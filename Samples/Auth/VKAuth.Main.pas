@@ -36,17 +36,17 @@ uses
 procedure TFormMain.Button1Click(Sender: TObject);
 begin
   if VK1.Account.Ban(-1) then
-    Memo1.Lines.Add('-1 banned')
+    Memo1.Lines.Add('Banned')
   else
-    Memo1.Lines.Add('Error -1 banned');
+    Memo1.Lines.Add('Error banned');
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
 begin
   if VK1.Account.UnBan(-1) then
-    Memo1.Lines.Add('-1 unbanned')
+    Memo1.Lines.Add('Unbanned')
   else
-    Memo1.Lines.Add('Error -1 unbanned');
+    Memo1.Lines.Add('Error unbanned');
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
