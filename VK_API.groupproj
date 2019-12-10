@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{89E169EC-E394-4A57-9BFA-0C43AFB6B940}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Samples\Auth\VKAuth.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\VKClean\VKClean.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="VKComponents.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="VKAuth">
+        <MSBuild Projects="Samples\Auth\VKAuth.dproj"/>
+    </Target>
+    <Target Name="VKAuth:Clean">
+        <MSBuild Projects="Samples\Auth\VKAuth.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VKAuth:Make">
+        <MSBuild Projects="Samples\Auth\VKAuth.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="VKClean">
+        <MSBuild Projects="..\VKClean\VKClean.dproj"/>
+    </Target>
+    <Target Name="VKClean:Clean">
+        <MSBuild Projects="..\VKClean\VKClean.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VKClean:Make">
+        <MSBuild Projects="..\VKClean\VKClean.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="VKComponents">
+        <MSBuild Projects="VKComponents.dproj"/>
+    </Target>
+    <Target Name="VKComponents:Clean">
+        <MSBuild Projects="VKComponents.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VKComponents:Make">
+        <MSBuild Projects="VKComponents.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="VKAuth;VKClean;VKComponents"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="VKAuth:Clean;VKClean:Clean;VKComponents:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="VKAuth:Make;VKClean:Make;VKComponents:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
