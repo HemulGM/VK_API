@@ -1,17 +1,14 @@
 # VKAPI
  VK API
 
-Русский
-
+**Русский**
 API для Вконтакте
-
 Я только начал
+---
 
-
-----------
-
-English
-
+**English**
 API for Vkontakte
-
 I just began
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbOTc4Mjg4MjkxXX0=
+-->
