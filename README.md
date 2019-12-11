@@ -1,14 +1,17 @@
 # VKAPI
  VK API
 
-**Русский**
+Русский
+-
 API для Вконтакте
 Я только начал
----
+
+    VK1.Login(Self);
 
 **English**
+-
 API for Vkontakte
 I just began
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTc4Mjg4MjkxXX0=
+eyJoaXN0b3J5IjpbLTE0NDUxODA3NDFdfQ==
 -->
