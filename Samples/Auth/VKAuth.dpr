@@ -11,7 +11,10 @@ uses
   VK.Account in '..\..\Entity\VK.Account.pas',
   VK.Handler in '..\..\VK.Handler.pas',
   VK.Captcha in '..\..\Forms\VK.Captcha.pas' {FormCaptcha},
-  VK.Account.ProfileInfo in '..\..\Entity\VK.Account.ProfileInfo.pas';
+  VK.Account.ProfileInfo in '..\..\Entity\VK.Account.ProfileInfo.pas',
+  VK.Account.ActiveOffers in '..\..\Entity\VK.Account.ActiveOffers.pas',
+  VK.Account.Counters in '..\..\Entity\VK.Account.Counters.pas',
+  VK.Account.PushSettings in '..\..\Entity\VK.Account.PushSettings.pas';
 
 {$R *.res}
 

@@ -114,6 +114,9 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Entity\VK.Account.ProfileInfo.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Account.ActiveOffers.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Account.Counters.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Account.PushSettings.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

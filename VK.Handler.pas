@@ -3,8 +3,8 @@ unit VK.Handler;
 interface
 
 uses
-  Winapi.Windows, System.SysUtils, Vcl.Forms, REST.Authenticator.OAuth,
-  REST.Client, REST.Json, JSON, VK.Captcha, VK.Types;
+  Winapi.Windows, System.SysUtils, Vcl.Forms, REST.Authenticator.OAuth, REST.Client, REST.Json, JSON,
+  VK.Captcha, VK.Types;
 
 type
   TRequestConstruct = class
@@ -194,7 +194,8 @@ begin
           end;
         6: //Превышено кол-во запросов в сек.
           begin
-            ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)', [FRequests, RequestLimit, TimeStamp, FStartRequest, TimeStampLast]));
+            ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)',
+              [FRequests, RequestLimit, TimeStamp, FStartRequest, TimeStampLast]));
             WaitTime(1000);
             Result := Execute(Request);
             if FreeRequset then
@@ -211,12 +212,8 @@ begin
       begin
         if Request.Response.JSONValue.TryGetValue<TJSONValue>('response', JS) then
         begin
-          Result.JSON := JS.ToJSON;
+          Result.Value := JS.ToJSON;
           Result.Success := True;
-        end
-        else if Request.Response.JSONValue.TryGetValue<Integer>('response', ResponseCode) then
-        begin
-          Result.Success := ResponseCode = 1;
         end;
       end;
     end;
