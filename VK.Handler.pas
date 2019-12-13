@@ -18,7 +18,7 @@ type
     const
       RequestLimit = 3; //Round(1000 / 3) + 10; //задержка между запросами 3 запроса в секунду + 10 мс страховка
   private
-    FStartRequest: Cardinal;  //Время последнего запроса в ВК
+    FStartRequest: Cardinal;
     FRequests: Integer;
     FRESTClient: TRESTClient;
     FOnConfirm: TOnConfirm;
@@ -58,7 +58,7 @@ begin
   Result.Resource := Resource;
   for Param in Params do
   begin
-    if (Param[0] <> '') and (Param[1] <> '') then
+    if not Param[0].IsEmpty then
       Result.Params.AddItem(Param[0], Param[1]);
   end;
 end;
@@ -123,7 +123,6 @@ var
   CaptchaImg: string;
   CaptchaAns: string;
   IsDone: Boolean;
-  ResponseCode: Integer;
   TimeStamp: Cardinal;
   TimeStampLast: Cardinal;
 begin
@@ -238,7 +237,7 @@ end;
 procedure TVKHandler.ProcError(Msg: string);
 begin
   if Assigned(FOnError) then
-    FOnError(-1, Msg);
+    FOnError(ERROR_VK_UNKNOWN, Msg);
 end;
 
 procedure TVKHandler.ProcError(Code: Integer; Text: string);
@@ -254,7 +253,7 @@ end;
 procedure TVKHandler.ProcError(E: Exception);
 begin
   if Assigned(FOnError) then
-    FOnError(-2, E.Message);
+    FOnError(ERROR_VK_UNKNOWN, E.Message);
 end;
 
 end.

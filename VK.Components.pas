@@ -9,12 +9,15 @@ type
   TVK = class(TCustomVK)
   published
     property OnLogin;
+    property OnError;
     property AppID;
     property AppKey;
-    property EndPoint;
-    property Permissions;
-    property APIVersion;
-    property BaseURL;
+    property EndPoint; // default 'https://oauth.vk.com/authorize';
+    property Permissions; // default 'groups,friends,wall,photos,video,docs,notes,market,messages';
+    property APIVersion; // default '5.101';
+    property BaseURL; // default 'https://api.vk.com/method';
+    property ServiceKey;
+    property UseServiceKeyOnly default False;
   end;
 
 procedure Register;
@@ -27,3 +30,4 @@ begin
 end;
 
 end.
+

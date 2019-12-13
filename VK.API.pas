@@ -3,9 +3,9 @@ unit VK.API;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Dialogs, IPPeerClient, REST.Client, Vcl.Controls,
-  REST.Authenticator.OAuth, VK.Types, VK.OAuth2, VK.Account, VK.Handler;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Dialogs,
+  IPPeerClient, REST.Client, Vcl.Controls, REST.Authenticator.OAuth, VK.Types, VK.OAuth2, VK.Account,
+  VK.Handler;
 
 type
   TCustomVK = class(TComponent)
@@ -21,7 +21,13 @@ type
     FBaseURL: string;
     FAPIVersion: string;
     FAccount: TAccount;
+    FServiceKey: string;
+    FUseServiceKeyOnly: Boolean;
+    FIsLogin: Boolean;
+    FOnError: TOnVKError;
+    function GetPermissions: string;
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
+    procedure FOnAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
     procedure SetOnLogin(const Value: TOnLogin);
     procedure SetPermissionsList(const Value: TPermissions);
     procedure DoLogin;
@@ -29,19 +35,22 @@ type
     procedure SetAppKey(const Value: string);
     procedure SetEndPoint(const Value: string);
     procedure SetPermissions(const Value: string);
-    function GetPermissions: string;
     procedure SetHandler(const Value: TVKHandler);
     procedure SetBaseURL(const Value: string);
     procedure SetAPIVersion(const Value: string);
     procedure FOnVKError(Code: Integer; Text: string);
+    procedure SetServiceKey(const Value: string);
+    procedure SetUseServiceKeyOnly(const Value: Boolean);
+    procedure SetOnError(const Value: TOnVKError);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Login(AParentWindow: TWinControl);
+    procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil);
     property PermissionsList: TPermissions read FPermissionsList write SetPermissionsList;
     property Account: TAccount read FAccount;
-  published
     property OnLogin: TOnLogin read FOnLogin write SetOnLogin;
+    property OnError: TOnVKError read FOnError write SetOnError;
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;
     property EndPoint: string read FEndPoint write SetEndPoint;
@@ -49,6 +58,9 @@ type
     property Handler: TVKHandler read FHandler write SetHandler;
     property APIVersion: string read FAPIVersion write SetAPIVersion;
     property BaseURL: string read FBaseURL write SetBaseURL;
+    property ServiceKey: string read FServiceKey write SetServiceKey;
+    property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
+    property IsLogin: Boolean read FIsLogin;
   end;
 
 implementation
@@ -58,9 +70,22 @@ uses
 
 { TVK }
 
+procedure TCustomVK.CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback);
+var
+  Response: TResponse;
+begin
+  Response := Handler.Execute(MethodName, Params);
+  if Assigned(Callback) then
+  begin
+    Callback(Response);
+  end;
+end;
+
 constructor TCustomVK.Create(AOwner: TComponent);
 begin
   inherited;
+  FIsLogin := False;
+  FUseServiceKeyOnly := False;
   FPermissionsList := TPermissions.Create;
   FOAuth2Authenticator := TOAuth2Authenticator.Create(Self);
   FHandler := TVKHandler.Create;
@@ -84,6 +109,7 @@ end;
 
 procedure TCustomVK.DoLogin;
 begin
+  FIsLogin := True;
   if Assigned(FOnLogin) then
     FOnLogin(Self);
 end;
@@ -95,7 +121,7 @@ var
   Params: TStringList;
 begin
   i := Pos('#access_token=', AURL);
-  if (i <> 0) and (FOAuth2Authenticator.AccessToken = EmptyStr) then
+  if (i <> 0) and (FOAuth2Authenticator.AccessToken.IsEmpty) then
   begin
     Str := AURL;
     Delete(Str, 1, i);
@@ -113,11 +139,23 @@ begin
   end;
   FAuthForm.Free;
   FAuthForm := nil;
+  if FOAuth2Authenticator.AccessToken.IsEmpty then
+  begin
+    FOnVKError(ERROR_VK_NOTOKEN, 'Токен не был получен');
+  end;
+end;
+
+procedure TCustomVK.FOnAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
+begin
+  FOnVKError(AStatusCode, 'AuthError');
 end;
 
 procedure TCustomVK.FOnVKError(Code: Integer; Text: string);
 begin
-  ShowMessage(Text);
+  if Assigned(FOnError) then
+    FOnError(Code, Text)
+  else
+    raise Exception.Create('Code: ' + Code.ToString + #13#10 + Text);
 end;
 
 procedure TCustomVK.Login(AParentWindow: TWinControl);
@@ -126,6 +164,7 @@ begin
   begin
     FAuthForm := TFormOAuth2.Create(nil);
     FAuthForm.OnAfterRedirect := FAfterRedirect;
+    FAuthForm.OnError := FOnAuthError;
   end;
 
   FOAuth2Authenticator.AccessToken := EmptyStr;
@@ -169,6 +208,11 @@ begin
   FHandler.RESTClient.BaseURL := FBaseURL;
 end;
 
+procedure TCustomVK.SetOnError(const Value: TOnVKError);
+begin
+  FOnError := Value;
+end;
+
 procedure TCustomVK.SetOnLogin(const Value: TOnLogin);
 begin
   FOnLogin := Value;
@@ -196,6 +240,16 @@ end;
 procedure TCustomVK.SetPermissionsList(const Value: TPermissions);
 begin
   FPermissionsList := Value;
+end;
+
+procedure TCustomVK.SetServiceKey(const Value: string);
+begin
+  FServiceKey := Value;
+end;
+
+procedure TCustomVK.SetUseServiceKeyOnly(const Value: Boolean);
+begin
+  FUseServiceKeyOnly := Value;
 end;
 
 end.

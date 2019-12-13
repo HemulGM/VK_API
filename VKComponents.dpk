@@ -51,9 +51,13 @@ contains
   VK.Entity in 'VK.Entity.pas',
   VK.Handler in 'VK.Handler.pas',
   VK.Types in 'VK.Types.pas',
+  VK.Captcha in 'Forms\VK.Captcha.pas' {FormCaptcha},
+  VK.Account.ActiveOffers in 'Entity\VK.Account.ActiveOffers.pas',
+  VK.Account.Counters in 'Entity\VK.Account.Counters.pas',
   VK.Account.Info in 'Entity\VK.Account.Info.pas',
   VK.Account in 'Entity\VK.Account.pas',
-  VK.Captcha in 'Forms\VK.Captcha.pas' {FormCaptcha},
-  VK.Account.ProfileInfo in 'Entity\VK.Account.ProfileInfo.pas';
+  VK.Account.ProfileInfo in 'Entity\VK.Account.ProfileInfo.pas',
+  VK.Account.PushSettings in 'Entity\VK.Account.PushSettings.pas',
+  VK.Structs in 'VK.Structs.pas';
 
 end.

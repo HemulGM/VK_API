@@ -3,9 +3,8 @@ unit VK.OAuth2;
 interface
 
 uses
-  Windows, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.OleCtrls, Vcl.StdCtrls, Vcl.ExtCtrls,
-  SHDocVw;
+  Windows, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
+  Vcl.Dialogs, Vcl.OleCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, SHDocVw;
 
 type
   TOAuth2WebFormRedirectEvent = procedure(const AURL: string; var DoCloseWebView: boolean) of object;
@@ -22,9 +21,11 @@ type
     procedure BrowserTitleChange(ASender: TObject; const Text: WideString);
     procedure FormCreate(Sender: TObject);
     procedure BrowserNavigateComplete2(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
-    procedure BrowserBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
+    procedure BrowserBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags,
+      TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
     procedure EditAddrChange(Sender: TObject);
-    procedure BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame, StatusCode: OleVariant; var Cancel: WordBool);
+    procedure BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame,
+      StatusCode: OleVariant; var Cancel: WordBool);
   private
     FOnBeforeRedirect: TOAuth2WebFormRedirectEvent;
     FOnAfterRedirect: TOAuth2WebFormRedirectEvent;
@@ -92,7 +93,8 @@ begin
     EditAddr.Color := $0096AFFF;
 end;
 
-procedure TFormOAuth2.BrowserBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL, Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
+procedure TFormOAuth2.BrowserBeforeNavigate2(ASender: TObject; const pDisp: IDispatch; const URL,
+  Flags, TargetFrameName, PostData, Headers: OleVariant; var Cancel: WordBool);
 var
   LDoCloseForm: boolean;
 begin
@@ -105,7 +107,8 @@ begin
     if LDoCloseForm then
     begin
       Cancel := True;
-      Close;
+      if Showing then
+        Close;
     end;
   end;
 end;
@@ -132,7 +135,8 @@ begin
   end;
 end;
 
-procedure TFormOAuth2.BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame, StatusCode: OleVariant; var Cancel: WordBool);
+procedure TFormOAuth2.BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL,
+  Frame, StatusCode: OleVariant; var Cancel: WordBool);
 begin
   if Assigned(FOnError) then
     FOnError(URL, StatusCode, Cancel);
@@ -207,6 +211,7 @@ begin
   SetParent(nil);
   Align := alNone;
   BorderStyle := bsSizeable;
+
   FNeedShow := True;
   Browser.Navigate(AURL);
   TS := GetTickCount;

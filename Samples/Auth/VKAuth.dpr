@@ -14,7 +14,8 @@ uses
   VK.Account.ProfileInfo in '..\..\Entity\VK.Account.ProfileInfo.pas',
   VK.Account.ActiveOffers in '..\..\Entity\VK.Account.ActiveOffers.pas',
   VK.Account.Counters in '..\..\Entity\VK.Account.Counters.pas',
-  VK.Account.PushSettings in '..\..\Entity\VK.Account.PushSettings.pas';
+  VK.Account.PushSettings in '..\..\Entity\VK.Account.PushSettings.pas',
+  VK.Structs in '..\..\VK.Structs.pas';
 
 {$R *.res}
 

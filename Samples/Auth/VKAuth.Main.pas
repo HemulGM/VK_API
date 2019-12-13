@@ -19,6 +19,9 @@ type
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
+    Button8: TButton;
+    Button9: TButton;
+    Button10: TButton;
     procedure FormCreate(Sender: TObject);
     procedure VK1Login(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -28,6 +31,10 @@ type
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
+    procedure VK1Error(Code: Integer; Text: string);
+    procedure Button8Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
+    procedure Button10Click(Sender: TObject);
   private
   public
     { Public declarations }
@@ -40,9 +47,17 @@ implementation
 
 uses
   VK.Account.Info, VK.Types, VK.Account.ProfileInfo, VK.Account.ActiveOffers, VK.Account.Counters,
-  VK.Account.PushSettings;
+  VK.Account.PushSettings, VK.Structs;
 
 {$R *.dfm}
+
+procedure TFormMain.Button10Click(Sender: TObject);
+begin
+  if VK1.Account.SetOffline then
+    Memo1.Lines.Add('offline')
+  else
+    Memo1.Lines.Add('Error offline');
+end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
 begin
@@ -114,9 +129,27 @@ var
   Response: TResponse;
   Info: TProfileInfoData;
 begin
+  Info.Clear;
   Info.status := 'test1';
   if VK1.Account.SaveProfileInfo(Info, Response) then
     Memo1.Lines.Add(Response.Value);
+end;
+
+procedure TFormMain.Button8Click(Sender: TObject);
+begin
+  VK1.CallMethod('account.getProfileInfo', [],
+    procedure(Respone: TResponse)
+    begin
+      ShowMessage(Respone.Value);
+    end);
+end;
+
+procedure TFormMain.Button9Click(Sender: TObject);
+begin
+  if VK1.Account.SetOnline() then
+    Memo1.Lines.Add('online')
+  else
+    Memo1.Lines.Add('Error online');
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
@@ -124,11 +157,29 @@ begin
   VK1.Login(Self);
 end;
 
+procedure TFormMain.VK1Error(Code: Integer; Text: string);
+begin
+  if Text = 'AuthError' then
+  begin
+    ShowMessage('Ошибка OAuth2 авторизации');
+  end
+  else
+  begin
+    if (not VK1.IsLogin) and (not VK1.UseServiceKeyOnly) then
+    begin
+      LabelLogin.Caption := 'login error';
+      ShowMessage('Ошибка авторизации');
+    end
+    else
+      ShowMessage('Ошибка: ' + Text);
+  end;
+end;
+
 procedure TFormMain.VK1Login(Sender: TObject);
 var
   Info: TProfileInfoClass;
 begin
-  LabelLogin.Caption := 'login';
+  LabelLogin.Caption := 'login success';
 
   if VK1.Account.GetProfileInfo(Info) then
   begin

@@ -5,6 +5,10 @@ interface
 uses
   System.Classes, System.Generics.Collections;
 
+const
+  ERROR_VK_UNKNOWN = -1;
+  ERROR_VK_NOTOKEN = -2;
+
 type
   TOnLogin = procedure(Sender: TObject) of object;
 
@@ -20,52 +24,37 @@ type
 
   TPremission = string;
 
-  TResponse = record
-    Success: Boolean;
-    Value: string;
-    Error: record
-      Code: Integer;
-      Text: string;
-    end;
-  end;
-
   TPermissions = class(TList<TPremission>)
     function ToString: string; override;
     procedure Assign(Source: TStrings);
   end;
 
-  TRegisterDeviceData = record
-    token: string;
-    device_model: string;
-    device_year: Integer;
-    device_id: string;
-    system_version: string;
-    settings: string;
-    sandbox: string;
+  TResponseError = record
+    Code: Integer;
+    Text: string;
   end;
 
-  TProfileInfoData = record
-    first_name: string;
-    last_name: string;
-    maiden_name: string;
-    screen_name: string;
-    cancel_request_id: string;
-    sex: string;
-    relation: string;
-    relation_partner_id: string;
-    bdate: string;
-    bdate_visibility: string;
-    home_town: string;
-    country_id: string;
-    city_id: string;
-    status: string;
+  TResponse = record
+    Success: Boolean;
+    Value: string;
+    Error: TResponseError;
   end;
+
+  TCallMethodCallback = reference to procedure(Respone: TResponse);
 
 function FieldsToString(Fields: TFields): string;
 
 function VKErrorString(ErrorCode: Integer): string;
 
+procedure AddParam(var Dest: TParams; Param: TParam);
+
 implementation
+
+procedure AddParam(var Dest: TParams; Param: TParam);
+begin
+  SetLength(Dest, Length(Dest) + 1);
+  Dest[High(Dest)] := Param;
+end;
 
 function FieldsToString(Fields: TFields): string;
 var
@@ -158,6 +147,8 @@ begin
     113:
       ErrStr :=
         'Неверный идентификатор пользователя. Убедитесь, что Вы используете верный идентификатор. Получить ID по короткому имени можно методом utils.resolveScreenName.';
+    148:
+      ErrStr := 'Пользователь не установил приложение в левое меню';
     150:
       ErrStr := 'Неверный timestamp. Получить актуальное значение Вы можете методом utils.getServerTime.';
     200:
