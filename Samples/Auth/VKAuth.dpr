@@ -15,7 +15,10 @@ uses
   VK.Account.ActiveOffers in '..\..\Entity\VK.Account.ActiveOffers.pas',
   VK.Account.Counters in '..\..\Entity\VK.Account.Counters.pas',
   VK.Account.PushSettings in '..\..\Entity\VK.Account.PushSettings.pas',
-  VK.Structs in '..\..\VK.Structs.pas';
+  VK.Structs in '..\..\VK.Structs.pas',
+  VK.Auth in '..\..\Entity\VK.Auth.pas',
+  VK.Users in '..\..\Entity\VK.Users.pas',
+  VK.Users.Types in '..\..\Entity\VK.Users.Types.pas';
 
 {$R *.res}
 

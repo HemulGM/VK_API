@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, System.SysUtils, Vcl.Forms, REST.Authenticator.OAuth, REST.Client, REST.Json, JSON,
-  VK.Captcha, VK.Types;
+  VK.Types;
 
 type
   TRequestConstruct = class
@@ -23,29 +23,55 @@ type
     FRESTClient: TRESTClient;
     FOnConfirm: TOnConfirm;
     FOnError: TOnVKError;
+    FOnLog: TOnLog;
+    FUseServiceKeyOnly: Boolean;
+    FOwner: TObject;
+    FOnCaptcha: TOnCaptcha;
+    function DoConfirm(Answer: string): Boolean;
     procedure ProcError(Code: Integer; Text: string = ''); overload;
     procedure ProcError(E: Exception); overload;
     procedure ProcError(Msg: string); overload;
-    function DoConfirm(Ans: string): Boolean;
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure SetOnError(const Value: TOnVKError);
+    procedure FLog(const Value: string);
+    procedure SetOnLog(const Value: TOnLog);
+    procedure SetUseServiceKeyOnly(const Value: Boolean);
+    procedure SetOwner(const Value: TObject);
+    procedure SetOnCaptcha(const Value: TOnCaptcha);
   public
-    constructor Create;
+    constructor Create(AOwner: TObject);
     destructor Destroy; override;
-    function AskCapcha(const CapchaImg: string; var Answer: string): Boolean;
+    function AskCaptcha(const CaptchaImg: string; var Answer: string): Boolean;
     function Execute(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Param: TParam): TResponse; overload;
     function Execute(Request: string): TResponse; overload;
     function Execute(Request: TRESTRequest; FreeRequset: Boolean = False): TResponse; overload;
     property RESTClient: TRESTClient read FRESTClient;
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
+    property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
     property OnError: TOnVKError read FOnError write SetOnError;
+    property OnLog: TOnLog read FOnLog write SetOnLog;
+    property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
+    property Owner: TObject read FOwner write SetOwner;
   end;
 
 implementation
 
-uses
-  HGM.Common.Utils;
+procedure WaitTime(MS: Int64);
+var
+  TS: Cardinal;
+begin
+  if MS < 0 then
+    Exit;
+  if MS = 0 then
+  begin
+    Application.ProcessMessages;
+    Exit;
+  end;
+  TS := GetTickCount;
+  while TS + MS > GetTickCount do
+    Application.ProcessMessages;
+end;
 
 { TRequsetConstruct }
 
@@ -65,14 +91,19 @@ end;
 
 { TVKHandler }
 
-function TVKHandler.AskCapcha(const CapchaImg: string; var Answer: string): Boolean;
+function TVKHandler.AskCaptcha(const CaptchaImg: string; var Answer: string): Boolean;
 begin
-  Result := TFormCaptcha.Execute(CapchaImg, Answer);
+  if Assigned(FOnCaptcha) then
+  begin
+    FOnCaptcha(CaptchaImg, Answer);
+    Result := not Answer.IsEmpty;
+  end;
 end;
 
-constructor TVKHandler.Create;
+constructor TVKHandler.Create(AOwner: TObject);
 begin
-  inherited;
+  inherited Create;
+  FOwner := AOwner;
   FStartRequest := 0;
   FRequests := 0;
   FRESTClient := TRESTClient.Create(nil);
@@ -88,7 +119,7 @@ begin
   inherited;
 end;
 
-function TVKHandler.DoConfirm(Ans: string): Boolean;
+function TVKHandler.DoConfirm(Answer: string): Boolean;
 begin
   if not Assigned(FOnConfirm) then
   begin
@@ -97,7 +128,7 @@ begin
   else
   begin
     Result := False;
-    FOnConfirm(Ans, Result);
+    FOnConfirm(Self, Answer, Result);
   end;
 end;
 
@@ -131,7 +162,7 @@ begin
   Result.Success := False;
   try
     IsDone := False;
-    //Log('Запрос: ' + Request.GetFullRequestURL);
+    FLog(Request.GetFullRequestURL);
 
     FRequests := FRequests + 1;
     //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
@@ -148,6 +179,7 @@ begin
       end);
     while not IsDone do
       Application.ProcessMessages;
+    FLog(Request.Response.JSONText);
 
     //Если это первый запрос, то сохраняем метку
     if FRequests = 1 then
@@ -162,7 +194,7 @@ begin
           begin
             CaptchaSID := JS.GetValue<string>('captcha_sid', '');
             CaptchaImg := JS.GetValue<string>('captcha_img', '');
-            if AskCapcha(CaptchaImg, CaptchaAns) then
+            if AskCaptcha(CaptchaImg, CaptchaAns) then
             begin
               Request.Params.AddItem('captcha_sid', CaptchaSID);
               Request.Params.AddItem('captcha_key', CaptchaAns);
@@ -212,6 +244,7 @@ begin
         if Request.Response.JSONValue.TryGetValue<TJSONValue>('response', JS) then
         begin
           Result.Value := JS.ToJSON;
+          Result.JSON := Request.Response.JSONText;
           Result.Success := True;
         end;
       end;
@@ -224,9 +257,35 @@ begin
     Request.Free;
 end;
 
+procedure TVKHandler.FLog(const Value: string);
+begin
+  if Assigned(FOnLog) then
+    FOnLog(Self, Value);
+end;
+
 procedure TVKHandler.SetOnError(const Value: TOnVKError);
 begin
   FOnError := Value;
+end;
+
+procedure TVKHandler.SetOnLog(const Value: TOnLog);
+begin
+  FOnLog := Value;
+end;
+
+procedure TVKHandler.SetOwner(const Value: TObject);
+begin
+  FOwner := Value;
+end;
+
+procedure TVKHandler.SetUseServiceKeyOnly(const Value: Boolean);
+begin
+  FUseServiceKeyOnly := Value;
+end;
+
+procedure TVKHandler.SetOnCaptcha(const Value: TOnCaptcha);
+begin
+  FOnCaptcha := Value;
 end;
 
 procedure TVKHandler.SetOnConfirm(const Value: TOnConfirm);
@@ -237,7 +296,7 @@ end;
 procedure TVKHandler.ProcError(Msg: string);
 begin
   if Assigned(FOnError) then
-    FOnError(ERROR_VK_UNKNOWN, Msg);
+    FOnError(Self, ERROR_VK_UNKNOWN, Msg);
 end;
 
 procedure TVKHandler.ProcError(Code: Integer; Text: string);
@@ -246,14 +305,14 @@ begin
   begin
     if Text = '' then
       Text := VKErrorString(Code);
-    FOnError(Code, Text);
+    FOnError(Self, Code, Text);
   end;
 end;
 
 procedure TVKHandler.ProcError(E: Exception);
 begin
   if Assigned(FOnError) then
-    FOnError(ERROR_VK_UNKNOWN, E.Message);
+    FOnError(Self, ERROR_VK_UNKNOWN, E.Message);
 end;
 
 end.

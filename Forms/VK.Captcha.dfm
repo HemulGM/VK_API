@@ -98,7 +98,7 @@ object FormCaptcha: TFormCaptcha
       7181C0F4145159963AE861C11C1F6A924E6DF2793451400DB6398C83C8AE13C5
       334ADAE5A4064730B1F9A32C769E7B8A28AD296E4CF63B211A4314491A2A281C
       0518156A6FF8F7145159BEA505B7FAA35143FF001F14514016E8A28A633FFFD9}
-    ExplicitTop = 8
+    ExplicitWidth = 130
   end
   object Panel1: TPanel
     Left = 0
@@ -110,51 +110,27 @@ object FormCaptcha: TFormCaptcha
     Color = 16250871
     ParentBackground = False
     TabOrder = 1
-    object ButtonFlatOK: TButtonFlat
+    object ButtonFlatOK: TButton
       AlignWithMargins = True
       Left = 203
       Top = 12
       Width = 100
       Height = 35
+      Cursor = crHandPoint
       Margins.Top = 12
       Margins.Right = 12
       Margins.Bottom = 12
       Align = alRight
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100
-      ColorNormal = 12091729
-      ColorOver = 10711624
-      ColorPressed = 10054212
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
       Font.Height = -13
       Font.Name = 'Roboto'
       Font.Style = []
       Font.Quality = fqAntialiased
-      FontOver.Charset = DEFAULT_CHARSET
-      FontOver.Color = clWhite
-      FontOver.Height = -13
-      FontOver.Name = 'Roboto'
-      FontOver.Style = []
-      FontOver.Quality = fqAntialiased
-      FontDown.Charset = DEFAULT_CHARSET
-      FontDown.Color = clWhite
-      FontDown.Height = -13
-      FontDown.Name = 'Roboto'
-      FontDown.Style = []
-      FontDown.Quality = fqAntialiased
-      IgnorBounds = True
-      OnClick = ButtonFlatOKClick
-      RoundRectParam = 6
-      Shape = stRoundRect
-      ShowFocusRect = False
+      ParentFont = False
       TabOrder = 0
-      TabStop = True
-      TextFormat = [tfCenter, tfSingleLine, tfVerticalCenter]
-      SubTextFont.Charset = DEFAULT_CHARSET
-      SubTextFont.Color = clWhite
-      SubTextFont.Height = -13
-      SubTextFont.Name = 'Tahoma'
-      SubTextFont.Style = []
+      OnClick = ButtonFlatOKClick
     end
   end
   object EditEnter: TEdit
@@ -168,7 +144,5 @@ object FormCaptcha: TFormCaptcha
     Margins.Right = 90
     Align = alTop
     TabOrder = 0
-    ExplicitLeft = 85
-    ExplicitTop = 133
   end
 end

@@ -41,8 +41,7 @@ requires
   bindcomp,
   RESTComponents,
   vclimg,
-  PngComponents,
-  HGMComponents;
+  PngComponents;
 
 contains
   VK.Components in 'VK.Components.pas',
@@ -58,6 +57,10 @@ contains
   VK.Account in 'Entity\VK.Account.pas',
   VK.Account.ProfileInfo in 'Entity\VK.Account.ProfileInfo.pas',
   VK.Account.PushSettings in 'Entity\VK.Account.PushSettings.pas',
-  VK.Structs in 'VK.Structs.pas';
+  VK.Structs in 'VK.Structs.pas',
+  VK.Auth in 'Entity\VK.Auth.pas',
+  VK.Users in 'Entity\VK.Users.pas',
+  VK.Users.Types in 'Entity\VK.Users.Types.pas',
+  VK.Utils in 'VK.Utils.pas';
 
 end.

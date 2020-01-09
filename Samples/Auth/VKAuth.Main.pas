@@ -10,8 +10,8 @@ uses
 type
   TFormMain = class(TForm)
     VK1: TVK;
+    Panel1: TPanel;
     LabelLogin: TLabel;
-    Memo1: TMemo;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -22,8 +22,12 @@ type
     Button8: TButton;
     Button9: TButton;
     Button10: TButton;
+    Button11: TButton;
+    Button12: TButton;
+    Panel2: TPanel;
+    Memo1: TMemo;
+    MemoLog: TMemo;
     procedure FormCreate(Sender: TObject);
-    procedure VK1Login(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -31,10 +35,14 @@ type
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
-    procedure VK1Error(Code: Integer; Text: string);
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
+    procedure VK1Error(Sender: TObject; Code: Integer; Text: string);
+    procedure VK1Login(Sender: TObject);
+    procedure VK1Log(Sender: TObject; const Value: string);
+    procedure Button11Click(Sender: TObject);
+    procedure Button12Click(Sender: TObject);
   private
   public
     { Public declarations }
@@ -47,7 +55,7 @@ implementation
 
 uses
   VK.Account.Info, VK.Types, VK.Account.ProfileInfo, VK.Account.ActiveOffers, VK.Account.Counters,
-  VK.Account.PushSettings, VK.Structs;
+  VK.Account.PushSettings, VK.Structs, VK.Users.Types;
 
 {$R *.dfm}
 
@@ -57,6 +65,35 @@ begin
     Memo1.Lines.Add('offline')
   else
     Memo1.Lines.Add('Error offline');
+end;
+
+procedure TFormMain.Button11Click(Sender: TObject);
+begin
+  if VK1.Auth.CheckPhone('+79512202849', True) then
+    Memo1.Lines.Add('CheckPhone')
+  else
+    Memo1.Lines.Add('Error CheckPhone');
+end;
+
+procedure TFormMain.Button12Click(Sender: TObject);
+var
+  Users: TUsersClass;
+  i: Integer;
+begin
+  if VK1.Users.Get(Users, '286400863', UserFieldsAll, '') then
+  begin
+    for i := Low(Users.Items) to High(Users.Items) do
+    begin
+      Memo1.Lines.Add('about: ' + Users.Items[i].about);
+      Memo1.Lines.Add('bdate: ' + Users.Items[i].bdate);
+      Memo1.Lines.Add('books: ' + Users.Items[i].books);
+      Memo1.Lines.Add('domain: ' + Users.Items[i].domain);
+      Memo1.Lines.Add('first_name: ' + Users.Items[i].first_name);
+      Memo1.Lines.Add('movies: ' + Users.Items[i].movies);
+      Memo1.Lines.Add('------------');
+    end;
+    Users.Free;
+  end;
 end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
@@ -154,25 +191,25 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  VK1.Login(Self);
+  VK1.Login;
+  VK1.UseServiceKeyOnly := True;
 end;
 
-procedure TFormMain.VK1Error(Code: Integer; Text: string);
+procedure TFormMain.VK1Error(Sender: TObject; Code: Integer; Text: string);
 begin
-  if Text = 'AuthError' then
+  if (not VK1.IsLogin) and (not VK1.UseServiceKeyOnly) then
   begin
-    ShowMessage('Ошибка OAuth2 авторизации');
+    LabelLogin.Caption := 'login error';
+    ShowMessage('Ошибка авторизации');
   end
   else
-  begin
-    if (not VK1.IsLogin) and (not VK1.UseServiceKeyOnly) then
-    begin
-      LabelLogin.Caption := 'login error';
-      ShowMessage('Ошибка авторизации');
-    end
-    else
-      ShowMessage('Ошибка: ' + Text);
-  end;
+    ShowMessage('Ошибка: ' + Code.ToString + ' - ' + Text);
+  Memo1.Lines.Add('Ошибка: ' + Code.ToString + ' - ' + Text);
+end;
+
+procedure TFormMain.VK1Log(Sender: TObject; const Value: string);
+begin
+  MemoLog.Lines.Add('Log: ' + Value);
 end;
 
 procedure TFormMain.VK1Login(Sender: TObject);

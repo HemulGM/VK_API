@@ -12,9 +12,13 @@ const
 type
   TOnLogin = procedure(Sender: TObject) of object;
 
-  TOnConfirm = procedure(Ans: string; var Accept: Boolean) of object;
+  TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
 
-  TOnVKError = procedure(Code: Integer; Text: string) of object;
+  TOnCaptcha = procedure(const CaptchaURL: string; var Answer: string) of object;
+
+  TOnLog = procedure(Sender: TObject; const Value: string) of object;
+
+  TOnVKError = procedure(Sender: TObject; Code: Integer; Text: string) of object;
 
   TFields = array of string;
 
@@ -37,6 +41,7 @@ type
   TResponse = record
     Success: Boolean;
     Value: string;
+    JSON: string;
     Error: TResponseError;
   end;
 

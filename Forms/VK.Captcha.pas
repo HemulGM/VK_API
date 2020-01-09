@@ -3,16 +3,15 @@ unit VK.Captcha;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  Vcl.Imaging.jpeg, Vcl.ExtCtrls, Vcl.StdCtrls, HGM.Button, HGM.Common.Utils;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.ExtCtrls, Vcl.StdCtrls, VK.Utils;
 
 type
   TFormCaptcha = class(TForm)
     ImageCaptcha: TImage;
     Panel1: TPanel;
-    ButtonFlatOK: TButtonFlat;
     EditEnter: TEdit;
+    ButtonFlatOK: TButton;
     procedure ButtonFlatOKClick(Sender: TObject);
   public
     class function Execute(const CaptchaURL: string; var Answer: string): Boolean;
@@ -44,9 +43,11 @@ begin
     begin
       Jpg.LoadFromStream(Mem);
       ImageCaptcha.Picture.Assign(Jpg);
-      EditEnter.Text := '';
-      Result := ShowModal = mrOk;
-    end;
+    end
+    else
+      ImageCaptcha.Picture.Assign(nil);
+    EditEnter.Text := '';
+    Result := ShowModal = mrOk;
   finally
     Jpg.Free;
     Mem.Free;
