@@ -41,7 +41,7 @@ type
   public
     constructor Create(AOwner: TObject);
     destructor Destroy; override;
-    function AskCaptcha(const CaptchaImg: string; var Answer: string): Boolean;
+    function AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
     function Execute(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Param: TParam): TResponse; overload;
     function Execute(Request: string): TResponse; overload;
@@ -91,13 +91,15 @@ end;
 
 { TVKHandler }
 
-function TVKHandler.AskCaptcha(const CaptchaImg: string; var Answer: string): Boolean;
+function TVKHandler.AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
 begin
   if Assigned(FOnCaptcha) then
   begin
-    FOnCaptcha(CaptchaImg, Answer);
+    FOnCaptcha(Sender, CaptchaImg, Answer);
     Result := not Answer.IsEmpty;
-  end;
+  end
+  else
+    raise Exception.Create('Необходимо определить обработчика для запроса капчи');
 end;
 
 constructor TVKHandler.Create(AOwner: TObject);
@@ -194,7 +196,7 @@ begin
           begin
             CaptchaSID := JS.GetValue<string>('captcha_sid', '');
             CaptchaImg := JS.GetValue<string>('captcha_img', '');
-            if AskCaptcha(CaptchaImg, CaptchaAns) then
+            if AskCaptcha(Self, CaptchaImg, CaptchaAns) then
             begin
               Request.Params.AddItem('captcha_sid', CaptchaSID);
               Request.Params.AddItem('captcha_key', CaptchaAns);

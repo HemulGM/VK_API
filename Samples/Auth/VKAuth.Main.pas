@@ -3,9 +3,10 @@ unit VKAuth.Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, Vcl.ExtCtrls, VK.Handler,
-  Vcl.StdCtrls;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls,
+  VK.Handler, Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents,
+  VK.Wall.Comment;
 
 type
   TFormMain = class(TForm)
@@ -27,6 +28,13 @@ type
     Panel2: TPanel;
     Memo1: TMemo;
     MemoLog: TMemo;
+    Button13: TButton;
+    Button14: TButton;
+    Button15: TButton;
+    Button16: TButton;
+    VkUserEvents1: TVkUserEvents;
+    VkGroupEventsController1: TVkGroupEventsController;
+    VkGroupEvents1: TVkGroupEvents;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -43,6 +51,36 @@ type
     procedure VK1Log(Sender: TObject; const Value: string);
     procedure Button11Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
+    procedure VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+    procedure VK1ErrorLogin(Sender: TObject; Code: Integer; Text: string);
+    procedure Button13Click(Sender: TObject);
+    procedure Button14Click(Sender: TObject);
+    procedure Button15Click(Sender: TObject);
+    procedure Button16Click(Sender: TObject);
+    procedure VkUserEvents1UserOnline(Sender: TObject; UserId: Integer; VkPlatform: TVkPlatform; TimeStamp: TDateTime);
+    procedure VkUserEvents1RecoverMessages(Sender: TObject; PeerId, LocalId: Integer);
+    procedure VkUserEvents1ChangeDialogFlags(Sender: TObject; DialogChangeData: TDialogChangeData);
+    procedure VkUserEvents1ChangeMessageFlags(Sender: TObject; MessageChangeData: TMessageChangeData);
+    procedure VkUserEvents1ChatChanged(Sender: TObject; const ChatId: Integer; IsSelf: Boolean);
+    procedure VkUserEvents1ChatChangeInfo(Sender: TObject; const PeerId: Integer; TypeId:
+      TChatChangeInfoType; Info: Integer);
+    procedure VkUserEvents1DeleteMessages(Sender: TObject; PeerId, LocalId: Integer);
+    procedure VkUserEvents1EditMessage(Sender: TObject; MessageData: TMessageData);
+    procedure VkUserEvents1UserOffline(Sender: TObject; UserId: Integer; InactiveUser: Boolean; TimeStamp: TDateTime);
+    procedure VkUserEvents1NewMessage(Sender: TObject; MessageData: TMessageData);
+    procedure VkUserEvents1ReadMessages(Sender: TObject; Incoming: Boolean; PeerId, LocalId: Integer);
+    procedure VkUserEvents1UsersRecording(Sender: TObject; Data: TChatRecordingData);
+    procedure VkUserEvents1UsersTyping(Sender: TObject; Data: TChatTypingData);
+    procedure VkUserEvents1UserTyping(Sender: TObject; UserId, ChatId: Integer);
+    procedure VkUserEvents1UserCall(Sender: TObject; UserId, CallId: Integer);
+    procedure VkUserEvents1CountChange(Sender: TObject; Count: Integer);
+    procedure VkUserEvents1NotifyChange(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer);
+    procedure VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
+      TWallComment; EventId: string);
+    procedure VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
+      TWallComment; EventId: string);
+    procedure VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer; Comment:
+      TWallComment; EventId: string);
   private
   public
     { Public declarations }
@@ -54,7 +92,7 @@ var
 implementation
 
 uses
-  VK.Account.Info, VK.Types, VK.Account.ProfileInfo, VK.Account.ActiveOffers, VK.Account.Counters,
+  VK.Account.Info, VK.Account.ProfileInfo, VK.Account.ActiveOffers, VK.Account.Counters,
   VK.Account.PushSettings, VK.Structs, VK.Users.Types;
 
 {$R *.dfm}
@@ -80,7 +118,7 @@ var
   Users: TUsersClass;
   i: Integer;
 begin
-  if VK1.Users.Get(Users, '286400863', UserFieldsAll, '') then
+  if VK1.Users.Get(Users, '286400863,415730216', UserFieldsAll, '') then
   begin
     for i := Low(Users.Items) to High(Users.Items) do
     begin
@@ -94,6 +132,27 @@ begin
     end;
     Users.Free;
   end;
+end;
+
+procedure TFormMain.Button13Click(Sender: TObject);
+begin
+//  Vk1.UserLongPollServerStart;
+  VkUserEvents1.Start;
+end;
+
+procedure TFormMain.Button14Click(Sender: TObject);
+begin
+  VkUserEvents1.Stop;
+end;
+
+procedure TFormMain.Button15Click(Sender: TObject);
+begin
+  VkGroupEventsController1.Start;
+end;
+
+procedure TFormMain.Button16Click(Sender: TObject);
+begin
+  VkGroupEventsController1.Stop;
 end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
@@ -192,7 +251,12 @@ end;
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   VK1.Login;
-  VK1.UseServiceKeyOnly := True;
+end;
+
+procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+begin
+  Token := '0531221a8de1ec30027acc14180a825d37843059703a44f8532a49988412f4849ed9e4045f81d4ae239cf';
+  TokenExpiry := 0;
 end;
 
 procedure TFormMain.VK1Error(Sender: TObject; Code: Integer; Text: string);
@@ -207,23 +271,144 @@ begin
   Memo1.Lines.Add('Ошибка: ' + Code.ToString + ' - ' + Text);
 end;
 
+procedure TFormMain.VK1ErrorLogin(Sender: TObject; Code: Integer; Text: string);
+begin
+  MemoLog.Lines.Add('Ошибка авторизации: ' + Code.ToString + ' - ' + Text);
+end;
+
 procedure TFormMain.VK1Log(Sender: TObject; const Value: string);
 begin
   MemoLog.Lines.Add('Log: ' + Value);
 end;
 
 procedure TFormMain.VK1Login(Sender: TObject);
-var
-  Info: TProfileInfoClass;
 begin
   LabelLogin.Caption := 'login success';
+end;
 
-  if VK1.Account.GetProfileInfo(Info) then
-  begin
-    Memo1.Lines.Add(Info.country.title);
-    Memo1.Lines.Add(Info.relation_partner.first_name);
-    Info.Free;
+procedure TFormMain.VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
+  TWallComment; EventId: string);
+begin
+  Memo1.Lines.Add('Комментарий изменили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
+    Comment.from_id.ToString);
+end;
+
+procedure TFormMain.VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
+  TWallComment; EventId: string);
+begin
+  Memo1.Lines.Add('Новый комментарий в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
+    Comment.from_id.ToString);
+end;
+
+procedure TFormMain.VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer;
+  Comment: TWallComment; EventId: string);
+begin
+  Memo1.Lines.Add('Комментарий восстановили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
+    Comment.from_id.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1ChangeDialogFlags(Sender: TObject; DialogChangeData: TDialogChangeData);
+begin
+  Memo1.Lines.Add('Изменение флагов диалога ' +
+    DialogChangeData.PeerId.ToString + ': ' +
+    DialogChangeData.ChangeType.ToString + ' ' +
+    DialogChangeData.Flags.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1ChangeMessageFlags(Sender: TObject; MessageChangeData: TMessageChangeData);
+begin
+  Memo1.Lines.Add('Изменение флагов сообщения ' +
+    MessageChangeData.MessageId.ToString + ': ' +
+    MessageChangeData.ChangeType.ToString + ' ' +
+    MessageChangeData.Flags.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1ChatChanged(Sender: TObject; const ChatId: Integer; IsSelf: Boolean);
+begin
+  Memo1.Lines.Add('Изменения в беседе ' + ChatId.ToString + ': ' + IsSelf.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1ChatChangeInfo(Sender: TObject; const PeerId: Integer; TypeId:
+  TChatChangeInfoType; Info: Integer);
+begin
+  Memo1.Lines.Add('Изменения в беседе ' + PeerId.ToString + ': ' + TypeId.ToString + ' -> ' + Info.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1CountChange(Sender: TObject; Count: Integer);
+begin
+  Memo1.Lines.Add('Кол-во уведомлений ' + Count.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1DeleteMessages(Sender: TObject; PeerId, LocalId: Integer);
+begin
+  Memo1.Lines.Add('Сообщения в чате ' + PeerId.ToString + ' удалены до ' + LocalId.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1EditMessage(Sender: TObject; MessageData: TMessageData);
+begin
+  Memo1.Lines.Add('Редактирование сообщения в чате ' + MessageData.PeerId.ToString + ': ' + MessageData.Text);
+end;
+
+procedure TFormMain.VkUserEvents1NewMessage(Sender: TObject; MessageData: TMessageData);
+begin
+  Memo1.Lines.Add('Новое сообщение в чате ' + MessageData.PeerId.ToString + ' ' + MessageData.MessageId.ToString
+    + ' ' + MessageData.Flags.ToString
+    + ': ' + MessageData.Text);
+end;
+
+procedure TFormMain.VkUserEvents1NotifyChange(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer);
+begin
+  Memo1.Lines.Add('Изменились настройки оповещения ' + PeerId.ToString + ' Звук -> ' + Sound.ToString
+    + ' на срок ' + DisableUntil.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1ReadMessages(Sender: TObject; Incoming: Boolean; PeerId, LocalId: Integer);
+begin
+  case Incoming of
+    True:
+      Memo1.Lines.Add('Все входящие сообщения в чате - ' + PeerId.ToString + ' до ' + LocalId.ToString + ' прочтены');
+    False:
+      Memo1.Lines.Add('Все исходящие сообщения в чате - ' + PeerId.ToString + ' до ' + LocalId.ToString + ' прочтены');
   end;
+end;
+
+procedure TFormMain.VkUserEvents1RecoverMessages(Sender: TObject; PeerId, LocalId: Integer);
+begin
+  Memo1.Lines.Add('Сообщения в чате ' + PeerId.ToString + ' восстановлены до ' + LocalId.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1UserCall(Sender: TObject; UserId, CallId: Integer);
+begin
+  Memo1.Lines.Add('Пользователь ' + UserId.ToString + ' совершил звонок с идентификатором ' + CallId.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1UserOffline(Sender: TObject; UserId: Integer; InactiveUser: Boolean;
+  TimeStamp: TDateTime);
+begin
+  Memo1.Lines.Add('Оффлайн - ' + UserId.ToString + ' ' + VkUserActive[InactiveUser]);
+end;
+
+procedure TFormMain.VkUserEvents1UserOnline(Sender: TObject; UserId: Integer; VkPlatform:
+  TVkPlatform; TimeStamp: TDateTime);
+begin
+  Memo1.Lines.Add('Онлайн - ' + UserId.ToString + ' ' + VkPlatforms[VkPlatform]);
+end;
+
+procedure TFormMain.VkUserEvents1UsersRecording(Sender: TObject; Data: TChatRecordingData);
+begin
+  Memo1.Lines.Add('Несколько пользователей записывают аудиосообщение ' + Data.UserIds.ToString +
+    ' в чате ' + Data.PeerId.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1UsersTyping(Sender: TObject; Data: TChatTypingData);
+begin
+  Memo1.Lines.Add('Несколько пользователей набирают текст ' + Data.UserIds.ToString + ' в чате ' +
+    Data.PeerId.ToString);
+end;
+
+procedure TFormMain.VkUserEvents1UserTyping(Sender: TObject; UserId, ChatId: Integer);
+begin
+  Memo1.Lines.Add('Пользователь набирает текст ' + UserId.ToString + ' в чате ' + ChatId.ToString);
 end;
 
 end.

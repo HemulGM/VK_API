@@ -3,7 +3,7 @@ unit VK.Users.Types;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, REST.Json.Types;
 
 const
   UserFieldsAll = 'photo_id, verified, sex, bdate, city, country, home_town, has_photo, ' +

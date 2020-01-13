@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Dialogs,
   IPPeerClient, REST.Client, Vcl.Controls, REST.Authenticator.OAuth, VK.Types, VK.OAuth2, VK.Account,
-  VK.Handler, VK.Auth, VK.Users;
+  VK.Handler, VK.Auth, VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON,
+  System.Generics.Collections;
 
 type
   TCustomVK = class(TComponent)
@@ -13,6 +14,7 @@ type
     FOAuth2Authenticator: TOAuth2Authenticator;
     FOnLogin: TOnLogin;
     FPermissionsList: TPermissions;
+    FGroupLongPollServers: TGroupLongPollServers;
     FAuthForm: TFormOAuth2;
     FAppID: string;
     FAppKey: string;
@@ -32,8 +34,9 @@ type
     FUsers: TUsers;
     FOnCaptcha: TOnCaptcha;
     FOnConfirm: TOnConfirm;
+    FOnAuth: TOnAuth;
     function GetPermissions: string;
-    procedure FAskCaptcha(const CaptchaImg: string; var Answer: string);
+    procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
     procedure FAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
     procedure FLog(Sender: TObject; const Value: string);
@@ -55,11 +58,16 @@ type
     procedure SetOnErrorLogin(const Value: TOnVKError);
     procedure SetOnCaptcha(const Value: TOnCaptcha);
     procedure SetOnConfirm(const Value: TOnConfirm);
+    procedure SetOnAuth(const Value: TOnAuth);
+    procedure DoAuth(const AURL: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DoLog(Sender: TObject; Text: string);
     procedure Login(AParentWindow: TWinControl = nil);
     procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil);
+    procedure GroupLongPollServerStart(GroupID: string);
+    procedure GroupLongPollServerStop(GroupID: string);
     /// <summary>
     /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
     /// https://vk.com/dev/execute
@@ -67,15 +75,11 @@ type
     /// <param name="Code">код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагается совместимость с ECMAScript). Алгоритм должен завершаться командой return %выражение%. Операторы должны быть разделены точкой с запятой. </param>
     function Execute(Code: string): TResponse;
     property PermissionsList: TPermissions read FPermissionsList write SetPermissionsList;
+    //Группы методов
     property Account: TAccount read FAccount;
     property Auth: TAuth read FAuth;
     property Users: TUsers read FUsers;
-    property OnLogin: TOnLogin read FOnLogin write SetOnLogin;
-    property OnError: TOnVKError read FOnError write SetOnError;
-    property OnErrorLogin: TOnVKError read FOnErrorLogin write SetOnErrorLogin;
-    property OnLog: TOnLog read FOnLog write SetOnLog;
-    property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
-    property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
+    //
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;
     property EndPoint: string read FEndPoint write SetEndPoint;
@@ -87,6 +91,14 @@ type
     property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
     property IsLogin: Boolean read FIsLogin;
     property ChangePasswordHash: string read FChangePasswordHash;
+    //
+    property OnLogin: TOnLogin read FOnLogin write SetOnLogin;
+    property OnError: TOnVKError read FOnError write SetOnError;
+    property OnErrorLogin: TOnVKError read FOnErrorLogin write SetOnErrorLogin;
+    property OnLog: TOnLog read FOnLog write SetOnLog;
+    property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
+    property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
+    property OnAuth: TOnAuth read FOnAuth write SetOnAuth;
   end;
 
 implementation
@@ -120,24 +132,34 @@ begin
   FHandler.RESTClient.Authenticator := FOAuth2Authenticator;
   FHandler.OnCaptcha := FAskCaptcha;
   FHandler.OnConfirm := FOnConfirm;
-
+  //Defaults
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
-  APIVersion := '5.101';
-
+  APIVersion := '5.103';
+  //
   FAccount := TAccount.Create(FHandler);
   FAuth := TAuth.Create(FHandler);
   FUsers := TUsers.Create(FHandler);
+  //Groups LongPolls
+  FGroupLongPollServers := TGroupLongPollServers.Create;
 end;
 
 destructor TCustomVK.Destroy;
 begin
+  FGroupLongPollServers.Clear;
+  FGroupLongPollServers.Free;
+
   FUsers.Free;
   FAccount.Free;
   FAuth.Free;
   FPermissionsList.Free;
   FHandler.Free;
   inherited;
+end;
+
+procedure TCustomVK.DoLog(Sender: TObject; Text: string);
+begin
+  FLog(Self, Text);
 end;
 
 procedure TCustomVK.DoLogin;
@@ -147,11 +169,11 @@ begin
     FOnLogin(Self);
 end;
 
-procedure TCustomVK.FAskCaptcha(const CaptchaImg: string; var Answer: string);
+procedure TCustomVK.FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
 begin
   if Assigned(FOnCaptcha) then
   begin
-    FOnCaptcha(CaptchaImg, Answer);
+    FOnCaptcha(Self, CaptchaImg, Answer);
   end
   else
     TFormCaptcha.Execute(CaptchaImg, Answer);
@@ -167,6 +189,24 @@ begin
       Resp := Response;
     end);
   Result := Resp;
+end;
+
+procedure TCustomVK.DoAuth(const AURL: string);
+var
+  Token, ChangePasswordHash: string;
+  TokenExpiry: Int64;
+begin
+  if Assigned(FOnAuth) then
+    FOnAuth(Self, Token, TokenExpiry, ChangePasswordHash);
+  if not Token.IsEmpty then
+  begin
+    FChangePasswordHash := ChangePasswordHash;
+    FOAuth2Authenticator.AccessToken := Token;
+    FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, TokenExpiry);
+    DoLogin;
+  end
+  else
+    FVKError(Self, ERROR_VK_NOTOKEN, 'Токен не был получен');
 end;
 
 procedure TCustomVK.FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
@@ -186,6 +226,7 @@ begin
       Params.DelimitedText := Str;
       FChangePasswordHash := Params.Values['change_password_hash'];
       FOAuth2Authenticator.AccessToken := Params.Values['access_token'];
+      FLog(Self, FOAuth2Authenticator.AccessToken);
       FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, StrToInt(Params.Values['expires_in']));
       DoLogin;
     finally
@@ -223,20 +264,60 @@ end;
 
 procedure TCustomVK.Login(AParentWindow: TWinControl);
 begin
-  if not Assigned(FAuthForm) then
-  begin
-    FAuthForm := TFormOAuth2.Create(nil);
-    FAuthForm.OnAfterRedirect := FAfterRedirect;
-    FAuthForm.OnError := FAuthError;
-  end;
-
   FOAuth2Authenticator.AccessToken := EmptyStr;
   FOAuth2Authenticator.ClientID := FAppID;
   FOAuth2Authenticator.ClientSecret := FAppKey;
   FOAuth2Authenticator.ResponseType := TOAuth2ResponseType.rtTOKEN;
   FOAuth2Authenticator.AuthorizationEndpoint := FEndPoint;
 
-  FAuthForm.ShowWithURL(AParentWindow, FOAuth2Authenticator.AuthorizationRequestURI);
+  if Assigned(FOnAuth) then
+  begin
+    DoAuth(FOAuth2Authenticator.AuthorizationRequestURI);
+  end
+  else
+  begin
+    if not Assigned(FAuthForm) then
+    begin
+      FAuthForm := TFormOAuth2.Create(nil);
+      FAuthForm.OnAfterRedirect := FAfterRedirect;
+      FAuthForm.OnError := FAuthError;
+    end;
+    FAuthForm.ShowWithURL(AParentWindow, FOAuth2Authenticator.AuthorizationRequestURI);
+  end;
+end;
+
+procedure TCustomVK.GroupLongPollServerStart(GroupID: string);
+{var
+  LongPollServer: TLongPollServer;}
+begin
+ { if FGroupLongPollServers.Find(GroupID) >= 0 then
+    Exit;
+  LongPollServer := TLongPollServer.Create(FHandler.RESTClient, 'groups.getLongPollServer', [['group_id',
+    GroupID], ['lp_version', '3']]);
+  LongPollServer.OnError := FVKError;
+  LongPollServer.OnUpdate := FOnLongPollUpdate;
+  if LongPollServer.Start then
+  begin
+    FLog(Self, 'GroupLongPoll started ' + GroupID);
+    FGroupLongPollServers.Add(LongPollServer);
+  end
+  else
+  begin
+    LongPollServer.Free;
+    FLog(Self, 'GroupLongPoll not started ' + GroupID);
+  end;  }
+end;
+
+procedure TCustomVK.GroupLongPollServerStop(GroupID: string);
+var
+  i: Integer;
+begin
+  i := FGroupLongPollServers.Find(GroupID);
+  if i >= 0 then
+    Exit;
+  FGroupLongPollServers[i].Stop;
+  FGroupLongPollServers.Delete(i);
+  FLog(Self, 'GroupLongPoll stopped ' + GroupID);
 end;
 
 procedure TCustomVK.SetAPIVersion(const Value: string);
@@ -281,6 +362,11 @@ procedure TCustomVK.SetBaseURL(const Value: string);
 begin
   FBaseURL := Value;
   FHandler.RESTClient.BaseURL := FBaseURL;
+end;
+
+procedure TCustomVK.SetOnAuth(const Value: TOnAuth);
+begin
+  FOnAuth := Value;
 end;
 
 procedure TCustomVK.SetOnCaptcha(const Value: TOnCaptcha);

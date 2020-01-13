@@ -3,18 +3,41 @@ unit VK.Types;
 interface
 
 uses
-  System.Classes, System.Generics.Collections;
+  System.Classes, System.Generics.Collections, System.JSON;
 
 const
+  //Inner VK errors
   ERROR_VK_UNKNOWN = -1;
   ERROR_VK_NOTOKEN = -2;
+
+  //Message Flags
+  UNREAD = 1;
+  OUTBOX = 2;
+  REPLIED = 4;
+  IMPORTANT = 8;
+  CHAT = 16;
+  FRIENDS = 32;
+  SPAM = 64;
+  DELЕTЕD = 128;
+  FIXED = 256;
+  MEDIA = 512;
+  HIDDEN = 65536;
+  DELETE_FOR_ALL = 131072;
+  NOT_DELIVERED = 262144;
+
+  //Group Dialog Flags
+  GR_IMPORTANT = 1;
+  GR_UNANSWERED = 2;
 
 type
   TOnLogin = procedure(Sender: TObject) of object;
 
+  TOnAuth = procedure(Sender: TObject; var Token: string; var TokenExpiry: Int64; var
+    ChangePasswordHash: string) of object;
+
   TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
 
-  TOnCaptcha = procedure(const CaptchaURL: string; var Answer: string) of object;
+  TOnCaptcha = procedure(Sender: TObject; const CaptchaURL: string; var Answer: string) of object;
 
   TOnLog = procedure(Sender: TObject; const Value: string) of object;
 
@@ -33,6 +56,69 @@ type
     procedure Assign(Source: TStrings);
   end;
 
+  TMessageFlag = (mfUnread, mfOutbox, mfReplied, mfImportant, mfChat, mfFriends, mfSpam, mfDeleted,
+    mfFixed, mfMedia, mfHidden, mfDeleteForAll, mfNotDelivered);
+
+  TMessageFlags = set of TMessageFlag;
+
+  TDialogFlag = (dfImportant, dfUnanswered);
+
+  TDialogFlags = set of TDialogFlag;
+
+  //$type_id (integer) — идентификатор типа изменения в чате
+  {
+  1 — Изменилось название беседы
+  2 — Сменилась обложка беседы
+  3 — Назначен новый администратор
+  4 — Закреплено сообщение
+  5 — Пользователь присоединился к беседе
+  6 — Пользователь покинул беседу
+  7 — Пользователя исключили из беседы
+  8 — С пользователя сняты права администратора
+  }
+  TChatChangeInfoType = (citNone, citName, citPic, citNewAdmin, citFixMessage, citJoin, citLeave, citKick, citUnadmin);
+
+  TChatChangeInfoTypeHelper = record helper for TChatChangeInfoType
+    function ToString: string; overload; inline;
+  end;
+
+  TVkPlatform = (pfUnknown, pfMobile, pfIPhone, pfIPad, pfAndroid, pfWindowsPhone, pfWindows, pfWeb);
+
+  TFlagsChangeType = (fcFlagsReplace, fcFlagsSet, fcFlagsReset);
+
+  TMessageChangeTypeHelper = record helper for TFlagsChangeType
+    function ToString: string; overload; inline;
+  end;
+
+  TMessageFlagsHelper = record helper for TMessageFlags
+    function ToString: string; overload; inline;
+  end;
+
+  TDialogFlagsHelper = record helper for TDialogFlags
+    function ToString: string; overload; inline;
+  end;
+
+  TMessageData = record
+    MessageId: Integer;
+    Flags: TMessageFlags;
+    PeerId: Integer;
+    TimeStamp: TDateTime;
+    Text: string;
+  end;
+
+  TMessageChangeData = record
+    MessageId: Integer;
+    Flags: TMessageFlags;
+    PeerId: Integer;
+    ChangeType: TFlagsChangeType;
+  end;
+
+  TDialogChangeData = record
+    PeerId: Integer;
+    Flags: TDialogFlags;
+    ChangeType: TFlagsChangeType;
+  end;
+
   TResponseError = record
     Code: Integer;
     Text: string;
@@ -45,7 +131,88 @@ type
     Error: TResponseError;
   end;
 
+  TEventExtraFields = record
+    peer_id: integer; // идентификатор назначения. Для пользователя: id пользователя. Для групповой беседы: 2000000000 + id беседы. Для сообщества: -id сообщества либо id сообщества + 1000000000 (для version = 0).
+    timestamp: integer; // время отправки сообщения в Unixtime;
+    text: string; // текст сообщения;
+   //[$attachments] (array) — вложения (если mode = 2);
+   //[$random_id] (integer) — random_id, если параметр был передан в messages.send. Может содержать 0, если значение не задано.
+  end;
+
+  TUserIds = array of Integer;
+
+  TUserIdsHelper = record helper for TUserIds
+    function ToString: string; overload; inline;
+  end;
+
+  TChatTypingData = record
+    UserIds: TUserIds;
+    PeerId, TotalCount: Integer;
+    TimeStamp: TDateTime;
+  end;
+
+  TChatRecordingData = record
+    UserIds: TUserIds;
+    PeerId, TotalCount: Integer;
+    TimeStamp: TDateTime;
+  end;
+
   TCallMethodCallback = reference to procedure(Respone: TResponse);
+
+  TOnLongPollServerUpdate = procedure(Sender: TObject; GroupID: string; Update: TJSONValue) of object;
+
+  TOnNewMessage = procedure(Sender: TObject; MessageData: TMessageData) of object;
+
+  TOnEditMessage = procedure(Sender: TObject; MessageData: TMessageData) of object;
+
+  TOnChangeMessageFlags = procedure(Sender: TObject; MessageChangeData: TMessageChangeData) of object;
+
+  TOnChangeDialogFlags = procedure(Sender: TObject; DialogChangeData: TDialogChangeData) of object;
+
+  TOnUserOnline = procedure(Sender: TObject; UserId: Integer; VkPlatform: TVkPlatform; TimeStamp: TDateTime) of object;
+
+  TOnUserOffline = procedure(Sender: TObject; UserId: Integer; InactiveUser: Boolean; TimeStamp: TDateTime) of object;
+
+  TOnReadMessages = procedure(Sender: TObject; Incoming: Boolean; PeerId, LocalId: Integer) of object;
+
+  TOnRecoverOrDeleteMessages = procedure(Sender: TObject; PeerId, LocalId: Integer) of object;
+
+  TOnChatChanged = procedure(Sender: TObject; const ChatId: Integer; IsSelf: Boolean) of object;
+
+  TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: Integer; TypeId: TChatChangeInfoType;
+    Info: Integer) of object;
+
+  TOnUserTyping = procedure(Sender: TObject; UserId, ChatId: Integer) of object;
+
+  TOnUserCall = procedure(Sender: TObject; UserId, CallId: Integer) of object;
+
+  TOnCountChange = procedure(Sender: TObject; Count: Integer) of object;
+
+  TOnNotifyChange = procedure(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer) of object;
+
+  TOnUsersTyping = procedure(Sender: TObject; Data: TChatTypingData) of object;
+
+  TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
+
+  MessageFlags = class
+    class function FlagDataToFlag(FlagData: Integer): TMessageFlag;
+    class function Create(Data: Integer): TMessageFlags;
+    class function ToString(Flags: TMessageFlags): string;
+  end;
+
+  DialogFlags = class
+    class function FlagDataToFlag(FlagData: Integer): TDialogFlag;
+    class function Create(Data: Integer): TDialogFlags;
+    class function ToString(Flags: TDialogFlags): string;
+  end;
+
+var
+  VkMessageFlags: array[0..12] of Integer = (NOT_DELIVERED, DELETE_FOR_ALL, HIDDEN, MEDIA,
+    FIXED, DELЕTЕD, SPAM, FRIENDS, CHAT, IMPORTANT, REPLIED, OUTBOX, UNREAD);
+  VkDialogFlags: array[0..1] of Integer = (GR_UNANSWERED, GR_IMPORTANT);
+  VkUserActive: array[Boolean] of string = ('Бездействие', 'Покинул сайт');
+  VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone', 'iPad', 'Android',
+    'Windows Phone', 'Windows', 'Web');
 
 function FieldsToString(Fields: TFields): string;
 
@@ -217,6 +384,202 @@ begin
     if i < (Count - 1) then
       Result := Result + ',';
   end;
+end;
+
+{ MessageFlags }
+
+class function MessageFlags.Create(Data: Integer): TMessageFlags;
+var
+  i: Integer;
+begin
+  Result := [];
+  for i := Low(VkMessageFlags) to High(VkMessageFlags) do
+  begin
+    if (Data - VkMessageFlags[i]) >= 0 then
+    begin
+      Include(Result, FlagDataToFlag(VkMessageFlags[i]));
+      Data := Data - VkMessageFlags[i];
+    end;
+  end;
+end;
+
+class function MessageFlags.FlagDataToFlag(FlagData: Integer): TMessageFlag;
+begin
+  case FlagData of
+    UNREAD:
+      Exit(mfUnread);
+    OUTBOX:
+      Exit(mfOutbox);
+    REPLIED:
+      Exit(mfReplied);
+    IMPORTANT:
+      Exit(mfImportant);
+    CHAT:
+      Exit(mfChat);
+    FRIENDS:
+      Exit(mfFriends);
+    SPAM:
+      Exit(mfSpam);
+    DELЕTЕD:
+      Exit(mfDeleted);
+    FIXED:
+      Exit(mfFixed);
+    MEDIA:
+      Exit(mfMedia);
+    HIDDEN:
+      Exit(mfHidden);
+    DELETE_FOR_ALL:
+      Exit(mfDeleteForAll);
+    NOT_DELIVERED:
+      Exit(mfNotDelivered);
+  else
+    Exit(mfChat);
+  end;
+end;
+
+class function MessageFlags.ToString(Flags: TMessageFlags): string;
+var
+  Flag: TMessageFlag;
+begin
+  for Flag in Flags do
+    case Flag of
+      mfUnread:
+        Result := Result + 'Unread ';
+      mfOutbox:
+        Result := Result + 'Outbox ';
+      mfReplied:
+        Result := Result + 'Replied ';
+      mfImportant:
+        Result := Result + 'Important ';
+      mfChat:
+        Result := Result + 'Chat ';
+      mfFriends:
+        Result := Result + 'Friends ';
+      mfSpam:
+        Result := Result + 'Spam ';
+      mfDeleted:
+        Result := Result + 'Deleted ';
+      mfFixed:
+        Result := Result + 'Fixed ';
+      mfMedia:
+        Result := Result + 'Media ';
+      mfHidden:
+        Result := Result + 'Hidden ';
+      mfDeleteForAll:
+        Result := Result + 'DeleteForAll ';
+      mfNotDelivered:
+        Result := Result + 'NotDelivered ';
+    end;
+end;
+
+{ TMessageChangeTypeHelper }
+
+function TMessageChangeTypeHelper.ToString: string;
+begin
+  case Self of
+    fcFlagsReplace:
+      Result := 'Replace';
+    fcFlagsSet:
+      Result := 'Set';
+    fcFlagsReset:
+      Result := 'Reset';
+  else
+    Exit('');
+  end;
+end;
+
+{ DialogFlags }
+
+class function DialogFlags.Create(Data: Integer): TDialogFlags;
+var
+  i: Integer;
+begin
+  Result := [];
+  for i := Low(VkDialogFlags) to High(VkDialogFlags) do
+  begin
+    if (Data - VkDialogFlags[i]) >= 0 then
+    begin
+      Include(Result, FlagDataToFlag(VkDialogFlags[i]));
+      Data := Data - VkDialogFlags[i];
+    end;
+  end;
+end;
+
+class function DialogFlags.FlagDataToFlag(FlagData: Integer): TDialogFlag;
+begin
+  case FlagData of
+    GR_IMPORTANT:
+      Exit(dfImportant);
+    GR_UNANSWERED:
+      Exit(dfUnanswered);
+  else
+    Exit(dfUnanswered);
+  end;
+end;
+
+class function DialogFlags.ToString(Flags: TDialogFlags): string;
+var
+  Flag: TDialogFlag;
+begin
+  for Flag in Flags do
+    case Flag of
+      dfImportant:
+        Result := Result + 'Important ';
+      dfUnanswered:
+        Result := Result + 'Unanswered ';
+    end;
+end;
+
+{ TMessageFlagsHelper }
+
+function TMessageFlagsHelper.ToString: string;
+begin
+  Result := MessageFlags.ToString(Self);
+end;
+
+{ TDialogFlagsHelper }
+
+function TDialogFlagsHelper.ToString: string;
+begin
+  Result := DialogFlags.ToString(Self);
+end;
+
+{ TChatChangeInfoTypeHelper }
+
+function TChatChangeInfoTypeHelper.ToString: string;
+begin
+  case Self of
+    citNone:
+      Exit('');
+    citName:
+      Exit('Изменилось название беседы');
+    citPic:
+      Exit('Сменилась обложка беседы');
+    citNewAdmin:
+      Exit('Назначен новый администратор');
+    citFixMessage:
+      Exit('Закреплено сообщение');
+    citJoin:
+      Exit('Пользователь присоединился к беседе');
+    citLeave:
+      Exit('Пользователь покинул беседу');
+    citKick:
+      Exit('Пользователя исключили из беседы');
+    citUnadmin:
+      Exit('С пользователя сняты права администратора');
+  else
+    Exit('');
+  end;
+end;
+
+{ TUserIdsHelper }
+
+function TUserIdsHelper.ToString: string;
+var
+  i: Integer;
+begin
+  for i := Low(Self) to High(Self) do
+    Result := Result + Self.ToString + ' ';
 end;
 
 end.

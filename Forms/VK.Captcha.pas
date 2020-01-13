@@ -34,7 +34,6 @@ var
   Mem: TMemoryStream;
   Jpg: TJPEGImage;
 begin
-  Result := False;
   Mem := DownloadURL(CaptchaURL);
   Jpg := TJPEGImage.Create;
   with TFormCaptcha.Create(nil) do

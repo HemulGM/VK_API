@@ -121,6 +121,10 @@
         <DCCReference Include="..\..\Entity\VK.Auth.pas"/>
         <DCCReference Include="..\..\Entity\VK.Users.pas"/>
         <DCCReference Include="..\..\Entity\VK.Users.Types.pas"/>
+        <DCCReference Include="..\..\VK.LongPollServer.pas"/>
+        <DCCReference Include="..\..\VK.UserEvents.pas"/>
+        <DCCReference Include="..\..\VK.GroupEvents.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Wall.Comment.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

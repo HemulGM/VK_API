@@ -18,7 +18,11 @@ uses
   VK.Structs in '..\..\VK.Structs.pas',
   VK.Auth in '..\..\Entity\VK.Auth.pas',
   VK.Users in '..\..\Entity\VK.Users.pas',
-  VK.Users.Types in '..\..\Entity\VK.Users.Types.pas';
+  VK.Users.Types in '..\..\Entity\VK.Users.Types.pas',
+  VK.LongPollServer in '..\..\VK.LongPollServer.pas',
+  VK.UserEvents in '..\..\VK.UserEvents.pas',
+  VK.GroupEvents in '..\..\VK.GroupEvents.pas',
+  VK.Wall.Comment in '..\..\Entity\VK.Wall.Comment.pas';
 
 {$R *.res}
 
