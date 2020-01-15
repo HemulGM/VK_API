@@ -105,26 +105,31 @@
         <DCCReference Include="..\..\VK.API.pas"/>
         <DCCReference Include="..\..\VK.Types.pas"/>
         <DCCReference Include="..\..\VK.Components.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Account.Info.pas"/>
-        <DCCReference Include="..\..\VK.Entity.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Account.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.AccountInfo.pas"/>
+        <DCCReference Include="..\..\VK.Controller.pas"/>
         <DCCReference Include="..\..\VK.Handler.pas"/>
         <DCCReference Include="..\..\Forms\VK.Captcha.pas">
             <Form>FormCaptcha</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\Entity\VK.Account.ProfileInfo.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Account.ActiveOffers.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Account.Counters.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Account.PushSettings.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.ProfileInfo.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.ActiveOffers.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Counters.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.PushSettings.pas"/>
         <DCCReference Include="..\..\VK.Structs.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Auth.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Users.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Users.Types.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.User.pas"/>
         <DCCReference Include="..\..\VK.LongPollServer.pas"/>
         <DCCReference Include="..\..\VK.UserEvents.pas"/>
         <DCCReference Include="..\..\VK.GroupEvents.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Wall.Comment.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Comment.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Post.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Photo.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Common.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Link.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Attachment.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Account.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Auth.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Users.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

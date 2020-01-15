@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client,
-  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API, VK.Wall.Comment;
+  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Comment;
 
 type
   TCustomGroupEvents = class(TComponent)
@@ -21,6 +21,7 @@ type
     procedure SetVK(const Value: TCustomVK);
     procedure FOnError(Sender: TObject; Code: Integer; Text: string);
     procedure SetGroupID(const Value: Integer);
+    //
     procedure DoAudioNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
     procedure DoBoardPostDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
     procedure DoBoardPostEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
@@ -56,6 +57,7 @@ type
     procedure DoWallReplyNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
     procedure DoWallReplyRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
     procedure DoWallRepost(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+    //
     procedure SetOnWallReplyNew(const Value: TOnWallReplyAction);
     procedure SetOnWallReplyEdit(const Value: TOnWallReplyAction);
     procedure SetOnWallReplyRestore(const Value: TOnWallReplyAction);
@@ -377,11 +379,11 @@ end;
 
 procedure TCustomGroupEvents.DoWallReplyDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
 var
-  Comment: TWallCommentDeleted;
+  Comment: TVkCommentDeleted;
 begin
   if Assigned(FOnWallReplyDelete) then
   begin
-    Comment := TWallCommentDeleted.FromJsonString(EventObject.ToString);
+    Comment := TVkCommentDeleted.FromJsonString(EventObject.ToString);
     FOnWallReplyDelete(Self, GroupId, Comment, EventId);
     Comment.Free;
   end;
@@ -389,11 +391,11 @@ end;
 
 procedure TCustomGroupEvents.DoWallReplyEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
 var
-  Comment: TWallComment;
+  Comment: TVkComment;
 begin
   if Assigned(FOnWallReplyEdit) then
   begin
-    Comment := TWallComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString(EventObject.ToString);
     FOnWallReplyEdit(Self, GroupId, Comment, EventId);
     Comment.Free;
   end;
@@ -401,11 +403,11 @@ end;
 
 procedure TCustomGroupEvents.DoWallReplyNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
 var
-  Comment: TWallComment;
+  Comment: TVkComment;
 begin
   if Assigned(FOnWallReplyNew) then
   begin
-    Comment := TWallComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString(EventObject.ToString);
     FOnWallReplyNew(Self, GroupId, Comment, EventId);
     Comment.Free;
   end;
@@ -413,11 +415,11 @@ end;
 
 procedure TCustomGroupEvents.DoWallReplyRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
 var
-  Comment: TWallComment;
+  Comment: TVkComment;
 begin
   if Assigned(FOnWallReplyRestore) then
   begin
-    Comment := TWallComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString(EventObject.ToString);
     FOnWallReplyRestore(Self, GroupId, Comment, EventId);
     Comment.Free;
   end;
@@ -590,8 +592,9 @@ function TCustomGroupEventControl.Start: Boolean;
 var
   i: Integer;
 begin
+  Result := False;
   for i := 0 to FItems.Count - 1 do
-    Result := FItems[i].Start;
+    Result := FItems[i].Start or Result;
 end;
 
 procedure TCustomGroupEventControl.Stop;

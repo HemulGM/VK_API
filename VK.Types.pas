@@ -197,13 +197,13 @@ type
   MessageFlags = class
     class function FlagDataToFlag(FlagData: Integer): TMessageFlag;
     class function Create(Data: Integer): TMessageFlags;
-    class function ToString(Flags: TMessageFlags): string;
+    class function ToString(Flags: TMessageFlags): string; overload;
   end;
 
   DialogFlags = class
     class function FlagDataToFlag(FlagData: Integer): TDialogFlag;
     class function Create(Data: Integer): TDialogFlags;
-    class function ToString(Flags: TDialogFlags): string;
+    class function ToString(Flags: TDialogFlags): string; overload;
   end;
 
 var

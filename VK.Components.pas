@@ -11,8 +11,8 @@ type
     property AppID;
     property AppKey;
     property EndPoint;    // default 'https://oauth.vk.com/authorize';
-    property Permissions; // default 'groups,friends,wall,photos,video,docs,notes,market,messages';
-    property APIVersion;  // default '5.101';
+    property Permissions; // default 'groups,friends,wall,photos,video,docs,notes,market';
+    property APIVersion;  // default '5.103';
     property BaseURL;     // default 'https://api.vk.com/method';
     property ServiceKey;
     property UseServiceKeyOnly default False;

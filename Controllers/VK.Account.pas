@@ -3,23 +3,24 @@ unit VK.Account;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Entity, VK.Types, VK.Account.Info,
-  VK.Account.ProfileInfo, VK.Account.ActiveOffers, VK.Account.Counters, VK.Account.PushSettings,
-  VK.Structs;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
+  VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
+  VK.Entity.PushSettings, VK.Structs;
 
 type
-  TAccount = class(TVKEntity)
+  TAccountController = class(TVkController)
+  public
     function GetInfo(var Info: TAccountInfoClass; Fields: TFields = []): Boolean;
     function SetInfo(const Name, Value: string): Boolean;
-    function GetProfileInfo(var ProfileInfo: TProfileInfoClass): Boolean;
+    function GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
     function Ban(const OwnerID: Integer): Boolean;
     function UnBan(const OwnerID: Integer): Boolean;
     function ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid,
       ChangePasswordHash, OldPassword: string): Boolean;
-    function GetActiveOffers(var Offers: TActiveOffers; Offset: Integer; Count: Integer = 100): Boolean;
+    function GetActiveOffers(var Offers: TVkActiveOffers; Offset: Integer; Count: Integer = 100): Boolean;
     function GetAppPermissions(var Mask: Int64; UserId: Integer): Boolean;
     function GetCounters(var Counters: TCountersClass; Filter: string = ''): Boolean;
-    function GetPushSettings(var PushSettings: TPushSettingsClass; DeviceId: string): Boolean;
+    function GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
     function RegisterDevice(const Data: TRegisterDeviceData): Boolean;
     function SaveProfileInfo(const Data: TProfileInfoData; var Response: TResponse): Boolean;
     function SetNameInMenu(const UserId: Integer; Name: string): Boolean;
@@ -34,7 +35,7 @@ implementation
 
 { TAccount }
 
-function TAccount.ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid,
+function TAccountController.ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid,
   ChangePasswordHash, OldPassword: string): Boolean;
 begin
   Response := Handler.Execute('account.changePassword', [
@@ -45,7 +46,8 @@ begin
   Result := Response.Success;
 end;
 
-function TAccount.GetActiveOffers(var Offers: TActiveOffers; Offset: Integer; Count: Integer = 100): Boolean;
+function TAccountController.GetActiveOffers(var Offers: TVkActiveOffers; Offset: Integer; Count:
+  Integer = 100): Boolean;
 begin
   if (Count > 100) or (Count < 0) then
     raise Exception.Create('Count - положительное число, по умолчанию 100, максимальное значение 100');
@@ -55,11 +57,11 @@ begin
   begin
     Result := Success;
     if Result then
-      Offers := TActiveOffers.FromJsonString(Value);
+      Offers := TVkActiveOffers.FromJsonString(Value);
   end;
 end;
 
-function TAccount.GetAppPermissions(var Mask: Int64; UserId: Integer): Boolean;
+function TAccountController.GetAppPermissions(var Mask: Int64; UserId: Integer): Boolean;
 begin
   with Handler.Execute('account.getAppPermissions', ['user_id', UserId.ToString]) do
   begin
@@ -69,7 +71,7 @@ begin
   end;
 end;
 
-function TAccount.GetCounters(var Counters: TCountersClass; Filter: string = ''): Boolean;
+function TAccountController.GetCounters(var Counters: TCountersClass; Filter: string = ''): Boolean;
 begin
   if Filter = '' then
     Filter :=
@@ -82,7 +84,7 @@ begin
   end;
 end;
 
-function TAccount.GetInfo(var Info: TAccountInfoClass; Fields: TFields = []): Boolean;
+function TAccountController.GetInfo(var Info: TAccountInfoClass; Fields: TFields = []): Boolean;
 begin
   with Handler.Execute('account.getInfo', ['fields', FieldsToString(Fields)]) do
   begin
@@ -92,27 +94,27 @@ begin
   end;
 end;
 
-function TAccount.GetProfileInfo(var ProfileInfo: TProfileInfoClass): Boolean;
+function TAccountController.GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
 begin
   with Handler.Execute('account.getProfileInfo') do
   begin
     Result := Success;
     if Result then
-      ProfileInfo := TProfileInfoClass.FromJsonString(Value);
+      ProfileInfo := TVkProfileInfo.FromJsonString(Value);
   end;
 end;
 
-function TAccount.GetPushSettings(var PushSettings: TPushSettingsClass; DeviceId: string): Boolean;
+function TAccountController.GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
 begin
   with Handler.Execute('account.getPushSettings') do
   begin
     Result := Success;
     if Result then
-      PushSettings := TPushSettingsClass.FromJsonString(Value);
+      PushSettings := TVkPushSettings.FromJsonString(Value);
   end;
 end;
 
-function TAccount.RegisterDevice(const Data: TRegisterDeviceData): Boolean;
+function TAccountController.RegisterDevice(const Data: TRegisterDeviceData): Boolean;
 var
   Response: TResponse;
   Params: TParams;
@@ -135,7 +137,7 @@ begin
   Result := Response.Success and (Response.Value = '1');
 end;
 
-function TAccount.SaveProfileInfo(const Data: TProfileInfoData; var Response: TResponse): Boolean;
+function TAccountController.SaveProfileInfo(const Data: TProfileInfoData; var Response: TResponse): Boolean;
 var
   Params: TParams;
 begin
@@ -171,31 +173,31 @@ begin
   Result := Response.Success;
 end;
 
-function TAccount.SetInfo(const Name, Value: string): Boolean;
+function TAccountController.SetInfo(const Name, Value: string): Boolean;
 begin
   with Handler.Execute('account.setInfo', [['name', Name], ['value', Value]]) do
     Result := Success and (Value = '1');
 end;
 
-function TAccount.SetNameInMenu(const UserId: Integer; Name: string): Boolean;
+function TAccountController.SetNameInMenu(const UserId: Integer; Name: string): Boolean;
 begin
   with Handler.Execute('account.setNameInMenu', [['user_id', UserId.ToString], ['name', Name]]) do
     Result := Success and (Value = '1');
 end;
 
-function TAccount.SetOffline: Boolean;
+function TAccountController.SetOffline: Boolean;
 begin
   with Handler.Execute('account.setOffline') do
     Result := Success and (Value = '1');
 end;
 
-function TAccount.SetOnline(Voip: Boolean): Boolean;
+function TAccountController.SetOnline(Voip: Boolean): Boolean;
 begin
   with Handler.Execute('account.setOnline', ['voip', Ord(Voip).ToString]) do
     Result := Success and (Value = '1');
 end;
 
-function TAccount.SetPushSettings(const DeviceId, Settings, Key, Value: string): Boolean;
+function TAccountController.SetPushSettings(const DeviceId, Settings, Key, Value: string): Boolean;
 var
   Params: TParams;
 begin
@@ -211,7 +213,8 @@ begin
     Result := Success and (Value = '1');
 end;
 
-function TAccount.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
+function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string;
+  Sound: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -223,19 +226,19 @@ begin
     Result := Success and (Value = '1');
 end;
 
-function TAccount.Ban(const OwnerID: Integer): Boolean;
+function TAccountController.Ban(const OwnerID: Integer): Boolean;
 begin
   with Handler.Execute('account.ban', ['owner_id', OwnerID.ToString]) do
     Result := Success and (Value = '1');
 end;
 
-function TAccount.UnBan(const OwnerID: Integer): Boolean;
+function TAccountController.UnBan(const OwnerID: Integer): Boolean;
 begin
   with Handler.Execute('account.unban', ['owner_id', OwnerID.ToString]) do
     Result := Success and (Value = '1');
 end;
 
-function TAccount.UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
+function TAccountController.UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
 var
   Params: TParams;
 begin

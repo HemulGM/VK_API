@@ -3,10 +3,11 @@ unit VK.Auth;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Entity, VK.Types, VK.Structs;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Structs;
 
 type
-  TAuth = class(TVKEntity)
+  TAuthController = class(TVkController)
+  public
     /// <summary>
     /// ѕровер€ет правильность введЄнного номера (возможность его использовани€ дл€ регистрации или авторизации).
     /// </summary>
@@ -37,14 +38,14 @@ uses
 
 { TAuth }
 
-function TAuth.CheckPhone(Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean): Boolean;
+function TAuthController.CheckPhone(Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean): Boolean;
 begin
   with Handler.Execute('auth.checkPhone', [['phone', Phone], ['client_id', ClientId], ['client_secret',
     ClientSecret], ['auth_by_phone', Ord(AuthByPhone).ToString]]) do
     Result := Success and (Value = '1');
 end;
 
-function TAuth.CheckPhone(Phone: string; AuthByPhone: Boolean): Boolean;
+function TAuthController.CheckPhone(Phone: string; AuthByPhone: Boolean): Boolean;
 var
   ClientId, ClientSecret: string;
 begin
@@ -53,7 +54,7 @@ begin
   Result := CheckPhone(Phone, ClientId, ClientSecret, AuthByPhone);
 end;
 
-function TAuth.Restore(Phone, LastName: string): TResponse;
+function TAuthController.Restore(Phone, LastName: string): TResponse;
 begin
   Result := Handler.Execute('auth.checkPhone', [['phone', Phone], ['last_name', LastName]]);
 end;

@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls,
   VK.Handler, Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents,
-  VK.Wall.Comment;
+  VK.Entity.Comment;
 
 type
   TFormMain = class(TForm)
@@ -76,11 +76,13 @@ type
     procedure VkUserEvents1CountChange(Sender: TObject; Count: Integer);
     procedure VkUserEvents1NotifyChange(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer);
     procedure VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
-      TWallComment; EventId: string);
+      TVkComment; EventId: string);
     procedure VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
-      TWallComment; EventId: string);
+      TVkComment; EventId: string);
     procedure VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer; Comment:
-      TWallComment; EventId: string);
+      TVkComment; EventId: string);
+    procedure VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Comment:
+      TVkCommentDeleted; EventId: string);
   private
   public
     { Public declarations }
@@ -92,8 +94,8 @@ var
 implementation
 
 uses
-  VK.Account.Info, VK.Account.ProfileInfo, VK.Account.ActiveOffers, VK.Account.Counters,
-  VK.Account.PushSettings, VK.Structs, VK.Users.Types;
+  VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
+  VK.Entity.PushSettings, VK.Structs, VK.Entity.User;
 
 {$R *.dfm}
 
@@ -115,7 +117,7 @@ end;
 
 procedure TFormMain.Button12Click(Sender: TObject);
 var
-  Users: TUsersClass;
+  Users: TVkUsers;
   i: Integer;
 begin
   if VK1.Users.Get(Users, '286400863,415730216', UserFieldsAll, '') then
@@ -173,7 +175,7 @@ end;
 
 procedure TFormMain.Button3Click(Sender: TObject);
 var
-  Offers: TActiveOffers;
+  Offers: TVkActiveOffers;
   i: Integer;
 begin
   if VK1.Account.GetActiveOffers(Offers, 0) then
@@ -210,7 +212,7 @@ end;
 
 procedure TFormMain.Button6Click(Sender: TObject);
 var
-  PushSettings: TPushSettingsClass;
+  PushSettings: TVkPushSettings;
 begin
   if VK1.Account.GetPushSettings(PushSettings, '1') then
   begin
@@ -286,22 +288,29 @@ begin
   LabelLogin.Caption := 'login success';
 end;
 
+procedure TFormMain.VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer;
+  Comment: TVkCommentDeleted; EventId: string);
+begin
+  Memo1.Lines.Add('Комментарий удалён в группе ' + GroupId.ToString + ' "' + Comment.post_id.ToString + '" от ' +
+    Comment.owner_id.ToString);
+end;
+
 procedure TFormMain.VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
-  TWallComment; EventId: string);
+  TVkComment; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий изменили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
     Comment.from_id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
-  TWallComment; EventId: string);
+  TVkComment; EventId: string);
 begin
   Memo1.Lines.Add('Новый комментарий в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
     Comment.from_id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer;
-  Comment: TWallComment; EventId: string);
+  Comment: TVkComment; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий восстановили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
     Comment.from_id.ToString);

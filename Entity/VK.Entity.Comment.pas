@@ -1,4 +1,4 @@
-unit VK.Wall.Comment;
+unit VK.Entity.Comment;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json;
 
 type
-  TWallComment = class
+  TVkComment = class
   private
     FDate: Extended;
     FFrom_id: Extended;
@@ -26,10 +26,10 @@ type
     property reply_to_user: Extended read FReply_to_user write FReply_to_user;
     property text: string read FText write FText;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TWallComment;
+    class function FromJsonString(AJsonString: string): TVkComment;
   end;
 
-  TWallCommentDeleted = class
+  TVkCommentDeleted = class
   private
     FDeleter_id: Extended;
     FId: Extended;
@@ -41,12 +41,12 @@ type
     property owner_id: Extended read FOwner_id write FOwner_id;
     property post_id: Extended read FPost_id write FPost_id;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TWallCommentDeleted;
+    class function FromJsonString(AJsonString: string): TVkCommentDeleted;
   end;
 
-  TOnWallReplyAction = procedure(Sender: TObject; GroupId: Integer; Comment: TWallComment; EventId: string) of object;
+  TOnWallReplyAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; EventId: string) of object;
 
-  TOnWallReplyDelete = procedure(Sender: TObject; GroupId: Integer; Comment: TWallCommentDeleted;
+  TOnWallReplyDelete = procedure(Sender: TObject; GroupId: Integer; Comment: TVkCommentDeleted;
     EventId: string) of object;
 
 implementation
@@ -54,26 +54,26 @@ implementation
 
 {TWallComment}
 
-function TWallComment.ToJsonString: string;
+function TVkComment.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TWallComment.FromJsonString(AJsonString: string): TWallComment;
+class function TVkComment.FromJsonString(AJsonString: string): TVkComment;
 begin
-  result := TJson.JsonToObject<TWallComment>(AJsonString)
+  result := TJson.JsonToObject<TVkComment>(AJsonString)
 end;
 
 { TWallCommentDeleted }
 
-function TWallCommentDeleted.ToJsonString: string;
+function TVkCommentDeleted.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TWallCommentDeleted.FromJsonString(AJsonString: string): TWallCommentDeleted;
+class function TVkCommentDeleted.FromJsonString(AJsonString: string): TVkCommentDeleted;
 begin
-  result := TJson.JsonToObject<TWallCommentDeleted>(AJsonString)
+  result := TJson.JsonToObject<TVkCommentDeleted>(AJsonString)
 end;
 
 end.

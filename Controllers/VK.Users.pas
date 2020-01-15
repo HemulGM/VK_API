@@ -8,6 +8,7 @@ uses
 
 type
   TUsersController = class(TVkController)
+  public
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>

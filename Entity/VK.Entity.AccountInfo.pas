@@ -1,4 +1,4 @@
-unit VK.Account.Info;
+unit VK.Entity.AccountInfo;
 
 interface
 

@@ -14,7 +14,7 @@ type
     class function Request(Resource: string; Params: TParams): TRESTRequest;
   end;
 
-  TVKHandler = class
+  TVkHandler = class
     const
       RequestLimit = 3; //Round(1000 / 3) + 10; //задержка между запросами 3 запроса в секунду + 10 мс страховка
   private
@@ -89,9 +89,9 @@ begin
   end;
 end;
 
-{ TVKHandler }
+{ TVkHandler }
 
-function TVKHandler.AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
+function TVkHandler.AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
 begin
   if Assigned(FOnCaptcha) then
   begin
@@ -102,7 +102,7 @@ begin
     raise Exception.Create('Необходимо определить обработчика для запроса капчи');
 end;
 
-constructor TVKHandler.Create(AOwner: TObject);
+constructor TVkHandler.Create(AOwner: TObject);
 begin
   inherited Create;
   FOwner := AOwner;
@@ -115,13 +115,13 @@ begin
   TRequestConstruct.Client := FRESTClient;
 end;
 
-destructor TVKHandler.Destroy;
+destructor TVkHandler.Destroy;
 begin
   FRESTClient.Free;
   inherited;
 end;
 
-function TVKHandler.DoConfirm(Answer: string): Boolean;
+function TVkHandler.DoConfirm(Answer: string): Boolean;
 begin
   if not Assigned(FOnConfirm) then
   begin
@@ -134,22 +134,22 @@ begin
   end;
 end;
 
-function TVKHandler.Execute(Request: string; Param: TParam): TResponse;
+function TVkHandler.Execute(Request: string; Param: TParam): TResponse;
 begin
   Result := Execute(TRequestConstruct.Request(Request, [Param]), True);
 end;
 
-function TVKHandler.Execute(Request: string; Params: TParams): TResponse;
+function TVkHandler.Execute(Request: string; Params: TParams): TResponse;
 begin
   Result := Execute(TRequestConstruct.Request(Request, Params), True);
 end;
 
-function TVKHandler.Execute(Request: string): TResponse;
+function TVkHandler.Execute(Request: string): TResponse;
 begin
   Result := Execute(TRequestConstruct.Request(Request, []), True);
 end;
 
-function TVKHandler.Execute(Request: TRESTRequest; FreeRequset: Boolean): TResponse;
+function TVkHandler.Execute(Request: TRESTRequest; FreeRequset: Boolean): TResponse;
 var
   JS: TJSONValue;
   CaptchaSID: string;
@@ -259,49 +259,49 @@ begin
     Request.Free;
 end;
 
-procedure TVKHandler.FLog(const Value: string);
+procedure TVkHandler.FLog(const Value: string);
 begin
   if Assigned(FOnLog) then
     FOnLog(Self, Value);
 end;
 
-procedure TVKHandler.SetOnError(const Value: TOnVKError);
+procedure TVkHandler.SetOnError(const Value: TOnVKError);
 begin
   FOnError := Value;
 end;
 
-procedure TVKHandler.SetOnLog(const Value: TOnLog);
+procedure TVkHandler.SetOnLog(const Value: TOnLog);
 begin
   FOnLog := Value;
 end;
 
-procedure TVKHandler.SetOwner(const Value: TObject);
+procedure TVkHandler.SetOwner(const Value: TObject);
 begin
   FOwner := Value;
 end;
 
-procedure TVKHandler.SetUseServiceKeyOnly(const Value: Boolean);
+procedure TVkHandler.SetUseServiceKeyOnly(const Value: Boolean);
 begin
   FUseServiceKeyOnly := Value;
 end;
 
-procedure TVKHandler.SetOnCaptcha(const Value: TOnCaptcha);
+procedure TVkHandler.SetOnCaptcha(const Value: TOnCaptcha);
 begin
   FOnCaptcha := Value;
 end;
 
-procedure TVKHandler.SetOnConfirm(const Value: TOnConfirm);
+procedure TVkHandler.SetOnConfirm(const Value: TOnConfirm);
 begin
   FOnConfirm := Value;
 end;
 
-procedure TVKHandler.ProcError(Msg: string);
+procedure TVkHandler.ProcError(Msg: string);
 begin
   if Assigned(FOnError) then
     FOnError(Self, ERROR_VK_UNKNOWN, Msg);
 end;
 
-procedure TVKHandler.ProcError(Code: Integer; Text: string);
+procedure TVkHandler.ProcError(Code: Integer; Text: string);
 begin
   if Assigned(FOnError) then
   begin
@@ -311,7 +311,7 @@ begin
   end;
 end;
 
-procedure TVKHandler.ProcError(E: Exception);
+procedure TVkHandler.ProcError(E: Exception);
 begin
   if Assigned(FOnError) then
     FOnError(Self, ERROR_VK_UNKNOWN, E.Message);

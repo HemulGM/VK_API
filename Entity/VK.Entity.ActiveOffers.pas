@@ -1,4 +1,4 @@
-unit VK.Account.ActiveOffers;
+unit VK.Entity.ActiveOffers;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json;
 
 type
-  TActiveOfferClass = class
+  TVkActiveOffer = class
   private
     FDescription: string;
     FId: string;
@@ -28,40 +28,40 @@ type
     property tag: string read FTag write FTag;
     property title: string read FTitle write FTitle;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TActiveOfferClass;
+    class function FromJsonString(AJsonString: string): TVkActiveOffer;
   end;
 
-  TActiveOffers = class
+  TVkActiveOffers = class
   private
     FCount: Extended;
-    FItems: TArray<TActiveOfferClass>;
+    FItems: TArray<TVkActiveOffer>;
   public
     property count: Extended read FCount write FCount;
-    property items: TArray<TActiveOfferClass> read FItems write FItems;
+    property items: TArray<TVkActiveOffer> read FItems write FItems;
     destructor Destroy; override;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TActiveOffers;
+    class function FromJsonString(AJsonString: string): TVkActiveOffers;
   end;
 
 implementation
 
-{TActiveOfferClass}
+{TVkActiveOffer}
 
-function TActiveOfferClass.ToJsonString: string;
+function TVkActiveOffer.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TActiveOfferClass.FromJsonString(AJsonString: string): TActiveOfferClass;
+class function TVkActiveOffer.FromJsonString(AJsonString: string): TVkActiveOffer;
 begin
-  result := TJson.JsonToObject<TActiveOfferClass>(AJsonString)
+  result := TJson.JsonToObject<TVkActiveOffer>(AJsonString)
 end;
 
-{TActiveOffers}
+{TVkActiveOffers}
 
-destructor TActiveOffers.Destroy;
+destructor TVkActiveOffers.Destroy;
 var
-  LitemsItem: TActiveOfferClass;
+  LitemsItem: TVkActiveOffer;
 begin
 
   for LitemsItem in FItems do
@@ -70,14 +70,14 @@ begin
   inherited;
 end;
 
-function TActiveOffers.ToJsonString: string;
+function TVkActiveOffers.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TActiveOffers.FromJsonString(AJsonString: string): TActiveOffers;
+class function TVkActiveOffers.FromJsonString(AJsonString: string): TVkActiveOffers;
 begin
-  result := TJson.JsonToObject<TActiveOffers>(AJsonString)
+  result := TJson.JsonToObject<TVkActiveOffers>(AJsonString)
 end;
 
 end.
