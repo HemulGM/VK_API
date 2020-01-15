@@ -7,7 +7,17 @@ uses
 
 function DownloadURL(URL: string): TMemoryStream;
 
+function GetRandomId: Int64;
+
 implementation
+
+uses
+  System.DateUtils, System.SysUtils;
+
+function GetRandomId: Int64;
+begin
+  Result := DateTimeToMilliseconds(Now + 1234567654321);
+end;
 
 function DownloadURL(URL: string): TMemoryStream;
 var

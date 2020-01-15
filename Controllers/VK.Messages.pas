@@ -18,14 +18,14 @@ type
 implementation
 
 uses
-  VK.API;
+  VK.API, VK.Utils;
 
 { TMessagesController }
 
 function TMessagesController.Send(PeerId: Integer; Message: string): Integer;
 begin
   with Handler.Execute('messages.send', [['peer_id', PeerId.ToString], ['message', Message], ['random_id',
-    Random(999999999999).ToString]]) do
+    Random(GetRandomId).ToString]]) do
   begin
     if not Success then
       Exit(-1)
