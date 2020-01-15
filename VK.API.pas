@@ -60,15 +60,12 @@ type
     procedure SetOnCaptcha(const Value: TOnCaptcha);
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure SetOnAuth(const Value: TOnAuth);
-    procedure DoAuth(const AURL: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoLog(Sender: TObject; Text: string);
     procedure Login(AParentWindow: TWinControl = nil);
     procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil);
-    procedure GroupLongPollServerStart(GroupID: string);
-    procedure GroupLongPollServerStop(GroupID: string);
     /// <summary>
     /// ”ниверсальный метод, который позвол€ет запускать последовательность других методов, сохран€€ и фильтру€ промежуточные результаты.
     /// https://vk.com/dev/execute
@@ -126,7 +123,6 @@ begin
   inherited;
   FIsLogin := False;
   FUseServiceKeyOnly := False;
-  FPermissionsList := TPermissions.Create;
   FOAuth2Authenticator := TOAuth2Authenticator.Create(Self);
   FHandler := TVkHandler.Create(Self);
   FHandler.OnError := FVKError;
@@ -138,7 +134,7 @@ begin
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
   APIVersion := '5.103';
-  SetPermissions('groups,friends,wall,photos,video,docs,notes,market');
+  PermissionsList := ['groups', 'friends', 'wall', 'photos', 'video', 'docs', 'notes', 'market'];
   //
   FAccount := TAccountController.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
@@ -157,7 +153,6 @@ begin
   FAccount.Free;
   FAuth.Free;
   FMessages.Free;
-  FPermissionsList.Free;
   FHandler.Free;
   inherited;
 end;
@@ -194,24 +189,6 @@ begin
       Resp := Response;
     end);
   Result := Resp;
-end;
-
-procedure TCustomVK.DoAuth(const AURL: string);
-var
-  Token, ChangePasswordHash: string;
-  TokenExpiry: Int64;
-begin
-  if Assigned(FOnAuth) then
-    FOnAuth(Self, Token, TokenExpiry, ChangePasswordHash);
-  if not Token.IsEmpty then
-  begin
-    FChangePasswordHash := ChangePasswordHash;
-    FOAuth2Authenticator.AccessToken := Token;
-    FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, TokenExpiry);
-    DoLogin;
-  end
-  else
-    FVKError(Self, ERROR_VK_NOTOKEN, '“окен не был получен');
 end;
 
 procedure TCustomVK.FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
@@ -268,6 +245,9 @@ begin
 end;
 
 procedure TCustomVK.Login(AParentWindow: TWinControl);
+var
+  Token, ChangePasswordHash: string;
+  TokenExpiry: Int64;
 begin
   FOAuth2Authenticator.AccessToken := EmptyStr;
   FOAuth2Authenticator.ClientID := FAppID;
@@ -276,8 +256,14 @@ begin
   FOAuth2Authenticator.AuthorizationEndpoint := FEndPoint;
 
   if Assigned(FOnAuth) then
+    FOnAuth(Self, Token, TokenExpiry, ChangePasswordHash);
+
+  if not Token.IsEmpty then
   begin
-    DoAuth(FOAuth2Authenticator.AuthorizationRequestURI);
+    FChangePasswordHash := ChangePasswordHash;
+    FOAuth2Authenticator.AccessToken := Token;
+    FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, TokenExpiry);
+    DoLogin;
   end
   else
   begin
@@ -289,40 +275,6 @@ begin
     end;
     FAuthForm.ShowWithURL(AParentWindow, FOAuth2Authenticator.AuthorizationRequestURI);
   end;
-end;
-
-procedure TCustomVK.GroupLongPollServerStart(GroupID: string);
-{var
-  LongPollServer: TLongPollServer;}
-begin
- { if FGroupLongPollServers.Find(GroupID) >= 0 then
-    Exit;
-  LongPollServer := TLongPollServer.Create(FHandler.RESTClient, 'groups.getLongPollServer', [['group_id',
-    GroupID], ['lp_version', '3']]);
-  LongPollServer.OnError := FVKError;
-  LongPollServer.OnUpdate := FOnLongPollUpdate;
-  if LongPollServer.Start then
-  begin
-    FLog(Self, 'GroupLongPoll started ' + GroupID);
-    FGroupLongPollServers.Add(LongPollServer);
-  end
-  else
-  begin
-    LongPollServer.Free;
-    FLog(Self, 'GroupLongPoll not started ' + GroupID);
-  end;  }
-end;
-
-procedure TCustomVK.GroupLongPollServerStop(GroupID: string);
-var
-  i: Integer;
-begin
-  i := FGroupLongPollServers.Find(GroupID);
-  if i >= 0 then
-    Exit;
-  FGroupLongPollServers[i].Stop;
-  FGroupLongPollServers.Delete(i);
-  FLog(Self, 'GroupLongPoll stopped ' + GroupID);
 end;
 
 procedure TCustomVK.SetAPIVersion(const Value: string);

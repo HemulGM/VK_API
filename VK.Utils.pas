@@ -9,10 +9,20 @@ function DownloadURL(URL: string): TMemoryStream;
 
 function GetRandomId: Int64;
 
+function BoolToString(Value: Boolean): string;
+
 implementation
 
 uses
   System.DateUtils, System.SysUtils;
+
+function BoolToString(Value: Boolean): string;
+begin
+  if Value then
+    Result := '1'
+  else
+    Result := '0';
+end;
 
 function GetRandomId: Int64;
 begin

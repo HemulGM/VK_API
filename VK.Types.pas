@@ -30,31 +30,38 @@ const
   GR_UNANSWERED = 2;
 
 type
-  TOnLogin = procedure(Sender: TObject) of object;
+  TArrayOfString = TArray<string>;
 
-  TOnAuth = procedure(Sender: TObject; var Token: string; var TokenExpiry: Int64; var
-    ChangePasswordHash: string) of object;
+  TArrayOfStringHelper = record helper for TArrayOfString
+    function ToString: string; overload; inline;
+    function CreateAttachmentsFromString(Attachments: string): TArrayOfString;
+    procedure Assign(Source: TStrings); overload;
+  end;
 
-  TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
+  TArrayOfInteger = TArray<Integer>;
 
-  TOnCaptcha = procedure(Sender: TObject; const CaptchaURL: string; var Answer: string) of object;
+  TArrayOfIntegerHelper = record helper for TArrayOfInteger
+    function ToString: string; overload; inline;
+  end;
 
-  TOnLog = procedure(Sender: TObject; const Value: string) of object;
+  TFields = TArrayOfString;
 
-  TOnVKError = procedure(Sender: TObject; Code: Integer; Text: string) of object;
+  TParam = TArrayOfString;
 
-  TFields = array of string;
+  TParams = TArray<TParam>;
 
-  TParam = array of string;
-
-  TParams = array of TParam;
+  TParamsHelper = record helper for TParams
+    function Add(Param: TParam): Integer; overload; inline;
+    function Add(Key, Value: string): Integer; overload; inline;
+  end;
 
   TPremission = string;
 
-  TPermissions = class(TList<TPremission>)
-    function ToString: string; override;
-    procedure Assign(Source: TStrings);
-  end;
+  TPermissions = TArray<TPremission>;
+
+  TAttachmentArray = TArrayOfString;
+
+  TUserIds = TArrayOfInteger;
 
   TMessageFlag = (mfUnread, mfOutbox, mfReplied, mfImportant, mfChat, mfFriends, mfSpam, mfDeleted,
     mfFixed, mfMedia, mfHidden, mfDeleteForAll, mfNotDelivered);
@@ -65,17 +72,7 @@ type
 
   TDialogFlags = set of TDialogFlag;
 
-  //$type_id (integer) Ч идентификатор типа изменени€ в чате
-  {
-  1 Ч »зменилось название беседы
-  2 Ч —менилась обложка беседы
-  3 Ч Ќазначен новый администратор
-  4 Ч «акреплено сообщение
-  5 Ч ѕользователь присоединилс€ к беседе
-  6 Ч ѕользователь покинул беседу
-  7 Ч ѕользовател€ исключили из беседы
-  8 Ч — пользовател€ сн€ты права администратора
-  }
+  //»дентификатор типа изменени€ в чате
   TChatChangeInfoType = (citNone, citName, citPic, citNewAdmin, citFixMessage, citJoin, citLeave, citKick, citUnadmin);
 
   TChatChangeInfoTypeHelper = record helper for TChatChangeInfoType
@@ -139,12 +136,6 @@ type
    //[$random_id] (integer) Ч random_id, если параметр был передан в messages.send. ћожет содержать 0, если значение не задано.
   end;
 
-  TUserIds = array of Integer;
-
-  TUserIdsHelper = record helper for TUserIds
-    function ToString: string; overload; inline;
-  end;
-
   TChatTypingData = record
     UserIds: TUserIds;
     PeerId, TotalCount: Integer;
@@ -156,6 +147,19 @@ type
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
+
+  TOnLogin = procedure(Sender: TObject) of object;
+
+  TOnAuth = procedure(Sender: TObject; var Token: string; var TokenExpiry: Int64; var
+    ChangePasswordHash: string) of object;
+
+  TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
+
+  TOnCaptcha = procedure(Sender: TObject; const CaptchaURL: string; var Answer: string) of object;
+
+  TOnLog = procedure(Sender: TObject; const Value: string) of object;
+
+  TOnVKError = procedure(Sender: TObject; Code: Integer; Text: string) of object;
 
   TCallMethodCallback = reference to procedure(Respone: TResponse);
 
@@ -218,14 +222,27 @@ function FieldsToString(Fields: TFields): string;
 
 function VKErrorString(ErrorCode: Integer): string;
 
-procedure AddParam(var Dest: TParams; Param: TParam);
+function AddParam(var Dest: TParams; Param: TParam): Integer;
+
+function CreateAttachment(&Type: string; Id: string; AccessKey: string = ''): string;
 
 implementation
 
-procedure AddParam(var Dest: TParams; Param: TParam);
+uses
+  System.SysUtils;
+
+function CreateAttachment(&Type: string; Id: string; AccessKey: string): string;
 begin
-  SetLength(Dest, Length(Dest) + 1);
-  Dest[High(Dest)] := Param;
+  Result := &Type + '_' + Id;
+  if not AccessKey.IsEmpty then
+    Result := Result + '_' + AccessKey;
+end;
+
+function AddParam(var Dest: TParams; Param: TParam): Integer;
+begin
+  Result := Length(Dest) + 1;
+  SetLength(Dest, Result);
+  Dest[Result - 1] := Param;
 end;
 
 function FieldsToString(Fields: TFields): string;
@@ -361,29 +378,6 @@ begin
   end;
 
   Result := ErrStr;
-end;
-
-{ TPermissions }
-
-procedure TPermissions.Assign(Source: TStrings);
-var
-  i: Integer;
-begin
-  Clear;
-  for i := 0 to Source.Count - 1 do
-    Add(Source[i]);
-end;
-
-function TPermissions.ToString: string;
-var
-  i: Integer;
-begin
-  for i := 0 to Count - 1 do
-  begin
-    Result := Result + Items[i];
-    if i < (Count - 1) then
-      Result := Result + ',';
-  end;
 end;
 
 { MessageFlags }
@@ -572,14 +566,66 @@ begin
   end;
 end;
 
-{ TUserIdsHelper }
+{ TArrayOfIntegerHelper }
 
-function TUserIdsHelper.ToString: string;
+function TArrayOfIntegerHelper.ToString: string;
 var
   i: Integer;
 begin
   for i := Low(Self) to High(Self) do
-    Result := Result + Self.ToString + ' ';
+  begin
+    if i <> Low(Self) then
+      Result := Result + ',';
+    Result := Result + Self.ToString;
+  end;
+end;
+
+{ TArrayOfStringHelper }
+
+function TArrayOfStringHelper.CreateAttachmentsFromString(Attachments: string): TArrayOfString;
+var
+  List: TStringList;
+begin
+  List := TStringList.Create;
+  List.Delimiter := ',';
+  List.DelimitedText := Attachments;
+  Result.Assign(List);
+  List.Free;
+end;
+
+function TArrayOfStringHelper.ToString: string;
+var
+  i: Integer;
+begin
+  for i := Low(Self) to High(Self) do
+  begin
+    if i <> Low(Self) then
+      Result := Result + ',';
+    Result := Result + Self[i];
+  end;
+end;
+
+procedure TArrayOfStringHelper.Assign(Source: TStrings);
+var
+  i: Integer;
+begin
+  SetLength(Self, Source.Count);
+  for i := 0 to Source.Count - 1 do
+  begin
+    Self[i] := Source[i];
+  end;
+end;
+
+{ TParamsHelper }
+
+function TParamsHelper.Add(Param: TParam): Integer;
+begin
+  Result := AddParam(Self, Param);
+end;
+
+function TParamsHelper.Add(Key, Value: string): Integer;
+begin
+  Result := AddParam(Self, [Key, Value]);
 end;
 
 end.

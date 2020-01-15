@@ -95,7 +95,7 @@ implementation
 
 uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Structs, VK.Entity.User;
+  VK.Entity.PushSettings, VK.Structs, VK.Entity.User, VK.Entity.Keyboard;
 
 {$R *.dfm}
 
@@ -251,20 +251,30 @@ begin
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
+var
+  KB: TVkKeyboard;
 begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   {$INCLUDE app_cred.inc}  //Моё приложение
   VK1.Login;
+
+  with TStringList.Create do
+  begin
+    LoadFromFile('keys.json', TEncoding.UTF8);
+    KB := TVkKeyboard.FromJsonString(Text);
+    ShowMessage(KB.buttons[1][0].action.&label);
+    KB.Free;
+    Free;
+  end;
 end;
 
 procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
 begin
   //Если определён этот метод, то авторизация происходить не будет, т.к. токен уже есть
   //Для использования обычной OAuth2 авторизации достаточно убрать этот метод
-  //Token := '0531221a8de1ec30027acc14180a825d37843059703a44f8532a49988412f4849ed9e4045f81d4ae239cf';  //vk admin
-
   //Это мой токен, эту строчку нужно убрать
-  {$INCLUDE access.inc}  //delphi live
+  {$INCLUDE vk_admin.inc}  //vk admin
+  //{$INCLUDE delphi_live.inc}  //delphi live
   TokenExpiry := 0;
 end;
 
@@ -378,6 +388,11 @@ begin
   begin
     //Сообщение от кого-то
     VK1.Messages.Send(MessageData.PeerId, 'Тест - ответ');
+          {
+    VK1.Messages.Send
+      .PeerId(MessageData.PeerId)
+      .Message('Тест - ответ')
+      .Send;   }
   end;
 end;
 

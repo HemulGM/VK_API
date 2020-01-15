@@ -28,7 +28,8 @@ uses
   VK.Account in '..\..\Controllers\VK.Account.pas',
   VK.Auth in '..\..\Controllers\VK.Auth.pas',
   VK.Users in '..\..\Controllers\VK.Users.pas',
-  VK.Messages in '..\..\Controllers\VK.Messages.pas';
+  VK.Messages in '..\..\Controllers\VK.Messages.pas',
+  VK.Entity.Keyboard in '..\..\Entity\VK.Entity.Keyboard.pas';
 
 {$R *.res}
 

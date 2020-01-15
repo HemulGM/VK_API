@@ -2,6 +2,9 @@ unit VK.Structs;
 
 interface
 
+uses
+  VK.Types;
+
 type
   TRegisterDeviceData = record
   private
