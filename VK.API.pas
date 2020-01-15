@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Dialogs,
   IPPeerClient, REST.Client, Vcl.Controls, REST.Authenticator.OAuth, VK.Types, VK.OAuth2, VK.Account,
-  VK.Handler, VK.Auth, VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON,
+  VK.Handler, VK.Auth, VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON, VK.Messages,
   System.Generics.Collections;
 
 type
@@ -35,6 +35,7 @@ type
     FOnCaptcha: TOnCaptcha;
     FOnConfirm: TOnConfirm;
     FOnAuth: TOnAuth;
+    FMessages: TMessagesController;
     function GetPermissions: string;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
@@ -79,6 +80,7 @@ type
     property Account: TAccountController read FAccount;
     property Auth: TAuthController read FAuth;
     property Users: TUsersController read FUsers;
+    property Messages: TMessagesController read FMessages;
     //
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;
@@ -141,6 +143,7 @@ begin
   FAccount := TAccountController.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
   FUsers := TUsersController.Create(FHandler);
+  FMessages := TMessagesController.Create(FHandler);
   //Groups LongPolls
   FGroupLongPollServers := TGroupLongPollServers.Create;
 end;
@@ -153,6 +156,7 @@ begin
   FUsers.Free;
   FAccount.Free;
   FAuth.Free;
+  FMessages.Free;
   FPermissionsList.Free;
   FHandler.Free;
   inherited;

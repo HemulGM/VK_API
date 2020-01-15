@@ -257,7 +257,8 @@ end;
 
 procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
 begin
-  Token := '0531221a8de1ec30027acc14180a825d37843059703a44f8532a49988412f4849ed9e4045f81d4ae239cf';
+  //Token := '0531221a8de1ec30027acc14180a825d37843059703a44f8532a49988412f4849ed9e4045f81d4ae239cf';  //vk admin
+  {$INCLUDE access.inc}  //delphi live
   TokenExpiry := 0;
 end;
 
@@ -363,6 +364,15 @@ begin
   Memo1.Lines.Add('Новое сообщение в чате ' + MessageData.PeerId.ToString + ' ' + MessageData.MessageId.ToString
     + ' ' + MessageData.Flags.ToString
     + ': ' + MessageData.Text);
+  if mfOutbox in MessageData.Flags then
+  begin
+    //Сообщение от нас
+  end
+  else
+  begin
+    //Сообщение от кого-то
+    VK1.Messages.Send(MessageData.PeerId, 'Тест - ответ');
+  end;
 end;
 
 procedure TFormMain.VkUserEvents1NotifyChange(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer);

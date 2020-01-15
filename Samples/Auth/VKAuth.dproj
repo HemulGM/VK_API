@@ -130,6 +130,8 @@
         <DCCReference Include="..\..\Controllers\VK.Account.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Auth.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Users.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Messages.pas"/>
+        <None Include="access.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -155,6 +157,12 @@
                 <DeployFile LocalName="Win32\Debug\VKAuth.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKAuth.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="access.inc" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

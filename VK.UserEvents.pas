@@ -273,7 +273,7 @@ end;
 
 procedure TCustomUserEvents.FOnError(Sender: TObject; Code: Integer; Text: string);
 begin
-  //
+  FVK.DoLog(Self, Text);
 end;
 
 procedure TCustomUserEvents.FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
@@ -379,7 +379,12 @@ begin
   FLongPollServer.Client := FVK.Handler.RESTClient;
   FLongPollServer.Method := 'messages.getLongPollServer';
   FLongPollServer.Params := [['lp_version', '3']];
+  FLongPollServer.OnError := FOnError;
   Result := FLongPollServer.Start;
+  if Result then
+    FVK.DoLog(Self, 'User LongPoll server started')
+  else
+    FVK.DoLog(Self, 'User LongPoll server not start');
 end;
 
 procedure TCustomUserEvents.Stop;

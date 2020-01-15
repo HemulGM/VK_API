@@ -27,7 +27,8 @@ uses
   VK.Entity.Attachment in '..\..\Entity\VK.Entity.Attachment.pas',
   VK.Account in '..\..\Controllers\VK.Account.pas',
   VK.Auth in '..\..\Controllers\VK.Auth.pas',
-  VK.Users in '..\..\Controllers\VK.Users.pas';
+  VK.Users in '..\..\Controllers\VK.Users.pas',
+  VK.Messages in '..\..\Controllers\VK.Messages.pas';
 
 {$R *.res}
 
