@@ -257,15 +257,6 @@ begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   {$INCLUDE app_cred.inc}  //Моё приложение
   VK1.Login;
-
-  with TStringList.Create do
-  begin
-    LoadFromFile('keys.json', TEncoding.UTF8);
-    KB := TVkKeyboard.FromJsonString(Text);
-    ShowMessage(KB.buttons[1][0].action.&label);
-    KB.Free;
-    Free;
-  end;
 end;
 
 procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
