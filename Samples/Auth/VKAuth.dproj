@@ -131,7 +131,7 @@
         <DCCReference Include="..\..\Controllers\VK.Auth.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Users.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Messages.pas"/>
-        <None Include="access.inc"/>
+        <None Include="app_cred.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

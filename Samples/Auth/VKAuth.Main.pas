@@ -252,12 +252,18 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  //Ёто мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
+  {$INCLUDE app_cred.inc}  //ћоЄ приложение
   VK1.Login;
 end;
 
 procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
 begin
+  //≈сли определЄн этот метод, то авторизаци€ происходить не будет, т.к. токен уже есть
+  //ƒл€ использовани€ обычной OAuth2 авторизации достаточно убрать этот метод
   //Token := '0531221a8de1ec30027acc14180a825d37843059703a44f8532a49988412f4849ed9e4045f81d4ae239cf';  //vk admin
+
+  //Ёто мой токен, эту строчку нужно убрать
   {$INCLUDE access.inc}  //delphi live
   TokenExpiry := 0;
 end;

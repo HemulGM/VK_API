@@ -215,15 +215,13 @@ object FormMain: TFormMain
     end
   end
   object VK1: TVK
-    AppID = '7245537'
-    AppKey = 'XVJ5V9F65v5eo1bhu3qY'
+    AppID = '9837245'
+    AppKey = 'XBMNBmndgfhdnmB34sxcZ'
     EndPoint = 'https://oauth.vk.com/authorize'
     Permissions = 'groups,friends,wall,photos,video,docs,notes,market,messages'
     APIVersion = '5.103'
     BaseURL = 'https://api.vk.com/method'
-    ServiceKey = 
-      'cbbadfcecbbadfcecbbadfce3ccbd4512fccbbacbbadfce9649f09303f1cb32b' +
-      '4717e70'
+    ServiceKey = 'fcsdfbvdsbvfcsbdvfcasdgfhgasdfjkshadgfbdsmfgbmdsfngbmdfsgb'
     OnAuth = VK1Auth
     OnLogin = VK1Login
     OnLog = VK1Log
