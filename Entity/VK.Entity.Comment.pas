@@ -3,7 +3,7 @@ unit VK.Entity.Comment;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Attachment;
 
 type
   TVkComment = class
@@ -16,6 +16,7 @@ type
     FReply_to_comment: Extended;
     FReply_to_user: Extended;
     FText: string;
+    FAttachments: TVkAttachment;
   public
     property date: Extended read FDate write FDate;
     property from_id: Extended read FFrom_id write FFrom_id;
@@ -25,6 +26,7 @@ type
     property reply_to_comment: Extended read FReply_to_comment write FReply_to_comment;
     property reply_to_user: Extended read FReply_to_user write FReply_to_user;
     property text: string read FText write FText;
+    property attachments: TVkAttachment read FAttachments write FAttachments;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkComment;
   end;

@@ -130,18 +130,18 @@ var
   end;
 
 begin
-  EventType := TJSONArray(Update).Items[0].AsType<Integer>;
+  EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
   case EventType of
     1..4: //Изменение флагов сообщений и новое сообщение
       begin
-        A1 := TJSONArray(Update).Items[1].AsType<Integer>;
-        A2 := TJSONArray(Update).Items[2].AsType<Integer>;
-        ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].AsType<Integer>);
+        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
         if TJSONArray(Update).Count > 4 then
         begin
-          ExtraFields.timestamp := TJSONArray(Update).Items[4].AsType<Integer>;
+          ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
           if TJSONArray(Update).Count > 5 then
-            ExtraFields.text := TJSONArray(Update).Items[5].AsType<string>;
+            ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
         end;
         case EventType of
           1: //1	$message_id (integer) $flags (integer) extra_fields*	Замена флагов сообщения (FLAGS:=$flags).
@@ -156,30 +156,30 @@ begin
       end;
     5: //Редактирование сообщения
       begin
-        A1 := TJSONArray(Update).Items[1].AsType<Integer>;
-        A2 := TJSONArray(Update).Items[2].AsType<Integer>;
-        ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].AsType<Integer>);
-        ExtraFields.timestamp := TJSONArray(Update).Items[4].AsType<Integer>;
-        ExtraFields.text := TJSONArray(Update).Items[5].AsType<string>;
+        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
+        ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
+        ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
         DoEditMessage(A1, A2, ExtraFields);
       end;
     6, 7: //Прочтение сообщений
       begin
-        A1 := NormalizePeerId(TJSONArray(Update).Items[1].AsType<Integer>);
-        A2 := TJSONArray(Update).Items[2].AsType<Integer>;
+        A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         DoReadMessages(EventType = 6, A1, A2);
       end;
     8, 9: //Online/Offline пользователя
       begin
-        A1 := TJSONArray(Update).Items[1].AsType<Integer> *  - 1;
-        A2 := TJSONArray(Update).Items[2].AsType<Integer>;
-        A3 := TJSONArray(Update).Items[3].AsType<Integer>;
+        A1 := TJSONArray(Update).Items[1].GetValue<Integer> *  - 1;
+        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         DoUserStateChange(EventType = 8, A1, A2, A3);
       end;
     10, 11, 12: //Изменение флагов диалога
       begin
-        A1 := NormalizePeerId(TJSONArray(Update).Items[1].AsType<Integer>);
-        A2 := TJSONArray(Update).Items[2].AsType<Integer>;
+        A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         case EventType of
           10: //$peer_id (integer) $mask (integer)	Сброс флагов диалога $peer_id. Соответствует операции (PEER_FLAGS &= ~$flags). Только для диалогов сообществ.
             DoChangeDialogFlags(A1, fcFlagsReset, A2);
@@ -191,8 +191,8 @@ begin
       end;
     13, 14: //Удаление/восставноление сообщений
       begin
-        A1 := NormalizePeerId(TJSONArray(Update).Items[1].AsType<Integer>);
-        A2 := TJSONArray(Update).Items[2].AsType<Integer>;
+        A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         case EventType of
           13: //Удаление всех сообщений в диалоге $peer_id с идентификаторами вплоть до $local_id.
             DoDeleteMessages(A1, A2);
@@ -202,25 +202,25 @@ begin
       end;
     51: //Один из параметров (состав, тема) беседы $chat_id были изменены. $self — 1 или 0 (вызваны ли изменения самим пользователем).
       begin
-        A1 := TJSONArray(Update).Items[1].AsType<Integer>;
+        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
         if TJSONArray(Update).Count > 2 then
-          A2 := TJSONArray(Update).Items[2].AsType<Integer>
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>
         else
           A2 := 0;
         DoChatChanged(A1, A2 = 1);
       end;
     52: //Изменение информации чата $peer_id с типом $type_id, $info — дополнительная информация об изменениях, зависит от типа события
       begin
-        A1 := TJSONArray(Update).Items[1].AsType<Integer>;
-        A2 := NormalizePeerId(TJSONArray(Update).Items[2].AsType<Integer>);
-        A3 := TJSONArray(Update).Items[3].AsType<Integer>;
+        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+        A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
+        A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         DoChatChangeInfo(A2, A1, A3);
       end;
     61, 62: //Пользователь набирает текст в диалоге/чате
       begin
-        A1 := TJSONArray(Update).Items[1].AsType<Integer>;
+        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
         if EventType = 62 then
-          A2 := TJSONArray(Update).Items[2].AsType<Integer>
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>
         else
           A2 := A1;
         DoUserTyping(A1, A2);
@@ -232,12 +232,12 @@ begin
         for i := 0 to Arr.Count do
         begin
           SetLength(UserIds, Length(UserIds) + 1);
-          UserIds[Length(UserIds) - 1] := Arr.Items[i].AsType<Integer>;
+          UserIds[Length(UserIds) - 1] := Arr.Items[i].GetValue<Integer>;
         end;
 
-        A1 := NormalizePeerId(TJSONArray(Update).Items[2].AsType<Integer>);
-        A2 := TJSONArray(Update).Items[3].AsType<Integer>;
-        A3 := TJSONArray(Update).Items[4].AsType<Integer>;
+        A1 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
+        A2 := TJSONArray(Update).Items[3].GetValue<Integer>;
+        A3 := TJSONArray(Update).Items[4].GetValue<Integer>;
         case EventType of
           63:
             DoUsersTyping(UserIds, A1, A2, A3);
@@ -247,23 +247,23 @@ begin
       end;
     70: //Пользователь $user_id совершил звонок с идентификатором $call_id.
       begin
-        A1 := TJSONArray(Update).Items[1].AsType<Integer>;
-        A2 := TJSONArray(Update).Items[2].AsType<Integer>;
+        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         DoUserCall(A1, A2);
       end;
     80: //Счетчик в левом меню стал равен $count.
       begin
-        A1 := TJSONArray(Update).Items[1].AsType<Integer>;
+        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
         DoCountChange(A1);
       end;
     114: //Изменились настройки оповещений. $peer_id — идентификатор чата/собеседника,
          //'$sound — 1/0, включены/выключены звуковые оповещения,
          //$disabled_until — выключение оповещений на необходимый срок (-1: навсегда, ''0
       begin
-        A1 := NormalizePeerId(TJSONArray(Update).Items[1].AsType<Integer>);
-        A2 := TJSONArray(Update).Items[2].AsType<Integer>;
+        A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         if TJSONArray(Update).Count > 3 then
-          A3 := TJSONArray(Update).Items[3].AsType<Integer>
+          A3 := TJSONArray(Update).Items[3].GetValue<Integer>
         else
           A3 := 0;
         DoNotifyChange(A1, A2, A3);

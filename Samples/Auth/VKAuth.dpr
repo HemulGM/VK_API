@@ -29,7 +29,10 @@ uses
   VK.Auth in '..\..\Controllers\VK.Auth.pas',
   VK.Users in '..\..\Controllers\VK.Users.pas',
   VK.Messages in '..\..\Controllers\VK.Messages.pas',
-  VK.Entity.Keyboard in '..\..\Entity\VK.Entity.Keyboard.pas';
+  VK.Entity.Keyboard in '..\..\Entity\VK.Entity.Keyboard.pas',
+  VK.Entity.Message in '..\..\Entity\VK.Entity.Message.pas',
+  VK.OAuth2 in '..\..\Forms\VK.OAuth2.pas' {FormOAuth2},
+  VK.Utils in '..\..\VK.Utils.pas';
 
 {$R *.res}
 
@@ -39,5 +42,6 @@ begin
   ReportMemoryLeaksOnShutdown := True;
   Application.CreateForm(TFormMain, FormMain);
   Application.CreateForm(TFormCaptcha, FormCaptcha);
+  Application.CreateForm(TFormOAuth2, FormOAuth2);
   Application.Run;
 end.

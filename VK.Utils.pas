@@ -2,6 +2,8 @@ unit VK.Utils;
 
 interface
 
+{$INCLUDE include.inc}
+
 uses
   System.Classes, System.Net.HttpClient;
 
@@ -26,7 +28,12 @@ end;
 
 function GetRandomId: Int64;
 begin
-  Result := DateTimeToMilliseconds(Now + 1234567654321);
+  {$IFDEF OLD_ARRAYS}
+  Result := DateTimeToUnix(Now) + 1234567654321;
+  {$ELSE}
+  Result := DateTimeToMilliseconds(Now) + 1234567654321;
+  {$ENDIF}
+
 end;
 
 function DownloadURL(URL: string): TMemoryStream;

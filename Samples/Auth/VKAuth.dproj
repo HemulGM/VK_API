@@ -132,6 +132,12 @@
         <DCCReference Include="..\..\Controllers\VK.Users.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Messages.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Keyboard.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Message.pas"/>
+        <DCCReference Include="..\..\Forms\VK.OAuth2.pas">
+            <Form>FormOAuth2</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\VK.Utils.pas"/>
         <None Include="app_cred.inc"/>
         <None Include="vk_admin.inc"/>
         <None Include="delphi_live.inc"/>

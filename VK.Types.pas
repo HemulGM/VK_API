@@ -2,6 +2,8 @@ unit VK.Types;
 
 interface
 
+{$INCLUDE include.inc}
+
 uses
   System.Classes, System.Generics.Collections, System.JSON;
 
@@ -30,7 +32,12 @@ const
   GR_UNANSWERED = 2;
 
 type
+  {$IFDEF OLD_ARRAYS}
+  TArrayOfString = array of string;
+  {$ELSE}
   TArrayOfString = TArray<string>;
+  {$ENDIF}
+
 
   TArrayOfStringHelper = record helper for TArrayOfString
     function ToString: string; overload; inline;
@@ -38,7 +45,12 @@ type
     procedure Assign(Source: TStrings); overload;
   end;
 
+  {$IFDEF OLD_ARRAYS}
+  TArrayOfInteger = array of Integer;
+  {$ELSE}
   TArrayOfInteger = TArray<Integer>;
+  {$ENDIF}
+
 
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
     function ToString: string; overload; inline;
@@ -48,7 +60,12 @@ type
 
   TParam = TArrayOfString;
 
+  {$IFDEF OLD_ARRAYS}
+  TParams = array of TParam;
+  {$ELSE}
   TParams = TArray<TParam>;
+  {$ENDIF}
+
 
   TParamsHelper = record helper for TParams
     function Add(Param: TParam): Integer; overload; inline;
@@ -57,7 +74,17 @@ type
 
   TPremission = string;
 
+  {$IFDEF OLD_ARRAYS}
+  TPermissions = array of TPremission;
+
+  TPermissionsHelper = record helper for TPermissions
+    function ToString: string; overload; inline;
+    procedure Assign(Source: TStrings); overload;
+  end;
+  {$ELSE}
   TPermissions = TArray<TPremission>;
+  {$ENDIF}
+
 
   TAttachmentArray = TArrayOfString;
 
@@ -65,6 +92,10 @@ type
 
   TMessageFlag = (mfUnread, mfOutbox, mfReplied, mfImportant, mfChat, mfFriends, mfSpam, mfDeleted,
     mfFixed, mfMedia, mfHidden, mfDeleteForAll, mfNotDelivered);
+
+  TMessageFlagHelper = record helper for TMessageFlag
+    function ToString: string; inline;
+  end;
 
   TMessageFlags = set of TMessageFlag;
 
@@ -436,34 +467,7 @@ var
   Flag: TMessageFlag;
 begin
   for Flag in Flags do
-    case Flag of
-      mfUnread:
-        Result := Result + 'Unread ';
-      mfOutbox:
-        Result := Result + 'Outbox ';
-      mfReplied:
-        Result := Result + 'Replied ';
-      mfImportant:
-        Result := Result + 'Important ';
-      mfChat:
-        Result := Result + 'Chat ';
-      mfFriends:
-        Result := Result + 'Friends ';
-      mfSpam:
-        Result := Result + 'Spam ';
-      mfDeleted:
-        Result := Result + 'Deleted ';
-      mfFixed:
-        Result := Result + 'Fixed ';
-      mfMedia:
-        Result := Result + 'Media ';
-      mfHidden:
-        Result := Result + 'Hidden ';
-      mfDeleteForAll:
-        Result := Result + 'DeleteForAll ';
-      mfNotDelivered:
-        Result := Result + 'NotDelivered ';
-    end;
+    Result := Result + Flag.ToString;
 end;
 
 { TMessageChangeTypeHelper }
@@ -616,6 +620,35 @@ begin
   end;
 end;
 
+{ TPermissionsHelper }
+
+{$IFDEF OLD_ARRAYS}
+
+function TPermissionsHelper.ToString: string;
+var
+  i: Integer;
+begin
+  for i := Low(Self) to High(Self) do
+  begin
+    if i <> Low(Self) then
+      Result := Result + ',';
+    Result := Result + Self[i];
+  end;
+end;
+
+procedure TPermissionsHelper.Assign(Source: TStrings);
+var
+  i: Integer;
+begin
+  SetLength(Self, Source.Count);
+  for i := 0 to Source.Count - 1 do
+  begin
+    Self[i] := Source[i];
+  end;
+end;
+
+{$ENDIF}
+
 { TParamsHelper }
 
 function TParamsHelper.Add(Param: TParam): Integer;
@@ -626,6 +659,42 @@ end;
 function TParamsHelper.Add(Key, Value: string): Integer;
 begin
   Result := AddParam(Self, [Key, Value]);
+end;
+
+{ TMessageFlagHelper }
+
+function TMessageFlagHelper.ToString: string;
+begin
+  case Self of
+    mfUnread:
+      Result := 'Unread ';
+    mfOutbox:
+      Result := 'Outbox ';
+    mfReplied:
+      Result := 'Replied ';
+    mfImportant:
+      Result := 'Important ';
+    mfChat:
+      Result := 'Chat ';
+    mfFriends:
+      Result := 'Friends ';
+    mfSpam:
+      Result := 'Spam ';
+    mfDeleted:
+      Result := 'Deleted ';
+    mfFixed:
+      Result := 'Fixed ';
+    mfMedia:
+      Result := 'Media ';
+    mfHidden:
+      Result := 'Hidden ';
+    mfDeleteForAll:
+      Result := 'DeleteForAll ';
+    mfNotDelivered:
+      Result := 'NotDelivered ';
+  else
+    Result := '';
+  end;
 end;
 
 end.

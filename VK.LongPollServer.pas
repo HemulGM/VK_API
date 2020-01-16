@@ -4,8 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, Vcl.Dialogs, System.Classes, System.Variants,
-  IPPeerClient, REST.Client, System.JSON, System.Net.HttpClient, VK.Types,
-  System.Generics.Collections;
+  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, System.Generics.Collections;
 
 type
   TLongPollServer = class;

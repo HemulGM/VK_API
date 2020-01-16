@@ -106,7 +106,7 @@ end;
 
 function TAccountController.GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
 begin
-  with Handler.Execute('account.getPushSettings') do
+  with Handler.Execute('account.getPushSettings', ['device_id', DeviceId]) do
   begin
     Result := Success;
     if Result then
@@ -201,13 +201,13 @@ function TAccountController.SetPushSettings(const DeviceId, Settings, Key, Value
 var
   Params: TParams;
 begin
-  AddParam(Params, ['device_id', DeviceId]);
+  Params.Add(['device_id', DeviceId]);
   if not Settings.IsEmpty then
-    AddParam(Params, ['settings', Settings]);
+    Params.Add(['settings', Settings]);
   if not Key.IsEmpty then
   begin
-    AddParam(Params, ['key', Key]);
-    AddParam(Params, ['value', Value]);
+    Params.Add(['key', Key]);
+    Params.Add(['value', Value]);
   end;
   with Handler.Execute('account.setPushSettings', Params) do
     Result := Success and (Value = '1');
@@ -218,10 +218,10 @@ function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer
 var
   Params: TParams;
 begin
-  AddParam(Params, ['device_id', DeviceId]);
-  AddParam(Params, ['time', Time.ToString]);
-  AddParam(Params, ['peer_id', PeerId]);
-  AddParam(Params, ['sound', Ord(Sound).ToString]);
+  Params.Add(['device_id', DeviceId]);
+  Params.Add(['time', Time.ToString]);
+  Params.Add(['peer_id', PeerId]);
+  Params.Add(['sound', Ord(Sound).ToString]);
   with Handler.Execute('account.setSilenceMode', Params) do
     Result := Success and (Value = '1');
 end;

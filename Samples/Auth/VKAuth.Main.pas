@@ -250,15 +250,6 @@ begin
     Memo1.Lines.Add('Error online');
 end;
 
-procedure TFormMain.FormCreate(Sender: TObject);
-var
-  KB: TVkKeyboard;
-begin
-  //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
-  {$INCLUDE app_cred.inc}  //Моё приложение
-  VK1.Login;
-end;
-
 procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
 begin
   //Если определён этот метод, то авторизация происходить не будет, т.к. токен уже есть
@@ -267,6 +258,13 @@ begin
   {$INCLUDE vk_admin.inc}  //vk admin
   //{$INCLUDE delphi_live.inc}  //delphi live
   TokenExpiry := 0;
+end;
+
+procedure TFormMain.FormCreate(Sender: TObject);
+begin
+  //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
+  {$INCLUDE app_cred.inc}  //Моё приложение
+  VK1.Login;
 end;
 
 procedure TFormMain.VK1Error(Sender: TObject; Code: Integer; Text: string);
@@ -378,12 +376,10 @@ begin
   else
   begin
     //Сообщение от кого-то
-    VK1.Messages.Send(MessageData.PeerId, 'Тест - ответ');
-          {
     VK1.Messages.Send
       .PeerId(MessageData.PeerId)
       .Message('Тест - ответ')
-      .Send;   }
+      .Send.Free;
   end;
 end;
 
