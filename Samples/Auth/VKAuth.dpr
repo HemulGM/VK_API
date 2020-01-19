@@ -39,7 +39,13 @@ uses
   VK.Entity.Market in '..\..\Entity\VK.Entity.Market.pas',
   VK.Entity.Doc in '..\..\Entity\VK.Entity.Doc.pas',
   VK.Entity.Audio in '..\..\Entity\VK.Entity.Audio.pas',
-  VK.Entity.Video in '..\..\Entity\VK.Entity.Video.pas';
+  VK.Entity.Video in '..\..\Entity\VK.Entity.Video.pas',
+  VK.Status in '..\..\Controllers\VK.Status.pas',
+  VK.Wall in '..\..\Controllers\VK.Wall.pas',
+  VK.Docs in '..\..\Controllers\VK.Docs.pas',
+  VK.Uploader in '..\..\VK.Uploader.pas',
+  VK.Entity.Doc.Save in '..\..\Entity\VK.Entity.Doc.Save.pas',
+  VK.Entity.Graffiti in '..\..\Entity\VK.Entity.Graffiti.pas';
 
 {$R *.res}
 

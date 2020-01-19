@@ -56,9 +56,9 @@ type
     FAccess_key: string;
     FDate: Extended;
     FExt: string;
-    FId: Extended;
+    FId: Integer;
     FIs_licensed: Extended;
-    FOwner_id: Extended;
+    FOwner_id: Integer;
     FPreview: TVkPreview;
     FSize: Extended;
     FTitle: string;
@@ -78,9 +78,9 @@ type
     property access_key: string read FAccess_key write FAccess_key;
     property date: Extended read FDate write FDate;
     property ext: string read FExt write FExt;
-    property id: Extended read FId write FId;
+    property id: Integer read FId write FId;
     property is_licensed: Extended read FIs_licensed write FIs_licensed;
-    property owner_id: Extended read FOwner_id write FOwner_id;
+    property owner_id: Integer read FOwner_id write FOwner_id;
     property preview: TVkPreview read FPreview write FPreview;
     property size: Extended read FSize write FSize;
     property title: string read FTitle write FTitle;
@@ -89,10 +89,14 @@ type
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
+    function ToAttachment: string;
     class function FromJsonString(AJsonString: string): TVkDocument;
   end;
 
 implementation
+
+uses
+  VK.Types, System.SysUtils;
 
 {TVkPreviewPhoto}
 
@@ -153,6 +157,11 @@ destructor TVkDocument.Destroy;
 begin
   FPreview.Free;
   inherited;
+end;
+
+function TVkDocument.ToAttachment: string;
+begin
+  Result := CreateAttachment('doc', FOwner_id, FId, FAccess_key);
 end;
 
 function TVkDocument.ToJsonString: string;

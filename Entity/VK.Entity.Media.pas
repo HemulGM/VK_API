@@ -5,7 +5,7 @@ interface
 uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link,
   VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video;
+  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti;
 
 type
   TVkAttachment = class;
@@ -34,6 +34,7 @@ type
     FAudio: TVkAudio;
     FVideo: TVkVideo;
     FPhoto: TVkPhoto;
+    FGraffiti: TVkGraffiti;
   public
     property&type: string read FType write FType;
     property link: TVkLink read FLink write FLink;
@@ -49,6 +50,7 @@ type
     property audio: TVkAudio read FAudio write FAudio;
     property video: TVkVideo read FVideo write FVideo;
     property photo: TVkPhoto read FPhoto write FPhoto;
+    property graffiti: TVkGraffiti read FGraffiti write FGraffiti;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -226,10 +228,12 @@ begin
     FMarket.Free;
   if Assigned(FDoc) then
     FDoc.Free;
-  if Assigned(FAudio) then
-    FAudio.Free;   {
   if Assigned(FVideo) then
-    FVideo.Free;  }
+    FVideo.Free;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  if Assigned(FGraffiti) then
+    FGraffiti.Free;
 
   inherited;
 end;

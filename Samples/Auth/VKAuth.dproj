@@ -145,6 +145,12 @@
         <DCCReference Include="..\..\Entity\VK.Entity.Doc.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Audio.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Video.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Status.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Wall.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Docs.pas"/>
+        <DCCReference Include="..\..\VK.Uploader.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Doc.Save.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Graffiti.pas"/>
         <None Include="app_cred.inc"/>
         <None Include="vk_admin.inc"/>
         <None Include="delphi_live.inc"/>

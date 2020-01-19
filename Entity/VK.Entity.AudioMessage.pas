@@ -10,26 +10,35 @@ type
   private
     FAccess_key: string;
     FDuration: Extended;
-    FId: Extended;
+    FId: Integer;
     FLink_mp3: string;
     FLink_ogg: string;
-    FOwner_id: Extended;
+    FOwner_id: Integer;
     FWaveform: TArray<Extended>;
   public
     property access_key: string read FAccess_key write FAccess_key;
     property duration: Extended read FDuration write FDuration;
-    property id: Extended read FId write FId;
+    property id: Integer read FId write FId;
     property link_mp3: string read FLink_mp3 write FLink_mp3;
     property link_ogg: string read FLink_ogg write FLink_ogg;
-    property owner_id: Extended read FOwner_id write FOwner_id;
+    property owner_id: Integer read FOwner_id write FOwner_id;
     property waveform: TArray<Extended> read FWaveform write FWaveform;
     function ToJsonString: string;
+    function ToAttachment: string;
     class function FromJsonString(AJsonString: string): TVkAudioMessage;
   end;
 
 implementation
 
+uses
+  VK.Types, System.SysUtils;
+
 {TVkAudioMessage}
+
+function TVkAudioMessage.ToAttachment: string;
+begin
+  Result := CreateAttachment('doc', owner_id, FId, FAccess_key);
+end;
 
 function TVkAudioMessage.ToJsonString: string;
 begin

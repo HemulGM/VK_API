@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, REST.Client,
   Vcl.Controls, REST.Authenticator.OAuth, VK.Types, VK.OAuth2, VK.Account, VK.Handler, VK.Auth,
   VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON, VK.Messages,
-  System.Generics.Collections;
+  System.Generics.Collections, VK.Status, VK.Wall, VK.Uploader, VK.Docs;
 
 type
   TCustomVK = class(TComponent)
@@ -36,6 +36,10 @@ type
     FOnConfirm: TOnConfirm;
     FOnAuth: TOnAuth;
     FMessages: TMessagesController;
+    FStatus: TStatusController;
+    FWall: TWallController;
+    FUploader: TUploader;
+    FDoc: TDocController;
     function GetPermissions: string;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
@@ -65,7 +69,10 @@ type
     destructor Destroy; override;
     procedure DoLog(Sender: TObject; Text: string);
     procedure Login(AParentWindow: TWinControl = nil);
-    procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil);
+    procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Param: string; Value: string; Callback:
+      TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// ”ниверсальный метод, который позвол€ет запускать последовательность других методов, сохран€€ и фильтру€ промежуточные результаты.
     /// https://vk.com/dev/execute
@@ -73,11 +80,15 @@ type
     /// <param name="Code">код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагаетс€ совместимость с ECMAScript). јлгоритм должен завершатьс€ командой return %выражение%. ќператоры должны быть разделены точкой с зап€той. </param>
     function Execute(Code: string): TResponse;
     property PermissionsList: TPermissions read FPermissionsList write SetPermissionsList;
+    property Uploader: TUploader read FUploader;
     //√руппы методов
     property Account: TAccountController read FAccount;
     property Auth: TAuthController read FAuth;
     property Users: TUsersController read FUsers;
     property Messages: TMessagesController read FMessages;
+    property Status: TStatusController read FStatus;
+    property Wall: TWallController read FWall;
+    property Docs: TDocController read FDoc;
     //
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;
@@ -118,6 +129,28 @@ begin
   end;
 end;
 
+procedure TCustomVK.CallMethod(MethodName: string; Param: string; Value: string; Callback: TCallMethodCallback);
+var
+  Response: TResponse;
+begin
+  Response := Handler.Execute(MethodName, [Param, Value]);
+  if Assigned(Callback) then
+  begin
+    Callback(Response);
+  end;
+end;
+
+procedure TCustomVK.CallMethod(MethodName: string; Callback: TCallMethodCallback);
+var
+  Response: TResponse;
+begin
+  Response := Handler.Execute(MethodName);
+  if Assigned(Callback) then
+  begin
+    Callback(Response);
+  end;
+end;
+
 constructor TCustomVK.Create(AOwner: TComponent);
 begin
   inherited;
@@ -140,7 +173,11 @@ begin
   FAuth := TAuthController.Create(FHandler);
   FUsers := TUsersController.Create(FHandler);
   FMessages := TMessagesController.Create(FHandler);
+  FStatus := TStatusController.Create(FHandler);
+  FWall := TWallController.Create(FHandler);
+  FDoc := TDocController.Create(FHandler);
   //Groups LongPolls
+  FUploader := TUploader.Create;
   FGroupLongPollServers := TGroupLongPollServers.Create;
 end;
 
@@ -149,6 +186,10 @@ begin
   FGroupLongPollServers.Clear;
   FGroupLongPollServers.Free;
 
+  FDoc.Free;
+  FUploader.Free;
+  FWall.Free;
+  FStatus.Free;
   FUsers.Free;
   FAccount.Free;
   FAuth.Free;

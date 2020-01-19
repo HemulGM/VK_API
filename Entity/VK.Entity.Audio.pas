@@ -146,10 +146,16 @@ constructor TVkAudio.Create;
 begin
   inherited;
   FAds := TVkAudioAds.Create();
+  FAlbum := TVkAudioAlbum.Create;
 end;
 
 destructor TVkAudio.Destroy;
+var
+  Artist: TVkAudioArtist;
 begin
+  for Artist in FMain_artists do
+    Artist.Free;
+  FAlbum.Free;
   FAds.Free;
   inherited;
 end;

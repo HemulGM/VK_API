@@ -33,6 +33,9 @@ const
   MF_DELETE_FOR_ALL = 131072;
   MF_NOT_DELIVERED = 262144;
   MF_UNKNOWN_6 = 524288;
+  MF_UNKNOWN_7 = 1048576;
+  MF_UNKNOWN_8 = 2097152;
+  MF_UNKNOWN_9 = 4194304;
 
   //Audio Genres
   AG_ROCK = 1;
@@ -73,6 +76,7 @@ type
   TArrayOfStringHelper = record helper for TArrayOfString
     function ToString: string; overload; inline;
     procedure Assign(Source: TStrings); overload;
+    function IsEmpty: Boolean;
   end;
 
   {$IFDEF OLD_VERSION}
@@ -100,6 +104,9 @@ type
   TParamsHelper = record helper for TParams
     function Add(Param: TParam): Integer; overload; inline;
     function Add(Key, Value: string): Integer; overload; inline;
+    function Add(Key: string; Value: Integer): Integer; overload; inline;
+    function PeerId(Value: Integer): Integer; overload; inline;
+    function OwnerId(Value: Integer): Integer; overload; inline;
   end;
 
   TPremission = string;
@@ -125,7 +132,7 @@ type
   //Флаги сообщений
   TMessageFlag = (mfUnread, mfOutbox, mfReplied, mfImportant, mfChat, mfFriends, mfSpam, mfDeleted,
     mfFixed, mfMedia, mfUNKNOWN_1, mfUNKNOWN_2, mfUNKNOWN_3, mfUnreadMultichat, mfUNKNOWN_4,
-    mfUNKNOWN_5, mfHidden, mfDeleteForAll, mfNotDelivered, mfUNKNOWN_6);
+    mfUNKNOWN_5, mfHidden, mfDeleteForAll, mfNotDelivered, mfUNKNOWN_6, mfUNKNOWN_7, mfUNKNOWN_8, mfUNKNOWN_9);
 
   TMessageFlagHelper = record helper for TMessageFlag
     function ToString: string; inline;
@@ -294,7 +301,8 @@ type
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
 
 var
-  VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN,
+  VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8, MF_UNKNOWN_7,
+    MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN,
     MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2, MF_UNKNOWN_1, MF_MEDIA,
     MF_FIXED, MF_DELЕTЕD, MF_SPAM, MF_FRIENDS, MF_CHAT, MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
   VkAudioGenres: array[TAudioGenre] of Integer = (AG_ROCK, AG_POP, AG_RAPANDHIPHOP, AG_EASYLISTENING,
@@ -315,16 +323,16 @@ function VKErrorString(ErrorCode: Integer): string;
 
 function AddParam(var Dest: TParams; Param: TParam): Integer;
 
-function CreateAttachment(&Type: string; Id: string; AccessKey: string = ''): string;
+function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string = ''): string;
 
 implementation
 
 uses
   System.SysUtils;
 
-function CreateAttachment(&Type: string; Id: string; AccessKey: string): string;
+function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string): string;
 begin
-  Result := &Type + '_' + Id;
+  Result := &Type + OwnerId.ToString + '_' + Id.ToString;
   if not AccessKey.IsEmpty then
     Result := Result + '_' + AccessKey;
 end;
@@ -440,6 +448,8 @@ begin
     203:
       ErrStr :=
         'Доступ к группе запрещён. Убедитесь, что текущий пользователь является участником или руководителем сообщества (для закрытых и частных групп и встреч).';
+    221:
+      ErrStr := 'Пользователь выключил трансляцию названий аудио в статус';
     300:
       ErrStr :=
         'Альбом переполнен. Перед продолжением работы нужно удалить лишние объекты из альбома или использовать другой альбом.';
@@ -531,6 +541,12 @@ begin
       Exit(mfNotDelivered);
     MF_UNKNOWN_6:
       Exit(mfUNKNOWN_6);
+    MF_UNKNOWN_7:
+      Exit(mfUNKNOWN_7);
+    MF_UNKNOWN_8:
+      Exit(mfUNKNOWN_8);
+    MF_UNKNOWN_9:
+      Exit(mfUNKNOWN_9);
   else
     Exit(mfChat);
   end;
@@ -660,6 +676,11 @@ end;
 
 { TArrayOfStringHelper }
 
+function TArrayOfStringHelper.IsEmpty: Boolean;
+begin
+  Result := Length(Self) = 0;
+end;
+
 function TArrayOfStringHelper.ToString: string;
 var
   i: Integer;
@@ -724,6 +745,21 @@ begin
   Result := AddParam(Self, [Key, Value]);
 end;
 
+function TParamsHelper.Add(Key: string; Value: Integer): Integer;
+begin
+  Result := AddParam(Self, [Key, Value.ToString]);
+end;
+
+function TParamsHelper.OwnerId(Value: Integer): Integer;
+begin
+  Result := Add('owner_id', Value.ToString);
+end;
+
+function TParamsHelper.PeerId(Value: Integer): Integer;
+begin
+  Result := Add('peer_id', Value.ToString);
+end;
+
 { TMessageFlagHelper }
 
 function TMessageFlagHelper.ToString: string;
@@ -769,6 +805,12 @@ begin
       Result := 'NotDelivered';
     mfUNKNOWN_6:
       Result := 'Unknown_6';
+    mfUNKNOWN_7:
+      Result := 'Unknown_7';
+    mfUNKNOWN_8:
+      Result := 'Unknown_8';
+    mfUNKNOWN_9:
+      Result := 'Unknown_9';
   else
     Result := '';
   end;
@@ -800,6 +842,7 @@ class function AudioGenre.Create(Data: Integer): TAudioGenre;
 var
   i: Integer;
 begin
+  Result := agOther;
   for i := Ord(agRock) to Ord(agOther) do
     if VkAudioGenres[TAudioGenre(i)] = Data then
       Exit(TAudioGenre(i));

@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls,
   VK.Handler, Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents,
-  VK.Entity.Comment, VK.Entity.Media;
+  VK.Entity.Comment, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
+  System.Net.HttpClientComponent;
 
 type
   TFormMain = class(TForm)
@@ -35,6 +36,10 @@ type
     VkUserEvents1: TVkUserEvents;
     VkGroupEventsController1: TVkGroupEventsController;
     VkGroupEvents1: TVkGroupEvents;
+    Button17: TButton;
+    Button18: TButton;
+    Button19: TButton;
+    Button20: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -83,6 +88,10 @@ type
       TVkComment; EventId: string);
     procedure VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Comment:
       TVkCommentDeleted; EventId: string);
+    procedure Button17Click(Sender: TObject);
+    procedure Button18Click(Sender: TObject);
+    procedure Button19Click(Sender: TObject);
+    procedure Button20Click(Sender: TObject);
   private
   public
     { Public declarations }
@@ -95,7 +104,8 @@ implementation
 
 uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Structs, VK.Entity.User, VK.Entity.Keyboard, VK.Entity.Message;
+  VK.Entity.PushSettings, VK.Structs, VK.Entity.User, VK.Entity.Keyboard, VK.Entity.Message,
+  VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save;
 
 {$R *.dfm}
 
@@ -157,12 +167,74 @@ begin
   VkGroupEventsController1.Stop;
 end;
 
+procedure TFormMain.Button17Click(Sender: TObject);
+var
+  Status: TVkStatus;
+begin
+  if Vk1.Status.Get(Status) then
+  begin
+    Memo1.Lines.Add(Status.Text);
+    if Assigned(Status.Audio) then
+    begin
+      Memo1.Lines.Add(Status.Audio.artist + ' ' + Status.Audio.title + ', ' + Status.Audio.url);
+      Status.Audio.Free;
+    end;
+  end
+  else
+    Memo1.Lines.Add('Error');
+end;
+
+procedure TFormMain.Button18Click(Sender: TObject);
+begin
+  if VK1.Status.&Set('Test22') then
+    Memo1.Lines.Add('Status set')
+  else
+    Memo1.Lines.Add('Status not set');
+end;
+
+procedure TFormMain.Button19Click(Sender: TObject);
+var
+  Params: TVkWallParams;
+begin
+//  VK1.Wall.Post('', -145962568, ['video58553419_456239240']);
+  Params.Message('Test Text');
+  Params.OwnerId(-145962568);
+  Params.FromGroup(True);
+  Params.Signed(True);
+  Params.Attachments(['doc58553419_533494309_657138cd5d7842ae0a']);
+  VK1.Wall.Post(Params);
+end;
+
 procedure TFormMain.Button1Click(Sender: TObject);
 begin
   if VK1.Account.Ban(-1) then
     Memo1.Lines.Add('Banned')
   else
     Memo1.Lines.Add('Error banned');
+end;
+
+procedure TFormMain.Button20Click(Sender: TObject);
+var
+  Url, Response: string;
+  Doc: TVkDocSaved;
+begin
+  if VK1.Docs.GetMessagesUploadServer(Url, dutAudioMessage) then
+  begin
+    if VK1.Uploader.Upload(Url, '1.ogg', Response) then
+    begin
+      if VK1.Docs.Save(Doc, Response, 'Тестовая аудиозапись', '') then
+      begin
+        Memo1.Lines.Add(Doc.&type);
+        Memo1.Lines.Add(Doc.audio_message.link_ogg);
+        Memo1.Lines.Add(Doc.audio_message.ToAttachment);
+        Doc.Free;
+      end;
+    end
+    else
+    begin
+      Memo1.Lines.Add('Error ' + Response);
+    end;
+  end;
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
@@ -388,6 +460,7 @@ begin
       VK1.Messages.Send
         .PeerId(MessageData.PeerId)
         .Message('Ай яй, так материться')
+        .Attachemt(['doc58553419_533494309_657138cd5d7842ae0a'])
         .Send.Free;
     end;
   end;

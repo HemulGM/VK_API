@@ -128,7 +128,14 @@ begin
     Lfwd_messagesItem.Free;
   for LattachmentsItem in FAttachments do
     LattachmentsItem.Free;
-
+  if Assigned(FReply_message) then
+    FReply_message.Free;
+  if Assigned(FKeyboard) then
+    FKeyboard.Free;
+  if Assigned(FAction) then
+    FAction.Free;
+  if Assigned(FGeo) then
+    FGeo.Free;
   inherited;
 end;
 

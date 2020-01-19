@@ -174,6 +174,42 @@ object FormMain: TFormMain
       TabOrder = 15
       OnClick = Button16Click
     end
+    object Button17: TButton
+      Left = 151
+      Top = 97
+      Width = 137
+      Height = 25
+      Caption = 'Status.Get'
+      TabOrder = 16
+      OnClick = Button17Click
+    end
+    object Button18: TButton
+      Left = 151
+      Top = 128
+      Width = 137
+      Height = 25
+      Caption = 'Status.Set'
+      TabOrder = 17
+      OnClick = Button18Click
+    end
+    object Button19: TButton
+      Left = 151
+      Top = 190
+      Width = 137
+      Height = 25
+      Caption = 'Wall.Post'
+      TabOrder = 18
+      OnClick = Button19Click
+    end
+    object Button20: TButton
+      Left = 151
+      Top = 252
+      Width = 137
+      Height = 25
+      Caption = 'UploadAudioMessage'
+      TabOrder = 19
+      OnClick = Button20Click
+    end
   end
   object Panel2: TPanel
     Left = 0
