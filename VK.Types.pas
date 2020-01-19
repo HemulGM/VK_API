@@ -13,26 +13,57 @@ const
   ERROR_VK_NOTOKEN = -2;
 
   //Message Flags
-  UNREAD = 1;
-  OUTBOX = 2;
-  REPLIED = 4;
-  IMPORTANT = 8;
-  CHAT = 16;
-  FRIENDS = 32;
-  SPAM = 64;
-  DELЕTЕD = 128;
-  FIXED = 256;
-  MEDIA = 512;
-  HIDDEN = 65536;
-  DELETE_FOR_ALL = 131072;
-  NOT_DELIVERED = 262144;
+  MF_UNREAD = 1;
+  MF_OUTBOX = 2;
+  MF_REPLIED = 4;
+  MF_IMPORTANT = 8;
+  MF_CHAT = 16;
+  MF_FRIENDS = 32;
+  MF_SPAM = 64;
+  MF_DELЕTЕD = 128;
+  MF_FIXED = 256;
+  MF_MEDIA = 512;
+  MF_UNKNOWN_1 = 1024;
+  MF_UNKNOWN_2 = 2048;
+  MF_UNKNOWN_3 = 4096;
+  MF_UNREAD_MULTICHAT = 8192;
+  MF_UNKNOWN_4 = 16384;
+  MF_UNKNOWN_5 = 32768;
+  MF_HIDDEN = 65536;
+  MF_DELETE_FOR_ALL = 131072;
+  MF_NOT_DELIVERED = 262144;
+  MF_UNKNOWN_6 = 524288;
+
+  //Audio Genres
+  AG_ROCK = 1;
+  AG_POP = 2;
+  AG_RAPANDHIPHOP = 3;
+  AG_EASYLISTENING = 4;
+  AG_HOUSEANDDANCE = 5;
+  AG_INSTRUMENTAL = 6;
+  AG_METAL = 7;
+  AG_ALTERNATIVE = 21;
+  AG_DUBSTEP = 8;
+  AG_JAZZANDBLUES = 1001;
+  AG_DRUMANDBASS = 10;
+  AG_TRANCE = 11;
+  AG_CHANSON = 12;
+  AG_ETHNIC = 13;
+  AG_ACOUSTICANDVOCAL = 14;
+  AG_REGGAE = 15;
+  AG_CLASSICAL = 16;
+  AG_INDIEPOP = 17;
+  AG_SPEECH = 19;
+  AG_ELECTROPOPANDDISCO = 22;
+  AG_OTHER = 18;
+
 
   //Group Dialog Flags
   GR_IMPORTANT = 1;
   GR_UNANSWERED = 2;
 
 type
-  {$IFDEF OLD_ARRAYS}
+  {$IFDEF OLD_VERSION}
   TArrayOfString = array of string;
   {$ELSE}
   TArrayOfString = TArray<string>;
@@ -41,11 +72,10 @@ type
 
   TArrayOfStringHelper = record helper for TArrayOfString
     function ToString: string; overload; inline;
-    function CreateAttachmentsFromString(Attachments: string): TArrayOfString;
     procedure Assign(Source: TStrings); overload;
   end;
 
-  {$IFDEF OLD_ARRAYS}
+  {$IFDEF OLD_VERSION}
   TArrayOfInteger = array of Integer;
   {$ELSE}
   TArrayOfInteger = TArray<Integer>;
@@ -60,7 +90,7 @@ type
 
   TParam = TArrayOfString;
 
-  {$IFDEF OLD_ARRAYS}
+  {$IFDEF OLD_VERSION}
   TParams = array of TParam;
   {$ELSE}
   TParams = TArray<TParam>;
@@ -74,7 +104,7 @@ type
 
   TPremission = string;
 
-  {$IFDEF OLD_ARRAYS}
+  {$IFDEF OLD_VERSION}
   TPermissions = array of TPremission;
 
   TPermissionsHelper = record helper for TPermissions
@@ -90,8 +120,12 @@ type
 
   TUserIds = TArrayOfInteger;
 
+  TIds = TArrayOfInteger;
+
+  //Флаги сообщений
   TMessageFlag = (mfUnread, mfOutbox, mfReplied, mfImportant, mfChat, mfFriends, mfSpam, mfDeleted,
-    mfFixed, mfMedia, mfHidden, mfDeleteForAll, mfNotDelivered);
+    mfFixed, mfMedia, mfUNKNOWN_1, mfUNKNOWN_2, mfUNKNOWN_3, mfUnreadMultichat, mfUNKNOWN_4,
+    mfUNKNOWN_5, mfHidden, mfDeleteForAll, mfNotDelivered, mfUNKNOWN_6);
 
   TMessageFlagHelper = record helper for TMessageFlag
     function ToString: string; inline;
@@ -99,9 +133,44 @@ type
 
   TMessageFlags = set of TMessageFlag;
 
+  TMessageFlagsHelper = record helper for TMessageFlags
+    function ToString: string; overload; inline;
+  end;
+
+  MessageFlags = class
+    class function FlagDataToFlag(FlagData: Integer): TMessageFlag;
+    class function Create(Data: Integer): TMessageFlags;
+    class function ToString(Flags: TMessageFlags): string; overload;
+  end;
+
+  //Жанры музыки
+  TAudioGenre = (agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental,
+    agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic,
+    agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
+
+  TAudioGenreHelper = record helper for TAudioGenre
+    function ToConst: Integer;
+    function ToString: string; inline;
+  end;
+
+  AudioGenre = class
+    class function Create(Data: Integer): TAudioGenre;
+  end;
+
+  //Флаги диалогов
   TDialogFlag = (dfImportant, dfUnanswered);
 
   TDialogFlags = set of TDialogFlag;
+
+  TDialogFlagsHelper = record helper for TDialogFlags
+    function ToString: string; overload; inline;
+  end;
+
+  DialogFlags = class
+    class function FlagDataToFlag(FlagData: Integer): TDialogFlag;
+    class function Create(Data: Integer): TDialogFlags;
+    class function ToString(Flags: TDialogFlags): string; overload;
+  end;
 
   //Идентификатор типа изменения в чате
   TChatChangeInfoType = (citNone, citName, citPic, citNewAdmin, citFixMessage, citJoin, citLeave, citKick, citUnadmin);
@@ -110,22 +179,17 @@ type
     function ToString: string; overload; inline;
   end;
 
+  //Платформы
   TVkPlatform = (pfUnknown, pfMobile, pfIPhone, pfIPad, pfAndroid, pfWindowsPhone, pfWindows, pfWeb);
 
+  //Тип смены флагов
   TFlagsChangeType = (fcFlagsReplace, fcFlagsSet, fcFlagsReset);
 
   TMessageChangeTypeHelper = record helper for TFlagsChangeType
     function ToString: string; overload; inline;
   end;
 
-  TMessageFlagsHelper = record helper for TMessageFlags
-    function ToString: string; overload; inline;
-  end;
-
-  TDialogFlagsHelper = record helper for TDialogFlags
-    function ToString: string; overload; inline;
-  end;
-
+  //Структура события входящего сообщения
   TMessageData = record
     MessageId: Integer;
     Flags: TMessageFlags;
@@ -154,7 +218,7 @@ type
 
   TResponse = record
     Success: Boolean;
-    Value: string;
+    Response: string;
     JSON: string;
     Error: TResponseError;
   end;
@@ -229,22 +293,18 @@ type
 
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
 
-  MessageFlags = class
-    class function FlagDataToFlag(FlagData: Integer): TMessageFlag;
-    class function Create(Data: Integer): TMessageFlags;
-    class function ToString(Flags: TMessageFlags): string; overload;
-  end;
-
-  DialogFlags = class
-    class function FlagDataToFlag(FlagData: Integer): TDialogFlag;
-    class function Create(Data: Integer): TDialogFlags;
-    class function ToString(Flags: TDialogFlags): string; overload;
-  end;
-
 var
-  VkMessageFlags: array[0..12] of Integer = (NOT_DELIVERED, DELETE_FOR_ALL, HIDDEN, MEDIA,
-    FIXED, DELЕTЕD, SPAM, FRIENDS, CHAT, IMPORTANT, REPLIED, OUTBOX, UNREAD);
-  VkDialogFlags: array[0..1] of Integer = (GR_UNANSWERED, GR_IMPORTANT);
+  VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN,
+    MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2, MF_UNKNOWN_1, MF_MEDIA,
+    MF_FIXED, MF_DELЕTЕD, MF_SPAM, MF_FRIENDS, MF_CHAT, MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
+  VkAudioGenres: array[TAudioGenre] of Integer = (AG_ROCK, AG_POP, AG_RAPANDHIPHOP, AG_EASYLISTENING,
+    AG_HOUSEANDDANCE, AG_INSTRUMENTAL, AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS,
+    AG_TRANCE, AG_CHANSON, AG_ETHNIC, AG_ACOUSTICANDVOCAL, AG_REGGAE, AG_CLASSICAL, AG_INDIEPOP, AG_SPEECH,
+    AG_ELECTROPOPANDDISCO, AG_OTHER);
+  VkAudioGenresStr: array[TAudioGenre] of string = ('Rock', 'Pop', 'RapAndHipHop', 'EasyListening', 'HouseAndDance',
+    'Instrumental', 'Metal', 'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson', 'Ethnic',
+    'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech', 'ElectropopAndDisco', 'Other');
+  VkDialogFlags: array[TDialogFlag] of Integer = (GR_UNANSWERED, GR_IMPORTANT);
   VkUserActive: array[Boolean] of string = ('Бездействие', 'Покинул сайт');
   VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone', 'iPad', 'Android',
     'Windows Phone', 'Windows', 'Web');
@@ -418,12 +478,12 @@ var
   i: Integer;
 begin
   Result := [];
-  for i := Low(VkMessageFlags) to High(VkMessageFlags) do
+  for i := Ord(mfUnread) to Ord(mfUNKNOWN_6) do
   begin
-    if (Data - VkMessageFlags[i]) >= 0 then
+    if (Data - VkMessageFlags[TMessageFlag(i)]) >= 0 then
     begin
-      Include(Result, FlagDataToFlag(VkMessageFlags[i]));
-      Data := Data - VkMessageFlags[i];
+      Include(Result, FlagDataToFlag(VkMessageFlags[TMessageFlag(i)]));
+      Data := Data - VkMessageFlags[TMessageFlag(i)];
     end;
   end;
 end;
@@ -431,32 +491,46 @@ end;
 class function MessageFlags.FlagDataToFlag(FlagData: Integer): TMessageFlag;
 begin
   case FlagData of
-    UNREAD:
+    MF_UNREAD:
       Exit(mfUnread);
-    OUTBOX:
+    MF_OUTBOX:
       Exit(mfOutbox);
-    REPLIED:
+    MF_REPLIED:
       Exit(mfReplied);
-    IMPORTANT:
+    MF_IMPORTANT:
       Exit(mfImportant);
-    CHAT:
+    MF_CHAT:
       Exit(mfChat);
-    FRIENDS:
+    MF_FRIENDS:
       Exit(mfFriends);
-    SPAM:
+    MF_SPAM:
       Exit(mfSpam);
-    DELЕTЕD:
+    MF_DELЕTЕD:
       Exit(mfDeleted);
-    FIXED:
+    MF_FIXED:
       Exit(mfFixed);
-    MEDIA:
+    MF_MEDIA:
       Exit(mfMedia);
-    HIDDEN:
+    MF_UNKNOWN_1:
+      Exit(mfUNKNOWN_1);
+    MF_UNKNOWN_2:
+      Exit(mfUNKNOWN_2);
+    MF_UNKNOWN_3:
+      Exit(mfUNKNOWN_3);
+    MF_UNREAD_MULTICHAT:
+      Exit(mfUnreadMultichat);
+    MF_UNKNOWN_4:
+      Exit(mfUNKNOWN_4);
+    MF_UNKNOWN_5:
+      Exit(mfUNKNOWN_5);
+    MF_HIDDEN:
       Exit(mfHidden);
-    DELETE_FOR_ALL:
+    MF_DELETE_FOR_ALL:
       Exit(mfDeleteForAll);
-    NOT_DELIVERED:
+    MF_NOT_DELIVERED:
       Exit(mfNotDelivered);
+    MF_UNKNOWN_6:
+      Exit(mfUNKNOWN_6);
   else
     Exit(mfChat);
   end;
@@ -467,7 +541,7 @@ var
   Flag: TMessageFlag;
 begin
   for Flag in Flags do
-    Result := Result + Flag.ToString;
+    Result := Result + Flag.ToString + ' ';
 end;
 
 { TMessageChangeTypeHelper }
@@ -493,12 +567,12 @@ var
   i: Integer;
 begin
   Result := [];
-  for i := Low(VkDialogFlags) to High(VkDialogFlags) do
+  for i := Ord(dfImportant) to Ord(dfUnanswered) do
   begin
-    if (Data - VkDialogFlags[i]) >= 0 then
+    if (Data - VkDialogFlags[TDialogFlag(i)]) >= 0 then
     begin
-      Include(Result, FlagDataToFlag(VkDialogFlags[i]));
-      Data := Data - VkDialogFlags[i];
+      Include(Result, FlagDataToFlag(VkDialogFlags[TDialogFlag(i)]));
+      Data := Data - VkDialogFlags[TDialogFlag(i)];
     end;
   end;
 end;
@@ -586,17 +660,6 @@ end;
 
 { TArrayOfStringHelper }
 
-function TArrayOfStringHelper.CreateAttachmentsFromString(Attachments: string): TArrayOfString;
-var
-  List: TStringList;
-begin
-  List := TStringList.Create;
-  List.Delimiter := ',';
-  List.DelimitedText := Attachments;
-  Result.Assign(List);
-  List.Free;
-end;
-
 function TArrayOfStringHelper.ToString: string;
 var
   i: Integer;
@@ -622,7 +685,7 @@ end;
 
 { TPermissionsHelper }
 
-{$IFDEF OLD_ARRAYS}
+{$IFDEF OLD_VERSION}
 
 function TPermissionsHelper.ToString: string;
 var
@@ -667,34 +730,79 @@ function TMessageFlagHelper.ToString: string;
 begin
   case Self of
     mfUnread:
-      Result := 'Unread ';
+      Result := 'Unread';
     mfOutbox:
-      Result := 'Outbox ';
+      Result := 'Outbox';
     mfReplied:
-      Result := 'Replied ';
+      Result := 'Replied';
     mfImportant:
-      Result := 'Important ';
+      Result := 'Important';
     mfChat:
-      Result := 'Chat ';
+      Result := 'Chat';
     mfFriends:
-      Result := 'Friends ';
+      Result := 'Friends';
     mfSpam:
-      Result := 'Spam ';
+      Result := 'Spam';
     mfDeleted:
-      Result := 'Deleted ';
+      Result := 'Deleted';
     mfFixed:
-      Result := 'Fixed ';
+      Result := 'Fixed';
     mfMedia:
-      Result := 'Media ';
+      Result := 'Media';
+    mfUNKNOWN_1:
+      Result := 'Unknown_1';
+    mfUNKNOWN_2:
+      Result := 'Unknown_2';
+    mfUNKNOWN_3:
+      Result := 'Unknown_3';
+    mfUnreadMultichat:
+      Result := 'UnreadMultichat';
+    mfUNKNOWN_4:
+      Result := 'Unknown_4';
+    mfUNKNOWN_5:
+      Result := 'Unknown_5';
     mfHidden:
-      Result := 'Hidden ';
+      Result := 'Hidden';
     mfDeleteForAll:
-      Result := 'DeleteForAll ';
+      Result := 'DeleteForAll';
     mfNotDelivered:
-      Result := 'NotDelivered ';
+      Result := 'NotDelivered';
+    mfUNKNOWN_6:
+      Result := 'Unknown_6';
   else
     Result := '';
   end;
+end;
+
+{ TAudioGenreHelper }
+
+function TAudioGenreHelper.ToConst: Integer;
+begin
+  try
+    Result := VkAudioGenres[Self];
+  except
+    Result := AG_OTHER;
+  end;
+end;
+
+function TAudioGenreHelper.ToString: string;
+begin
+  try
+    Result := VkAudioGenresStr[Self];
+  except
+    Result := 'Other';
+  end;
+end;
+
+{ AudioGenre }
+
+class function AudioGenre.Create(Data: Integer): TAudioGenre;
+var
+  i: Integer;
+begin
+  for i := Ord(agRock) to Ord(agOther) do
+    if VkAudioGenres[TAudioGenre(i)] = Data then
+      Exit(TAudioGenre(i));
 end;
 
 end.

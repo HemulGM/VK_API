@@ -57,7 +57,7 @@ begin
   begin
     Result := Success;
     if Result then
-      Offers := TVkActiveOffers.FromJsonString(Value);
+      Offers := TVkActiveOffers.FromJsonString(Response);
   end;
 end;
 
@@ -67,7 +67,7 @@ begin
   begin
     Result := Success;
     if Result then
-      Mask := StrToIntDef(Value, 0);
+      Mask := StrToIntDef(Response, 0);
   end;
 end;
 
@@ -80,7 +80,7 @@ begin
   begin
     Result := Success;
     if Result then
-      Counters := TCountersClass.FromJsonString(Value);
+      Counters := TCountersClass.FromJsonString(Response);
   end;
 end;
 
@@ -90,7 +90,7 @@ begin
   begin
     Result := Success;
     if Result then
-      Info := TAccountInfoClass.FromJsonString(Value);
+      Info := TAccountInfoClass.FromJsonString(Response);
   end;
 end;
 
@@ -100,7 +100,7 @@ begin
   begin
     Result := Success;
     if Result then
-      ProfileInfo := TVkProfileInfo.FromJsonString(Value);
+      ProfileInfo := TVkProfileInfo.FromJsonString(Response);
   end;
 end;
 
@@ -110,7 +110,7 @@ begin
   begin
     Result := Success;
     if Result then
-      PushSettings := TVkPushSettings.FromJsonString(Value);
+      PushSettings := TVkPushSettings.FromJsonString(Response);
   end;
 end;
 
@@ -134,7 +134,7 @@ begin
   if Data.Fsandbox_need then
     AddParam(Params, ['sandbox', Data.sandbox]);
   Response := Handler.Execute('account.registerDevice', Params);
-  Result := Response.Success and (Response.Value = '1');
+  Result := Response.Success and (Response.Response = '1');
 end;
 
 function TAccountController.SaveProfileInfo(const Data: TProfileInfoData; var Response: TResponse): Boolean;
@@ -176,25 +176,25 @@ end;
 function TAccountController.SetInfo(const Name, Value: string): Boolean;
 begin
   with Handler.Execute('account.setInfo', [['name', Name], ['value', Value]]) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.SetNameInMenu(const UserId: Integer; Name: string): Boolean;
 begin
   with Handler.Execute('account.setNameInMenu', [['user_id', UserId.ToString], ['name', Name]]) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.SetOffline: Boolean;
 begin
   with Handler.Execute('account.setOffline') do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.SetOnline(Voip: Boolean): Boolean;
 begin
   with Handler.Execute('account.setOnline', ['voip', Ord(Voip).ToString]) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.SetPushSettings(const DeviceId, Settings, Key, Value: string): Boolean;
@@ -210,7 +210,7 @@ begin
     Params.Add(['value', Value]);
   end;
   with Handler.Execute('account.setPushSettings', Params) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string;
@@ -223,19 +223,19 @@ begin
   Params.Add(['peer_id', PeerId]);
   Params.Add(['sound', Ord(Sound).ToString]);
   with Handler.Execute('account.setSilenceMode', Params) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.Ban(const OwnerID: Integer): Boolean;
 begin
   with Handler.Execute('account.ban', ['owner_id', OwnerID.ToString]) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.UnBan(const OwnerID: Integer): Boolean;
 begin
   with Handler.Execute('account.unban', ['owner_id', OwnerID.ToString]) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
@@ -248,7 +248,7 @@ begin
     AddParam(Params, ['token', Token]);
   AddParam(Params, ['sandbox', Ord(Sandbox).ToString]);
   with Handler.Execute('account.unregisterDevice', Params) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 end.

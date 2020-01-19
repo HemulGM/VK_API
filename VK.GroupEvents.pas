@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client,
-  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Comment;
+  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Comment,
+  VK.Entity.Media;
 
 type
   TCustomGroupEvents = class(TComponent)

@@ -24,21 +24,22 @@ type
     FWidth: Extended;
     FHeight: Extended;
   public
+    property id: Extended read FId write FId;
     property album_id: Extended read FAlbum_id write FAlbum_id;
+    property owner_id: Extended read FOwner_id write FOwner_id;
+    property user_id: Extended read FUser_id write FUser_id;
+    property text: string read FText write FText;
+    property date: Extended read FDate write FDate;
+    property sizes: TArray<TVkSizes> read FSizes write FSizes;
+    property width: Extended read FWidth write FWidth;
+    property height: Extended read FHeight write FHeight;
+    //
     property can_comment: Extended read FCan_comment write FCan_comment;
     property can_repost: Extended read FCan_repost write FCan_repost;
     property comments: TVkCommentsInfo read FComments write FComments;
-    property date: Extended read FDate write FDate;
-    property id: Extended read FId write FId;
     property likes: TVkLikesInfo read FLikes write FLikes;
-    property owner_id: Extended read FOwner_id write FOwner_id;
-    property user_id: Extended read FUser_id write FUser_id;
     property reposts: TVkRepostsInfo read FReposts write FReposts;
-    property sizes: TArray<TVkSizes> read FSizes write FSizes;
     property tags: TVkTags read FTags write FTags;
-    property text: string read FText write FText;
-    property width: Extended read FWidth write FWidth;
-    property height: Extended read FHeight write FHeight;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

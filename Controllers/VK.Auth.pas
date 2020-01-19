@@ -42,7 +42,7 @@ function TAuthController.CheckPhone(Phone: string; ClientId, ClientSecret: strin
 begin
   with Handler.Execute('auth.checkPhone', [['phone', Phone], ['client_id', ClientId], ['client_secret',
     ClientSecret], ['auth_by_phone', Ord(AuthByPhone).ToString]]) do
-    Result := Success and (Value = '1');
+    Result := Success and (Response = '1');
 end;
 
 function TAuthController.CheckPhone(Phone: string; AuthByPhone: Boolean): Boolean;

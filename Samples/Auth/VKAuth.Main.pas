@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls,
   VK.Handler, Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents,
-  VK.Entity.Comment;
+  VK.Entity.Comment, VK.Entity.Media;
 
 type
   TFormMain = class(TForm)
@@ -95,7 +95,7 @@ implementation
 
 uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Structs, VK.Entity.User, VK.Entity.Keyboard;
+  VK.Entity.PushSettings, VK.Structs, VK.Entity.User, VK.Entity.Keyboard, VK.Entity.Message;
 
 {$R *.dfm}
 
@@ -230,7 +230,7 @@ begin
   Info.Clear;
   Info.status := 'test1';
   if VK1.Account.SaveProfileInfo(Info, Response) then
-    Memo1.Lines.Add(Response.Value);
+    Memo1.Lines.Add(Response.Response);
 end;
 
 procedure TFormMain.Button8Click(Sender: TObject);
@@ -238,7 +238,7 @@ begin
   VK1.CallMethod('account.getProfileInfo', [],
     procedure(Respone: TResponse)
     begin
-      ShowMessage(Respone.Value);
+      ShowMessage(Respone.Response);
     end);
 end;
 
@@ -365,10 +365,17 @@ begin
 end;
 
 procedure TFormMain.VkUserEvents1NewMessage(Sender: TObject; MessageData: TMessageData);
+var
+  Msg: TVkMessage;
 begin
   Memo1.Lines.Add('Новое сообщение в чате ' + MessageData.PeerId.ToString + ' ' + MessageData.MessageId.ToString
     + ' ' + MessageData.Flags.ToString
     + ': ' + MessageData.Text);
+  if VK1.Messages.GetById(MessageData.MessageId, Msg) then
+  begin
+    Memo1.Lines.Add(Msg.text);
+    Msg.Free;
+  end;
   if mfOutbox in MessageData.Flags then
   begin
     //Сообщение от нас
@@ -376,10 +383,13 @@ begin
   else
   begin
     //Сообщение от кого-то
-    VK1.Messages.Send
-      .PeerId(MessageData.PeerId)
-      .Message('Тест - ответ')
-      .Send.Free;
+    if Pos('хуй', AnsiLowerCase(MessageData.Text)) <> 0 then
+    begin
+      VK1.Messages.Send
+        .PeerId(MessageData.PeerId)
+        .Message('Ай яй, так материться')
+        .Send.Free;
+    end;
   end;
 end;
 

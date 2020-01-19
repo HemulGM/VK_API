@@ -153,7 +153,7 @@
         <DCCReference Include="VK.UserEvents.pas"/>
         <DCCReference Include="VK.GroupEvents.pas"/>
         <DCCReference Include="Entity\VK.Entity.ActiveOffers.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Attachment.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Media.pas"/>
         <DCCReference Include="Entity\VK.Entity.Comment.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.pas"/>
         <DCCReference Include="Entity\VK.Entity.Link.pas"/>

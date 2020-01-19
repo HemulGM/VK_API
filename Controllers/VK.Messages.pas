@@ -78,7 +78,17 @@ type
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
     function SendToUsers(UserIds: TUserIds; Message: string; Attachemts: TAttachmentArray = []):
       TVkMessageSendResponses; overload;
+    /// <summary>
+    /// Универсальный метод отправки сообщений (Fluent Method)
+    /// Send.PeerId(123456).ReplyTo(12345)...Message('Текст').Send.Free;
+    /// </summary>
+    /// <returns>Возвращает конструктор сообщений. Метод Send в этом конструкторе, возвращает результат в виде класса</returns>
     function Send: TNewMessage; overload;
+    function GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength: Integer = 0; GroupId:
+      Integer = 0): Boolean; overload;
+    function GetById(Id: Integer; var Message: TVkMessage; PreviewLength: Integer = 0; GroupId:
+      Integer = 0): Boolean; overload;
+    function AddChatUser(ChatId, UserId: Integer; VisibleMessagesCount: Integer = 0): Boolean;
   end;
 
 implementation
@@ -104,7 +114,100 @@ begin
       Exit(-1)
     else
     begin
-      Result := Value.ToInteger;
+      Result := Response.ToInteger;
+    end;
+  end;
+end;
+
+function TMessagesController.AddChatUser(ChatId, UserId, VisibleMessagesCount: Integer): Boolean;
+var
+  Params: TParams;
+begin
+  Params.Add(['chat_id', ChatId.ToString]);
+  Params.Add(['user_id', UserId.ToString]);
+  Params.Add(['visible_messages_count', VisibleMessagesCount.ToString]);
+
+  with Handler.Execute('messages.addChatUser', Params) do
+  begin
+    if not Success then
+      Exit(False)
+    else
+    begin
+      try
+        Result := Response.ToInteger = 1;
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TMessagesController.GetById(Id: Integer; var Message: TVkMessage; PreviewLength, GroupId: Integer): Boolean;
+var
+  Params: TParams;
+  Items: TJSONArray;
+  RespJSON: TJSONValue;
+begin
+  Params.Add(['message_ids', Id.ToString]);
+  if PreviewLength > 0 then
+    Params.Add(['preview_length', PreviewLength.ToString]);
+  if GroupId > 0 then
+    Params.Add(['group_id', GroupId.ToString]);
+  Message := nil;
+  with Handler.Execute('messages.getById', Params) do
+  begin
+    if not Success then
+      Exit(False)
+    else
+    begin
+      RespJSON := TJSONObject.ParseJSONValue(Response);
+      try
+        if RespJSON.TryGetValue<TJSONArray>('items', Items) then
+        begin
+          Result := True;
+          Message := TVkMessage.FromJsonString(Items.Items[0].ToString);
+        end
+        else
+          Result := False;
+      finally
+        RespJSON.Free;
+      end;
+    end;
+  end;
+end;
+
+function TMessagesController.GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength, GroupId: Integer): Boolean;
+var
+  Params: TParams;
+  Items: TJSONArray;
+  RespJSON: TJSONValue;
+  i: Integer;
+begin
+  Params.Add(['message_ids', Ids.ToString]);
+  if PreviewLength > 0 then
+    Params.Add(['preview_length', PreviewLength.ToString]);
+  if GroupId > 0 then
+    Params.Add(['group_id', GroupId.ToString]);
+  with Handler.Execute('messages.getById', Params) do
+  begin
+    if not Success then
+      Exit(False)
+    else
+    begin
+      RespJSON := TJSONObject.ParseJSONValue(Response);
+      try
+        if RespJSON.TryGetValue<TJSONArray>('items', Items) then
+        begin
+          Result := True;
+          SetLength(Messages, Items.Count);
+          for i := 0 to Items.Count - 1 do
+            Messages[i] := TVkMessage.FromJsonString(Items.Items[i].ToString);
+        end
+        else
+          Result := False;
+      finally
+        RespJSON.Free;
+      end;
     end;
   end;
 end;
@@ -130,7 +233,7 @@ begin
       Exit(-1)
     else
     begin
-      Result := Value.ToInteger;
+      Result := Response.ToInteger;
     end;
   end;
 end;
@@ -151,7 +254,7 @@ begin
       Exit(-1)
     else
     begin
-      Result := Value.ToInteger;
+      Result := Response.ToInteger;
     end;
   end;
 end;
@@ -173,7 +276,7 @@ begin
       Exit(nil)
     else
     begin
-      Result := TVkMessageSendResponses.FromJsonString(Value);
+      Result := TVkMessageSendResponses.FromJsonString(Response);
     end;
   end;
 end;
@@ -194,7 +297,7 @@ begin
       Exit(-1)
     else
     begin
-      Result := Value.ToInteger;
+      Result := Response.ToInteger;
     end;
   end;
 end;
@@ -208,7 +311,7 @@ end;
 
 function TNewMessage.Send: TVkMessageSendResponses;
 var
-  Response: Integer;
+  Value: Integer;
 begin
   FParams.Add('random_id', GetRandomId.ToString);
   with Handler.Execute('messages.send', Params) do
@@ -217,10 +320,10 @@ begin
       Exit(TVkMessageSendResponses.CreateFalse)
     else
     begin
-      if TryStrToInt(Value, Response) then
-        Result := TVkMessageSendResponses.CreateTrue(Response)
+      if TryStrToInt(Response, Value) then
+        Result := TVkMessageSendResponses.CreateTrue(Value)
       else
-        Result := TVkMessageSendResponses.FromJsonString(Value);
+        Result := TVkMessageSendResponses.FromJsonString(Response);
     end;
   end;
   Free;

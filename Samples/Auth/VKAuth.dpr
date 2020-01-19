@@ -24,7 +24,7 @@ uses
   VK.Entity.Photo in '..\..\Entity\VK.Entity.Photo.pas',
   VK.Entity.Common in '..\..\Entity\VK.Entity.Common.pas',
   VK.Entity.Link in '..\..\Entity\VK.Entity.Link.pas',
-  VK.Entity.Attachment in '..\..\Entity\VK.Entity.Attachment.pas',
+  VK.Entity.Media in '..\..\Entity\VK.Entity.Media.pas',
   VK.Account in '..\..\Controllers\VK.Account.pas',
   VK.Auth in '..\..\Controllers\VK.Auth.pas',
   VK.Users in '..\..\Controllers\VK.Users.pas',
@@ -32,7 +32,14 @@ uses
   VK.Entity.Keyboard in '..\..\Entity\VK.Entity.Keyboard.pas',
   VK.Entity.Message in '..\..\Entity\VK.Entity.Message.pas',
   VK.OAuth2 in '..\..\Forms\VK.OAuth2.pas' {FormOAuth2},
-  VK.Utils in '..\..\VK.Utils.pas';
+  VK.Utils in '..\..\VK.Utils.pas',
+  VK.Entity.AudioMessage in '..\..\Entity\VK.Entity.AudioMessage.pas',
+  VK.Entity.Sticker in '..\..\Entity\VK.Entity.Sticker.pas',
+  VK.Entity.Gift in '..\..\Entity\VK.Entity.Gift.pas',
+  VK.Entity.Market in '..\..\Entity\VK.Entity.Market.pas',
+  VK.Entity.Doc in '..\..\Entity\VK.Entity.Doc.pas',
+  VK.Entity.Audio in '..\..\Entity\VK.Entity.Audio.pas',
+  VK.Entity.Video in '..\..\Entity\VK.Entity.Video.pas';
 
 {$R *.res}
 

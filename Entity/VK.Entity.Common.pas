@@ -71,6 +71,15 @@ type
     class function FromJsonString(AJsonString: string): TVkRepostsInfo;
   end;
 
+  TVkViewsInfo = class
+  private
+    FCount: Extended;
+  public
+    property count: Extended read FCount write FCount;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkViewsInfo;
+  end;
+
   TVkLikesInfo = class
   private
     FCan_like: Extended;
@@ -144,6 +153,68 @@ type
     property title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCountry;
+  end;
+
+  TVkPlace = class
+  private
+    FCity: string; // Ч название города;
+    FCountry: string; // Ч название страны;
+    FTitle: string; // Ч название места (если назначено);
+    FId: integer; // Ч идентификатор места (если назначено);
+    FLatitude: Extended; // Ч географическа€ широта;
+    FLongitude: Extended; // Ч географическа€ долгота;
+    FCreated: integer; // Ч дата создани€ (если назначено);
+    FIcon: string; // Ч URL изображени€-иконки;
+  public
+    property city: string read FCity write FCity;
+    property country: string read FCountry write FCountry;
+    property title: string read FTitle write FTitle;
+    property id: integer read FId write FId;
+    property latitude: Extended read FLatitude write FLatitude;
+    property longitude: Extended read FLongitude write FLongitude;
+    property created: integer read FCreated write FCreated;
+    property icon: string read FIcon write FIcon;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkPlace;
+  end;
+
+  TVkCoordinates = class
+  private
+    FLatitude: Extended;
+    FLongitude: Extended;
+  public
+    property latitude: Extended read FLatitude write FLatitude;
+    property longitude: Extended read FLongitude write FLongitude;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkCoordinates;
+  end;
+
+  TVkGeo = class
+  private
+    FCoordinates: TVkCoordinates;
+    FPlace: TVkPlace;
+    FType: string;
+  public
+    property coordinates: TVkCoordinates read FCoordinates write FCoordinates;
+    property place: TVkPlace read FPlace write FPlace;
+    property&type: string read FType write FType;
+    constructor Create;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkGeo;
+  end;
+
+  TVkChatPhoto = class
+  private
+    FPhoto_50: string;
+    FPhoto_200: string;
+    FPhoto_100: string;
+  public
+    property photo_50: string read FPhoto_50 write FPhoto_50; // Ч URL изображени€ 50x50px;
+    property photo_100: string read FPhoto_100 write FPhoto_100; // Ч URL изображени€ 100x100px;
+    property photo_200: string read FPhoto_200 write FPhoto_200; // Ч URL изображени€ 200x200px;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkChatPhoto;
   end;
 
 implementation
@@ -265,7 +336,81 @@ end;
 
 class function TVkSizes.FromJsonString(AJsonString: string): TVkSizes;
 begin
-  result := TJson.JsonToObject<TVkSizes>(AJsonString)
+  result := TJson.JsonToObject<TVkSizes>(AJsonString);
+end;
+
+{ TVkViewsInfo }
+
+class function TVkViewsInfo.FromJsonString(AJsonString: string): TVkViewsInfo;
+begin
+  result := TJson.JsonToObject<TVkViewsInfo>(AJsonString);
+end;
+
+function TVkViewsInfo.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkChatPhoto }
+
+class function TVkChatPhoto.FromJsonString(AJsonString: string): TVkChatPhoto;
+begin
+  result := TJson.JsonToObject<TVkChatPhoto>(AJsonString)
+end;
+
+function TVkChatPhoto.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{TVkPlace}
+
+function TVkPlace.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkPlace.FromJsonString(AJsonString: string): TVkPlace;
+begin
+  result := TJson.JsonToObject<TVkPlace>(AJsonString)
+end;
+
+{TVkCoordinates}
+
+function TVkCoordinates.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkCoordinates.FromJsonString(AJsonString: string): TVkCoordinates;
+begin
+  result := TJson.JsonToObject<TVkCoordinates>(AJsonString)
+end;
+
+{TVkGeo}
+
+constructor TVkGeo.Create;
+begin
+  inherited;
+  FCoordinates := TVkCoordinates.Create();
+  FPlace := TVkPlace.Create();
+end;
+
+destructor TVkGeo.Destroy;
+begin
+  FCoordinates.Free;
+  FPlace.Free;
+  inherited;
+end;
+
+function TVkGeo.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkGeo.FromJsonString(AJsonString: string): TVkGeo;
+begin
+  result := TJson.JsonToObject<TVkGeo>(AJsonString)
 end;
 
 end.

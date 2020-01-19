@@ -28,10 +28,11 @@ end;
 
 function GetRandomId: Int64;
 begin
-  {$IFDEF OLD_ARRAYS}
-  Result := DateTimeToUnix(Now) + 1234567654321;
+
+  {$IFDEF OLD_VERSION}
+  Result := DateTimeToUnix(Now) + 1234567;
   {$ELSE}
-  Result := DateTimeToMilliseconds(Now) + 1234567654321;
+  Result := DateTimeToMilliseconds(Now) + 1234567;
   {$ENDIF}
 
 end;

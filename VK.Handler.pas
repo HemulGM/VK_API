@@ -245,7 +245,7 @@ begin
       begin
         if Request.Response.JSONValue.TryGetValue<TJSONValue>('response', JS) then
         begin
-          Result.Value := JS.ToJSON;
+          Result.Response := JS.ToJSON;
           Result.JSON := Request.Response.JSONText;
           Result.Success := True;
         end;

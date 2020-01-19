@@ -51,7 +51,7 @@ contains
   VK.UserEvents in 'VK.UserEvents.pas',
   VK.GroupEvents in 'VK.GroupEvents.pas',
   VK.Entity.ActiveOffers in 'Entity\VK.Entity.ActiveOffers.pas',
-  VK.Entity.Attachment in 'Entity\VK.Entity.Attachment.pas',
+  VK.Entity.Media in 'Entity\VK.Entity.Media.pas',
   VK.Entity.Comment in 'Entity\VK.Entity.Comment.pas',
   VK.Entity.Common in 'Entity\VK.Entity.Common.pas',
   VK.Entity.Link in 'Entity\VK.Entity.Link.pas',

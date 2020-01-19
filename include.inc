@@ -1,3 +1,3 @@
 {$if CompilerVersion < 33.0}
-    {$DEFINE OLD_ARRAYS}
+    {$DEFINE OLD_VERSION}
 {$ENDIF}
