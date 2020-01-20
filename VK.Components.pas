@@ -48,23 +48,93 @@ type
   end;
 
   TVkGroupEvents = class(TCustomGroupEvents)
+  private
+    FActualVersion: string;
+  public
+    constructor Create(AOwner: TComponent); override;
   published
+    property ActualVersion: string read FActualVersion;
     property VK;
     property GroupID default 0;
     property OnWallReplyNew;
     property OnWallReplyEdit;
     property OnWallReplyRestore;
     property OnWallReplyDelete;
+    property OnWallPostNew;
+    property OnWallRepost;
+    property OnAudioNew;
+    property OnVideoNew;
+    property OnVideoCommentNew;
+    property OnVideoCommentEdit;
+    property OnVideoCommentRestore;
+    property OnVideoCommentDelete;
+    property OnPhotoNew;
+    property OnPhotoCommentNew;
+    property OnPhotoCommentEdit;
+    property OnPhotoCommentRestore;
+    property OnPhotoCommentDelete;
+    property OnMessageNew;
+    property OnMessageReply;
+    property OnMessageEdit;
+    property OnMessageAllow;
+    property OnMessageDeny;
+    property OnBoardPostNew;
+    property OnBoardPostEdit;
+    property OnBoardPostRestore;
+    property OnBoardPostDelete;
+    property OnMarketCommentNew;
+    property OnMarketCommentEdit;
+    property OnMarketCommentRestore;
+    property OnMarketCommentDelete;
+    property OnGroupLeave;
+    property OnGroupJoin;
+    property OnUserBlock;
+    property OnUserUnBlock;
   end;
 
   TVkGroupEventsController = class(TCustomGroupEventControl)
+  private
+    FActualVersion: string;
+  public
+    constructor Create(AOwner: TComponent); override;
   published
+    property ActualVersion: string read FActualVersion;
     property VK;
     property Groups;
     property OnWallReplyNew;
     property OnWallReplyEdit;
     property OnWallReplyRestore;
     property OnWallReplyDelete;
+    property OnWallPostNew;
+    property OnWallRepost;
+    property OnAudioNew;
+    property OnVideoNew;
+    property OnVideoCommentNew;
+    property OnVideoCommentEdit;
+    property OnVideoCommentRestore;
+    property OnVideoCommentDelete;
+    property OnPhotoNew;
+    property OnPhotoCommentNew;
+    property OnPhotoCommentEdit;
+    property OnPhotoCommentRestore;
+    property OnPhotoCommentDelete;
+    property OnMessageNew;
+    property OnMessageReply;
+    property OnMessageEdit;
+    property OnMessageAllow;
+    property OnMessageDeny;
+    property OnBoardPostNew;
+    property OnBoardPostEdit;
+    property OnBoardPostRestore;
+    property OnBoardPostDelete;
+    property OnMarketCommentNew;
+    property OnMarketCommentEdit;
+    property OnMarketCommentRestore;
+    property OnMarketCommentDelete;
+    property OnGroupLeave;
+    property OnGroupJoin;
+    property OnUserBlock;
+    property OnUserUnBlock;
   end;
 
 procedure Register;
@@ -77,6 +147,22 @@ begin
   RegisterComponents('VK API HGM', [TVkUserEvents]);
   RegisterComponents('VK API HGM', [TVkGroupEvents]);
   RegisterComponents('VK API HGM', [TVkGroupEventsController]);
+end;
+
+{ TVkGroupEventsController }
+
+constructor TVkGroupEventsController.Create(AOwner: TComponent);
+begin
+  inherited;
+  FActualVersion := '1.503';
+end;
+
+{ TVkGroupEvents }
+
+constructor TVkGroupEvents.Create(AOwner: TComponent);
+begin
+  inherited;
+  FActualVersion := '1.503';
 end;
 
 end.

@@ -297,6 +297,8 @@ object FormMain: TFormMain
     OnWallReplyEdit = VkGroupEventsController1WallReplyEdit
     OnWallReplyRestore = VkGroupEventsController1WallReplyRestore
     OnWallReplyDelete = VkGroupEventsController1WallReplyDelete
+    OnWallPostNew = VkGroupEventsController1WallPostNew
+    OnMessageNew = VkGroupEventsController1MessageNew
     Left = 96
     Top = 176
   end

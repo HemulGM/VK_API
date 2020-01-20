@@ -20,13 +20,14 @@ type
     ts: string;
     server: string;
     version: string;
-    function Requset: string;
+    function Request: string;
   end;
 
   TLongPollServer = class
   private
     FThread: TThread;
     FLongPollNeedStop: Boolean;
+    FLongPollStopped: Boolean;
     FLongPollData: TLongPollData;
     FParams: TParams;
     FMethod: string;
@@ -213,13 +214,14 @@ begin
       Stream: TStringStream;
       JSON: TJSONValue;
     begin
+      FLongPollStopped := False;
       HTTP := THTTPClient.Create;
       Stream := TStringStream.Create;
       try
         while (not TThread.CurrentThread.CheckTerminated) and (not FLongPollNeedStop) do
         begin
           Stream.Clear;
-          HTTP.Get(FLongPollData.Requset, Stream);
+          HTTP.Get(FLongPollData.Request, Stream);
           if FLongPollNeedStop then
             Break;
           JSON := TJSONObject.ParseJSONValue(UTF8ToString(Stream.DataString));
@@ -243,6 +245,7 @@ begin
       end;
       HTTP.Free;
       Stream.Free;
+      FLongPollStopped := True;
     end);
   FThread.FreeOnTerminate := False;
   FThread.Start;
@@ -255,7 +258,8 @@ begin
   if Assigned(FThread) then
   begin
     FThread.Terminate;
-    FThread.WaitFor;
+    while not FLongPollStopped do
+      Sleep(400);
     FThread.Free;
     FThread := nil;
   end;
@@ -263,7 +267,7 @@ end;
 
 { TLongPollData }
 
-function TLongPollData.Requset: string;
+function TLongPollData.Request: string;
 begin
   Result := server + '?act=a_check&key=' + key + '&ts=' + ts + '&' + wait + '=25&version=' + version;
   if Pos('http', Result) = 0 then

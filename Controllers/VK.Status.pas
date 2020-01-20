@@ -53,7 +53,9 @@ begin
       Status.Text := JSONItem.GetValue<string>('text', '');
       Audio := JSONItem.GetValue<TJSONValue>('audio', nil);
       if Assigned(Audio) then
-        Status.Audio := TVkAudio.FromJsonString(Audio.ToJSON);
+        Status.Audio := TVkAudio.FromJsonString(Audio.ToJSON)
+      else
+        Status.Audio := nil;
       JSONItem.Free;
       Result := True;
     end

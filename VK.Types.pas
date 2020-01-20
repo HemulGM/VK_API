@@ -105,8 +105,6 @@ type
     function Add(Param: TParam): Integer; overload; inline;
     function Add(Key, Value: string): Integer; overload; inline;
     function Add(Key: string; Value: Integer): Integer; overload; inline;
-    function PeerId(Value: Integer): Integer; overload; inline;
-    function OwnerId(Value: Integer): Integer; overload; inline;
   end;
 
   TPremission = string;
@@ -248,6 +246,18 @@ type
     UserIds: TUserIds;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
+  end;
+
+  TUserBlockReason = (brOther, brSpam, btInsultingParticipants, btObsceneExpressions, btOffTopic);
+
+  TGroupJoinType = (jtUnknown, jtJoin, jtUnsure, jtAccepted, jtApproved, jtRequest);
+
+  TGroupJoinTypeHelper = record helper for TGroupJoinType
+    function ToString: string; overload; inline;
+  end;
+
+  GroupJoinType = class
+    class function Create(Value: string): TGroupJoinType;
   end;
 
   TOnLogin = procedure(Sender: TObject) of object;
@@ -750,16 +760,6 @@ begin
   Result := AddParam(Self, [Key, Value.ToString]);
 end;
 
-function TParamsHelper.OwnerId(Value: Integer): Integer;
-begin
-  Result := Add('owner_id', Value.ToString);
-end;
-
-function TParamsHelper.PeerId(Value: Integer): Integer;
-begin
-  Result := Add('peer_id', Value.ToString);
-end;
-
 { TMessageFlagHelper }
 
 function TMessageFlagHelper.ToString: string;
@@ -846,6 +846,53 @@ begin
   for i := Ord(agRock) to Ord(agOther) do
     if VkAudioGenres[TAudioGenre(i)] = Data then
       Exit(TAudioGenre(i));
+end;
+
+{ TGroupJoinTypeHelper }
+
+function TGroupJoinTypeHelper.ToString: string;
+begin
+ {
+  join Ч пользователь вступил в группу или меропри€тие (подписалс€ на публичную страницу).
+  unsure Ч дл€ меропри€тий: пользователь выбрал вариант Ђ¬озможно, пойдуї.
+  accepted Ч пользователь прин€л приглашение в группу или на меропри€тие.
+  approved Ч за€вка на вступление в группу/меропри€тие была одобрена руководителем сообщества.
+  request Ч пользователь подал за€вку на вступление в сообщество.
+ }
+  case Self of
+    jtUnknown:
+      Exit('');
+    jtJoin:
+      Exit('join');
+    jtUnsure:
+      Exit('unsure');
+    jtAccepted:
+      Exit('accepted');
+    jtApproved:
+      Exit('approved');
+    jtRequest:
+      Exit('request');
+  else
+    Exit('');
+  end;
+end;
+
+{ GroupJoinType }
+
+class function GroupJoinType.Create(Value: string): TGroupJoinType;
+begin
+  Value := LowerCase(Value);
+  if Value = 'join' then
+    Exit(jtJoin);
+  if Value = 'unsure' then
+    Exit(jtUnsure);
+  if Value = 'accepted' then
+    Exit(jtAccepted);
+  if Value = 'approved' then
+    Exit(jtApproved);
+  if Value = 'request' then
+    Exit(jtRequest);
+  Result := jtUnknown;
 end;
 
 end.

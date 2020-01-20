@@ -6,8 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls,
   VK.Handler, Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents,
-  VK.Entity.Comment, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
-  System.Net.HttpClientComponent;
+  VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient, System.Net.HttpClientComponent,
+  VK.Entity.Message, VK.Entity.ClientInfo;
 
 type
   TFormMain = class(TForm)
@@ -80,18 +80,21 @@ type
     procedure VkUserEvents1UserCall(Sender: TObject; UserId, CallId: Integer);
     procedure VkUserEvents1CountChange(Sender: TObject; Count: Integer);
     procedure VkUserEvents1NotifyChange(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer);
-    procedure VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; EventId: string);
-    procedure VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; EventId: string);
-    procedure VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; EventId: string);
-    procedure VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Comment:
-      TVkCommentDeleted; EventId: string);
     procedure Button17Click(Sender: TObject);
     procedure Button18Click(Sender: TObject);
     procedure Button19Click(Sender: TObject);
     procedure Button20Click(Sender: TObject);
+    procedure VkGroupEventsController1MessageNew(Sender: TObject; GroupId: Integer; Message:
+      TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
+    procedure VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer; Comment:
+      TVkComment; Info: TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
+      TVkComment; Info: TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
+      TVkComment; Info: TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Info:
+      TVkCommentInfo; EventId: string);
+    procedure VkGroupEventsController1WallPostNew(Sender: TObject; GroupId: Integer; Post: TVkPost; EventId: string);
   private
   public
     { Public declarations }
@@ -104,8 +107,8 @@ implementation
 
 uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Structs, VK.Entity.User, VK.Entity.Keyboard, VK.Entity.Message,
-  VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save;
+  VK.Entity.PushSettings, VK.Structs, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall,
+  VK.Docs, VK.Entity.Doc.Save;
 
 {$R *.dfm}
 
@@ -366,29 +369,41 @@ begin
   LabelLogin.Caption := 'login success';
 end;
 
-procedure TFormMain.VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer;
-  Comment: TVkCommentDeleted; EventId: string);
+procedure TFormMain.VkGroupEventsController1MessageNew(Sender: TObject; GroupId: Integer; Message:
+  TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий удалён в группе ' + GroupId.ToString + ' "' + Comment.post_id.ToString + '" от ' +
-    Comment.owner_id.ToString);
+  Memo1.Lines.Add(Message.text);
+end;
+
+procedure TFormMain.VkGroupEventsController1WallPostNew(Sender: TObject; GroupId: Integer; Post:
+  TVkPost; EventId: string);
+begin
+  Memo1.Lines.Add('Новый пост в группе ' + GroupId.ToString + ': ' + Post.text);
+end;
+
+procedure TFormMain.VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Info:
+  TVkCommentInfo; EventId: string);
+begin
+  Memo1.Lines.Add('Комментарий удалён в группе ' + GroupId.ToString + ' "' + Info.ObjectId.ToString + '" от ' +
+    Info.OwnerId.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
-  TVkComment; EventId: string);
+  TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий изменили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
     Comment.from_id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
-  TVkComment; EventId: string);
+  TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Новый комментарий в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
     Comment.from_id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; EventId: string);
+  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий восстановили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
     Comment.from_id.ToString);
@@ -460,7 +475,7 @@ begin
       VK1.Messages.Send
         .PeerId(MessageData.PeerId)
         .Message('Ай яй, так материться')
-        .Attachemt(['doc58553419_533494309_657138cd5d7842ae0a'])
+        .Attachemt(['album58553419_234519653'])
         .Send.Free;
     end;
   end;

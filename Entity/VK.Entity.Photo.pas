@@ -23,6 +23,13 @@ type
     FUser_id: Extended;
     FWidth: Extended;
     FHeight: Extended;
+    FAccess_key: string;
+    FPhoto_604: string;
+    FPhoto_75: string;
+    FPhoto_1280: string;
+    FPhoto_807: string;
+    FPhoto_2560: string;
+    FPhoto_130: string;
   public
     property id: Extended read FId write FId;
     property album_id: Extended read FAlbum_id write FAlbum_id;
@@ -40,6 +47,15 @@ type
     property likes: TVkLikesInfo read FLikes write FLikes;
     property reposts: TVkRepostsInfo read FReposts write FReposts;
     property tags: TVkTags read FTags write FTags;
+    property access_key: string read FAccess_key write FAccess_key;
+    //
+    property photo_1280: string read FPhoto_1280 write FPhoto_1280;
+    property photo_130: string read FPhoto_130 write FPhoto_130;
+    property photo_2560: string read FPhoto_2560 write FPhoto_2560;
+    property photo_604: string read FPhoto_604 write FPhoto_604;
+    property photo_75: string read FPhoto_75 write FPhoto_75;
+    property photo_807: string read FPhoto_807 write FPhoto_807;
+    //
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -63,7 +79,7 @@ type
 
 implementation
 
-{TRootClass}
+{TVkPhoto}
 
 constructor TVkPhoto.Create;
 begin

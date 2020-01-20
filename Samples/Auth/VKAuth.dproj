@@ -105,56 +105,58 @@
         <DCCReference Include="..\..\VK.API.pas"/>
         <DCCReference Include="..\..\VK.Types.pas"/>
         <DCCReference Include="..\..\VK.Components.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.AccountInfo.pas"/>
         <DCCReference Include="..\..\VK.Controller.pas"/>
         <DCCReference Include="..\..\VK.Handler.pas"/>
         <DCCReference Include="..\..\Forms\VK.Captcha.pas">
             <Form>FormCaptcha</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\Entity\VK.Entity.ProfileInfo.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.ActiveOffers.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Counters.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.PushSettings.pas"/>
         <DCCReference Include="..\..\VK.Structs.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.User.pas"/>
         <DCCReference Include="..\..\VK.LongPollServer.pas"/>
         <DCCReference Include="..\..\VK.UserEvents.pas"/>
         <DCCReference Include="..\..\VK.GroupEvents.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Comment.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Post.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Photo.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Common.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Link.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Media.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Account.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Auth.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Users.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Messages.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Keyboard.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Message.pas"/>
         <DCCReference Include="..\..\Forms\VK.OAuth2.pas">
             <Form>FormOAuth2</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\VK.Utils.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.AudioMessage.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Sticker.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Gift.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Market.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Doc.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Audio.pas"/>
-        <DCCReference Include="..\..\Entity\VK.Entity.Video.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Status.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Wall.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Docs.pas"/>
         <DCCReference Include="..\..\VK.Uploader.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.AccountInfo.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.ActiveOffers.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Album.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Audio.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.AudioMessage.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.ClientInfo.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Common.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Counters.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Doc.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Doc.Save.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Event.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Gift.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Graffiti.pas"/>
-        <None Include="app_cred.inc"/>
-        <None Include="vk_admin.inc"/>
-        <None Include="delphi_live.inc"/>
-        <None Include="..\..\include.inc"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Keyboard.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Link.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Market.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Media.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Message.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Note.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.OldApp.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Page.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Photo.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Poll.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.PrettyCard.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.ProfileInfo.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.PushSettings.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Sticker.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.User.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Video.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -177,33 +179,9 @@
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="app_cred.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\VKAuth.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKAuth.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="vk_admin.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="delphi_live.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\..\include.inc" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

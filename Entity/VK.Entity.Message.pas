@@ -3,7 +3,8 @@ unit VK.Entity.Message;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Entity.Keyboard;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Entity.Keyboard,
+  VK.Entity.ClientInfo;
 
 type
   TVkMessageSendResponse = class

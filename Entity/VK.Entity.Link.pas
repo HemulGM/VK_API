@@ -53,7 +53,7 @@ type
 
 implementation
 
-{TActionClass}
+{TVkLinkAction}
 
 function TVkLinkAction.ToJsonString: string;
 begin

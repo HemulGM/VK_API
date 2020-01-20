@@ -5,7 +5,8 @@ interface
 uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link,
   VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti;
+  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp,
+  VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard, VK.Entity.Event;
 
 type
   TVkAttachment = class;
@@ -15,8 +16,6 @@ type
   TVkPost = class;
 
   TVkPostCopyHistory = class;
-
-  TVkCommentDeleted = class;
 
   TVkAttachment = class
   private
@@ -35,6 +34,13 @@ type
     FVideo: TVkVideo;
     FPhoto: TVkPhoto;
     FGraffiti: TVkGraffiti;
+    FNote: TVkNote;
+    FApp: TVkOldApp;
+    FPoll: TVkPoll;
+    FPage: TVkPoll;
+    FAlbum: TVkPhotoAlbum;
+    FPretty_cards: TVkPrettyCards;
+    FEvent: TVkEvent;
   public
     property&type: string read FType write FType;
     property link: TVkLink read FLink write FLink;
@@ -51,6 +57,13 @@ type
     property video: TVkVideo read FVideo write FVideo;
     property photo: TVkPhoto read FPhoto write FPhoto;
     property graffiti: TVkGraffiti read FGraffiti write FGraffiti;
+    property note: TVkNote read FNote write FNote;
+    property app: TVkOldApp read FApp write FApp;
+    property poll: TVkPoll read FPoll write FPoll;
+    property page: TVkPoll read FPage write FPage;
+    property album: TVkPhotoAlbum read FAlbum write FAlbum;
+    property pretty_cards: TVkPrettyCards read FPretty_cards write FPretty_cards;
+    property event: TVkEvent read FEvent write FEvent;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -172,26 +185,6 @@ type
     class function FromJsonString(AJsonString: string): TVkPost;
   end;
 
-  TVkCommentDeleted = class
-  private
-    FDeleter_id: Extended;
-    FId: Extended;
-    FOwner_id: Extended;
-    FPost_id: Extended;
-  public
-    property deleter_id: Extended read FDeleter_id write FDeleter_id;
-    property id: Extended read FId write FId;
-    property owner_id: Extended read FOwner_id write FOwner_id;
-    property post_id: Extended read FPost_id write FPost_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCommentDeleted;
-  end;
-
-  TOnWallReplyAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; EventId: string) of object;
-
-  TOnWallReplyDelete = procedure(Sender: TObject; GroupId: Integer; Comment: TVkCommentDeleted;
-    EventId: string) of object;
-
 implementation
 
 {TVkAttachment}
@@ -234,6 +227,22 @@ begin
     FPhoto.Free;
   if Assigned(FGraffiti) then
     FGraffiti.Free;
+  if Assigned(FNote) then
+    FNote.Free;
+  if Assigned(FApp) then
+    FApp.Free;
+  if Assigned(FPoll) then
+    FPoll.Free;
+  if Assigned(FPage) then
+    FPage.Free;
+  if Assigned(FAlbum) then
+    FAlbum.Free;
+  if Assigned(FAlbum) then
+    FAlbum.Free;
+  if Assigned(FPretty_cards) then
+    FPretty_cards.Free;
+  if Assigned(FEvent) then
+    FEvent.Free;
 
   inherited;
 end;
@@ -305,15 +314,19 @@ end;
 destructor TVkPost.Destroy;
 var
   Lcopy_historyItem: TVkPostCopyHistory;
+  LAttachment: TVkAttachment;
 begin
 
   for Lcopy_historyItem in FCopy_history do
     Lcopy_historyItem.Free;
+  for LAttachment in FAttachments do
+    LAttachment.Free;
 
   FPost_source.Free;
   FComments.Free;
   FLikes.Free;
   FReposts.Free;
+  FViews.Free;
   inherited;
 end;
 
@@ -325,18 +338,6 @@ end;
 class function TVkPost.FromJsonString(AJsonString: string): TVkPost;
 begin
   result := TJson.JsonToObject<TVkPost>(AJsonString)
-end;
-
-{ TWallCommentDeleted }
-
-function TVkCommentDeleted.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCommentDeleted.FromJsonString(AJsonString: string): TVkCommentDeleted;
-begin
-  result := TJson.JsonToObject<TVkCommentDeleted>(AJsonString)
 end;
 
 end.
