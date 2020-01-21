@@ -135,6 +135,11 @@
         <DCCReference Include="vclie.dcp"/>
         <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
+        <DCCReference Include="IndyIPCommon.dcp"/>
+        <DCCReference Include="IndySystem.dcp"/>
+        <DCCReference Include="IndyProtocols.dcp"/>
+        <DCCReference Include="IndyCore.dcp"/>
+        <DCCReference Include="IndyIPClient.dcp"/>
         <DCCReference Include="VK.Components.pas"/>
         <DCCReference Include="VK.API.pas"/>
         <DCCReference Include="VK.Controller.pas"/>
@@ -188,6 +193,7 @@
         <DCCReference Include="Entity\VK.Entity.Sticker.pas"/>
         <DCCReference Include="Entity\VK.Entity.User.pas"/>
         <DCCReference Include="Entity\VK.Entity.Video.pas"/>
+        <DCCReference Include="Entity\VK.Entity.GroupSettings.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

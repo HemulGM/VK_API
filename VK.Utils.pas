@@ -11,7 +11,9 @@ function DownloadURL(URL: string): TMemoryStream;
 
 function GetRandomId: Int64;
 
-function BoolToString(Value: Boolean): string;
+function BoolToString(Value: Boolean): string; overload;
+
+function BoolToString(Value: Boolean; TrueValue, FalseValue: string): string; overload;
 
 implementation
 
@@ -24,6 +26,14 @@ begin
     Result := '1'
   else
     Result := '0';
+end;
+
+function BoolToString(Value: Boolean; TrueValue, FalseValue: string): string;
+begin
+  if Value then
+    Result := TrueValue
+  else
+    Result := FalseValue;
 end;
 
 function GetRandomId: Int64;

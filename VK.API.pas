@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, REST.Client,
   Vcl.Controls, REST.Authenticator.OAuth, VK.Types, VK.OAuth2, VK.Account, VK.Handler, VK.Auth,
   VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON, VK.Messages,
-  System.Generics.Collections, VK.Status, VK.Wall, VK.Uploader, VK.Docs;
+  System.Generics.Collections, VK.Status, VK.Wall, VK.Uploader, VK.Docs, IPPeerClient;
 
 type
   TCustomVK = class(TComponent)

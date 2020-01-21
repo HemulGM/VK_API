@@ -78,6 +78,7 @@ type
     property OnMessageEdit;
     property OnMessageAllow;
     property OnMessageDeny;
+    property OnMessageTypingState;
     property OnBoardPostNew;
     property OnBoardPostEdit;
     property OnBoardPostRestore;
@@ -90,6 +91,12 @@ type
     property OnGroupJoin;
     property OnUserBlock;
     property OnUserUnBlock;
+    property OnGroupPollVoteNew;
+    property OnGroupOfficersEdit;
+    property OnGroupChangeSettings;
+    property OnGroupChangePhoto;
+    property OnGroupPayTransaction;
+    property OnGroupAppPayload;
   end;
 
   TVkGroupEventsController = class(TCustomGroupEventControl)
@@ -123,6 +130,7 @@ type
     property OnMessageEdit;
     property OnMessageAllow;
     property OnMessageDeny;
+    property OnMessageTypingState;
     property OnBoardPostNew;
     property OnBoardPostEdit;
     property OnBoardPostRestore;
@@ -135,6 +143,12 @@ type
     property OnGroupJoin;
     property OnUserBlock;
     property OnUserUnBlock;
+    property OnGroupPollVoteNew;
+    property OnGroupOfficersEdit;
+    property OnGroupChangeSettings;
+    property OnGroupChangePhoto;
+    property OnGroupPayTransaction;
+    property OnGroupAppPayload;
   end;
 
 procedure Register;

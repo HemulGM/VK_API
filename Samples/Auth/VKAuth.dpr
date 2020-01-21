@@ -51,7 +51,9 @@ uses
   VK.Entity.PushSettings in '..\..\Entity\VK.Entity.PushSettings.pas',
   VK.Entity.Sticker in '..\..\Entity\VK.Entity.Sticker.pas',
   VK.Entity.User in '..\..\Entity\VK.Entity.User.pas',
-  VK.Entity.Video in '..\..\Entity\VK.Entity.Video.pas';
+  VK.Entity.Video in '..\..\Entity\VK.Entity.Video.pas',
+  VK.Entity.GroupSettings in '..\..\Entity\VK.Entity.GroupSettings.pas',
+  VK.Likes in '..\..\Controllers\VK.Likes.pas';
 
 {$R *.res}
 

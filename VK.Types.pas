@@ -88,6 +88,7 @@ type
 
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
     function ToString: string; overload; inline;
+    function Add(Value: Integer): Integer;
   end;
 
   TFields = TArrayOfString;
@@ -194,6 +195,14 @@ type
     function ToString: string; overload; inline;
   end;
 
+  //Типы объектов
+  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment,
+    itVideoComment, itTopicComment, itMarketComment, itSitepage);
+
+  TVkItemTypeHelper = record helper for TVkItemType
+    function ToConst: string; inline;
+  end;
+
   //Структура события входящего сообщения
   TMessageData = record
     MessageId: Integer;
@@ -250,6 +259,10 @@ type
 
   TUserBlockReason = (brOther, brSpam, btInsultingParticipants, btObsceneExpressions, btOffTopic);
 
+  TUserBlockReasonHelper = record helper for TUserBlockReason
+    function ToString: string; overload; inline;
+  end;
+
   TGroupJoinType = (jtUnknown, jtJoin, jtUnsure, jtAccepted, jtApproved, jtRequest);
 
   TGroupJoinTypeHelper = record helper for TGroupJoinType
@@ -258,6 +271,12 @@ type
 
   GroupJoinType = class
     class function Create(Value: string): TGroupJoinType;
+  end;
+
+  TVkGroupLevel = (glNone, glModer, glEditor, glAdmin);
+
+  TVkGroupLevelHelper = record helper for TVkGroupLevel
+    function ToString: string; overload; inline;
   end;
 
   TOnLogin = procedure(Sender: TObject) of object;
@@ -672,6 +691,13 @@ end;
 
 { TArrayOfIntegerHelper }
 
+function TArrayOfIntegerHelper.Add(Value: Integer): Integer;
+begin
+  Result := Length(Self) + 1;
+  SetLength(Self, Result);
+  Self[Result - 1] := Value;
+end;
+
 function TArrayOfIntegerHelper.ToString: string;
 var
   i: Integer;
@@ -893,6 +919,74 @@ begin
   if Value = 'request' then
     Exit(jtRequest);
   Result := jtUnknown;
+end;
+
+{ TUserBlockReasonHelper }
+
+function TUserBlockReasonHelper.ToString: string;
+begin
+  case Self of
+    brOther:
+      Result := 'Другое';
+    brSpam:
+      Result := 'Спам';
+    btInsultingParticipants:
+      Result := 'Оскорбление участников';
+    btObsceneExpressions:
+      Result := 'Мат';
+    btOffTopic:
+      Result := 'Разговоры не по теме';
+  else
+    Result := 'Не известно';
+  end;
+end;
+
+{ TVkGroupLevelHelper }
+
+function TVkGroupLevelHelper.ToString: string;
+begin
+  case Self of
+    glNone:
+      Result := 'Участник';
+    glModer:
+      Result := 'Модератор';
+    glEditor:
+      Result := 'Редактор';
+    glAdmin:
+      Result := 'Администратор';
+  end;
+end;
+
+{ TVkItemTypeHelper }
+
+function TVkItemTypeHelper.ToConst: string;
+begin
+  case Self of
+    itPost:
+      Result := 'post';
+    itComment:
+      Result := 'comment';
+    itPhoto:
+      Result := 'photo';
+    itAudio:
+      Result := 'audio';
+    itVideo:
+      Result := 'video';
+    itNote:
+      Result := 'note';
+    itMarket:
+      Result := 'market';
+    itPhotoComment:
+      Result := 'photo_comment';
+    itVideoComment:
+      Result := 'video_comment';
+    itTopicComment:
+      Result := 'topic_comment';
+    itMarketComment:
+      Result := 'market_comment';
+    itSitepage:
+      Result := 'sitepage';
+  end;
 end;
 
 end.
