@@ -7,7 +7,7 @@ uses
   Vcl.Controls, REST.Authenticator.OAuth, IPPeerClient, VK.Types, VK.OAuth2, VK.Account, VK.Handler,
   VK.Auth, VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON, VK.Messages,
   System.Generics.Collections, VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes,
-  VK.Board;
+  VK.Board, Vcl.Forms;
 
 type
   TCustomVK = class(TComponent)
@@ -48,6 +48,7 @@ type
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
     procedure FAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
+    procedure FAuthClose(Sender: TObject; var Action: TCloseAction);
     procedure FLog(Sender: TObject; const Value: string);
     procedure FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure SetOnLogin(const Value: TOnLogin);
@@ -194,6 +195,8 @@ end;
 
 destructor TCustomVK.Destroy;
 begin
+  if Assigned(FAuthForm) then
+    FAuthForm.Close;
   FGroupLongPollServers.Clear;
   FGroupLongPollServers.Free;
 
@@ -272,15 +275,13 @@ begin
       FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, StrToInt(Params.Values['expires_in']));
       DoLogin;
     finally
-      Params.Free;
+      begin
+        Params.Free;
+        FAuthForm.Close;
+        FAuthForm := nil;
+      end;
     end;
     DoCloseWebView := True;
-  end;
-  FAuthForm.Free;
-  FAuthForm := nil;
-  if FOAuth2Authenticator.AccessToken.IsEmpty then
-  begin
-    FVKError(Self, TVkException.Create('Токен не был получен'), ERROR_VK_NOTOKEN, 'Токен не был получен');
   end;
 end;
 
@@ -288,6 +289,26 @@ procedure TCustomVK.FLog(Sender: TObject; const Value: string);
 begin
   if Assigned(FOnLog) then
     FOnLog(Self, Value);
+end;
+
+procedure TCustomVK.FAuthClose(Sender: TObject; var Action: TCloseAction);
+var
+  E: Exception;
+begin
+  Action := caFree;
+  FAuthForm := nil;
+  if FOAuth2Authenticator.AccessToken.IsEmpty then
+  begin
+    E := TVkException.Create('Токен не был получен');
+    if Assigned(FOnError) then
+    begin
+      FOnErrorLogin(Self, E, ERROR_VK_NOTOKEN, E.Message);
+      if Assigned(E) then
+        E.Free;
+    end
+    else
+      raise E;
+  end;
 end;
 
 procedure TCustomVK.FAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
@@ -338,6 +359,7 @@ begin
       FAuthForm := TFormOAuth2.Create(nil);
       FAuthForm.OnAfterRedirect := FAfterRedirect;
       FAuthForm.OnError := FAuthError;
+      FAuthForm.OnClose := FAuthClose;
     end;
     FAuthForm.ShowWithURL(AParentWindow, FOAuth2Authenticator.AuthorizationRequestURI);
   end;

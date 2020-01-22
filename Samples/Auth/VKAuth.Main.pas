@@ -58,8 +58,6 @@ type
     procedure VK1Log(Sender: TObject; const Value: string);
     procedure Button11Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
-    procedure VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
-    procedure VK1ErrorLogin(Sender: TObject; Code: Integer; Text: string);
     procedure Button13Click(Sender: TObject);
     procedure Button14Click(Sender: TObject);
     procedure Button15Click(Sender: TObject);
@@ -164,6 +162,8 @@ type
     procedure Button21Click(Sender: TObject);
     procedure Button22Click(Sender: TObject);
     procedure VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
+    procedure VK1ErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
+    procedure VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
   private
   public
     { Public declarations }
@@ -177,7 +177,7 @@ implementation
 uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
   VK.Entity.PushSettings, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
-  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest;
+  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.OAuth2;
 
 {$R *.dfm}
 
@@ -428,16 +428,6 @@ begin
     Memo1.Lines.Add('Error online');
 end;
 
-procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
-begin
-  //Если определён этот метод, то авторизация происходить не будет, т.к. токен уже есть
-  //Для использования обычной OAuth2 авторизации достаточно убрать этот метод
-  //Это мой токен, эту строчку нужно убрать
-  {$INCLUDE vk_admin.inc}  //vk admin
-  //{$INCLUDE delphi_live.inc}  //delphi live
-  TokenExpiry := 0;
-end;
-
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
@@ -445,21 +435,25 @@ begin
   VK1.Login;
 end;
 
+procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+begin
+  //Если определён этот метод, то авторизация происходить не будет, т.к. токен уже есть
+  //Для использования обычной OAuth2 авторизации достаточно убрать этот метод
+  //Это мой токен, эту строчку нужно убрать
+  {$INCLUDE vk_admin.inc}  //vk admin
+  //{$INCLUDE delphi_live.inc}  //delphi live
+end;
+
 procedure TFormMain.VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
-  if (not VK1.IsLogin) and (not VK1.UseServiceKeyOnly) then
-  begin
-    LabelLogin.Caption := 'login error';
-    ShowMessage('Ошибка авторизации');
-  end
-  else
-    ShowMessage('Ошибка: ' + Code.ToString + ' - ' + Text);
+  ShowMessage('Ошибка: ' + Code.ToString + ' - ' + Text);
   Memo1.Lines.Add('Ошибка: ' + Code.ToString + ' - ' + Text);
 end;
 
-procedure TFormMain.VK1ErrorLogin(Sender: TObject; Code: Integer; Text: string);
+procedure TFormMain.VK1ErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
   MemoLog.Lines.Add('Ошибка авторизации: ' + Code.ToString + ' - ' + Text);
+  LabelLogin.Caption := 'login error';
 end;
 
 procedure TFormMain.VK1Log(Sender: TObject; const Value: string);

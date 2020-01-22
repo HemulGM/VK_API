@@ -35,7 +35,6 @@ type
     FLastURL: string;
     FNeedShow: Boolean;
   public
-    procedure DeleteCache(URLContains: string);
     procedure ShowWithURL(const AURL: string); overload;
     procedure ShowWithURL(AParent: TWinControl; const AURL: string); overload;
     property LastTitle: string read FLastTitle;
@@ -49,14 +48,15 @@ type
 var
   FormOAuth2: TFormOAuth2;
 
+procedure DeleteCache(URLContains: string);
+
 implementation
 
 uses
   WinInet;
 
 {$R *.dfm}
-
-procedure TFormOAuth2.DeleteCache;
+procedure DeleteCache;
 var
   lpEntryInfo: PInternetCacheEntryInfo;
   hCacheDir: LongWord;
