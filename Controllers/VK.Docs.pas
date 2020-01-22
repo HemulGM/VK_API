@@ -3,7 +3,7 @@ unit VK.Docs;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Structs,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
   VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save;
 
 type

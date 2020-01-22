@@ -4,9 +4,10 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, REST.Client,
-  Vcl.Controls, REST.Authenticator.OAuth, VK.Types, VK.OAuth2, VK.Account, VK.Handler, VK.Auth,
-  VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON, VK.Messages,
-  System.Generics.Collections, VK.Status, VK.Wall, VK.Uploader, VK.Docs, IPPeerClient;
+  Vcl.Controls, REST.Authenticator.OAuth, IPPeerClient, VK.Types, VK.OAuth2, VK.Account, VK.Handler,
+  VK.Auth, VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON, VK.Messages,
+  System.Generics.Collections, VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes,
+  VK.Board;
 
 type
   TCustomVK = class(TComponent)
@@ -40,12 +41,15 @@ type
     FWall: TWallController;
     FUploader: TUploader;
     FDoc: TDocController;
+    FLikes: TLikesController;
+    FAudio: TAudioController;
+    FBoard: TBoardController;
     function GetPermissions: string;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
     procedure FAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
     procedure FLog(Sender: TObject; const Value: string);
-    procedure FVKError(Sender: TObject; Code: Integer; Text: string);
+    procedure FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure SetOnLogin(const Value: TOnLogin);
     procedure SetPermissionsList(const Value: TPermissions);
     procedure DoLogin;
@@ -68,6 +72,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoLog(Sender: TObject; Text: string);
+    procedure DoError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure Login(AParentWindow: TWinControl = nil);
     procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
     procedure CallMethod(MethodName: string; Param: string; Value: string; Callback:
@@ -89,6 +94,9 @@ type
     property Status: TStatusController read FStatus;
     property Wall: TWallController read FWall;
     property Docs: TDocController read FDoc;
+    property Likes: TLikesController read FLikes;
+    property Audio: TAudioController read FAudio;
+    property Board: TBoardController read FBoard;
     //
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;
@@ -176,6 +184,9 @@ begin
   FStatus := TStatusController.Create(FHandler);
   FWall := TWallController.Create(FHandler);
   FDoc := TDocController.Create(FHandler);
+  FLikes := TLikesController.Create(FHandler);
+  FAudio := TAudioController.Create(FHandler);
+  FBoard := TBoardController.Create(FHandler);
   //Groups LongPolls
   FUploader := TUploader.Create;
   FGroupLongPollServers := TGroupLongPollServers.Create;
@@ -186,6 +197,9 @@ begin
   FGroupLongPollServers.Clear;
   FGroupLongPollServers.Free;
 
+  FBoard.Free;
+  FLikes.Free;
+  FAudio.Free;
   FDoc.Free;
   FUploader.Free;
   FWall.Free;
@@ -196,6 +210,11 @@ begin
   FMessages.Free;
   FHandler.Free;
   inherited;
+end;
+
+procedure TCustomVK.DoError(Sender: TObject; E: Exception; Code: Integer; Text: string);
+begin
+  FVKError(Sender, E, Code, Text);
 end;
 
 procedure TCustomVK.DoLog(Sender: TObject; Text: string);
@@ -261,7 +280,7 @@ begin
   FAuthForm := nil;
   if FOAuth2Authenticator.AccessToken.IsEmpty then
   begin
-    FVKError(Self, ERROR_VK_NOTOKEN, 'Токен не был получен');
+    FVKError(Self, TVkException.Create('Токен не был получен'), ERROR_VK_NOTOKEN, 'Токен не был получен');
   end;
 end;
 
@@ -274,15 +293,19 @@ end;
 procedure TCustomVK.FAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
 begin
   if Assigned(FOnErrorLogin) then
-    FOnErrorLogin(Self, AStatusCode, AURL);
+    FOnErrorLogin(Self, TVkException.Create('Ошибка авторизации, код : ' + AStatusCode.ToString), AStatusCode, AURL);
 end;
 
-procedure TCustomVK.FVKError(Sender: TObject; Code: Integer; Text: string);
+procedure TCustomVK.FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
   if Assigned(FOnError) then
-    FOnError(Self, Code, Text)
+  begin
+    FOnError(Self, E, Code, Text);
+    if Assigned(E) then
+      E.Free;
+  end
   else
-    raise Exception.Create('Code: ' + Code.ToString + #13#10 + Text);
+    raise E;
 end;
 
 procedure TCustomVK.Login(AParentWindow: TWinControl);
@@ -296,6 +319,8 @@ begin
   FOAuth2Authenticator.ResponseType := TOAuth2ResponseType.rtTOKEN;
   FOAuth2Authenticator.AuthorizationEndpoint := FEndPoint;
 
+  Token := '';
+  TokenExpiry := 0;
   if Assigned(FOnAuth) then
     FOnAuth(Self, Token, TokenExpiry, ChangePasswordHash);
 

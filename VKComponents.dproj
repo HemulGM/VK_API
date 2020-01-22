@@ -148,7 +148,6 @@
         <DCCReference Include="Forms\VK.Captcha.pas">
             <Form>FormCaptcha</Form>
         </DCCReference>
-        <DCCReference Include="VK.Structs.pas"/>
         <DCCReference Include="VK.Utils.pas"/>
         <DCCReference Include="VK.LongPollServer.pas"/>
         <DCCReference Include="VK.UserEvents.pas"/>
@@ -158,8 +157,10 @@
         </DCCReference>
         <DCCReference Include="VK.Uploader.pas"/>
         <DCCReference Include="Controllers\VK.Account.pas"/>
+        <DCCReference Include="Controllers\VK.Audio.pas"/>
         <DCCReference Include="Controllers\VK.Auth.pas"/>
         <DCCReference Include="Controllers\VK.Docs.pas"/>
+        <DCCReference Include="Controllers\VK.Likes.pas"/>
         <DCCReference Include="Controllers\VK.Messages.pas"/>
         <DCCReference Include="Controllers\VK.Status.pas"/>
         <DCCReference Include="Controllers\VK.Users.pas"/>
@@ -177,6 +178,7 @@
         <DCCReference Include="Entity\VK.Entity.Event.pas"/>
         <DCCReference Include="Entity\VK.Entity.Gift.pas"/>
         <DCCReference Include="Entity\VK.Entity.Graffiti.pas"/>
+        <DCCReference Include="Entity\VK.Entity.GroupSettings.pas"/>
         <DCCReference Include="Entity\VK.Entity.Keyboard.pas"/>
         <DCCReference Include="Entity\VK.Entity.Link.pas"/>
         <DCCReference Include="Entity\VK.Entity.Market.pas"/>
@@ -193,7 +195,8 @@
         <DCCReference Include="Entity\VK.Entity.Sticker.pas"/>
         <DCCReference Include="Entity\VK.Entity.User.pas"/>
         <DCCReference Include="Entity\VK.Entity.Video.pas"/>
-        <DCCReference Include="Entity\VK.Entity.GroupSettings.pas"/>
+        <DCCReference Include="Entity\VK.Entity.AccountInfoRequest.pas"/>
+        <DCCReference Include="Controllers\VK.Board.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

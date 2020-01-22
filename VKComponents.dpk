@@ -46,7 +46,6 @@ contains
   VK.Handler in 'VK.Handler.pas',
   VK.Types in 'VK.Types.pas',
   VK.Captcha in 'Forms\VK.Captcha.pas' {FormCaptcha},
-  VK.Structs in 'VK.Structs.pas',
   VK.Utils in 'VK.Utils.pas',
   VK.LongPollServer in 'VK.LongPollServer.pas',
   VK.UserEvents in 'VK.UserEvents.pas',
@@ -54,8 +53,10 @@ contains
   VK.OAuth2 in 'Forms\VK.OAuth2.pas' {FormOAuth2},
   VK.Uploader in 'VK.Uploader.pas',
   VK.Account in 'Controllers\VK.Account.pas',
+  VK.Audio in 'Controllers\VK.Audio.pas',
   VK.Auth in 'Controllers\VK.Auth.pas',
   VK.Docs in 'Controllers\VK.Docs.pas',
+  VK.Likes in 'Controllers\VK.Likes.pas',
   VK.Messages in 'Controllers\VK.Messages.pas',
   VK.Status in 'Controllers\VK.Status.pas',
   VK.Users in 'Controllers\VK.Users.pas',
@@ -73,6 +74,7 @@ contains
   VK.Entity.Event in 'Entity\VK.Entity.Event.pas',
   VK.Entity.Gift in 'Entity\VK.Entity.Gift.pas',
   VK.Entity.Graffiti in 'Entity\VK.Entity.Graffiti.pas',
+  VK.Entity.GroupSettings in 'Entity\VK.Entity.GroupSettings.pas',
   VK.Entity.Keyboard in 'Entity\VK.Entity.Keyboard.pas',
   VK.Entity.Link in 'Entity\VK.Entity.Link.pas',
   VK.Entity.Market in 'Entity\VK.Entity.Market.pas',
@@ -89,7 +91,8 @@ contains
   VK.Entity.Sticker in 'Entity\VK.Entity.Sticker.pas',
   VK.Entity.User in 'Entity\VK.Entity.User.pas',
   VK.Entity.Video in 'Entity\VK.Entity.Video.pas',
-  VK.Entity.GroupSettings in 'Entity\VK.Entity.GroupSettings.pas';
+  VK.Entity.AccountInfoRequest in 'Entity\VK.Entity.AccountInfoRequest.pas',
+  VK.Board in 'Controllers\VK.Board.pas';
 
 end.
 

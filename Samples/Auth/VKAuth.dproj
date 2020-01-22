@@ -111,7 +111,6 @@
             <Form>FormCaptcha</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\VK.Structs.pas"/>
         <DCCReference Include="..\..\VK.LongPollServer.pas"/>
         <DCCReference Include="..\..\VK.UserEvents.pas"/>
         <DCCReference Include="..\..\VK.GroupEvents.pas"/>
@@ -159,6 +158,9 @@
         <DCCReference Include="..\..\Entity\VK.Entity.Video.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.GroupSettings.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Likes.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Audio.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.AccountInfoRequest.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Board.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

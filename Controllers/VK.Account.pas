@@ -5,9 +5,38 @@ interface
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Structs;
+  VK.Entity.PushSettings, VK.Entity.Common, VK.Entity.AccountInfoRequest;
 
 type
+  TVkRegisterDeviceParams = record
+    List: TParams;
+    function Token(Value: string): Integer;
+    function DeviceModel(Value: string): Integer;
+    function DeviceYear(Value: Integer): Integer;
+    function DeviceId(Value: string): Integer;
+    function SystemVersion(Value: string): Integer;
+    function Settings(Value: string): Integer;
+    function Sandbox(Value: string): Integer;
+  end;
+
+  TVkProfileInfoParams = record
+    List: TParams;
+    function FirstName(Value: string): Integer;
+    function LastName(Value: string): Integer;
+    function MaidenName(Value: string): Integer;
+    function ScreenName(Value: string): Integer;
+    function CancelRequestId(Value: Integer): Integer;
+    function Sex(Value: TVkSex): Integer;
+    function Relation(Value: TVkRelation): Integer;
+    function RelationPartnerId(Value: Integer): Integer;
+    function BirthDate(Value: TDateTime): Integer;
+    function BirthDateVisibility(Value: TVkBirthDateVisibility): Integer;
+    function HomeTown(Value: string): Integer;
+    function CountryId(Value: Integer): Integer;
+    function CityId(Value: Integer): Integer;
+    function Status(Value: string): Integer;
+  end;
+
   TAccountController = class(TVkController)
   public
     function GetInfo(var Info: TAccountInfoClass; Fields: TFields = []): Boolean;
@@ -21,8 +50,8 @@ type
     function GetAppPermissions(var Mask: Int64; UserId: Integer): Boolean;
     function GetCounters(var Counters: TCountersClass; Filter: string = ''): Boolean;
     function GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
-    function RegisterDevice(const Data: TRegisterDeviceData): Boolean;
-    function SaveProfileInfo(const Data: TProfileInfoData; var Response: TResponse): Boolean;
+    function RegisterDevice(const Data: TVkRegisterDeviceParams): Boolean;
+    function SaveProfileInfo(const Data: TVkProfileInfoParams; var Request: TVkAccountInfoRequest): Boolean;
     function SetNameInMenu(const UserId: Integer; Name: string): Boolean;
     function SetOffline(): Boolean;
     function SetOnline(Voip: Boolean = False): Boolean;
@@ -50,9 +79,9 @@ function TAccountController.GetActiveOffers(var Offers: TVkActiveOffers; Offset:
   Integer = 100): Boolean;
 begin
   if (Count > 100) or (Count < 0) then
-    raise Exception.Create('Count - положительное число, по умолчанию 100, максимальное значение 100');
+    raise TVkWrongParamException.Create('Count - положительное число, по умолчанию 100, максимальное значение 100');
   if (Offset < 0) then
-    raise Exception.Create('Count - положительное число, по умолчанию 0');
+    raise TVkWrongParamException.Create('Count - положительное число, по умолчанию 0');
   with Handler.Execute('account.getActiveOffers', [['offset', Offset.ToString], ['count', Count.ToString]]) do
   begin
     Result := Success;
@@ -114,63 +143,22 @@ begin
   end;
 end;
 
-function TAccountController.RegisterDevice(const Data: TRegisterDeviceData): Boolean;
+function TAccountController.RegisterDevice(const Data: TVkRegisterDeviceParams): Boolean;
 var
   Response: TResponse;
-  Params: TParams;
 begin
-  if Data.Ftoken_need then
-    AddParam(Params, ['token', Data.token]);
-  if Data.Fdevice_model_need then
-    AddParam(Params, ['device_model', Data.device_model]);
-  if Data.Fdevice_year_need then
-    AddParam(Params, ['device_year', Data.device_year.ToString]);
-  if Data.Fdevice_id_need then
-    AddParam(Params, ['device_id', Data.device_id]);
-  if Data.Fsystem_version_need then
-    AddParam(Params, ['system_version', Data.system_version]);
-  if Data.Fsettings_need then
-    AddParam(Params, ['settings', Data.settings]);
-  if Data.Fsandbox_need then
-    AddParam(Params, ['sandbox', Data.sandbox]);
-  Response := Handler.Execute('account.registerDevice', Params);
+  Response := Handler.Execute('account.registerDevice', Data.List);
   Result := Response.Success and (Response.Response = '1');
 end;
 
-function TAccountController.SaveProfileInfo(const Data: TProfileInfoData; var Response: TResponse): Boolean;
+function TAccountController.SaveProfileInfo(const Data: TVkProfileInfoParams; var Request:
+  TVkAccountInfoRequest): Boolean;
 var
-  Params: TParams;
+  Response: TResponse;
 begin
-  if Data.Ffirst_name_need then
-    AddParam(Params, ['first_name', Data.first_name]);
-  if Data.Flast_name_need then
-    AddParam(Params, ['last_name', Data.last_name]);
-  if Data.Fmaiden_name_need then
-    AddParam(Params, ['maiden_name', Data.maiden_name]);
-  if Data.Fscreen_name_need then
-    AddParam(Params, ['screen_name', Data.screen_name]);
-  if Data.Fcancel_request_id_need then
-    AddParam(Params, ['cancel_request_id', Data.cancel_request_id]);
-  if Data.Fsex_need then
-    AddParam(Params, ['sex', Data.sex]);
-  if Data.Frelation_need then
-    AddParam(Params, ['relation', Data.relation]);
-  if Data.Frelation_partner_id_need then
-    AddParam(Params, ['relation_partner_id', Data.relation_partner_id]);
-  if Data.Fbdate_need then
-    AddParam(Params, ['bdate', Data.bdate]);
-  if Data.Fbdate_visibility_need then
-    AddParam(Params, ['bdate_visibility', Data.bdate_visibility]);
-  if Data.Fhome_town_need then
-    AddParam(Params, ['home_town', Data.home_town]);
-  if Data.Fcountry_id_need then
-    AddParam(Params, ['country_id', Data.country_id]);
-  if Data.Fcity_id_need then
-    AddParam(Params, ['city_id', Data.city_id]);
-  if Data.Fstatus_need then
-    AddParam(Params, ['status', Data.status]);
-  Response := Handler.Execute('account.saveProfileInfo', Params);
-  Result := Response.Success;
+  Response := Handler.Execute('account.saveProfileInfo', Data.List);
+  Request := TVkAccountInfoRequest.FromJsonString(Response.Response);
+  Result := Response.Success and Assigned(Request);
 end;
 
 function TAccountController.SetInfo(const Name, Value: string): Boolean;
@@ -249,6 +237,115 @@ begin
   AddParam(Params, ['sandbox', Ord(Sandbox).ToString]);
   with Handler.Execute('account.unregisterDevice', Params) do
     Result := Success and (Response = '1');
+end;
+
+{ TVkRegisterDeviceParams }
+
+function TVkRegisterDeviceParams.DeviceId(Value: string): Integer;
+begin
+  Result := List.Add('device_id', Value);
+end;
+
+function TVkRegisterDeviceParams.DeviceModel(Value: string): Integer;
+begin
+  Result := List.Add('device_model', Value);
+end;
+
+function TVkRegisterDeviceParams.DeviceYear(Value: Integer): Integer;
+begin
+  Result := List.Add('device_year', Value);
+end;
+
+function TVkRegisterDeviceParams.Sandbox(Value: string): Integer;
+begin
+  Result := List.Add('sandbox', Value);
+end;
+
+function TVkRegisterDeviceParams.Settings(Value: string): Integer;
+begin
+  Result := List.Add('settings', Value);
+end;
+
+function TVkRegisterDeviceParams.SystemVersion(Value: string): Integer;
+begin
+  Result := List.Add('system_version', Value);
+end;
+
+function TVkRegisterDeviceParams.Token(Value: string): Integer;
+begin
+  Result := List.Add('token', Value);
+end;
+
+{ TVkProfileInfoParams }
+
+function TVkProfileInfoParams.BirthDate(Value: TDateTime): Integer;
+begin
+  Result := List.Add('bdate', FormatDateTime('DD.MM.YYYY', Value));
+end;
+
+function TVkProfileInfoParams.BirthDateVisibility(Value: TVkBirthDateVisibility): Integer;
+begin
+  Result := List.Add('bdate_visibility', Ord(Value).ToString);
+end;
+
+function TVkProfileInfoParams.CancelRequestId(Value: Integer): Integer;
+begin
+  Result := List.Add('cancel_request_id', Value);
+end;
+
+function TVkProfileInfoParams.CityId(Value: Integer): Integer;
+begin
+  Result := List.Add('cancel_request_id', Value);
+end;
+
+function TVkProfileInfoParams.CountryId(Value: Integer): Integer;
+begin
+  Result := List.Add('country_id', Value);
+end;
+
+function TVkProfileInfoParams.FirstName(Value: string): Integer;
+begin
+  Result := List.Add('first_name', Value);
+end;
+
+function TVkProfileInfoParams.HomeTown(Value: string): Integer;
+begin
+  Result := List.Add('home_town', Value);
+end;
+
+function TVkProfileInfoParams.LastName(Value: string): Integer;
+begin
+  Result := List.Add('last_name', Value);
+end;
+
+function TVkProfileInfoParams.MaidenName(Value: string): Integer;
+begin
+  Result := List.Add('maiden_name', Value);
+end;
+
+function TVkProfileInfoParams.Relation(Value: TVkRelation): Integer;
+begin
+  Result := List.Add('relation', Ord(Value).ToString);
+end;
+
+function TVkProfileInfoParams.RelationPartnerId(Value: Integer): Integer;
+begin
+  Result := List.Add('relation_partner_id', Value);
+end;
+
+function TVkProfileInfoParams.ScreenName(Value: string): Integer;
+begin
+  Result := List.Add('screen_name', Value);
+end;
+
+function TVkProfileInfoParams.Sex(Value: TVkSex): Integer;
+begin
+  Result := List.Add('sex', Ord(Value).ToString);
+end;
+
+function TVkProfileInfoParams.Status(Value: string): Integer;
+begin
+  Result := List.Add('status', Value);
 end;
 
 end.

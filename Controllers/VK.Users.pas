@@ -3,7 +3,7 @@ unit VK.Users;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Structs,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
   VK.Entity.User;
 
 type

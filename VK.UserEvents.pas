@@ -65,7 +65,7 @@ type
     procedure SetOnCountChange(const Value: TOnCountChange);
     procedure DoNotifyChange(const PeerId, Sound, DisabledUntil: Integer);
     procedure SetOnNotifyChange(const Value: TOnNotifyChange);
-    procedure FOnError(Sender: TObject; Code: Integer; Text: string);
+    procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -130,18 +130,26 @@ var
   end;
 
 begin
-  EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
+  try
+    EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
+  except
+    raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+  end;
   case EventType of
     1..4: //Изменение флагов сообщений и новое сообщение
       begin
-        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
-        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
-        ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
-        if TJSONArray(Update).Count > 4 then
-        begin
-          ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
-          if TJSONArray(Update).Count > 5 then
-            ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
+        try
+          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+          ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
+          if TJSONArray(Update).Count > 4 then
+          begin
+            ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
+            if TJSONArray(Update).Count > 5 then
+              ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
+          end;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
         end;
         case EventType of
           1: //1	$message_id (integer) $flags (integer) extra_fields*	Замена флагов сообщения (FLAGS:=$flags).
@@ -156,30 +164,46 @@ begin
       end;
     5: //Редактирование сообщения
       begin
-        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
-        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
-        ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
-        ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
-        ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
+        try
+          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+          ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
+          ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
+          ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoEditMessage(A1, A2, ExtraFields);
       end;
     6, 7: //Прочтение сообщений
       begin
-        A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
-        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        try
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoReadMessages(EventType = 6, A1, A2);
       end;
     8, 9: //Online/Offline пользователя
       begin
-        A1 := TJSONArray(Update).Items[1].GetValue<Integer> *  - 1;
-        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
-        A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
+        try
+          A1 := TJSONArray(Update).Items[1].GetValue<Integer> *  - 1;
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+          A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoUserStateChange(EventType = 8, A1, A2, A3);
       end;
     10, 11, 12: //Изменение флагов диалога
       begin
-        A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
-        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        try
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         case EventType of
           10: //$peer_id (integer) $mask (integer)	Сброс флагов диалога $peer_id. Соответствует операции (PEER_FLAGS &= ~$flags). Только для диалогов сообществ.
             DoChangeDialogFlags(A1, fcFlagsReset, A2);
@@ -191,8 +215,12 @@ begin
       end;
     13, 14: //Удаление/восставноление сообщений
       begin
-        A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
-        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        try
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         case EventType of
           13: //Удаление всех сообщений в диалоге $peer_id с идентификаторами вплоть до $local_id.
             DoDeleteMessages(A1, A2);
@@ -202,42 +230,58 @@ begin
       end;
     51: //Один из параметров (состав, тема) беседы $chat_id были изменены. $self — 1 или 0 (вызваны ли изменения самим пользователем).
       begin
-        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
-        if TJSONArray(Update).Count > 2 then
-          A2 := TJSONArray(Update).Items[2].GetValue<Integer>
-        else
-          A2 := 0;
+        try
+          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+          if TJSONArray(Update).Count > 2 then
+            A2 := TJSONArray(Update).Items[2].GetValue<Integer>
+          else
+            A2 := 0;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoChatChanged(A1, A2 = 1);
       end;
     52: //Изменение информации чата $peer_id с типом $type_id, $info — дополнительная информация об изменениях, зависит от типа события
       begin
-        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
-        A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
-        A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
+        try
+          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+          A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
+          A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoChatChangeInfo(A2, A1, A3);
       end;
     61, 62: //Пользователь набирает текст в диалоге/чате
       begin
-        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
-        if EventType = 62 then
-          A2 := TJSONArray(Update).Items[2].GetValue<Integer>
-        else
-          A2 := A1;
+        try
+          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+          if EventType = 62 then
+            A2 := TJSONArray(Update).Items[2].GetValue<Integer>
+          else
+            A2 := A1;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoUserTyping(A1, A2);
       end;
     63, 64: //Пользователи в беседе набирают текст или записывают аудио
       begin
-        Arr := TJSONArray(TJSONArray(Update).Items[1]);
-        SetLength(UserIds, 0);
-        for i := 0 to Arr.Count do
-        begin
-          SetLength(UserIds, Length(UserIds) + 1);
-          UserIds[Length(UserIds) - 1] := Arr.Items[i].GetValue<Integer>;
-        end;
+        try
+          Arr := TJSONArray(TJSONArray(Update).Items[1]);
+          SetLength(UserIds, 0);
+          for i := 0 to Arr.Count do
+          begin
+            SetLength(UserIds, Length(UserIds) + 1);
+            UserIds[Length(UserIds) - 1] := Arr.Items[i].GetValue<Integer>;
+          end;
 
-        A1 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
-        A2 := TJSONArray(Update).Items[3].GetValue<Integer>;
-        A3 := TJSONArray(Update).Items[4].GetValue<Integer>;
+          A1 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
+          A2 := TJSONArray(Update).Items[3].GetValue<Integer>;
+          A3 := TJSONArray(Update).Items[4].GetValue<Integer>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         case EventType of
           63:
             DoUsersTyping(UserIds, A1, A2, A3);
@@ -247,33 +291,45 @@ begin
       end;
     70: //Пользователь $user_id совершил звонок с идентификатором $call_id.
       begin
-        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
-        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        try
+          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoUserCall(A1, A2);
       end;
     80: //Счетчик в левом меню стал равен $count.
       begin
-        A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+        try
+          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoCountChange(A1);
       end;
     114: //Изменились настройки оповещений. $peer_id — идентификатор чата/собеседника,
          //'$sound — 1/0, включены/выключены звуковые оповещения,
          //$disabled_until — выключение оповещений на необходимый срок (-1: навсегда, ''0
       begin
-        A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
-        A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
-        if TJSONArray(Update).Count > 3 then
-          A3 := TJSONArray(Update).Items[3].GetValue<Integer>
-        else
-          A3 := 0;
+        try
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+          if TJSONArray(Update).Count > 3 then
+            A3 := TJSONArray(Update).Items[3].GetValue<Integer>
+          else
+            A3 := 0;
+        except
+          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+        end;
         DoNotifyChange(A1, A2, A3);
       end;
   end;
 end;
 
-procedure TCustomUserEvents.FOnError(Sender: TObject; Code: Integer; Text: string);
+procedure TCustomUserEvents.FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
-  FVK.DoLog(Self, Text);
+  FVK.DoError(Sender, E, Code, Text);
 end;
 
 procedure TCustomUserEvents.FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);

@@ -9,7 +9,6 @@ uses
   VK.Controller in '..\..\VK.Controller.pas',
   VK.Handler in '..\..\VK.Handler.pas',
   VK.Captcha in '..\..\Forms\VK.Captcha.pas' {FormCaptcha},
-  VK.Structs in '..\..\VK.Structs.pas',
   VK.LongPollServer in '..\..\VK.LongPollServer.pas',
   VK.UserEvents in '..\..\VK.UserEvents.pas',
   VK.GroupEvents in '..\..\VK.GroupEvents.pas',
@@ -53,7 +52,10 @@ uses
   VK.Entity.User in '..\..\Entity\VK.Entity.User.pas',
   VK.Entity.Video in '..\..\Entity\VK.Entity.Video.pas',
   VK.Entity.GroupSettings in '..\..\Entity\VK.Entity.GroupSettings.pas',
-  VK.Likes in '..\..\Controllers\VK.Likes.pas';
+  VK.Likes in '..\..\Controllers\VK.Likes.pas',
+  VK.Audio in '..\..\Controllers\VK.Audio.pas',
+  VK.Entity.AccountInfoRequest in '..\..\Entity\VK.Entity.AccountInfoRequest.pas',
+  VK.Board in '..\..\Controllers\VK.Board.pas';
 
 {$R *.res}
 

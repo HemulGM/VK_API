@@ -167,7 +167,7 @@ type
     FOnGroupPayTransaction: TOnGroupPayTransaction;
     FOnGroupAppPayload: TOnGroupAppPayload;
     FOnMessageTypingState: TOnGroupMessageTypingState;
-    procedure FOnError(Sender: TObject; Code: Integer; Text: string);
+    procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
     procedure SetVK(const Value: TCustomVK);
@@ -496,7 +496,10 @@ begin
   EventObject := Update.GetValue<TJSONValue>('object', nil);
   GroupId := Update.GetValue<Integer>('group_id', 0);
   EventId := Update.GetValue<string>('event_id', '');
-
+  if not Assigned(EventObject) then
+    raise TVkGroupEventsException.Create('Не был получен объект события');
+  if EventType.IsEmpty then
+    raise TVkGroupEventsException.Create('Не был получен тип события');
   //message_typing_state
   if EventType = 'message_new' then
     DoMessageNew(GroupId, EventObject, EventId)
@@ -589,8 +592,11 @@ begin
   if Assigned(FOnAudioNew) then
   begin
     Audio := TVkAudio.FromJsonString(EventObject.ToString);
-    FOnAudioNew(Self, GroupId, Audio, EventId);
-    Audio.Free;
+    try
+      FOnAudioNew(Self, GroupId, Audio, EventId);
+    finally
+      Audio.Free;
+    end;
   end;
 end;
 
@@ -633,8 +639,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
-    FOnBoardPostEdit(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnBoardPostEdit(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -648,8 +657,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
-    FOnBoardPostNew(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnBoardPostNew(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -663,8 +675,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
-    FOnBoardPostRestore(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnBoardPostRestore(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -676,8 +691,11 @@ begin
   begin
     Changes.UserId := EventObject.GetValue<Integer>('user_id', -1);
     Changes.Photo := TVkPhoto.FromJsonString(EventObject.GetValue<TJSONValue>('photo', nil).ToString);
-    FOnGroupChangePhoto(Self, GroupId, Changes, EventId);
-    Changes.Photo.Free;
+    try
+      FOnGroupChangePhoto(Self, GroupId, Changes, EventId);
+    finally
+      Changes.Photo.Free;
+    end;
   end;
 end;
 
@@ -688,8 +706,11 @@ begin
   if Assigned(FOnGroupChangeSettings) then
   begin
     Changes := TVkGroupSettingsChange.FromJsonString(EventObject.ToString);
-    FOnGroupChangeSettings(Self, GroupId, Changes, EventId);
-    Changes.Free;
+    try
+      FOnGroupChangeSettings(Self, GroupId, Changes, EventId);
+    finally
+      Changes.Free;
+    end;
   end;
 end;
 
@@ -758,8 +779,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
-    FOnMarketCommentEdit(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnMarketCommentEdit(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -773,8 +797,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
-    FOnMarketCommentNew(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnMarketCommentNew(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -788,8 +815,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
-    FOnMarketCommentRestore(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnMarketCommentRestore(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -824,8 +854,11 @@ begin
   if Assigned(FOnMessageEdit) then
   begin
     Message := TVkMessage.FromJsonString(EventObject.ToString);
-    FOnMessageEdit(Self, GroupId, Message, EventId);
-    Message.Free;
+    try
+      FOnMessageEdit(Self, GroupId, Message, EventId);
+    finally
+      Message.Free;
+    end;
   end;
 end;
 
@@ -838,9 +871,12 @@ begin
   begin
     Message := TVkMessage.FromJsonString(EventObject.GetValue<TJSONValue>('message').ToString);
     ClientInfo := TVkClientInfo.FromJsonString(EventObject.GetValue<TJSONValue>('client_info').ToString);
-    FOnMessageNew(Self, GroupId, Message, ClientInfo, EventId);
-    Message.Free;
-    ClientInfo.Free;
+    try
+      FOnMessageNew(Self, GroupId, Message, ClientInfo, EventId);
+    finally
+      Message.Free;
+      ClientInfo.Free;
+    end;
   end;
 end;
 
@@ -851,8 +887,11 @@ begin
   if Assigned(FOnMessageReply) then
   begin
     Message := TVkMessage.FromJsonString(EventObject.ToString);
-    FOnMessageReply(Self, GroupId, Message, EventId);
-    Message.Free;
+    try
+      FOnMessageReply(Self, GroupId, Message, EventId);
+    finally
+      Message.Free;
+    end;
   end;
 end;
 
@@ -894,8 +933,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
-    FOnPhotoCommentEdit(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnPhotoCommentEdit(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -909,8 +951,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
-    FOnPhotoCommentNew(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnPhotoCommentNew(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -924,8 +969,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
-    FOnPhotoCommentRestore(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnPhotoCommentRestore(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -936,8 +984,11 @@ begin
   if Assigned(FOnPhotoNew) then
   begin
     Photo := TVkPhoto.FromJsonString(EventObject.ToString);
-    FOnPhotoNew(Self, GroupId, Photo, EventId);
-    Photo.Free;
+    try
+      FOnPhotoNew(Self, GroupId, Photo, EventId);
+    finally
+      Photo.Free;
+    end;
   end;
 end;
 
@@ -1008,8 +1059,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
-    FOnVideoCommentEdit(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnVideoCommentEdit(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -1023,8 +1077,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
-    FOnVideoCommentNew(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnVideoCommentNew(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -1038,8 +1095,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
-    FOnVideoCommentRestore(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnVideoCommentRestore(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -1050,8 +1110,11 @@ begin
   if Assigned(FOnVideoNew) then
   begin
     Video := TVkVideo.FromJsonString(EventObject.ToString);
-    FOnVideoNew(Self, GroupId, Video, EventId);
-    Video.Free;
+    try
+      FOnVideoNew(Self, GroupId, Video, EventId);
+    finally
+      Video.Free;
+    end;
   end;
 end;
 
@@ -1076,8 +1139,11 @@ begin
   if Assigned(FOnWallPostNew) then
   begin
     Post := TVkPost.FromJsonString(EventObject.ToString);
-    FOnWallPostNew(Self, GroupId, Post, EventId);
-    Post.Free;
+    try
+      FOnWallPostNew(Self, GroupId, Post, EventId);
+    finally
+      Post.Free;
+    end;
   end;
 end;
 
@@ -1106,8 +1172,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
-    FOnWallReplyEdit(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnWallReplyEdit(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -1121,8 +1190,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
-    FOnWallReplyNew(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnWallReplyNew(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -1136,8 +1208,11 @@ begin
     Comment := TVkComment.FromJsonString(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
-    FOnWallReplyRestore(Self, GroupId, Comment, Info, EventId);
-    Comment.Free;
+    try
+      FOnWallReplyRestore(Self, GroupId, Comment, Info, EventId);
+    finally
+      Comment.Free;
+    end;
   end;
 end;
 
@@ -1148,14 +1223,17 @@ begin
   if Assigned(FOnWallRepost) then
   begin
     Post := TVkPost.FromJsonString(EventObject.ToString);
-    FOnWallRepost(Self, GroupId, Post, EventId);
-    Post.Free;
+    try
+      FOnWallRepost(Self, GroupId, Post, EventId);
+    finally
+      Post.Free;
+    end;
   end;
 end;
 
-procedure TCustomGroupEvents.FOnError(Sender: TObject; Code: Integer; Text: string);
+procedure TCustomGroupEvents.FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
-  FVK.DoLog(Self, Text);
+  FVK.DoError(Sender, E, Code, Text);
 end;
 
 procedure TCustomGroupEvents.FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);

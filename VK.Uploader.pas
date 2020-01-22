@@ -22,24 +22,31 @@ var
   ResStream: TStringStream;
   JSON: TJSONValue;
 begin
-  Data := TMultipartFormData.Create();
-  Data.AddFile('file', FileName);
+  Data := TMultipartFormData.Create;
   HTTP := THTTPClient.Create;
   ResStream := TStringStream.Create;
-  if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
-  begin
-    JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
-    Response := JSON.GetValue<string>('file', '');
-    JSON.Free;
-    Result := not Response.IsEmpty;
-    if not Result then
-      Response := ResStream.DataString;
-  end
-  else
-    Result := False;
-  Data.Free;
-  HTTP.Free;
-  ResStream.Free;
+  try
+    Data.AddFile('file', FileName);
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      try
+        JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
+        Response := JSON.GetValue<string>('file');
+        JSON.Free;
+      except
+        Response := '';
+      end;
+      Result := not Response.IsEmpty;
+      if not Result then
+        Response := ResStream.DataString;
+    end
+    else
+      Result := False;
+  finally
+    Data.Free;
+    HTTP.Free;
+    ResStream.Free;
+  end;
 end;
 
 end.

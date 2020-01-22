@@ -3,7 +3,7 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Types;
+  Generics.Collections, System.SysUtils, Rest.Json, VK.Types;
 
 type
   TVkAudioArtist = class
@@ -85,10 +85,10 @@ type
     FDate: Extended;
     FDuration: Extended;
     FGenre_id: Integer;
-    FId: Extended;
+    FId: Integer;
     FIs_licensed: Boolean;
     FMain_artists: TArray<TVkAudioArtist>;
-    FOwner_id: Extended;
+    FOwner_id: Integer;
     FTitle: string;
     FTrack_code: string;
     FUrl: string;
@@ -99,8 +99,8 @@ type
     function GetAudioGenre: TAudioGenre;
     procedure SetAudioGenre(const Value: TAudioGenre);
   public
-    property id: Extended read FId write FId;
-    property owner_id: Extended read FOwner_id write FOwner_id;
+    property id: Integer read FId write FId;
+    property owner_id: Integer read FOwner_id write FOwner_id;
     property artist: string read FArtist write FArtist;
     property title: string read FTitle write FTitle;
     property duration: Extended read FDuration write FDuration;
@@ -124,6 +124,16 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAudio;
+  end;
+
+  TVkAudioIndex = TArrayOfInteger;
+
+  TVkAudioIndexes = TArray<TVkAudioIndex>;
+
+  TVkAudios = TArray<TVkAudio>;
+
+  TVkAudiosHelper = record helper for TVkAudios
+    function ToAudioIndexes: TVkAudioIndexes; inline;
   end;
 
 implementation
@@ -226,6 +236,17 @@ end;
 class function TVkAudioAlbum.FromJsonString(AJsonString: string): TVkAudioAlbum;
 begin
   result := TJson.JsonToObject<TVkAudioAlbum>(AJsonString)
+end;
+
+{ TVkAudiosHelper }
+
+function TVkAudiosHelper.ToAudioIndexes: TVkAudioIndexes;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(Self));
+  for i := Low(Self) to High(Self) do
+    Result[i] := [Self[i].owner_id, Self[i].id];
 end;
 
 end.

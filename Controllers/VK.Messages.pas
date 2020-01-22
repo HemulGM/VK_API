@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
-  VK.Structs, VK.Handler, VK.Entity.Keyboard, VK.Entity.Message;
+  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message;
 
 type
   TMessagesController = class;

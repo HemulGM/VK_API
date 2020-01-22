@@ -38,7 +38,7 @@ type
     FGroupID: string;
     FOnUpdate: TOnLongPollServerUpdate;
     function QueryLongPollServer: Boolean;
-    procedure DoError(Text: string);
+    procedure DoError(E: Exception);
     procedure OnLongPollRecieve(Response: TJSONValue);
     procedure SetOnError(const Value: TOnVKError);
     procedure SetInterval(const Value: Integer);
@@ -98,10 +98,10 @@ begin
   inherited;
 end;
 
-procedure TLongPollServer.DoError(Text: string);
+procedure TLongPollServer.DoError(E: Exception);
 begin
   if Assigned(FOnError) then
-    FOnError(Self, -10000, Text);
+    FOnError(Self, E, -10000, E.Message);
 end;
 
 function TLongPollServer.GetClient: TCustomRESTClient;
@@ -118,9 +118,17 @@ begin
   for i := Low(FParams) to High(FParams) do
     RESTRequest.AddParameter(FParams[i][0], FParams[i][1]);
   RESTRequest.Resource := FMethod;
-  RESTRequest.Execute;
+  try
+    RESTRequest.Execute;
+    JSON := RESTResponse.JSONValue;
+  except
+    on E: Exception do
+    begin
+      DoError(E);
+      Exit(False);
+    end;
+  end;
 
-  JSON := RESTResponse.JSONValue;
   if RESTResponse.JSONValue.TryGetValue<TJSONValue>('response', JSON) then
   begin
     FLongPollData.key := JSON.GetValue('key', '');
@@ -131,8 +139,10 @@ begin
     Result := not FLongPollData.server.IsEmpty;
   end
   else
+    Result := False;
+  if not Result then
   begin
-    DoError('QueryLongPollServer error '#13#10 + JSON.ToString);
+    DoError(TVkLongPollServerException.Create('QueryLongPollServer error '#13#10 + JSON.ToString));
     Exit(False);
   end;
 end;
@@ -142,18 +152,21 @@ var
   Updates: TJSONArray;
   i: Integer;
 begin
-  if not Assigned(FOnUpdate) then
-    raise Exception.Create('Необходимо обязательно указать обработчик входящих обновлений');
   if Response.TryGetValue<TJSONArray>('updates', Updates) then
   begin
     for i := 0 to Updates.Count - 1 do
+    try
       FOnUpdate(Self, FGroupID, Updates.Items[i]);
+    except
+      on E: Exception do
+        DoError(E);
+    end;
   end
   else
   begin
     if not QueryLongPollServer then
     begin
-      DoError(Response.ToString);
+      DoError(TVkLongPollServerException.Create('not QueryLongPollServer ' + Response.ToString));
       FLongPollNeedStop := True;
     end;
   end;
@@ -205,6 +218,8 @@ begin
   Result := False;
   FLongPollNeedStop := False;
   //
+  if not Assigned(FOnUpdate) then
+    raise Exception.Create('Необходимо обязательно указать обработчик входящих обновлений');
   if not QueryLongPollServer then
     Exit;
   FThread := TThread.CreateAnonymousThread(
@@ -241,7 +256,7 @@ begin
         end;
       except
         on E: Exception do
-          DoError(E.Message);
+          DoError(E);
       end;
       HTTP.Free;
       Stream.Free;

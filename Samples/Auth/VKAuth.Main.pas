@@ -41,6 +41,8 @@ type
     Button18: TButton;
     Button19: TButton;
     Button20: TButton;
+    Button21: TButton;
+    Button22: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -52,7 +54,6 @@ type
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
-    procedure VK1Error(Sender: TObject; Code: Integer; Text: string);
     procedure VK1Login(Sender: TObject);
     procedure VK1Log(Sender: TObject; const Value: string);
     procedure Button11Click(Sender: TObject);
@@ -160,6 +161,9 @@ type
       TVkPayTransaction; EventId: string);
     procedure VkGroupEventsController1MessageTypingState(Sender: TObject; GroupId, UserId: Integer;
       State, EventId: string);
+    procedure Button21Click(Sender: TObject);
+    procedure Button22Click(Sender: TObject);
+    procedure VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
   private
   public
     { Public declarations }
@@ -172,8 +176,8 @@ implementation
 
 uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Structs, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall,
-  VK.Docs, VK.Entity.Doc.Save, VK.Utils;
+  VK.Entity.PushSettings, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
+  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest;
 
 {$R *.dfm}
 
@@ -305,6 +309,31 @@ begin
   end;
 end;
 
+procedure TFormMain.Button21Click(Sender: TObject);
+var
+  List: TVkAudios;
+  i: Integer;
+begin
+  if VK1.Audio.Get(List, 415730216) then
+  begin
+    for i := Low(List) to High(List) do
+    begin
+      Memo1.Lines.Add(List[i].artist + '-' + List[i].title + ' URL: ' + List[i].Url);
+      List[i].Free;
+    end;
+  end
+  else
+    Memo1.Lines.Add('Error unbanned');
+end;
+
+procedure TFormMain.Button22Click(Sender: TObject);
+begin
+  if VK1.Board.CreateComment(145962568, 39960452, 'Мой комментарий') then
+    Memo1.Lines.Add('Комментарий добавлен')
+  else
+    Memo1.Lines.Add('Комментарий НЕ добавлен');
+end;
+
 procedure TFormMain.Button2Click(Sender: TObject);
 begin
   if VK1.Account.UnBan(-1) then
@@ -364,21 +393,30 @@ end;
 
 procedure TFormMain.Button7Click(Sender: TObject);
 var
-  Response: TResponse;
-  Info: TProfileInfoData;
+  Response: TVkAccountInfoRequest;
+  Info: TVkProfileInfoParams;
 begin
-  Info.Clear;
-  Info.status := 'test1';
+  Info.Status('test123');
   if VK1.Account.SaveProfileInfo(Info, Response) then
-    Memo1.Lines.Add(Response.Response);
+  begin
+    Memo1.Lines.Add(Response.status);
+    Response.Free;
+  end;
 end;
 
 procedure TFormMain.Button8Click(Sender: TObject);
 begin
-  VK1.CallMethod('account.getProfileInfo', [],
+  //audio.get
+  //audio.search,q
+  {
+  "id": 456239099,
+                "owner_id": 444273385,
+  }
+  //VK1.CallMethod('audio.getById', [['audios', '444273385_456239099,444273385_456239107']],
+  VK1.CallMethod('audio.get', [['owner_id', '415730216']],
     procedure(Respone: TResponse)
     begin
-      ShowMessage(Respone.Response);
+      Memo1.Lines.Add(Respone.Response);
     end);
 end;
 
@@ -407,7 +445,7 @@ begin
   VK1.Login;
 end;
 
-procedure TFormMain.VK1Error(Sender: TObject; Code: Integer; Text: string);
+procedure TFormMain.VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
   if (not VK1.IsLogin) and (not VK1.UseServiceKeyOnly) then
   begin

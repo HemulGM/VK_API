@@ -5,7 +5,20 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, System.Generics.Collections, System.JSON;
+  System.Classes, System.SysUtils, System.Generics.Collections, System.JSON;
+
+type
+  TVkException = Exception;
+
+  TVkHandlerException = TVkException;
+
+  TVkWrongParamException = TVkException;
+
+  TVkLongPollServerException = TVkException;
+
+  TVkGroupEventsException = TVkLongPollServerException;
+
+  TVkUserEventsException = TVkLongPollServerException;
 
 const
   //Inner VK errors
@@ -95,10 +108,15 @@ type
 
   TParam = TArrayOfString;
 
+  TParamInt = TArrayOfInteger;
+
   {$IFDEF OLD_VERSION}
   TParams = array of TParam;
+
+  TParamsInt = array of TParamInt;
   {$ELSE}
   TParams = TArray<TParam>;
+  TParamsInt = TArray<TParamInt>;
   {$ENDIF}
 
 
@@ -106,6 +124,7 @@ type
     function Add(Param: TParam): Integer; overload; inline;
     function Add(Key, Value: string): Integer; overload; inline;
     function Add(Key: string; Value: Integer): Integer; overload; inline;
+    function Add(Key: string; Value: Boolean): Integer; overload; inline;
   end;
 
   TPremission = string;
@@ -203,7 +222,28 @@ type
     function ToConst: string; inline;
   end;
 
+  //ѕол
+  TVkSex = (sxMale, sxFemale);
+
+  //¬идимость даты рождени€
+  TVkBirthDateVisibility = (dvVisible, dvDayMonOnly, dvHidden);
+
+  //ќтношени€
+  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated,
+    rnnActivelyLooking, rnInLove, rnCivilMarriage);
+  {0 Ч не указано.
+    1 Ч не женат/не замужем;
+    2 Ч есть друг/есть подруга;
+    3 Ч помолвлен/помолвлена;
+    4 Ч женат/замужем;
+    5 Ч всЄ сложно;
+    6 Ч в активном поиске;
+    7 Ч влюблЄн/влюблена;
+    8 Ч в гражданском браке;}
+
+
   //—труктура событи€ вход€щего сообщени€
+
   TMessageData = record
     MessageId: Integer;
     Flags: TMessageFlags;
@@ -290,7 +330,7 @@ type
 
   TOnLog = procedure(Sender: TObject; const Value: string) of object;
 
-  TOnVKError = procedure(Sender: TObject; Code: Integer; Text: string) of object;
+  TOnVKError = procedure(Sender: TObject; E: Exception; Code: Integer; Text: string) of object;
 
   TCallMethodCallback = reference to procedure(Respone: TResponse);
 
@@ -357,7 +397,7 @@ function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string
 implementation
 
 uses
-  System.SysUtils;
+  VK.Utils;
 
 function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string): string;
 begin
@@ -706,7 +746,7 @@ begin
   begin
     if i <> Low(Self) then
       Result := Result + ',';
-    Result := Result + Self.ToString;
+    Result := Result + Self[i].ToString;
   end;
 end;
 
@@ -784,6 +824,11 @@ end;
 function TParamsHelper.Add(Key: string; Value: Integer): Integer;
 begin
   Result := AddParam(Self, [Key, Value.ToString]);
+end;
+
+function TParamsHelper.Add(Key: string; Value: Boolean): Integer;
+begin
+  Result := AddParam(Self, [Key, BoolToString(Value)]);
 end;
 
 { TMessageFlagHelper }

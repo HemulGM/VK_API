@@ -210,6 +210,24 @@ object FormMain: TFormMain
       TabOrder = 19
       OnClick = Button20Click
     end
+    object Button21: TButton
+      Left = 6
+      Top = 391
+      Width = 137
+      Height = 25
+      Caption = 'Audio.Get'
+      TabOrder = 20
+      OnClick = Button21Click
+    end
+    object Button22: TButton
+      Left = 6
+      Top = 453
+      Width = 137
+      Height = 25
+      Caption = 'Board.CreateComment'
+      TabOrder = 21
+      OnClick = Button22Click
+    end
   end
   object Panel2: TPanel
     Left = 0
@@ -262,7 +280,6 @@ object FormMain: TFormMain
     OnLogin = VK1Login
     OnLog = VK1Log
     OnError = VK1Error
-    OnErrorLogin = VK1ErrorLogin
     Left = 96
     Top = 56
   end

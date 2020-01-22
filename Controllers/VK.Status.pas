@@ -3,7 +3,7 @@ unit VK.Status;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Structs,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
   VK.Entity.Audio, System.JSON;
 
 type
@@ -53,7 +53,11 @@ begin
       Status.Text := JSONItem.GetValue<string>('text', '');
       Audio := JSONItem.GetValue<TJSONValue>('audio', nil);
       if Assigned(Audio) then
+      try
         Status.Audio := TVkAudio.FromJsonString(Audio.ToJSON)
+      except
+        Status.Audio := nil;
+      end
       else
         Status.Audio := nil;
       JSONItem.Free;

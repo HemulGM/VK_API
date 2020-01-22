@@ -7,7 +7,9 @@ interface
 uses
   System.Classes, System.Net.HttpClient;
 
-function DownloadURL(URL: string): TMemoryStream;
+function DownloadURL(URL: string): TMemoryStream; overload;
+
+function DownloadURL(URL: string; FileName: string): Boolean; overload;
 
 function GetRandomId: Int64;
 
@@ -18,7 +20,7 @@ function BoolToString(Value: Boolean; TrueValue, FalseValue: string): string; ov
 implementation
 
 uses
-  System.DateUtils, System.SysUtils;
+  System.DateUtils, System.SysUtils, Winapi.Windows;
 
 function BoolToString(Value: Boolean): string;
 begin
@@ -63,6 +65,36 @@ begin
       //если проверить размер потока перед его использованием
     end;
   finally
+    HTTP.Free;
+  end;
+end;
+
+function DownloadURL(URL: string; FileName: string): Boolean;
+var
+  HTTP: THTTPClient;
+  Mem: TFileStream;
+begin
+  //Создание, открытие файла
+  try
+    FileClose(FileCreate(FileName));
+    Mem := TFileStream.Create(FileName, fmOpenWrite);
+  except
+    begin
+      raise Exception.Create('Не возможно создать файл');
+      Exit(False);
+    end;
+  end;
+  //Загрузка
+  HTTP := THTTPClient.Create;
+  try
+    try
+      HTTP.HandleRedirects := True;
+      Result := HTTP.Get(URL, Mem).StatusCode = 200;
+    except
+      Result := False;
+    end;
+  finally
+    Mem.Free;
     HTTP.Free;
   end;
 end;

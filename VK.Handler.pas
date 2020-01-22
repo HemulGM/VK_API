@@ -298,7 +298,7 @@ end;
 procedure TVkHandler.ProcError(Msg: string);
 begin
   if Assigned(FOnError) then
-    FOnError(Self, ERROR_VK_UNKNOWN, Msg);
+    FOnError(Self, TVkHandlerException.Create(Msg), ERROR_VK_UNKNOWN, Msg);
 end;
 
 procedure TVkHandler.ProcError(Code: Integer; Text: string);
@@ -307,14 +307,14 @@ begin
   begin
     if Text = '' then
       Text := VKErrorString(Code);
-    FOnError(Self, Code, Text);
+    FOnError(Self, TVkHandlerException.Create(Text), Code, Text);
   end;
 end;
 
 procedure TVkHandler.ProcError(E: Exception);
 begin
   if Assigned(FOnError) then
-    FOnError(Self, ERROR_VK_UNKNOWN, E.Message);
+    FOnError(Self, TVkHandlerException.Create(E.Message), ERROR_VK_UNKNOWN, E.Message);
 end;
 
 end.
