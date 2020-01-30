@@ -10,7 +10,7 @@ type
   private
     FId: Extended;
   public
-    property id: Extended read FId write FId;
+    property Id: Extended read FId write FId;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPollFriends;
   end;
@@ -20,8 +20,8 @@ type
     FColor: string;
     FPosition: Extended;
   public
-    property color: string read FColor write FColor;
-    property position: Extended read FPosition write FPosition;
+    property Color: string read FColor write FColor;
+    property Position: Extended read FPosition write FPosition;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPollPoints;
   end;
@@ -35,12 +35,12 @@ type
     FPoints: TArray<TVkPollPoints>;
     FType: string;
   public
-    property angle: Extended read FAngle write FAngle;
-    property color: string read FColor write FColor;
-    property id: Extended read FId write FId;
-    property name: string read FName write FName;
-    property points: TArray<TVkPollPoints> read FPoints write FPoints;
-    property&type: string read FType write FType;
+    property Angle: Extended read FAngle write FAngle;
+    property Color: string read FColor write FColor;
+    property Id: Extended read FId write FId;
+    property Name: string read FName write FName;
+    property Points: TArray<TVkPollPoints> read FPoints write FPoints;
+    property&Type: string read FType write FType;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPollBackground;
@@ -53,10 +53,10 @@ type
     FText: string;
     FVotes: Extended;
   public
-    property id: Extended read FId write FId;
-    property rate: Extended read FRate write FRate;
-    property text: string read FText write FText;
-    property votes: Extended read FVotes write FVotes;
+    property Id: Extended read FId write FId;
+    property Rate: Extended read FRate write FRate;
+    property Text: string read FText write FText;
+    property Votes: Extended read FVotes write FVotes;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPollAnswer;
   end;
@@ -84,26 +84,26 @@ type
     FPhoto: TVkPhoto;
     FFriends: TArray<TVkPollFriends>;
   public
-    property id: Extended read FId write FId;
-    property owner_id: Extended read FOwner_id write FOwner_id;
-    property created: Extended read FCreated write FCreated;
-    property question: string read FQuestion write FQuestion;
-    property votes: Extended read FVotes write FVotes;
-    property answers: TArray<TVkPollAnswer> read FAnswers write FAnswers;
-    property anonymous: Boolean read FAnonymous write FAnonymous;
-    property multiple: Boolean read FMultiple write FMultiple;
-    property answer_ids: TArray<Extended> read FAnswer_ids write FAnswer_ids;
-    property end_date: Extended read FEnd_date write FEnd_date;
-    property closed: Boolean read FClosed write FClosed;
-    property is_board: Boolean read FIs_board write FIs_board;
-    property can_edit: Boolean read FCan_edit write FCan_edit;
-    property can_vote: Boolean read FCan_vote write FCan_vote;
-    property can_report: Boolean read FCan_report write FCan_report;
-    property can_share: Boolean read FCan_share write FCan_share;
-    property author_id: Extended read FAuthor_id write FAuthor_id;
-    property photo: TVkPhoto read FPhoto write FPhoto;
-    property background: TVkPollBackground read FBackground write FBackground;
-    property friends: TArray<TVkPollFriends> read FFriends write FFriends;
+    property Id: Extended read FId write FId;
+    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property Created: Extended read FCreated write FCreated;
+    property Question: string read FQuestion write FQuestion;
+    property Votes: Extended read FVotes write FVotes;
+    property Answers: TArray<TVkPollAnswer> read FAnswers write FAnswers;
+    property Anonymous: Boolean read FAnonymous write FAnonymous;
+    property Multiple: Boolean read FMultiple write FMultiple;
+    property AnswerIds: TArray<Extended> read FAnswer_ids write FAnswer_ids;
+    property EndDate: Extended read FEnd_date write FEnd_date;
+    property Closed: Boolean read FClosed write FClosed;
+    property IsBoard: Boolean read FIs_board write FIs_board;
+    property CanEdit: Boolean read FCan_edit write FCan_edit;
+    property CanVote: Boolean read FCan_vote write FCan_vote;
+    property CanReport: Boolean read FCan_report write FCan_report;
+    property CanShare: Boolean read FCan_share write FCan_share;
+    property AuthorId: Extended read FAuthor_id write FAuthor_id;
+    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property Background: TVkPollBackground read FBackground write FBackground;
+    property Friends: TArray<TVkPollFriends> read FFriends write FFriends;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -112,7 +112,7 @@ type
 
 implementation
 
-{TPointsClass}
+{TVkPollPoints}
 
 function TVkPollPoints.ToJsonString: string;
 begin
@@ -124,7 +124,7 @@ begin
   result := TJson.JsonToObject<TVkPollPoints>(AJsonString)
 end;
 
-{TBackgroundClass}
+{TVkPollBackground}
 
 destructor TVkPollBackground.Destroy;
 var
@@ -147,7 +147,7 @@ begin
   result := TJson.JsonToObject<TVkPollBackground>(AJsonString)
 end;
 
-{TAnswersClass}
+{TVkPollAnswer}
 
 function TVkPollAnswer.ToJsonString: string;
 begin
@@ -159,7 +159,7 @@ begin
   result := TJson.JsonToObject<TVkPollAnswer>(AJsonString)
 end;
 
-{TRootClass}
+{TVkPoll}
 
 constructor TVkPoll.Create;
 begin
@@ -193,7 +193,7 @@ begin
   result := TJson.JsonToObject<TVkPoll>(AJsonString)
 end;
 
-{ TFriendsClass }
+{ TVkPollFriends }
 
 function TVkPollFriends.ToJsonString: string;
 begin

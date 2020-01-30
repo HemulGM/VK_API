@@ -14,11 +14,11 @@ type
     FKeyboard: Boolean;
     FLang_id: Extended;
   public
-    property button_actions: TArray<string> read FButton_actions write FButton_actions;
-    property carousel: Boolean read FCarousel write FCarousel;
-    property inline_keyboard: Boolean read FInline_keyboard write FInline_keyboard;
-    property keyboard: Boolean read FKeyboard write FKeyboard;
-    property lang_id: Extended read FLang_id write FLang_id;
+    property ButtonActions: TArray<string> read FButton_actions write FButton_actions;
+    property Carousel: Boolean read FCarousel write FCarousel;
+    property InlineKeyboard: Boolean read FInline_keyboard write FInline_keyboard;
+    property Keyboard: Boolean read FKeyboard write FKeyboard;
+    property LangId: Extended read FLang_id write FLang_id;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkClientInfo;
   end;

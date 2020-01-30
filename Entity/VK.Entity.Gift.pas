@@ -13,10 +13,10 @@ type
     FThumb_96: string;
     FThumb_48: string;
   public
-    property id: Extended read FId write FId;
-    property thumb_256: string read FThumb_256 write FThumb_256;
-    property thumb_96: string read FThumb_96 write FThumb_96;
-    property thumb_48: string read FThumb_48 write FThumb_48;
+    property Id: Extended read FId write FId;
+    property Thumb256: string read FThumb_256 write FThumb_256;
+    property Thumb96: string read FThumb_96 write FThumb_96;
+    property Thumb48: string read FThumb_48 write FThumb_48;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkGift;
   end;

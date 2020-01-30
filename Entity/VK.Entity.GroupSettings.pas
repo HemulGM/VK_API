@@ -11,8 +11,8 @@ type
     FNew_value: string;
     FOld_value: string;
   public
-    property new_value: string read FNew_value write FNew_value;
-    property old_value: string read FOld_value write FOld_value;
+    property NewValue: string read FNew_value write FNew_value;
+    property OldValue: string read FOld_value write FOld_value;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkGroupSettingStr;
   end;
@@ -22,8 +22,8 @@ type
     FNew_value: Integer;
     FOld_value: Integer;
   public
-    property new_value: Integer read FNew_value write FNew_value;
-    property old_value: Integer read FOld_value write FOld_value;
+    property NewValue: Integer read FNew_value write FNew_value;
+    property OldValue: Integer read FOld_value write FOld_value;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkGroupSettingInt;
   end;
@@ -47,22 +47,22 @@ type
     FTopics: TVkGroupSettingInt;
     FStatus_default: TVkGroupSettingInt;
   public
-    property city_id: TVkGroupSettingInt read FCity_id write FCity_id;
-    property access: TVkGroupSettingInt read FAccess write FAccess;
-    property age_limits: TVkGroupSettingInt read FAge_limits write FAge_limits;
-    property public_category: TVkGroupSettingInt read FPublic_category write FPublic_category;
-    property public_subcategory: TVkGroupSettingInt read FPublic_subcategory write FPublic_subcategory;
-    property audio: TVkGroupSettingInt read FAudio write FAudio;
-    property docs: TVkGroupSettingInt read FDocs write FDocs;
-    property photos: TVkGroupSettingInt read FPhotos write FPhotos;
-    property video: TVkGroupSettingInt read FVideo write FVideo;
-    property market: TVkGroupSettingInt read FMarket write FMarket;
-    property topics: TVkGroupSettingInt read FTopics write FTopics;
-    property status_default: TVkGroupSettingInt read FStatus_default write FStatus_default;
-    property description: TVkGroupSettingStr read FDescription write FDescription;
-    property title: TVkGroupSettingStr read FTitle write FTitle;
-    property screen_name: TVkGroupSettingStr read FScreen_name write FScreen_name;
-    property website: TVkGroupSettingStr read FWebsite write FWebsite;
+    property CityId: TVkGroupSettingInt read FCity_id write FCity_id;
+    property Access: TVkGroupSettingInt read FAccess write FAccess;
+    property AgeLimits: TVkGroupSettingInt read FAge_limits write FAge_limits;
+    property PublicCategory: TVkGroupSettingInt read FPublic_category write FPublic_category;
+    property PublicSubcategory: TVkGroupSettingInt read FPublic_subcategory write FPublic_subcategory;
+    property Audio: TVkGroupSettingInt read FAudio write FAudio;
+    property Docs: TVkGroupSettingInt read FDocs write FDocs;
+    property Photos: TVkGroupSettingInt read FPhotos write FPhotos;
+    property Video: TVkGroupSettingInt read FVideo write FVideo;
+    property Market: TVkGroupSettingInt read FMarket write FMarket;
+    property Topics: TVkGroupSettingInt read FTopics write FTopics;
+    property StatusDefault: TVkGroupSettingInt read FStatus_default write FStatus_default;
+    property Description: TVkGroupSettingStr read FDescription write FDescription;
+    property Title: TVkGroupSettingStr read FTitle write FTitle;
+    property ScreenName: TVkGroupSettingStr read FScreen_name write FScreen_name;
+    property Website: TVkGroupSettingStr read FWebsite write FWebsite;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -74,8 +74,8 @@ type
     FChanges: TVkGroupChangeList;
     FUser_id: Extended;
   public
-    property changes: TVkGroupChangeList read FChanges write FChanges;
-    property user_id: Extended read FUser_id write FUser_id;
+    property Changes: TVkGroupChangeList read FChanges write FChanges;
+    property UserId: Extended read FUser_id write FUser_id;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

@@ -18,15 +18,15 @@ type
     FTag: string;
     FTitle: string;
   public
-    property description: string read FDescription write FDescription;
-    property id: string read FId write FId;
-    property img: string read FImg write FImg;
-    property instruction: string read FInstruction write FInstruction;
-    property instruction_html: string read FInstruction_html write FInstruction_html;
-    property price: Extended read FPrice write FPrice;
-    property short_description: string read FShort_description write FShort_description;
-    property tag: string read FTag write FTag;
-    property title: string read FTitle write FTitle;
+    property Description: string read FDescription write FDescription;
+    property Id: string read FId write FId;
+    property Img: string read FImg write FImg;
+    property Instruction: string read FInstruction write FInstruction;
+    property InstructionHtml: string read FInstruction_html write FInstruction_html;
+    property Price: Extended read FPrice write FPrice;
+    property ShortDescription: string read FShort_description write FShort_description;
+    property Tag: string read FTag write FTag;
+    property Title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkActiveOffer;
   end;

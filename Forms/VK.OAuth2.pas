@@ -34,6 +34,7 @@ type
     FLastTitle: string;
     FLastURL: string;
     FNeedShow: Boolean;
+    FFreeze: Boolean;
   public
     procedure ShowWithURL(const AURL: string); overload;
     procedure ShowWithURL(AParent: TWinControl; const AURL: string); overload;
@@ -50,12 +51,34 @@ var
 
 procedure DeleteCache(URLContains: string);
 
+procedure FixIE;
+
 implementation
 
 uses
-  WinInet;
+  WinInet, Registry;
 
 {$R *.dfm}
+
+procedure FixIE;
+const
+  IEVersion = 11001;
+var
+  Reg: TRegistry;
+begin
+  Reg := TRegIniFile.Create(KEY_WRITE);
+  Reg.RootKey := HKEY_CURRENT_USER;
+  if Reg.OpenKey('SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION', True) then
+  begin
+    try
+      Reg.WriteInteger(ExtractFileName(Application.ExeName), IEVersion);
+    except
+    end;
+  end;
+  Reg.CloseKey;
+  Reg.Free;
+end;
+
 procedure DeleteCache;
 var
   lpEntryInfo: PInternetCacheEntryInfo;
@@ -108,7 +131,8 @@ begin
     begin
       Cancel := True;
       if Showing then
-        Close;
+        if not FFreeze then
+          Close;
     end;
   end;
 end;
@@ -119,7 +143,8 @@ var
 begin
   FLastURL := VarToStrDef(URL, '');
   EditAddr.Text := ' ' + FLastURL;
-  Repaint;
+  if Showing then
+    Repaint;
   if Assigned(FOnAfterRedirect) then
   begin
     LDoCloseForm := False;
@@ -130,7 +155,8 @@ begin
     begin
       FNeedShow := False;
       if Showing then
-        Close;
+        if not FFreeze then
+          Close;
     end;
   end;
 end;
@@ -153,14 +179,15 @@ begin
 
     if Assigned(FOnBrowserTitleChanged) then
     begin
-      LCloseForm := FALSE;
+      LCloseForm := False;
       FOnBrowserTitleChanged(FLastTitle, LCloseForm);
 
       if LCloseForm then
       begin
         FNeedShow := False;
         if Showing then
-          Close;
+          if not FFreeze then
+            Close;
       end;
     end;
   end;
@@ -174,13 +201,15 @@ begin
 
   FLastTitle := '';
   FLastURL := '';
+  FixIE;
 end;
 
 procedure TFormOAuth2.FormKeyPress(Sender: TObject; var Key: Char);
 begin
   if (Key = #27) then
   begin
-    Close;
+    if not FFreeze then
+      Close;
   end;
 end;
 
@@ -198,10 +227,15 @@ begin
   FNeedShow := True;
   Browser.Navigate(AURL);
   TS := GetTickCount;
+  FFreeze := True;
   while TS + 3000 > GetTickCount do
     Application.ProcessMessages;
+  FFreeze := False;
+
   if FNeedShow then
-    Show;
+    Show
+  else
+    Close;
 end;
 
 procedure TFormOAuth2.ShowWithURL(const AURL: string);
@@ -215,10 +249,14 @@ begin
   FNeedShow := True;
   Browser.Navigate(AURL);
   TS := GetTickCount;
+  FFreeze := True;
   while TS + 3000 > GetTickCount do
     Application.ProcessMessages;
+  FFreeze := False;
   if FNeedShow then
-    ShowModal;
+    ShowModal
+  else
+    Close;
 end;
 
 end.

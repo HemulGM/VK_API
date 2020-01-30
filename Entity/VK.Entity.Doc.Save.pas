@@ -14,10 +14,10 @@ type
     FDoc: TVkDocument;
     FGraffiti: TVkGraffiti;
   public
-    property&type: string read FType write FType;
-    property audio_message: TVkAudioMessage read FAudio_message write FAudio_message;
-    property doc: TVkDocument read FDoc write FDoc;
-    property graffiti: TVkGraffiti read FGraffiti write FGraffiti;
+    property&Type: string read FType write FType;
+    property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
+    property Doc: TVkDocument read FDoc write FDoc;
+    property Graffiti: TVkGraffiti read FGraffiti write FGraffiti;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

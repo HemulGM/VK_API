@@ -221,12 +221,39 @@ object FormMain: TFormMain
     end
     object Button22: TButton
       Left = 6
-      Top = 453
+      Top = 485
       Width = 137
       Height = 25
       Caption = 'Board.CreateComment'
       TabOrder = 21
       OnClick = Button22Click
+    end
+    object Button23: TButton
+      Left = 6
+      Top = 422
+      Width = 137
+      Height = 25
+      Caption = 'Audio.GetAlbums'
+      TabOrder = 22
+      OnClick = Button23Click
+    end
+    object Button24: TButton
+      Left = 6
+      Top = 453
+      Width = 137
+      Height = 25
+      Caption = 'Audio.GetRecoms'
+      TabOrder = 23
+      OnClick = Button24Click
+    end
+    object Button25: TButton
+      Left = 151
+      Top = 66
+      Width = 137
+      Height = 25
+      Caption = 'Groups.getMembers'
+      TabOrder = 24
+      OnClick = Button25Click
     end
   end
   object Panel2: TPanel
@@ -269,10 +296,12 @@ object FormMain: TFormMain
     end
   end
   object VK1: TVK
-    AppID = '9837245'
-    AppKey = 'XBMNBmndgfhdnmB34sxcZ'
+    AppID = '6121396'
+    AppKey = 'AlVXZFMUqyrnABp8ncuU'
     EndPoint = 'https://oauth.vk.com/authorize'
-    Permissions = 'groups,friends,wall,photos,video,docs,notes,market,messages'
+    Permissions = 
+      'groups,friends,wall,photos,video,docs,notes,market,messages,audi' +
+      'o'
     APIVersion = '5.103'
     BaseURL = 'https://api.vk.com/method'
     ServiceKey = 'fcsdfbvdsbvfcsbdvfcasdgfhgasdfjkshadgfbdsmfgbmdsfngbmdfsgb'

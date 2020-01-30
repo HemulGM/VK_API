@@ -43,6 +43,9 @@ type
     Button20: TButton;
     Button21: TButton;
     Button22: TButton;
+    Button23: TButton;
+    Button24: TButton;
+    Button25: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -164,6 +167,9 @@ type
     procedure VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure VK1ErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+    procedure Button23Click(Sender: TObject);
+    procedure Button24Click(Sender: TObject);
+    procedure Button25Click(Sender: TObject);
   private
   public
     { Public declarations }
@@ -177,7 +183,8 @@ implementation
 uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
   VK.Entity.PushSettings, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
-  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.OAuth2;
+  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.OAuth2,
+  VK.Entity.Playlist, VK.Audio;
 
 {$R *.dfm}
 
@@ -206,12 +213,12 @@ begin
   begin
     for i := Low(Users.Items) to High(Users.Items) do
     begin
-      Memo1.Lines.Add('about: ' + Users.Items[i].about);
-      Memo1.Lines.Add('bdate: ' + Users.Items[i].bdate);
-      Memo1.Lines.Add('books: ' + Users.Items[i].books);
-      Memo1.Lines.Add('domain: ' + Users.Items[i].domain);
-      Memo1.Lines.Add('first_name: ' + Users.Items[i].first_name);
-      Memo1.Lines.Add('movies: ' + Users.Items[i].movies);
+      Memo1.Lines.Add('About: ' + Users.Items[i].About);
+      Memo1.Lines.Add('BirthDate: ' + Users.Items[i].BirthDate);
+      Memo1.Lines.Add('Books: ' + Users.Items[i].Books);
+      Memo1.Lines.Add('Domain: ' + Users.Items[i].Domain);
+      Memo1.Lines.Add('FirstName: ' + Users.Items[i].FirstName);
+      Memo1.Lines.Add('Movies: ' + Users.Items[i].Movies);
       Memo1.Lines.Add('------------');
     end;
     Users.Free;
@@ -220,7 +227,6 @@ end;
 
 procedure TFormMain.Button13Click(Sender: TObject);
 begin
-//  Vk1.UserLongPollServerStart;
   VkUserEvents1.Start;
 end;
 
@@ -248,7 +254,7 @@ begin
     Memo1.Lines.Add(Status.Text);
     if Assigned(Status.Audio) then
     begin
-      Memo1.Lines.Add(Status.Audio.artist + ' ' + Status.Audio.title + ', ' + Status.Audio.url);
+      Memo1.Lines.Add(Status.Audio.Artist + ' ' + Status.Audio.Title + ', ' + Status.Audio.Url);
       Status.Audio.Free;
     end;
   end
@@ -296,9 +302,9 @@ begin
     begin
       if VK1.Docs.Save(Doc, Response, 'Тестовая аудиозапись', '') then
       begin
-        Memo1.Lines.Add(Doc.&type);
-        Memo1.Lines.Add(Doc.audio_message.link_ogg);
-        Memo1.Lines.Add(Doc.audio_message.ToAttachment);
+        Memo1.Lines.Add(Doc.&Type);
+        Memo1.Lines.Add(Doc.AudioMessage.LinkOgg);
+        Memo1.Lines.Add(Doc.AudioMessage.ToAttachment);
         Doc.Free;
       end;
     end
@@ -313,17 +319,22 @@ procedure TFormMain.Button21Click(Sender: TObject);
 var
   List: TVkAudios;
   i: Integer;
+var
+  Params: TVkAudioParams;
 begin
-  if VK1.Audio.Get(List, 415730216) then
+  Params.OwnerId(415730216);
+  Params.AlbumId(86751037);
+  if VK1.Audio.Get(List, Params) then
   begin
     for i := Low(List) to High(List) do
     begin
-      Memo1.Lines.Add(List[i].artist + '-' + List[i].title + ' URL: ' + List[i].Url);
+      Memo1.Lines.Add(List[i].Artist + '-' + List[i].Title + ' ' + BoolToString(List[i].ContentRestricted = 0,
+        '', ' - аудиозапись не доступна'));
       List[i].Free;
     end;
   end
   else
-    Memo1.Lines.Add('Error unbanned');
+    Memo1.Lines.Add('Error get audios');
 end;
 
 procedure TFormMain.Button22Click(Sender: TObject);
@@ -332,6 +343,71 @@ begin
     Memo1.Lines.Add('Комментарий добавлен')
   else
     Memo1.Lines.Add('Комментарий НЕ добавлен');
+end;
+
+procedure TFormMain.Button23Click(Sender: TObject);
+var
+  List: TVkPlaylists;
+  i: Integer;
+begin
+  //VK1.CallMethod('audio.getPlaylist', [['album_id', '86751037']]);
+  Exit;
+  if VK1.Audio.GetPlaylists(List, 415730216) then
+  begin
+    for i := Low(List) to High(List) do
+    begin
+      Memo1.Lines.Add(List[i].Title + '-' + List[i].Description + ' Playlist Type: ' + List[i].AlbumType);
+      List[i].Free;
+    end;
+  end
+  else
+    Memo1.Lines.Add('Error GetPlaylists');
+end;
+
+procedure TFormMain.Button24Click(Sender: TObject);
+var
+  List: TVkAudios;
+  i: Integer;
+var
+  Params: TVkAudioParams;
+begin
+  Params.OwnerId(415730216);
+  Params.AlbumId(86751037);
+  if VK1.Audio.GetRecommendations(List) then
+  begin
+    for i := Low(List) to High(List) do
+    begin
+      Memo1.Lines.Add(List[i].Artist + '-' + List[i].Title + ' ' + BoolToString(List[i].ContentRestricted = 0,
+        '', ' - аудиозапись не доступна'));
+      List[i].Free;
+    end;
+  end
+  else
+    Memo1.Lines.Add('Error GetRecommendations');
+end;
+
+procedure TFormMain.Button25Click(Sender: TObject);
+var
+  Users: TVkUserList;
+  TS: Cardinal;
+begin
+  TThread.CreateAnonymousThread(
+    procedure
+    var
+      i: Integer;
+    begin
+      TS := GetTickCount;
+      if VK1.Groups.GetMembersFull(Users, 'delphilive') then
+      begin
+        Memo1.Lines.Add('done ' + Length(Users).ToString);
+        Memo1.Lines.Add('time ' + ((GetTickCount - TS) / 1000).ToString);
+        for i := Low(Users) to High(Users) do
+        begin
+          Memo1.Lines.Add(Users[i].FirstName + ' ' + Users[i].LastName);
+          Users[i].Free;
+        end;
+      end;
+    end).Start;
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
@@ -353,7 +429,7 @@ begin
     for i := 0 to Length(Offers.items) - 1 do
     begin
       Memo1.Lines.Add('--');
-      Memo1.Lines.Add(Offers.items[i].description);
+      Memo1.Lines.Add(Offers.items[i].Description);
     end;
     Offers.Free;
   end;
@@ -373,8 +449,8 @@ var
 begin
   if VK1.Account.GetCounters(Counters) then
   begin
-    Memo1.Lines.Add('messages ' + Counters.messages.ToString);
-    Memo1.Lines.Add('notifications ' + Counters.notifications.ToString);
+    Memo1.Lines.Add('messages ' + Counters.Messages.ToString);
+    Memo1.Lines.Add('notifications ' + Counters.Notifications.ToString);
     Counters.Free;
   end;
 end;
@@ -385,8 +461,8 @@ var
 begin
   if VK1.Account.GetPushSettings(PushSettings, '1') then
   begin
-    Memo1.Lines.Add('disabled ' + PushSettings.disabled.ToString);
-    Memo1.Lines.Add('conversations ' + PushSettings.conversations.count.ToString);
+    Memo1.Lines.Add('disabled ' + PushSettings.Disabled.ToString);
+    Memo1.Lines.Add('conversations ' + PushSettings.Conversations.Count.ToString);
     PushSettings.Free;
   end;
 end;
@@ -399,7 +475,7 @@ begin
   Info.Status('test123');
   if VK1.Account.SaveProfileInfo(Info, Response) then
   begin
-    Memo1.Lines.Add(Response.status);
+    Memo1.Lines.Add(Response.Status);
     Response.Free;
   end;
 end;
@@ -431,8 +507,9 @@ end;
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
-  {$INCLUDE app_cred.inc}  //Моё приложение
+  //{$INCLUDE app_cred.inc}  //Моё приложение
   VK1.Login;
+  //VK1.Login('alinvip@inbox.ru', 'HemulGM570092959');
 end;
 
 procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
@@ -442,6 +519,7 @@ begin
   //Это мой токен, эту строчку нужно убрать
   {$INCLUDE vk_admin.inc}  //vk admin
   //{$INCLUDE delphi_live.inc}  //delphi live
+  //Token := '01cdb9a07dcf67352040652808e86566d0448792ab67b52215a34702082c26c19400bef2a223fd5dde3ea';
 end;
 
 procedure TFormMain.VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
@@ -464,13 +542,14 @@ end;
 procedure TFormMain.VK1Login(Sender: TObject);
 begin
   LabelLogin.Caption := 'login success';
+  Memo1.Lines.Add(VK1.Token);
 end;
 
 procedure TFormMain.VkGroupEventsController1AudioNew(Sender: TObject; GroupId: Integer; Audio:
   TVkAudio; EventId: string);
 begin
-  Memo1.Lines.Add('Новоая аудиозапись в группе ' + GroupId.ToString + ' "' + Audio.url + '" от ' +
-    Audio.owner_id.ToString);
+  Memo1.Lines.Add('Новоая аудиозапись в группе ' + GroupId.ToString + ' "' + Audio.Url + '" от ' +
+    Audio.OwnerId.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1BoardPostDelete(Sender: TObject; GroupId: Integer; Info:
@@ -484,22 +563,22 @@ end;
 procedure TFormMain.VkGroupEventsController1BoardPostEdit(Sender: TObject; GroupId: Integer; Comment:
   TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий к обсуждению изменили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString + ', обсуждение ' + Info.Id.ToString);
+  Memo1.Lines.Add('Комментарий к обсуждению изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString + ', обсуждение ' + Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1BoardPostNew(Sender: TObject; GroupId: Integer; Comment:
   TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Новый комментарий к обсуждению в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString + ', обсуждение ' + Info.Id.ToString);
+  Memo1.Lines.Add('Новый комментарий к обсуждению в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString + ', обсуждение ' + Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1BoardPostRestore(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к обсуждению восстановили в группе ' + GroupId.ToString + ' "' +
-    Comment.text + '" обсуждение ' +
+    Comment.Text + '" обсуждение ' +
     Info.Id.ToString);
 end;
 
@@ -514,13 +593,13 @@ procedure TFormMain.VkGroupEventsController1GroupChangePhoto(Sender: TObject; Gr
   Changes: TVkGroupChangePhoto; EventId: string);
 begin
   Memo1.Lines.Add('Изменение фото в группе ' + GroupId.ToString + ' инициатор ' + Changes.UserId.ToString
-    + ' => ' + Changes.Photo.id.ToString);
+    + ' => ' + Changes.Photo.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1GroupChangeSettings(Sender: TObject; GroupId: Integer;
   Changes: TVkGroupSettingsChange; EventId: string);
 begin
-  Memo1.Lines.Add('Изменение параметров в группе ' + GroupId.ToString + ' инициатор ' + Changes.user_id.ToString);
+  Memo1.Lines.Add('Изменение параметров в группе ' + GroupId.ToString + ' инициатор ' + Changes.UserId.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1GroupJoin(Sender: TObject; GroupId, UserId: Integer;
@@ -566,21 +645,21 @@ end;
 procedure TFormMain.VkGroupEventsController1MarketCommentEdit(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий к товару изменили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString + ', товар ' + Info.Id.ToString);
+  Memo1.Lines.Add('Комментарий к товару изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString + ', товар ' + Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1MarketCommentNew(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Новый комментарий к товару в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString + ', товар ' + Info.Id.ToString);
+  Memo1.Lines.Add('Новый комментарий к товару в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString + ', товар ' + Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1MarketCommentRestore(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий к товару восстановили в группе ' + GroupId.ToString + ' "' + Comment.text + '" товар ' +
+  Memo1.Lines.Add('Комментарий к товару восстановили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" товар ' +
     Info.Id.ToString);
 end;
 
@@ -601,19 +680,26 @@ end;
 procedure TFormMain.VkGroupEventsController1MessageEdit(Sender: TObject; GroupId: Integer; Message:
   TVkMessage; EventId: string);
 begin
-  Memo1.Lines.Add('Редактирование сообщения в группе ' + GroupId.ToString + ': ' + Message.text);
+  Memo1.Lines.Add('Редактирование сообщения в группе ' + GroupId.ToString + ': ' + Message.Text);
 end;
 
 procedure TFormMain.VkGroupEventsController1MessageNew(Sender: TObject; GroupId: Integer; Message:
   TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Новое сообщение в группе ' + GroupId.ToString + ': ' + Message.text);
+  Memo1.Lines.Add('Новое сообщение в группе ' + GroupId.ToString + ': ' + Message.Text);
+  if Message.Text = 'погода' then
+    VK1.Messages.
+      Send.
+      PeerId(Message.PeerId).
+      Message('Тут типа я вам показываю прогноз погоды, ага').
+      Send.
+      Free;
 end;
 
 procedure TFormMain.VkGroupEventsController1MessageReply(Sender: TObject; GroupId: Integer; Message:
   TVkMessage; EventId: string);
 begin
-  Memo1.Lines.Add('Исходящее сообщение в группе ' + GroupId.ToString + ': ' + Message.text);
+  Memo1.Lines.Add('Исходящее сообщение в группе ' + GroupId.ToString + ': ' + Message.Text);
 end;
 
 procedure TFormMain.VkGroupEventsController1MessageTypingState(Sender: TObject; GroupId, UserId:
@@ -632,29 +718,29 @@ end;
 procedure TFormMain.VkGroupEventsController1PhotoCommentEdit(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий к фото изменили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString + ', фото ' + Info.Id.ToString);
+  Memo1.Lines.Add('Комментарий к фото изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString + ', фото ' + Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1PhotoCommentNew(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Новый комментарий к фото в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString + ', фото ' + Info.Id.ToString);
+  Memo1.Lines.Add('Новый комментарий к фото в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString + ', фото ' + Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1PhotoCommentRestore(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий к фото восстановили в группе ' + GroupId.ToString + ' "' + Comment.text + '" фото ' +
+  Memo1.Lines.Add('Комментарий к фото восстановили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" фото ' +
     Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1PhotoNew(Sender: TObject; GroupId: Integer; Photo:
   TVkPhoto; EventId: string);
 begin
-  Memo1.Lines.Add('Новое фото в группе ' + GroupId.ToString + ' "' + Photo.text + '" от ' +
-    Photo.owner_id.ToString);
+  Memo1.Lines.Add('Новое фото в группе ' + GroupId.ToString + ' "' + Photo.Text + '" от ' +
+    Photo.OwnerId.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1UserBlock(Sender: TObject; GroupId: Integer; Info:
@@ -680,35 +766,35 @@ end;
 procedure TFormMain.VkGroupEventsController1VideoCommentEdit(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий к видео изменили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString + ', видео ' + Info.Id.ToString);
+  Memo1.Lines.Add('Комментарий к видео изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString + ', видео ' + Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1VideoCommentNew(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Новый комментарий к видео в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString + ', видео ' + Info.Id.ToString);
+  Memo1.Lines.Add('Новый комментарий к видео в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString + ', видео ' + Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1VideoCommentRestore(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий к видео восстановили в группе ' + GroupId.ToString + ' "' + Comment.text + '" видео ' +
+  Memo1.Lines.Add('Комментарий к видео восстановили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" видео ' +
     Info.Id.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1VideoNew(Sender: TObject; GroupId: Integer; Video:
   TVkVideo; EventId: string);
 begin
-  Memo1.Lines.Add('Новое видео в группе ' + GroupId.ToString + ' "' + Video.title + '" от ' +
-    Video.owner_id.ToString);
+  Memo1.Lines.Add('Новое видео в группе ' + GroupId.ToString + ' "' + Video.Title + '" от ' +
+    Video.OwnerId.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallPostNew(Sender: TObject; GroupId: Integer; Post:
   TVkPost; EventId: string);
 begin
-  Memo1.Lines.Add('Новый пост в группе ' + GroupId.ToString + ': ' + Post.text);
+  Memo1.Lines.Add('Новый пост в группе ' + GroupId.ToString + ': ' + Post.Text);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Info:
@@ -721,29 +807,29 @@ end;
 procedure TFormMain.VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
   TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий изменили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString);
+  Memo1.Lines.Add('Комментарий изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
   TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Новый комментарий в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString);
+  Memo1.Lines.Add('Новый комментарий в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer;
   Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
 begin
-  Memo1.Lines.Add('Комментарий к посту восстановили в группе ' + GroupId.ToString + ' "' + Comment.text + '" от ' +
-    Comment.from_id.ToString);
+  Memo1.Lines.Add('Комментарий к посту восстановили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
+    Comment.FromId.ToString);
 end;
 
 procedure TFormMain.VkGroupEventsController1WallRepost(Sender: TObject; GroupId: Integer; Post:
   TVkPost; EventId: string);
 begin
-  Memo1.Lines.Add('Репост записи в группе ' + GroupId.ToString + ' "' + Post.text + '" от ' +
-    Post.from_id.ToString);
+  Memo1.Lines.Add('Репост записи в группе ' + GroupId.ToString + ' "' + Post.Text + '" от ' +
+    Post.FromId.ToString);
 end;
 
 procedure TFormMain.VkUserEvents1ChangeDialogFlags(Sender: TObject; DialogChangeData: TDialogChangeData);
@@ -795,11 +881,15 @@ begin
   Memo1.Lines.Add('Новое сообщение в чате ' + MessageData.PeerId.ToString + ' ' + MessageData.MessageId.ToString
     + ' ' + MessageData.Flags.ToString
     + ': ' + MessageData.Text);
-  if VK1.Messages.GetById(MessageData.MessageId, Msg) then
+  {if VK1.Messages.GetById(MessageData.MessageId, Msg) then
   begin
-    Memo1.Lines.Add(Msg.text);
+    if Length(Msg.attachments) > 0 then
+    begin
+      if Msg.attachments[0].&type = 'audio_message' then
+        Memo1.Lines.Add(Msg.text);
+    end;
     Msg.Free;
-  end;
+  end;  }
   if mfOutbox in MessageData.Flags then
   begin
     //Сообщение от нас
@@ -814,6 +904,18 @@ begin
         .Message('Ай яй, так материться')
         .Attachemt(['album58553419_234519653'])
         .Send.Free;
+    end;
+    if VK1.Messages.GetById(MessageData.MessageId, Msg) then
+    begin
+      if Length(Msg.Attachments) > 0 then
+      begin
+        if Msg.Attachments[0].&Type = 'audio_message' then
+          VK1.Messages.Send
+            .PeerId(MessageData.PeerId)
+            .Message('Опять сука свои голосвые сообщения отправляете')
+            .Send.Free;
+      end;
+      Msg.Free;
     end;
   end;
 end;

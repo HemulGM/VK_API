@@ -197,6 +197,14 @@
         <DCCReference Include="Entity\VK.Entity.Video.pas"/>
         <DCCReference Include="Entity\VK.Entity.AccountInfoRequest.pas"/>
         <DCCReference Include="Controllers\VK.Board.pas"/>
+        <DCCReference Include="VK.FakeAndroidProto.pas"/>
+        <DCCReference Include="Utils\pbInput.pas"/>
+        <DCCReference Include="Utils\pbOutput.pas"/>
+        <DCCReference Include="Utils\pbPublic.pas"/>
+        <DCCReference Include="Utils\StrBuffer.pas"/>
+        <DCCReference Include="Utils\uAbstractProtoBufClasses.pas"/>
+        <DCCReference Include="Controllers\VK.Friends.pas"/>
+        <DCCReference Include="Controllers\VK.Groups.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

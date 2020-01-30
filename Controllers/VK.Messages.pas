@@ -23,7 +23,7 @@ type
     function Message(Text: string): TNewMessage;
     function Payload(Value: string): TNewMessage;
     function Intent(Value: string): TNewMessage;
-    function Keyboard(Value: TVkKeyboard): TNewMessage;
+    function Keyboard(Value: TVkKeyboardConstructor): TNewMessage;
     function DontParseLinks(Value: Boolean): TNewMessage;
     function DisableMentions(Value: Boolean): TNewMessage;
     function StickerId(Id: Integer): TNewMessage;
@@ -370,7 +370,7 @@ begin
   Result := Self;
 end;
 
-function TNewMessage.Keyboard(Value: TVkKeyboard): TNewMessage;
+function TNewMessage.Keyboard(Value: TVkKeyboardConstructor): TNewMessage;
 begin
   Params.Add('keyboard', Value.ToJsonString);
   Result := Self;

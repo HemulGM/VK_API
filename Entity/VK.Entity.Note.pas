@@ -17,14 +17,14 @@ type
     FView_url: string;
     FText: string;
   public
-    property comments: Extended read FComments write FComments;
-    property date: Extended read FDate write FDate;
-    property id: Extended read FId write FId;
-    property owner_id: Extended read FOwner_id write FOwner_id;
-    property read_comments: Extended read FRead_comments write FRead_comments;
-    property title: string read FTitle write FTitle;
-    property text: string read FText write FText;
-    property view_url: string read FView_url write FView_url;
+    property Comments: Extended read FComments write FComments;
+    property Date: Extended read FDate write FDate;
+    property Id: Extended read FId write FId;
+    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property ReadComments: Extended read FRead_comments write FRead_comments;
+    property Title: string read FTitle write FTitle;
+    property Text: string read FText write FText;
+    property ViewUrl: string read FView_url write FView_url;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkNote;
   end;

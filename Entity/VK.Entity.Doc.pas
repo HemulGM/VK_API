@@ -10,41 +10,17 @@ type
   private
     FSizes: TArray<TVkSizes>;
   public
-    property sizes: TArray<TVkSizes> read FSizes write FSizes;
+    property Sizes: TArray<TVkSizes> read FSizes write FSizes;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPreviewPhoto;
-  end;
-
-  TVkPreviewGraffiti = class
-  private
-    FWidth: integer;
-    FSrc: string;
-    FHeight: integer;
-  public
-    property src: string read FSrc write FSrc;
-    property width: integer read FWidth write FWidth;
-    property height: integer read FHeight write FHeight;
-  end;
-
-  TVkPreviewAudioMessage = class
-  private
-    FDuration: integer;
-    Fink_mp3: string;
-    FLink_ogg: string;
-    FWaveform: TArray<Integer>;
-  public
-    property duration: integer read FDuration write FDuration;
-    property waveform: TArray<Integer> read FWaveform write FWaveform;
-    property link_ogg: string read FLink_ogg write FLink_ogg;
-    property link_mp3: string read Fink_mp3 write Fink_mp3;
   end;
 
   TVkPreview = class
   private
     FPhoto: TVkPreviewPhoto;
   public
-    property photo: TVkPreviewPhoto read FPhoto write FPhoto;
+    property Photo: TVkPreviewPhoto read FPhoto write FPhoto;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -75,17 +51,17 @@ type
     FType: Extended;
     FUrl: string;
   public
-    property access_key: string read FAccess_key write FAccess_key;
-    property date: Extended read FDate write FDate;
-    property ext: string read FExt write FExt;
-    property id: Integer read FId write FId;
-    property is_licensed: Extended read FIs_licensed write FIs_licensed;
-    property owner_id: Integer read FOwner_id write FOwner_id;
-    property preview: TVkPreview read FPreview write FPreview;
-    property size: Extended read FSize write FSize;
-    property title: string read FTitle write FTitle;
-    property&type: Extended read FType write FType;
-    property url: string read FUrl write FUrl;
+    property AccessKey: string read FAccess_key write FAccess_key;
+    property Date: Extended read FDate write FDate;
+    property Ext: string read FExt write FExt;
+    property Id: Integer read FId write FId;
+    property IsLicensed: Extended read FIs_licensed write FIs_licensed;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property Preview: TVkPreview read FPreview write FPreview;
+    property Size: Extended read FSize write FSize;
+    property Title: string read FTitle write FTitle;
+    property&Type: Extended read FType write FType;
+    property Url: string read FUrl write FUrl;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

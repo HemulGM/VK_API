@@ -92,7 +92,15 @@ contains
   VK.Entity.User in 'Entity\VK.Entity.User.pas',
   VK.Entity.Video in 'Entity\VK.Entity.Video.pas',
   VK.Entity.AccountInfoRequest in 'Entity\VK.Entity.AccountInfoRequest.pas',
-  VK.Board in 'Controllers\VK.Board.pas';
+  VK.Board in 'Controllers\VK.Board.pas',
+  VK.FakeAndroidProto in 'VK.FakeAndroidProto.pas',
+  pbInput in 'Utils\pbInput.pas',
+  pbOutput in 'Utils\pbOutput.pas',
+  pbPublic in 'Utils\pbPublic.pas',
+  StrBuffer in 'Utils\StrBuffer.pas',
+  uAbstractProtoBufClasses in 'Utils\uAbstractProtoBufClasses.pas',
+  VK.Friends in 'Controllers\VK.Friends.pas',
+  VK.Groups in 'Controllers\VK.Groups.pas';
 
 end.
 

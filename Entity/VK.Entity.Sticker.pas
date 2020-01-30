@@ -12,9 +12,9 @@ type
     FUrl: string;
     FWidth: Extended;
   public
-    property height: Extended read FHeight write FHeight;
-    property url: string read FUrl write FUrl;
-    property width: Extended read FWidth write FWidth;
+    property Height: Extended read FHeight write FHeight;
+    property Url: string read FUrl write FUrl;
+    property Width: Extended read FWidth write FWidth;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkStickerImage;
   end;
@@ -26,10 +26,10 @@ type
     FProduct_id: Extended;
     FSticker_id: Extended;
   public
-    property images: TArray<TVkStickerImage> read FImages write FImages;
-    property images_with_background: TArray<TVkStickerImage> read FImages_with_background write FImages_with_background;
-    property product_id: Extended read FProduct_id write FProduct_id;
-    property sticker_id: Extended read FSticker_id write FSticker_id;
+    property Images: TArray<TVkStickerImage> read FImages write FImages;
+    property ImagesWithBackground: TArray<TVkStickerImage> read FImages_with_background write FImages_with_background;
+    property ProductId: Extended read FProduct_id write FProduct_id;
+    property StickerId: Extended read FSticker_id write FSticker_id;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkSticker;

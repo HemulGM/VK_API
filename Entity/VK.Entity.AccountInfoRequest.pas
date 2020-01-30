@@ -14,11 +14,11 @@ type
     FLast_name: string;
     FStatus: string;
   public
-    property changed: Extended read FChanged write FChanged;
-    property first_name: string read FFirst_name write FFirst_name;
-    property id: Extended read FId write FId;
-    property last_name: string read FLast_name write FLast_name;
-    property status: string read FStatus write FStatus;
+    property Changed: Extended read FChanged write FChanged;
+    property FirstName: string read FFirst_name write FFirst_name;
+    property Id: Extended read FId write FId;
+    property Last_name: string read FLast_name write FLast_name;
+    property Status: string read FStatus write FStatus;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAccountInfoRequest;
   end;

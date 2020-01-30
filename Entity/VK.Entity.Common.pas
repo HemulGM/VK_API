@@ -13,10 +13,10 @@ type
     FY: Extended;
     FY2: Extended;
   public
-    property x: Extended read FX write FX;
-    property x2: Extended read FX2 write FX2;
-    property y: Extended read FY write FY;
-    property y2: Extended read FY2 write FY2;
+    property X: Extended read FX write FX;
+    property X2: Extended read FX2 write FX2;
+    property Y: Extended read FY write FY;
+    property Y2: Extended read FY2 write FY2;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRect;
   end;
@@ -27,7 +27,7 @@ type
   private
     FCount: Extended;
   public
-    property count: Extended read FCount write FCount;
+    property Count: Extended read FCount write FCount;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkTags;
   end;
@@ -39,10 +39,10 @@ type
     FType: string;
     FUrl: string;
   public
-    property data: string read FData write FData;
+    property Data: string read FData write FData;
     property platform: string read FPlatform write FPlatform;
-    property&type: string read FType write FType;
-    property url: string read FUrl write FUrl;
+    property&Type: string read FType write FType;
+    property Url: string read FUrl write FUrl;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPostSource;
   end;
@@ -53,9 +53,9 @@ type
     FCount: Extended;
     FGroups_can_post: Boolean;
   public
-    property can_post: Extended read FCan_post write FCan_post;
-    property count: Extended read FCount write FCount;
-    property groups_can_post: Boolean read FGroups_can_post write FGroups_can_post;
+    property CanPost: Extended read FCan_post write FCan_post;
+    property Count: Extended read FCount write FCount;
+    property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCommentsInfo;
   end;
@@ -65,8 +65,8 @@ type
     FCount: Extended;
     FUser_reposted: Extended;
   public
-    property count: Extended read FCount write FCount;
-    property user_reposted: Extended read FUser_reposted write FUser_reposted;
+    property Count: Extended read FCount write FCount;
+    property UserReposted: Extended read FUser_reposted write FUser_reposted;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRepostsInfo;
   end;
@@ -75,7 +75,7 @@ type
   private
     FCount: Extended;
   public
-    property count: Extended read FCount write FCount;
+    property Count: Extended read FCount write FCount;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkViewsInfo;
   end;
@@ -87,10 +87,10 @@ type
     FCount: Extended;
     FUser_likes: Extended;
   public
-    property can_like: Extended read FCan_like write FCan_like;
-    property can_publish: Extended read FCan_publish write FCan_publish;
-    property count: Extended read FCount write FCount;
-    property user_likes: Extended read FUser_likes write FUser_likes;
+    property CanLike: Extended read FCan_like write FCan_like;
+    property CanPublish: Extended read FCan_publish write FCan_publish;
+    property Count: Extended read FCount write FCount;
+    property UserLikes: Extended read FUser_likes write FUser_likes;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkLikesInfo;
   end;
@@ -102,10 +102,10 @@ type
     FUrl: string;
     FWidth: Extended;
   public
-    property height: Extended read FHeight write FHeight;
-    property&type: string read FType write FType;
-    property url: string read FUrl write FUrl;
-    property width: Extended read FWidth write FWidth;
+    property Height: Extended read FHeight write FHeight;
+    property&Type: string read FType write FType;
+    property Url: string read FUrl write FUrl;
+    property Width: Extended read FWidth write FWidth;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkSizes;
   end;
@@ -118,11 +118,11 @@ type
     FIs_closed: Boolean;
     FLast_name: string;
   public
-    property can_access_closed: Boolean read FCan_access_closed write FCan_access_closed;
-    property first_name: string read FFirst_name write FFirst_name;
-    property id: Extended read FId write FId;
-    property is_closed: Boolean read FIs_closed write FIs_closed;
-    property last_name: string read FLast_name write FLast_name;
+    property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
+    property FirstName: string read FFirst_name write FFirst_name;
+    property Id: Extended read FId write FId;
+    property IsClosed: Boolean read FIs_closed write FIs_closed;
+    property LastName: string read FLast_name write FLast_name;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRelationPartner;
   end;
@@ -135,11 +135,11 @@ type
     FIs_closed: Boolean;
     FLast_name: string;
   public
-    property can_access_closed: Boolean read FCan_access_closed write FCan_access_closed;
-    property first_name: string read FFirst_name write FFirst_name;
-    property id: Extended read FId write FId;
-    property is_closed: Boolean read FIs_closed write FIs_closed;
-    property last_name: string read FLast_name write FLast_name;
+    property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
+    property FirstName: string read FFirst_name write FFirst_name;
+    property Id: Extended read FId write FId;
+    property IsClosed: Boolean read FIs_closed write FIs_closed;
+    property LastName: string read FLast_name write FLast_name;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRelationRequests;
   end;
@@ -149,8 +149,8 @@ type
     FId: Extended;
     FTitle: string;
   public
-    property id: Extended read FId write FId;
-    property title: string read FTitle write FTitle;
+    property Id: Extended read FId write FId;
+    property Title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCountry;
   end;
@@ -166,14 +166,14 @@ type
     FCreated: integer; // Ч дата создани€ (если назначено);
     FIcon: string; // Ч URL изображени€-иконки;
   public
-    property city: string read FCity write FCity;
-    property country: string read FCountry write FCountry;
-    property title: string read FTitle write FTitle;
-    property id: integer read FId write FId;
-    property latitude: Extended read FLatitude write FLatitude;
-    property longitude: Extended read FLongitude write FLongitude;
-    property created: integer read FCreated write FCreated;
-    property icon: string read FIcon write FIcon;
+    property City: string read FCity write FCity;
+    property Country: string read FCountry write FCountry;
+    property Title: string read FTitle write FTitle;
+    property Id: integer read FId write FId;
+    property Latitude: Extended read FLatitude write FLatitude;
+    property Longitude: Extended read FLongitude write FLongitude;
+    property Created: integer read FCreated write FCreated;
+    property Icon: string read FIcon write FIcon;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPlace;
   end;
@@ -183,8 +183,8 @@ type
     FLatitude: Extended;
     FLongitude: Extended;
   public
-    property latitude: Extended read FLatitude write FLatitude;
-    property longitude: Extended read FLongitude write FLongitude;
+    property Latitude: Extended read FLatitude write FLatitude;
+    property Longitude: Extended read FLongitude write FLongitude;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCoordinates;
   end;
@@ -195,9 +195,9 @@ type
     FPlace: TVkPlace;
     FType: string;
   public
-    property coordinates: TVkCoordinates read FCoordinates write FCoordinates;
-    property place: TVkPlace read FPlace write FPlace;
-    property&type: string read FType write FType;
+    property Coordinates: TVkCoordinates read FCoordinates write FCoordinates;
+    property Place: TVkPlace read FPlace write FPlace;
+    property&Type: string read FType write FType;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -210,16 +210,16 @@ type
     FPhoto_200: string;
     FPhoto_100: string;
   public
-    property photo_50: string read FPhoto_50 write FPhoto_50; // Ч URL изображени€ 50x50px;
-    property photo_100: string read FPhoto_100 write FPhoto_100; // Ч URL изображени€ 100x100px;
-    property photo_200: string read FPhoto_200 write FPhoto_200; // Ч URL изображени€ 200x200px;
+    property Photo50: string read FPhoto_50 write FPhoto_50; // Ч URL изображени€ 50x50px;
+    property Photo100: string read FPhoto_100 write FPhoto_100; // Ч URL изображени€ 100x100px;
+    property Photo200: string read FPhoto_200 write FPhoto_200; // Ч URL изображени€ 200x200px;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkChatPhoto;
   end;
 
 implementation
 
-{TCountryClass}
+{TVkCountry}
 
 function TVkCountry.ToJsonString: string;
 begin
@@ -231,7 +231,7 @@ begin
   result := TJson.JsonToObject<TVkCountry>(AJsonString)
 end;
 
-{TRelationRequests}
+{TVkRelationRequests}
 
 function TVkRelationRequests.ToJsonString: string;
 begin
@@ -255,7 +255,7 @@ begin
   result := TJson.JsonToObject<TVkRelationPartner>(AJsonString)
 end;
 
-{TRectClass}
+{TVkRect}
 
 function TVkRect.ToJsonString: string;
 begin
@@ -267,7 +267,7 @@ begin
   result := TJson.JsonToObject<TVkRect>(AJsonString)
 end;
 
-{TTagsClass}
+{TVkTags}
 
 function TVkTags.ToJsonString: string;
 begin
@@ -279,7 +279,7 @@ begin
   result := TJson.JsonToObject<TVkTags>(AJsonString)
 end;
 
-{TCommentsClass}
+{TVkCommentsInfo}
 
 function TVkCommentsInfo.ToJsonString: string;
 begin
@@ -291,7 +291,7 @@ begin
   result := TJson.JsonToObject<TVkCommentsInfo>(AJsonString)
 end;
 
-{TPost_sourceClass}
+{TVkPostSource}
 
 function TVkPostSource.ToJsonString: string;
 begin
@@ -303,7 +303,7 @@ begin
   result := TJson.JsonToObject<TVkPostSource>(AJsonString)
 end;
 
-{TRepostsClass}
+{TVkRepostsInfo}
 
 function TVkRepostsInfo.ToJsonString: string;
 begin
@@ -315,7 +315,7 @@ begin
   result := TJson.JsonToObject<TVkRepostsInfo>(AJsonString)
 end;
 
-{TLikesClass}
+{TVkLikesInfo}
 
 function TVkLikesInfo.ToJsonString: string;
 begin
@@ -327,7 +327,7 @@ begin
   result := TJson.JsonToObject<TVkLikesInfo>(AJsonString)
 end;
 
-{TSizesClass}
+{TVkSizes}
 
 function TVkSizes.ToJsonString: string;
 begin
@@ -339,7 +339,7 @@ begin
   result := TJson.JsonToObject<TVkSizes>(AJsonString);
 end;
 
-{ TVkViewsInfo }
+{TVkViewsInfo}
 
 class function TVkViewsInfo.FromJsonString(AJsonString: string): TVkViewsInfo;
 begin

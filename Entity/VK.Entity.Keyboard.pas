@@ -3,22 +3,46 @@ unit VK.Entity.Keyboard;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, System.Json;
 
 type
+  TVkKeyboardConstructor = record
+    FList: TArray<TArray<string>>;
+    FOneTime: Boolean;
+    FInline: Boolean;
+    procedure AddButtonText(Group: Integer; Caption, Payload, Color: string);
+    procedure AddButtonOpenLink(Group: Integer; Link, Caption, Payload: string);
+    procedure SetOneTime(Value: Boolean);
+    procedure SetInline(Value: Boolean);
+    function ToJsonString: string;
+  end;
+
+  TVkPayloadButton = class
+  private
+    FButton: string;
+  public
+    property Button: string read FButton write FButton;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkPayloadButton;
+  end;
+
   TVkKeyboardAction = class
   private
     FApp_id: Extended;
     FHash: string;
     FLabel: string;
+    FPayload: string;
     FOwner_id: Extended;
-    FType: string;
+    FType: string;  //text, open_link, location, vkpay, open_app
+    FLink: string;
   public
-    property app_id: Extended read FApp_id write FApp_id;
-    property hash: string read FHash write FHash;
-    property&label: string read FLabel write FLabel;
-    property owner_id: Extended read FOwner_id write FOwner_id;
-    property&type: string read FType write FType;
+    property AppId: Extended read FApp_id write FApp_id;
+    property Hash: string read FHash write FHash;
+    property Link: string read FLink write FLink;
+    property Payload: string read FPayload write FPayload;
+    property&Label: string read FLabel write FLabel;
+    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property&Type: string read FType write FType;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkKeyboardAction;
   end;
@@ -28,8 +52,8 @@ type
     FAction: TVkKeyboardAction;
     FColor: string;
   public
-    property action: TVkKeyboardAction read FAction write FAction;
-    property color: string read FColor write FColor;
+    property Action: TVkKeyboardAction read FAction write FAction;
+    property Color: string read FColor write FColor;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -42,9 +66,11 @@ type
   private
     FButtons: TArray<TVkKeyboardButtons>;
     FOne_time: Boolean;
+    FInline: Boolean;
   public
-    property buttons: TArray<TVkKeyboardButtons> read FButtons write FButtons;
-    property one_time: Boolean read FOne_time write FOne_time;
+    property Buttons: TArray<TVkKeyboardButtons> read FButtons write FButtons;
+    property OneTime: Boolean read FOne_time write FOne_time;
+    property&Inline: Boolean read FInline write FInline;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkKeyboard;
@@ -63,8 +89,6 @@ class function TVkKeyboardAction.FromJsonString(AJsonString: string): TVkKeyboar
 begin
   result := TJson.JsonToObject<TVkKeyboardAction>(AJsonString)
 end;
-
-{TVkKeyboard}
 
 destructor TVkKeyboard.Destroy;
 var
@@ -94,7 +118,7 @@ end;
 constructor TVkKeyboardButton.Create;
 begin
   inherited;
-  action := TVkKeyboardAction.Create;
+  Action := TVkKeyboardAction.Create;
 end;
 
 destructor TVkKeyboardButton.Destroy;
@@ -109,6 +133,86 @@ begin
 end;
 
 function TVkKeyboardButton.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkKeyboardConstructor }
+
+procedure TVkKeyboardConstructor.AddButtonOpenLink(Group: Integer; Link, Caption, Payload: string);
+begin
+
+end;
+
+procedure TVkKeyboardConstructor.AddButtonText(Group: Integer; Caption, Payload, Color: string);
+var
+  JS, Act: TJSONObject;
+begin
+  while Length(FList) < Group + 1 do
+    SetLength(FList, Group + 1);
+  SetLength(FList[Group], Length(FList[Group]) + 1);
+
+  Act := TJSONObject.Create;
+  Act.AddPair('label', Caption);
+  Act.AddPair('payload', '{"button":"' + Payload + '"}');
+  Act.AddPair('type', 'text');
+
+  JS := TJSONObject.Create;
+  JS.AddPair('action', Act);
+  JS.AddPair('color', Color);
+  FList[Group][Length(FList[Group]) - 1] := JS.ToJSON;
+  JS.Free;
+end;
+
+procedure TVkKeyboardConstructor.SetInline(Value: Boolean);
+begin
+  FInline := Value;
+end;
+
+procedure TVkKeyboardConstructor.SetOneTime(Value: Boolean);
+begin
+  FOneTime := Value;
+end;
+
+function TVkKeyboardConstructor.ToJsonString: string;
+var
+  FButtons: string;
+  i, j: Integer;
+begin
+  FButtons := '';
+  for i := Low(FList) to High(FList) do
+  begin
+    if FButtons <> '' then
+      FButtons := FButtons + ',';
+    FButtons := FButtons + '[';
+    for j := Low(FList[i]) to High(FList[i]) do
+    begin
+      if j <> Low(FList[i]) then
+        FButtons := FButtons + ',';
+      FButtons := FButtons + FList[i][j];
+    end;
+    FButtons := FButtons + ']';
+  end;
+  Result := '{"buttons": [' + FButtons + ']';
+  if FOneTime then
+    Result := Result + ',"one_time": true'
+  else
+    Result := Result + ',"one_time": false';
+  if FInline then
+    Result := Result + ',"inline": true'
+  else
+    Result := Result + ',"inline": false';
+  Result := Result + '}'
+end;
+
+{ TVkPayloadButton }
+
+class function TVkPayloadButton.FromJsonString(AJsonString: string): TVkPayloadButton;
+begin
+  result := TJson.JsonToObject<TVkPayloadButton>(AJsonString);
+end;
+
+function TVkPayloadButton.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

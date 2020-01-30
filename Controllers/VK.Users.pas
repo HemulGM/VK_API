@@ -3,8 +3,7 @@ unit VK.Users;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.User;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.User;
 
 type
   TUsersController = class(TVkController)
@@ -12,7 +11,11 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Users: TVkUsers; UserIds, Fields, NameCase: string): Boolean;
+    function Get(var Users: TVkUsers; UserIds, Fields, NameCase: string): Boolean; overload;
+    /// <summary>
+    /// Возвращает расширенную информацию о пользователях.
+    /// </summary>
+    function Get(var User: TVkUser; UserId: Integer = 0; Fields: string = ''; NameCase: string = ''): Boolean; overload;
   end;
 
 implementation
@@ -37,6 +40,31 @@ begin
     Result := Success;
     if Result then
       Users := TVkUsers.FromJsonString(JSON);
+  end;
+end;
+
+function TUsersController.Get(var User: TVkUser; UserId: Integer; Fields, NameCase: string): Boolean;
+var
+  Params: TParams;
+  Users: TVkUsers;
+begin
+  if UserId <> 0 then
+    AddParam(Params, ['user_ids', UserId.ToString]);
+  if not Fields.IsEmpty then
+    AddParam(Params, ['fields', Fields]);
+  if not NameCase.IsEmpty then
+    AddParam(Params, ['num', NameCase]);
+  with Handler.Execute('users.get', Params) do
+  begin
+    Users := TVkUsers.FromJsonString(JSON);
+    if Success and (Length(Users.Items) > 0) then
+    begin
+      User := TVkUser.FromJsonString(Users.Items[0].ToJsonString);
+      Result := True;
+      Users.Free;
+    end
+    else
+      Result := False;
   end;
 end;
 

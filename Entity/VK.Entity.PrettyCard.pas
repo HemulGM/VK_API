@@ -12,9 +12,9 @@ type
     FUrl: string;
     FWidth: Extended;
   public
-    property height: Extended read FHeight write FHeight;
-    property url: string read FUrl write FUrl;
-    property width: Extended read FWidth write FWidth;
+    property Height: Extended read FHeight write FHeight;
+    property Url: string read FUrl write FUrl;
+    property Width: Extended read FWidth write FWidth;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCardImage;
   end;
@@ -29,13 +29,13 @@ type
     FPrice_old: string;
     FTitle: string;
   public
-    property button: TVkLinkButton read FButton write FButton;
-    property card_id: string read FCard_id write FCard_id;
-    property images: TArray<TVkCardImage> read FImages write FImages;
-    property link_url: string read FLink_url write FLink_url;
-    property price: string read FPrice write FPrice;
-    property price_old: string read FPrice_old write FPrice_old;
-    property title: string read FTitle write FTitle;
+    property Button: TVkLinkButton read FButton write FButton;
+    property CardId: string read FCard_id write FCard_id;
+    property Images: TArray<TVkCardImage> read FImages write FImages;
+    property LinkUrl: string read FLink_url write FLink_url;
+    property Price: string read FPrice write FPrice;
+    property PriceOld: string read FPrice_old write FPrice_old;
+    property Title: string read FTitle write FTitle;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

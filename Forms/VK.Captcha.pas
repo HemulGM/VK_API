@@ -47,6 +47,7 @@ begin
       ImageCaptcha.Picture.Assign(nil);
     EditEnter.Text := '';
     Result := ShowModal = mrOk;
+    Answer := EditEnter.Text;
   finally
     Jpg.Free;
     Mem.Free;

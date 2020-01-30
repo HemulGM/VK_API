@@ -13,10 +13,10 @@ type
     FPhoto_130: string;
     FName: string;
   public
-    property id: Extended read FId write FId;
-    property name: string read FName write FName;
-    property photo_130: string read FPhoto_130 write FPhoto_130;
-    property photo_604: string read FPhoto_604 write FPhoto_604;
+    property Id: Extended read FId write FId;
+    property Name: string read FName write FName;
+    property Photo130: string read FPhoto_130 write FPhoto_130;
+    property Photo604: string read FPhoto_604 write FPhoto_604;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkOldApp;
   end;

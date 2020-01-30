@@ -27,6 +27,7 @@ type
     FUseServiceKeyOnly: Boolean;
     FOwner: TObject;
     FOnCaptcha: TOnCaptcha;
+    FExecuting: Integer;
     function DoConfirm(Answer: string): Boolean;
     procedure ProcError(Code: Integer; Text: string = ''); overload;
     procedure ProcError(E: Exception); overload;
@@ -38,6 +39,8 @@ type
     procedure SetUseServiceKeyOnly(const Value: Boolean);
     procedure SetOwner(const Value: TObject);
     procedure SetOnCaptcha(const Value: TOnCaptcha);
+    function FExecute(Request: TRESTRequest): TResponse;
+    function GetExecuting: Boolean;
   public
     constructor Create(AOwner: TObject);
     destructor Destroy; override;
@@ -53,6 +56,7 @@ type
     property OnLog: TOnLog read FOnLog write SetOnLog;
     property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
     property Owner: TObject read FOwner write SetOwner;
+    property Executing: Boolean read GetExecuting;
   end;
 
 implementation
@@ -106,6 +110,7 @@ constructor TVkHandler.Create(AOwner: TObject);
 begin
   inherited Create;
   FOwner := AOwner;
+  FExecuting := 0;
   FStartRequest := 0;
   FRequests := 0;
   FRESTClient := TRESTClient.Create(nil);
@@ -150,6 +155,18 @@ begin
 end;
 
 function TVkHandler.Execute(Request: TRESTRequest; FreeRequset: Boolean): TResponse;
+begin
+  try
+    Inc(FExecuting);
+    Result := FExecute(Request);
+  finally
+    if FreeRequset then
+      Request.Free;
+    Dec(FExecuting);
+  end;
+end;
+
+function TVkHandler.FExecute(Request: TRESTRequest): TResponse;
 var
   JS: TJSONValue;
   CaptchaSID: string;
@@ -158,6 +175,7 @@ var
   IsDone: Boolean;
   TimeStamp: Cardinal;
   TimeStampLast: Cardinal;
+  Thr: TRESTExecutionThread;
 begin
   TimeStamp := GetTickCount;
   TimeStampLast := FStartRequest;
@@ -165,89 +183,86 @@ begin
   try
     IsDone := False;
     FLog(Request.GetFullRequestURL);
-
     FRequests := FRequests + 1;
-    //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
+      //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
     if FRequests > RequestLimit then
     begin
       FRequests := 0;
       WaitTime(1300 - Int64(GetTickCount - FStartRequest));
     end;
     Request.Response := TRESTResponse.Create(Request);
-    Request.ExecuteAsync(
+    Thr := Request.ExecuteAsync(
       procedure
       begin
         IsDone := True;
-      end);
-    while not IsDone do
+      end, False, False);
+    while (not IsDone) and (not Thr.Finished) {and (not Application.Terminated)} do
       Application.ProcessMessages;
-    FLog(Request.Response.JSONText);
-
-    //Если это первый запрос, то сохраняем метку
-    if FRequests = 1 then
-      FStartRequest := GetTickCount;
-
-    if Request.Response.JSONValue.TryGetValue<TJSONValue>('error', JS) then
+    Thr.Free;
+    if not Application.Terminated then
     begin
-      Result.Error.Code := JS.GetValue<Integer>('error_code', -1);
-      Result.Error.Text := JS.GetValue<string>('error_msg', VKErrorString(Result.Error.Code));
-      case Result.Error.Code of
-        14: //Капча
-          begin
-            CaptchaSID := JS.GetValue<string>('captcha_sid', '');
-            CaptchaImg := JS.GetValue<string>('captcha_img', '');
-            if AskCaptcha(Self, CaptchaImg, CaptchaAns) then
-            begin
-              Request.Params.AddItem('captcha_sid', CaptchaSID);
-              Request.Params.AddItem('captcha_key', CaptchaAns);
-              Result := Execute(Request);
-              Request.Params.Delete('captcha_sid');
-              Request.Params.Delete('captcha_key');
-              if FreeRequset then
-                Request.Free;
-              Exit;
-            end
-            else
-              ProcError(Result.Error.Code, Result.Error.Text);
-          end;
-        24: //Подтверждение для ВК
-          begin
-            CaptchaAns := JS.GetValue<string>('confirmation_text', '');
-            if DoConfirm(CaptchaAns) then
-            begin
-              Request.Params.AddItem('confirm', '1');
-              Result := Execute(Request);
-              Request.Params.Delete('confirm');
-              if FreeRequset then
-                Request.Free;
-              Exit;
-            end
-            else
-              ProcError(Result.Error.Code, Result.Error.Text);
-          end;
-        6: //Превышено кол-во запросов в сек.
-          begin
-            ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)',
-              [FRequests, RequestLimit, TimeStamp, FStartRequest, TimeStampLast]));
-            WaitTime(1000);
-            Result := Execute(Request);
-            if FreeRequset then
-              Request.Free;
-            Exit;
-          end;
-      else
-        ProcError(Result.Error.Code, Result.Error.Text);
-      end;
-    end
-    else
-    begin
-      if Request.Response.StatusCode = 200 then
+      FLog(Request.Response.JSONText);
+
+        //Если это первый запрос, то сохраняем метку
+      if FRequests = 1 then
+        FStartRequest := GetTickCount;
+
+      if Request.Response.JSONValue.TryGetValue<TJSONValue>('error', JS) then
       begin
-        if Request.Response.JSONValue.TryGetValue<TJSONValue>('response', JS) then
+        Result.Error.Code := JS.GetValue<Integer>('error_code', -1);
+        Result.Error.Text := JS.GetValue<string>('error_msg', VKErrorString(Result.Error.Code));
+        case Result.Error.Code of
+          14: //Капча
+            begin
+              CaptchaSID := JS.GetValue<string>('captcha_sid', '');
+              CaptchaImg := JS.GetValue<string>('captcha_img', '');
+              if AskCaptcha(Self, CaptchaImg, CaptchaAns) then
+              begin
+                Request.Params.AddItem('captcha_sid', CaptchaSID);
+                Request.Params.AddItem('captcha_key', CaptchaAns);
+                Result := Execute(Request);
+                Request.Params.Delete('captcha_sid');
+                Request.Params.Delete('captcha_key');
+                Exit;
+              end
+              else
+                ProcError(Result.Error.Code, Result.Error.Text);
+            end;
+          24: //Подтверждение для ВК
+            begin
+              CaptchaAns := JS.GetValue<string>('confirmation_text', '');
+              if DoConfirm(CaptchaAns) then
+              begin
+                Request.Params.AddItem('confirm', '1');
+                Result := Execute(Request);
+                Request.Params.Delete('confirm');
+                Exit;
+              end
+              else
+                ProcError(Result.Error.Code, Result.Error.Text);
+            end;
+          6: //Превышено кол-во запросов в сек.
+            begin
+              ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)',
+                [FRequests, RequestLimit, TimeStamp, FStartRequest, TimeStampLast]));
+              WaitTime(1000);
+              Result := Execute(Request);
+              Exit;
+            end;
+        else
+          ProcError(Result.Error.Code, Result.Error.Text);
+        end;
+      end
+      else
+      begin
+        if Request.Response.StatusCode = 200 then
         begin
-          Result.Response := JS.ToJSON;
-          Result.JSON := Request.Response.JSONText;
-          Result.Success := True;
+          if Request.Response.JSONValue.TryGetValue<TJSONValue>('response', JS) then
+          begin
+            Result.Response := JS.ToJSON;
+            Result.JSON := Request.Response.JSONText;
+            Result.Success := True;
+          end;
         end;
       end;
     end;
@@ -255,14 +270,17 @@ begin
     on E: Exception do
       ProcError(E);
   end;
-  if FreeRequset then
-    Request.Free;
 end;
 
 procedure TVkHandler.FLog(const Value: string);
 begin
   if Assigned(FOnLog) then
     FOnLog(Self, Value);
+end;
+
+function TVkHandler.GetExecuting: Boolean;
+begin
+  Result := FExecuting > 0;
 end;
 
 procedure TVkHandler.SetOnError(const Value: TOnVKError);

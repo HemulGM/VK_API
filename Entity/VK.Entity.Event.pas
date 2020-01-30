@@ -17,14 +17,14 @@ type
     FText: string;
     FTime: Extended;
   public
-    property address: string read FAddress write FAddress;
-    property button_text: string read FButton_text write FButton_text;
-    property friends: TArray<Extended> read FFriends write FFriends;
-    property id: Extended read FId write FId;
-    property is_favorite: Boolean read FIs_favorite write FIs_favorite;
-    property member_status: Extended read FMember_status write FMember_status;
-    property text: string read FText write FText;
-    property time: Extended read FTime write FTime;
+    property Address: string read FAddress write FAddress;
+    property ButtonText: string read FButton_text write FButton_text;
+    property Friends: TArray<Extended> read FFriends write FFriends;
+    property Id: Extended read FId write FId;
+    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
+    property MemberStatus: Extended read FMember_status write FMember_status;
+    property Text: string read FText write FText;
+    property Time: Extended read FTime write FTime;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkEvent;
   end;

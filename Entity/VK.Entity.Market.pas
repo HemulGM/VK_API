@@ -11,8 +11,8 @@ type
     FId: Extended;
     FName: string;
   public
-    property id: Extended read FId write FId;
-    property name: string read FName write FName;
+    property Id: Extended read FId write FId;
+    property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMarketCurrency;
   end;
@@ -23,9 +23,9 @@ type
     FCurrency: TVkMarketCurrency;
     FText: string;
   public
-    property amount: string read FAmount write FAmount;
-    property currency: TVkMarketCurrency read FCurrency write FCurrency;
-    property text: string read FText write FText;
+    property Amount: string read FAmount write FAmount;
+    property Currency: TVkMarketCurrency read FCurrency write FCurrency;
+    property Text: string read FText write FText;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -37,8 +37,8 @@ type
     FId: Extended;
     FName: string;
   public
-    property id: Extended read FId write FId;
-    property name: string read FName write FName;
+    property Id: Extended read FId write FId;
+    property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMarketSection;
   end;
@@ -49,9 +49,9 @@ type
     FName: string;
     FSection: TVkMarketSection;
   public
-    property id: Extended read FId write FId;
-    property name: string read FName write FName;
-    property section: TVkMarketSection read FSection write FSection;
+    property Id: Extended read FId write FId;
+    property Name: string read FName write FName;
+    property Section: TVkMarketSection read FSection write FSection;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -71,16 +71,16 @@ type
     FThumb_photo: string;
     FTitle: string;
   public
-    property availability: Extended read FAvailability write FAvailability;
-    property category: TVkMarketCategory read FCategory write FCategory;
-    property date: Extended read FDate write FDate;
-    property description: string read FDescription write FDescription;
-    property external_id: string read FExternal_id write FExternal_id;
-    property id: Extended read FId write FId;
-    property owner_id: Extended read FOwner_id write FOwner_id;
-    property price: TVkMarketPrice read FPrice write FPrice;
-    property thumb_photo: string read FThumb_photo write FThumb_photo;
-    property title: string read FTitle write FTitle;
+    property Availability: Extended read FAvailability write FAvailability;
+    property Category: TVkMarketCategory read FCategory write FCategory;
+    property Date: Extended read FDate write FDate;
+    property Description: string read FDescription write FDescription;
+    property ExternalId: string read FExternal_id write FExternal_id;
+    property Id: Extended read FId write FId;
+    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property Price: TVkMarketPrice read FPrice write FPrice;
+    property ThumbPhoto: string read FThumb_photo write FThumb_photo;
+    property Title: string read FTitle write FTitle;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -100,16 +100,16 @@ type
     FThumb_photo: string;
     FTitle: string;
   public
-    property availability: Extended read FAvailability write FAvailability;
-    property category: TVkMarketCategory read FCategory write FCategory;
-    property date: Extended read FDate write FDate;
-    property description: string read FDescription write FDescription;
-    property external_id: string read FExternal_id write FExternal_id;
-    property id: Extended read FId write FId;
-    property owner_id: Extended read FOwner_id write FOwner_id;
-    property price: TVkMarketPrice read FPrice write FPrice;
-    property thumb_photo: string read FThumb_photo write FThumb_photo;
-    property title: string read FTitle write FTitle;
+    property Availability: Extended read FAvailability write FAvailability;
+    property Category: TVkMarketCategory read FCategory write FCategory;
+    property Date: Extended read FDate write FDate;
+    property Description: string read FDescription write FDescription;
+    property ExternalId: string read FExternal_id write FExternal_id;
+    property Id: Extended read FId write FId;
+    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property Price: TVkMarketPrice read FPrice write FPrice;
+    property ThumbPhoto: string read FThumb_photo write FThumb_photo;
+    property Title: string read FTitle write FTitle;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

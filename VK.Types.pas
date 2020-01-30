@@ -231,7 +231,7 @@ type
   //ќтношени€
   TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated,
     rnnActivelyLooking, rnInLove, rnCivilMarriage);
-  {0 Ч не указано.
+   {0 Ч не указано.
     1 Ч не женат/не замужем;
     2 Ч есть друг/есть подруга;
     3 Ч помолвлен/помолвлена;
@@ -407,7 +407,15 @@ begin
 end;
 
 function AddParam(var Dest: TParams; Param: TParam): Integer;
+var
+  i: Integer;
 begin
+  for i := Low(Dest) to High(Dest) do
+    if Dest[i][0] = Param[0] then
+    begin
+      Dest[i] := Param;
+      Exit(i);
+    end;
   Result := Length(Dest) + 1;
   SetLength(Dest, Result);
   Dest[Result - 1] := Param;

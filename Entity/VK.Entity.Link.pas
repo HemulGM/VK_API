@@ -11,8 +11,8 @@ type
     FType: string;
     FUrl: string;
   public
-    property&type: string read FType write FType;
-    property url: string read FUrl write FUrl;
+    property&Type: string read FType write FType;
+    property Url: string read FUrl write FUrl;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkLinkAction;
   end;
@@ -22,8 +22,8 @@ type
     FAction: TVkLinkAction;
     FTitle: string;
   public
-    property action: TVkLinkAction read FAction write FAction;
-    property title: string read FTitle write FTitle;
+    property Action: TVkLinkAction read FAction write FAction;
+    property Title: string read FTitle write FTitle;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -39,12 +39,12 @@ type
     FTitle: string;
     FUrl: string;
   public
-    property button: TVkLinkButton read FButton write FButton;
-    property caption: string read FCaption write FCaption;
-    property description: string read FDescription write FDescription;
-    property photo: TVkPhoto read FPhoto write FPhoto;
-    property title: string read FTitle write FTitle;
-    property url: string read FUrl write FUrl;
+    property Button: TVkLinkButton read FButton write FButton;
+    property Caption: string read FCaption write FCaption;
+    property Description: string read FDescription write FDescription;
+    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property Title: string read FTitle write FTitle;
+    property Url: string read FUrl write FUrl;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

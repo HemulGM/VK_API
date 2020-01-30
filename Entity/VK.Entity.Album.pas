@@ -17,14 +17,14 @@ type
     FTitle: string;
     FUpdated: Extended;
   public
-    property created: Extended read FCreated write FCreated;
-    property description: string read FDescription write FDescription;
-    property id: string read FId write FId;
-    property owner_id: Extended read FOwner_id write FOwner_id;
-    property size: Extended read FSize write FSize;
-    property thumb: TVkPhoto read FThumb write FThumb;
-    property title: string read FTitle write FTitle;
-    property updated: Extended read FUpdated write FUpdated;
+    property Created: Extended read FCreated write FCreated;
+    property Description: string read FDescription write FDescription;
+    property Id: string read FId write FId;
+    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property Size: Extended read FSize write FSize;
+    property Thumb: TVkPhoto read FThumb write FThumb;
+    property Title: string read FTitle write FTitle;
+    property Updated: Extended read FUpdated write FUpdated;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

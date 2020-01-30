@@ -55,7 +55,9 @@ uses
   VK.Likes in '..\..\Controllers\VK.Likes.pas',
   VK.Audio in '..\..\Controllers\VK.Audio.pas',
   VK.Entity.AccountInfoRequest in '..\..\Entity\VK.Entity.AccountInfoRequest.pas',
-  VK.Board in '..\..\Controllers\VK.Board.pas';
+  VK.Board in '..\..\Controllers\VK.Board.pas',
+  VK.Entity.Playlist in '..\..\Entity\VK.Entity.Playlist.pas',
+  VK.Groups in '..\..\Controllers\VK.Groups.pas';
 
 {$R *.res}
 
