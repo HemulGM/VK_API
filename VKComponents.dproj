@@ -205,6 +205,8 @@
         <DCCReference Include="Utils\uAbstractProtoBufClasses.pas"/>
         <DCCReference Include="Controllers\VK.Friends.pas"/>
         <DCCReference Include="Controllers\VK.Groups.pas"/>
+        <DCCReference Include="Controllers\VK.Photos.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Photo.Upload.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

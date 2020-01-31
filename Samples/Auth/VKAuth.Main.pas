@@ -46,6 +46,7 @@ type
     Button23: TButton;
     Button24: TButton;
     Button25: TButton;
+    Button26: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -170,6 +171,7 @@ type
     procedure Button23Click(Sender: TObject);
     procedure Button24Click(Sender: TObject);
     procedure Button25Click(Sender: TObject);
+    procedure Button26Click(Sender: TObject);
   private
   public
     { Public declarations }
@@ -184,7 +186,7 @@ uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
   VK.Entity.PushSettings, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
   VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.OAuth2,
-  VK.Entity.Playlist, VK.Audio;
+  VK.Entity.Playlist, VK.Audio, VK.Entity.Audio.Upload;
 
 {$R *.dfm}
 
@@ -410,6 +412,33 @@ begin
     end).Start;
 end;
 
+procedure TFormMain.Button26Click(Sender: TObject);
+var
+  Url: string;
+  Response: TVkAudioUploadResponse;
+  Audio: TVkAudio;
+begin
+  if VK1.Audio.GetUploadServer(Url) then
+  begin
+    if VK1.Uploader.UploadAudio(Url,
+      'D:\Мультимедиа\Музыка\ТГК\Триагрутрика - Вечерний Челябинск (2012)\06. Блэк дэй.mp3', Response) then
+    begin
+      if VK1.Audio.Save(Response, Audio) then
+      begin
+        Memo1.Lines.Add(Audio.Title);
+        Audio.Free;
+      end
+      else
+        Memo1.Lines.Add('Error VK1.Audio.Save');
+      Response.Free;
+    end
+    else
+      Memo1.Lines.Add('Error VK1.Uploader.UploadAudio');
+  end
+  else
+    Memo1.Lines.Add('Error VK1.Audio.GetUploadServer');
+end;
+
 procedure TFormMain.Button2Click(Sender: TObject);
 begin
   if VK1.Account.UnBan(-1) then
@@ -445,7 +474,7 @@ end;
 
 procedure TFormMain.Button5Click(Sender: TObject);
 var
-  Counters: TCountersClass;
+  Counters: TVkCounters;
 begin
   if VK1.Account.GetCounters(Counters) then
   begin
@@ -489,7 +518,7 @@ begin
                 "owner_id": 444273385,
   }
   //VK1.CallMethod('audio.getById', [['audios', '444273385_456239099,444273385_456239107']],
-  VK1.CallMethod('audio.get', [['owner_id', '415730216']],
+  VK1.CallMethod('audio.search', [['q', 'Noize']],
     procedure(Respone: TResponse)
     begin
       Memo1.Lines.Add(Respone.Response);
@@ -508,6 +537,7 @@ procedure TFormMain.FormCreate(Sender: TObject);
 begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   //{$INCLUDE app_cred.inc}  //Моё приложение
+  VK1.SetProxy('86.57.179.4', 8080);
   VK1.Login;
   //VK1.Login('alinvip@inbox.ru', 'HemulGM570092959');
 end;

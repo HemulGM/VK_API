@@ -100,7 +100,9 @@ contains
   StrBuffer in 'Utils\StrBuffer.pas',
   uAbstractProtoBufClasses in 'Utils\uAbstractProtoBufClasses.pas',
   VK.Friends in 'Controllers\VK.Friends.pas',
-  VK.Groups in 'Controllers\VK.Groups.pas';
+  VK.Groups in 'Controllers\VK.Groups.pas',
+  VK.Photos in 'Controllers\VK.Photos.pas',
+  VK.Entity.Photo.Upload in 'Entity\VK.Entity.Photo.Upload.pas';
 
 end.
 

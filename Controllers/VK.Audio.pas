@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON, REST.Json, VK.Entity.Playlist;
+  VK.Entity.Audio, System.JSON, REST.Json, VK.Entity.Playlist, VK.Entity.Audio.Upload;
 
 type
   TVkAudioParams = record
@@ -78,6 +78,17 @@ type
     /// <param name="var Audio: TVkAudio">Аудиозапись</param>
     /// <param name="Item: TVkAudioIndexe">Не полная аудиозапись</param>
     function GetById(var Audio: TVkAudio; Item: TVkAudio): Boolean; overload;
+    /// <summary>
+    /// Возвращает адрес сервера для загрузки аудиозаписей
+    /// </summary>
+    function GetUploadServer(var UploadUrl: string): Boolean;
+    /// <summary>
+    /// Возвращает список аудиозаписей в соответствии с заданным критерием поиска
+    /// </summary>
+    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
+    /// <param name="Query: string">Поисковый запрос</param>
+    function Search(var Audios: TVkAudios; Query: string): Boolean;
+    function Save(AudioSaveData: TVkAudioUploadResponse; var Audio: TVkAudio): Boolean;
   end;
 
 implementation
@@ -86,6 +97,29 @@ uses
   VK.API;
 
 { TAudioController }
+
+function TAudioController.Save(AudioSaveData: TVkAudioUploadResponse; var Audio: TVkAudio): Boolean;
+var
+  Params: TParams;
+begin
+  Params.Add('audio', AudioSaveData.Audio);
+  Params.Add('server', AudioSaveData.Server);
+  Params.Add('hash', AudioSaveData.Hash);
+  with Handler.Execute('audio.save', Params) do
+  begin
+    if Success then
+    begin
+      try
+        Audio := TVkAudio.FromJsonString(Response);
+        Result := True;
+      except
+        Result := False;
+      end;
+    end
+    else
+      Result := False;
+  end;
+end;
 
 function TAudioController.Get(var Audios: TVkAudios; OwnerId: Integer): Boolean;
 var
@@ -223,6 +257,48 @@ begin
     ListStr := ListStr + List[i][0].ToString + '_' + List[i][1].ToString;
   end;
   with Handler.Execute('audio.getById', ['audios', ListStr]) do
+  begin
+    if Success then
+    begin
+      JArray := TJSONArray(TJSONObject.ParseJSONValue(Response));
+      if Assigned(JArray) then
+      begin
+        SetLength(Audios, JArray.Count);
+        for i := 0 to JArray.Count - 1 do
+          Audios[i] := TVkAudio.FromJsonString(JArray.Items[i].ToString);
+      end;
+      JArray.Free;
+      Result := True;
+    end
+    else
+      Result := False;
+  end;
+end;
+
+function TAudioController.GetUploadServer(var UploadUrl: string): Boolean;
+var
+  JSONItem: TJSONValue;
+begin
+  with Handler.Execute('audio.getUploadServer') do
+  begin
+    if Success then
+    begin
+      JSONItem := TJSONObject.ParseJSONValue(Response);
+      UploadUrl := JSONItem.GetValue<string>('upload_url', '');
+      JSONItem.Free;
+      Result := not UploadUrl.IsEmpty;
+    end
+    else
+      Result := False;
+  end;
+end;
+
+function TAudioController.Search(var Audios: TVkAudios; Query: string): Boolean;
+var
+  JArray: TJSONArray;
+  i: Integer;
+begin
+  with Handler.Execute('audio.search', ['q', Query]) do
   begin
     if Success then
     begin

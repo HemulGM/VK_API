@@ -7,7 +7,7 @@ uses
   Vcl.Controls, REST.Authenticator.OAuth, IPPeerClient, VK.Types, VK.OAuth2, VK.Account, VK.Handler,
   VK.Auth, VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON, VK.Messages,
   System.Generics.Collections, VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes,
-  VK.Board, Vcl.Forms, REST.Types, VK.FakeAndroidProto, VK.Friends, VK.Groups;
+  VK.Board, Vcl.Forms, REST.Types, VK.FakeAndroidProto, VK.Friends, VK.Groups, VK.Photos;
 
 type
   TCustomVK = class(TComponent)
@@ -15,7 +15,6 @@ type
     FOAuth2Authenticator: TOAuth2Authenticator;
     FOnLogin: TOnLogin;
     FPermissionsList: TPermissions;
-    FGroupLongPollServers: TGroupLongPollServers;
     FAuthForm: TFormOAuth2;
     FAppID: string;
     FAppKey: string;
@@ -46,6 +45,7 @@ type
     FBoard: TBoardController;
     FFriends: TFriendsController;
     FGroups: TGroupsController;
+    FPhotos: TPhotosController;
     function GetPermissions: string;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
@@ -92,6 +92,7 @@ type
     /// </summary>
     /// <param name="Code">код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагается совместимость с ECMAScript). Алгоритм должен завершаться командой return %выражение%. Операторы должны быть разделены точкой с запятой. </param>
     function Execute(Code: string): TResponse;
+    procedure SetProxy(IP: string; Port: Integer; UserName: string = ''; Password: string = '');
     property PermissionsList: TPermissions read FPermissionsList write SetPermissionsList;
     property Uploader: TUploader read FUploader;
     //Группы методов
@@ -107,6 +108,7 @@ type
     property Board: TBoardController read FBoard;
     property Friends: TFriendsController read FFriends;
     property Groups: TGroupsController read FGroups;
+    property Photos: TPhotosController read FPhotos;
     //
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;
@@ -179,7 +181,7 @@ begin
   FHandler := TVkHandler.Create(Self);
   FHandler.OnError := FVKError;
   FHandler.OnLog := FLog;
-  FHandler.RESTClient.Authenticator := FOAuth2Authenticator;
+  FHandler.Client.Authenticator := FOAuth2Authenticator;
   FHandler.OnCaptcha := FAskCaptcha;
   FHandler.OnConfirm := FOnConfirm;
   //Defaults
@@ -200,9 +202,9 @@ begin
   FBoard := TBoardController.Create(FHandler);
   FFriends := TFriendsController.Create(FHandler);
   FGroups := TGroupsController.Create(FHandler);
-  //Groups LongPolls
+  FPhotos := TPhotosController.Create(FHandler);
+  //
   FUploader := TUploader.Create;
-  FGroupLongPollServers := TGroupLongPollServers.Create;
 end;
 
 procedure TCustomVK.Await;
@@ -216,12 +218,11 @@ begin
   Await;
   if Assigned(FAuthForm) then
     FAuthForm.Close;
-  FGroupLongPollServers.Clear;
-  FGroupLongPollServers.Free;
 
   FBoard.Free;
   FFriends.Free;
   FGroups.Free;
+  FPhotos.Free;
   FLikes.Free;
   FAudio.Free;
   FDoc.Free;
@@ -508,6 +509,9 @@ begin
       FAuthForm.OnAfterRedirect := FAfterRedirect;
       FAuthForm.OnError := FAuthError;
       FAuthForm.OnClose := FAuthClose;
+      if not FHandler.Client.ProxyServer.IsEmpty then
+        FAuthForm.SetProxy(FHandler.Client.ProxyServer, FHandler.Client.ProxyPort, FHandler.Client.ProxyUsername,
+          FHandler.Client.ProxyPassword);
     end;
     FAuthForm.ShowWithURL(AParentWindow, FOAuth2Authenticator.AuthorizationRequestURI);
   end;
@@ -516,7 +520,7 @@ end;
 procedure TCustomVK.SetAPIVersion(const Value: string);
 begin
   FAPIVersion := Value;
-  FHandler.RESTClient.AddParameter('v', FAPIVersion);
+  FHandler.Client.AddParameter('v', FAPIVersion);
 end;
 
 procedure TCustomVK.SetServiceKey(const Value: string);
@@ -527,7 +531,7 @@ begin
 
   if FUseServiceKeyOnly then
   begin
-    FHandler.RESTClient.AddParameter('access_token', FServiceKey);
+    FHandler.Client.AddParameter('access_token', FServiceKey);
   end;
 end;
 
@@ -554,7 +558,7 @@ end;
 procedure TCustomVK.SetBaseURL(const Value: string);
 begin
   FBaseURL := Value;
-  FHandler.RESTClient.BaseURL := FBaseURL;
+  FHandler.Client.BaseURL := FBaseURL;
 end;
 
 procedure TCustomVK.SetOnAuth(const Value: TOnAuth);
@@ -621,6 +625,14 @@ begin
   FPermissionsList := Value;
 end;
 
+procedure TCustomVK.SetProxy(IP: string; Port: Integer; UserName, Password: string);
+begin
+  FHandler.Client.ProxyServer := IP;
+  FHandler.Client.ProxyPort := Port;
+  FHandler.Client.ProxyUsername := UserName;
+  FHandler.Client.ProxyPassword := Password;
+end;
+
 procedure TCustomVK.SetUseServiceKeyOnly(const Value: Boolean);
 begin
   FUseServiceKeyOnly := Value;
@@ -630,13 +642,13 @@ begin
   FHandler.UseServiceKeyOnly := Value;
   if FUseServiceKeyOnly then
   begin
-    FHandler.RESTClient.Authenticator := nil;
-    FHandler.RESTClient.AddParameter('access_token', FServiceKey);
+    FHandler.Client.Authenticator := nil;
+    FHandler.Client.AddParameter('access_token', FServiceKey);
   end
   else
   begin
-    FHandler.RESTClient.Authenticator := FOAuth2Authenticator;
-    FHandler.RESTClient.Params.Delete('access_token');
+    FHandler.Client.Authenticator := FOAuth2Authenticator;
+    FHandler.Client.Params.Delete('access_token');
   end;
 end;
 

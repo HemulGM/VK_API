@@ -49,7 +49,7 @@ type
     function Execute(Request: string; Param: TParam): TResponse; overload;
     function Execute(Request: string): TResponse; overload;
     function Execute(Request: TRESTRequest; FreeRequset: Boolean = False): TResponse; overload;
-    property RESTClient: TRESTClient read FRESTClient;
+    property Client: TRESTClient read FRESTClient;
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
     property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
     property OnError: TOnVKError read FOnError write SetOnError;

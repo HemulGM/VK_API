@@ -255,6 +255,15 @@ object FormMain: TFormMain
       TabOrder = 24
       OnClick = Button25Click
     end
+    object Button26: TButton
+      Left = 151
+      Top = 283
+      Width = 137
+      Height = 25
+      Caption = 'UploadAudio'
+      TabOrder = 25
+      OnClick = Button26Click
+    end
   end
   object Panel2: TPanel
     Left = 0

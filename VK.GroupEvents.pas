@@ -1465,7 +1465,7 @@ begin
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
   if FGroupID >= 0 then
     raise Exception.Create('Идентификатор группы не указан или указан не верно');
-  FLongPollServer.Client := FVK.Handler.RESTClient;
+  FLongPollServer.Client := FVK.Handler.Client;
   FLongPollServer.Method := 'groups.getLongPollServer';
   FLongPollServer.Params := [['lp_version', '3'], ['group_id', (FGroupID *  - 1).ToString]];
   Result := FLongPollServer.Start;

@@ -39,7 +39,7 @@ type
 
   TAccountController = class(TVkController)
   public
-    function GetInfo(var Info: TAccountInfoClass; Fields: TFields = []): Boolean;
+    function GetInfo(var Info: TVkAccountInfo; Fields: TFields = []): Boolean;
     function SetInfo(const Name, Value: string): Boolean;
     function GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
     function Ban(const OwnerID: Integer): Boolean;
@@ -48,7 +48,7 @@ type
       ChangePasswordHash, OldPassword: string): Boolean;
     function GetActiveOffers(var Offers: TVkActiveOffers; Offset: Integer; Count: Integer = 100): Boolean;
     function GetAppPermissions(var Mask: Int64; UserId: Integer): Boolean;
-    function GetCounters(var Counters: TCountersClass; Filter: string = ''): Boolean;
+    function GetCounters(var Counters: TVkCounters; Filter: string = ''): Boolean;
     function GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
     function RegisterDevice(const Data: TVkRegisterDeviceParams): Boolean;
     function SaveProfileInfo(const Data: TVkProfileInfoParams; var Request: TVkAccountInfoRequest): Boolean;
@@ -62,7 +62,7 @@ type
 
 implementation
 
-{ TAccount }
+{ TAccountController }
 
 function TAccountController.ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid,
   ChangePasswordHash, OldPassword: string): Boolean;
@@ -100,7 +100,7 @@ begin
   end;
 end;
 
-function TAccountController.GetCounters(var Counters: TCountersClass; Filter: string = ''): Boolean;
+function TAccountController.GetCounters(var Counters: TVkCounters; Filter: string = ''): Boolean;
 begin
   if Filter = '' then
     Filter :=
@@ -109,17 +109,17 @@ begin
   begin
     Result := Success;
     if Result then
-      Counters := TCountersClass.FromJsonString(Response);
+      Counters := TVkCounters.FromJsonString(Response);
   end;
 end;
 
-function TAccountController.GetInfo(var Info: TAccountInfoClass; Fields: TFields = []): Boolean;
+function TAccountController.GetInfo(var Info: TVkAccountInfo; Fields: TFields = []): Boolean;
 begin
   with Handler.Execute('account.getInfo', ['fields', FieldsToString(Fields)]) do
   begin
     Result := Success;
     if Result then
-      Info := TAccountInfoClass.FromJsonString(Response);
+      Info := TVkAccountInfo.FromJsonString(Response);
   end;
 end;
 

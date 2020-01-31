@@ -36,7 +36,7 @@ implementation
 uses
   VK.API;
 
-{ TAuth }
+{ TAuthController }
 
 function TAuthController.CheckPhone(Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean): Boolean;
 begin

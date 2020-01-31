@@ -118,7 +118,7 @@ type
   public
     property CountryId: Extended read FCountry_id write FCountry_id;
     property From: Extended read FFrom write FFrom;
-    property&UnitName: string read FUnit write FUnit;
+    property&Unit: string read FUnit write FUnit;
     property UnitId: Extended read FUnit_id write FUnit_id;
     property UntilDate: Extended read FUntil write FUntil;
     function ToJsonString: string;

@@ -8,21 +8,21 @@ uses
 type
   TVkPhoto = class
   private
-    FAlbum_id: Extended;
-    FCan_comment: Extended;
-    FCan_repost: Extended;
+    FAlbum_id: Integer;
+    FCan_comment: Integer;
+    FCan_repost: Integer;
     FComments: TVkCommentsInfo;
     FDate: Extended;
-    FId: Extended;
+    FId: Integer;
     FLikes: TVkLikesInfo;
-    FOwner_id: Extended;
+    FOwner_id: Integer;
     FReposts: TVkRepostsInfo;
     FSizes: TArray<TVkSizes>;
     FTags: TVkTags;
     FText: string;
-    FUser_id: Extended;
-    FWidth: Extended;
-    FHeight: Extended;
+    FUser_id: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
     FAccess_key: string;
     FPhoto_604: string;
     FPhoto_75: string;
@@ -31,18 +31,18 @@ type
     FPhoto_2560: string;
     FPhoto_130: string;
   public
-    property Id: Extended read FId write FId;
-    property AlbumId: Extended read FAlbum_id write FAlbum_id;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
-    property UserId: Extended read FUser_id write FUser_id;
+    property Id: Integer read FId write FId;
+    property AlbumId: Integer read FAlbum_id write FAlbum_id;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property UserId: Integer read FUser_id write FUser_id;
     property Text: string read FText write FText;
     property Date: Extended read FDate write FDate;
     property Sizes: TArray<TVkSizes> read FSizes write FSizes;
-    property Width: Extended read FWidth write FWidth;
-    property Height: Extended read FHeight write FHeight;
+    property Width: Integer read FWidth write FWidth;
+    property Height: Integer read FHeight write FHeight;
     //
-    property CanComment: Extended read FCan_comment write FCan_comment;
-    property CanRepost: Extended read FCan_repost write FCan_repost;
+    property CanComment: Integer read FCan_comment write FCan_comment;
+    property CanRepost: Integer read FCan_repost write FCan_repost;
     property Comments: TVkCommentsInfo read FComments write FComments;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
@@ -76,6 +76,8 @@ type
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPostedPhoto;
   end;
+
+  TVkPhotos = TArray<TVkPhoto>;
 
 implementation
 

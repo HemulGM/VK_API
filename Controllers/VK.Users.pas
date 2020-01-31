@@ -48,6 +48,8 @@ var
   Params: TParams;
   Users: TVkUsers;
 begin
+  if UserId < 0 then
+    Exit(False);
   if UserId <> 0 then
     AddParam(Params, ['user_ids', UserId.ToString]);
   if not Fields.IsEmpty then
@@ -56,12 +58,17 @@ begin
     AddParam(Params, ['num', NameCase]);
   with Handler.Execute('users.get', Params) do
   begin
-    Users := TVkUsers.FromJsonString(JSON);
-    if Success and (Length(Users.Items) > 0) then
+    if Success then
     begin
-      User := TVkUser.FromJsonString(Users.Items[0].ToJsonString);
-      Result := True;
-      Users.Free;
+      Users := TVkUsers.FromJsonString(JSON);
+      if (Length(Users.Items) > 0) then
+      begin
+        User := TVkUser.FromJsonString(Users.Items[0].ToJsonString);
+        Result := True;
+        Users.Free;
+      end
+      else
+        Result := False;
     end
     else
       Result := False;

@@ -6,21 +6,14 @@ uses
   Generics.Collections, REST.Json.Types, REST.Json, VK.Types;
 
 type
-  TAccountInfoClass = class
+  TVkAccountInfo = class
   private
-    [JSONName('2fa_required')]
     F2fa_required: Extended;
-    [JSONName('country')]
     FCountry: string;
-    [JSONName('https_required')]
     FHttps_required: Extended;
-    [JSONName('intro')]
     FIntro: Extended;
-    [JSONName('lang')]
     FLang: Extended;
-    [JSONName('no_wall_replies')]
     FNo_wall_replies: Extended;
-    [JSONName('own_posts_default')]
     FOwn_posts_default: Extended;
   public
     property FA2Required: Extended read F2fa_required write F2fa_required;
@@ -31,21 +24,21 @@ type
     property NoWallReplies: Extended read FNo_wall_replies write FNo_wall_replies;
     property OwnPostsDefault: Extended read FOwn_posts_default write FOwn_posts_default;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TAccountInfoClass;
+    class function FromJsonString(AJsonString: string): TVkAccountInfo;
   end;
 
 implementation
 
-{TAccountInfoClass}
+{TVkAccountInfo}
 
-function TAccountInfoClass.ToJsonString: string;
+function TVkAccountInfo.ToJsonString: string;
 begin
   Result := TJson.ObjectToJsonString(self);
 end;
 
-class function TAccountInfoClass.FromJsonString(AJsonString: string): TAccountInfoClass;
+class function TVkAccountInfo.FromJsonString(AJsonString: string): TVkAccountInfo;
 begin
-  Result := TJson.JsonToObject<TAccountInfoClass>(AJsonString)
+  Result := TJson.JsonToObject<TVkAccountInfo>(AJsonString)
 end;
 
 end.

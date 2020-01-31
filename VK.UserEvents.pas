@@ -432,7 +432,7 @@ function TCustomUserEvents.Start: Boolean;
 begin
   if not Assigned(FVK) then
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
-  FLongPollServer.Client := FVK.Handler.RESTClient;
+  FLongPollServer.Client := FVK.Handler.Client;
   FLongPollServer.Method := 'messages.getLongPollServer';
   FLongPollServer.Params := [['lp_version', '3']];
   FLongPollServer.OnError := FOnError;

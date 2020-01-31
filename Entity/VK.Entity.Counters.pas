@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json;
 
 type
-  TCountersClass = class
+  TVkCounters = class
   private
     FApp_requests: Extended;
     FEvents: Extended;
@@ -36,21 +36,21 @@ type
     property SDK: Extended read FSdk write FSdk;
     property Videos: Extended read FVideos write FVideos;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TCountersClass;
+    class function FromJsonString(AJsonString: string): TVkCounters;
   end;
 
 implementation
 
-{TCountersClass}
+{TVkCounters}
 
-function TCountersClass.ToJsonString: string;
+function TVkCounters.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TCountersClass.FromJsonString(AJsonString: string): TCountersClass;
+class function TVkCounters.FromJsonString(AJsonString: string): TVkCounters;
 begin
-  result := TJson.JsonToObject<TCountersClass>(AJsonString)
+  result := TJson.JsonToObject<TVkCounters>(AJsonString)
 end;
 
 end.
