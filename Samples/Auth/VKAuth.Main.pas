@@ -539,7 +539,6 @@ begin
   //{$INCLUDE app_cred.inc}  //Моё приложение
   VK1.SetProxy('86.57.179.4', 8080);
   VK1.Login;
-  //VK1.Login('alinvip@inbox.ru', 'HemulGM570092959');
 end;
 
 procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);

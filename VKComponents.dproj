@@ -156,19 +156,18 @@
             <Form>FormOAuth2</Form>
         </DCCReference>
         <DCCReference Include="VK.Uploader.pas"/>
-        <DCCReference Include="Controllers\VK.Account.pas"/>
-        <DCCReference Include="Controllers\VK.Audio.pas"/>
-        <DCCReference Include="Controllers\VK.Auth.pas"/>
-        <DCCReference Include="Controllers\VK.Docs.pas"/>
-        <DCCReference Include="Controllers\VK.Likes.pas"/>
-        <DCCReference Include="Controllers\VK.Messages.pas"/>
-        <DCCReference Include="Controllers\VK.Status.pas"/>
-        <DCCReference Include="Controllers\VK.Users.pas"/>
-        <DCCReference Include="Controllers\VK.Wall.pas"/>
+        <DCCReference Include="VK.FakeAndroidProto.pas"/>
+        <DCCReference Include="Utils\pbInput.pas"/>
+        <DCCReference Include="Utils\pbOutput.pas"/>
+        <DCCReference Include="Utils\pbPublic.pas"/>
+        <DCCReference Include="Utils\StrBuffer.pas"/>
+        <DCCReference Include="Utils\uAbstractProtoBufClasses.pas"/>
         <DCCReference Include="Entity\VK.Entity.AccountInfo.pas"/>
+        <DCCReference Include="Entity\VK.Entity.AccountInfoRequest.pas"/>
         <DCCReference Include="Entity\VK.Entity.ActiveOffers.pas"/>
         <DCCReference Include="Entity\VK.Entity.Album.pas"/>
         <DCCReference Include="Entity\VK.Entity.Audio.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Audio.Upload.pas"/>
         <DCCReference Include="Entity\VK.Entity.AudioMessage.pas"/>
         <DCCReference Include="Entity\VK.Entity.ClientInfo.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.pas"/>
@@ -188,6 +187,8 @@
         <DCCReference Include="Entity\VK.Entity.OldApp.pas"/>
         <DCCReference Include="Entity\VK.Entity.Page.pas"/>
         <DCCReference Include="Entity\VK.Entity.Photo.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Photo.Upload.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Playlist.pas"/>
         <DCCReference Include="Entity\VK.Entity.Poll.pas"/>
         <DCCReference Include="Entity\VK.Entity.PrettyCard.pas"/>
         <DCCReference Include="Entity\VK.Entity.ProfileInfo.pas"/>
@@ -195,18 +196,19 @@
         <DCCReference Include="Entity\VK.Entity.Sticker.pas"/>
         <DCCReference Include="Entity\VK.Entity.User.pas"/>
         <DCCReference Include="Entity\VK.Entity.Video.pas"/>
-        <DCCReference Include="Entity\VK.Entity.AccountInfoRequest.pas"/>
+        <DCCReference Include="Controllers\VK.Account.pas"/>
+        <DCCReference Include="Controllers\VK.Audio.pas"/>
+        <DCCReference Include="Controllers\VK.Auth.pas"/>
         <DCCReference Include="Controllers\VK.Board.pas"/>
-        <DCCReference Include="VK.FakeAndroidProto.pas"/>
-        <DCCReference Include="Utils\pbInput.pas"/>
-        <DCCReference Include="Utils\pbOutput.pas"/>
-        <DCCReference Include="Utils\pbPublic.pas"/>
-        <DCCReference Include="Utils\StrBuffer.pas"/>
-        <DCCReference Include="Utils\uAbstractProtoBufClasses.pas"/>
+        <DCCReference Include="Controllers\VK.Docs.pas"/>
         <DCCReference Include="Controllers\VK.Friends.pas"/>
         <DCCReference Include="Controllers\VK.Groups.pas"/>
+        <DCCReference Include="Controllers\VK.Likes.pas"/>
+        <DCCReference Include="Controllers\VK.Messages.pas"/>
         <DCCReference Include="Controllers\VK.Photos.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Photo.Upload.pas"/>
+        <DCCReference Include="Controllers\VK.Status.pas"/>
+        <DCCReference Include="Controllers\VK.Users.pas"/>
+        <DCCReference Include="Controllers\VK.Wall.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
