@@ -66,12 +66,14 @@ type
     procedure DoNotifyChange(const PeerId, Sound, DisabledUntil: Integer);
     procedure SetOnNotifyChange(const Value: TOnNotifyChange);
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
+    function GetIsWork: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Stop;
     function Start: Boolean;
     property VK: TCustomVK read FVK write SetVK;
+    property IsWork: Boolean read GetIsWork;
     property OnNewMessage: TOnNewMessage read FOnNewMessage write SetOnNewMessage;
     property OnEditMessage: TOnEditMessage read FOnEditMessage write SetOnEditMessage;
     property OnUserOnline: TOnUserOnline read FOnUserOnline write SetOnUserOnline;
@@ -336,6 +338,11 @@ procedure TCustomUserEvents.FOnLongPollUpdate(Sender: TObject; GroupID: string; 
 begin
   FVK.DoLog(Self, Update.ToString);
   DoEvent(Sender, Update);
+end;
+
+function TCustomUserEvents.GetIsWork: Boolean;
+begin
+  Result := FLongPollServer.IsWork;
 end;
 
 procedure TCustomUserEvents.SetOnChangeDialogFlags(const Value: TOnChangeDialogFlags);

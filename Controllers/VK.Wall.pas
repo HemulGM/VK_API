@@ -61,15 +61,16 @@ begin
     Params.Add('message', Message);
   with Handler.Execute('wall.post', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       JSONItem := TJSONObject.ParseJSONValue(Response);
-      PostId := JSONItem.GetValue<integer>('post_id', -1);
-      JSONItem.Free;
-      Result := True;
-    end
-    else
-      Result := False;
+      try
+        PostId := JSONItem.GetValue<integer>('post_id', -1);
+      finally
+        JSONItem.Free;
+      end;
+    end;
   end;
 end;
 
@@ -100,15 +101,16 @@ begin
   Params.Add('owner_id', OwnerId);
   with Handler.Execute('wall.post', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       JSONItem := TJSONObject.ParseJSONValue(Response);
-      PostId := JSONItem.GetValue<integer>('post_id', -1);
-      JSONItem.Free;
-      Result := True;
-    end
-    else
-      Result := False;
+      try
+        PostId := JSONItem.GetValue<integer>('post_id', -1);
+      finally
+        JSONItem.Free;
+      end;
+    end;
   end;
 end;
 
@@ -125,15 +127,16 @@ var
 begin
   with Handler.Execute('wall.post', Params.List) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       JSONItem := TJSONObject.ParseJSONValue(Response);
-      PostId := JSONItem.GetValue<integer>('post_id', -1);
-      JSONItem.Free;
-      Result := True;
-    end
-    else
-      Result := False;
+      try
+        PostId := JSONItem.GetValue<integer>('post_id', -1);
+      finally
+        JSONItem.Free;
+      end;
+    end;
   end;
 end;
 

@@ -49,7 +49,7 @@ type
     function GetPermissions: string;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
-    procedure FAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
+    procedure FAuthError(const AText: string; AStatusCode: Integer; var Cancel: WordBool);
     procedure FAuthClose(Sender: TObject; var Action: TCloseAction);
     procedure FLog(Sender: TObject; const Value: string);
     procedure FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
@@ -322,34 +322,54 @@ end;
 procedure TCustomVK.FAuthClose(Sender: TObject; var Action: TCloseAction);
 var
   E: Exception;
+  IsError: Boolean;
 begin
+  IsError := FAuthForm.IsError;
   Action := caFree;
   FAuthForm := nil;
   //Это необходимо, чтобы не передавать ошибку авторизации, если мы сразу завершаем программу
   if Application.Terminated then
     Exit;
-
-  if FOAuth2Authenticator.AccessToken.IsEmpty then
+  if not IsError then
   begin
-    E := TVkException.Create('Токен не был получен');
-    if Assigned(FOnErrorLogin) then
+    if FOAuth2Authenticator.AccessToken.IsEmpty then
     begin
-      FOnErrorLogin(Self, E, ERROR_VK_NOTOKEN, E.Message);
-      if Assigned(E) then
+      E := TVkException.Create('Токен не был получен');
+      if Assigned(FOnErrorLogin) then
+      begin
+        FOnErrorLogin(Self, E, ERROR_VK_NOTOKEN, E.Message);
+        if Assigned(E) then
+          E.Free;
+      end
+      else
+      begin
+        DoLog(Self, E.Message);
         E.Free;
-    end
-    else
-    begin
-      DoLog(Self, E.Message);
-      E.Free;
+      end;
     end;
   end;
 end;
 
-procedure TCustomVK.FAuthError(const AURL: string; AStatusCode: Integer; var Cancel: WordBool);
+procedure TCustomVK.FAuthError(const AText: string; AStatusCode: Integer; var Cancel: WordBool);
+var
+  E: Exception;
 begin
+  E := TVkException.Create('Токен не был получен');
   if Assigned(FOnErrorLogin) then
-    FOnErrorLogin(Self, TVkException.Create('Ошибка авторизации, код : ' + AStatusCode.ToString), AStatusCode, AURL);
+  begin
+    FOnErrorLogin(Self, E, ERROR_VK_NOTOKEN, AText);
+    if Assigned(E) then
+      E.Free;
+  end
+  else
+  begin
+    DoLog(Self, E.Message);
+    E.Free;
+  end;
+  if Assigned(FAuthForm) then
+  begin
+    FAuthForm.Close;
+  end;
 end;
 
 procedure TCustomVK.FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);

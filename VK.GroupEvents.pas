@@ -256,6 +256,7 @@ type
     procedure SetOnGroupAppPayload(const Value: TOnGroupAppPayload);
     procedure SetOnGroupPayTransaction(const Value: TOnGroupPayTransaction);
     procedure SetOnMessageTypingState(const Value: TOnGroupMessageTypingState);
+    function GetIsWork: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -263,6 +264,7 @@ type
     function Start: Boolean;
     property VK: TCustomVK read FVK write SetVK;
     property GroupID: Integer read FGroupID write SetGroupID;
+    property IsWork: Boolean read GetIsWork;
     //
     property OnWallReplyNew: TOnCommentAction read FOnWallReplyNew write SetOnWallReplyNew;
     property OnWallReplyEdit: TOnCommentAction read FOnWallReplyEdit write SetOnWallReplyEdit;
@@ -501,88 +503,92 @@ begin
   if EventType.IsEmpty then
     raise TVkGroupEventsException.Create('Не был получен тип события');
   //message_typing_state
-  if EventType = 'message_new' then
-    DoMessageNew(GroupId, EventObject, EventId)
-  else if (EventType = 'message_reply') then
-    DoMessageReply(GroupId, EventObject, EventId)
-  else if (EventType = 'message_edit') then
-    DoMessageEdit(GroupId, EventObject, EventId)
-  else if EventType = 'message_allow' then
-    DoMessageAllow(GroupId, EventObject, EventId)
-  else if EventType = 'message_deny' then
-    DoMessageDeny(GroupId, EventObject, EventId)
-  else if EventType = 'message_typing_state' then
-    DoMessageTypingState(GroupId, EventObject, EventId)
-  else if EventType = 'photo_new' then
-    DoPhotoNew(GroupId, EventObject, EventId)
-  else if EventType = 'photo_comment_new' then
-    DoPhotoCommentNew(GroupId, EventObject, EventId)
-  else if EventType = 'photo_comment_edit' then
-    DoPhotoCommentEdit(GroupId, EventObject, EventId)
-  else if EventType = 'photo_comment_restore' then
-    DoPhotoCommentRestore(GroupId, EventObject, EventId)
-  else if EventType = 'photo_comment_delete' then
-    DoPhotoCommentDelete(GroupId, EventObject, EventId)
-  else if EventType = 'audio_new' then
-    DoAudioNew(GroupId, EventObject, EventId)
-  else if EventType = 'video_new' then
-    DoVideoNew(GroupId, EventObject, EventId)
-  else if EventType = 'video_comment_new' then
-    DoVideoCommentNew(GroupId, EventObject, EventId)
-  else if EventType = 'video_comment_edit' then
-    DoVideoCommentEdit(GroupId, EventObject, EventId)
-  else if EventType = 'video_comment_restore' then
-    DoVideoCommentRestore(GroupId, EventObject, EventId)
-  else if EventType = 'video_comment_delete' then
-    DoVideoCommentDelete(GroupId, EventObject, EventId)
-  else if EventType = 'wall_post_new' then
-    DoWallPostNew(GroupId, EventObject, EventId)
-  else if EventType = 'wall_repost' then
-    DoWallRepost(GroupId, EventObject, EventId)
-  else if EventType = 'wall_reply_new' then
-    DoWallReplyNew(GroupId, EventObject, EventId)
-  else if EventType = 'wall_reply_edit' then
-    DoWallReplyEdit(GroupId, EventObject, EventId)
-  else if EventType = 'wall_reply_restore' then
-    DoWallReplyRestore(GroupId, EventObject, EventId)
-  else if EventType = 'wall_reply_delete' then
-    DoWallReplyDelete(GroupId, EventObject, EventId)
-  else if EventType = 'board_post_new' then
-    DoBoardPostNew(GroupId, EventObject, EventId)
-  else if EventType = 'board_post_edit' then
-    DoBoardPostEdit(GroupId, EventObject, EventId)
-  else if EventType = 'board_post_restore' then
-    DoBoardPostRestore(GroupId, EventObject, EventId)
-  else if EventType = 'board_post_delete' then
-    DoBoardPostDelete(GroupId, EventObject, EventId)
-  else if EventType = 'market_comment_new' then
-    DoMarketCommentNew(GroupId, EventObject, EventId)
-  else if EventType = 'market_comment_edit' then
-    DoMarketCommentEdit(GroupId, EventObject, EventId)
-  else if EventType = 'market_comment_restore' then
-    DoMarketCommentRestore(GroupId, EventObject, EventId)
-  else if EventType = 'market_comment_delete' then
-    DoMarketCommentDelete(GroupId, EventObject, EventId)
-  else if EventType = 'group_leave' then
-    DoGroupLeave(GroupId, EventObject, EventId)
-  else if EventType = 'group_join' then
-    DoGroupJoin(GroupId, EventObject, EventId)
-  else if EventType = 'group_officers_edit' then
-    DoGroupOfficersEdit(GroupId, EventObject, EventId)
-  else if EventType = 'user_block' then
-    DoUserBlock(GroupId, EventObject, EventId)
-  else if EventType = 'user_unblock' then
-    DoUserUnblock(GroupId, EventObject, EventId)
-  else if EventType = 'group_change_settings' then
-    DoGroupChangeSettings(GroupId, EventObject, EventId)
-  else if EventType = 'group_change_photo' then
-    DoGroupChangePhoto(GroupId, EventObject, EventId)
-  else if EventType = 'vkpay_transaction' then
-    DoVkPayTransaction(GroupId, EventObject, EventId)
-  else if EventType = 'app_payload' then
-    DoAppPayload(GroupId, EventObject, EventId)
-  else if EventType = 'poll_vote_new' then
-    DoPollVoteNew(GroupId, EventObject, EventId);
+  try
+    if EventType = 'message_new' then
+      DoMessageNew(GroupId, EventObject, EventId)
+    else if (EventType = 'message_reply') then
+      DoMessageReply(GroupId, EventObject, EventId)
+    else if (EventType = 'message_edit') then
+      DoMessageEdit(GroupId, EventObject, EventId)
+    else if EventType = 'message_allow' then
+      DoMessageAllow(GroupId, EventObject, EventId)
+    else if EventType = 'message_deny' then
+      DoMessageDeny(GroupId, EventObject, EventId)
+    else if EventType = 'message_typing_state' then
+      DoMessageTypingState(GroupId, EventObject, EventId)
+    else if EventType = 'photo_new' then
+      DoPhotoNew(GroupId, EventObject, EventId)
+    else if EventType = 'photo_comment_new' then
+      DoPhotoCommentNew(GroupId, EventObject, EventId)
+    else if EventType = 'photo_comment_edit' then
+      DoPhotoCommentEdit(GroupId, EventObject, EventId)
+    else if EventType = 'photo_comment_restore' then
+      DoPhotoCommentRestore(GroupId, EventObject, EventId)
+    else if EventType = 'photo_comment_delete' then
+      DoPhotoCommentDelete(GroupId, EventObject, EventId)
+    else if EventType = 'audio_new' then
+      DoAudioNew(GroupId, EventObject, EventId)
+    else if EventType = 'video_new' then
+      DoVideoNew(GroupId, EventObject, EventId)
+    else if EventType = 'video_comment_new' then
+      DoVideoCommentNew(GroupId, EventObject, EventId)
+    else if EventType = 'video_comment_edit' then
+      DoVideoCommentEdit(GroupId, EventObject, EventId)
+    else if EventType = 'video_comment_restore' then
+      DoVideoCommentRestore(GroupId, EventObject, EventId)
+    else if EventType = 'video_comment_delete' then
+      DoVideoCommentDelete(GroupId, EventObject, EventId)
+    else if EventType = 'wall_post_new' then
+      DoWallPostNew(GroupId, EventObject, EventId)
+    else if EventType = 'wall_repost' then
+      DoWallRepost(GroupId, EventObject, EventId)
+    else if EventType = 'wall_reply_new' then
+      DoWallReplyNew(GroupId, EventObject, EventId)
+    else if EventType = 'wall_reply_edit' then
+      DoWallReplyEdit(GroupId, EventObject, EventId)
+    else if EventType = 'wall_reply_restore' then
+      DoWallReplyRestore(GroupId, EventObject, EventId)
+    else if EventType = 'wall_reply_delete' then
+      DoWallReplyDelete(GroupId, EventObject, EventId)
+    else if EventType = 'board_post_new' then
+      DoBoardPostNew(GroupId, EventObject, EventId)
+    else if EventType = 'board_post_edit' then
+      DoBoardPostEdit(GroupId, EventObject, EventId)
+    else if EventType = 'board_post_restore' then
+      DoBoardPostRestore(GroupId, EventObject, EventId)
+    else if EventType = 'board_post_delete' then
+      DoBoardPostDelete(GroupId, EventObject, EventId)
+    else if EventType = 'market_comment_new' then
+      DoMarketCommentNew(GroupId, EventObject, EventId)
+    else if EventType = 'market_comment_edit' then
+      DoMarketCommentEdit(GroupId, EventObject, EventId)
+    else if EventType = 'market_comment_restore' then
+      DoMarketCommentRestore(GroupId, EventObject, EventId)
+    else if EventType = 'market_comment_delete' then
+      DoMarketCommentDelete(GroupId, EventObject, EventId)
+    else if EventType = 'group_leave' then
+      DoGroupLeave(GroupId, EventObject, EventId)
+    else if EventType = 'group_join' then
+      DoGroupJoin(GroupId, EventObject, EventId)
+    else if EventType = 'group_officers_edit' then
+      DoGroupOfficersEdit(GroupId, EventObject, EventId)
+    else if EventType = 'user_block' then
+      DoUserBlock(GroupId, EventObject, EventId)
+    else if EventType = 'user_unblock' then
+      DoUserUnblock(GroupId, EventObject, EventId)
+    else if EventType = 'group_change_settings' then
+      DoGroupChangeSettings(GroupId, EventObject, EventId)
+    else if EventType = 'group_change_photo' then
+      DoGroupChangePhoto(GroupId, EventObject, EventId)
+    else if EventType = 'vkpay_transaction' then
+      DoVkPayTransaction(GroupId, EventObject, EventId)
+    else if EventType = 'app_payload' then
+      DoAppPayload(GroupId, EventObject, EventId)
+    else if EventType = 'poll_vote_new' then
+      DoPollVoteNew(GroupId, EventObject, EventId);
+  except
+    //
+  end;
 end;
 
 procedure TCustomGroupEvents.DoAudioNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
@@ -1242,6 +1248,11 @@ begin
   DoEvent(Sender, Update);
 end;
 
+function TCustomGroupEvents.GetIsWork: Boolean;
+begin
+  Result := FLongPollServer.IsWork;
+end;
+
 procedure TCustomGroupEvents.SetGroupID(const Value: Integer);
 begin
   if Value > 0 then
@@ -1467,7 +1478,7 @@ begin
     raise Exception.Create('Идентификатор группы не указан или указан не верно');
   FLongPollServer.Client := FVK.Handler.Client;
   FLongPollServer.Method := 'groups.getLongPollServer';
-  FLongPollServer.Params := [['lp_version', '3'], ['group_id', (FGroupID *  - 1).ToString]];
+  FLongPollServer.Params := [['lp_version', '3'], ['group_id', (-FGroupID).ToString]];
   Result := FLongPollServer.Start;
   if Result then
     FVK.DoLog(FLongPollServer, FGroupID.ToString + ' started')

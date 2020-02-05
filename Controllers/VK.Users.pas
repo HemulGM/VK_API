@@ -58,20 +58,18 @@ begin
     AddParam(Params, ['num', NameCase]);
   with Handler.Execute('users.get', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       Users := TVkUsers.FromJsonString(JSON);
       if (Length(Users.Items) > 0) then
       begin
         User := TVkUser.FromJsonString(Users.Items[0].ToJsonString);
-        Result := True;
         Users.Free;
       end
       else
         Result := False;
-    end
-    else
-      Result := False;
+    end;
   end;
 end;
 

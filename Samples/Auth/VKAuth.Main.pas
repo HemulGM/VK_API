@@ -15,6 +15,15 @@ type
     VK1: TVK;
     Panel1: TPanel;
     LabelLogin: TLabel;
+    Panel2: TPanel;
+    Memo1: TMemo;
+    MemoLog: TMemo;
+    VkUserEvents1: TVkUserEvents;
+    VkGroupEventsController1: TVkGroupEventsController;
+    VkGroupEvents1: TVkGroupEvents;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -22,31 +31,36 @@ type
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
-    Button8: TButton;
     Button9: TButton;
     Button10: TButton;
     Button11: TButton;
+    TabSheet3: TTabSheet;
+    Button21: TButton;
+    Button23: TButton;
+    Button24: TButton;
+    TabSheet4: TTabSheet;
+    Button22: TButton;
+    TabSheet5: TTabSheet;
+    Button17: TButton;
+    Button18: TButton;
+    TabSheet6: TTabSheet;
+    Button19: TButton;
+    TabSheet7: TTabSheet;
     Button12: TButton;
-    Panel2: TPanel;
-    Memo1: TMemo;
-    MemoLog: TMemo;
+    TabSheet8: TTabSheet;
+    Button25: TButton;
+    TabSheet9: TTabSheet;
+    Button20: TButton;
+    Button26: TButton;
     Button13: TButton;
     Button14: TButton;
     Button15: TButton;
     Button16: TButton;
-    VkUserEvents1: TVkUserEvents;
-    VkGroupEventsController1: TVkGroupEventsController;
-    VkGroupEvents1: TVkGroupEvents;
-    Button17: TButton;
-    Button18: TButton;
-    Button19: TButton;
-    Button20: TButton;
-    Button21: TButton;
-    Button22: TButton;
-    Button23: TButton;
-    Button24: TButton;
-    Button25: TButton;
-    Button26: TButton;
+    Button8: TButton;
+    TabSheet10: TTabSheet;
+    Button27: TButton;
+    TabSheet11: TTabSheet;
+    Button28: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -172,6 +186,8 @@ type
     procedure Button24Click(Sender: TObject);
     procedure Button25Click(Sender: TObject);
     procedure Button26Click(Sender: TObject);
+    procedure Button27Click(Sender: TObject);
+    procedure Button28Click(Sender: TObject);
   private
   public
     { Public declarations }
@@ -186,7 +202,8 @@ uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
   VK.Entity.PushSettings, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
   VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.OAuth2,
-  VK.Entity.Playlist, VK.Audio, VK.Entity.Audio.Upload;
+  VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload, VK.Entity.Conversation,
+  VK.Entity.Status;
 
 {$R *.dfm}
 
@@ -257,8 +274,8 @@ begin
     if Assigned(Status.Audio) then
     begin
       Memo1.Lines.Add(Status.Audio.Artist + ' ' + Status.Audio.Title + ', ' + Status.Audio.Url);
-      Status.Audio.Free;
     end;
+    Status.Free;
   end
   else
     Memo1.Lines.Add('Error');
@@ -328,12 +345,13 @@ begin
   Params.AlbumId(86751037);
   if VK1.Audio.Get(List, Params) then
   begin
-    for i := Low(List) to High(List) do
+    for i := Low(List.Items) to High(List.Items) do
     begin
-      Memo1.Lines.Add(List[i].Artist + '-' + List[i].Title + ' ' + BoolToString(List[i].ContentRestricted = 0,
+      Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title + ' ' + BoolToString(List.Items[i].ContentRestricted
+        = 0,
         '', ' - аудиозапись не доступна'));
-      List[i].Free;
     end;
+    List.Free;
   end
   else
     Memo1.Lines.Add('Error get audios');
@@ -353,14 +371,14 @@ var
   i: Integer;
 begin
   //VK1.CallMethod('audio.getPlaylist', [['album_id', '86751037']]);
-  Exit;
   if VK1.Audio.GetPlaylists(List, 415730216) then
   begin
-    for i := Low(List) to High(List) do
+    for i := Low(List.Items) to High(List.Items) do
     begin
-      Memo1.Lines.Add(List[i].Title + '-' + List[i].Description + ' Playlist Type: ' + List[i].AlbumType);
-      List[i].Free;
+      Memo1.Lines.Add(List.Items[i].Title + '-' + List.Items[i].Description + ' Playlist Type: ' +
+        List.Items[i].AlbumType);
     end;
+    List.Free;
   end
   else
     Memo1.Lines.Add('Error GetPlaylists');
@@ -377,12 +395,13 @@ begin
   Params.AlbumId(86751037);
   if VK1.Audio.GetRecommendations(List) then
   begin
-    for i := Low(List) to High(List) do
+    for i := Low(List.Items) to High(List.Items) do
     begin
-      Memo1.Lines.Add(List[i].Artist + '-' + List[i].Title + ' ' + BoolToString(List[i].ContentRestricted = 0,
+      Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title + ' ' + BoolToString(List.Items
+        [i].ContentRestricted = 0,
         '', ' - аудиозапись не доступна'));
-      List[i].Free;
     end;
+    List.Free;
   end
   else
     Memo1.Lines.Add('Error GetRecommendations');
@@ -390,7 +409,8 @@ end;
 
 procedure TFormMain.Button25Click(Sender: TObject);
 var
-  Users: TVkUserList;
+  Users: TVkUsers;
+  //Users: TIds;
   TS: Cardinal;
 begin
   TThread.CreateAnonymousThread(
@@ -399,17 +419,33 @@ begin
       i: Integer;
     begin
       TS := GetTickCount;
-      if VK1.Groups.GetMembersFull(Users, 'delphilive') then
+      if VK1.Groups.GetMembersFull(Users, 'fcarsenaltula') then
+      begin
+        Memo1.Lines.Add('done ' + Users.Count.ToString);
+        Memo1.Lines.Add('time ' + ((GetTickCount - TS) / 1000).ToString);
+        for i := Low(Users.Items) to High(Users.Items) do
+        begin
+          Memo1.Lines.Add(Users.Items[i].FirstName + ' ' + Users.Items[i].LastName);
+        end;
+        Users.Free;
+      end;
+    end).Start;
+{  TThread.CreateAnonymousThread(
+    procedure
+    var
+      i: Integer;
+    begin                                 //delphilive
+      TS := GetTickCount;                //fcarsenaltula
+      if VK1.Groups.GetMembersIds(Users, 'fcarsenaltula') then
       begin
         Memo1.Lines.Add('done ' + Length(Users).ToString);
         Memo1.Lines.Add('time ' + ((GetTickCount - TS) / 1000).ToString);
         for i := Low(Users) to High(Users) do
         begin
-          Memo1.Lines.Add(Users[i].FirstName + ' ' + Users[i].LastName);
-          Users[i].Free;
+          Memo1.Lines.Add(Users[i].ToString);
         end;
       end;
-    end).Start;
+    end).Start;  }
 end;
 
 procedure TFormMain.Button26Click(Sender: TObject);
@@ -437,6 +473,42 @@ begin
   end
   else
     Memo1.Lines.Add('Error VK1.Audio.GetUploadServer');
+end;
+
+procedure TFormMain.Button27Click(Sender: TObject);
+var
+  List: TVkConversationItems;
+  Params: TParamConversation;
+  Item: TVkConversationItem;
+begin
+  if VK1.Messages.GetConversations(List, Params) then
+  begin
+    Memo1.Lines.Add('Count: ' + List.Count.ToString);
+    for Item in List.Items do
+    begin
+      Memo1.Lines.Add('Тип беседы: ' + Item.Conversation.Peer.&Type);
+      if Item.Conversation.IsChat then
+        Memo1.Lines.Add('Название беседы: ' + Item.Conversation.ChatSettings.Title)
+      else
+        Memo1.Lines.Add('Собеседник: ' + Item.Conversation.Peer.Id.ToString);
+    end;
+
+    List.Free;
+  end;
+end;
+
+procedure TFormMain.Button28Click(Sender: TObject);
+var
+  Users: TVkUsers;
+begin
+  if VK1.Friends.Get(Users) then
+  begin
+    for var User in Users.Items do
+    begin
+      Memo1.Lines.Add(User.GetFullName);
+    end;
+    Users.Free;
+  end;
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
@@ -536,8 +608,8 @@ end;
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
-  //{$INCLUDE app_cred.inc}  //Моё приложение
-  VK1.SetProxy('86.57.179.4', 8080);
+  {$INCLUDE app_cred.inc}  //Моё приложение
+  //VK1.SetProxy('177.22.24.246', 3128);
   VK1.Login;
 end;
 
@@ -547,7 +619,7 @@ begin
   //Для использования обычной OAuth2 авторизации достаточно убрать этот метод
   //Это мой токен, эту строчку нужно убрать
   {$INCLUDE vk_admin.inc}  //vk admin
-  //{$INCLUDE delphi_live.inc}  //delphi live
+  //{$INCLUDE delphi_live.inc}  //bot delphi live
   //Token := '01cdb9a07dcf67352040652808e86566d0448792ab67b52215a34702082c26c19400bef2a223fd5dde3ea';
 end;
 

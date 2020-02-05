@@ -48,6 +48,7 @@ type
     function GetClient: TCustomRESTClient;
     procedure SetMethod(const Value: string);
     procedure SetParams(const Value: TParams);
+    function GetIsWork: Boolean;
   public
     function Start: Boolean;
     procedure Stop;
@@ -61,6 +62,7 @@ type
     property Client: TCustomRESTClient read GetClient write SetClient;
     property Method: string read FMethod write SetMethod;
     property Params: TParams read FParams write SetParams;
+    property IsWork: Boolean read GetIsWork;
   end;
 
 const
@@ -107,6 +109,11 @@ end;
 function TLongPollServer.GetClient: TCustomRESTClient;
 begin
   Result := RESTRequest.Client;
+end;
+
+function TLongPollServer.GetIsWork: Boolean;
+begin
+  Result := not FLongPollNeedStop;
 end;
 
 function TLongPollServer.QueryLongPollServer: Boolean;

@@ -61,7 +61,10 @@ uses
   VK.Entity.Sticker in '..\..\Entity\VK.Entity.Sticker.pas',
   VK.Entity.User in '..\..\Entity\VK.Entity.User.pas',
   VK.Entity.Video in '..\..\Entity\VK.Entity.Video.pas',
-  VK.Entity.Audio.Upload in '..\..\Entity\VK.Entity.Audio.Upload.pas';
+  VK.Entity.Audio.Upload in '..\..\Entity\VK.Entity.Audio.Upload.pas',
+  VK.Entity.Conversation in '..\..\Entity\VK.Entity.Conversation.pas',
+  VK.Entity.Group in '..\..\Entity\VK.Entity.Group.pas',
+  VK.Entity.Status in '..\..\Entity\VK.Entity.Status.pas';
 
 {$R *.res}
 

@@ -115,7 +115,8 @@ var
 begin
   with Handler.Execute('likes.getList', Params.List) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       JSONItem := TJSONObject.ParseJSONValue(Response);
       Likes.Count := JSONItem.GetValue<Integer>('count', -1);
@@ -126,12 +127,11 @@ begin
         for i := 0 to JArray.Count - 1 do
           Likes.Users[i] := JArray.Items[i].GetValue<Integer>();
         JArray.Free;
-      end;
+      end
+      else
+        Result := False;
       JSONItem.Free;
-      Result := True;
-    end
-    else
-      Result := False;
+    end;
   end;
 end;
 

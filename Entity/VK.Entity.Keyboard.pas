@@ -67,10 +67,12 @@ type
     FButtons: TArray<TVkKeyboardButtons>;
     FOne_time: Boolean;
     FInline: Boolean;
+    FAuthor_id: Integer;
   public
     property Buttons: TArray<TVkKeyboardButtons> read FButtons write FButtons;
     property OneTime: Boolean read FOne_time write FOne_time;
     property&Inline: Boolean read FInline write FInline;
+    property AuthorId: Integer read FAuthor_id write FAuthor_id;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkKeyboard;

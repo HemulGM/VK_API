@@ -144,21 +144,20 @@ begin
 end;
 
 function TAccountController.RegisterDevice(const Data: TVkRegisterDeviceParams): Boolean;
-var
-  Response: TResponse;
 begin
-  Response := Handler.Execute('account.registerDevice', Data.List);
-  Result := Response.Success and (Response.Response = '1');
+  with Handler.Execute('account.registerDevice', Data.List) do
+    Result := Success and (Response = '1');
 end;
 
 function TAccountController.SaveProfileInfo(const Data: TVkProfileInfoParams; var Request:
   TVkAccountInfoRequest): Boolean;
-var
-  Response: TResponse;
 begin
-  Response := Handler.Execute('account.saveProfileInfo', Data.List);
-  Request := TVkAccountInfoRequest.FromJsonString(Response.Response);
-  Result := Response.Success and Assigned(Request);
+  with Handler.Execute('account.saveProfileInfo', Data.List) do
+  begin
+    Result := Success;
+    if Result then
+      Request := TVkAccountInfoRequest.FromJsonString(Response);
+  end;
 end;
 
 function TAccountController.SetInfo(const Name, Value: string): Boolean;

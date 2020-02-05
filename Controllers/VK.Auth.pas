@@ -39,9 +39,14 @@ uses
 { TAuthController }
 
 function TAuthController.CheckPhone(Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean): Boolean;
+var
+  Params: TParams;
 begin
-  with Handler.Execute('auth.checkPhone', [['phone', Phone], ['client_id', ClientId], ['client_secret',
-    ClientSecret], ['auth_by_phone', Ord(AuthByPhone).ToString]]) do
+  Params.Add('phone', Phone);
+  Params.Add('client_id', ClientId);
+  Params.Add('client_secret', ClientSecret);
+  Params.Add('auth_by_phone', Ord(AuthByPhone));
+  with Handler.Execute('auth.checkPhone', Params) do
     Result := Success and (Response = '1');
 end;
 
@@ -55,8 +60,12 @@ begin
 end;
 
 function TAuthController.Restore(Phone, LastName: string): TResponse;
+var
+  Params: TParams;
 begin
-  Result := Handler.Execute('auth.checkPhone', [['phone', Phone], ['last_name', LastName]]);
+  Params.Add('phone', Phone);
+  Params.Add('last_name', LastName);
+  Result := Handler.Execute('auth.checkPhone', Params);
 end;
 
 end.

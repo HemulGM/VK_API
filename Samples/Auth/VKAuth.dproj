@@ -167,6 +167,12 @@
         <DCCReference Include="..\..\Entity\VK.Entity.User.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Video.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Audio.Upload.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Conversation.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Group.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Status.pas"/>
+        <None Include="app_cred.inc"/>
+        <None Include="delphi_live.inc"/>
+        <None Include="vk_admin.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -189,9 +195,27 @@
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="app_cred.inc" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\VKAuth.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKAuth.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="vk_admin.inc" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="delphi_live.inc" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

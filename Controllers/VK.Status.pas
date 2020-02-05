@@ -4,14 +4,9 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON;
+  VK.Entity.Audio, System.JSON, VK.Entity.Status;
 
 type
-  TVkStatus = record
-    Text: string;
-    Audio: TVkAudio;
-  end;
-
   TStatusController = class(TVkController)
   public
     /// <summary>
@@ -39,7 +34,6 @@ uses
 function TStatusController.Get(var Status: TVkStatus; Id: Integer; IsGroup: Boolean): Boolean;
 var
   Params: TParams;
-  JSONItem, Audio: TJSONValue;
 begin
   if IsGroup then
     Params.Add('group_id', Id)
@@ -47,24 +41,11 @@ begin
     Params.Add('user_id', Id);
   with Handler.Execute('status.get', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
-      JSONItem := TJSONObject.ParseJSONValue(Response);
-      Status.Text := JSONItem.GetValue<string>('text', '');
-      Audio := JSONItem.GetValue<TJSONValue>('audio', nil);
-      if Assigned(Audio) then
-      try
-        Status.Audio := TVkAudio.FromJsonString(Audio.ToJSON)
-      except
-        Status.Audio := nil;
-      end
-      else
-        Status.Audio := nil;
-      JSONItem.Free;
-      Result := True;
-    end
-    else
-      Result := False;
+      Status := TVkStatus.FromJsonString(Response);
+    end;
   end;
 end;
 

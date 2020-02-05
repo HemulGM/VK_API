@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
-  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message;
+  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation;
 
 type
   TMessagesController = class;
@@ -35,6 +35,18 @@ type
     constructor Create(Controller: TMessagesController);
     property Handler: TVkHandler read FHandler;
     property Params: TParams read FParams write SetParams;
+  end;
+
+  TParamConversation = record
+    List: TParams;
+    function Offset(Value: Integer): Integer;
+    function Count(Value: Integer): Integer;
+    function GroupId(Value: Integer): Integer;
+    function MajorSortId(Value: Integer): Integer;
+    function Filter(Value: string): Integer;
+    function Fields(Value: string): Integer;
+    function Extended(Value: Boolean): Integer;
+    function StartMessageId(Value: Integer): Integer;
   end;
 
   TMessagesController = class(TVkController)
@@ -84,11 +96,33 @@ type
     /// </summary>
     /// <returns>¬озвращает конструктор сообщений. ћетод Send в этом конструкторе, возвращает результат в виде класса</returns>
     function Send: TNewMessage; overload;
+    //
     function GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength: Integer = 0; GroupId:
       Integer = 0): Boolean; overload;
+    //
     function GetById(Id: Integer; var Message: TVkMessage; PreviewLength: Integer = 0; GroupId:
       Integer = 0): Boolean; overload;
+    //
     function AddChatUser(ChatId, UserId: Integer; VisibleMessagesCount: Integer = 0): Boolean;
+    /// <summary>
+    /// ”дал€ет сообщени€
+    /// </summary>
+    function Delete(MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam:
+      Boolean = False): Boolean; overload;
+    /// <summary>
+    /// ”дал€ет сообщение
+    /// </summary>
+    function Delete(MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam:
+      Boolean = False): Boolean; overload;
+    /// <summary>
+    /// ѕолучает ссылку дл€ приглашени€ пользовател€ в беседу.
+    /// “олько создатель беседы имеет доступ к ссылке на беседу.
+    /// </summary>
+    function GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean = False; GroupId: Integer = 0): Boolean;
+    /// <summary>
+    /// ¬озвращает список бесед пользовател€
+    /// </summary>
+    function GetConversations(var Conversations: TVkConversationItems; Params: TParamConversation): Boolean;
   end;
 
 implementation
@@ -142,19 +176,22 @@ begin
   end;
 end;
 
-function TMessagesController.GetById(Id: Integer; var Message: TVkMessage; PreviewLength, GroupId: Integer): Boolean;
+function TMessagesController.Delete(MessageIds: TIds; GroupID: Integer; DeleteForAll, Spam: Boolean): Boolean;
 var
   Params: TParams;
-  Items: TJSONArray;
   RespJSON: TJSONValue;
+  i, DelRes: Integer;
 begin
-  Params.Add(['message_ids', Id.ToString]);
-  if PreviewLength > 0 then
-    Params.Add(['preview_length', PreviewLength.ToString]);
-  if GroupId > 0 then
-    Params.Add(['group_id', GroupId.ToString]);
-  Message := nil;
-  with Handler.Execute('messages.getById', Params) do
+  if GroupID < 0 then
+    raise TVkException.Create('GroupID должен быть положительным числом');
+  Params.Add('message_ids', MessageIds.ToString);
+  if DeleteForAll then
+    Params.Add('delete_for_all', DeleteForAll);
+  if DeleteForAll then
+    Params.Add('spam', Spam);
+  if GroupID > 0 then
+    Params.Add('group_id', GroupID.ToString);
+  with Handler.Execute('messages.delete', Params) do
   begin
     if not Success then
       Exit(False)
@@ -162,13 +199,16 @@ begin
     begin
       RespJSON := TJSONObject.ParseJSONValue(Response);
       try
-        if RespJSON.TryGetValue<TJSONArray>('items', Items) then
+        Result := True;
+        for i := Low(MessageIds) to High(MessageIds) do
         begin
-          Result := True;
-          Message := TVkMessage.FromJsonString(Items.Items[0].ToString);
-        end
-        else
-          Result := False;
+          if RespJSON.TryGetValue<Integer>(MessageIds[i].ToString, DelRes) then
+            Result := DelRes = 1
+          else
+            Result := False;
+          if not Result then
+            Break;
+        end;
       finally
         RespJSON.Free;
       end;
@@ -176,12 +216,14 @@ begin
   end;
 end;
 
+function TMessagesController.Delete(MessageId, GroupID: Integer; DeleteForAll, Spam: Boolean): Boolean;
+begin
+  Result := Delete([MessageId], GroupID, DeleteForAll, Spam);
+end;
+
 function TMessagesController.GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength, GroupId: Integer): Boolean;
 var
   Params: TParams;
-  Items: TJSONArray;
-  RespJSON: TJSONValue;
-  i: Integer;
 begin
   Params.Add(['message_ids', Ids.ToString]);
   if PreviewLength > 0 then
@@ -190,21 +232,77 @@ begin
     Params.Add(['group_id', GroupId.ToString]);
   with Handler.Execute('messages.getById', Params) do
   begin
+    Result := Success;
+    if Result then
+    begin
+      Messages := TVkMessages.FromJsonString(Response);
+    end;
+  end;
+end;
+
+function TMessagesController.GetById(Id: Integer; var Message: TVkMessage; PreviewLength, GroupId: Integer): Boolean;
+var
+  Params: TParams;
+  Items: TVkMessages;
+begin
+  Params.Add(['message_ids', Id.ToString]);
+  if PreviewLength > 0 then
+    Params.Add(['preview_length', PreviewLength.ToString]);
+  if GroupId <> 0 then
+    Params.Add(['group_id', GroupId.ToString]);
+  Result := GetById([Id], Items, PreviewLength, GroupId);
+  if Result then
+  begin
+    if Length(Items.Items) > 0 then
+    begin
+      Message := Items.Items[0];
+      Items.SaveObjects := True;
+      Items.Free;
+    end
+    else
+      Result := False;
+  end;
+end;
+
+function TMessagesController.GetConversations(var Conversations: TVkConversationItems; Params:
+  TParamConversation): Boolean;
+begin
+  with Handler.Execute('messages.getConversations', Params.List) do
+  begin
     if not Success then
       Exit(False)
     else
     begin
+      try
+        Conversations := TVkConversationItems.FromJsonString(Response);
+        Result := True;
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TMessagesController.GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean;
+  GroupId: Integer): Boolean;
+var
+  Params: TParams;
+  RespJSON: TJSONValue;
+begin
+  Params.Add('peer_id', PeerId);
+  if Reset then
+    Params.Add('reset', Reset);
+  if GroupId > 0 then
+    Params.Add('group_id', GroupId);
+  with Handler.Execute('messages.getInviteLink', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
       RespJSON := TJSONObject.ParseJSONValue(Response);
       try
-        if RespJSON.TryGetValue<TJSONArray>('items', Items) then
-        begin
-          Result := True;
-          SetLength(Messages, Items.Count);
-          for i := 0 to Items.Count - 1 do
-            Messages[i] := TVkMessage.FromJsonString(Items.Items[i].ToString);
-        end
-        else
-          Result := False;
+        Link := RespJSON.GetValue<string>('link', '');
+        Result := not Link.IsEmpty;
       finally
         RespJSON.Free;
       end;
@@ -358,7 +456,7 @@ begin
   Result := Self;
 end;
 
-function TNewMessage.GroupId(Id: Integer): TNewMessage;
+function TNewMessage.GroupID(Id: Integer): TNewMessage;
 begin
   Params.Add('group_id', Id.ToString);
   Result := Self;
@@ -428,6 +526,48 @@ function TNewMessage.UserIds(Ids: TUserIds): TNewMessage;
 begin
   Params.Add('user_ids', Ids.ToString);
   Result := Self;
+end;
+
+{ TParamConversation }
+
+function TParamConversation.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TParamConversation.Extended(Value: Boolean): Integer;
+begin
+  Result := List.Add('extended', Value);
+end;
+
+function TParamConversation.Fields(Value: string): Integer;
+begin
+  Result := List.Add('fields', Value);
+end;
+
+function TParamConversation.Filter(Value: string): Integer;
+begin
+  Result := List.Add('filter', Value);
+end;
+
+function TParamConversation.GroupID(Value: Integer): Integer;
+begin
+  Result := List.Add('group_id', Value);
+end;
+
+function TParamConversation.MajorSortId(Value: Integer): Integer;
+begin
+  Result := List.Add('major_sort_id', Value);
+end;
+
+function TParamConversation.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TParamConversation.StartMessageId(Value: Integer): Integer;
+begin
+  Result := List.Add('start_message_id', Value);
 end;
 
 end.

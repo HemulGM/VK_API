@@ -39,6 +39,8 @@ object FormOAuth2: TFormOAuth2
     OnTitleChange = BrowserTitleChange
     OnBeforeNavigate2 = BrowserBeforeNavigate2
     OnNavigateComplete2 = BrowserNavigateComplete2
+    OnFileDownload = BrowserFileDownload
+    OnNavigateError = BrowserNavigateError
     ExplicitTop = 30
     ControlData = {
       4C000000B04C0000673100000000000000000000000000000000000000000000

@@ -3,7 +3,7 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, Rest.Json, VK.Types;
+  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Types;
 
 type
   TVkAudioArtist = class
@@ -126,16 +126,31 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAudio;
+    class function FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
   end;
 
-  TVkAudioIndex = TArrayOfInteger;
+  TVkAudioIndex = record
+    OwnerId: Integer;
+    AudioId: Integer;
+  end;
 
   TVkAudioIndexes = TArray<TVkAudioIndex>;
 
-  TVkAudios = TArray<TVkAudio>;
-
-  TVkAudiosHelper = record helper for TVkAudios
-    function ToAudioIndexes: TVkAudioIndexes; inline;
+  TVkAudios = class
+  private
+    FItems: TArray<TVkAudio>;
+    FCount: Integer;
+    FSaveObjects: Boolean;
+    procedure SetSaveObjects(const Value: Boolean);
+  public
+    property Items: TArray<TVkAudio> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
+    procedure Append(Audios: TVkAudios);
+    constructor Create;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkAudios;
   end;
 
 implementation
@@ -175,6 +190,11 @@ end;
 function TVkAudio.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkAudio.FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
+begin
+  Result := TJson.JsonToObject<TVkAudio>(AJsonObject);
 end;
 
 class function TVkAudio.FromJsonString(AJsonString: string): TVkAudio;
@@ -241,7 +261,7 @@ begin
 end;
 
 { TVkAudiosHelper }
-
+      {
 function TVkAudiosHelper.ToAudioIndexes: TVkAudioIndexes;
 var
   i: Integer;
@@ -249,6 +269,51 @@ begin
   SetLength(Result, Length(Self));
   for i := Low(Self) to High(Self) do
     Result[i] := [Self[i].OwnerId, Self[i].Id];
+end;  }
+
+{ TVkAudios }
+
+procedure TVkAudios.Append(Audios: TVkAudios);
+var
+  OldLen: Integer;
+begin
+  OldLen := Length(Items);
+  SetLength(FItems, OldLen + Length(Audios.Items));
+  Move(Audios.Items[0], FItems[OldLen], Length(Audios.Items) * SizeOf(TVkAudio));
+end;
+
+constructor TVkAudios.Create;
+begin
+  inherited;
+  FSaveObjects := False;
+end;
+
+destructor TVkAudios.Destroy;
+var
+  LItemsItem: TVkAudio;
+begin
+  if not FSaveObjects then
+  begin
+    for LItemsItem in FItems do
+      LItemsItem.Free;
+  end;
+
+  inherited;
+end;
+
+class function TVkAudios.FromJsonString(AJsonString: string): TVkAudios;
+begin
+  result := TJson.JsonToObject<TVkAudios>(AJsonString);
+end;
+
+procedure TVkAudios.SetSaveObjects(const Value: Boolean);
+begin
+  FSaveObjects := Value;
+end;
+
+function TVkAudios.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

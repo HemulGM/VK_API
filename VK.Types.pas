@@ -10,6 +10,8 @@ uses
 type
   TVkException = Exception;
 
+  TVkParserException = TVkException;
+
   TVkHandlerException = TVkException;
 
   TVkWrongParamException = TVkException;
@@ -222,7 +224,17 @@ type
     function ToConst: string; inline;
   end;
 
+  TVkNameCase = (ncNom, ncGen, ncDat, ncAcc, ncIns, ncAbl);
+
+  TVkNameCaseHelper = record helper for TVkNameCase
+    function ToConst: string; inline;
+  end;
+  {
+  именительный Ц nom, родительный Ц gen, дательный Ц dat, винительный Ц acc, творительный Ц ins, предложный Ц abl. ѕо умолчанию nom.
+  }
+
   //ѕол
+
   TVkSex = (sxMale, sxFemale);
 
   //¬идимость даты рождени€
@@ -368,6 +380,14 @@ type
   TOnUsersTyping = procedure(Sender: TObject; Data: TChatTypingData) of object;
 
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
+
+const
+  AllUserFields = 'sex, bdate, city, country, photo_50, photo_100, photo_200_orig, ' +
+    'photo_200, photo_400_orig, photo_max, photo_max_orig, online, ' +
+    'online_mobile, lists, domain, has_mobile, contacts, connections, ' +
+    'site, education, universities, schools, can_post, can_see_all_posts, ' +
+    'can_see_audio, can_write_private_message, status, last_seen, ' +
+    'common_count, relation, relatives';
 
 var
   VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8, MF_UNKNOWN_7,
@@ -1039,6 +1059,30 @@ begin
       Result := 'market_comment';
     itSitepage:
       Result := 'sitepage';
+  else
+    Result := '';
+  end;
+end;
+
+{ TVkNameCaseHelper }
+
+function TVkNameCaseHelper.ToConst: string;
+begin
+  case Self of
+    ncNom:
+      Result := 'nom';
+    ncGen:
+      Result := 'gen';
+    ncDat:
+      Result := 'dat';
+    ncAcc:
+      Result := 'acc';
+    ncIns:
+      Result := 'ins';
+    ncAbl:
+      Result := 'abl';
+  else
+    Result := 'nom';
   end;
 end;
 

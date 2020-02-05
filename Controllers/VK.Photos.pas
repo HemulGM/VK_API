@@ -54,17 +54,11 @@ begin
   Params.Add('peer_id', PeerId);
   with Handler.Execute('photos.getMessagesUploadServer', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
-      try
-        Upload := TVkPhotoGetUploadResponse.FromJsonString(Response);
-        Result := True;
-      except
-        Result := False;
-      end;
-    end
-    else
-      Result := False;
+      Upload := TVkPhotoGetUploadResponse.FromJsonString(Response);
+    end;
   end;
 end;
 
@@ -79,24 +73,20 @@ begin
   Params.Add('hash', PhotoSaveData.Hash);
   with Handler.Execute('photos.saveMessagesPhoto', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       JArr := TJSONArray(TJSONObject.ParseJSONValue(Response));
-      if Assigned(JArr) then
-      begin
+      try
         SetLength(Photos, JArr.Count);
         for i := 0 to JArr.Count - 1 do
         begin
           Photos[i] := TVkPhoto.FromJsonString(JArr.Items[i].ToJSON);
         end;
-        Result := True;
+      finally
         JArr.Free;
-      end
-      else
-        Result := False;
-    end
-    else
-      Result := False;
+      end;
+    end;
   end;
 end;
 

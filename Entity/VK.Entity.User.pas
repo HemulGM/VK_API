@@ -261,6 +261,7 @@ type
     FUniversity_name: string;
     FVerified: Extended;
     function GetRefer: string;
+    function FGetFullName: string;
   public
     property About: string read FAbout write FAbout;
     property Activities: string read FActivities write FActivities;
@@ -338,34 +339,29 @@ type
     property UniversityName: string read FUniversity_name write FUniversity_name;
     property Verified: Extended read FVerified write FVerified;
     property Refer: string read GetRefer;
+    property GetFullName: string read FGetFullName;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkUser;
   end;
 
-  TVkFriends = class
-  private
-    FItems: TArray<TVkUser>;
-  public
-    property Items: TArray<TVkUser> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFriends;
-  end;
-
   TVkUsers = class
   private
-    FResponse: TArray<TVkUser>;
+    FItems: TArray<TVkUser>;
+    FCount: Integer;
+    FSaveObjects: Boolean;
+    procedure SetSaveObjects(const Value: Boolean);
   public
-    property Response: TArray<TVkUser> read FResponse write FResponse;
-    property Items: TArray<TVkUser> read FResponse write FResponse;
+    property Items: TArray<TVkUser> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
+    procedure Append(Users: TVkUsers);
+    constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkUsers;
   end;
-
-  TVkUserList = TArray<TVkUser>;
 
 implementation
 
@@ -545,6 +541,11 @@ begin
   result := TJson.JsonToObject<TVkUser>(AJsonString)
 end;
 
+function TVkUser.FGetFullName: string;
+begin
+  Result := FFirst_name + ' ' + FLast_name;
+end;
+
 function TVkUser.GetRefer: string;
 begin
   Result := '[' + Domain + '|' + FirstName + ']';
@@ -552,12 +553,30 @@ end;
 
 {TVkUsers}
 
+procedure TVkUsers.Append(Users: TVkUsers);
+var
+  OldLen: Integer;
+begin
+  OldLen := Length(Items);
+  SetLength(FItems, OldLen + Length(Users.Items));
+  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkUser));
+end;
+
+constructor TVkUsers.Create;
+begin
+  inherited;
+  FSaveObjects := False;
+end;
+
 destructor TVkUsers.Destroy;
 var
   LItemsItem: TVkUser;
 begin
-  for LItemsItem in FResponse do
-    LItemsItem.Free;
+  if not FSaveObjects then
+  begin
+    for LItemsItem in FItems do
+      LItemsItem.Free;
+  end;
 
   inherited;
 end;
@@ -572,26 +591,9 @@ begin
   result := TJson.JsonToObject<TVkUsers>(AJsonString);
 end;
 
-{ TVkFriends }
-
-destructor TVkFriends.Destroy;
-var
-  LItemsItem: TVkUser;
+procedure TVkUsers.SetSaveObjects(const Value: Boolean);
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-
-  inherited;
-end;
-
-class function TVkFriends.FromJsonString(AJsonString: string): TVkFriends;
-begin
-  result := TJson.JsonToObject<TVkFriends>(AJsonString);
-end;
-
-function TVkFriends.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
+  FSaveObjects := Value;
 end;
 
 end.

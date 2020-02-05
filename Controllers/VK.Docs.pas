@@ -51,15 +51,17 @@ begin
   Params.Add('peer_id', PeerId);
   with Handler.Execute('docs.getMessagesUploadServer', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       JSONItem := TJSONObject.ParseJSONValue(Response);
-      UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-      JSONItem.Free;
+      try
+        UploadUrl := JSONItem.GetValue<string>('upload_url', '');
+      finally
+        JSONItem.Free;
+      end;
       Result := not UploadUrl.IsEmpty;
-    end
-    else
-      Result := False;
+    end;
   end;
 end;
 
@@ -76,15 +78,17 @@ begin
   end;
   with Handler.Execute('docs.getMessagesUploadServer', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       JSONItem := TJSONObject.ParseJSONValue(Response);
-      UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-      JSONItem.Free;
+      try
+        UploadUrl := JSONItem.GetValue<string>('upload_url', '');
+      finally
+        JSONItem.Free;
+      end;
       Result := not UploadUrl.IsEmpty;
-    end
-    else
-      Result := False;
+    end;
   end;
 end;
 
@@ -99,13 +103,12 @@ begin
     Params.Add('return_tags', BoolToString(ReturnTags));
   with Handler.Execute('docs.save', Params) do
   begin
-    if Success then
+    Result := Success;
+    if Result then
     begin
       Doc := TVkDocSaved.FromJsonString(Response);
       Result := True;
-    end
-    else
-      Result := False;
+    end;
   end;
 end;
 

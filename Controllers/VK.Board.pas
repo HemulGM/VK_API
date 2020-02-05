@@ -85,13 +85,7 @@ begin
   Params.TopicId(TopicId);
   with Handler.Execute('board.createComment', Params.List) do
   begin
-    Result := Success;
-    try
-      if Result then
-        Id := Response.ToInteger;
-    except
-      Result := False;
-    end;
+    Result := Success and TryStrToInt(Response, Id);
   end;
 end;
 

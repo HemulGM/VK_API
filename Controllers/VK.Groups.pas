@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller,
-  VK.Types, VK.Entity.User, System.Classes, VCl.Forms;
+  VK.Types, VK.Entity.User, System.Classes, VK.Entity.Group;
 
 type
   TVkGetMembersParams = record
@@ -26,20 +26,16 @@ type
 
   TGroupsController = class(TVkController)
   public
-    function GetMembers(var Users: TVkUserList; GroupId: string; Params: TVkGetMembersParams): Boolean;
+    function GetMembers(var Users: TVkUsers; GroupId: string; Params: TVkGetMembersParams): Boolean;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function GetMembersFull(var Users: TVkUserList; GroupId: string): Boolean; overload;
+    function GetMembersFull(var Users: TVkUsers; GroupId: string): Boolean; overload;
+    function GetMembersIds(var Users: TIds; GroupId: string): Boolean; overload;
+    function EnableOnline(GroupId: Integer): Boolean;
+    function DisableOnline(GroupId: Integer): Boolean;
+    function GetOnlineStatus(var Status: TVkGroupStatus; GroupId: Integer): Boolean;
   end;
-
-const
-  AllFields = 'sex, bdate, city, country, photo_50, photo_100, photo_200_orig, ' +
-    'photo_200, photo_400_orig, photo_max, photo_max_orig, online, ' +
-    'online_mobile, lists, domain, has_mobile, contacts, connections, ' +
-    'site, education, universities, schools, can_post, can_see_all_posts, ' +
-    'can_see_audio, can_write_private_message, status, last_seen, ' +
-    'common_count, relation, relatives';
 
 implementation
 
@@ -48,42 +44,72 @@ uses
 
 { TGroupsController }
 
-function TGroupsController.GetMembers(var Users: TVkUserList; GroupId: string; Params: TVkGetMembersParams): Boolean;
-var
-  JArray: TJSONArray;
-  JsonValue: TJSONValue;
-  Count, i: Integer;
+function TGroupsController.DisableOnline(GroupId: Integer): Boolean;
+begin
+  GroupId := Abs(GroupId);
+  with Handler.Execute('groups.disableOnline', ['group_id', GroupId.ToString]) do
+    Result := Success and (Response = '1');
+end;
+
+function TGroupsController.EnableOnline(GroupId: Integer): Boolean;
+begin
+  GroupId := Abs(GroupId);
+  with Handler.Execute('groups.enableOnline', ['group_id', GroupId.ToString]) do
+    Result := Success and (Response = '1');
+end;
+
+function TGroupsController.GetMembers(var Users: TVkUsers; GroupId: string; Params: TVkGetMembersParams): Boolean;
 begin
   with Handler.Execute('groups.getMembers', Params.List) do
   begin
     Result := Success;
     if Result then
     begin
-      Result := False;
-      JsonValue := TJSONObject.ParseJSONValue(Response);
-      Count := JsonValue.GetValue<Integer>('count', -1);
-      if Count >= 0 then
-      begin
-        Result := True;
-        if Count > 0 then
-        begin
-          SetLength(Users, Count);
-          JArray := JsonValue.GetValue<TJSONArray>('items', nil);
-          if Assigned(JArray) then
-          begin
-            for i := 0 to JArray.Count - 1 do
-              Users[i] := TVkUser.FromJsonString(JArray.Items[i].ToJSON);
-          end
-          else
-            Result := False;
-        end;
-      end;
-      JsonValue.Free;
+      Users := TVkUsers.FromJsonString(Response);
     end;
   end;
 end;
 
-function TGroupsController.GetMembersFull(var Users: TVkUserList; GroupId: string): Boolean;
+function TGroupsController.GetMembersFull(var Users: TVkUsers; GroupId: string): Boolean;
+var
+  Params: TParams;
+  FUsers: TVkUsers;
+  FCount, FNeedCount: Integer;
+  FOffset: Integer;
+  Res: Boolean;
+begin
+  Params.Add('group_id', GroupId);
+  Params.Add('fields', 'domain');
+  Params.Add('count', 1000);
+  Params.Add('offset', 0);
+  FOffset := 0;
+  Users := TVkUsers.Create;
+  repeat
+    with Handler.Execute('groups.getMembers', Params) do
+    begin
+      if Success then
+      begin
+        FUsers := TVkUsers.FromJsonString(Response);
+        FNeedCount := FUsers.Count;
+        Users.Append(FUsers);
+        FUsers.SaveObjects := True;
+        FUsers.Free;
+        FCount := Length(Users.Items);
+        Res := True;
+      end
+      else
+      begin
+        Res := False;
+        Break;
+      end;
+    end;
+    FOffset := FOffset + 1000;
+    Params.Add('offset', FOffset);
+  until FCount >= FNeedCount;
+  Result := Res;
+end;
+
+function TGroupsController.GetMembersIds(var Users: TIds; GroupId: string): Boolean;
 var
   Params: TParams;
   JArray: TJSONArray;
@@ -94,7 +120,6 @@ var
   i: Integer;
 begin
   Params.Add('group_id', GroupId);
-  Params.Add('fields', 'domain');
   Params.Add('count', 1000);
   Params.Add('offset', 0);
   FCount := 0;
@@ -107,22 +132,25 @@ begin
       if Res then
       begin
         JsonValue := TJSONObject.ParseJSONValue(Response);
-        FNeedCount := JsonValue.GetValue<Integer>('count', 0);
-        if Length(Users) <> FNeedCount then
-          SetLength(Users, FNeedCount);
-        JArray := JsonValue.GetValue<TJSONArray>('items', nil);
-        if Assigned(JArray) then
-        begin
-          FCount := FCount + JArray.Count;
-          for i := 0 to JArray.Count - 1 do
+        try
+          FNeedCount := JsonValue.GetValue<Integer>('count', 0);
+          if Length(Users) <> FNeedCount then
+            SetLength(Users, FNeedCount);
+          JArray := JsonValue.GetValue<TJSONArray>('items', nil);
+          if Assigned(JArray) then
           begin
-            Users[FCur] := TVkUser.FromJsonString(JArray.Items[i].ToJSON);
-            Inc(FCur);
-          end;
-        end
-        else
-          Res := False;
-        JsonValue.Free;
+            FCount := FCount + JArray.Count;
+            for i := 0 to JArray.Count - 1 do
+            begin
+              Users[FCur] := JArray.Items[i].GetValue<Integer>;
+              Inc(FCur);
+            end;
+          end
+          else
+            Res := False;
+        finally
+          JsonValue.Free;
+        end;
       end
       else
         Break;
@@ -131,6 +159,19 @@ begin
     Params.Add('offset', FOffset);
   until (FCount >= FNeedCount) or (not Res);
   Result := Res;
+end;
+
+function TGroupsController.GetOnlineStatus(var Status: TVkGroupStatus; GroupId: Integer): Boolean;
+begin
+  GroupId := Abs(GroupId);
+  with Handler.Execute('groups.getOnlineStatus', ['group_id', GroupId.ToString]) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      Status := TVkGroupStatus.FromJsonString(Response);
+    end;
+  end;
 end;
 
 { TVkGetMembersParams }
