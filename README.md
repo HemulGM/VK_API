@@ -31,7 +31,7 @@ API для Вконтакте
       Users: TVkUsers;
       i: Integer;
     begin
-      if VK1.Users.Get(Users, '286400863,415730216', UserFieldsAll, '') then
+      if VK.Users.Get(Users, '286400863,415730216', UserFieldsAll, '') then
       begin
         for i := Low(Users.Items) to High(Users.Items) do
         begin
@@ -47,7 +47,7 @@ API для Вконтакте
     end;
 Установка статуса онлайн
 
-    if VK1.Account.SetOnline then
+    if VK.Account.SetOnline then
       Memo1.Lines.Add('online')
     else
       Memo1.Lines.Add('Error online');
@@ -61,7 +61,7 @@ API для Вконтакте
       Params.FromGroup(True);
       Params.Signed(True);
       Params.Attachments(['doc58553419_533494309_657138cd5d7842ae0a']);
-      VK1.Wall.Post(Params);
+      VK.Wall.Post(Params);
     end;  
 Отправка сообщения:
 
@@ -83,7 +83,9 @@ API для Вконтакте
         Message('Выбери вариант').
         Send.Free;
     end;
+или
 
+    Vk.Messages.Send(PeerId, 'Текст сообщения', [<вложения>]);
 
 **English**
 -
@@ -95,6 +97,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg3NDY4MTA2MSwzNDUyOTIzNSwtMTQ0NT
-E4MDc0MV19
+eyJoaXN0b3J5IjpbLTE1Nzg2MTQyODcsMzQ1MjkyMzUsLTE0ND
+UxODA3NDFdfQ==
 -->
