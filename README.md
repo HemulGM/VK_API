@@ -5,12 +5,15 @@
 -
 API для Вконтакте
 
-Способы авторизации
+Способы авторизации:
+1.
 
     VK1.Login(Self);
 
+2.
 
-Получение пользователей
+
+Получение пользователей:
 
     var
       Users: TVkUsers;
@@ -44,6 +47,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MTUyMjYwOTMsMzQ1MjkyMzUsLTE0ND
-UxODA3NDFdfQ==
+eyJoaXN0b3J5IjpbLTQ0OTI4MjY3MiwzNDUyOTIzNSwtMTQ0NT
+E4MDc0MV19
 -->
