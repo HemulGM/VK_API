@@ -51,6 +51,21 @@ API для Вконтакте
       Memo1.Lines.Add('online')
     else
       Memo1.Lines.Add('Error online');
+Создание поста в группе
+
+    var
+      Params: TVkWallParams;
+    begin
+      Params.Message('Test Text');
+      Params.OwnerId(-145962568);
+      Params.FromGroup(True);
+      Params.Signed(True);
+      Params.Attachments(['doc58553419_533494309_657138cd5d7842ae0a']);
+      VK1.Wall.Post(Params);
+    end;  
+Отправка сообщения:
+Vk.Messages.Send.PeerId(Message.PeerId).Message(FAnswer).Send.Free;
+
 
 
 **English**
@@ -63,6 +78,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA5OTkwNzM5MSwzNDUyOTIzNSwtMTQ0NT
+eyJoaXN0b3J5IjpbMTA4NTY3MzEyOSwzNDUyOTIzNSwtMTQ0NT
 E4MDc0MV19
 -->
