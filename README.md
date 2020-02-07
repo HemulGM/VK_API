@@ -110,7 +110,7 @@ API для Вконтакте
         end;
       end;
     end;
-Получение аудиозаписей плейлиста (альбома)
+**Получение аудиозаписей плейлиста (альбома)**
 
     var
       List: TVkAudios;
@@ -129,10 +129,11 @@ API для Вконтакте
       end;
     end;    
 
+
 **English**
 -
 API for Vkontakte
-> *I just began*
+
 
 **Authorization Methods:**
 1 . Authorization through OAuth2 form
@@ -211,10 +212,10 @@ API for Vkontakte
         Message('Выбери вариант').
         Send.Free;
     end;
-**или простое**
+**or simple**
 
     Vk.Messages.Send(PeerId, 'Текст сообщения', [<вложения>]);
-**Отправка фото**
+**Photo send**
 
     var
       Url: string;
@@ -239,7 +240,7 @@ API for Vkontakte
         end;
       end;
     end;
-Получение аудиозаписей плейлиста (альбома)
+**Receiving audio recordings of a playlist (album)**
 
     var
       List: TVkAudios;
@@ -258,6 +259,6 @@ API for Vkontakte
       end;
     end;    
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg5MjU0MDU2OCw5MzcyNjYxMzQsMzQ1Mj
+eyJoaXN0b3J5IjpbMTQzODY4ODI5MCw5MzcyNjYxMzQsMzQ1Mj
 kyMzUsLTE0NDUxODA3NDFdfQ==
 -->
