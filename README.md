@@ -64,8 +64,25 @@ API для Вконтакте
       VK1.Wall.Post(Params);
     end;  
 Отправка сообщения:
-Vk.Messages.Send.PeerId(Message.PeerId).Message(FAnswer).Send.Free;
 
+    Vk.Messages.Send.PeerId(Message.PeerId).Message(FAnswer).Send.Free;
+или, с созданием клавиатуры
+
+    var
+      Keys: TVkKeyboardConstructor;
+    begin
+      Keys.SetOneTime(True);
+      Keys.AddButtonText(0, 'Погода', 'weather', 'positive');
+      Keys.AddButtonText(0, 'Отмена', 'cancel', 'negative');
+      Keys.AddButtonText(1, 'Информация', 'info', 'primary');
+      Keys.AddButtonText(1, 'Команды', 'commands', 'secondary');
+      Vk.Messages.
+        Send.
+        PeerId(PeerId).
+        Keyboard(Keys).
+        Message('Выбери вариант').
+        Send.Free;
+    end;
 
 
 **English**
@@ -78,6 +95,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA4NTY3MzEyOSwzNDUyOTIzNSwtMTQ0NT
+eyJoaXN0b3J5IjpbLTg3NDY4MTA2MSwzNDUyOTIzNSwtMTQ0NT
 E4MDc0MV19
 -->
