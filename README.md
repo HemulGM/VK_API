@@ -37,7 +37,6 @@ API для Вконтакте
         begin
           Memo1.Lines.Add('About: ' + Users.Items[i].About);
           Memo1.Lines.Add('BirthDate: ' + Users.Items[i].BirthDate);
-          Memo1.Lines.Add('Books: ' + Users.Items[i].Books);
           Memo1.Lines.Add('Domain: ' + Users.Items[i].Domain);
           Memo1.Lines.Add('FirstName: ' + Users.Items[i].FirstName);
           Memo1.Lines.Add('Movies: ' + Users.Items[i].Movies);
@@ -46,7 +45,12 @@ API для Вконтакте
         Users.Free;
       end;
     end;
+Установка статуса онлайн
 
+    if VK1.Account.SetOnline then
+      Memo1.Lines.Add('online')
+    else
+      Memo1.Lines.Add('Error online');
 
 
 **English**
@@ -59,6 +63,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzMDk0NzEyNTQsMzQ1MjkyMzUsLTE0ND
-UxODA3NDFdfQ==
+eyJoaXN0b3J5IjpbMjA5OTkwNzM5MSwzNDUyOTIzNSwtMTQ0NT
+E4MDc0MV19
 -->
