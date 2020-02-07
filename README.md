@@ -134,12 +134,12 @@ API для Вконтакте
 API for Vkontakte
 > *I just began*
 
-**Способы авторизации:**
-1 . Авторизация через OAuth2 форму
+**Authorization Methods:**
+1 . Authorization through OAuth2 form
 
     VK.Login(<родитель для окна, необяз.>);
 
-2 . Авторизация напрямую, используя токен (пользовательский или бота)
+2 . Log in directly using a token (user or bot)
     
     procedure TFormMain.VKAuth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
     begin
@@ -150,10 +150,10 @@ API for Vkontakte
     begin
       VK.Login;
     end;  
-3 . Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
+3 . Authorization using service keys (specified in the designtime component) 
 
 
-**Получение пользователей**
+**Get Users**
 
     var
       Users: TVkUsers;
@@ -173,13 +173,13 @@ API for Vkontakte
         Users.Free;
       end;
     end;
-**Установка статуса онлайн**
+**Set Online**
 
     if VK.Account.SetOnline then
       Memo1.Lines.Add('online')
     else
       Memo1.Lines.Add('Error online');
-**Создание поста в группе**
+**New Post**
 
     var
       Params: TVkWallParams;
@@ -191,10 +191,10 @@ API for Vkontakte
       Params.Attachments(['doc58553419_533494309_657138cd5d7842ae0a']);
       VK.Wall.Post(Params);
     end;  
-**Отправка сообщения**
+**Message send**
 
     Vk.Messages.Send.PeerId(Message.PeerId).Message(FAnswer).Send.Free;
-**или, с созданием клавиатуры**
+**or, with keyboard**
 
     var
       Keys: TVkKeyboardConstructor;
@@ -258,6 +258,6 @@ API for Vkontakte
       end;
     end;    
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTI5MTExMDk5LDkzNzI2NjEzNCwzNDUyOT
-IzNSwtMTQ0NTE4MDc0MV19
+eyJoaXN0b3J5IjpbMTg5MjU0MDU2OCw5MzcyNjYxMzQsMzQ1Mj
+kyMzUsLTE0NDUxODA3NDFdfQ==
 -->
