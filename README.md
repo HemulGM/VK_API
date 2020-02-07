@@ -8,7 +8,7 @@ API для Вконтакте
 **Способы авторизации:**
 1 . Авторизация через OAuth2 форму
 
-    VK1.Login(<родитель для окна, необяз.>);
+    VK.Login(<родитель для окна, необяз.>);
 
 2 . Авторизация напрямую, используя токен (пользовательский или бота)
     
@@ -83,7 +83,7 @@ API для Вконтакте
         Message('Выбери вариант').
         Send.Free;
     end;
-или
+или простое
 
     Vk.Messages.Send(PeerId, 'Текст сообщения', [<вложения>]);
 
@@ -97,6 +97,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1Nzg2MTQyODcsMzQ1MjkyMzUsLTE0ND
-UxODA3NDFdfQ==
+eyJoaXN0b3J5IjpbMTQ5NTU1ODA5MSwzNDUyOTIzNSwtMTQ0NT
+E4MDc0MV19
 -->
