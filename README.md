@@ -5,11 +5,12 @@
 -
 API для Вконтакте
 
-Способы авторизации:
-Авторизация через OAuth2 форму
+**Способы авторизации:**
+1 . Авторизация через OAuth2 форму
 
     VK1.Login(<родитель для окна, необяз.>);
-Авторизация напрямую, используя токен (пользовательский или бота)
+
+2 . Авторизация напрямую, используя токен (пользовательский или бота)
     
     procedure TFormMain.VKAuth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
     begin
@@ -20,13 +21,9 @@ API для Вконтакте
     begin
       VK.Login;
     end;  
-Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
+3 . Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
 
-
-
-
-
-
+**Примеры:**
 
 Получение пользователей:
 
@@ -62,6 +59,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY5NjE0MjQ5NywzNDUyOTIzNSwtMTQ0NT
-E4MDc0MV19
+eyJoaXN0b3J5IjpbLTEzMDk0NzEyNTQsMzQ1MjkyMzUsLTE0ND
+UxODA3NDFdfQ==
 -->
