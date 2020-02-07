@@ -23,9 +23,8 @@ API для Вконтакте
     end;  
 3 . Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
 
-**Примеры:**
 
-Получение пользователей:
+**Получение пользователей**
 
     var
       Users: TVkUsers;
@@ -45,13 +44,13 @@ API для Вконтакте
         Users.Free;
       end;
     end;
-Установка статуса онлайн
+**Установка статуса онлайн**
 
     if VK.Account.SetOnline then
       Memo1.Lines.Add('online')
     else
       Memo1.Lines.Add('Error online');
-Создание поста в группе
+**Создание поста в группе**
 
     var
       Params: TVkWallParams;
@@ -63,7 +62,7 @@ API для Вконтакте
       Params.Attachments(['doc58553419_533494309_657138cd5d7842ae0a']);
       VK.Wall.Post(Params);
     end;  
-Отправка сообщения:
+**Отправка сообщения:**
 
     Vk.Messages.Send.PeerId(Message.PeerId).Message(FAnswer).Send.Free;
 или, с созданием клавиатуры
@@ -86,6 +85,32 @@ API для Вконтакте
 или простое
 
     Vk.Messages.Send(PeerId, 'Текст сообщения', [<вложения>]);
+Отправка фото
+
+    var
+      Url: string;
+      Response: TVkPhotoUploadResponse;
+      Photos: TVkPhotos;
+    begin
+      if VK.Photos.GetMessagesUploadServer(Url, PeerId) then
+      begin
+        if VK.Uploader.UploadPhotos(Url, FileName, Response) then
+        begin
+          if VK.Photos.SaveMessagesPhoto(Response, Photos) then
+          begin
+            FileName := CreateAttachment('photo', Photos.Items[0].OwnerId, Photos.Items[0].Id, Photos.Items[0].AccessKey);
+            Vk.Messages.
+              Send.
+              PeerId(PeerId).
+              Attachemt([FileName]).
+              Send.Free;
+            Photos.Free;
+          end;
+          Response.Free;
+        end;
+      end;
+    end;
+
 
 **English**
 -
@@ -97,6 +122,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ5NTU1ODA5MSwzNDUyOTIzNSwtMTQ0NT
-E4MDc0MV19
+eyJoaXN0b3J5IjpbOTMwMTUzMzM0LDM0NTI5MjM1LC0xNDQ1MT
+gwNzQxXX0=
 -->
