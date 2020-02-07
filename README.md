@@ -6,11 +6,10 @@
 API для Вконтакте
 
 Способы авторизации:
-1.
+Авторизация через OAuth2 форму
 
     VK1.Login(Self);
-
-2.
+Авторизация напрямую, используя токен (пользовательский или  
 
 
 Получение пользователей:
@@ -47,6 +46,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ0OTI4MjY3MiwzNDUyOTIzNSwtMTQ0NT
-E4MDc0MV19
+eyJoaXN0b3J5IjpbMTEzODYzOTM5LDM0NTI5MjM1LC0xNDQ1MT
+gwNzQxXX0=
 -->
