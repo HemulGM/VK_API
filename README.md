@@ -10,9 +10,18 @@ API для Вконтакте
 
     VK1.Login(Self);
 Авторизация напрямую, используя токен (пользовательский или бота)
-
-    VK.Login;
+    
     procedure TFormMain.VKAuth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+    begin
+      Token := '<здесь токен>';
+    end;
+    procdure TFormMain.FormCreate(Sender: TObject);
+    begin
+      VK.Login;
+      
+ 
+
+
 
 
 
@@ -52,6 +61,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMTE5NzA4NiwzNDUyOTIzNSwtMTQ0NT
+eyJoaXN0b3J5IjpbMTExNDg0NzM1NywzNDUyOTIzNSwtMTQ0NT
 E4MDc0MV19
 -->
