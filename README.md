@@ -110,7 +110,27 @@ API для Вконтакте
         end;
       end;
     end;
+Получение аудиозаписей плейлиста (альбома)
 
+    var
+      List: TVkAudios;
+      i: Integer;
+      Params: TVkAudioParams;
+    begin
+      Params.OwnerId(415730216);
+      Params.AlbumId(86751037);
+      if VK1.Audio.Get(List, Params) then
+      begin
+        for i := Low(List.Items) to High(List.Items) do
+        begin
+          Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title + ' ' + BoolToString(List.Items[i].ContentRestricted
+            = 0,
+            '', ' - аудиозапись не доступна'));
+        end;
+        List.Free;
+      end
+      else
+        Memo1.Lines.Add('Error get audios');
 
 **English**
 -
@@ -122,6 +142,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTM3MjY2MTM0LDM0NTI5MjM1LC0xNDQ1MT
-gwNzQxXX0=
+eyJoaXN0b3J5IjpbODI0MjgxOTUzLDkzNzI2NjEzNCwzNDUyOT
+IzNSwtMTQ0NTE4MDc0MV19
 -->
