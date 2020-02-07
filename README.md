@@ -129,7 +129,6 @@ API для Вконтакте
       end;
     end;    
 
-
 **English**
 -
 API for Vkontakte
@@ -259,6 +258,6 @@ API for Vkontakte
       end;
     end;    
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQzODY4ODI5MCw5MzcyNjYxMzQsMzQ1Mj
+eyJoaXN0b3J5IjpbLTY2MDExNDI1Miw5MzcyNjYxMzQsMzQ1Mj
 kyMzUsLTE0NDUxODA3NDFdfQ==
 -->
