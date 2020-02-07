@@ -62,10 +62,10 @@ API для Вконтакте
       Params.Attachments(['doc58553419_533494309_657138cd5d7842ae0a']);
       VK.Wall.Post(Params);
     end;  
-**Отправка сообщения:**
+**Отправка сообщения**
 
     Vk.Messages.Send.PeerId(Message.PeerId).Message(FAnswer).Send.Free;
-или, с созданием клавиатуры
+**или, с созданием клавиатуры**
 
     var
       Keys: TVkKeyboardConstructor;
@@ -82,10 +82,10 @@ API для Вконтакте
         Message('Выбери вариант').
         Send.Free;
     end;
-или простое
+**или простое**
 
     Vk.Messages.Send(PeerId, 'Текст сообщения', [<вложения>]);
-Отправка фото
+**Отправка фото**
 
     var
       Url: string;
@@ -122,6 +122,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTMwMTUzMzM0LDM0NTI5MjM1LC0xNDQ1MT
+eyJoaXN0b3J5IjpbOTM3MjY2MTM0LDM0NTI5MjM1LC0xNDQ1MT
 gwNzQxXX0=
 -->
