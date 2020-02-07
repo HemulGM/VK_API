@@ -9,7 +9,13 @@ API для Вконтакте
 Авторизация через OAuth2 форму
 
     VK1.Login(Self);
-Авторизация напрямую, используя токен (пользовательский или  
+Авторизация напрямую, используя токен (пользовательский или бота)
+
+    VK.Login;
+    procedure TFormMain.VKAuth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+
+
+
 
 
 Получение пользователей:
@@ -46,6 +52,6 @@ Call authorization form
     VK1.Login(Self);
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTEzODYzOTM5LDM0NTI5MjM1LC0xNDQ1MT
-gwNzQxXX0=
+eyJoaXN0b3J5IjpbLTIwMTE5NzA4NiwzNDUyOTIzNSwtMTQ0NT
+E4MDc0MV19
 -->
