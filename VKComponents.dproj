@@ -140,23 +140,12 @@
         <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="IndyCore.dcp"/>
         <DCCReference Include="IndyIPClient.dcp"/>
-        <DCCReference Include="VK.Components.pas"/>
-        <DCCReference Include="VK.API.pas"/>
-        <DCCReference Include="VK.Controller.pas"/>
-        <DCCReference Include="VK.Handler.pas"/>
-        <DCCReference Include="VK.Types.pas"/>
         <DCCReference Include="Forms\VK.Captcha.pas">
             <Form>FormCaptcha</Form>
         </DCCReference>
-        <DCCReference Include="VK.Utils.pas"/>
-        <DCCReference Include="VK.LongPollServer.pas"/>
-        <DCCReference Include="VK.UserEvents.pas"/>
-        <DCCReference Include="VK.GroupEvents.pas"/>
         <DCCReference Include="Forms\VK.OAuth2.pas">
             <Form>FormOAuth2</Form>
         </DCCReference>
-        <DCCReference Include="VK.Uploader.pas"/>
-        <DCCReference Include="VK.FakeAndroidProto.pas"/>
         <DCCReference Include="Utils\pbInput.pas"/>
         <DCCReference Include="Utils\pbOutput.pas"/>
         <DCCReference Include="Utils\pbPublic.pas"/>
@@ -212,6 +201,17 @@
         <DCCReference Include="Entity\VK.Entity.Sticker.pas"/>
         <DCCReference Include="Entity\VK.Entity.User.pas"/>
         <DCCReference Include="Entity\VK.Entity.Video.pas"/>
+        <DCCReference Include="VK.API.pas"/>
+        <DCCReference Include="VK.Components.pas"/>
+        <DCCReference Include="VK.Controller.pas"/>
+        <DCCReference Include="VK.FakeAndroidProto.pas"/>
+        <DCCReference Include="VK.GroupEvents.pas"/>
+        <DCCReference Include="VK.Handler.pas"/>
+        <DCCReference Include="VK.LongPollServer.pas"/>
+        <DCCReference Include="VK.Types.pas"/>
+        <DCCReference Include="VK.Uploader.pas"/>
+        <DCCReference Include="VK.UserEvents.pas"/>
+        <DCCReference Include="VK.Utils.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

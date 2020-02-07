@@ -414,10 +414,17 @@ function AddParam(var Dest: TParams; Param: TParam): Integer;
 
 function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string = ''): string;
 
+function AppendItemsTag(JSON: string): string;
+
 implementation
 
 uses
   VK.Utils;
+
+function AppendItemsTag(JSON: string): string;
+begin
+  Result := '{"Items": ' + JSON + '}';
+end;
 
 function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string): string;
 begin

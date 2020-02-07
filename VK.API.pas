@@ -208,9 +208,9 @@ begin
 end;
 
 procedure TCustomVK.Await;
-begin
+begin       {
   while FHandler.Executing do
-    Application.ProcessMessages;
+    Application.ProcessMessages;  }
 end;
 
 destructor TCustomVK.Destroy;

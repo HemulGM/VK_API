@@ -61,14 +61,15 @@ begin
     Result := Success;
     if Result then
     begin
-      Users := TVkUsers.FromJsonString(JSON);
-      if (Length(Users.Items) > 0) then
+      Users := TVkUsers.FromJsonString(AppendItemsTag(Response));
+      if Length(Users.Items) > 0 then
       begin
-        User := TVkUser.FromJsonString(Users.Items[0].ToJsonString);
-        Users.Free;
+        Users.SaveObjects := True;
+        User := Users.Items[0];
       end
       else
         Result := False;
+      Users.Free;
     end;
   end;
 end;

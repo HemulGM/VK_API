@@ -65,8 +65,6 @@ end;
 function TPhotosController.SaveMessagesPhoto(PhotoSaveData: TVkPhotoUploadResponse; var Photos: TVkPhotos): Boolean;
 var
   Params: TParams;
-  JArr: TJSONArray;
-  i: Integer;
 begin
   Params.Add('photo', PhotoSaveData.Photo);
   Params.Add('server', PhotoSaveData.Server);
@@ -76,16 +74,7 @@ begin
     Result := Success;
     if Result then
     begin
-      JArr := TJSONArray(TJSONObject.ParseJSONValue(Response));
-      try
-        SetLength(Photos, JArr.Count);
-        for i := 0 to JArr.Count - 1 do
-        begin
-          Photos[i] := TVkPhoto.FromJsonString(JArr.Items[i].ToJSON);
-        end;
-      finally
-        JArr.Free;
-      end;
+      Photos := TVkPhotos.FromJsonString('{"Items":' + Response + '}');
     end;
   end;
 end;

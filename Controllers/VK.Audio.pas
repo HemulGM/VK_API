@@ -35,6 +35,12 @@ type
     /// </summary>
     /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
     /// <param name="Params: TVkAudioParams">Параметры запроса</param>
+    function Get(var Audios: TVkAudios; Params: TVkAudioParams): Boolean; overload;
+    /// <summary>
+    /// Возвращает информацию об аудиозаписях
+    /// </summary>
+    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
+    /// <param name="Params: TVkAudioParams">Параметры запроса</param>
     function GetRecommendations(var Audios: TVkAudios; Params: TVkAudioParams): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
@@ -42,12 +48,6 @@ type
     /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
     /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
     function GetRecommendations(var Audios: TVkAudios; OwnerId: Integer = 0): Boolean; overload;
-    /// <summary>
-    /// Возвращает информацию об аудиозаписях
-    /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="Params: TVkAudioParams">Параметры запроса</param>
-    function Get(var Audios: TVkAudios; Params: TVkAudioParams): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>

@@ -3,8 +3,8 @@ unit VK.Handler;
 interface
 
 uses
-  Winapi.Windows, System.SysUtils, Vcl.Forms, REST.Authenticator.OAuth, REST.Client, REST.Json, JSON,
-  VK.Types;
+  Winapi.Windows, System.Classes, System.SysUtils, Vcl.Forms, REST.Authenticator.OAuth, REST.Client,
+  REST.Json, JSON, VK.Types;
 
 type
   TRequestConstruct = class
@@ -68,13 +68,10 @@ begin
   if MS < 0 then
     Exit;
   if MS = 0 then
-  begin
-    Application.ProcessMessages;
     Exit;
-  end;
   TS := GetTickCount;
   while TS + MS > GetTickCount do
-    Application.ProcessMessages;
+    Sleep(100);
 end;
 
 { TRequsetConstruct }
@@ -175,30 +172,37 @@ var
   IsDone: Boolean;
   TimeStamp: Cardinal;
   TimeStampLast: Cardinal;
-  Thr: TRESTExecutionThread;
+  Thr: TThread;
 begin
+  Result.Success := False;
+  FLog(Request.GetFullRequestURL);
   TimeStamp := GetTickCount;
   TimeStampLast := FStartRequest;
-  Result.Success := False;
   try
     IsDone := False;
-    FLog(Request.GetFullRequestURL);
-    FRequests := FRequests + 1;
-      //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
-    if FRequests > RequestLimit then
-    begin
-      FRequests := 0;
-      WaitTime(1300 - Int64(GetTickCount - FStartRequest));
-    end;
     Request.Response := TRESTResponse.Create(Request);
-    Thr := Request.ExecuteAsync(
+    Thr := TThread.CreateAnonymousThread(
       procedure
       begin
+        try
+          FRequests := FRequests + 1;
+          //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
+          if FRequests > RequestLimit then
+          begin
+            FRequests := 0;
+            WaitTime(1300 - Int64(GetTickCount - FStartRequest));
+          end;
+          Request.Execute;
+        finally
+        end;
         IsDone := True;
-      end, False, False);
+      end);
+    Thr.FreeOnTerminate := False;
+    Thr.Start;
     while (not IsDone) and (not Thr.Finished) {and (not Application.Terminated)} do
       Application.ProcessMessages;
     Thr.Free;
+
     if not Application.Terminated then
     begin
       FLog(Request.Response.JSONText);

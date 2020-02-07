@@ -40,19 +40,8 @@ requires
   IndyIPClient;
 
 contains
-  VK.Components in 'VK.Components.pas',
-  VK.API in 'VK.API.pas',
-  VK.Controller in 'VK.Controller.pas',
-  VK.Handler in 'VK.Handler.pas',
-  VK.Types in 'VK.Types.pas',
   VK.Captcha in 'Forms\VK.Captcha.pas' {FormCaptcha},
-  VK.Utils in 'VK.Utils.pas',
-  VK.LongPollServer in 'VK.LongPollServer.pas',
-  VK.UserEvents in 'VK.UserEvents.pas',
-  VK.GroupEvents in 'VK.GroupEvents.pas',
   VK.OAuth2 in 'Forms\VK.OAuth2.pas' {FormOAuth2},
-  VK.Uploader in 'VK.Uploader.pas',
-  VK.FakeAndroidProto in 'VK.FakeAndroidProto.pas',
   pbInput in 'Utils\pbInput.pas',
   pbOutput in 'Utils\pbOutput.pas',
   pbPublic in 'Utils\pbPublic.pas',
@@ -107,7 +96,18 @@ contains
   VK.Entity.Status in 'Entity\VK.Entity.Status.pas',
   VK.Entity.Sticker in 'Entity\VK.Entity.Sticker.pas',
   VK.Entity.User in 'Entity\VK.Entity.User.pas',
-  VK.Entity.Video in 'Entity\VK.Entity.Video.pas';
+  VK.Entity.Video in 'Entity\VK.Entity.Video.pas',
+  VK.API in 'VK.API.pas',
+  VK.Components in 'VK.Components.pas',
+  VK.Controller in 'VK.Controller.pas',
+  VK.FakeAndroidProto in 'VK.FakeAndroidProto.pas',
+  VK.GroupEvents in 'VK.GroupEvents.pas',
+  VK.Handler in 'VK.Handler.pas',
+  VK.LongPollServer in 'VK.LongPollServer.pas',
+  VK.Types in 'VK.Types.pas',
+  VK.Uploader in 'VK.Uploader.pas',
+  VK.UserEvents in 'VK.UserEvents.pas',
+  VK.Utils in 'VK.Utils.pas';
 
 end.
 

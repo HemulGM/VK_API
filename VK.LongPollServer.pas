@@ -39,7 +39,7 @@ type
     FOnUpdate: TOnLongPollServerUpdate;
     function QueryLongPollServer: Boolean;
     procedure DoError(E: Exception);
-    procedure OnLongPollRecieve(Response: TJSONValue);
+    procedure OnLongPollRecieve(Updates: TJSONArray);
     procedure SetOnError(const Value: TOnVKError);
     procedure SetInterval(const Value: Integer);
     procedure SetGroupID(const Value: string);
@@ -69,6 +69,9 @@ const
   DefaultLongPollServerInterval = 1000;
 
 implementation
+
+uses
+  Vcl.Forms, Winapi.Windows, System.SyncObjs;
 
 { TLongPollServer }
 
@@ -154,28 +157,16 @@ begin
   end;
 end;
 
-procedure TLongPollServer.OnLongPollRecieve(Response: TJSONValue);
+procedure TLongPollServer.OnLongPollRecieve(Updates: TJSONArray);
 var
-  Updates: TJSONArray;
   i: Integer;
 begin
-  if Response.TryGetValue<TJSONArray>('updates', Updates) then
-  begin
-    for i := 0 to Updates.Count - 1 do
-    try
-      FOnUpdate(Self, FGroupID, Updates.Items[i]);
-    except
-      on E: Exception do
-        DoError(E);
-    end;
-  end
-  else
-  begin
-    if not QueryLongPollServer then
-    begin
-      DoError(TVkLongPollServerException.Create('not QueryLongPollServer ' + Response.ToString));
-      FLongPollNeedStop := True;
-    end;
+  for i := 0 to Updates.Count - 1 do
+  try
+    FOnUpdate(Self, FGroupID, Updates.Items[i]);
+  except
+    on E: Exception do
+      DoError(E);
   end;
 end;
 
@@ -235,12 +226,13 @@ begin
       HTTP: THTTPClient;
       Stream: TStringStream;
       JSON: TJSONValue;
+      Updates: TJSONArray;
     begin
       FLongPollStopped := False;
       HTTP := THTTPClient.Create;
       Stream := TStringStream.Create;
       try
-        while (not TThread.CurrentThread.CheckTerminated) and (not FLongPollNeedStop) do
+        while (not TThread.Current.CheckTerminated) and (not FLongPollNeedStop) do
         begin
           Stream.Clear;
           HTTP.Get(FLongPollData.Request, Stream);
@@ -252,11 +244,33 @@ begin
             FLongPollData.ts := JSON.GetValue('ts', '');
             if FLongPollNeedStop then
               Break;
-            TThread.Synchronize(TThread.CurrentThread,
-              procedure
-              begin
-                OnLongPollRecieve(JSON);
-              end);
+            if JSON.TryGetValue<TJSONArray>('updates', Updates) then
+            begin
+              TThread.Synchronize(TThread.Current,
+                procedure
+                begin
+                  if not FLongPollNeedStop then
+                  begin
+                    OnLongPollRecieve(Updates);
+                  end;
+                end);
+            end
+            else
+            begin
+              TThread.Synchronize(TThread.Current,
+                procedure
+                begin
+                  if not FLongPollNeedStop then
+                  begin
+                    if not QueryLongPollServer then
+                    begin
+                      DoError(TVkLongPollServerException.Create('QueryLongPollServer error, result: '
+                        + Stream.DataString));
+                      FLongPollNeedStop := True;
+                    end;
+                  end;
+                end);
+            end;
             JSON.Free;
           end;
           Sleep(FInterval);
@@ -281,7 +295,10 @@ begin
   begin
     FThread.Terminate;
     while not FLongPollStopped do
-      Sleep(400);
+    begin
+      Application.ProcessMessages;
+      Sleep(100);
+    end;
     FThread.Free;
     FThread := nil;
   end;
