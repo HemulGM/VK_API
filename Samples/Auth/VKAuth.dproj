@@ -170,6 +170,7 @@
         <DCCReference Include="..\..\Entity\VK.Entity.Conversation.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Group.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Status.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.CommentInfo.pas"/>
         <None Include="app_cred.inc"/>
         <None Include="delphi_live.inc"/>
         <None Include="vk_admin.inc"/>

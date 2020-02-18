@@ -308,7 +308,7 @@ end;
 
 function TLongPollData.Request: string;
 begin
-  Result := server + '?act=a_check&key=' + key + '&ts=' + ts + '&' + wait + '=25&version=' + version;
+  Result := server + '?act=a_check&key=' + key + '&ts=' + ts + '&wait=' + wait + '&version=' + version;
   if Pos('http', Result) = 0 then
     Result := 'http://' + Result;
 end;

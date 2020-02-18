@@ -195,7 +195,7 @@ type
     FCan_be_invited_group: Boolean;
     FCan_post: Extended;
     FCan_see_all_posts: Extended;
-    FCan_see_audio: Extended;
+    FCan_see_audio: integer;
     FCan_send_friend_request: Extended;
     FCan_write_private_message: Extended;
     FCareer: TArray<TVkCareer>;
@@ -273,7 +273,7 @@ type
     property CanBeInvitedGroup: Boolean read FCan_be_invited_group write FCan_be_invited_group;
     property CanPost: Extended read FCan_post write FCan_post;
     property CanSeeAllPosts: Extended read FCan_see_all_posts write FCan_see_all_posts;
-    property CanSeeAudio: Extended read FCan_see_audio write FCan_see_audio;
+    property CanSeeAudio: integer read FCan_see_audio write FCan_see_audio;
     property CanSendFriendRequest: Extended read FCan_send_friend_request write FCan_send_friend_request;
     property CanWritePrivateMessage: Extended read FCan_write_private_message write FCan_write_private_message;
     property Career: TArray<TVkCareer> read FCareer write FCareer;

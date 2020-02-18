@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.User;
 
 type
-  TVkFriendsSort = (fsHints, fsRandom, fsMobile, fsName);
+  TVkFriendsSort = (fsNone, fsHints, fsRandom, fsMobile, fsName);
 
   TVkFriendsSortHelper = record helper for TVkFriendsSort
     function ToConst: string; inline;
@@ -34,12 +34,13 @@ type
     /// Возвращает список идентификаторов друзей пользователя или расширенную
     /// информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Users: TVkUsers; UserId: Integer = -1; Fields: string = ''): Boolean; overload;
+    function Get(var Users: TVkUsers; UserId: Integer = -1; Fields: string = ''; Order:
+      TVkFriendsSort = fsNone): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную
     /// информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Users: TVkUsers; Fields: string): Boolean; overload;
+    function Get(var Users: TVkUsers; Fields: string; Order: TVkFriendsSort = fsNone): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную
     /// информацию о друзьях пользователя (при использовании параметра fields).
@@ -59,12 +60,12 @@ uses
 
 { TFriendsController }
 
-function TFriendsController.Get(var Users: TVkUsers; Fields: string): Boolean;
+function TFriendsController.Get(var Users: TVkUsers; Fields: string; Order: TVkFriendsSort): Boolean;
 begin
-  Result := Get(Users, -1, Fields);
+  Result := Get(Users, -1, Fields, Order);
 end;
 
-function TFriendsController.Get(var Users: TVkUsers; UserId: Integer; Fields: string): Boolean;
+function TFriendsController.Get(var Users: TVkUsers; UserId: Integer; Fields: string; Order: TVkFriendsSort): Boolean;
 var
   Params: TParams;
 begin
@@ -74,6 +75,8 @@ begin
     Params.Add('fields', Fields)
   else
     Params.Add('fields', 'domian');
+  if Order <> fsNone then
+    Params.Add('order', Order.ToConst);
   Result := Get(Users, Params);
 end;
 

@@ -38,16 +38,12 @@ object FormMain: TFormMain
       Top = 19
       Width = 578
       Height = 540
-      ActivePage = TabSheet10
+      ActivePage = TabSheet6
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button20: TButton
           Left = 3
           Top = 3
@@ -114,10 +110,6 @@ object FormMain: TFormMain
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button1: TButton
           Left = 3
           Top = 3
@@ -203,10 +195,6 @@ object FormMain: TFormMain
       object TabSheet2: TTabSheet
         Caption = 'Auth'
         ImageIndex = 1
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button11: TButton
           Left = 3
           Top = 3
@@ -220,10 +208,6 @@ object FormMain: TFormMain
       object TabSheet3: TTabSheet
         Caption = 'Audio'
         ImageIndex = 2
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button21: TButton
           Left = 3
           Top = 3
@@ -251,14 +235,19 @@ object FormMain: TFormMain
           TabOrder = 2
           OnClick = Button24Click
         end
+        object Button29: TButton
+          Left = 3
+          Top = 96
+          Width = 137
+          Height = 25
+          Caption = 'Audio.GetPop'
+          TabOrder = 3
+          OnClick = Button29Click
+        end
       end
       object TabSheet4: TTabSheet
         Caption = 'Board'
         ImageIndex = 3
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button22: TButton
           Left = 3
           Top = 3
@@ -272,10 +261,6 @@ object FormMain: TFormMain
       object TabSheet5: TTabSheet
         Caption = 'Status'
         ImageIndex = 4
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button17: TButton
           Left = 3
           Top = 3
@@ -298,10 +283,6 @@ object FormMain: TFormMain
       object TabSheet6: TTabSheet
         Caption = 'Wall'
         ImageIndex = 5
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button19: TButton
           Left = 3
           Top = 3
@@ -315,10 +296,6 @@ object FormMain: TFormMain
       object TabSheet7: TTabSheet
         Caption = 'Users'
         ImageIndex = 6
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button12: TButton
           Left = 3
           Top = 3
@@ -332,10 +309,6 @@ object FormMain: TFormMain
       object TabSheet8: TTabSheet
         Caption = 'Groups'
         ImageIndex = 7
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 529
-        ExplicitHeight = 0
         object Button25: TButton
           Left = 3
           Top = 3
@@ -362,10 +335,6 @@ object FormMain: TFormMain
       object TabSheet11: TTabSheet
         Caption = 'Friends'
         ImageIndex = 10
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button28: TButton
           Left = 3
           Top = 3

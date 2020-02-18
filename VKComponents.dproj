@@ -164,6 +164,17 @@
         <DCCReference Include="Controllers\VK.Status.pas"/>
         <DCCReference Include="Controllers\VK.Users.pas"/>
         <DCCReference Include="Controllers\VK.Wall.pas"/>
+        <DCCReference Include="VK.API.pas"/>
+        <DCCReference Include="VK.Components.pas"/>
+        <DCCReference Include="VK.Controller.pas"/>
+        <DCCReference Include="VK.FakeAndroidProto.pas"/>
+        <DCCReference Include="VK.GroupEvents.pas"/>
+        <DCCReference Include="VK.Handler.pas"/>
+        <DCCReference Include="VK.LongPollServer.pas"/>
+        <DCCReference Include="VK.Types.pas"/>
+        <DCCReference Include="VK.Uploader.pas"/>
+        <DCCReference Include="VK.UserEvents.pas"/>
+        <DCCReference Include="VK.Utils.pas"/>
         <DCCReference Include="Entity\VK.Entity.AccountInfo.pas"/>
         <DCCReference Include="Entity\VK.Entity.AccountInfoRequest.pas"/>
         <DCCReference Include="Entity\VK.Entity.ActiveOffers.pas"/>
@@ -172,6 +183,7 @@
         <DCCReference Include="Entity\VK.Entity.Audio.Upload.pas"/>
         <DCCReference Include="Entity\VK.Entity.AudioMessage.pas"/>
         <DCCReference Include="Entity\VK.Entity.ClientInfo.pas"/>
+        <DCCReference Include="Entity\VK.Entity.CommentInfo.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.pas"/>
         <DCCReference Include="Entity\VK.Entity.Conversation.pas"/>
         <DCCReference Include="Entity\VK.Entity.Counters.pas"/>
@@ -201,17 +213,6 @@
         <DCCReference Include="Entity\VK.Entity.Sticker.pas"/>
         <DCCReference Include="Entity\VK.Entity.User.pas"/>
         <DCCReference Include="Entity\VK.Entity.Video.pas"/>
-        <DCCReference Include="VK.API.pas"/>
-        <DCCReference Include="VK.Components.pas"/>
-        <DCCReference Include="VK.Controller.pas"/>
-        <DCCReference Include="VK.FakeAndroidProto.pas"/>
-        <DCCReference Include="VK.GroupEvents.pas"/>
-        <DCCReference Include="VK.Handler.pas"/>
-        <DCCReference Include="VK.LongPollServer.pas"/>
-        <DCCReference Include="VK.Types.pas"/>
-        <DCCReference Include="VK.Uploader.pas"/>
-        <DCCReference Include="VK.UserEvents.pas"/>
-        <DCCReference Include="VK.Utils.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

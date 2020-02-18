@@ -61,6 +61,7 @@ type
     Button27: TButton;
     TabSheet11: TTabSheet;
     Button28: TButton;
+    Button29: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -188,6 +189,7 @@ type
     procedure Button26Click(Sender: TObject);
     procedure Button27Click(Sender: TObject);
     procedure Button28Click(Sender: TObject);
+    procedure Button29Click(Sender: TObject);
   private
   public
     { Public declarations }
@@ -388,12 +390,10 @@ procedure TFormMain.Button24Click(Sender: TObject);
 var
   List: TVkAudios;
   i: Integer;
-var
   Params: TVkAudioParams;
 begin
-  Params.OwnerId(415730216);
-  Params.AlbumId(86751037);
-  if VK1.Audio.GetRecommendations(List) then
+  Params.AlbumId(-1);
+  if VK1.Audio.GetRecommendations(List, Params) then
   begin
     for i := Low(List.Items) to High(List.Items) do
     begin
@@ -459,7 +459,7 @@ begin
     if VK1.Uploader.UploadAudio(Url,
       'D:\Мультимедиа\Музыка\ТГК\Триагрутрика - Вечерний Челябинск (2012)\06. Блэк дэй.mp3', Response) then
     begin
-      if VK1.Audio.Save(Response, Audio) then
+      if VK1.Audio.Save(Audio, Response) then
       begin
         Memo1.Lines.Add(Audio.Title);
         Audio.Free;
@@ -508,6 +508,21 @@ begin
       Memo1.Lines.Add(User.GetFullName);
     end;
     Users.Free;
+  end;
+end;
+
+procedure TFormMain.Button29Click(Sender: TObject);
+var
+  List: TVkAudios;
+  i: Integer;
+begin
+  if VK1.Audio.GetPopular(List) then
+  begin
+    for i := Low(List.Items) to High(List.Items) do
+    begin
+      Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title);
+    end;
+    List.Free;
   end;
 end;
 
@@ -790,7 +805,7 @@ begin
   Memo1.Lines.Add('Новое сообщение в группе ' + GroupId.ToString + ': ' + Message.Text);
   if Message.Text = 'погода' then
     VK1.Messages.
-      Send.
+      New.
       PeerId(Message.PeerId).
       Message('Тут типа я вам показываю прогноз погоды, ага').
       Send.
@@ -1000,21 +1015,26 @@ begin
     //Сообщение от кого-то
     if Pos('хуй', AnsiLowerCase(MessageData.Text)) <> 0 then
     begin
-      VK1.Messages.Send
-        .PeerId(MessageData.PeerId)
-        .Message('Ай яй, так материться')
-        .Attachemt(['album58553419_234519653'])
-        .Send.Free;
+      VK1.Messages.
+        New.
+        PeerId(MessageData.PeerId).
+        Message('Ай яй, так материться').
+        Attachment(['album58553419_234519653']).
+        Send.
+        Free;
     end;
+
     if VK1.Messages.GetById(MessageData.MessageId, Msg) then
     begin
       if Length(Msg.Attachments) > 0 then
       begin
         if Msg.Attachments[0].&Type = 'audio_message' then
-          VK1.Messages.Send
-            .PeerId(MessageData.PeerId)
-            .Message('Опять сука свои голосвые сообщения отправляете')
-            .Send.Free;
+          VK1.Messages.
+            New.
+            PeerId(MessageData.PeerId).
+            Message('Опять сука свои голосовые сообщения отправляете').
+            Send.
+            Free;
       end;
       Msg.Free;
     end;

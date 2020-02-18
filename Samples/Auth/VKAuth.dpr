@@ -64,7 +64,8 @@ uses
   VK.Entity.Audio.Upload in '..\..\Entity\VK.Entity.Audio.Upload.pas',
   VK.Entity.Conversation in '..\..\Entity\VK.Entity.Conversation.pas',
   VK.Entity.Group in '..\..\Entity\VK.Entity.Group.pas',
-  VK.Entity.Status in '..\..\Entity\VK.Entity.Status.pas';
+  VK.Entity.Status in '..\..\Entity\VK.Entity.Status.pas',
+  VK.Entity.CommentInfo in '..\..\Entity\VK.Entity.CommentInfo.pas';
 
 {$R *.res}
 

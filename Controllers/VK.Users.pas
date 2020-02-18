@@ -39,7 +39,7 @@ begin
   begin
     Result := Success;
     if Result then
-      Users := TVkUsers.FromJsonString(JSON);
+      Users := TVkUsers.FromJsonString(AppendItemsTag(Response));
   end;
 end;
 

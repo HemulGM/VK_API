@@ -190,7 +190,7 @@ begin
     8, 9: //Online/Offline пользователя
       begin
         try
-          A1 := TJSONArray(Update).Items[1].GetValue<Integer> *  - 1;
+          A1 := -TJSONArray(Update).Items[1].GetValue<Integer>;
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
           A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         except

@@ -30,7 +30,7 @@ type
     function GroupId(Id: Integer): TNewMessage;
     function ReplyTo(Id: Integer): TNewMessage;
     function ForwardMessages(Ids: TArrayOfInteger): TNewMessage;
-    function Attachemt(Attachemts: TAttachmentArray): TNewMessage;
+    function Attachment(Attachments: TAttachmentArray): TNewMessage;
     function Send: TVkMessageSendResponses;
     constructor Create(Controller: TMessagesController);
     property Handler: TVkHandler read FHandler;
@@ -60,42 +60,42 @@ type
     /// <param name="PeerId">Ид чата</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function Send(PeerId: Integer; Message: string; Attachemts: TAttachmentArray = []): Integer; overload;
+    function Send(PeerId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение пользователю
     /// </summary>
     /// <param name="UserId">Ид пользователя</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToUser(UserId: Integer; Message: string; Attachemts: TAttachmentArray = []): Integer; overload;
+    function SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение пользователю
     /// </summary>
     /// <param name="UserDomain">Короткий адрес пользователя (например, illarionov)</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToUser(UserDomain: string; Message: string; Attachemts: TAttachmentArray = []): Integer; overload;
+    function SendToUser(UserDomain: string; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение в беседу
     /// </summary>
     /// <param name="ChatId">Ид беседы</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToChat(ChatId: Integer; Message: string; Attachemts: TAttachmentArray = []): Integer; overload;
+    function SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение нескольким пользователям (Доступно только для ключа доступа сообщества)
     /// </summary>
     /// <param name="UserIds">Ид пользователей</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToUsers(UserIds: TUserIds; Message: string; Attachemts: TAttachmentArray = []):
+    function SendToUsers(UserIds: TUserIds; Message: string; Attachments: TAttachmentArray = []):
       TVkMessageSendResponses; overload;
     /// <summary>
     /// Универсальный метод отправки сообщений (Fluent Method)
     /// Send.PeerId(123456).ReplyTo(12345)...Message('Текст').Send.Free;
     /// </summary>
     /// <returns>Возвращает конструктор сообщений. Метод Send в этом конструкторе, возвращает результат в виде класса</returns>
-    function Send: TNewMessage; overload;
+    function New: TNewMessage; overload;
     //
     function GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength: Integer = 0; GroupId:
       Integer = 0): Boolean; overload;
@@ -132,15 +132,15 @@ uses
 
 { TMessagesController }
 
-function TMessagesController.Send(PeerId: Integer; Message: string; Attachemts: TAttachmentArray): Integer;
+function TMessagesController.Send(PeerId: Integer; Message: string; Attachments: TAttachmentArray): Integer;
 var
   Params: TParams;
 begin
   Params.Add(['peer_id', PeerId.ToString]);
   Params.Add(['message', Message]);
   Params.Add(['random_id', GetRandomId.ToString]);
-  if Length(Attachemts) <> 0 then
-    Params.Add(['attachment', Attachemts.ToString]);
+  if Length(Attachments) <> 0 then
+    Params.Add(['attachment', Attachments.ToString]);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -310,20 +310,20 @@ begin
   end;
 end;
 
-function TMessagesController.Send: TNewMessage;
+function TMessagesController.New: TNewMessage;
 begin
   Result := TNewMessage.Create(Self);
 end;
 
-function TMessagesController.SendToChat(ChatId: Integer; Message: string; Attachemts: TAttachmentArray): Integer;
+function TMessagesController.SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray): Integer;
 var
   Params: TParams;
 begin
   Params.Add(['chat_id', ChatId.ToString]);
   Params.Add(['message', Message]);
   Params.Add(['random_id', GetRandomId.ToString]);
-  if Length(Attachemts) <> 0 then
-    Params.Add(['attachment', Attachemts.ToString]);
+  if Length(Attachments) <> 0 then
+    Params.Add(['attachment', Attachments.ToString]);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -336,15 +336,15 @@ begin
   end;
 end;
 
-function TMessagesController.SendToUser(UserDomain, Message: string; Attachemts: TAttachmentArray): Integer;
+function TMessagesController.SendToUser(UserDomain, Message: string; Attachments: TAttachmentArray): Integer;
 var
   Params: TParams;
 begin
   Params.Add(['domian', UserDomain]);
   Params.Add(['message', Message]);
   Params.Add(['random_id', GetRandomId.ToString]);
-  if Length(Attachemts) <> 0 then
-    Params.Add(['attachment', Attachemts.ToString]);
+  if Length(Attachments) <> 0 then
+    Params.Add(['attachment', Attachments.ToString]);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -357,7 +357,7 @@ begin
   end;
 end;
 
-function TMessagesController.SendToUsers(UserIds: TUserIds; Message: string; Attachemts:
+function TMessagesController.SendToUsers(UserIds: TUserIds; Message: string; Attachments:
   TAttachmentArray): TVkMessageSendResponses;
 var
   Params: TParams;
@@ -365,8 +365,8 @@ begin
   Params.Add(['user_ids', UserIds.ToString]);
   Params.Add(['message', Message]);
   Params.Add(['random_id', GetRandomId.ToString]);
-  if Length(Attachemts) <> 0 then
-    Params.Add(['attachment', Attachemts.ToString]);
+  if Length(Attachments) <> 0 then
+    Params.Add(['attachment', Attachments.ToString]);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -379,15 +379,15 @@ begin
   end;
 end;
 
-function TMessagesController.SendToUser(UserId: Integer; Message: string; Attachemts: TAttachmentArray): Integer;
+function TMessagesController.SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray): Integer;
 var
   Params: TParams;
 begin
   Params.Add(['user_id', UserId.ToString]);
   Params.Add(['message', Message]);
   Params.Add(['random_id', GetRandomId.ToString]);
-  if Length(Attachemts) <> 0 then
-    Params.Add(['attachment', Attachemts.ToString]);
+  if Length(Attachments) <> 0 then
+    Params.Add(['attachment', Attachments.ToString]);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -474,9 +474,9 @@ begin
   Result := Self;
 end;
 
-function TNewMessage.Attachemt(Attachemts: TAttachmentArray): TNewMessage;
+function TNewMessage.Attachment(Attachments: TAttachmentArray): TNewMessage;
 begin
-  Params.Add('attachment', Attachemts.ToString);
+  Params.Add('attachment', Attachments.ToString);
   Result := Self;
 end;
 

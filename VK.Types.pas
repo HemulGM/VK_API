@@ -53,6 +53,7 @@ const
   MF_UNKNOWN_9 = 4194304;
 
   //Audio Genres
+  AG_NONE = 0;
   AG_ROCK = 1;
   AG_POP = 2;
   AG_RAPANDHIPHOP = 3;
@@ -171,7 +172,7 @@ type
   end;
 
   //Æàíðû ìóçûêè
-  TAudioGenre = (agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental,
+  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental,
     agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic,
     agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 
@@ -394,11 +395,11 @@ var
     MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN,
     MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2, MF_UNKNOWN_1, MF_MEDIA,
     MF_FIXED, MF_DELÅTÅD, MF_SPAM, MF_FRIENDS, MF_CHAT, MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
-  VkAudioGenres: array[TAudioGenre] of Integer = (AG_ROCK, AG_POP, AG_RAPANDHIPHOP, AG_EASYLISTENING,
+  VkAudioGenres: array[TAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP, AG_RAPANDHIPHOP, AG_EASYLISTENING,
     AG_HOUSEANDDANCE, AG_INSTRUMENTAL, AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS,
     AG_TRANCE, AG_CHANSON, AG_ETHNIC, AG_ACOUSTICANDVOCAL, AG_REGGAE, AG_CLASSICAL, AG_INDIEPOP, AG_SPEECH,
     AG_ELECTROPOPANDDISCO, AG_OTHER);
-  VkAudioGenresStr: array[TAudioGenre] of string = ('Rock', 'Pop', 'RapAndHipHop', 'EasyListening', 'HouseAndDance',
+  VkAudioGenresStr: array[TAudioGenre] of string = ('', 'Rock', 'Pop', 'RapAndHipHop', 'EasyListening', 'HouseAndDance',
     'Instrumental', 'Metal', 'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson', 'Ethnic',
     'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech', 'ElectropopAndDisco', 'Other');
   VkDialogFlags: array[TDialogFlag] of Integer = (GR_UNANSWERED, GR_IMPORTANT);
