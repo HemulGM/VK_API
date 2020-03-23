@@ -1,4 +1,4 @@
-unit VK.Utils;
+unit VK.CommonUtils;
 
 interface
 
@@ -15,12 +15,22 @@ function GetRandomId: Int64;
 
 function BoolToString(Value: Boolean): string; overload;
 
+function BoolToInt(Value: Boolean): Integer; overload;
+
 function BoolToString(Value: Boolean; TrueValue, FalseValue: string): string; overload;
 
 implementation
 
 uses
-  System.DateUtils, System.SysUtils, Winapi.Windows;
+  System.DateUtils, System.SysUtils, System.IOUtils;
+
+function BoolToInt(Value: Boolean): Integer; overload;
+begin
+  if Value then
+    Result := 1
+  else
+    Result := 0;
+end;
 
 function BoolToString(Value: Boolean): string;
 begin
@@ -76,7 +86,7 @@ var
 begin
   //Создание, открытие файла
   try
-    FileClose(FileCreate(FileName));
+    TFile.Create(FileName).Free;
     Mem := TFileStream.Create(FileName, fmOpenWrite);
   except
     begin
@@ -100,4 +110,5 @@ begin
 end;
 
 end.
+
 

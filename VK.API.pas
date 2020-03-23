@@ -3,11 +3,11 @@ unit VK.API;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, REST.Client,
-  Vcl.Controls, REST.Authenticator.OAuth, IPPeerClient, VK.Types, VK.OAuth2, VK.Account, VK.Handler,
-  VK.Auth, VK.Users, System.Net.HttpClient, VK.LongPollServer, System.JSON, VK.Messages,
-  System.Generics.Collections, VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes,
-  VK.Board, Vcl.Forms, REST.Types, VK.FakeAndroidProto, VK.Friends, VK.Groups, VK.Photos;
+  System.SysUtils, System.Variants, System.Classes, REST.Client,
+  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
+  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
+  VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board,
+  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Utils, FMX.Types;
 
 type
   TCustomVK = class(TComponent)
@@ -15,7 +15,6 @@ type
     FOAuth2Authenticator: TOAuth2Authenticator;
     FOnLogin: TOnLogin;
     FPermissionsList: TPermissions;
-    FAuthForm: TFormOAuth2;
     FAppID: string;
     FAppKey: string;
     FEndPoint: string;
@@ -46,11 +45,11 @@ type
     FFriends: TFriendsController;
     FGroups: TGroupsController;
     FPhotos: TPhotosController;
+    FCatalog: TCatalogController;
+    FUtils: TUtilsController;
     function GetPermissions: string;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
-    procedure FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
-    procedure FAuthError(const AText: string; AStatusCode: Integer; var Cancel: WordBool);
-    procedure FAuthClose(Sender: TObject; var Action: TCloseAction);
+    procedure FAuthError(const AText: string; AStatusCode: Integer);
     procedure FLog(Sender: TObject; const Value: string);
     procedure FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure SetOnLogin(const Value: TOnLogin);
@@ -73,6 +72,8 @@ type
     procedure SetOnAuth(const Value: TOnAuth);
     function GetToken: string;
     procedure FVKErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
+    procedure SetToken(const Value: string);
+    function CheckAuth: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -80,11 +81,10 @@ type
     procedure DoLog(Sender: TObject; Text: string);
     procedure DoError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure DoErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
-    procedure Login(AParentWindow: TWinControl = nil); overload;
-    procedure Login(Login, Password: string; AParentWindow: TWinControl = nil); overload;
+    function Login: Boolean; overload;
+    function Login(ALogin, APassword: string): Boolean; overload;
     procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
-    procedure CallMethod(MethodName: string; Param: string; Value: string; Callback:
-      TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Param: string; Value: string; Callback: TCallMethodCallback = nil); overload;
     procedure CallMethod(MethodName: string; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
@@ -109,6 +109,8 @@ type
     property Friends: TFriendsController read FFriends;
     property Groups: TGroupsController read FGroups;
     property Photos: TPhotosController read FPhotos;
+    property Catalog: TCatalogController read FCatalog;
+    property Utils: TUtilsController read FUtils;
     //
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;
@@ -129,13 +131,19 @@ type
     property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
     property OnAuth: TOnAuth read FOnAuth write SetOnAuth;
-    property Token: string read GetToken;
+    property Token: string read GetToken write SetToken;
   end;
 
 implementation
 
 uses
-  System.DateUtils, VK.Captcha;
+  System.DateUtils, System.Net.HttpClient,
+  {$IF DECLARED(FireMonkeyVersion)}
+  VK.FMX.Captcha,
+  {$ELSE}
+  VK.Captcha,
+  {$ENDIF}
+  VK.Entity.AccountInfo;
 
 { TVK }
 
@@ -203,6 +211,8 @@ begin
   FFriends := TFriendsController.Create(FHandler);
   FGroups := TGroupsController.Create(FHandler);
   FPhotos := TPhotosController.Create(FHandler);
+  FCatalog := TCatalogController.Create(FHandler);
+  FUtils := TUtilsController.Create(FHandler);
   //
   FUploader := TUploader.Create;
 end;
@@ -216,13 +226,12 @@ end;
 destructor TCustomVK.Destroy;
 begin
   Await;
-  if Assigned(FAuthForm) then
-    FAuthForm.Close;
-
   FBoard.Free;
   FFriends.Free;
   FGroups.Free;
   FPhotos.Free;
+  FCatalog.Free;
+  FUtils.Free;
   FLikes.Free;
   FAudio.Free;
   FDoc.Free;
@@ -265,8 +274,11 @@ begin
   begin
     FOnCaptcha(Self, CaptchaImg, Answer);
   end
-  else
-    TFormCaptcha.Execute(CaptchaImg, Answer);
+  else    {$IF DECLARED(FireMonkeyVersion)}
+    TFormFMXCaptcha.Execute(CaptchaImg, Answer);
+    {$ELSE}
+  TFormCaptcha.Execute(CaptchaImg, Answer);
+    {$ENDIF}
 end;
 
 function TCustomVK.Execute(Code: string): TResponse;
@@ -281,83 +293,20 @@ begin
   Result := Resp;
 end;
 
-procedure TCustomVK.FAfterRedirect(const AURL: string; var DoCloseWebView: boolean);
-var
-  i: integer;
-  Str: string;
-  Params: TStringList;
-begin
-  i := Pos('#access_token=', AURL);
-  if (i = 0) then
-    i := Pos('&access_token=', AURL);
-  if (i <> 0) and (FOAuth2Authenticator.AccessToken.IsEmpty) then
-  begin
-    Str := AURL;
-    Delete(Str, 1, i);
-    Params := TStringList.Create;
-    try
-      Params.Delimiter := '&';
-      Params.DelimitedText := Str;
-      FChangePasswordHash := Params.Values['change_password_hash'];
-      FOAuth2Authenticator.AccessToken := Params.Values['access_token'];
-      FLog(Self, FOAuth2Authenticator.AccessToken);
-      if Params.IndexOf('expires_in') >= 0 then
-        FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, StrToInt(Params.Values['expires_in']))
-      else
-        FOAuth2Authenticator.AccessTokenExpiry := 0;
-      DoLogin;
-    finally
-      Params.Free;
-    end;
-    DoCloseWebView := True;
-  end;
-end;
-
 procedure TCustomVK.FLog(Sender: TObject; const Value: string);
 begin
   if Assigned(FOnLog) then
     FOnLog(Self, Value);
 end;
 
-procedure TCustomVK.FAuthClose(Sender: TObject; var Action: TCloseAction);
-var
-  E: Exception;
-  IsError: Boolean;
-begin
-  IsError := FAuthForm.IsError;
-  Action := caFree;
-  FAuthForm := nil;
-  //Это необходимо, чтобы не передавать ошибку авторизации, если мы сразу завершаем программу
-  if Application.Terminated then
-    Exit;
-  if not IsError then
-  begin
-    if FOAuth2Authenticator.AccessToken.IsEmpty then
-    begin
-      E := TVkException.Create('Токен не был получен');
-      if Assigned(FOnErrorLogin) then
-      begin
-        FOnErrorLogin(Self, E, ERROR_VK_NOTOKEN, E.Message);
-        if Assigned(E) then
-          E.Free;
-      end
-      else
-      begin
-        DoLog(Self, E.Message);
-        E.Free;
-      end;
-    end;
-  end;
-end;
-
-procedure TCustomVK.FAuthError(const AText: string; AStatusCode: Integer; var Cancel: WordBool);
+procedure TCustomVK.FAuthError(const AText: string; AStatusCode: Integer);
 var
   E: Exception;
 begin
   E := TVkException.Create('Токен не был получен');
   if Assigned(FOnErrorLogin) then
   begin
-    FOnErrorLogin(Self, E, ERROR_VK_NOTOKEN, AText);
+    FOnErrorLogin(Self, E, AStatusCode, AText);
     if Assigned(E) then
       E.Free;
   end
@@ -365,10 +314,6 @@ begin
   begin
     DoLog(Self, E.Message);
     E.Free;
-  end;
-  if Assigned(FAuthForm) then
-  begin
-    FAuthForm.Close;
   end;
 end;
 
@@ -396,112 +341,39 @@ begin
     raise E;
 end;
 
-procedure TCustomVK.Login(Login, Password: string; AParentWindow: TWinControl = nil);
+function TCustomVK.CheckAuth: Boolean;
 var
-  Token, PasswordHash: string;
-  TokenExpiry: Int64;
-  HTTP: THTTPClient;
-  RedirectUrl, Error: string;
-  Stream: TStringStream;
-  JSON: TJSONValue;
-//  Proto: TStream;
+  TM: Int64;
 begin
-  PasswordHash := '';
-  Token := '';
-  TokenExpiry := 0;
-  if Assigned(FOnAuth) then
-    FOnAuth(Self, Token, TokenExpiry, PasswordHash);
-
-  if not Token.IsEmpty then
-  begin
-    FChangePasswordHash := PasswordHash;
-    FOAuth2Authenticator.AccessToken := Token;
-    if TokenExpiry > 0 then
-      FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, TokenExpiry)
-    else
-      FOAuth2Authenticator.AccessTokenExpiry := 0;
-    DoLogin;
-  end
-  else
-  begin
-    HTTP := THTTPClient.Create;
-    Stream := TStringStream.Create;
-    try
-      {Proto := TMemoryStream.Create;
-      with TAndroidCheckinRequest.Create do
-      begin
-        Checkin := TAndroidChekin.Create;
-        with Checkin do
-        begin
-          CellOperator := '310260';
-          Roaming := 'mobile:LTE:';
-          SimOperator := '310260';
-          &Type := 'DEVICE_ANDROID_OS';
-        end;
-        Digest := '1-929a0dca0eee55513280171a8585da7dcd3700f8';
-        Locale := 'en_US';
-        LoggingId := -8212629671123625360;
-        Meid := '358240051111110';
-        OtaCerts.Add('71Q6Rn2DDZl1zPDVaaeEHItd+Yg=');
-        TimeZone := 'America/New_York';
-        Version := 3;
-        SaveToStream(Proto);
-        Checkin.Free;
-        Free;
-      end;
-      HTTP.ContentType := 'application/x-protobuffer';
-      HTTP.UserAgent := 'Android-GCM/1.5 (generic_x86 KK)'; }
-      HTTP.Get(
-        'https://oauth.vk.com/token?grant_type=password' +
-        '&client_id=' + FAppID +
-        '&client_secret=' + FAppKey +
-        '&username=' + Login +
-        '&password=' + Password, Stream);
-     // Proto.Free;
-      try
-        JSON := TJSONObject.ParseJSONValue(Stream.DataString);
-        if Assigned(JSON) then
-        begin
-          RedirectUrl := JSON.GetValue<string>('redirect_uri', '');
-          JSON.Free;
-        end
-        else
-          RedirectUrl := '';
-        if RedirectUrl = '' then
-          Error := Stream.DataString;
-      except
-        RedirectUrl := '';
-      end;
-    finally
-      HTTP.Free;
-      Stream.Free;
-    end;
-    if not RedirectUrl.IsEmpty then
-    begin
-      if not Assigned(FAuthForm) then
-      begin
-        FAuthForm := TFormOAuth2.Create(nil);
-        FAuthForm.OnAfterRedirect := FAfterRedirect;
-        FAuthForm.OnError := FAuthError;
-        FAuthForm.OnClose := FAuthClose;
-      end;
-      FAuthForm.ShowWithURL(AParentWindow, RedirectUrl)
-    end
-    else
-    begin
-      DoError(Self, TVkException.Create('Ошибка запроса авторизации'), -1, Error);
-    end;
-  end;
+  Result := Utils.GetServerTime(TM);
 end;
 
-procedure TCustomVK.Login(AParentWindow: TWinControl);
+function TCustomVK.Login(ALogin, APassword: string): Boolean;
+{var
+  HTTP: THTTPClient;  }
+begin
+  raise TVkException.Create('Метод в разработке');
+ { HTTP := THTTPClient.Create;
+  try
+    try
+      //HTTP.
+    finally
+      HTTP.Free;
+    end;
+  except
+
+  end;  }
+end;
+
+function TCustomVK.Login: Boolean;
 var
   Token, PasswordHash: string;
   TokenExpiry: Int64;
 begin
+  Result := False;
   FOAuth2Authenticator.AccessToken := EmptyStr;
   FOAuth2Authenticator.ClientID := FAppID;
-  //FOAuth2Authenticator.ClientSecret := FAppKey;
+  FOAuth2Authenticator.ClientSecret := FAppKey;
   FOAuth2Authenticator.ResponseType := TOAuth2ResponseType.rtTOKEN;
   FOAuth2Authenticator.AuthorizationEndpoint := FEndPoint;
   FOAuth2Authenticator.Scope := PermissionsList.ToString;
@@ -509,7 +381,7 @@ begin
   Token := '';
   TokenExpiry := 0;
   if Assigned(FOnAuth) then
-    FOnAuth(Self, Token, TokenExpiry, PasswordHash);
+    FOnAuth(Self, FOAuth2Authenticator.AuthorizationRequestURI, Token, TokenExpiry, PasswordHash);
 
   if not Token.IsEmpty then
   begin
@@ -519,21 +391,13 @@ begin
       FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, TokenExpiry)
     else
       FOAuth2Authenticator.AccessTokenExpiry := 0;
-    DoLogin;
-  end
-  else
-  begin
-    if not Assigned(FAuthForm) then
+    if CheckAuth then
     begin
-      FAuthForm := TFormOAuth2.Create(nil);
-      FAuthForm.OnAfterRedirect := FAfterRedirect;
-      FAuthForm.OnError := FAuthError;
-      FAuthForm.OnClose := FAuthClose;
-      if not FHandler.Client.ProxyServer.IsEmpty then
-        FAuthForm.SetProxy(FHandler.Client.ProxyServer, FHandler.Client.ProxyPort, FHandler.Client.ProxyUsername,
-          FHandler.Client.ProxyPassword);
-    end;
-    FAuthForm.ShowWithURL(AParentWindow, FOAuth2Authenticator.AuthorizationRequestURI);
+      DoLogin;
+      Exit(True);
+    end
+    else
+      FAuthError('Ошибка авторизации', -1);
   end;
 end;
 
@@ -553,6 +417,11 @@ begin
   begin
     FHandler.Client.AddParameter('access_token', FServiceKey);
   end;
+end;
+
+procedure TCustomVK.SetToken(const Value: string);
+begin
+  FOAuth2Authenticator.AccessToken := Value;
 end;
 
 procedure TCustomVK.SetAppID(const Value: string);

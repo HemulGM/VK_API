@@ -3,8 +3,9 @@ unit VK.LongPollServer;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, Vcl.Dialogs, System.Classes, System.Variants,
-  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, System.Generics.Collections;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  REST.Client, System.JSON, System.Net.HttpClient, VK.Types,
+  System.Generics.Collections;
 
 type
   TLongPollServer = class;
@@ -71,7 +72,13 @@ const
 implementation
 
 uses
-  Vcl.Forms, Winapi.Windows, System.SyncObjs;
+  FMX.Types,
+  {$IF DECLARED(FireMonkeyVersion)}
+  FMX.Forms,
+  {$ELSE}
+  Vcl.Forms,
+  {$ENDIF}
+  System.SyncObjs;
 
 { TLongPollServer }
 
@@ -134,7 +141,7 @@ begin
   except
     on E: Exception do
     begin
-      DoError(E);
+      DoError(TVkLongPollServerException.Create(E.Message));
       Exit(False);
     end;
   end;
@@ -264,8 +271,7 @@ begin
                   begin
                     if not QueryLongPollServer then
                     begin
-                      DoError(TVkLongPollServerException.Create('QueryLongPollServer error, result: '
-                        + Stream.DataString));
+                      DoError(TVkLongPollServerException.Create('QueryLongPollServer error, result: ' + Stream.DataString));
                       FLongPollNeedStop := True;
                     end;
                   end;
@@ -308,7 +314,7 @@ end;
 
 function TLongPollData.Request: string;
 begin
-  Result := server + '?act=a_check&key=' + key + '&ts=' + ts + '&wait=' + wait + '&version=' + version;
+  Result := server + '?act=a_check&key=' + key + '&mode=10&ts=' + ts + '&wait=' + wait + '&version=' + version;
   if Pos('http', Result) = 0 then
     Result := 'http://' + Result;
 end;

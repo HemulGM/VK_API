@@ -62,6 +62,7 @@ type
     TabSheet11: TTabSheet;
     Button28: TButton;
     Button29: TButton;
+    Button30: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -190,6 +191,7 @@ type
     procedure Button27Click(Sender: TObject);
     procedure Button28Click(Sender: TObject);
     procedure Button29Click(Sender: TObject);
+    procedure Button30Click(Sender: TObject);
   private
   public
     { Public declarations }
@@ -205,7 +207,7 @@ uses
   VK.Entity.PushSettings, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
   VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.OAuth2,
   VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload, VK.Entity.Conversation,
-  VK.Entity.Status;
+  VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section;
 
 {$R *.dfm}
 
@@ -230,7 +232,7 @@ var
   Users: TVkUsers;
   i: Integer;
 begin
-  if VK1.Users.Get(Users, '286400863,415730216', UserFieldsAll, '') then
+  if VK1.Users.Get(Users, [286400863, 415730216], UserFieldsAll, '') then
   begin
     for i := Low(Users.Items) to High(Users.Items) do
     begin
@@ -532,6 +534,39 @@ begin
     Memo1.Lines.Add('Unbanned')
   else
     Memo1.Lines.Add('Error unbanned');
+end;
+
+procedure TFormMain.Button30Click(Sender: TObject);
+var
+  Catalog: TVkCatalog;
+  Section: TVkSectionData;
+  Chart: TVkSectionData;
+  Block, i: Integer;
+begin
+  if VK1.Catalog.GetAudio(Catalog, True) then
+  begin
+    if VK1.Catalog.GetSection(Section, Catalog.Catalog.Sections[1].Id, False) then
+    begin
+      Memo1.Clear;
+      Memo1.Lines.Add(Section.ToJsonString);
+      Block := Section.Section.FindBlock('music_audios', 'music_chart_triple_stacked_slider');
+      if Block <> -1 then
+      begin
+        if VK1.Catalog.GetSection(Chart, Section.Section.Blocks[Block].Id, False) then
+        begin
+          Memo1.Clear;
+          for i := 0 to High(Chart.Audios) do
+          begin
+            Memo1.Lines.Add(Chart.Audios[i].AudioChartInfo.Position.ToString + ' - ' + Chart.Audios[i].Artist
+              + ' - ' + Chart.Audios[i].Title);
+          end;
+          Chart.Free;
+        end;
+      end;
+      Section.Free;
+    end;
+    Catalog.Free;
+  end;
 end;
 
 procedure TFormMain.Button3Click(Sender: TObject);

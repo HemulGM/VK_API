@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 578
       Height = 540
-      ActivePage = TabSheet6
+      ActivePage = TabSheet9
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -243,6 +243,15 @@ object FormMain: TFormMain
           Caption = 'Audio.GetPop'
           TabOrder = 3
           OnClick = Button29Click
+        end
+        object Button30: TButton
+          Left = 3
+          Top = 127
+          Width = 137
+          Height = 25
+          Caption = 'GetChart'
+          TabOrder = 4
+          OnClick = Button30Click
         end
       end
       object TabSheet4: TTabSheet

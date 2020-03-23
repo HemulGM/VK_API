@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON, REST.Json, VK.Utils, VK.Entity.Playlist, VK.Entity.Audio.Upload;
+  VK.Entity.Audio, System.JSON, REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload;
 
 type
   TVkAudioParams = record

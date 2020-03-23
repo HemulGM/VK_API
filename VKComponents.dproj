@@ -18,26 +18,6 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='iOSDevice32' and '$(Base)'=='true') or '$(Base_iOSDevice32)'!=''">
-        <Base_iOSDevice32>true</Base_iOSDevice32>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='iOSDevice64' and '$(Base)'=='true') or '$(Base_iOSDevice64)'!=''">
-        <Base_iOSDevice64>true</Base_iOSDevice64>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='iOSSimulator' and '$(Base)'=='true') or '$(Base_iOSSimulator)'!=''">
-        <Base_iOSSimulator>true</Base_iOSSimulator>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='OSX32' and '$(Base)'=='true') or '$(Base_OSX32)'!=''">
-        <Base_OSX32>true</Base_OSX32>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
         <Base_Win32>true</Base_Win32>
         <CfgParent>Base</CfgParent>
@@ -81,22 +61,7 @@
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
         <EnabledSysJars>android-support-v4.dex.jar;cloud-messaging.dex.jar;com-google-android-gms.play-services-ads-base.17.2.0.dex.jar;com-google-android-gms.play-services-ads-identifier.16.0.0.dex.jar;com-google-android-gms.play-services-ads-lite.17.2.0.dex.jar;com-google-android-gms.play-services-ads.17.2.0.dex.jar;com-google-android-gms.play-services-analytics-impl.16.0.8.dex.jar;com-google-android-gms.play-services-analytics.16.0.8.dex.jar;com-google-android-gms.play-services-base.16.0.1.dex.jar;com-google-android-gms.play-services-basement.16.2.0.dex.jar;com-google-android-gms.play-services-gass.17.2.0.dex.jar;com-google-android-gms.play-services-identity.16.0.0.dex.jar;com-google-android-gms.play-services-maps.16.1.0.dex.jar;com-google-android-gms.play-services-measurement-base.16.4.0.dex.jar;com-google-android-gms.play-services-measurement-sdk-api.16.4.0.dex.jar;com-google-android-gms.play-services-stats.16.0.1.dex.jar;com-google-android-gms.play-services-tagmanager-v4-impl.16.0.8.dex.jar;com-google-android-gms.play-services-tasks.16.0.1.dex.jar;com-google-android-gms.play-services-wallet.16.0.1.dex.jar;com-google-firebase.firebase-analytics.16.4.0.dex.jar;com-google-firebase.firebase-common.16.1.0.dex.jar;com-google-firebase.firebase-iid-interop.16.0.1.dex.jar;com-google-firebase.firebase-iid.17.1.1.dex.jar;com-google-firebase.firebase-measurement-connector.17.0.1.dex.jar;com-google-firebase.firebase-messaging.17.5.0.dex.jar;fmx.dex.jar;google-play-billing.dex.jar;google-play-licensing.dex.jar</EnabledSysJars>
-        <DCC_UsePackage>rtl;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_iOSDevice32)'!=''">
-        <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
-        <DCC_UsePackage>rtl;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_iOSDevice64)'!=''">
-        <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
-        <DCC_UsePackage>rtl;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;HGMComponents;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_iOSSimulator)'!=''">
-        <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
-        <DCC_UsePackage>rtl;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_OSX32)'!=''">
-        <DCC_UsePackage>rtl;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>rtl;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;fmx;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -104,10 +69,10 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <DCC_UsePackage>rtl;vcl;vclie;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;vclimg;PngComponents;HGMComponents;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>rtl;vcl;vclie;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;vclimg;PngComponents;HGMComponents;fmx;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
-        <DCC_UsePackage>rtl;vcl;vclie;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;vclimg;PngComponents;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>rtl;vcl;vclie;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;vclimg;PngComponents;fmx;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -140,30 +105,15 @@
         <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="IndyCore.dcp"/>
         <DCCReference Include="IndyIPClient.dcp"/>
+        <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="Forms\VK.Captcha.pas">
             <Form>FormCaptcha</Form>
-        </DCCReference>
-        <DCCReference Include="Forms\VK.OAuth2.pas">
-            <Form>FormOAuth2</Form>
         </DCCReference>
         <DCCReference Include="Utils\pbInput.pas"/>
         <DCCReference Include="Utils\pbOutput.pas"/>
         <DCCReference Include="Utils\pbPublic.pas"/>
         <DCCReference Include="Utils\StrBuffer.pas"/>
         <DCCReference Include="Utils\uAbstractProtoBufClasses.pas"/>
-        <DCCReference Include="Controllers\VK.Account.pas"/>
-        <DCCReference Include="Controllers\VK.Audio.pas"/>
-        <DCCReference Include="Controllers\VK.Auth.pas"/>
-        <DCCReference Include="Controllers\VK.Board.pas"/>
-        <DCCReference Include="Controllers\VK.Docs.pas"/>
-        <DCCReference Include="Controllers\VK.Friends.pas"/>
-        <DCCReference Include="Controllers\VK.Groups.pas"/>
-        <DCCReference Include="Controllers\VK.Likes.pas"/>
-        <DCCReference Include="Controllers\VK.Messages.pas"/>
-        <DCCReference Include="Controllers\VK.Photos.pas"/>
-        <DCCReference Include="Controllers\VK.Status.pas"/>
-        <DCCReference Include="Controllers\VK.Users.pas"/>
-        <DCCReference Include="Controllers\VK.Wall.pas"/>
         <DCCReference Include="VK.API.pas"/>
         <DCCReference Include="VK.Components.pas"/>
         <DCCReference Include="VK.Controller.pas"/>
@@ -174,7 +124,7 @@
         <DCCReference Include="VK.Types.pas"/>
         <DCCReference Include="VK.Uploader.pas"/>
         <DCCReference Include="VK.UserEvents.pas"/>
-        <DCCReference Include="VK.Utils.pas"/>
+        <DCCReference Include="VK.CommonUtils.pas"/>
         <DCCReference Include="Entity\VK.Entity.AccountInfo.pas"/>
         <DCCReference Include="Entity\VK.Entity.AccountInfoRequest.pas"/>
         <DCCReference Include="Entity\VK.Entity.ActiveOffers.pas"/>
@@ -182,6 +132,8 @@
         <DCCReference Include="Entity\VK.Entity.Audio.pas"/>
         <DCCReference Include="Entity\VK.Entity.Audio.Upload.pas"/>
         <DCCReference Include="Entity\VK.Entity.AudioMessage.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Catalog.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Catalog.Section.pas"/>
         <DCCReference Include="Entity\VK.Entity.ClientInfo.pas"/>
         <DCCReference Include="Entity\VK.Entity.CommentInfo.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.pas"/>
@@ -213,6 +165,33 @@
         <DCCReference Include="Entity\VK.Entity.Sticker.pas"/>
         <DCCReference Include="Entity\VK.Entity.User.pas"/>
         <DCCReference Include="Entity\VK.Entity.Video.pas"/>
+        <DCCReference Include="Controllers\VK.Account.pas"/>
+        <DCCReference Include="Controllers\VK.Audio.pas"/>
+        <DCCReference Include="Controllers\VK.Auth.pas"/>
+        <DCCReference Include="Controllers\VK.Board.pas"/>
+        <DCCReference Include="Controllers\VK.Catalog.pas"/>
+        <DCCReference Include="Controllers\VK.Docs.pas"/>
+        <DCCReference Include="Controllers\VK.Friends.pas"/>
+        <DCCReference Include="Controllers\VK.Groups.pas"/>
+        <DCCReference Include="Controllers\VK.Likes.pas"/>
+        <DCCReference Include="Controllers\VK.Messages.pas"/>
+        <DCCReference Include="Controllers\VK.Photos.pas"/>
+        <DCCReference Include="Controllers\VK.Status.pas"/>
+        <DCCReference Include="Controllers\VK.Users.pas"/>
+        <DCCReference Include="Controllers\VK.Wall.pas"/>
+        <DCCReference Include="Forms\VK.Vcl.OAuth2.pas">
+            <Form>FormOAuth2</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Forms\VK.FMX.OAuth2.pas">
+            <Form>FormFMXOAuth2</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="Forms\VK.FMX.Captcha.pas">
+            <Form>FormFMXCaptcha</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="Controllers\VK.Utils.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -1054,10 +1033,6 @@
             </Deployment>
             <Platforms>
                 <Platform value="Android">False</Platform>
-                <Platform value="iOSDevice32">False</Platform>
-                <Platform value="iOSDevice64">False</Platform>
-                <Platform value="iOSSimulator">False</Platform>
-                <Platform value="OSX32">False</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
             </Platforms>

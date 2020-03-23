@@ -15,6 +15,10 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
+    function Get(var Users: TVkUsers; UserIds: TIds; Fields, NameCase: string): Boolean; overload;
+    /// <summary>
+    /// Возвращает расширенную информацию о пользователях.
+    /// </summary>
     function Get(var User: TVkUser; UserId: Integer = 0; Fields: string = ''; NameCase: string = ''): Boolean; overload;
   end;
 
@@ -71,6 +75,24 @@ begin
         Result := False;
       Users.Free;
     end;
+  end;
+end;
+
+function TUsersController.Get(var Users: TVkUsers; UserIds: TIds; Fields, NameCase: string): Boolean;
+var
+  Params: TParams;
+begin
+  if Length(UserIds) > 0 then
+    AddParam(Params, ['user_ids', UserIds.ToString]);
+  if not Fields.IsEmpty then
+    AddParam(Params, ['fields', Fields]);
+  if not NameCase.IsEmpty then
+    AddParam(Params, ['num', NameCase]);
+  with Handler.Execute('users.get', Params) do
+  begin
+    Result := Success;
+    if Result then
+      Users := TVkUsers.FromJsonString(AppendItemsTag(Response));
   end;
 end;
 

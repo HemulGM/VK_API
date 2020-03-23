@@ -3,9 +3,10 @@ unit VK.GroupEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client,
-  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Media,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  REST.Client, System.JSON, VK.Types, System.Generics.Collections,
+  VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
   VK.Entity.GroupSettings;
 
 type
@@ -69,38 +70,29 @@ type
     GroupId: Integer;
   end;
 
-  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
-    TVkObjectInfo; EventId: string) of object;
+  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId: string) of object;
 
   TOnCommentDelete = procedure(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string) of object;
 
-  TOnGroupPollVoteNew = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupPollVoteNew;
-    EventId: string) of object;
+  TOnGroupPollVoteNew = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupPollVoteNew; EventId: string) of object;
 
-  TOnGroupLeave = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; IsSelf: Boolean;
-    EventId: string) of object;
+  TOnGroupLeave = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; IsSelf: Boolean; EventId: string) of object;
 
-  TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit;
-    EventId: string) of object;
+  TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; EventId: string) of object;
 
-  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType:
-    TGroupJoinType; EventId: string) of object;
+  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TGroupJoinType; EventId: string) of object;
 
   TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string) of object;
 
-  TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock;
-    EventId: string) of object;
+  TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; EventId: string) of object;
 
-  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes:
-    TVkGroupSettingsChange; EventId: string) of object;
+  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string) of object;
 
-  TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction;
-    EventId: string) of object;
+  TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction; EventId: string) of object;
 
   TOnGroupAppPayload = procedure(Sender: TObject; GroupId: Integer; Info: TVkAppPayload; EventId: string) of object;
 
-  TOnGroupChangePhoto = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupChangePhoto;
-    EventId: string) of object;
+  TOnGroupChangePhoto = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupChangePhoto; EventId: string) of object;
 
   TOnVideoNew = procedure(Sender: TObject; GroupId: Integer; Video: TVkVideo; EventId: string) of object;
 
@@ -110,16 +102,13 @@ type
 
   TOnAudioNew = procedure(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string) of object;
 
-  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo:
-    TVkClientInfo; EventId: string) of object;
+  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string) of object;
 
   TOnGroupMessageAction = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string) of object;
 
-  TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string;
-    EventId: string) of object;
+  TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string; EventId: string) of object;
 
-  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State:
-    string; EventId: string) of object;
+  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId: string) of object;
 
   TCustomGroupEvents = class(TComponent)
   private
@@ -1255,9 +1244,7 @@ end;
 
 procedure TCustomGroupEvents.SetGroupID(const Value: Integer);
 begin
-  if Value > 0 then
-    raise Exception.Create('Идентификатор группы может быть только отрицательным цислом');
-  FGroupID := Value;
+  FGroupID := Abs(Value);
 end;
 
 procedure TCustomGroupEvents.SetOnAudioNew(const Value: TOnAudioNew);
@@ -1474,11 +1461,9 @@ function TCustomGroupEvents.Start: Boolean;
 begin
   if not Assigned(FVK) then
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
-  if FGroupID >= 0 then
-    raise Exception.Create('Идентификатор группы не указан или указан не верно');
   FLongPollServer.Client := FVK.Handler.Client;
   FLongPollServer.Method := 'groups.getLongPollServer';
-  FLongPollServer.Params := [['lp_version', '3'], ['group_id', (-FGroupID).ToString]];
+  FLongPollServer.Params := [['lp_version', '3'], ['group_id', FGroupID.ToString]];
   Result := FLongPollServer.Start;
   if Result then
     FVK.DoLog(FLongPollServer, FGroupID.ToString + ' started')

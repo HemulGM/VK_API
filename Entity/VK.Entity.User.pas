@@ -260,10 +260,13 @@ type
     FUniversity: Extended;
     FUniversity_name: string;
     FVerified: Extended;
+    FTrending: Extended;
+    FActivity: string;
     function GetRefer: string;
     function FGetFullName: string;
   public
     property About: string read FAbout write FAbout;
+    property Activity: string read FActivity write FActivity;
     property Activities: string read FActivities write FActivities;
     property BirthDate: string read FBdate write FBdate;
     property Blacklisted: Extended read FBlacklisted write FBlacklisted;
@@ -338,6 +341,7 @@ type
     property University: Extended read FUniversity write FUniversity;
     property UniversityName: string read FUniversity_name write FUniversity_name;
     property Verified: Extended read FVerified write FVerified;
+    property Trending: Extended read FTrending write FTrending;
     property Refer: string read GetRefer;
     property GetFullName: string read FGetFullName;
     constructor Create;
@@ -363,7 +367,19 @@ type
     class function FromJsonString(AJsonString: string): TVkUsers;
   end;
 
+function FindUser(Id: Integer; List: TArray<TVkUser>): Integer;
+
 implementation
+
+function FindUser(Id: Integer; List: TArray<TVkUser>): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := Low(List) to High(List) do
+    if List[i].Id = Id then
+      Exit(i);
+end;
 
 {TVkRelative}
 

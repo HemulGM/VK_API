@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Entity.Keyboard,
-  VK.Entity.ClientInfo;
+  VK.Entity.ClientInfo, VK.Entity.User;
 
 type
   TVkMessageSendResponse = class
@@ -66,16 +66,16 @@ type
   TVkMessage = class
   private
     FAttachments: TArray<TVkAttachment>;
-    FConversation_message_id: Extended;
-    FDate: Extended;
+    FConversation_message_id: Integer;
+    FDate: Int64;
     FFrom_id: Integer;
     FFwd_messages: TArray<TVkMessage>;
-    FId: Extended;
+    FId: Integer;
     FImportant: Boolean;
     FIs_hidden: Boolean;
-    FOut: Extended;
+    FOut: Integer;
     FPeer_id: Integer;
-    FRandom_id: Extended;
+    FRandom_id: Integer;
     FText: string;
     FRef: string;
     FRef_source: string;
@@ -86,13 +86,17 @@ type
     FReply_message: TVkMessage;
     FAction: TVkMessageAction;
     function GetPayloadButton: TVkPayloadButton;
+    function GetOut: Boolean;
+    procedure SetOut(const Value: Boolean);
+    function GetDate: TDateTime;
+    procedure SetDate(const Value: TDateTime);
   public
-    property Id: Extended read FId write FId;
-    property Date: Extended read FDate write FDate;
+    property Id: Integer read FId write FId;
+    property Date: TDateTime read GetDate write SetDate;
     property PeerId: Integer read FPeer_id write FPeer_id;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Text: string read FText write FText;
-    property RandomId: Extended read FRandom_id write FRandom_id;
+    property RandomId: Integer read FRandom_id write FRandom_id;
     property Ref: string read FRef write FRef;
     property RefSource: string read FRef_source write FRef_source;
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
@@ -105,9 +109,9 @@ type
     property Action: TVkMessageAction read FAction write FAction;
     property PayloadButton: TVkPayloadButton read GetPayloadButton;
     //
-    property ConversationMessageId: Extended read FConversation_message_id write FConversation_message_id;
+    property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
-    property&Out: Extended read FOut write FOut;
+    property&Out: Boolean read GetOut write SetOut;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMessage;
@@ -118,9 +122,11 @@ type
     FItems: TArray<TVkMessage>;
     FCount: Integer;
     FSaveObjects: Boolean;
+    FProfiles: TArray<TVkUser>;
     procedure SetSaveObjects(const Value: Boolean);
   public
     property Items: TArray<TVkMessage> read FItems write FItems;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkMessages);
@@ -133,7 +139,7 @@ type
 implementation
 
 uses
-  SysUtils;
+  SysUtils, DateUtils, VK.CommonUtils;
 
 {TVkMessageAction}
 
@@ -182,6 +188,16 @@ begin
   result := TJson.JsonToObject<TVkMessage>(AJsonString)
 end;
 
+function TVkMessage.GetDate: TDateTime;
+begin
+  Result := UnixToDateTime(FDate, False);
+end;
+
+function TVkMessage.GetOut: Boolean;
+begin
+  Result := FOut = 1;
+end;
+
 function TVkMessage.GetPayloadButton: TVkPayloadButton;
 begin
   if Payload.IsEmpty then
@@ -194,6 +210,16 @@ begin
   except
     Exit(nil);
   end;
+end;
+
+procedure TVkMessage.SetDate(const Value: TDateTime);
+begin
+  FDate := DateTimeToUnix(Value, False);
+end;
+
+procedure TVkMessage.SetOut(const Value: Boolean);
+begin
+  FOut := BoolToInt(Value);
 end;
 
 { TVkMessageSendResponse }

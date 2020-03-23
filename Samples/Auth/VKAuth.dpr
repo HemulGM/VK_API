@@ -13,7 +13,7 @@ uses
   VK.UserEvents in '..\..\VK.UserEvents.pas',
   VK.GroupEvents in '..\..\VK.GroupEvents.pas',
   VK.OAuth2 in '..\..\Forms\VK.OAuth2.pas' {FormOAuth2},
-  VK.Utils in '..\..\VK.Utils.pas',
+  VK.CommonUtils in '..\..\VK.CommonUtils.pas',
   VK.Uploader in '..\..\VK.Uploader.pas',
   VK.Account in '..\..\Controllers\VK.Account.pas',
   VK.Audio in '..\..\Controllers\VK.Audio.pas',
@@ -65,7 +65,10 @@ uses
   VK.Entity.Conversation in '..\..\Entity\VK.Entity.Conversation.pas',
   VK.Entity.Group in '..\..\Entity\VK.Entity.Group.pas',
   VK.Entity.Status in '..\..\Entity\VK.Entity.Status.pas',
-  VK.Entity.CommentInfo in '..\..\Entity\VK.Entity.CommentInfo.pas';
+  VK.Entity.CommentInfo in '..\..\Entity\VK.Entity.CommentInfo.pas',
+  VK.Entity.Catalog in '..\..\Entity\VK.Entity.Catalog.pas',
+  VK.Catalog in '..\..\Controllers\VK.Catalog.pas',
+  VK.Entity.Catalog.Section in '..\..\Entity\VK.Entity.Catalog.Section.pas';
 
 {$R *.res}
 

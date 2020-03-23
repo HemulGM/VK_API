@@ -5,10 +5,13 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, System.SysUtils, System.Generics.Collections, System.JSON;
+  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections,
+  System.JSON;
 
 type
   TVkException = Exception;
+
+  TVkAuthException = TVkException;
 
   TVkParserException = TVkException;
 
@@ -81,13 +84,16 @@ const
   GR_IMPORTANT = 1;
   GR_UNANSWERED = 2;
 
+  //
+  VK_CHAT_ID_START = 2000000000;
+
 type
   {$IFDEF OLD_VERSION}
   TArrayOfString = array of string;
   {$ELSE}
+
   TArrayOfString = TArray<string>;
   {$ENDIF}
-
 
   TArrayOfStringHelper = record helper for TArrayOfString
     function ToString: string; overload; inline;
@@ -98,9 +104,9 @@ type
   {$IFDEF OLD_VERSION}
   TArrayOfInteger = array of Integer;
   {$ELSE}
+
   TArrayOfInteger = TArray<Integer>;
   {$ENDIF}
-
 
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
     function ToString: string; overload; inline;
@@ -118,10 +124,11 @@ type
 
   TParamsInt = array of TParamInt;
   {$ELSE}
+
   TParams = TArray<TParam>;
+
   TParamsInt = TArray<TParamInt>;
   {$ENDIF}
-
 
   TParamsHelper = record helper for TParams
     function Add(Param: TParam): Integer; overload; inline;
@@ -140,9 +147,9 @@ type
     procedure Assign(Source: TStrings); overload;
   end;
   {$ELSE}
+
   TPermissions = TArray<TPremission>;
   {$ENDIF}
-
 
   TAttachmentArray = TArrayOfString;
 
@@ -151,9 +158,7 @@ type
   TIds = TArrayOfInteger;
 
   //Флаги сообщений
-  TMessageFlag = (mfUnread, mfOutbox, mfReplied, mfImportant, mfChat, mfFriends, mfSpam, mfDeleted,
-    mfFixed, mfMedia, mfUNKNOWN_1, mfUNKNOWN_2, mfUNKNOWN_3, mfUnreadMultichat, mfUNKNOWN_4,
-    mfUNKNOWN_5, mfHidden, mfDeleteForAll, mfNotDelivered, mfUNKNOWN_6, mfUNKNOWN_7, mfUNKNOWN_8, mfUNKNOWN_9);
+  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden, mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted, mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
 
   TMessageFlagHelper = record helper for TMessageFlag
     function ToString: string; inline;
@@ -166,15 +171,14 @@ type
   end;
 
   MessageFlags = class
+  public
     class function FlagDataToFlag(FlagData: Integer): TMessageFlag;
     class function Create(Data: Integer): TMessageFlags;
     class function ToString(Flags: TMessageFlags): string; overload;
   end;
 
   //Жанры музыки
-  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental,
-    agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic,
-    agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
+  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 
   TAudioGenreHelper = record helper for TAudioGenre
     function ToConst: Integer;
@@ -183,6 +187,81 @@ type
 
   AudioGenre = class
     class function Create(Data: Integer): TAudioGenre;
+  end;
+
+  TVkMessageInfo = class
+  private
+    FTitle: string;
+    FFrom: string;
+    FMentions: TArray<Extended>;
+  public
+    property Title: string read FTitle write FTitle;
+    property From: string read FFrom write FFrom;
+    property Mentions: TArray<Extended> read FMentions write FMentions;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkMessageInfo;
+  end;
+
+  TVkMessageAttachmentInfo = class
+    type
+      TAttachInfoType = record
+        Attach: string;
+        AttachType: string;
+        class function Create(AAttach, AAttachType: string): TAttachInfoType; static;
+      end;
+  private
+    FFwd: string;
+    FReply: string;
+    FAttach1: string;
+    FAttach1_type: string;
+    FAttach2: string;
+    FAttach2_type: string;
+    FAttach3: string;
+    FAttach3_type: string;
+    FAttach4: string;
+    FAttach4_type: string;
+    FAttach5: string;
+    FAttach5_type: string;
+    FAttach6: string;
+    FAttach6_type: string;
+    FAttach7: string;
+    FAttach7_type: string;
+    FAttach8: string;
+    FAttach8_type: string;
+    FAttach9: string;
+    FAttach9_type: string;
+    FAttach10: string;
+    FAttach10_type: string;
+    function GetCount: Integer;
+    function GetAttachments(Index: Integer): TAttachInfoType;
+  public
+    property Fwd: string read FFwd write FFwd;
+    property Reply: string read FReply write FReply;
+    property Attach1: string read FAttach1 write FAttach1;
+    property Attach1Type: string read FAttach1_type write FAttach1_type;
+    property Attach2: string read FAttach2 write FAttach2;
+    property Attach2Type: string read FAttach2_type write FAttach2_type;
+    property Attach3: string read FAttach3 write FAttach3;
+    property Attach3Type: string read FAttach3_type write FAttach3_type;
+    property Attach4: string read FAttach4 write FAttach4;
+    property Attach4Type: string read FAttach4_type write FAttach4_type;
+    property Attach5: string read FAttach5 write FAttach5;
+    property Attach5Type: string read FAttach5_type write FAttach5_type;
+    property Attach6: string read FAttach6 write FAttach6;
+    property Attach6Type: string read FAttach6_type write FAttach6_type;
+    property Attach7: string read FAttach7 write FAttach7;
+    property Attach7Type: string read FAttach7_type write FAttach7_type;
+    property Attach8: string read FAttach8 write FAttach8;
+    property Attach8Type: string read FAttach8_type write FAttach8_type;
+    property Attach9: string read FAttach9 write FAttach9;
+    property Attach9Type: string read FAttach9_type write FAttach9_type;
+    property Attach10: string read FAttach10 write FAttach10;
+    property Attach10Type: string read FAttach10_type write FAttach10_type;
+    property Count: Integer read GetCount;
+    property Attachments[Index: Integer]: TAttachInfoType read GetAttachments;
+    function ToArray: TArray<TAttachInfoType>;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkMessageAttachmentInfo;
   end;
 
   //Флаги диалогов
@@ -218,8 +297,7 @@ type
   end;
 
   //Типы объектов
-  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment,
-    itVideoComment, itTopicComment, itMarketComment, itSitepage);
+  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment, itTopicComment, itMarketComment, itSitepage);
 
   TVkItemTypeHelper = record helper for TVkItemType
     function ToConst: string; inline;
@@ -242,8 +320,7 @@ type
   TVkBirthDateVisibility = (dvVisible, dvDayMonOnly, dvHidden);
 
   //Отношения
-  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated,
-    rnnActivelyLooking, rnInLove, rnCivilMarriage);
+  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove, rnCivilMarriage);
    {0 — не указано.
     1 — не женат/не замужем;
     2 — есть друг/есть подруга;
@@ -263,6 +340,8 @@ type
     PeerId: Integer;
     TimeStamp: TDateTime;
     Text: string;
+    Info: TVkMessageInfo;
+    Attachments: TVkMessageAttachmentInfo;
   end;
 
   TMessageChangeData = record
@@ -294,7 +373,8 @@ type
     peer_id: integer; // идентификатор назначения. Для пользователя: id пользователя. Для групповой беседы: 2000000000 + id беседы. Для сообщества: -id сообщества либо id сообщества + 1000000000 (для version = 0).
     timestamp: integer; // время отправки сообщения в Unixtime;
     text: string; // текст сообщения;
-   //[$attachments] (array) — вложения (если mode = 2);
+    info: TVkMessageInfo;
+    attachments: TVkMessageAttachmentInfo;
    //[$random_id] (integer) — random_id, если параметр был передан в messages.send. Может содержать 0, если значение не задано.
   end;
 
@@ -334,8 +414,7 @@ type
 
   TOnLogin = procedure(Sender: TObject) of object;
 
-  TOnAuth = procedure(Sender: TObject; var Token: string; var TokenExpiry: Int64; var
-    ChangePasswordHash: string) of object;
+  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string) of object;
 
   TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
 
@@ -367,8 +446,7 @@ type
 
   TOnChatChanged = procedure(Sender: TObject; const ChatId: Integer; IsSelf: Boolean) of object;
 
-  TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: Integer; TypeId: TChatChangeInfoType;
-    Info: Integer) of object;
+  TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: Integer; TypeId: TChatChangeInfoType; Info: Integer) of object;
 
   TOnUserTyping = procedure(Sender: TObject; UserId, ChatId: Integer) of object;
 
@@ -383,29 +461,15 @@ type
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
 
 const
-  AllUserFields = 'sex, bdate, city, country, photo_50, photo_100, photo_200_orig, ' +
-    'photo_200, photo_400_orig, photo_max, photo_max_orig, online, ' +
-    'online_mobile, lists, domain, has_mobile, contacts, connections, ' +
-    'site, education, universities, schools, can_post, can_see_all_posts, ' +
-    'can_see_audio, can_write_private_message, status, last_seen, ' +
-    'common_count, relation, relatives';
+  AllUserFields = 'sex, bdate, city, country, photo_50, photo_100, photo_200_orig, ' + 'photo_200, photo_400_orig, photo_max, photo_max_orig, online, ' + 'online_mobile, lists, domain, has_mobile, contacts, connections, ' + 'site, education, universities, schools, can_post, can_see_all_posts, ' + 'can_see_audio, can_write_private_message, status, last_seen, ' + 'common_count, relation, relatives';
 
 var
-  VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8, MF_UNKNOWN_7,
-    MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN,
-    MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2, MF_UNKNOWN_1, MF_MEDIA,
-    MF_FIXED, MF_DELЕTЕD, MF_SPAM, MF_FRIENDS, MF_CHAT, MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
-  VkAudioGenres: array[TAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP, AG_RAPANDHIPHOP, AG_EASYLISTENING,
-    AG_HOUSEANDDANCE, AG_INSTRUMENTAL, AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS,
-    AG_TRANCE, AG_CHANSON, AG_ETHNIC, AG_ACOUSTICANDVOCAL, AG_REGGAE, AG_CLASSICAL, AG_INDIEPOP, AG_SPEECH,
-    AG_ELECTROPOPANDDISCO, AG_OTHER);
-  VkAudioGenresStr: array[TAudioGenre] of string = ('', 'Rock', 'Pop', 'RapAndHipHop', 'EasyListening', 'HouseAndDance',
-    'Instrumental', 'Metal', 'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson', 'Ethnic',
-    'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech', 'ElectropopAndDisco', 'Other');
+  VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8, MF_UNKNOWN_7, MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN, MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2, MF_UNKNOWN_1, MF_MEDIA, MF_FIXED, MF_DELЕTЕD, MF_SPAM, MF_FRIENDS, MF_CHAT, MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
+  VkAudioGenres: array[TAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP, AG_RAPANDHIPHOP, AG_EASYLISTENING, AG_HOUSEANDDANCE, AG_INSTRUMENTAL, AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS, AG_TRANCE, AG_CHANSON, AG_ETHNIC, AG_ACOUSTICANDVOCAL, AG_REGGAE, AG_CLASSICAL, AG_INDIEPOP, AG_SPEECH, AG_ELECTROPOPANDDISCO, AG_OTHER);
+  VkAudioGenresStr: array[TAudioGenre] of string = ('', 'Rock', 'Pop', 'RapAndHipHop', 'EasyListening', 'HouseAndDance', 'Instrumental', 'Metal', 'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson', 'Ethnic', 'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech', 'ElectropopAndDisco', 'Other');
   VkDialogFlags: array[TDialogFlag] of Integer = (GR_UNANSWERED, GR_IMPORTANT);
   VkUserActive: array[Boolean] of string = ('Бездействие', 'Покинул сайт');
-  VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone', 'iPad', 'Android',
-    'Windows Phone', 'Windows', 'Web');
+  VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone', 'iPad', 'Android', 'Windows Phone', 'Windows', 'Web');
 
 function FieldsToString(Fields: TFields): string;
 
@@ -420,7 +484,7 @@ function AppendItemsTag(JSON: string): string;
 implementation
 
 uses
-  VK.Utils;
+  VK.CommonUtils;
 
 function AppendItemsTag(JSON: string): string;
 begin
@@ -469,54 +533,41 @@ begin
     1:
       ErrStr := 'Произошла неизвестная ошибка. Попробуйте повторить запрос позже.';
     2:
-      ErrStr :=
-        'Приложение выключено. Необходимо включить приложение в настройках https://vk.com/editapp?id={Ваш API_ID} или использовать тестовый режим (test_mode=1)';
+      ErrStr := 'Приложение выключено. Необходимо включить приложение в настройках https://vk.com/editapp?id={Ваш API_ID} или использовать тестовый режим (test_mode=1)';
     3:
-      ErrStr :=
-        'Передан неизвестный метод. Проверьте, правильно ли указано название вызываемого метода: https://vk.com/dev/methods.';
+      ErrStr := 'Передан неизвестный метод. Проверьте, правильно ли указано название вызываемого метода: https://vk.com/dev/methods.';
     4:
       ErrStr := 'Неверная подпись.';
     5:
       ErrStr := 'Авторизация пользователя не удалась. Убедитесь, что Вы используете верную схему авторизации.';
     6:
-      ErrStr :=
-        'Слишком много запросов в секунду. Задайте больший интервал между вызовами или используйте метод execute. Подробнее об ограничениях на частоту вызовов см. на странице https://vk.com/dev/api_requests.';
+      ErrStr := 'Слишком много запросов в секунду. Задайте больший интервал между вызовами или используйте метод execute. Подробнее об ограничениях на частоту вызовов см. на странице https://vk.com/dev/api_requests.';
     7:
-      ErrStr :=
-        'Нет прав для выполнения этого действия. Проверьте, получены ли нужные права доступа при авторизации. Это можно сделать с помощью метода account.getAppPermissions.';
+      ErrStr := 'Нет прав для выполнения этого действия. Проверьте, получены ли нужные права доступа при авторизации. Это можно сделать с помощью метода account.getAppPermissions.';
     8:
-      ErrStr :=
-        'Неверный запрос. Проверьте синтаксис запроса и список используемых параметров (его можно найти на странице с описанием метода).';
+      ErrStr := 'Неверный запрос. Проверьте синтаксис запроса и список используемых параметров (его можно найти на странице с описанием метода).';
     9:
-      ErrStr :=
-        'Слишком много однотипных действий. Нужно сократить число однотипных обращений. Для более эффективной работы Вы можете использовать execute или JSONP.';
+      ErrStr := 'Слишком много однотипных действий. Нужно сократить число однотипных обращений. Для более эффективной работы Вы можете использовать execute или JSONP.';
     10:
       ErrStr := 'Произошла внутренняя ошибка сервера. Попробуйте повторить запрос позже.';
     11:
-      ErrStr :=
-        'В тестовом режиме приложение должно быть выключено или пользователь должен быть залогинен. Выключите приложение в настройках https://vk.com/editapp?id={Ваш API_ID}';
+      ErrStr := 'В тестовом режиме приложение должно быть выключено или пользователь должен быть залогинен. Выключите приложение в настройках https://vk.com/editapp?id={Ваш API_ID}';
     14:
       ErrStr := 'Требуется ввод кода с картинки (Captcha).';
     15:
-      ErrStr :=
-        'Доступ запрещён. Убедитесь, что Вы используете верные идентификаторы, и доступ к контенту для текущего пользователя есть в полной версии сайта.';
+      ErrStr := 'Доступ запрещён. Убедитесь, что Вы используете верные идентификаторы, и доступ к контенту для текущего пользователя есть в полной версии сайта.';
     16:
-      ErrStr :=
-        'Требуется выполнение запросов по протоколу HTTPS, т.к. пользователь включил настройку, требующую работу через безопасное соединение.'#13#10 +
-        ' Чтобы избежать появления такой ошибки, в Standalone-приложении Вы можете предварительно проверять состояние этой настройки у пользователя методом account.getInfo.';
+      ErrStr := 'Требуется выполнение запросов по протоколу HTTPS, т.к. пользователь включил настройку, требующую работу через безопасное соединение.'#13#10 + ' Чтобы избежать появления такой ошибки, в Standalone-приложении Вы можете предварительно проверять состояние этой настройки у пользователя методом account.getInfo.';
     17:
-      ErrStr :=
-        'Требуется валидация пользователя. Действие требует подтверждения — необходимо перенаправить пользователя на служебную страницу для валидации.';
+      ErrStr := 'Требуется валидация пользователя. Действие требует подтверждения — необходимо перенаправить пользователя на служебную страницу для валидации.';
     18:
       ErrStr := 'Страница удалена или заблокирована. Страница пользователя была удалена или заблокирована';
     20:
-      ErrStr :=
-        'Данное действие запрещено для не Standalone приложений. Если ошибка возникает несмотря на то, что Ваше приложение имеет тип Standalone, убедитесь, что при авторизации Вы используете redirect_uri=https://oauth.vk.com/blank.html.';
+      ErrStr := 'Данное действие запрещено для не Standalone приложений. Если ошибка возникает несмотря на то, что Ваше приложение имеет тип Standalone, убедитесь, что при авторизации Вы используете redirect_uri=https://oauth.vk.com/blank.html.';
     21:
       ErrStr := 'Данное действие разрешено только для Standalone и Open API приложений.';
     23:
-      ErrStr :=
-        'Метод был выключен. Все актуальные методы ВК API, которые доступны в настоящий момент, перечислены здесь: https://vk.com/dev/methods.';
+      ErrStr := 'Метод был выключен. Все актуальные методы ВК API, которые доступны в настоящий момент, перечислены здесь: https://vk.com/dev/methods.';
     24:
       ErrStr := 'Требуется подтверждение со стороны пользователя.';
     27:
@@ -524,43 +575,33 @@ begin
     28:
       ErrStr := 'Ключ доступа приложения недействителен.';
     29:
-      ErrStr :=
-        'Достигнут количественный лимит на вызов метода Подробнее об ограничениях на количество вызовов см. на странице https://vk.com/dev/data_limits';
+      ErrStr := 'Достигнут количественный лимит на вызов метода Подробнее об ограничениях на количество вызовов см. на странице https://vk.com/dev/data_limits';
     30:
-      ErrStr :=
-        'Профиль является приватным Информация, запрашиваемая о профиле, недоступна с используемым ключом доступа';
+      ErrStr := 'Профиль является приватным Информация, запрашиваемая о профиле, недоступна с используемым ключом доступа';
     33:
       ErrStr := 'Not implemented yet';
     100:
-      ErrStr :=
-        'Один из необходимых параметров был не передан или неверен. Проверьте список требуемых параметров и их формат на странице с описанием метода.';
+      ErrStr := 'Один из необходимых параметров был не передан или неверен. Проверьте список требуемых параметров и их формат на странице с описанием метода.';
     101:
-      ErrStr :=
-        'Неверный API ID приложения. Найдите приложение в списке администрируемых на странице https://vk.com/apps?act=settings и укажите в запросе верный API_ID (идентификатор приложения).';
+      ErrStr := 'Неверный API ID приложения. Найдите приложение в списке администрируемых на странице https://vk.com/apps?act=settings и укажите в запросе верный API_ID (идентификатор приложения).';
     113:
-      ErrStr :=
-        'Неверный идентификатор пользователя. Убедитесь, что Вы используете верный идентификатор. Получить ID по короткому имени можно методом utils.resolveScreenName.';
+      ErrStr := 'Неверный идентификатор пользователя. Убедитесь, что Вы используете верный идентификатор. Получить ID по короткому имени можно методом utils.resolveScreenName.';
     148:
       ErrStr := 'Пользователь не установил приложение в левое меню';
     150:
       ErrStr := 'Неверный timestamp. Получить актуальное значение Вы можете методом utils.getServerTime.';
     200:
-      ErrStr :=
-        'Доступ к альбому запрещён. Убедитесь, что Вы используете верные идентификаторы (для пользователей owner_idположительный, для сообществ — отрицательный), и доступ к запрашиваемому контенту для текущего пользователя есть в полной версии сайта.';
+      ErrStr := 'Доступ к альбому запрещён. Убедитесь, что Вы используете верные идентификаторы (для пользователей owner_idположительный, для сообществ — отрицательный), и доступ к запрашиваемому контенту для текущего пользователя есть в полной версии сайта.';
     201:
-      ErrStr :=
-        'Доступ к аудио запрещён. Убедитесь, что Вы используете верные идентификаторы (для пользователей owner_idположительный, для сообществ — отрицательный), и доступ к запрашиваемому контенту для текущего пользователя есть в полной версии сайта.';
+      ErrStr := 'Доступ к аудио запрещён. Убедитесь, что Вы используете верные идентификаторы (для пользователей owner_idположительный, для сообществ — отрицательный), и доступ к запрашиваемому контенту для текущего пользователя есть в полной версии сайта.';
     203:
-      ErrStr :=
-        'Доступ к группе запрещён. Убедитесь, что текущий пользователь является участником или руководителем сообщества (для закрытых и частных групп и встреч).';
+      ErrStr := 'Доступ к группе запрещён. Убедитесь, что текущий пользователь является участником или руководителем сообщества (для закрытых и частных групп и встреч).';
     221:
       ErrStr := 'Пользователь выключил трансляцию названий аудио в статус';
     300:
-      ErrStr :=
-        'Альбом переполнен. Перед продолжением работы нужно удалить лишние объекты из альбома или использовать другой альбом.';
+      ErrStr := 'Альбом переполнен. Перед продолжением работы нужно удалить лишние объекты из альбома или использовать другой альбом.';
     500:
-      ErrStr :=
-        'Действие запрещено. Вы должны включить переводы голосов в настройках приложения. Проверьте настройки приложения: https://vk.com/editapp?id={Ваш API_ID}&section=payments';
+      ErrStr := 'Действие запрещено. Вы должны включить переводы голосов в настройках приложения. Проверьте настройки приложения: https://vk.com/editapp?id={Ваш API_ID}&section=payments';
     600:
       ErrStr := 'Нет прав на выполнение данных операций с рекламным кабинетом.';
     603:
@@ -593,7 +634,7 @@ var
   i: Integer;
 begin
   Result := [];
-  for i := Ord(mfUnread) to Ord(mfUNKNOWN_6) do
+  for i := Ord(mfUNKNOWN_9) to Ord(mfUnread) do
   begin
     if (Data - VkMessageFlags[TMessageFlag(i)]) >= 0 then
     begin
@@ -1092,6 +1133,98 @@ begin
   else
     Result := 'nom';
   end;
+end;
+
+{TVkMessageInfo}
+
+function TVkMessageInfo.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkMessageInfo.FromJsonString(AJsonString: string): TVkMessageInfo;
+begin
+  result := TJson.JsonToObject<TVkMessageInfo>(AJsonString)
+end;
+
+{ TVkMessageAttachmentInfo }
+
+function TVkMessageAttachmentInfo.GetCount: Integer;
+begin
+  if FAttach1_type.IsEmpty then
+    Exit(0);
+  if FAttach2_type.IsEmpty then
+    Exit(1);
+  if FAttach3_type.IsEmpty then
+    Exit(2);
+  if FAttach4_type.IsEmpty then
+    Exit(3);
+  if FAttach5_type.IsEmpty then
+    Exit(4);
+  if FAttach6_type.IsEmpty then
+    Exit(5);
+  if FAttach7_type.IsEmpty then
+    Exit(6);
+  if FAttach8_type.IsEmpty then
+    Exit(7);
+  if FAttach9_type.IsEmpty then
+    Exit(8);
+  if FAttach10_type.IsEmpty then
+    Exit(9);
+  Result := 10;
+end;
+
+function TVkMessageAttachmentInfo.GetAttachments(Index: Integer): TAttachInfoType;
+begin
+  case Index of
+    1:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach1, FAttach1_type);
+    2:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach2, FAttach2_type);
+    3:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach3, FAttach3_type);
+    4:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach4, FAttach4_type);
+    5:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach5, FAttach5_type);
+    6:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach6, FAttach6_type);
+    7:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach7, FAttach7_type);
+    8:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach8, FAttach8_type);
+    9:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach9, FAttach9_type);
+    10:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach10, FAttach10_type);
+  end;
+end;
+
+function TVkMessageAttachmentInfo.ToArray: TArray<TAttachInfoType>;
+var
+  i: Integer;
+begin
+  SetLength(Result, Count);
+  for i := 0 to Count - 1 do
+    Result[i] := Attachments[i];
+end;
+
+function TVkMessageAttachmentInfo.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkMessageAttachmentInfo.FromJsonString(AJsonString: string): TVkMessageAttachmentInfo;
+begin
+  result := TJson.JsonToObject<TVkMessageAttachmentInfo>(AJsonString)
+end;
+
+{ TVkMessageAttachmentInfo.TAttachInfoType }
+
+class function TVkMessageAttachmentInfo.TAttachInfoType.Create(AAttach, AAttachType: string): TAttachInfoType;
+begin
+  Result.Attach := AAttach;
+  Result.AttachType := AAttachType;
 end;
 
 end.

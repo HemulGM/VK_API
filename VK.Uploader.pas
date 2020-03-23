@@ -3,9 +3,9 @@ unit VK.Uploader;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, Vcl.Dialogs, System.Classes, System.Variants,
-  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, System.Net.Mime, VK.Entity.Photo.Upload,
-  VK.Entity.Audio.Upload;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, System.Net.Mime,
+  VK.Entity.Photo.Upload, VK.Entity.Audio.Upload;
 
 type
   TUploader = class
@@ -25,6 +25,9 @@ var
   ResStream: TStringStream;
   JSON: TJSONValue;
 begin
+  Result := False;
+  if not FileExists(FileName) then
+    Exit;
   Data := TMultipartFormData.Create;
   HTTP := THTTPClient.Create;
   ResStream := TStringStream.Create;
@@ -34,8 +37,11 @@ begin
     begin
       try
         JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
-        Response := JSON.GetValue<string>('file');
-        JSON.Free;
+        try
+          Response := JSON.GetValue<string>('file');
+        finally
+          JSON.Free;
+        end;
       except
         Response := '';
       end;

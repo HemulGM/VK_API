@@ -189,6 +189,17 @@ type
     class function FromJsonString(AJsonString: string): TVkCoordinates;
   end;
 
+  TVkCity = class
+  private
+    FId: Extended;
+    FTitle: string;
+  public
+    property Id: Extended read FId write FId;
+    property Title: string read FTitle write FTitle;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkCity;
+  end;
+
   TVkGeo = class
   private
     FCoordinates: TVkCoordinates;
@@ -325,6 +336,18 @@ end;
 class function TVkLikesInfo.FromJsonString(AJsonString: string): TVkLikesInfo;
 begin
   result := TJson.JsonToObject<TVkLikesInfo>(AJsonString)
+end;
+
+{TVkCity}
+
+function TVkCity.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkCity.FromJsonString(AJsonString: string): TVkCity;
+begin
+  result := TJson.JsonToObject<TVkCity>(AJsonString)
 end;
 
 {TVkSizes}

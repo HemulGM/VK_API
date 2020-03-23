@@ -118,7 +118,7 @@
             <Form>FormOAuth2</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\VK.Utils.pas"/>
+        <DCCReference Include="..\..\VK.CommonUtils.pas"/>
         <DCCReference Include="..\..\VK.Uploader.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Account.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Audio.pas"/>
@@ -171,6 +171,9 @@
         <DCCReference Include="..\..\Entity\VK.Entity.Group.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.Status.pas"/>
         <DCCReference Include="..\..\Entity\VK.Entity.CommentInfo.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Catalog.pas"/>
+        <DCCReference Include="..\..\Controllers\VK.Catalog.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Catalog.Section.pas"/>
         <None Include="app_cred.inc"/>
         <None Include="delphi_live.inc"/>
         <None Include="vk_admin.inc"/>

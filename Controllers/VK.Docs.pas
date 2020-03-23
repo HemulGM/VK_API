@@ -3,8 +3,8 @@ unit VK.Docs;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save;
 
 type
   TVkDocUploadType = (dutDoc, dutAudioMessage);
@@ -17,8 +17,7 @@ type
     /// <param name="var UploadUrl">искомый адрес сервера</param>
     /// <param name="Type">тип документа</param>
     /// <param name="PeerId">идентификатор назначения</param>
-    function GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: Integer):
-      Boolean; overload;
+    function GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: Integer): Boolean; overload;
     /// <summary>
     /// Получает адрес сервера для загрузки документа в личное сообщение
     /// </summary>
@@ -27,17 +26,18 @@ type
     function GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType): Boolean; overload;
     //
     function Save(var Doc: TVkDocSaved; FileData: string; Title, Tags: string; ReturnTags: Boolean = False): Boolean;
+    //
+    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0; ReturnTags: Boolean = False): Boolean;
   end;
 
 implementation
 
 uses
-  VK.API, VK.Utils;
+  VK.API, VK.CommonUtils;
 
 { TDocController }
 
-function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType;
-  PeerId: Integer): Boolean;
+function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: Integer): Boolean;
 var
   Params: TParams;
   JSONItem: TJSONValue;
@@ -48,7 +48,8 @@ begin
     dutAudioMessage:
       Params.Add('type', 'audio_message');
   end;
-  Params.Add('peer_id', PeerId);
+  if PeerId <> 0 then
+    Params.Add('peer_id', PeerId);
   with Handler.Execute('docs.getMessagesUploadServer', Params) do
   begin
     Result := Success;
@@ -109,6 +110,25 @@ begin
       Doc := TVkDocSaved.FromJsonString(Response);
       Result := True;
     end;
+  end;
+end;
+
+function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
+var
+  Url, Response: string;
+begin
+  Result := False;
+  if GetMessagesUploadServer(Url, dutAudioMessage, PeerId) then
+  begin
+    if TCustomVK(VK).Uploader.Upload(Url, FileName, Response) then
+    begin
+      if Save(Doc, Response, Title, Tags) then
+      begin
+        Result := True;
+      end;
+    end
+    else
+      TCustomVK(VK).DoError(Self, TVkException.Create(Response), -1, Response);
   end;
 end;
 

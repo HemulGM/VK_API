@@ -81,12 +81,12 @@ type
 
   TVkPeer = class
   private
-    FId: Extended;
-    FLocal_id: Extended;
+    FId: Integer;
+    FLocal_id: Integer;
     FType: string;
   public
-    property Id: Extended read FId write FId;
-    property LocalId: Extended read FLocal_id write FLocal_id;
+    property Id: Integer read FId write FId;
+    property LocalId: Integer read FLocal_id write FLocal_id;
     property&Type: string read FType write FType;
     {user, chat}
     function ToJsonString: string;
@@ -97,18 +97,28 @@ type
   private
     FCan_write: TVkCanWrite;
     FChat_settings: TVkChatSettings;
-    FIn_read: Extended;
-    FLast_message_id: Extended;
-    FOut_read: Extended;
+    FIn_read: Integer;
+    FLast_message_id: Integer;
+    FOut_read: Integer;
     FPeer: TVkPeer;
+    FUnread_count: Integer;
+    FUnanswered: Boolean;
+    FImportant: Boolean;
+    FCan_send_money: Boolean;
+    FCan_receive_money: Boolean;
     function GetIsChat: Boolean;
   public
     property CanWrite: TVkCanWrite read FCan_write write FCan_write;
     property ChatSettings: TVkChatSettings read FChat_settings write FChat_settings;
-    property InRead: Extended read FIn_read write FIn_read;
-    property LastMessageId: Extended read FLast_message_id write FLast_message_id;
-    property OutRead: Extended read FOut_read write FOut_read;
+    property InRead: Integer read FIn_read write FIn_read;
+    property LastMessageId: Integer read FLast_message_id write FLast_message_id;
+    property OutRead: Integer read FOut_read write FOut_read;
     property Peer: TVkPeer read FPeer write FPeer;
+    property UnreadCount: Integer read FUnread_count write FUnread_count;
+    property Unanswered: Boolean read FUnanswered write FUnanswered;
+    property Important: Boolean read FImportant write FImportant;
+    property CanSendMoney: Boolean read FCan_send_money write FCan_send_money;
+    property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
     property IsChat: Boolean read GetIsChat;
     constructor Create;
     destructor Destroy; override;
@@ -145,6 +155,29 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkConversationItems;
+  end;
+
+  TVkMessageHistory = class
+  private
+    FItems: TArray<TVkMessage>;
+    FCount: Integer;
+    FSaveObjects: Boolean;
+    FConversations: TArray<TVkConversation>;
+    FProfiles: TArray<TVkUser>;
+    FSaveMessages: Boolean;
+    procedure SetSaveObjects(const Value: Boolean);
+    procedure SetSaveMessages(const Value: Boolean);
+  public
+    property Items: TArray<TVkMessage> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    property Conversations: TArray<TVkConversation> read FConversations write FConversations;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
+    property SaveMessages: Boolean read FSaveMessages write SetSaveMessages;
+    constructor Create;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkMessageHistory;
   end;
 
 implementation
@@ -299,6 +332,58 @@ begin
 end;
 
 function TVkConversationItems.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkMessageHistory }
+
+constructor TVkMessageHistory.Create;
+begin
+  inherited;
+  FSaveObjects := False;
+end;
+
+destructor TVkMessageHistory.Destroy;
+var
+  LItemsItem: TVkMessage;
+  LuserItem: TVkUser;
+  LconversationItem: TVkConversation;
+begin
+  if not FSaveObjects then
+  begin
+    if not FSaveMessages then
+    begin
+      for LItemsItem in FItems do
+        LItemsItem.Free;
+    end;
+
+    for LuserItem in FProfiles do
+      LuserItem.Free;
+
+    for LconversationItem in FConversations do
+      LconversationItem.Free;
+  end;
+
+  inherited;
+end;
+
+class function TVkMessageHistory.FromJsonString(AJsonString: string): TVkMessageHistory;
+begin
+  result := TJson.JsonToObject<TVkMessageHistory>(AJsonString);
+end;
+
+procedure TVkMessageHistory.SetSaveMessages(const Value: Boolean);
+begin
+  FSaveMessages := Value;
+end;
+
+procedure TVkMessageHistory.SetSaveObjects(const Value: Boolean);
+begin
+  FSaveObjects := Value;
+end;
+
+function TVkMessageHistory.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

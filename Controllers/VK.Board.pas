@@ -73,7 +73,7 @@ type
 implementation
 
 uses
-  VK.API, VK.Utils;
+  VK.API, VK.CommonUtils;
 
 { TBoardController }
 

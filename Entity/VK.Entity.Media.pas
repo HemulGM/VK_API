@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link,
   VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
   VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp,
-  VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard, VK.Entity.Event;
+  VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard, VK.Types, VK.Entity.Event;
 
 type
   TVkAttachment = class;
@@ -185,7 +185,20 @@ type
     class function FromJsonString(AJsonString: string): TVkPost;
   end;
 
+function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArray<string>;
+
 implementation
+
+function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArray<string>;
+var
+  i: Integer;
+begin
+  SetLength(Result, Source.Count);
+  for i := 0 to Source.Count - 1 do
+  begin
+    Result[i] := Source.Attachments[i].Attach;
+  end;
+end;
 
 {TVkAttachment}
 

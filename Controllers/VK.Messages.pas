@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
-  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation;
+  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.User;
 
 type
   TMessagesController = class;
@@ -47,6 +47,19 @@ type
     function Fields(Value: string): Integer;
     function Extended(Value: Boolean): Integer;
     function StartMessageId(Value: Integer): Integer;
+  end;
+
+  TParamMessageHistory = record
+    List: TParams;
+    function Offset(Value: Integer): Integer;
+    function Count(Value: Integer): Integer;
+    function Fields(Value: string): Integer;
+    function Extended(Value: Boolean): Integer;
+    function GroupId(Value: Integer): Integer;
+    function UserId(Value: Integer): Integer;
+    function PeerId(Value: Integer): Integer;
+    function StartMessageId(Value: Integer): Integer;
+    function Rev(Value: Boolean): Integer;
   end;
 
   TMessagesController = class(TVkController)
@@ -100,6 +113,8 @@ type
     function GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength: Integer = 0; GroupId:
       Integer = 0): Boolean; overload;
     //
+    function GetById(Id: Integer; var Message: TVkMessage; var Profiles: TArray<TVkUser>;
+      PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     function GetById(Id: Integer; var Message: TVkMessage; PreviewLength: Integer = 0; GroupId:
       Integer = 0): Boolean; overload;
     //
@@ -123,12 +138,14 @@ type
     /// ¬озвращает список бесед пользовател€
     /// </summary>
     function GetConversations(var Conversations: TVkConversationItems; Params: TParamConversation): Boolean;
+    //
+    function GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory): Boolean; overload;
   end;
 
 implementation
 
 uses
-  VK.API, VK.Utils;
+  VK.API, VK.CommonUtils;
 
 { TMessagesController }
 
@@ -221,6 +238,39 @@ begin
   Result := Delete([MessageId], GroupID, DeleteForAll, Spam);
 end;
 
+function TMessagesController.GetById(Id: Integer; var Message: TVkMessage; PreviewLength, GroupId: Integer): Boolean;
+var
+  Profiles: TArray<TVkUser>;
+begin
+  Result := GetById(Id, Message, Profiles, PreviewLength, GroupId);
+end;
+
+function TMessagesController.GetById(Id: Integer; var Message: TVkMessage; var Profiles: TArray<
+  TVkUser>; PreviewLength, GroupId: Integer): Boolean;
+var
+  Params: TParams;
+  Items: TVkMessages;
+begin
+  Params.Add(['message_ids', Id.ToString]);
+  if PreviewLength > 0 then
+    Params.Add(['preview_length', PreviewLength.ToString]);
+  if GroupId <> 0 then
+    Params.Add(['group_id', GroupId.ToString]);
+  Result := GetById([Id], Items, PreviewLength, GroupId);
+  if Result then
+  begin
+    if Length(Items.Items) > 0 then
+    begin
+      Message := Items.Items[0];
+      Profiles := Items.Profiles;
+      Items.SaveObjects := True;
+      Items.Free;
+    end
+    else
+      Result := False;
+  end;
+end;
+
 function TMessagesController.GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength, GroupId: Integer): Boolean;
 var
   Params: TParams;
@@ -240,30 +290,6 @@ begin
   end;
 end;
 
-function TMessagesController.GetById(Id: Integer; var Message: TVkMessage; PreviewLength, GroupId: Integer): Boolean;
-var
-  Params: TParams;
-  Items: TVkMessages;
-begin
-  Params.Add(['message_ids', Id.ToString]);
-  if PreviewLength > 0 then
-    Params.Add(['preview_length', PreviewLength.ToString]);
-  if GroupId <> 0 then
-    Params.Add(['group_id', GroupId.ToString]);
-  Result := GetById([Id], Items, PreviewLength, GroupId);
-  if Result then
-  begin
-    if Length(Items.Items) > 0 then
-    begin
-      Message := Items.Items[0];
-      Items.SaveObjects := True;
-      Items.Free;
-    end
-    else
-      Result := False;
-  end;
-end;
-
 function TMessagesController.GetConversations(var Conversations: TVkConversationItems; Params:
   TParamConversation): Boolean;
 begin
@@ -279,6 +305,18 @@ begin
       except
         Result := False;
       end;
+    end;
+  end;
+end;
+
+function TMessagesController.GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory): Boolean;
+begin
+  with Handler.Execute('messages.getHistory', Params.List) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      History := TVkMessageHistory.FromJsonString(Response);
     end;
   end;
 end;
@@ -568,6 +606,53 @@ end;
 function TParamConversation.StartMessageId(Value: Integer): Integer;
 begin
   Result := List.Add('start_message_id', Value);
+end;
+
+{ TParamMessageHistory }
+
+function TParamMessageHistory.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TParamMessageHistory.Extended(Value: Boolean): Integer;
+begin
+  Result := List.Add('extended', Value);
+end;
+
+function TParamMessageHistory.Fields(Value: string): Integer;
+begin
+  Result := List.Add('fields', Value);
+end;
+
+function TParamMessageHistory.GroupID(Value: Integer): Integer;
+begin
+  Result := List.Add('group_id', Value);
+end;
+
+function TParamMessageHistory.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TParamMessageHistory.PeerId(Value: Integer): Integer;
+begin
+  Result := List.Add('peer_id', Value);
+end;
+
+function TParamMessageHistory.Rev(Value: Boolean): Integer;
+begin
+  Result := List.Add('rev', Value);
+end;
+
+function TParamMessageHistory.StartMessageId(Value: Integer): Integer;
+begin
+  Result := List.Add('start_message_id', Value);
+end;
+
+function TParamMessageHistory.UserId(Value: Integer): Integer;
+begin
+  Result := List.Add('user_id', Value);
 end;
 
 end.

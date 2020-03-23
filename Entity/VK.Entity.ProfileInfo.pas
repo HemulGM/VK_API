@@ -43,7 +43,7 @@ type
 
 implementation
 
-{TProfileInfoClass}
+{TVkProfileInfo}
 
 constructor TVkProfileInfo.Create;
 begin

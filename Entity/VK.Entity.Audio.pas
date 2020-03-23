@@ -31,13 +31,13 @@ type
     FWidth: Extended;
   public
     property Height: Extended read FHeight write FHeight;
+    property Width: Extended read FWidth write FWidth;
     property Photo135: string read FPhoto_135 write FPhoto_135;
     property Photo270: string read FPhoto_270 write FPhoto_270;
     property Photo300: string read FPhoto_300 write FPhoto_300;
     property Photo34: string read FPhoto_34 write FPhoto_34;
     property Photo600: string read FPhoto_600 write FPhoto_600;
     property Photo68: string read FPhoto_68 write FPhoto_68;
-    property Width: Extended read FWidth write FWidth;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAlbumThumb;
   end;
@@ -76,6 +76,15 @@ type
     class function FromJsonString(AJsonString: string): TVkAudioAds;
   end;
 
+  TVkAudioChartInfo = class
+  private
+    FPosition: Integer;
+  public
+    property Position: Integer read FPosition write FPosition;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkAudioChartInfo;
+  end;
+
   TVkAudio = class
   private
     FAccess_key: string;
@@ -97,6 +106,8 @@ type
     FNo_search: Integer;
     FIs_hq: Integer;
     FContent_restricted: Integer;
+    FAudio_chart_info: TVkAudioChartInfo;
+    FIs_explicit: Boolean;
     function GetAudioGenre: TAudioGenre;
     procedure SetAudioGenre(const Value: TAudioGenre);
   public
@@ -120,6 +131,9 @@ type
     property Album: TVkAudioAlbum read FAlbum write FAlbum;
     property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
     property ContentRestricted: Integer read FContent_restricted write FContent_restricted;
+    property AudioChartInfo: TVkAudioChartInfo read FAudio_chart_info write FAudio_chart_info;
+    property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
+
     //
     property Genre: TAudioGenre read GetAudioGenre write SetAudioGenre;
     constructor Create;
@@ -172,8 +186,6 @@ end;
 constructor TVkAudio.Create;
 begin
   inherited;
-  FAds := TVkAudioAds.Create();
-  FAlbum := TVkAudioAlbum.Create;
 end;
 
 destructor TVkAudio.Destroy;
@@ -182,8 +194,12 @@ var
 begin
   for Artist in FMain_artists do
     Artist.Free;
-  FAlbum.Free;
-  FAds.Free;
+  if Assigned(FAudio_chart_info) then
+    FAudio_chart_info.Free;
+  if Assigned(FAlbum) then
+    FAlbum.Free;
+  if Assigned(FAds) then
+    FAds.Free;
   inherited;
 end;
 
@@ -312,6 +328,18 @@ begin
 end;
 
 function TVkAudios.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkAudioChartInfo }
+
+class function TVkAudioChartInfo.FromJsonString(AJsonString: string): TVkAudioChartInfo;
+begin
+  result := TJson.JsonToObject<TVkAudioChartInfo>(AJsonString);
+end;
+
+function TVkAudioChartInfo.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

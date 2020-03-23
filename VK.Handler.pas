@@ -3,8 +3,13 @@ unit VK.Handler;
 interface
 
 uses
-  Winapi.Windows, System.Classes, System.SysUtils, Vcl.Forms, REST.Authenticator.OAuth, REST.Client,
-  REST.Json, JSON, VK.Types;
+  System.Classes, System.SysUtils, FMX.Types,
+  {$IF DECLARED(FireMonkeyVersion)}
+  FMX.Forms,
+  {$ELSE}
+  Vcl.Forms,
+  {$ENDIF}
+  REST.Client, REST.Json, JSON, VK.Types;
 
 type
   TRequestConstruct = class
@@ -69,8 +74,8 @@ begin
     Exit;
   if MS = 0 then
     Exit;
-  TS := GetTickCount;
-  while TS + MS > GetTickCount do
+  TS := TThread.GetTickCount;
+  while TS + MS > TThread.GetTickCount do
     Sleep(100);
 end;
 
@@ -170,38 +175,57 @@ var
   CaptchaImg: string;
   CaptchaAns: string;
   IsDone: Boolean;
-  TimeStamp: Cardinal;
-  TimeStampLast: Cardinal;
   Thr: TThread;
+
+  procedure ExecRequest;
+  begin
+
+  end;
+
 begin
   Result.Success := False;
   FLog(Request.GetFullRequestURL);
-  TimeStamp := GetTickCount;
-  TimeStampLast := FStartRequest;
   try
     IsDone := False;
     Request.Response := TRESTResponse.Create(Request);
-    Thr := TThread.CreateAnonymousThread(
-      procedure
-      begin
-        try
-          FRequests := FRequests + 1;
-          //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
-          if FRequests > RequestLimit then
-          begin
-            FRequests := 0;
-            WaitTime(1300 - Int64(GetTickCount - FStartRequest));
+    if TThread.Current.ThreadID = MainThreadID then
+    begin
+      Thr := TThread.CreateAnonymousThread(
+        procedure
+        begin
+          try
+            FRequests := FRequests + 1;
+            //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
+            if FRequests > RequestLimit then
+            begin
+              FRequests := 0;
+              WaitTime(1300 - Int64(TThread.GetTickCount - FStartRequest));
+            end;
+            Request.Execute;
+          except
           end;
-          Request.Execute;
-        finally
+          IsDone := True;
+        end);
+      Thr.FreeOnTerminate := False;
+      Thr.Start;
+      while (not IsDone) and (not Thr.Finished) do
+        Application.ProcessMessages;
+      Thr.Free;
+    end
+    else
+    begin
+      try
+        FRequests := FRequests + 1;
+        //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
+        if FRequests > RequestLimit then
+        begin
+          FRequests := 0;
+          WaitTime(1300 - Int64(TThread.GetTickCount - FStartRequest));
         end;
-        IsDone := True;
-      end);
-    Thr.FreeOnTerminate := False;
-    Thr.Start;
-    while (not IsDone) and (not Thr.Finished) {and (not Application.Terminated)} do
-      Application.ProcessMessages;
-    Thr.Free;
+        Request.Execute;
+      except
+      end;
+    end;
 
     if not Application.Terminated then
     begin
@@ -209,7 +233,7 @@ begin
 
         //Если это первый запрос, то сохраняем метку
       if FRequests = 1 then
-        FStartRequest := GetTickCount;
+        FStartRequest := TThread.GetTickCount;
 
       if Request.Response.JSONValue.TryGetValue<TJSONValue>('error', JS) then
       begin
@@ -247,8 +271,7 @@ begin
             end;
           6: //Превышено кол-во запросов в сек.
             begin
-              ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)',
-                [FRequests, RequestLimit, TimeStamp, FStartRequest, TimeStampLast]));
+              ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)', [FRequests, RequestLimit, FStartRequest]));
               WaitTime(1000);
               Result := Execute(Request);
               Exit;

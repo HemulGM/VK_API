@@ -3,7 +3,8 @@ unit VK.FakeAndroidProto;
 interface
 
 uses
-  SysUtils, Classes, Generics.Collections, pbInput, pbOutput, pbPublic, uAbstractProtoBufClasses;
+  SysUtils, Classes, Generics.Collections, pbInput, pbOutput, pbPublic,
+  uAbstractProtoBufClasses;
 
 type
   TAndroidChekin = class(TAbstractProtoBufClass)
@@ -23,8 +24,7 @@ type
     procedure SetCellOperator(const Index: Integer; const Value: string);
     procedure SetType(const Index: Integer; const Value: string);
   protected
-    function LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer; WireType:
-      Integer): Boolean; override;
+    function LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer; WireType: Integer): Boolean; override;
     procedure SaveFieldsToBuf(ProtoBuf: TProtoBufOutput); override;
   public
     property CellOperator: string index Tag_CellOperator read FCellOperator write SetCellOperator;
@@ -60,8 +60,7 @@ type
     procedure SetLocale(const Index: Integer; const Value: string);
     procedure SetDigest(const Index: Integer; const Value: string);
   protected
-    function LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer; WireType:
-      Integer): Boolean; override;
+    function LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer; WireType: Integer): Boolean; override;
     procedure SaveFieldsToBuf(ProtoBuf: TProtoBufOutput); override;
   public
     constructor Create; override;
@@ -80,8 +79,7 @@ implementation
 
 { TAndroidChekin }
 
-function TAndroidChekin.LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer;
-  WireType: Integer): Boolean;
+function TAndroidChekin.LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer; WireType: Integer): Boolean;
 begin
   Result := inherited;
 end;
@@ -137,8 +135,7 @@ begin
   inherited;
 end;
 
-function TAndroidCheckinRequest.LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber:
-  Integer; WireType: Integer): Boolean;
+function TAndroidCheckinRequest.LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer; WireType: Integer): Boolean;
 begin
   Result := inherited;
 end;

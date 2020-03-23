@@ -3,8 +3,9 @@ unit VK.UserEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client,
-  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
+  System.SysUtils, REST.json, System.Types, System.UITypes, System.Classes,
+  System.Variants, REST.Client, System.JSON, VK.Types,
+  System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
   TCustomUserEvents = class(TComponent)
@@ -30,8 +31,7 @@ type
     FOnNotifyChange: TOnNotifyChange;
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
-    procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType;
-      FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
+    procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoUserTyping(const UserId, ChatId: Integer);
     procedure DoUserCall(const UserId, CallId: Integer);
     procedure DoUsersTyping(const UserId: TUserIds; PeerId, TotalCount, Ts: Integer);
@@ -149,6 +149,10 @@ begin
             ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
             if TJSONArray(Update).Count > 5 then
               ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
+            if TJSONArray(Update).Count > 6 then
+              ExtraFields.info := TVkMessageInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[6].GetValue<TJSONValue>).ToJSON);
+            if TJSONArray(Update).Count > 7 then
+              ExtraFields.attachments := TVkMessageAttachmentInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[7].GetValue<TJSONValue>).ToJSON);
           end;
         except
           raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
@@ -455,8 +459,7 @@ begin
   FLongPollServer.Stop;
 end;
 
-procedure TCustomUserEvents.DoChangeMessageFlags(const MessageId: Integer; ChangeType:
-  TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
+procedure TCustomUserEvents.DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
 var
   MessageChangeData: TMessageChangeData;
 begin
@@ -486,8 +489,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoNewMessage(const MessageId: Integer; FlagsMasksData: Integer;
-  ExtraFields: TEventExtraFields);
+procedure TCustomUserEvents.DoNewMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
 var
   MessageData: TMessageData;
 begin
@@ -498,8 +500,16 @@ begin
     MessageData.PeerId := ExtraFields.peer_id;
     MessageData.TimeStamp := UnixToDateTime(ExtraFields.timestamp, False);
     MessageData.Text := ExtraFields.text;
+    if Assigned(ExtraFields.attachments) then
+      MessageData.Attachments := ExtraFields.attachments;
+    if Assigned(ExtraFields.info) then
+      MessageData.Info := ExtraFields.info;
     FOnNewMessage(Self, MessageData);
   end;
+  if Assigned(ExtraFields.attachments) then
+    ExtraFields.attachments.Free;
+  if Assigned(ExtraFields.info) then
+    ExtraFields.info.Free;
 end;
 
 procedure TCustomUserEvents.DoReadMessages(const Incoming: Boolean; PeerId, LocalId: Integer);
@@ -526,8 +536,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoEditMessage(const MessageId: Integer; FlagsMasksData: Integer;
-  ExtraFields: TEventExtraFields);
+procedure TCustomUserEvents.DoEditMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
 var
   MessageData: TMessageData;
 begin
@@ -630,8 +639,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoChangeDialogFlags(const PeerId: Integer; ChangeType: TFlagsChangeType;
-  FlagsMasksData: Integer);
+procedure TCustomUserEvents.DoChangeDialogFlags(const PeerId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer);
 var
   DialogChangeData: TDialogChangeData;
 begin
