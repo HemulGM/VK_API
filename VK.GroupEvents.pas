@@ -458,6 +458,9 @@ begin
   FLongPollServer := TLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
+  {$IFDEF FULLLOG}
+  FLongPollServer.FullLog := True;
+  {$ENDIF}
 end;
 
 destructor TCustomGroupEvents.Destroy;
@@ -472,16 +475,6 @@ var
   EventType: string;
   EventId: string;
   EventObject: TJSONValue;
-
-  function NormalizePeerId(Value: Integer): Integer;
-  begin
-    if Value > 2000000000 then
-      Exit(Value - 2000000000);
-    if Value > 1000000000 then
-      Exit(-(Value - 1000000000));
-    Result := Value;
-  end;
-
 begin
   EventType := Update.GetValue<string>('type', '');
   EventObject := Update.GetValue<TJSONValue>('object', nil);
@@ -1233,7 +1226,6 @@ end;
 
 procedure TCustomGroupEvents.FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
 begin
-  FVK.DoLog(Self, Update.ToString);
   DoEvent(Sender, Update);
 end;
 
@@ -1461,7 +1453,7 @@ function TCustomGroupEvents.Start: Boolean;
 begin
   if not Assigned(FVK) then
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
-  FLongPollServer.Client := FVK.Handler.Client;
+  FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'groups.getLongPollServer';
   FLongPollServer.Params := [['lp_version', '3'], ['group_id', FGroupID.ToString]];
   Result := FLongPollServer.Start;

@@ -115,7 +115,8 @@ contains
   VK.Vcl.OAuth2 in 'Forms\VK.Vcl.OAuth2.pas' {FormOAuth2},
   VK.FMX.OAuth2 in 'Forms\VK.FMX.OAuth2.pas' {FormFMXOAuth2},
   VK.FMX.Captcha in 'Forms\VK.FMX.Captcha.pas' {FormFMXCaptcha},
-  VK.Utils in 'Controllers\VK.Utils.pas';
+  VK.Utils in 'Controllers\VK.Utils.pas',
+  VK.Video in 'Controllers\VK.Video.pas';
 
 end.
 

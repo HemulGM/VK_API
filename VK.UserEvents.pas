@@ -3,9 +3,8 @@ unit VK.UserEvents;
 interface
 
 uses
-  System.SysUtils, REST.json, System.Types, System.UITypes, System.Classes,
-  System.Variants, REST.Client, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
   TCustomUserEvents = class(TComponent)
@@ -106,6 +105,10 @@ begin
   FLongPollServer := TLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
+
+  {$IFDEF FULLLOG}
+  FLongPollServer.FullLog := True;
+  {$ENDIF}
 end;
 
 destructor TCustomUserEvents.Destroy;
@@ -121,16 +124,6 @@ var
   ExtraFields: TEventExtraFields;
   UserIds: TUserIds;
   Arr: TJSONArray;
-
-  function NormalizePeerId(Value: Integer): Integer;
-  begin
-    if Value > 2000000000 then
-      Exit(Value - 2000000000);
-    if Value > 1000000000 then
-      Exit(-(Value - 1000000000));
-    Result := Value;
-  end;
-
 begin
   try
     EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
@@ -143,16 +136,18 @@ begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
-          ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
+          ExtraFields.PeerId := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
           if TJSONArray(Update).Count > 4 then
           begin
-            ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
+            ExtraFields.TimeStamp := TJSONArray(Update).Items[4].GetValue<Integer>;
             if TJSONArray(Update).Count > 5 then
-              ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
+              ExtraFields.Text := TJSONArray(Update).Items[5].GetValue<string>;
             if TJSONArray(Update).Count > 6 then
-              ExtraFields.info := TVkMessageInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[6].GetValue<TJSONValue>).ToJSON);
+              ExtraFields.Info := TVkMessageInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[6].GetValue<TJSONValue>).ToJSON);
             if TJSONArray(Update).Count > 7 then
-              ExtraFields.attachments := TVkMessageAttachmentInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[7].GetValue<TJSONValue>).ToJSON);
+              ExtraFields.Attachments := TVkMessageAttachmentInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[7].GetValue<TJSONValue>).ToJSON);
+            if TJSONArray(Update).Count > 8 then
+              ExtraFields.RandomId := TJSONArray(Update).Items[8].GetValue<Integer>;
           end;
         except
           raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
@@ -173,9 +168,9 @@ begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
-          ExtraFields.peer_id := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
-          ExtraFields.timestamp := TJSONArray(Update).Items[4].GetValue<Integer>;
-          ExtraFields.text := TJSONArray(Update).Items[5].GetValue<string>;
+          ExtraFields.PeerId := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
+          ExtraFields.TimeStamp := TJSONArray(Update).Items[4].GetValue<Integer>;
+          ExtraFields.Text := TJSONArray(Update).Items[5].GetValue<string>;
         except
           raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
         end;
@@ -340,7 +335,6 @@ end;
 
 procedure TCustomUserEvents.FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
 begin
-  FVK.DoLog(Self, Update.ToString);
   DoEvent(Sender, Update);
 end;
 
@@ -443,7 +437,7 @@ function TCustomUserEvents.Start: Boolean;
 begin
   if not Assigned(FVK) then
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
-  FLongPollServer.Client := FVK.Handler.Client;
+  FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'messages.getLongPollServer';
   FLongPollServer.Params := [['lp_version', '3']];
   FLongPollServer.OnError := FOnError;
@@ -468,7 +462,7 @@ begin
     MessageChangeData.MessageId := MessageId;
     MessageChangeData.ChangeType := ChangeType;
     MessageChangeData.Flags := MessageFlags.Create(FlagsMasksData);
-    MessageChangeData.PeerId := ExtraFields.peer_id;
+    MessageChangeData.PeerId := ExtraFields.PeerId;
     FOnChangeMessageFlags(Self, MessageChangeData);
   end;
 end;
@@ -497,19 +491,20 @@ begin
   begin
     MessageData.MessageId := MessageId;
     MessageData.Flags := MessageFlags.Create(FlagsMasksData);
-    MessageData.PeerId := ExtraFields.peer_id;
-    MessageData.TimeStamp := UnixToDateTime(ExtraFields.timestamp, False);
-    MessageData.Text := ExtraFields.text;
-    if Assigned(ExtraFields.attachments) then
-      MessageData.Attachments := ExtraFields.attachments;
-    if Assigned(ExtraFields.info) then
-      MessageData.Info := ExtraFields.info;
+    MessageData.PeerId := ExtraFields.PeerId;
+    MessageData.TimeStamp := UnixToDateTime(ExtraFields.TimeStamp, False);
+    MessageData.RandomId := ExtraFields.RandomId;
+    MessageData.Text := ExtraFields.Text;
+    if Assigned(ExtraFields.Attachments) then
+      MessageData.Attachments := ExtraFields.Attachments;
+    if Assigned(ExtraFields.Info) then
+      MessageData.Info := ExtraFields.Info;
     FOnNewMessage(Self, MessageData);
   end;
-  if Assigned(ExtraFields.attachments) then
-    ExtraFields.attachments.Free;
-  if Assigned(ExtraFields.info) then
-    ExtraFields.info.Free;
+  if Assigned(ExtraFields.Attachments) then
+    ExtraFields.Attachments.Free;
+  if Assigned(ExtraFields.Info) then
+    ExtraFields.Info.Free;
 end;
 
 procedure TCustomUserEvents.DoReadMessages(const Incoming: Boolean; PeerId, LocalId: Integer);
@@ -544,9 +539,9 @@ begin
   begin
     MessageData.MessageId := MessageId;
     MessageData.Flags := MessageFlags.Create(FlagsMasksData);
-    MessageData.PeerId := ExtraFields.peer_id;
-    MessageData.TimeStamp := UnixToDateTime(ExtraFields.timestamp, False);
-    MessageData.Text := ExtraFields.text;
+    MessageData.PeerId := ExtraFields.PeerId;
+    MessageData.TimeStamp := UnixToDateTime(ExtraFields.TimeStamp, False);
+    MessageData.Text := ExtraFields.Text;
     FOnEditMessage(Self, MessageData);
   end;
 end;

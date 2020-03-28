@@ -45,7 +45,7 @@ type
     property Token: string read FToken write SetToken;
     property TokenExpiry: Int64 read FTokenExpiry write SetTokenExpiry;
     property ChangePasswordHash: string read FChangePasswordHash write SetChangePasswordHash;
-    class procedure Execute(Url: string; Proc: TAuthResult); static;
+    class procedure Execute(Url: string; Proc: TAuthResult; Modal: Boolean = False); static;
   end;
 
 var
@@ -62,13 +62,13 @@ uses
 
 {$R *.dfm}
 
-class procedure TFormOAuth2.Execute(Url: string; Proc: TAuthResult);
+class procedure TFormOAuth2.Execute(Url: string; Proc: TAuthResult; Modal: Boolean);
 var
   Form: TFormOAuth2;
 begin
   Form := TFormOAuth2.Create(nil);
   Form.FProc := Proc;
-  Form.ShowWithURL(nil, Url, True);
+  Form.ShowWithURL(nil, Url, Modal);
 end;
 
 procedure TFormOAuth2.SetChangePasswordHash(const Value: string);

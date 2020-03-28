@@ -21,7 +21,7 @@ type
   private
     FLastTitle: string;
     FProxyUserName: string;
-    FProxyPassword: string;
+    //FProxyPassword: string;
     FLastURL: string;
     FBrakeAll: Boolean;
     FNeedShow: Boolean;

@@ -192,6 +192,7 @@
             <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="Controllers\VK.Utils.pas"/>
+        <DCCReference Include="Controllers\VK.Video.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

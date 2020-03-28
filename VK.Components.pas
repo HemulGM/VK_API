@@ -23,6 +23,7 @@ type
     property OnErrorLogin;
     property OnCaptcha;
     property OnConfirm;
+    property Logging;
   end;
 
   TVkUserEvents = class(TCustomUserEvents)

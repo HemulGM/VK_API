@@ -7,7 +7,8 @@ uses
   REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
   VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
   VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board,
-  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Utils, FMX.Types;
+  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Utils, FMX.Types,
+  VK.Video;
 
 type
   TCustomVK = class(TComponent)
@@ -47,6 +48,8 @@ type
     FPhotos: TPhotosController;
     FCatalog: TCatalogController;
     FUtils: TUtilsController;
+    FVideo: TVideoController;
+    FLogging: Boolean;
     function GetPermissions: string;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAuthError(const AText: string; AStatusCode: Integer);
@@ -74,10 +77,13 @@ type
     procedure FVKErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure SetToken(const Value: string);
     function CheckAuth: Boolean;
+    function GetTokenExpiry: Int64;
+    procedure SetTokenExpiry(const Value: Int64);
+    procedure SetLogging(const Value: Boolean);
+    function GetIsWorking: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Await;
     procedure DoLog(Sender: TObject; Text: string);
     procedure DoError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure DoErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
@@ -111,6 +117,7 @@ type
     property Photos: TPhotosController read FPhotos;
     property Catalog: TCatalogController read FCatalog;
     property Utils: TUtilsController read FUtils;
+    property Video: TVideoController read FVideo;
     //
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;
@@ -132,6 +139,9 @@ type
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
     property OnAuth: TOnAuth read FOnAuth write SetOnAuth;
     property Token: string read GetToken write SetToken;
+    property TokenExpiry: Int64 read GetTokenExpiry write SetTokenExpiry;
+    property Logging: Boolean read FLogging write SetLogging;
+    property IsWorking: Boolean read GetIsWorking;
   end;
 
 implementation
@@ -184,6 +194,7 @@ constructor TCustomVK.Create(AOwner: TComponent);
 begin
   inherited;
   FIsLogin := False;
+  FLogging := False;
   FUseServiceKeyOnly := False;
   FOAuth2Authenticator := TOAuth2Authenticator.Create(Self);
   FHandler := TVkHandler.Create(Self);
@@ -197,7 +208,7 @@ begin
   BaseURL := 'https://api.vk.com/method';
   APIVersion := '5.103';
   PermissionsList := ['groups', 'friends', 'wall', 'photos', 'video', 'docs', 'notes', 'market'];
-  //
+  //Controllers
   FAccount := TAccountController.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
   FUsers := TUsersController.Create(FHandler);
@@ -213,25 +224,20 @@ begin
   FPhotos := TPhotosController.Create(FHandler);
   FCatalog := TCatalogController.Create(FHandler);
   FUtils := TUtilsController.Create(FHandler);
+  FVideo := TVideoController.Create(FHandler);
   //
   FUploader := TUploader.Create;
 end;
 
-procedure TCustomVK.Await;
-begin       {
-  while FHandler.Executing do
-    Application.ProcessMessages;  }
-end;
-
 destructor TCustomVK.Destroy;
 begin
-  Await;
   FBoard.Free;
   FFriends.Free;
   FGroups.Free;
   FPhotos.Free;
   FCatalog.Free;
   FUtils.Free;
+  FVideo.Free;
   FLikes.Free;
   FAudio.Free;
   FDoc.Free;
@@ -274,11 +280,14 @@ begin
   begin
     FOnCaptcha(Self, CaptchaImg, Answer);
   end
-  else    {$IF DECLARED(FireMonkeyVersion)}
+  else
+  begin
+    {$IF DECLARED(FireMonkeyVersion)}
     TFormFMXCaptcha.Execute(CaptchaImg, Answer);
     {$ELSE}
-  TFormCaptcha.Execute(CaptchaImg, Answer);
+    TFormCaptcha.Execute(CaptchaImg, Answer);
     {$ENDIF}
+  end;
 end;
 
 function TCustomVK.Execute(Code: string): TResponse;
@@ -295,8 +304,9 @@ end;
 
 procedure TCustomVK.FLog(Sender: TObject; const Value: string);
 begin
-  if Assigned(FOnLog) then
-    FOnLog(Self, Value);
+  if FLogging then
+    if Assigned(FOnLog) then
+      FOnLog(Self, Value);
 end;
 
 procedure TCustomVK.FAuthError(const AText: string; AStatusCode: Integer);
@@ -367,8 +377,8 @@ end;
 
 function TCustomVK.Login: Boolean;
 var
-  Token, PasswordHash: string;
-  TokenExpiry: Int64;
+  AToken, APasswordHash: string;
+  ATokenExpiry: Int64;
 begin
   Result := False;
   FOAuth2Authenticator.AccessToken := EmptyStr;
@@ -377,18 +387,18 @@ begin
   FOAuth2Authenticator.ResponseType := TOAuth2ResponseType.rtTOKEN;
   FOAuth2Authenticator.AuthorizationEndpoint := FEndPoint;
   FOAuth2Authenticator.Scope := PermissionsList.ToString;
-  PasswordHash := '';
-  Token := '';
-  TokenExpiry := 0;
+  APasswordHash := '';
+  AToken := Token;
+  ATokenExpiry := TokenExpiry;
   if Assigned(FOnAuth) then
-    FOnAuth(Self, FOAuth2Authenticator.AuthorizationRequestURI, Token, TokenExpiry, PasswordHash);
+    FOnAuth(Self, FOAuth2Authenticator.AuthorizationRequestURI, AToken, ATokenExpiry, APasswordHash);
 
-  if not Token.IsEmpty then
+  if not AToken.IsEmpty then
   begin
-    FChangePasswordHash := PasswordHash;
-    FOAuth2Authenticator.AccessToken := Token;
-    if TokenExpiry > 0 then
-      FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, TokenExpiry)
+    FChangePasswordHash := APasswordHash;
+    FOAuth2Authenticator.AccessToken := AToken;
+    if ATokenExpiry > 0 then
+      FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, ATokenExpiry)
     else
       FOAuth2Authenticator.AccessTokenExpiry := 0;
     if CheckAuth then
@@ -424,6 +434,11 @@ begin
   FOAuth2Authenticator.AccessToken := Value;
 end;
 
+procedure TCustomVK.SetTokenExpiry(const Value: Int64);
+begin
+  FOAuth2Authenticator.AccessTokenExpiry := UnixToDateTime(Value, False);
+end;
+
 procedure TCustomVK.SetAppID(const Value: string);
 begin
   FAppID := Value;
@@ -442,6 +457,11 @@ end;
 procedure TCustomVK.SetHandler(const Value: TVkHandler);
 begin
   FHandler := Value;
+end;
+
+procedure TCustomVK.SetLogging(const Value: Boolean);
+begin
+  FLogging := Value;
 end;
 
 procedure TCustomVK.SetBaseURL(const Value: string);
@@ -499,6 +519,11 @@ begin
   end;
 end;
 
+function TCustomVK.GetIsWorking: Boolean;
+begin
+  Result := FHandler.Executing;
+end;
+
 function TCustomVK.GetPermissions: string;
 begin
   Result := FPermissionsList.ToString;
@@ -507,6 +532,11 @@ end;
 function TCustomVK.GetToken: string;
 begin
   Result := FOAuth2Authenticator.AccessToken;
+end;
+
+function TCustomVK.GetTokenExpiry: Int64;
+begin
+  Result := DateTimeToUnix(FOAuth2Authenticator.AccessTokenExpiry, False);
 end;
 
 procedure TCustomVK.SetPermissionsList(const Value: TPermissions);

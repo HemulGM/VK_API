@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save;
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save,
+  VK.Entity.Video.Save;
 
 type
   TVkDocUploadType = (dutDoc, dutAudioMessage);

@@ -21,6 +21,10 @@ type
 
   TVkLongPollServerException = TVkException;
 
+  TVkLongPollServerParseException = TVkLongPollServerException;
+
+  TVkLongPollServerHTTPException = TVkLongPollServerException;
+
   TVkGroupEventsException = TVkLongPollServerException;
 
   TVkUserEventsException = TVkLongPollServerException;
@@ -86,6 +90,7 @@ const
 
   //
   VK_CHAT_ID_START = 2000000000;
+  VK_GROUP_ID_START = 1000000000;
 
 type
   {$IFDEF OLD_VERSION}
@@ -341,6 +346,7 @@ type
     TimeStamp: TDateTime;
     Text: string;
     Info: TVkMessageInfo;
+    RandomId: Integer;
     Attachments: TVkMessageAttachmentInfo;
   end;
 
@@ -367,14 +373,17 @@ type
     Response: string;
     JSON: string;
     Error: TResponseError;
+    function GetJSONValue: TJSONValue;
+    function GetJSONResponse: TJSONValue;
   end;
 
   TEventExtraFields = record
-    peer_id: integer; // идентификатор назначения. Для пользователя: id пользователя. Для групповой беседы: 2000000000 + id беседы. Для сообщества: -id сообщества либо id сообщества + 1000000000 (для version = 0).
-    timestamp: integer; // время отправки сообщения в Unixtime;
-    text: string; // текст сообщения;
-    info: TVkMessageInfo;
-    attachments: TVkMessageAttachmentInfo;
+    PeerId: integer; // идентификатор назначения. Для пользователя: id пользователя. Для групповой беседы: 2000000000 + id беседы. Для сообщества: -id сообщества либо id сообщества + 1000000000 (для version = 0).
+    TimeStamp: integer; // время отправки сообщения в Unixtime;
+    Text: string; // текст сообщения;
+    Info: TVkMessageInfo;
+    Attachments: TVkMessageAttachmentInfo;
+    RandomId: Integer;
    //[$random_id] (integer) — random_id, если параметр был передан в messages.send. Может содержать 0, если значение не задано.
   end;
 
@@ -481,10 +490,42 @@ function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string
 
 function AppendItemsTag(JSON: string): string;
 
+function NormalizePeerId(Value: Integer): Integer;
+
+function PeerIdIsChat(Value: Integer): Boolean;
+
+function PeerIdIsUser(Value: Integer): Boolean;
+
+function PeerIdIsGroup(Value: Integer): Boolean;
+
 implementation
 
 uses
   VK.CommonUtils;
+
+function PeerIdIsChat(Value: Integer): Boolean;
+begin
+  Result := Value > VK_CHAT_ID_START;
+end;
+
+function PeerIdIsUser(Value: Integer): Boolean;
+begin
+  Result := Value < VK_GROUP_ID_START;
+end;
+
+function PeerIdIsGroup(Value: Integer): Boolean;
+begin
+  Result := (Value > VK_GROUP_ID_START) and (Value < VK_CHAT_ID_START);
+end;
+
+function NormalizePeerId(Value: Integer): Integer;
+begin
+  if Value > VK_CHAT_ID_START then
+    Exit(Value - VK_CHAT_ID_START);
+  if Value > VK_GROUP_ID_START then
+    Exit(-(Value - VK_GROUP_ID_START));
+  Result := Value;
+end;
 
 function AppendItemsTag(JSON: string): string;
 begin
@@ -1225,6 +1266,24 @@ class function TVkMessageAttachmentInfo.TAttachInfoType.Create(AAttach, AAttachT
 begin
   Result.Attach := AAttach;
   Result.AttachType := AAttachType;
+end;
+
+{ TResponse }
+
+function TResponse.GetJSONValue: TJSONValue;
+begin
+  if not JSON.IsEmpty then
+    Result := TJSONObject.ParseJSONValue(UTF8ToString(JSON))
+  else
+    Result := nil;
+end;
+
+function TResponse.GetJSONResponse: TJSONValue;
+begin
+  if not Response.IsEmpty then
+    Result := TJSONObject.ParseJSONValue(UTF8ToString(Response))
+  else
+    Result := nil;
 end;
 
 end.

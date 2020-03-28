@@ -10,8 +10,9 @@ uses
 type
   TUploader = class
     function Upload(UploadUrl: string; FileName: string; var Response: string): Boolean; overload;
-    function UploadPhotos(UploadUrl, FileName: string; var Response: TVkPhotoUploadResponse): Boolean;
-    function UploadAudio(UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean;
+    function UploadPhotos(UploadUrl, FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
+    function UploadAudio(UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean; overload;
+    function UploadPhotos(UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
   end;
 
 implementation
@@ -26,13 +27,15 @@ var
   JSON: TJSONValue;
 begin
   Result := False;
-  if not FileExists(FileName) then
-    Exit;
+  if not FileName.IsEmpty then
+    if not FileExists(FileName) then
+      Exit;
   Data := TMultipartFormData.Create;
   HTTP := THTTPClient.Create;
   ResStream := TStringStream.Create;
   try
-    Data.AddFile('file', FileName);
+    if not FileName.IsEmpty then
+      Data.AddFile('file', FileName);
     if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
     begin
       try
@@ -99,6 +102,36 @@ begin
   ResStream := TStringStream.Create;
   try
     Data.AddFile('file', FileName);
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      try
+        Response := TVkPhotoUploadResponse.FromJsonString(ResStream.DataString);
+        Result := True;
+      except
+        Response := nil;
+        Result := False;
+      end;
+    end
+    else
+      Result := False;
+  finally
+    Data.Free;
+    HTTP.Free;
+    ResStream.Free;
+  end;
+end;
+
+function TUploader.UploadPhotos(UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse): Boolean;
+var
+  HTTP: THTTPClient;
+  Data: TMultipartFormData;
+  ResStream: TStringStream;
+begin
+  Data := TMultipartFormData.Create;
+  HTTP := THTTPClient.Create;
+  ResStream := TStringStream.Create;
+  try
+    Data.AddStream('file', Stream, ExtractFileName(FileName));
     if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
     begin
       try

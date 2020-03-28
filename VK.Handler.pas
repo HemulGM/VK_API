@@ -49,6 +49,7 @@ type
   public
     constructor Create(AOwner: TObject);
     destructor Destroy; override;
+    procedure Log(Sender: TObject; const Text: string);
     function AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
     function Execute(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Param: TParam): TResponse; overload;
@@ -176,15 +177,11 @@ var
   CaptchaAns: string;
   IsDone: Boolean;
   Thr: TThread;
-
-  procedure ExecRequest;
-  begin
-
-  end;
-
 begin
   Result.Success := False;
+  {$IFDEF FULLLOG}
   FLog(Request.GetFullRequestURL);
+  {$ENDIF}
   try
     IsDone := False;
     Request.Response := TRESTResponse.Create(Request);
@@ -229,8 +226,9 @@ begin
 
     if not Application.Terminated then
     begin
+      {$IFDEF FULLLOG}
       FLog(Request.Response.JSONText);
-
+      {$ENDIF}
         //≈сли это первый запрос, то сохран€ем метку
       if FRequests = 1 then
         FStartRequest := TThread.GetTickCount;
@@ -308,6 +306,12 @@ end;
 function TVkHandler.GetExecuting: Boolean;
 begin
   Result := FExecuting > 0;
+end;
+
+procedure TVkHandler.Log(Sender: TObject; const Text: string);
+begin
+  if Assigned(FOnLog) then
+    FOnLog(Sender, Text);
 end;
 
 procedure TVkHandler.SetOnError(const Value: TOnVKError);
