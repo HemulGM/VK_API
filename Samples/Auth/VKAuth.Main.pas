@@ -3,12 +3,11 @@ unit VKAuth.Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls,
-  VK.Handler, Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents,
-  VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient, System.Net.HttpClientComponent,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video, VK.Entity.Photo, VK.Entity.Audio,
-  VK.Entity.GroupSettings;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler, Vcl.StdCtrls,
+  System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents, VK.Entity.Media, System.Net.URLClient,
+  System.Net.HttpClient, System.Net.HttpClientComponent, VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video,
+  VK.Entity.Photo, VK.Entity.Audio, VK.Entity.GroupSettings;
 
 type
   TFormMain = class(TForm)
@@ -87,8 +86,7 @@ type
     procedure VkUserEvents1ChangeDialogFlags(Sender: TObject; DialogChangeData: TDialogChangeData);
     procedure VkUserEvents1ChangeMessageFlags(Sender: TObject; MessageChangeData: TMessageChangeData);
     procedure VkUserEvents1ChatChanged(Sender: TObject; const ChatId: Integer; IsSelf: Boolean);
-    procedure VkUserEvents1ChatChangeInfo(Sender: TObject; const PeerId: Integer; TypeId:
-      TChatChangeInfoType; Info: Integer);
+    procedure VkUserEvents1ChatChangeInfo(Sender: TObject; const PeerId: Integer; TypeId: TChatChangeInfoType; Info: Integer);
     procedure VkUserEvents1DeleteMessages(Sender: TObject; PeerId, LocalId: Integer);
     procedure VkUserEvents1EditMessage(Sender: TObject; MessageData: TMessageData);
     procedure VkUserEvents1UserOffline(Sender: TObject; UserId: Integer; InactiveUser: Boolean; TimeStamp: TDateTime);
@@ -104,86 +102,76 @@ type
     procedure Button18Click(Sender: TObject);
     procedure Button19Click(Sender: TObject);
     procedure Button20Click(Sender: TObject);
-    procedure VkGroupEventsController1MessageNew(Sender: TObject; GroupId: Integer; Message:
-      TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
-    procedure VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Info:
-      TVkCommentInfo; EventId: string);
+    procedure VkGroupEventsController1MessageNew(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo:
+      TVkClientInfo; EventId: string);
+    procedure VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string);
     procedure VkGroupEventsController1WallPostNew(Sender: TObject; GroupId: Integer; Post: TVkPost; EventId: string);
     procedure VkGroupEventsController1WallRepost(Sender: TObject; GroupId: Integer; Post: TVkPost; EventId: string);
     procedure VkGroupEventsController1VideoNew(Sender: TObject; GroupId: Integer; Video: TVkVideo; EventId: string);
-    procedure VkGroupEventsController1VideoCommentRestore(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1PhotoCommentRestore(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1MarketCommentRestore(Sender: TObject; GroupId: Integer;
-      Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1VideoCommentNew(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1PhotoCommentNew(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1MarketCommentNew(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1VideoCommentEdit(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1PhotoCommentEdit(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1MarketCommentEdit(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1BoardPostRestore(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1BoardPostEdit(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1BoardPostNew(Sender: TObject; GroupId: Integer; Comment:
-      TVkComment; Info: TVkObjectInfo; EventId: string);
-    procedure VkGroupEventsController1VideoCommentDelete(Sender: TObject; GroupId: Integer; Info:
-      TVkCommentInfo; EventId: string);
-    procedure VkGroupEventsController1PhotoCommentDelete(Sender: TObject; GroupId: Integer; Info:
-      TVkCommentInfo; EventId: string);
-    procedure VkGroupEventsController1MarketCommentDelete(Sender: TObject; GroupId: Integer; Info:
-      TVkCommentInfo; EventId: string);
-    procedure VkGroupEventsController1BoardPostDelete(Sender: TObject; GroupId: Integer; Info:
-      TVkCommentInfo; EventId: string);
+    procedure VkGroupEventsController1VideoCommentRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1PhotoCommentRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1MarketCommentRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1VideoCommentNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1PhotoCommentNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1MarketCommentNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1VideoCommentEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1PhotoCommentEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1MarketCommentEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1BoardPostRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1BoardPostEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1BoardPostNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+      TVkObjectInfo; EventId: string);
+    procedure VkGroupEventsController1VideoCommentDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo;
+      EventId: string);
+    procedure VkGroupEventsController1PhotoCommentDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo;
+      EventId: string);
+    procedure VkGroupEventsController1MarketCommentDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo;
+      EventId: string);
+    procedure VkGroupEventsController1BoardPostDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string);
     procedure VkGroupEventsController1PhotoNew(Sender: TObject; GroupId: Integer; Photo: TVkPhoto; EventId: string);
     procedure VkGroupEventsController1AudioNew(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string);
-    procedure VkGroupEventsController1GroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType:
-      TGroupJoinType; EventId: string);
-    procedure VkGroupEventsController1GroupLeave(Sender: TObject; GroupId, UserId: Integer; IsSelf:
-      Boolean; EventId: string);
-    procedure VkGroupEventsController1UserBlock(Sender: TObject; GroupId: Integer; Info:
-      TVkGroupUserBlock; EventId: string);
-    procedure VkGroupEventsController1UserUnBlock(Sender: TObject; GroupId: Integer; Info:
-      TVkGroupUserUnBlock; EventId: string);
-    procedure VkGroupEventsController1MessageReply(Sender: TObject; GroupId: Integer; Message:
-      TVkMessage; EventId: string);
-    procedure VkGroupEventsController1MessageEdit(Sender: TObject; GroupId: Integer; Message:
-      TVkMessage; EventId: string);
+    procedure VkGroupEventsController1GroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType: TVkGroupJoinType;
+      EventId: string);
+    procedure VkGroupEventsController1GroupLeave(Sender: TObject; GroupId, UserId: Integer; IsSelf: Boolean; EventId: string);
+    procedure VkGroupEventsController1UserBlock(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string);
+    procedure VkGroupEventsController1UserUnBlock(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; EventId: string);
+    procedure VkGroupEventsController1MessageReply(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string);
+    procedure VkGroupEventsController1MessageEdit(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string);
     procedure VkGroupEventsController1MessageDeny(Sender: TObject; GroupId, UserId: Integer; Key, EventId: string);
     procedure VkGroupEventsController1MessageAllow(Sender: TObject; GroupId, UserId: Integer; Key, EventId: string);
-    procedure VkGroupEventsController1GroupPollVoteNew(Sender: TObject; GroupId: Integer; Info:
-      TVkGroupPollVoteNew; EventId: string);
-    procedure VkGroupEventsController1GroupOfficersEdit(Sender: TObject; GroupId: Integer; Info:
-      TVkGroupOfficersEdit; EventId: string);
+    procedure VkGroupEventsController1GroupPollVoteNew(Sender: TObject; GroupId: Integer; Info: TVkGroupPollVoteNew;
+      EventId: string);
+    procedure VkGroupEventsController1GroupOfficersEdit(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit;
+      EventId: string);
     procedure VkGroupEventsController1GroupChangeSettings(Sender: TObject; GroupId: Integer; Changes:
       TVkGroupSettingsChange; EventId: string);
-    procedure VkGroupEventsController1GroupChangePhoto(Sender: TObject; GroupId: Integer; Changes:
-      TVkGroupChangePhoto; EventId: string);
-    procedure VkGroupEventsController1GroupAppPayload(Sender: TObject; GroupId: Integer; Info:
-      TVkAppPayload; EventId: string);
-    procedure VkGroupEventsController1GroupPayTransaction(Sender: TObject; GroupId: Integer; Info:
-      TVkPayTransaction; EventId: string);
-    procedure VkGroupEventsController1MessageTypingState(Sender: TObject; GroupId, UserId: Integer;
-      State, EventId: string);
+    procedure VkGroupEventsController1GroupChangePhoto(Sender: TObject; GroupId: Integer; Changes: TVkGroupChangePhoto;
+      EventId: string);
+    procedure VkGroupEventsController1GroupAppPayload(Sender: TObject; GroupId: Integer; Info: TVkAppPayload; EventId: string);
+    procedure VkGroupEventsController1GroupPayTransaction(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction;
+      EventId: string);
+    procedure VkGroupEventsController1MessageTypingState(Sender: TObject; GroupId, UserId: Integer; State, EventId: string);
     procedure Button21Click(Sender: TObject);
     procedure Button22Click(Sender: TObject);
     procedure VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure VK1ErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
-    procedure VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
     procedure Button23Click(Sender: TObject);
     procedure Button24Click(Sender: TObject);
     procedure Button25Click(Sender: TObject);
@@ -192,6 +180,7 @@ type
     procedure Button28Click(Sender: TObject);
     procedure Button29Click(Sender: TObject);
     procedure Button30Click(Sender: TObject);
+    procedure VK1Auth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
   private
   public
     { Public declarations }
@@ -203,11 +192,10 @@ var
 implementation
 
 uses
-  VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
-  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.OAuth2,
-  VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload, VK.Entity.Conversation,
-  VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section;
+  VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
+  VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
+  VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
+  VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils;
 
 {$R *.dfm}
 
@@ -488,7 +476,7 @@ begin
     Memo1.Lines.Add('Count: ' + List.Count.ToString);
     for Item in List.Items do
     begin
-      Memo1.Lines.Add('Тип беседы: ' + Item.Conversation.Peer.&Type);
+      Memo1.Lines.Add('Тип беседы: ' + Item.Conversation.Peer.&Type.ToConst);
       if Item.Conversation.IsChat then
         Memo1.Lines.Add('Название беседы: ' + Item.Conversation.ChatSettings.Title)
       else
@@ -663,7 +651,8 @@ begin
   VK1.Login;
 end;
 
-procedure TFormMain.VK1Auth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+procedure TFormMain.VK1Auth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var
+  ChangePasswordHash: string);
 begin
   //Если определён этот метод, то авторизация происходить не будет, т.к. токен уже есть
   //Для использования обычной OAuth2 авторизации достаточно убрать этот метод
@@ -696,84 +685,83 @@ begin
   Memo1.Lines.Add(VK1.Token);
 end;
 
-procedure TFormMain.VkGroupEventsController1AudioNew(Sender: TObject; GroupId: Integer; Audio:
-  TVkAudio; EventId: string);
+procedure TFormMain.VkGroupEventsController1AudioNew(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string);
 begin
   Memo1.Lines.Add('Новоая аудиозапись в группе ' + GroupId.ToString + ' "' + Audio.Url + '" от ' +
     Audio.OwnerId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1BoardPostDelete(Sender: TObject; GroupId: Integer; Info:
-  TVkCommentInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1BoardPostDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo;
+  EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к обсуждению удалён в группе ' + GroupId.ToString + ' "' + Info.ObjectId.ToString
     + '" от ' +
     Info.OwnerId.ToString + ', обсуждение ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1BoardPostEdit(Sender: TObject; GroupId: Integer; Comment:
-  TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1BoardPostEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+  TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к обсуждению изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString + ', обсуждение ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1BoardPostNew(Sender: TObject; GroupId: Integer; Comment:
-  TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1BoardPostNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+  TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Новый комментарий к обсуждению в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString + ', обсуждение ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1BoardPostRestore(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1BoardPostRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к обсуждению восстановили в группе ' + GroupId.ToString + ' "' +
     Comment.Text + '" обсуждение ' +
     Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1GroupAppPayload(Sender: TObject; GroupId: Integer; Info:
-  TVkAppPayload; EventId: string);
+procedure TFormMain.VkGroupEventsController1GroupAppPayload(Sender: TObject; GroupId: Integer; Info: TVkAppPayload;
+  EventId: string);
 begin
   Memo1.Lines.Add('Событие в VK Mini Apps в группе ' + GroupId.ToString + ' инициатор ' + Info.UserId.ToString
     + ', Payload: ' + Info.Payload);
 end;
 
-procedure TFormMain.VkGroupEventsController1GroupChangePhoto(Sender: TObject; GroupId: Integer;
-  Changes: TVkGroupChangePhoto; EventId: string);
+procedure TFormMain.VkGroupEventsController1GroupChangePhoto(Sender: TObject; GroupId: Integer; Changes:
+  TVkGroupChangePhoto; EventId: string);
 begin
   Memo1.Lines.Add('Изменение фото в группе ' + GroupId.ToString + ' инициатор ' + Changes.UserId.ToString
     + ' => ' + Changes.Photo.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1GroupChangeSettings(Sender: TObject; GroupId: Integer;
-  Changes: TVkGroupSettingsChange; EventId: string);
+procedure TFormMain.VkGroupEventsController1GroupChangeSettings(Sender: TObject; GroupId: Integer; Changes:
+  TVkGroupSettingsChange; EventId: string);
 begin
   Memo1.Lines.Add('Изменение параметров в группе ' + GroupId.ToString + ' инициатор ' + Changes.UserId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1GroupJoin(Sender: TObject; GroupId, UserId: Integer;
-  JoinType: TGroupJoinType; EventId: string);
+procedure TFormMain.VkGroupEventsController1GroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType:
+  TVkGroupJoinType; EventId: string);
 begin
   Memo1.Lines.Add('К группе присоединился ' + UserId.ToString + ' "' + JoinType.ToString + '"');
 end;
 
-procedure TFormMain.VkGroupEventsController1GroupLeave(Sender: TObject; GroupId, UserId: Integer;
-  IsSelf: Boolean; EventId: string);
+procedure TFormMain.VkGroupEventsController1GroupLeave(Sender: TObject; GroupId, UserId: Integer; IsSelf: Boolean;
+  EventId: string);
 begin
   Memo1.Lines.Add('Группу покинул ' + UserId.ToString + ' "' + BoolToString(IsSelf, 'Сам покинул', 'Исключен') + '"');
 end;
 
-procedure TFormMain.VkGroupEventsController1GroupOfficersEdit(Sender: TObject; GroupId: Integer;
-  Info: TVkGroupOfficersEdit; EventId: string);
+procedure TFormMain.VkGroupEventsController1GroupOfficersEdit(Sender: TObject; GroupId: Integer; Info:
+  TVkGroupOfficersEdit; EventId: string);
 begin
   Memo1.Lines.Add('Изменение в руководстве в группе ' + GroupId.ToString + ' ' + Info.UserId.ToString + ' => ' +
     Info.LevelNew.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1GroupPayTransaction(Sender: TObject; GroupId: Integer;
-  Info: TVkPayTransaction; EventId: string);
+procedure TFormMain.VkGroupEventsController1GroupPayTransaction(Sender: TObject; GroupId: Integer; Info:
+  TVkPayTransaction; EventId: string);
 begin
   Memo1.Lines.Add('Новый платёж через VK Pay в группе ' + GroupId.ToString + ' от ' + Info.FromId.ToString +
     ', сумма ' + Info.Amount);
@@ -786,56 +774,53 @@ begin
     Info.UserId.ToString + ', ответ ' + Info.OptionId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1MarketCommentDelete(Sender: TObject; GroupId: Integer;
-  Info: TVkCommentInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1MarketCommentDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo;
+  EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к товару удалён в группе ' + GroupId.ToString + ' "' + Info.ObjectId.ToString + '" от ' +
     Info.OwnerId.ToString + ', товар ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1MarketCommentEdit(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1MarketCommentEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к товару изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString + ', товар ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1MarketCommentNew(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1MarketCommentNew(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Новый комментарий к товару в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString + ', товар ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1MarketCommentRestore(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1MarketCommentRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к товару восстановили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" товар ' +
     Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1MessageAllow(Sender: TObject; GroupId, UserId: Integer;
-  Key, EventId: string);
+procedure TFormMain.VkGroupEventsController1MessageAllow(Sender: TObject; GroupId, UserId: Integer; Key, EventId: string);
 begin
   Memo1.Lines.Add('Пользователь подписался на сообщения в группе ' + GroupId.ToString +
     ': ' + UserId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1MessageDeny(Sender: TObject; GroupId, UserId: Integer;
-  Key, EventId: string);
+procedure TFormMain.VkGroupEventsController1MessageDeny(Sender: TObject; GroupId, UserId: Integer; Key, EventId: string);
 begin
   Memo1.Lines.Add('Пользователь отказался от подписки на сообщения в группе ' + GroupId.ToString +
     ': ' + UserId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1MessageEdit(Sender: TObject; GroupId: Integer; Message:
-  TVkMessage; EventId: string);
+procedure TFormMain.VkGroupEventsController1MessageEdit(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string);
 begin
   Memo1.Lines.Add('Редактирование сообщения в группе ' + GroupId.ToString + ': ' + Message.Text);
 end;
 
-procedure TFormMain.VkGroupEventsController1MessageNew(Sender: TObject; GroupId: Integer; Message:
-  TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1MessageNew(Sender: TObject; GroupId: Integer; Message: TVkMessage;
+  ClientInfo: TVkClientInfo; EventId: string);
 begin
   Memo1.Lines.Add('Новое сообщение в группе ' + GroupId.ToString + ': ' + Message.Text);
   if Message.Text = 'погода' then
@@ -847,137 +832,131 @@ begin
       Free;
 end;
 
-procedure TFormMain.VkGroupEventsController1MessageReply(Sender: TObject; GroupId: Integer; Message:
-  TVkMessage; EventId: string);
+procedure TFormMain.VkGroupEventsController1MessageReply(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string);
 begin
   Memo1.Lines.Add('Исходящее сообщение в группе ' + GroupId.ToString + ': ' + Message.Text);
 end;
 
-procedure TFormMain.VkGroupEventsController1MessageTypingState(Sender: TObject; GroupId, UserId:
-  Integer; State, EventId: string);
+procedure TFormMain.VkGroupEventsController1MessageTypingState(Sender: TObject; GroupId, UserId: Integer; State, EventId: string);
 begin
   Memo1.Lines.Add('Набирают сообщение в группе ' + GroupId.ToString + ': ' + UserId.ToString + ' ' + State);
 end;
 
-procedure TFormMain.VkGroupEventsController1PhotoCommentDelete(Sender: TObject; GroupId: Integer;
-  Info: TVkCommentInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1PhotoCommentDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo;
+  EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к фото удалён в группе ' + GroupId.ToString + ' "' + Info.ObjectId.ToString + '" от ' +
     Info.OwnerId.ToString + ', фото ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1PhotoCommentEdit(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1PhotoCommentEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к фото изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString + ', фото ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1PhotoCommentNew(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1PhotoCommentNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+  TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Новый комментарий к фото в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString + ', фото ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1PhotoCommentRestore(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1PhotoCommentRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к фото восстановили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" фото ' +
     Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1PhotoNew(Sender: TObject; GroupId: Integer; Photo:
-  TVkPhoto; EventId: string);
+procedure TFormMain.VkGroupEventsController1PhotoNew(Sender: TObject; GroupId: Integer; Photo: TVkPhoto; EventId: string);
 begin
   Memo1.Lines.Add('Новое фото в группе ' + GroupId.ToString + ' "' + Photo.Text + '" от ' +
     Photo.OwnerId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1UserBlock(Sender: TObject; GroupId: Integer; Info:
-  TVkGroupUserBlock; EventId: string);
+procedure TFormMain.VkGroupEventsController1UserBlock(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock;
+  EventId: string);
 begin
   Memo1.Lines.Add('Заблокирован пользователь ' + Info.UserId.ToString + ' Причина: ' + Info.Reason.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1UserUnBlock(Sender: TObject; GroupId: Integer; Info:
-  TVkGroupUserUnBlock; EventId: string);
+procedure TFormMain.VkGroupEventsController1UserUnBlock(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock;
+  EventId: string);
 begin
   Memo1.Lines.Add('Разблокирован пользователь ' + Info.UserId.ToString + ' Причина: ' + BoolToString
     (Info.ByEndDate, 'Окончание времени блокировки', 'Вручную'));
 end;
 
-procedure TFormMain.VkGroupEventsController1VideoCommentDelete(Sender: TObject; GroupId: Integer;
-  Info: TVkCommentInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1VideoCommentDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo;
+  EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к видео удалён в группе ' + GroupId.ToString + ' "' + Info.ObjectId.ToString + '" от ' +
     Info.OwnerId.ToString + ', видео ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1VideoCommentEdit(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1VideoCommentEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к видео изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString + ', видео ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1VideoCommentNew(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1VideoCommentNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+  TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Новый комментарий к видео в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString + ', видео ' + Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1VideoCommentRestore(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1VideoCommentRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к видео восстановили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" видео ' +
     Info.Id.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1VideoNew(Sender: TObject; GroupId: Integer; Video:
-  TVkVideo; EventId: string);
+procedure TFormMain.VkGroupEventsController1VideoNew(Sender: TObject; GroupId: Integer; Video: TVkVideo; EventId: string);
 begin
   Memo1.Lines.Add('Новое видео в группе ' + GroupId.ToString + ' "' + Video.Title + '" от ' +
     Video.OwnerId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1WallPostNew(Sender: TObject; GroupId: Integer; Post:
-  TVkPost; EventId: string);
+procedure TFormMain.VkGroupEventsController1WallPostNew(Sender: TObject; GroupId: Integer; Post: TVkPost; EventId: string);
 begin
   Memo1.Lines.Add('Новый пост в группе ' + GroupId.ToString + ': ' + Post.Text);
 end;
 
-procedure TFormMain.VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Info:
-  TVkCommentInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1WallReplyDelete(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo;
+  EventId: string);
 begin
   Memo1.Lines.Add('Комментарий удалён в группе ' + GroupId.ToString + ' "' + Info.Id.ToString + '" от ' +
     Info.DeleterId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment:
-  TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1WallReplyEdit(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+  TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий изменили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment:
-  TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1WallReplyNew(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info:
+  TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Новый комментарий в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer;
-  Comment: TVkComment; Info: TVkObjectInfo; EventId: string);
+procedure TFormMain.VkGroupEventsController1WallReplyRestore(Sender: TObject; GroupId: Integer; Comment: TVkComment;
+  Info: TVkObjectInfo; EventId: string);
 begin
   Memo1.Lines.Add('Комментарий к посту восстановили в группе ' + GroupId.ToString + ' "' + Comment.Text + '" от ' +
     Comment.FromId.ToString);
 end;
 
-procedure TFormMain.VkGroupEventsController1WallRepost(Sender: TObject; GroupId: Integer; Post:
-  TVkPost; EventId: string);
+procedure TFormMain.VkGroupEventsController1WallRepost(Sender: TObject; GroupId: Integer; Post: TVkPost; EventId: string);
 begin
   Memo1.Lines.Add('Репост записи в группе ' + GroupId.ToString + ' "' + Post.Text + '" от ' +
     Post.FromId.ToString);
@@ -1004,8 +983,8 @@ begin
   Memo1.Lines.Add('Изменения в беседе ' + ChatId.ToString + ': ' + IsSelf.ToString);
 end;
 
-procedure TFormMain.VkUserEvents1ChatChangeInfo(Sender: TObject; const PeerId: Integer; TypeId:
-  TChatChangeInfoType; Info: Integer);
+procedure TFormMain.VkUserEvents1ChatChangeInfo(Sender: TObject; const PeerId: Integer; TypeId: TChatChangeInfoType;
+  Info: Integer);
 begin
   Memo1.Lines.Add('Изменения в беседе ' + PeerId.ToString + ': ' + TypeId.ToString + ' -> ' + Info.ToString);
 end;
@@ -1059,11 +1038,11 @@ begin
         Free;
     end;
 
-    if VK1.Messages.GetById(MessageData.MessageId, Msg) then
+    if VK1.Messages.GetById(Msg, MessageData.MessageId) then
     begin
       if Length(Msg.Attachments) > 0 then
       begin
-        if Msg.Attachments[0].&Type = 'audio_message' then
+        if Msg.Attachments[0].&Type = atAudioMessage then
           VK1.Messages.
             New.
             PeerId(MessageData.PeerId).
@@ -1102,14 +1081,12 @@ begin
   Memo1.Lines.Add('Пользователь ' + UserId.ToString + ' совершил звонок с идентификатором ' + CallId.ToString);
 end;
 
-procedure TFormMain.VkUserEvents1UserOffline(Sender: TObject; UserId: Integer; InactiveUser: Boolean;
-  TimeStamp: TDateTime);
+procedure TFormMain.VkUserEvents1UserOffline(Sender: TObject; UserId: Integer; InactiveUser: Boolean; TimeStamp: TDateTime);
 begin
   Memo1.Lines.Add('Оффлайн - ' + UserId.ToString + ' ' + VkUserActive[InactiveUser]);
 end;
 
-procedure TFormMain.VkUserEvents1UserOnline(Sender: TObject; UserId: Integer; VkPlatform:
-  TVkPlatform; TimeStamp: TDateTime);
+procedure TFormMain.VkUserEvents1UserOnline(Sender: TObject; UserId: Integer; VkPlatform: TVkPlatform; TimeStamp: TDateTime);
 begin
   Memo1.Lines.Add('Онлайн - ' + UserId.ToString + ' ' + VkPlatforms[VkPlatform]);
 end;

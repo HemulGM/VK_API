@@ -408,6 +408,7 @@ object FormMain: TFormMain
     OnLog = VK1Log
     OnError = VK1Error
     OnErrorLogin = VK1ErrorLogin
+    Logging = False
     Left = 96
     Top = 56
   end

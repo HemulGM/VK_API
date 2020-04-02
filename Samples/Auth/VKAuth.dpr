@@ -8,11 +8,9 @@ uses
   VK.Components in '..\..\VK.Components.pas',
   VK.Controller in '..\..\VK.Controller.pas',
   VK.Handler in '..\..\VK.Handler.pas',
-  VK.Captcha in '..\..\Forms\VK.Captcha.pas' {FormCaptcha},
   VK.LongPollServer in '..\..\VK.LongPollServer.pas',
   VK.UserEvents in '..\..\VK.UserEvents.pas',
   VK.GroupEvents in '..\..\VK.GroupEvents.pas',
-  VK.OAuth2 in '..\..\Forms\VK.OAuth2.pas' {FormOAuth2},
   VK.CommonUtils in '..\..\VK.CommonUtils.pas',
   VK.Uploader in '..\..\VK.Uploader.pas',
   VK.Account in '..\..\Controllers\VK.Account.pas',
@@ -77,7 +75,5 @@ begin
   Application.MainFormOnTaskbar := True;
   ReportMemoryLeaksOnShutdown := True;
   Application.CreateForm(TFormMain, FormMain);
-  Application.CreateForm(TFormCaptcha, FormCaptcha);
-  Application.CreateForm(TFormOAuth2, FormOAuth2);
   Application.Run;
 end.

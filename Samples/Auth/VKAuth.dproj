@@ -107,17 +107,9 @@
         <DCCReference Include="..\..\VK.Components.pas"/>
         <DCCReference Include="..\..\VK.Controller.pas"/>
         <DCCReference Include="..\..\VK.Handler.pas"/>
-        <DCCReference Include="..\..\Forms\VK.Captcha.pas">
-            <Form>FormCaptcha</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="..\..\VK.LongPollServer.pas"/>
         <DCCReference Include="..\..\VK.UserEvents.pas"/>
         <DCCReference Include="..\..\VK.GroupEvents.pas"/>
-        <DCCReference Include="..\..\Forms\VK.OAuth2.pas">
-            <Form>FormOAuth2</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="..\..\VK.CommonUtils.pas"/>
         <DCCReference Include="..\..\VK.Uploader.pas"/>
         <DCCReference Include="..\..\Controllers\VK.Account.pas"/>
