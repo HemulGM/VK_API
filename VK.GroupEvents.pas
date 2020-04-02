@@ -27,7 +27,7 @@ type
     AdminId: integer;
     UserId: integer;
     UnblockDate: TDateTime;
-    Reason: TUserBlockReason;
+    Reason: TVkUserBlockReason;
     Comment: string;
   end;
 
@@ -80,7 +80,7 @@ type
 
   TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; EventId: string) of object;
 
-  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TGroupJoinType; EventId: string) of object;
+  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId: string) of object;
 
   TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string) of object;
 
@@ -705,7 +705,7 @@ end;
 procedure TCustomGroupEvents.DoGroupJoin(GroupId: Integer; EventObject: TJSONValue; EventId: string);
 var
   UserId: Integer;
-  JoinType: TGroupJoinType;
+  JoinType: TVkGroupJoinType;
 begin
   if Assigned(FOnGroupJoin) then
   begin
@@ -1003,7 +1003,7 @@ begin
     Info.AdminId := EventObject.GetValue<Integer>('admin_id', -1);
     Info.UserId := EventObject.GetValue<Integer>('user_id', -1);
     Info.UnblockDate := UnixToDateTime(EventObject.GetValue<Integer>('unblock_date ', 0), False);
-    Info.Reason := TUserBlockReason(EventObject.GetValue<Integer>('reason', 0));
+    Info.Reason := TVkUserBlockReason(EventObject.GetValue<Integer>('reason', 0));
     Info.Comment := EventObject.GetValue<string>('comment', '');
     FOnUserBlock(Self, GroupId, Info, EventId);
   end;

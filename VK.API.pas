@@ -381,7 +381,7 @@ var
   ATokenExpiry: Int64;
 begin
   Result := False;
-  FOAuth2Authenticator.AccessToken := EmptyStr;
+  //FOAuth2Authenticator.AccessToken := EmptyStr;
   FOAuth2Authenticator.ClientID := FAppID;
   FOAuth2Authenticator.ClientSecret := FAppKey;
   FOAuth2Authenticator.ResponseType := TOAuth2ResponseType.rtTOKEN;

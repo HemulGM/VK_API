@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.User,
-  VK.Entity.Group;
+  VK.Entity.Group, VK.Types;
 
 type
   TVkChatAccess = class
@@ -84,11 +84,18 @@ type
     FId: Integer;
     FLocal_id: Integer;
     FType: string;
+    function GetType: TVkPeerType;
+    procedure SetType(const Value: TVkPeerType);
+    function GetIsChat: Boolean;
+    function GetIsGroup: Boolean;
+    function GetIsUser: Boolean;
   public
     property Id: Integer read FId write FId;
     property LocalId: Integer read FLocal_id write FLocal_id;
-    property&Type: string read FType write FType;
-    {user, chat}
+    property&Type: TVkPeerType read GetType write SetType;
+    property IsUser: Boolean read GetIsUser;
+    property IsGroup: Boolean read GetIsGroup;
+    property IsChat: Boolean read GetIsChat;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPeer;
   end;
@@ -107,6 +114,7 @@ type
     FCan_send_money: Boolean;
     FCan_receive_money: Boolean;
     function GetIsChat: Boolean;
+    function GetIsUser: Boolean;
   public
     property CanWrite: TVkCanWrite read FCan_write write FCan_write;
     property ChatSettings: TVkChatSettings read FChat_settings write FChat_settings;
@@ -120,6 +128,7 @@ type
     property CanSendMoney: Boolean read FCan_send_money write FCan_send_money;
     property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
     property IsChat: Boolean read GetIsChat;
+    property IsUser: Boolean read GetIsUser;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -165,6 +174,7 @@ type
     FConversations: TArray<TVkConversation>;
     FProfiles: TArray<TVkUser>;
     FSaveMessages: Boolean;
+    FGroups: TArray<TVkGroup>;
     procedure SetSaveObjects(const Value: Boolean);
     procedure SetSaveMessages(const Value: Boolean);
   public
@@ -172,6 +182,7 @@ type
     property Count: Integer read FCount write FCount;
     property Conversations: TArray<TVkConversation> read FConversations write FConversations;
     property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     property SaveMessages: Boolean read FSaveMessages write SetSaveMessages;
     constructor Create;
@@ -236,6 +247,31 @@ end;
 
 {TVkPeer}
 
+function TVkPeer.GetIsChat: Boolean;
+begin
+  Result := PeerIdIsChat(FId);
+end;
+
+function TVkPeer.GetIsGroup: Boolean;
+begin
+  Result := PeerIdIsGroup(FId);
+end;
+
+function TVkPeer.GetIsUser: Boolean;
+begin
+  Result := PeerIdIsUser(FId);
+end;
+
+function TVkPeer.GetType: TVkPeerType;
+begin
+  Result := TVkPeerType.Create(FType);
+end;
+
+procedure TVkPeer.SetType(const Value: TVkPeerType);
+begin
+  FType := Value.ToConst;
+end;
+
 function TVkPeer.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
@@ -276,7 +312,12 @@ end;
 
 function TVkConversation.GetIsChat: Boolean;
 begin
-  Result := Peer.&Type = 'chat';
+  Result := Peer.&Type = ptChat;
+end;
+
+function TVkConversation.GetIsUser: Boolean;
+begin
+  Result := Peer.&Type = ptUser;
 end;
 
 { TVkConversationItem }
@@ -348,6 +389,7 @@ destructor TVkMessageHistory.Destroy;
 var
   LItemsItem: TVkMessage;
   LuserItem: TVkUser;
+  LgroupItem: TVkGroup;
   LconversationItem: TVkConversation;
 begin
   if not FSaveObjects then
@@ -360,6 +402,9 @@ begin
 
     for LuserItem in FProfiles do
       LuserItem.Free;
+
+    for LgroupItem in FGroups do
+      LgroupItem.Free;
 
     for LconversationItem in FConversations do
       LconversationItem.Free;

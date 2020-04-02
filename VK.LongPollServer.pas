@@ -3,9 +3,8 @@ unit VK.LongPollServer;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, VK.Handler,
-  System.Generics.Collections;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client,
+  System.JSON, System.Net.HttpClient, VK.Types, VK.Handler, System.Generics.Collections;
 
 type
   TLongPollData = record
@@ -241,7 +240,7 @@ begin
     begin
       FLongPollStopped := False;
       HTTP := THTTPClient.Create;
-      Stream := TStringStream.Create;
+      Stream := TStringStream.Create('', TEncoding.UTF8);
       try
         while (not TThread.Current.CheckTerminated) and (not FLongPollNeedStop) do
         begin
@@ -256,7 +255,8 @@ begin
               TThread.Synchronize(TThread.Current,
                 procedure
                 begin
-                  DoError(TVkLongPollServerHTTPException.Create('HTTP error, status code: ' + ReqCode.ToString));
+                  DoError(TVkLongPollServerHTTPException.Create('HTTP error, status code: ' +
+                    ReqCode.ToString));
                 end);
             end;
           end;
@@ -268,7 +268,8 @@ begin
           begin
             //Парсим данные
             try
-              JSON := TJSONObject.ParseJSONValue(UTF8ToString(Stream.DataString));
+              Stream.Position := 0;
+              JSON := TJSONObject.ParseJSONValue(Stream.DataString);
             except
               JSON := nil;
             end;
@@ -303,7 +304,8 @@ begin
                     begin
                       if not QueryLongPollServer then
                       begin
-                        DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: ' + Stream.DataString));
+                        DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: '
+                          + Stream.DataString));
                       end;
                     end;
                   end);
@@ -321,7 +323,8 @@ begin
                 begin
                   if not QueryLongPollServer then
                   begin
-                    DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: ' + Stream.DataString));
+                    DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: '
+                      + Stream.DataString));
                   end;
                 end;
               end);
@@ -355,7 +358,9 @@ begin
     end;
     FThread.Free;
     FThread := nil;
-  end;
+  end
+  else
+    FLongPollNeedStop := False;
 end;
 
 { TLongPollData }

@@ -39,7 +39,9 @@ type
     procedure ProcError(Msg: string); overload;
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure SetOnError(const Value: TOnVKError);
+    {$IFDEF FULLLOG}
     procedure FLog(const Value: string);
+    {$ENDIF}
     procedure SetOnLog(const Value: TOnLog);
     procedure SetUseServiceKeyOnly(const Value: Boolean);
     procedure SetOwner(const Value: TObject);
@@ -297,11 +299,13 @@ begin
   end;
 end;
 
+{$IFDEF FULLLOG}
 procedure TVkHandler.FLog(const Value: string);
 begin
   if Assigned(FOnLog) then
     FOnLog(Self, Value);
 end;
+{$ENDIF}
 
 function TVkHandler.GetExecuting: Boolean;
 begin

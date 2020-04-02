@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
-  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.User;
+  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.User,
+  VK.Entity.Group;
 
 type
   TMessagesController = class;
@@ -49,6 +50,16 @@ type
     function StartMessageId(Value: Integer): Integer;
   end;
 
+  TParamGet = record
+    List: TParams;
+    function MessageIds(Value: TIds): Integer; overload;
+    function MessageIds(Value: Integer): Integer; overload;
+    function PreviewLength(Value: Integer): Integer;
+    function Extended(Value: Boolean): Integer;
+    function Fields(Value: string): Integer;
+    function GroupId(Value: Integer): Integer;
+  end;
+
   TParamMessageHistory = record
     List: TParams;
     function Offset(Value: Integer): Integer;
@@ -80,21 +91,24 @@ type
     /// <param name="UserId">Ид пользователя</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
+    function SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray = []):
+      Integer; overload;
     /// <summary>
     /// Отправить сообщение пользователю
     /// </summary>
     /// <param name="UserDomain">Короткий адрес пользователя (например, illarionov)</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToUser(UserDomain: string; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
+    function SendToUser(UserDomain: string; Message: string; Attachments: TAttachmentArray = []):
+      Integer; overload;
     /// <summary>
     /// Отправить сообщение в беседу
     /// </summary>
     /// <param name="ChatId">Ид беседы</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
+    function SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray = []):
+      Integer; overload;
     /// <summary>
     /// Отправить сообщение нескольким пользователям (Доступно только для ключа доступа сообщества)
     /// </summary>
@@ -109,36 +123,80 @@ type
     /// </summary>
     /// <returns>Возвращает конструктор сообщений. Метод Send в этом конструкторе, возвращает результат в виде класса</returns>
     function New: TNewMessage; overload;
-    //
-    function GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength: Integer = 0; GroupId:
+    /// <summary>
+    /// Возвращает сообщения по их идентификаторам.
+    /// </summary>
+    /// <param name="var Messages: TVkMessages">Список сообщений</param>
+    /// <param name="Params: TParamGet">Параметры</param>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
+    function GetById(var Messages: TVkMessages; Params: TParamGet): Boolean; overload;
+    /// <summary>
+    /// Возвращает сообщения по их идентификаторам.
+    /// </summary>
+    /// <param name="var Messages: TVkMessages">Список сообщений</param>
+    /// <param name="Ids: TIds">Идентификаторы сообщений</param>
+    /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
+    /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
+    function GetById(var Messages: TVkMessages; Ids: TIds; PreviewLength: Integer = 0; GroupId:
       Integer = 0): Boolean; overload;
-    //
-    function GetById(Id: Integer; var Message: TVkMessage; var Profiles: TArray<TVkUser>;
-      PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
-    function GetById(Id: Integer; var Message: TVkMessage; PreviewLength: Integer = 0; GroupId:
+    /// <summary>
+    /// Возвращает сообщение по идентификатору.
+    /// </summary>
+    /// <param name="var Message: TVkMessages">Сообщение</param>
+    /// <param name="var Profiles: TArray(TVkUser)">Список профилей (Extended)</param>
+    /// <param name="var Groups: TArray(TVkGroup)">Список групп (Extended)</param>
+    /// <param name="Id: TId">Идентификатор сообщения</param>
+    /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
+    /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
+    function GetById(var Message: TVkMessage; var Profiles: TArray<TVkUser>; var Groups: TArray<
+      TVkGroup>; Id: Integer; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
+    /// <summary>
+    /// Возвращает сообщение по идентификатору.
+    /// </summary>
+    /// <param name="var Message: TVkMessages">Сообщение</param>
+    /// <param name="Id: TId">Идентификатор сообщения</param>
+    /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
+    /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
+    function GetById(var Message: TVkMessage; Id: Integer; PreviewLength: Integer = 0; GroupId:
       Integer = 0): Boolean; overload;
-    //
+    /// <summary>
+    /// Добавляет в мультидиалог нового пользователя.
+    /// </summary>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function AddChatUser(ChatId, UserId: Integer; VisibleMessagesCount: Integer = 0): Boolean;
     /// <summary>
     /// Удаляет сообщения
     /// </summary>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function Delete(MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam:
       Boolean = False): Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function Delete(MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam:
       Boolean = False): Boolean; overload;
     /// <summary>
     /// Получает ссылку для приглашения пользователя в беседу.
     /// Только создатель беседы имеет доступ к ссылке на беседу.
     /// </summary>
-    function GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean = False; GroupId: Integer = 0): Boolean;
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
+    function GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean = False; GroupId:
+      Integer = 0): Boolean;
     /// <summary>
-    /// Возвращает список бесед пользователя
+    /// Возвращает список бесед пользователя.
     /// </summary>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetConversations(var Conversations: TVkConversationItems; Params: TParamConversation): Boolean;
-    //
+    /// <summary>
+    /// Возвращает историю сообщений для указанного диалога.
+    /// </summary>
+    /// <param name="var History: TVkMessageHistory">История</param>
+    /// <param name="Params: TParamMessageHistory">Параметры</param>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory): Boolean; overload;
   end;
 
@@ -238,31 +296,42 @@ begin
   Result := Delete([MessageId], GroupID, DeleteForAll, Spam);
 end;
 
-function TMessagesController.GetById(Id: Integer; var Message: TVkMessage; PreviewLength, GroupId: Integer): Boolean;
+function TMessagesController.GetById(var Message: TVkMessage; Id: Integer; PreviewLength, GroupId:
+  Integer): Boolean;
 var
   Profiles: TArray<TVkUser>;
+  Groups: TArray<TVkGroup>;
+  LUserItem: TVkUser;
+  LGroupItem: TVkGroup;
 begin
-  Result := GetById(Id, Message, Profiles, PreviewLength, GroupId);
+  Result := GetById(Message, Profiles, Groups, Id, PreviewLength, GroupId);
+
+  for LUserItem in Profiles do
+    LUserItem.Free;
+  for LGroupItem in Groups do
+    LGroupItem.Free;
 end;
 
-function TMessagesController.GetById(Id: Integer; var Message: TVkMessage; var Profiles: TArray<
-  TVkUser>; PreviewLength, GroupId: Integer): Boolean;
+function TMessagesController.GetById(var Message: TVkMessage; var Profiles: TArray<TVkUser>; var
+  Groups: TArray<TVkGroup>; Id: Integer; PreviewLength, GroupId: Integer): Boolean;
 var
-  Params: TParams;
+  Params: TParamGet;
   Items: TVkMessages;
 begin
-  Params.Add(['message_ids', Id.ToString]);
+  Params.MessageIds([Id]);
   if PreviewLength > 0 then
-    Params.Add(['preview_length', PreviewLength.ToString]);
+    Params.PreviewLength(PreviewLength);
   if GroupId <> 0 then
-    Params.Add(['group_id', GroupId.ToString]);
-  Result := GetById([Id], Items, PreviewLength, GroupId);
+    Params.GroupId(GroupId);
+  Params.Extended(True);
+  Result := GetById(Items, Params);
   if Result then
   begin
     if Length(Items.Items) > 0 then
     begin
       Message := Items.Items[0];
       Profiles := Items.Profiles;
+      Groups := Items.Groups;
       Items.SaveObjects := True;
       Items.Free;
     end
@@ -271,16 +340,22 @@ begin
   end;
 end;
 
-function TMessagesController.GetById(Ids: TIds; var Messages: TVkMessages; PreviewLength, GroupId: Integer): Boolean;
+function TMessagesController.GetById(var Messages: TVkMessages; Ids: TIds; PreviewLength, GroupId:
+  Integer): Boolean;
 var
-  Params: TParams;
+  Params: TParamGet;
 begin
-  Params.Add(['message_ids', Ids.ToString]);
+  Params.MessageIds(Ids);
   if PreviewLength > 0 then
-    Params.Add(['preview_length', PreviewLength.ToString]);
+    Params.PreviewLength(PreviewLength);
   if GroupId > 0 then
-    Params.Add(['group_id', GroupId.ToString]);
-  with Handler.Execute('messages.getById', Params) do
+    Params.GroupId(GroupId);
+  Result := GetById(Messages, Params);
+end;
+
+function TMessagesController.GetById(var Messages: TVkMessages; Params: TParamGet): Boolean;
+begin
+  with Handler.Execute('messages.getById', Params.List) do
   begin
     Result := Success;
     if Result then
@@ -309,7 +384,8 @@ begin
   end;
 end;
 
-function TMessagesController.GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory): Boolean;
+function TMessagesController.GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory):
+  Boolean;
 begin
   with Handler.Execute('messages.getHistory', Params.List) do
   begin
@@ -353,15 +429,16 @@ begin
   Result := TNewMessage.Create(Self);
 end;
 
-function TMessagesController.SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray): Integer;
+function TMessagesController.SendToChat(ChatId: Integer; Message: string; Attachments:
+  TAttachmentArray): Integer;
 var
   Params: TParams;
 begin
-  Params.Add(['chat_id', ChatId.ToString]);
-  Params.Add(['message', Message]);
-  Params.Add(['random_id', GetRandomId.ToString]);
+  Params.Add('chat_id', ChatId);
+  Params.Add('message', Message);
+  Params.Add('random_id', GetRandomId);
   if Length(Attachments) <> 0 then
-    Params.Add(['attachment', Attachments.ToString]);
+    Params.Add('attachment', Attachments.ToString);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -378,11 +455,11 @@ function TMessagesController.SendToUser(UserDomain, Message: string; Attachments
 var
   Params: TParams;
 begin
-  Params.Add(['domian', UserDomain]);
-  Params.Add(['message', Message]);
-  Params.Add(['random_id', GetRandomId.ToString]);
+  Params.Add('domian', UserDomain);
+  Params.Add('message', Message);
+  Params.Add('random_id', GetRandomId);
   if Length(Attachments) <> 0 then
-    Params.Add(['attachment', Attachments.ToString]);
+    Params.Add('attachment', Attachments.ToString);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -400,11 +477,11 @@ function TMessagesController.SendToUsers(UserIds: TUserIds; Message: string; Att
 var
   Params: TParams;
 begin
-  Params.Add(['user_ids', UserIds.ToString]);
-  Params.Add(['message', Message]);
-  Params.Add(['random_id', GetRandomId.ToString]);
+  Params.Add('user_ids', UserIds.ToString);
+  Params.Add('message', Message);
+  Params.Add('random_id', GetRandomId);
   if Length(Attachments) <> 0 then
-    Params.Add(['attachment', Attachments.ToString]);
+    Params.Add('attachment', Attachments.ToString);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -417,15 +494,16 @@ begin
   end;
 end;
 
-function TMessagesController.SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray): Integer;
+function TMessagesController.SendToUser(UserId: Integer; Message: string; Attachments:
+  TAttachmentArray): Integer;
 var
   Params: TParams;
 begin
-  Params.Add(['user_id', UserId.ToString]);
-  Params.Add(['message', Message]);
-  Params.Add(['random_id', GetRandomId.ToString]);
+  Params.Add('user_id', UserId);
+  Params.Add('message', Message);
+  Params.Add('random_id', GetRandomId);
   if Length(Attachments) <> 0 then
-    Params.Add(['attachment', Attachments.ToString]);
+    Params.Add('attachment', Attachments.ToString);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -449,7 +527,7 @@ function TNewMessage.Send: TVkMessageSendResponses;
 var
   Value: Integer;
 begin
-  FParams.Add('random_id', GetRandomId.ToString);
+  FParams.Add('random_id', GetRandomId);
   with Handler.Execute('messages.send', Params) do
   begin
     if not Success then
@@ -472,19 +550,19 @@ end;
 
 function TNewMessage.DisableMentions(Value: Boolean): TNewMessage;
 begin
-  Params.Add('disable_mentions', BoolToString(Value));
+  Params.Add('disable_mentions', Value);
   Result := Self;
 end;
 
 function TNewMessage.DontParseLinks(Value: Boolean): TNewMessage;
 begin
-  Params.Add('dont_parse_links', BoolToString(Value));
+  Params.Add('dont_parse_links', Value);
   Result := Self;
 end;
 
 function TNewMessage.StickerId(Id: Integer): TNewMessage;
 begin
-  Params.Add('sticker_id', Id.ToString);
+  Params.Add('sticker_id', Id);
   Result := Self;
 end;
 
@@ -496,7 +574,7 @@ end;
 
 function TNewMessage.GroupID(Id: Integer): TNewMessage;
 begin
-  Params.Add('group_id', Id.ToString);
+  Params.Add('group_id', Id);
   Result := Self;
 end;
 
@@ -520,7 +598,7 @@ end;
 
 function TNewMessage.ChatId(Id: Integer): TNewMessage;
 begin
-  Params.Add('chat_id', Id.ToString);
+  Params.Add('chat_id', Id);
   Result := Self;
 end;
 
@@ -538,13 +616,13 @@ end;
 
 function TNewMessage.PeerId(Id: Integer): TNewMessage;
 begin
-  Params.Add('peer_id', Id.ToString);
+  Params.Add('peer_id', Id);
   Result := Self;
 end;
 
 function TNewMessage.ReplyTo(Id: Integer): TNewMessage;
 begin
-  Params.Add('reply_to', Id.ToString);
+  Params.Add('reply_to', Id);
   Result := Self;
 end;
 
@@ -556,7 +634,7 @@ end;
 
 function TNewMessage.UserId(Id: Integer): TNewMessage;
 begin
-  Params.Add('user_id', Id.ToString);
+  Params.Add('user_id', Id);
   Result := Self;
 end;
 
@@ -653,6 +731,38 @@ end;
 function TParamMessageHistory.UserId(Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
+end;
+
+{ TParamGet }
+
+function TParamGet.Extended(Value: Boolean): Integer;
+begin
+  Result := List.Add('extended', Value);
+end;
+
+function TParamGet.Fields(Value: string): Integer;
+begin
+  Result := List.Add('fields', Value);
+end;
+
+function TParamGet.GroupID(Value: Integer): Integer;
+begin
+  Result := List.Add('group_id', Value);
+end;
+
+function TParamGet.MessageIds(Value: Integer): Integer;
+begin
+  Result := List.Add('message_ids', Value);
+end;
+
+function TParamGet.MessageIds(Value: TIds): Integer;
+begin
+  Result := List.Add('message_ids', Value);
+end;
+
+function TParamGet.PreviewLength(Value: Integer): Integer;
+begin
+  Result := List.Add('preview_length', Value);
 end;
 
 end.

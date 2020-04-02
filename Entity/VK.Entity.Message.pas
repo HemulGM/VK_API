@@ -3,8 +3,8 @@ unit VK.Entity.Message;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media,
-  VK.Entity.Keyboard, VK.Entity.ClientInfo, VK.Entity.User;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Entity.Keyboard,
+  VK.Entity.ClientInfo, VK.Entity.User, VK.Entity.Group;
 
 type
   TVkMessageSendResponse = class
@@ -112,6 +112,7 @@ type
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
     property&Out: Boolean read GetOut write SetOut;
+    function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMessage;
@@ -123,10 +124,12 @@ type
     FCount: Integer;
     FSaveObjects: Boolean;
     FProfiles: TArray<TVkUser>;
+    FGroups: TArray<TVkGroup>;
     procedure SetSaveObjects(const Value: Boolean);
   public
     property Items: TArray<TVkMessage> read FItems write FItems;
     property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkMessages);
@@ -139,7 +142,7 @@ type
 implementation
 
 uses
-  SysUtils, DateUtils, VK.CommonUtils;
+  SysUtils, DateUtils, VK.CommonUtils, VK.Types;
 
 {TVkMessageAction}
 
@@ -210,6 +213,24 @@ begin
   except
     Exit(nil);
   end;
+end;
+
+function TVkMessage.GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
+var
+  i, c: Integer;
+begin
+  c := -1;
+  Result := False;
+  for i := Low(FAttachments) to High(FAttachments) do
+    if FAttachments[i].&Type in [atPhoto, atVideo] then
+    begin
+      Inc(c);
+      if c = Index then
+      begin
+        Url := FAttachments[i].GetPreviewUrl;
+        Exit(True);
+      end;
+    end;
 end;
 
 procedure TVkMessage.SetDate(const Value: TDateTime);
@@ -291,11 +312,17 @@ end;
 destructor TVkMessages.Destroy;
 var
   LItemsItem: TVkMessage;
+  LGroupItem: TVkGroup;
+  LUserItem: TVkUser;
 begin
   if not FSaveObjects then
   begin
     for LItemsItem in FItems do
       LItemsItem.Free;
+    for LUserItem in FProfiles do
+      LUserItem.Free;
+    for LGroupItem in FGroups do
+      LGroupItem.Free;
   end;
 
   inherited;

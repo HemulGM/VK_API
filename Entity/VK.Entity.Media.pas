@@ -41,8 +41,10 @@ type
     FAlbum: TVkPhotoAlbum;
     FPretty_cards: TVkPrettyCards;
     FEvent: TVkEvent;
+    function GetType: TVkAttachmentType;
+    procedure SetType(const Value: TVkAttachmentType);
   public
-    property&Type: string read FType write FType;
+    property&Type: TVkAttachmentType read GetType write SetType;
     property Link: TVkLink read FLink write FLink;
     property PostedPhoto: TVkPostedPhoto read FPosted_photo write FPosted_photo;
     property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
@@ -64,6 +66,7 @@ type
     property Album: TVkPhotoAlbum read FAlbum write FAlbum;
     property PrettyCards: TVkPrettyCards read FPretty_cards write FPretty_cards;
     property Event: TVkEvent read FEvent write FEvent;
+    function GetPreviewUrl: string;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -185,6 +188,8 @@ type
     class function FromJsonString(AJsonString: string): TVkPost;
   end;
 
+  TVkAttachments = TArray<TVkAttachment>;
+
 function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArray<string>;
 
 implementation
@@ -268,6 +273,44 @@ end;
 class function TVkAttachment.FromJsonString(AJsonString: string): TVkAttachment;
 begin
   result := TJson.JsonToObject<TVkAttachment>(AJsonString);
+end;
+
+function TVkAttachment.GetPreviewUrl: string;
+begin
+  case&Type of
+    atPhoto:
+      Exit(Self.FPhoto.Sizes[4].Url);
+    atVideo:
+      Exit(Self.FVideo.Image[4].Url);
+    atAudio:
+      Exit('');
+    atDoc:
+      Exit('');
+    atLink:
+      Exit('');
+    atMarket:
+      Exit('');
+    atMarketAlbum:
+      Exit('');
+    atWall:
+      Exit('');
+    atWalReply:
+      Exit('');
+    atSticker:
+      Exit(Self.FSticker.Images[1].Url);
+    atGift:
+      Exit('');
+  end;
+end;
+
+function TVkAttachment.GetType: TVkAttachmentType;
+begin
+  Result := TVkAttachmentType.Create(FType);
+end;
+
+procedure TVkAttachment.SetType(const Value: TVkAttachmentType);
+begin
+  FType := Value.ToConst;
 end;
 
 { TVkComment }

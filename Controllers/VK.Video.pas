@@ -27,14 +27,20 @@ uses
 function TVideoController.Save(var VideoSaved: TVkVideoSaved; Link: string): Boolean;
 var
   Params: TParams;
-  Url, SaveResp: string;
+  SaveResp: string;
 begin
   Params.Add('link', Link);
+  Result := False;
   with Handler.Execute('video.save', Params) do
   begin
     if Success then
     begin
-      VideoSaved := TVkVideoSaved.FromJsonString(Response);
+      try
+        VideoSaved := TVkVideoSaved.FromJsonString(Response);
+        Result := True;
+      except
+        Result := False;
+      end;
     end;
   end;
   if Result then
