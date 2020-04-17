@@ -3,8 +3,8 @@ object FormCaptcha: TFormCaptcha
   Top = 0
   BorderStyle = bsDialog
   Caption = #1042#1074#1077#1076#1080#1090#1077' '#1082#1086#1076' '#1089' '#1082#1072#1088#1090#1080#1085#1082#1080
-  ClientHeight = 263
-  ClientWidth = 350
+  ClientHeight = 260
+  ClientWidth = 280
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object FormCaptcha: TFormCaptcha
     AlignWithMargins = True
     Left = 3
     Top = 30
-    Width = 344
+    Width = 274
     Height = 83
     Margins.Top = 30
     Align = alTop
@@ -97,22 +97,21 @@ object FormCaptcha: TFormCaptcha
       7181C0F4145159963AE861C11C1F6A924E6DF2793451400DB6398C83C8AE13C5
       334ADAE5A4064730B1F9A32C769E7B8A28AD296E4CF63B211A4314491A2A281C
       0518156A6FF8F7145159BEA505B7FAA35143FF001F14514016E8A28A633FFFD9}
+    ExplicitWidth = 344
   end
   object Panel1: TPanel
     Left = 0
-    Top = 204
-    Width = 350
+    Top = 201
+    Width = 280
     Height = 59
     Align = alBottom
     BevelOuter = bvNone
     Color = 16250871
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 176
-    ExplicitWidth = 315
     object ButtonFlatOK: TButton
       AlignWithMargins = True
-      Left = 238
+      Left = 168
       Top = 12
       Width = 100
       Height = 35
@@ -131,21 +130,18 @@ object FormCaptcha: TFormCaptcha
       ParentFont = False
       TabOrder = 0
       OnClick = ButtonFlatOKClick
-      ExplicitLeft = 203
     end
   end
   object EditEnter: TEdit
     AlignWithMargins = True
-    Left = 90
+    Left = 85
     Top = 126
-    Width = 170
+    Width = 110
     Height = 27
-    Margins.Left = 90
+    Margins.Left = 85
     Margins.Top = 10
-    Margins.Right = 90
+    Margins.Right = 85
     Align = alTop
     TabOrder = 0
-    ExplicitTop = 93
-    ExplicitWidth = 135
   end
 end

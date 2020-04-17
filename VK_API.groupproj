@@ -15,6 +15,9 @@
         <Projects Include="..\VKBotTemplate\VKBotApp.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Samples\VKBotTemplate.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -59,14 +62,23 @@
     <Target Name="VKBotApp:Make">
         <MSBuild Projects="..\VKBotTemplate\VKBotApp.dproj" Targets="Make"/>
     </Target>
+    <Target Name="VKBotTemplate">
+        <MSBuild Projects="Samples\VKBotTemplate.dproj"/>
+    </Target>
+    <Target Name="VKBotTemplate:Clean">
+        <MSBuild Projects="Samples\VKBotTemplate.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VKBotTemplate:Make">
+        <MSBuild Projects="Samples\VKBotTemplate.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="VKAuth;VKClean;VKComponents;VKBotApp"/>
+        <CallTarget Targets="VKAuth;VKClean;VKComponents;VKBotApp;VKBotTemplate"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="VKAuth:Clean;VKClean:Clean;VKComponents:Clean;VKBotApp:Clean"/>
+        <CallTarget Targets="VKAuth:Clean;VKClean:Clean;VKComponents:Clean;VKBotApp:Clean;VKBotTemplate:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="VKAuth:Make;VKClean:Make;VKComponents:Make;VKBotApp:Make"/>
+        <CallTarget Targets="VKAuth:Make;VKClean:Make;VKComponents:Make;VKBotApp:Make;VKBotTemplate:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

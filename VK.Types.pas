@@ -163,9 +163,9 @@ type
   TAttachmentArray = TArrayOfString;
 
   //‘лаги сообщений
-  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll,
-    mfHidden, mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1,
-    mfMedia, mfFixed, mfDeleted, mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
+  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden,
+    mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted,
+    mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
 
   TMessageFlagHelper = record helper for TMessageFlag
     function ToString: string; inline;
@@ -177,18 +177,20 @@ type
     function ToString: string; overload; inline;
   end;
 
+  {$WARNINGS OFF}
   MessageFlags = class
   public
     class function FlagDataToFlag(FlagData: Integer): TMessageFlag;
     class function Create(Data: Integer): TMessageFlags;
-    class function ToString(Flags: TMessageFlags): string; overload;
+    class function ToString(Flags: TMessageFlags): string;
   end;
+  {$WARNINGS ON}
 
   //∆анры музыки
-  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance,
-    agInstrumental, agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance,
-    agChanson, agEthnic, agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech,
-    agElectropopAndDisco, agOther);
+
+  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
+    agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
+    agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 
   TAudioGenreHelper = record helper for TAudioGenre
     function ToConst: Integer;
@@ -199,11 +201,10 @@ type
     class function Create(Value: Integer): TAudioGenre;
   end;
 
-  TVkUserField = (ufSex, ufBDate, ufCity, ufCountry, ufPhoto50, ufPhoto100, ufPhoto200Orig,
-    ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufOnlineMobile, ufLists,
-    ufDomain, ufHasMobile, ufContacts, ufConnections, ufSite, ufEducation, ufUniversities, ufSchools,
-    ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufStatus, ufLastSeen,
-    ufCommonCount, ufRelation, ufRelatives);
+  TVkUserField = (ufSex, ufBDate, ufCity, ufCountry, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig,
+    ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufOnlineMobile, ufLists, ufDomain, ufHasMobile, ufContacts, ufConnections,
+    ufSite, ufEducation, ufUniversities, ufSchools, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage,
+    ufStatus, ufLastSeen, ufCommonCount, ufRelation, ufRelatives);
 
   TVkMessageInfo = class
   private
@@ -289,15 +290,17 @@ type
     function ToString: string; overload; inline;
   end;
 
+  {$WARNINGS OFF}
   DialogFlags = class
     class function FlagDataToFlag(FlagData: Integer): TDialogFlag;
     class function Create(Data: Integer): TDialogFlags;
-    class function ToString(Flags: TDialogFlags): string; overload;
+    class function ToString(Flags: TDialogFlags): string;
   end;
+  {$WARNINGS ON}
 
   //»дентификатор типа изменени€ в чате
-  TChatChangeInfoType = (citNone, citName, citPic, citNewAdmin, citFixMessage, citJoin, citLeave,
-    citKick, citUnadmin);
+
+  TChatChangeInfoType = (citNone, citName, citPic, citNewAdmin, citFixMessage, citJoin, citLeave, citKick, citUnadmin);
 
   TChatChangeInfoTypeHelper = record helper for TChatChangeInfoType
     function ToString: string; overload; inline;
@@ -314,16 +317,16 @@ type
   end;
 
   //“ипы объектов
-  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment,
-    itVideoComment, itTopicComment, itMarketComment, itSitepage);
+  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment,
+    itTopicComment, itMarketComment, itSitepage);
 
   TVkItemTypeHelper = record helper for TVkItemType
     function ToConst: string; inline;
   end;
 
   //“ипы объектов
-  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum,
-    atWall, atWalReply, atSticker, atGift, atCall);
+  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWalReply,
+    atSticker, atGift, atCall, atAudioMessage);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToConst: string; inline;
@@ -354,8 +357,8 @@ type
   TVkBirthDateVisibility = (dvVisible, dvDayMonOnly, dvHidden);
 
   //ќтношени€
-  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated,
-    rnnActivelyLooking, rnInLove, rnCivilMarriage);
+  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove,
+    rnCivilMarriage);
    {0 Ч не указано.
     1 Ч не женат/не замужем;
     2 Ч есть друг/есть подруга;
@@ -452,8 +455,8 @@ type
 
   TOnLogin = procedure(Sender: TObject) of object;
 
-  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var
-    ChangePasswordHash: string) of object;
+  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash:
+    string) of object;
 
   TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
 
@@ -475,11 +478,9 @@ type
 
   TOnChangeDialogFlags = procedure(Sender: TObject; DialogChangeData: TDialogChangeData) of object;
 
-  TOnUserOnline = procedure(Sender: TObject; UserId: Integer; VkPlatform: TVkPlatform; TimeStamp:
-    TDateTime) of object;
+  TOnUserOnline = procedure(Sender: TObject; UserId: Integer; VkPlatform: TVkPlatform; TimeStamp: TDateTime) of object;
 
-  TOnUserOffline = procedure(Sender: TObject; UserId: Integer; InactiveUser: Boolean; TimeStamp:
-    TDateTime) of object;
+  TOnUserOffline = procedure(Sender: TObject; UserId: Integer; InactiveUser: Boolean; TimeStamp: TDateTime) of object;
 
   TOnReadMessages = procedure(Sender: TObject; Incoming: Boolean; PeerId, LocalId: Integer) of object;
 
@@ -487,8 +488,7 @@ type
 
   TOnChatChanged = procedure(Sender: TObject; const ChatId: Integer; IsSelf: Boolean) of object;
 
-  TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: Integer; TypeId: TChatChangeInfoType;
-    Info: Integer) of object;
+  TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: Integer; TypeId: TChatChangeInfoType; Info: Integer) of object;
 
   TOnUserTyping = procedure(Sender: TObject; UserId, ChatId: Integer) of object;
 
@@ -496,8 +496,7 @@ type
 
   TOnCountChange = procedure(Sender: TObject; Count: Integer) of object;
 
-  TOnNotifyChange = procedure(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil:
-    Integer) of object;
+  TOnNotifyChange = procedure(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer) of object;
 
   TOnUsersTyping = procedure(Sender: TObject; Data: TChatTypingData) of object;
 
@@ -538,7 +537,7 @@ var
     'iPad', 'Android', 'Windows Phone', 'Windows', 'Web');
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video',
     'audio', 'doc', 'link', 'market', 'market_album', 'wall', 'wall_reply',
-    'sticker', 'gift', 'call');
+    'sticker', 'gift', 'call', 'audio_message');
   VkPeerType: array[TVkPeerType] of string = ('', 'user', 'chat', 'group', 'email');
   VkNameCase: array[TVkNameCase] of string = ('nom', 'gen', 'dat', 'acc', 'ins', 'abl');
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo',
@@ -1234,6 +1233,7 @@ end;
 
 { TResponse }
 
+{$WARNINGS OFF}
 function TResponse.GetJSONValue: TJSONValue;
 begin
   if not JSON.IsEmpty then
@@ -1249,6 +1249,7 @@ begin
   else
     Result := nil;
 end;
+{$WARNINGS ON}
 
 { TVkAttachmentTypeHelper }
 

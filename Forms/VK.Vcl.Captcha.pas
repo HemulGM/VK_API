@@ -1,11 +1,10 @@
-unit VK.Captcha;
+unit VK.Vcl.Captcha;
 
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  Vcl.Imaging.jpeg, Vcl.ExtCtrls, Vcl.StdCtrls, VK.CommonUtils;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls,
+  Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.ExtCtrls, Vcl.StdCtrls, VK.CommonUtils;
 
 type
   TFormCaptcha = class(TForm)

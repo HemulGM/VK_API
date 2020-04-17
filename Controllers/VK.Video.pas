@@ -3,8 +3,8 @@ unit VK.Video;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Status, VK.Entity.Video.Save;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Status, VK.Entity.Video.Save;
 
 type
   TVideoController = class(TVkController)

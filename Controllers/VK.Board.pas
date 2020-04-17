@@ -3,8 +3,8 @@ unit VK.Board;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON, VK.Entity.Media;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Media;
 
 type
   TVkBoardCommentParams = record
@@ -28,8 +28,8 @@ type
     /// <param name="TopicId: Integer">Ид обсуждения</param>
     /// <param name="Message: string">Комментарий</param>
     /// <param name="Attachments: TAttachmentArray = []">Массив вложений</param>
-    function CreateComment(var Id: Integer; GroupId, TopicId: Integer; Message: string; Attachments:
-      TAttachmentArray = []): Boolean; overload;
+    function CreateComment(var Id: Integer; GroupId, TopicId: Integer; Message: string; Attachments: TAttachmentArray =
+      []): Boolean; overload;
     /// <summary>
     /// Добавляет новый комментарий в обсуждении
     /// </summary>
@@ -37,8 +37,7 @@ type
     /// <param name="TopicId: Integer">Ид обсуждения</param>
     /// <param name="Message: string">Комментарий</param>
     /// <param name="Attachments: TAttachmentArray = []">Массив вложений</param>
-    function CreateComment(GroupId, TopicId: Integer; Message: string; Attachments: TAttachmentArray
-      = []): Boolean; overload;
+    function CreateComment(GroupId, TopicId: Integer; Message: string; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Добавляет новый комментарий в обсуждении
     /// </summary>
@@ -46,8 +45,7 @@ type
     /// <param name="GroupId: Integer">Ид группы</param>
     /// <param name="TopicId: Integer">Ид обсуждения</param>
     /// <param name="Params: TVkBoardCommentParams">Параметры</param>
-    function CreateComment(var Id: Integer; GroupId, TopicId: Integer; Params: TVkBoardCommentParams):
-      Boolean; overload;
+    function CreateComment(var Id: Integer; GroupId, TopicId: Integer; Params: TVkBoardCommentParams): Boolean; overload;
     /// <summary>
     /// Добавляет новый комментарий в обсуждении
     /// </summary>
@@ -77,8 +75,7 @@ uses
 
 { TBoardController }
 
-function TBoardController.CreateComment(var Id: Integer; GroupId, TopicId: Integer; Params:
-  TVkBoardCommentParams): Boolean;
+function TBoardController.CreateComment(var Id: Integer; GroupId, TopicId: Integer; Params: TVkBoardCommentParams): Boolean;
 begin
   Id := -1;
   Params.GroupId(Abs(GroupId));
@@ -89,8 +86,8 @@ begin
   end;
 end;
 
-function TBoardController.CreateComment(var Id: Integer; GroupId, TopicId: Integer; Message: string;
-  Attachments: TAttachmentArray): Boolean;
+function TBoardController.CreateComment(var Id: Integer; GroupId, TopicId: Integer; Message: string; Attachments:
+  TAttachmentArray): Boolean;
 var
   Params: TVkBoardCommentParams;
 begin
@@ -102,8 +99,7 @@ begin
   Result := CreateComment(Id, GroupId, TopicId, Params);
 end;
 
-function TBoardController.CreateComment(GroupId, TopicId: Integer; Message: string; Attachments:
-  TAttachmentArray): Boolean;
+function TBoardController.CreateComment(GroupId, TopicId: Integer; Message: string; Attachments: TAttachmentArray): Boolean;
 var
   Id: Integer;
 begin

@@ -3,9 +3,9 @@ unit VK.Account;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Entity.Common, VK.Entity.AccountInfoRequest;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.AccountInfo,
+  VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
+  VK.Entity.AccountInfoRequest;
 
 type
   TVkRegisterDeviceParams = record
@@ -44,8 +44,8 @@ type
     function GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
     function Ban(const OwnerID: Integer): Boolean;
     function UnBan(const OwnerID: Integer): Boolean;
-    function ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid,
-      ChangePasswordHash, OldPassword: string): Boolean;
+    function ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword:
+      string): Boolean;
     function GetActiveOffers(var Offers: TVkActiveOffers; Offset: Integer; Count: Integer = 100): Boolean;
     function GetAppPermissions(var Mask: Int64; UserId: Integer): Boolean;
     function GetCounters(var Counters: TVkCounters; Filter: string = ''): Boolean;
@@ -64,8 +64,8 @@ implementation
 
 { TAccountController }
 
-function TAccountController.ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid,
-  ChangePasswordHash, OldPassword: string): Boolean;
+function TAccountController.ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid, ChangePasswordHash,
+  OldPassword: string): Boolean;
 begin
   Response := Handler.Execute('account.changePassword', [
     ['new_password', NewPassword],
@@ -75,8 +75,7 @@ begin
   Result := Response.Success;
 end;
 
-function TAccountController.GetActiveOffers(var Offers: TVkActiveOffers; Offset: Integer; Count:
-  Integer = 100): Boolean;
+function TAccountController.GetActiveOffers(var Offers: TVkActiveOffers; Offset: Integer; Count: Integer = 100): Boolean;
 begin
   if (Count > 100) or (Count < 0) then
     raise TVkWrongParamException.Create('Count - положительное число, по умолчанию 100, максимальное значение 100');
@@ -149,8 +148,7 @@ begin
     Result := Success and (Response = '1');
 end;
 
-function TAccountController.SaveProfileInfo(const Data: TVkProfileInfoParams; var Request:
-  TVkAccountInfoRequest): Boolean;
+function TAccountController.SaveProfileInfo(const Data: TVkProfileInfoParams; var Request: TVkAccountInfoRequest): Boolean;
 begin
   with Handler.Execute('account.saveProfileInfo', Data.List) do
   begin
@@ -200,8 +198,7 @@ begin
     Result := Success and (Response = '1');
 end;
 
-function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string;
-  Sound: Boolean): Boolean;
+function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
 var
   Params: TParams;
 begin

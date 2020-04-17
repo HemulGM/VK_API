@@ -34,8 +34,8 @@ type
     /// Возвращает список идентификаторов друзей пользователя или расширенную
     /// информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Users: TVkUsers; UserId: Integer = -1; Fields: string = ''; Order:
-      TVkFriendsSort = fsNone): Boolean; overload;
+    function Get(var Users: TVkUsers; UserId: Integer = -1; Fields: string = ''; Order: TVkFriendsSort = fsNone):
+      Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную
     /// информацию о друзьях пользователя (при использовании параметра fields).

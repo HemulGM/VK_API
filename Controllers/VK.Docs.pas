@@ -3,9 +3,8 @@ unit VK.Docs;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save,
-  VK.Entity.Video.Save;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Doc.Save, VK.Entity.Video.Save;
 
 type
   TVkDocUploadType = (dutDoc, dutAudioMessage);
@@ -28,7 +27,8 @@ type
     //
     function Save(var Doc: TVkDocSaved; FileData: string; Title, Tags: string; ReturnTags: Boolean = False): Boolean;
     //
-    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0; ReturnTags: Boolean = False): Boolean;
+    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0;
+      ReturnTags: Boolean = False): Boolean;
   end;
 
 implementation
@@ -114,7 +114,8 @@ begin
   end;
 end;
 
-function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
+function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer;
+  ReturnTags: Boolean): Boolean;
 var
   Url, Response: string;
 begin

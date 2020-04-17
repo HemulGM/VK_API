@@ -3,8 +3,8 @@ unit VK.Groups;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller,
-  VK.Types, VK.Entity.User, System.Classes, VK.Entity.Group;
+  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller, VK.Types,
+  VK.Entity.User, System.Classes, VK.Entity.Group;
 
 type
   TVkGetMembersParams = record

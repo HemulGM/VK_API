@@ -3,9 +3,8 @@ unit VK.Messages;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
-  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.User,
-  VK.Entity.Group;
+  System.SysUtils, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types, VK.Handler,
+  VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.User, VK.Entity.Group;
 
 type
   TMessagesController = class;
@@ -91,24 +90,21 @@ type
     /// <param name="UserId">Ид пользователя</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray = []):
-      Integer; overload;
+    function SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение пользователю
     /// </summary>
     /// <param name="UserDomain">Короткий адрес пользователя (например, illarionov)</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToUser(UserDomain: string; Message: string; Attachments: TAttachmentArray = []):
-      Integer; overload;
+    function SendToUser(UserDomain: string; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение в беседу
     /// </summary>
     /// <param name="ChatId">Ид беседы</param>
     /// <param name="Message">Текст сообщения</param>
     /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
-    function SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray = []):
-      Integer; overload;
+    function SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение нескольким пользователям (Доступно только для ключа доступа сообщества)
     /// </summary>
@@ -138,8 +134,7 @@ type
     /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
     /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function GetById(var Messages: TVkMessages; Ids: TIds; PreviewLength: Integer = 0; GroupId:
-      Integer = 0): Boolean; overload;
+    function GetById(var Messages: TVkMessages; Ids: TIds; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает сообщение по идентификатору.
     /// </summary>
@@ -150,8 +145,8 @@ type
     /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
     /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function GetById(var Message: TVkMessage; var Profiles: TArray<TVkUser>; var Groups: TArray<
-      TVkGroup>; Id: Integer; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
+    function GetById(var Message: TVkMessage; var Profiles: TArray<TVkUser>; var Groups: TArray<TVkGroup>; Id: Integer;
+      PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает сообщение по идентификатору.
     /// </summary>
@@ -160,8 +155,7 @@ type
     /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
     /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function GetById(var Message: TVkMessage; Id: Integer; PreviewLength: Integer = 0; GroupId:
-      Integer = 0): Boolean; overload;
+    function GetById(var Message: TVkMessage; Id: Integer; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Добавляет в мультидиалог нового пользователя.
     /// </summary>
@@ -171,21 +165,20 @@ type
     /// Удаляет сообщения
     /// </summary>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function Delete(MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam:
-      Boolean = False): Boolean; overload;
+    function Delete(MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam: Boolean = False):
+      Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function Delete(MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam:
-      Boolean = False): Boolean; overload;
+    function Delete(MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam: Boolean = False):
+      Boolean; overload;
     /// <summary>
     /// Получает ссылку для приглашения пользователя в беседу.
     /// Только создатель беседы имеет доступ к ссылке на беседу.
     /// </summary>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean = False; GroupId:
-      Integer = 0): Boolean;
+    function GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean = False; GroupId: Integer = 0): Boolean;
     /// <summary>
     /// Возвращает список бесед пользователя.
     /// </summary>
@@ -296,8 +289,7 @@ begin
   Result := Delete([MessageId], GroupID, DeleteForAll, Spam);
 end;
 
-function TMessagesController.GetById(var Message: TVkMessage; Id: Integer; PreviewLength, GroupId:
-  Integer): Boolean;
+function TMessagesController.GetById(var Message: TVkMessage; Id: Integer; PreviewLength, GroupId: Integer): Boolean;
 var
   Profiles: TArray<TVkUser>;
   Groups: TArray<TVkGroup>;
@@ -312,8 +304,8 @@ begin
     LGroupItem.Free;
 end;
 
-function TMessagesController.GetById(var Message: TVkMessage; var Profiles: TArray<TVkUser>; var
-  Groups: TArray<TVkGroup>; Id: Integer; PreviewLength, GroupId: Integer): Boolean;
+function TMessagesController.GetById(var Message: TVkMessage; var Profiles: TArray<TVkUser>; var Groups: TArray<TVkGroup
+  >; Id: Integer; PreviewLength, GroupId: Integer): Boolean;
 var
   Params: TParamGet;
   Items: TVkMessages;
@@ -340,8 +332,7 @@ begin
   end;
 end;
 
-function TMessagesController.GetById(var Messages: TVkMessages; Ids: TIds; PreviewLength, GroupId:
-  Integer): Boolean;
+function TMessagesController.GetById(var Messages: TVkMessages; Ids: TIds; PreviewLength, GroupId: Integer): Boolean;
 var
   Params: TParamGet;
 begin
@@ -365,8 +356,7 @@ begin
   end;
 end;
 
-function TMessagesController.GetConversations(var Conversations: TVkConversationItems; Params:
-  TParamConversation): Boolean;
+function TMessagesController.GetConversations(var Conversations: TVkConversationItems; Params: TParamConversation): Boolean;
 begin
   with Handler.Execute('messages.getConversations', Params.List) do
   begin
@@ -384,8 +374,7 @@ begin
   end;
 end;
 
-function TMessagesController.GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory):
-  Boolean;
+function TMessagesController.GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory): Boolean;
 begin
   with Handler.Execute('messages.getHistory', Params.List) do
   begin
@@ -397,8 +386,7 @@ begin
   end;
 end;
 
-function TMessagesController.GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean;
-  GroupId: Integer): Boolean;
+function TMessagesController.GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean; GroupId: Integer): Boolean;
 var
   Params: TParams;
   RespJSON: TJSONValue;
@@ -429,8 +417,7 @@ begin
   Result := TNewMessage.Create(Self);
 end;
 
-function TMessagesController.SendToChat(ChatId: Integer; Message: string; Attachments:
-  TAttachmentArray): Integer;
+function TMessagesController.SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray): Integer;
 var
   Params: TParams;
 begin
@@ -472,8 +459,8 @@ begin
   end;
 end;
 
-function TMessagesController.SendToUsers(UserIds: TUserIds; Message: string; Attachments:
-  TAttachmentArray): TVkMessageSendResponses;
+function TMessagesController.SendToUsers(UserIds: TUserIds; Message: string; Attachments: TAttachmentArray):
+  TVkMessageSendResponses;
 var
   Params: TParams;
 begin
@@ -494,8 +481,7 @@ begin
   end;
 end;
 
-function TMessagesController.SendToUser(UserId: Integer; Message: string; Attachments:
-  TAttachmentArray): Integer;
+function TMessagesController.SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray): Integer;
 var
   Params: TParams;
 begin

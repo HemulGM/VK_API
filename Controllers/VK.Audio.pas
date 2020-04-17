@@ -3,8 +3,8 @@ unit VK.Audio;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON, REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload;
 
 type
   TVkAudioParams = record
@@ -96,8 +96,8 @@ type
     /// <param name="GenreId: TAudioGenre">Жанр</param>
     /// <param name="Count: Integer">Количество</param>
     /// <param name="Offset: Integer">Смещение</param>
-    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TAudioGenre =
-      agNone; Count: Integer = 0; Offset: Integer = 0): Boolean; overload;
+    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TAudioGenre = agNone; Count: Integer =
+      0; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
@@ -327,8 +327,8 @@ begin
   end;
 end;
 
-function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TAudioGenre;
-  Count, Offset: Integer): Boolean;
+function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TAudioGenre; Count, Offset:
+  Integer): Boolean;
 var
   Params: TVkPopAudioParams;
 begin

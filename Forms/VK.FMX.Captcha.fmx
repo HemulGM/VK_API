@@ -1,33 +1,35 @@
 object FormFMXCaptcha: TFormFMXCaptcha
   Left = 0
   Top = 0
-  Caption = 'Form2'
-  ClientHeight = 284
-  ClientWidth = 350
+  Caption = #1042#1074#1077#1076#1080#1090#1077' '#1082#1086#1076' '#1089' '#1082#1072#1088#1090#1080#1085#1082#1080
+  ClientHeight = 260
+  ClientWidth = 280
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   DesignerMasterStyle = 0
   object Panel1: TPanel
     Align = Bottom
-    Position.Y = 225.000000000000000000
-    Size.Width = 350.000000000000000000
+    Position.Y = 201.000000000000000000
+    Size.Width = 280.000000000000000000
     Size.Height = 59.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
     object Button1: TButton
       Align = Right
+      StyledSettings = [Family, Style, FontColor]
       Margins.Left = 12.000000000000000000
       Margins.Top = 12.000000000000000000
       Margins.Right = 12.000000000000000000
       Margins.Bottom = 12.000000000000000000
-      Position.X = 242.000000000000000000
+      Position.X = 172.000000000000000000
       Position.Y = 12.000000000000000000
       Size.Width = 96.000000000000000000
       Size.Height = 35.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
       Text = #1054#1090#1087#1088#1072#1074#1080#1090#1100
+      TextSettings.Font.Size = 13.000000000000000000
       OnClick = Button1Click
     end
   end
@@ -492,12 +494,12 @@ object FormFMXCaptcha: TFormFMXCaptcha
       Align = Top
       TabOrder = 1
       TextSettings.Font.Size = 16.000000000000000000
-      Position.X = 30.000000000000000000
+      Position.X = 80.000000000000000000
       Position.Y = 128.000000000000000000
-      Margins.Left = 30.000000000000000000
+      Margins.Left = 80.000000000000000000
       Margins.Top = 15.000000000000000000
-      Margins.Right = 30.000000000000000000
-      Size.Width = 248.000000000000000000
+      Margins.Right = 80.000000000000000000
+      Size.Width = 148.000000000000000000
       Size.Height = 36.000000000000000000
       Size.PlatformDefault = False
       StyledSettings = [Family, FontColor]

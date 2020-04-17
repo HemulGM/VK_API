@@ -3,8 +3,8 @@ unit VK.Photos;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON, REST.Json, VK.Entity.Photo.Upload, VK.Entity.Photo;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  REST.Json, VK.Entity.Photo.Upload, VK.Entity.Photo;
 
 type
   TPhotosController = class(TVkController)

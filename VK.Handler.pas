@@ -3,9 +3,9 @@ unit VK.Handler;
 interface
 
 uses
-  System.Classes, System.SysUtils, FMX.Types,
+  System.Classes, System.SysUtils,
   {$IF DECLARED(FireMonkeyVersion)}
-  FMX.Forms,
+  FMX.Types, FMX.Forms,
   {$ELSE}
   Vcl.Forms,
   {$ENDIF}
@@ -271,7 +271,8 @@ begin
             end;
           6: //Превышено кол-во запросов в сек.
             begin
-              ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)', [FRequests, RequestLimit, FStartRequest]));
+              ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)', [FRequests,
+                RequestLimit, FStartRequest]));
               WaitTime(1000);
               Result := Execute(Request);
               Exit;

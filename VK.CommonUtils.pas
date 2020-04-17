@@ -56,7 +56,6 @@ begin
   {$ELSE}
   Result := DateTimeToMilliseconds(Now) + 1234567;
   {$ENDIF}
-
 end;
 
 function DownloadURL(URL: string): TMemoryStream;
@@ -110,5 +109,4 @@ begin
 end;
 
 end.
-
 

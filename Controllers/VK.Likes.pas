@@ -3,8 +3,7 @@ unit VK.Likes;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON;
 
 type
   TVkLikesCount = record
@@ -33,8 +32,7 @@ type
     /// <param name="ItemType: TVkItemType">Тип элемента</param>
     /// <param name="ItemId: Integer">ИД элемента</param>
     /// <param name="OwnerId: Integer">Владелец элемента</param>
-    function GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer; OwnerId:
-      Integer = 0): Boolean; overload;
+    function GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer; OwnerId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Получает список идентификаторов пользователей, которые добавили заданный объект в свой список Мне нравится.
     /// </summary>
@@ -43,8 +41,8 @@ type
     /// <param name="ItemId: Integer">ИД элемента</param>
     /// <param name="Copies: Boolean">Только репосты</param>
     /// <param name="OwnerId: Integer">Владелец элемента</param>
-    function GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer; Copies:
-      Boolean; OwnerId: Integer = 0): Boolean; overload;
+    function GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer; Copies: Boolean; OwnerId: Integer
+      = 0): Boolean; overload;
     /// <summary>
     /// Получает список идентификаторов пользователей, которые добавили заданный
     /// объект в свой список Мне нравится. Для виджетов
@@ -93,8 +91,8 @@ begin
   Result := GetList(Likes, Params);
 end;
 
-function TLikesController.GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer;
-  Copies: Boolean; OwnerId: Integer): Boolean;
+function TLikesController.GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer; Copies: Boolean;
+  OwnerId: Integer): Boolean;
 var
   Params: TVkLikesParams;
 begin

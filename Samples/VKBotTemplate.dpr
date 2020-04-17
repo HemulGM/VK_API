@@ -48,32 +48,34 @@ end;
 
 begin
   try
+    //Use
+    //TVkBot.GetInstance<TVkBotChat>.
+    //or
+    //TVkBotChat.GetInstance.
     //Найстрока бота
-    TVkBotChat.GetInstance<TVkBotChat>.OnInit :=
+    TVkBotChat.GetInstance.OnInit :=
       procedure(Bot: TVkBot)
       begin
-        AddText('Initializate...');
-
-        Bot.VK.Token := ''; //Укажите токен
+        Bot.Token := ''; //Укажите токен
         Bot.GroupId := 0;  //Укажите ид группы бота
       end;
 
     //Событие при закрытии бота
-    TVkBotChat.GetInstance<TVkBotChat>.OnDestroy :=
+    TVkBotChat.GetInstance.OnDestroy :=
       procedure(Bot: TVkBot)
       begin
         //DoSomething
       end;
 
     //Событие при возникновении ошибки
-    TVkBotChat.GetInstance<TVkBotChat>.OnError :=
+    TVkBotChat.GetInstance.OnError :=
       procedure(Bot: TVkBot; E: Exception; Code: Integer; Text: string)
       begin
         AddLine(Text, FOREGROUND_RED);
       end;
 
     //Событие нового сообщения
-    TVkBotChat.GetInstance<TVkBotChat>.OnMessage :=
+    TVkBotChat.GetInstance.OnMessage :=
       procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
       var
         NewMessage: TVkMessage;
@@ -97,7 +99,7 @@ begin
       end;
 
     //Событие редактирования сообщения
-    TVkBotChat.GetInstance<TVkBotChat>.OnMessageEdit :=
+    TVkBotChat.GetInstance.OnMessageEdit :=
       procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage)
       var
         NewMessage: TVkMessage;
@@ -121,8 +123,13 @@ begin
       end;
 
     //Запуск бота
-    if TVkBot.GetInstance<TVkBotChat>.Run then
-      AddLine('Done!', FOREGROUND_GREEN);
+    AddText('Initializate...');
+    if TVkBotChat.GetInstance.Run then
+      AddLine('Done!', FOREGROUND_GREEN)
+    else if TVkBotChat.GetInstance.VK.Token.IsEmpty then
+      AddLine('Error! Token Need', FOREGROUND_RED)
+    else
+      AddLine('Error!', FOREGROUND_RED);
 
     //Рабочий цикл
     while not Application.Terminated do
@@ -133,7 +140,7 @@ begin
     end;
 
     //Освобождение бота
-    TVkBot.GetInstance<TVkBotChat>.Free;
+    TVkBotChat.GetInstance.Free;
   except
     on E: Exception do
     begin

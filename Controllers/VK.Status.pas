@@ -3,8 +3,8 @@ unit VK.Status;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON, VK.Entity.Status;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Status;
 
 type
   TStatusController = class(TVkController)

@@ -3,11 +3,15 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client,
-  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
-  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
-  VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board,
-  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Utils, FMX.Types,
+  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
+  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
+  VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
+  VK.Utils, System.Types,
+  {$IF DECLARED(FireMonkeyVersion)}
+  VK.FMX.Captcha,
+  {$ELSE}
+  VK.Vcl.Captcha,
+  {$ENDIF}
   VK.Video;
 
 type
@@ -147,15 +151,9 @@ type
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient,
-  {$IF DECLARED(FireMonkeyVersion)}
-  VK.FMX.Captcha,
-  {$ELSE}
-  VK.Captcha,
-  {$ENDIF}
-  VK.Entity.AccountInfo;
+  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo;
 
-{ TVK }
+{ TCustomVK }
 
 procedure TCustomVK.CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback);
 var

@@ -106,7 +106,7 @@
         <DCCReference Include="IndyCore.dcp"/>
         <DCCReference Include="IndyIPClient.dcp"/>
         <DCCReference Include="fmx.dcp"/>
-        <DCCReference Include="Forms\VK.Captcha.pas">
+        <DCCReference Include="Forms\VK.Vcl.Captcha.pas">
             <Form>FormCaptcha</Form>
         </DCCReference>
         <DCCReference Include="Utils\pbInput.pas"/>
@@ -194,6 +194,7 @@
         <DCCReference Include="Controllers\VK.Utils.pas"/>
         <DCCReference Include="Controllers\VK.Video.pas"/>
         <DCCReference Include="VK.Bot.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Video.Save.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

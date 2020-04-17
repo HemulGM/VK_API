@@ -3,8 +3,8 @@ unit VK.Wall;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types,
-  VK.Entity.Audio, System.JSON, VK.Entity.Media, VK.Entity.CommentInfo;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Media, VK.Entity.CommentInfo;
 
 type
   TVkWallParams = record
@@ -54,8 +54,7 @@ type
     /// <summary>
     /// Позволяет создать запись на своей стене
     /// </summary>
-    function Post(var PostId: Integer; Message: string; OwnerId: Integer; Attachments:
-      TAttachmentArray = []): Boolean; overload;
+    function Post(var PostId: Integer; Message: string; OwnerId: Integer; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Позволяет создать запись на своей стене
     /// </summary>
@@ -79,8 +78,8 @@ type
     /// <summary>
     /// Добавляет комментарий к записи на стене.
     /// </summary>
-    function CreateComment(PostId: Integer; Message: string; OwnerId: Integer = 0; Attachments:
-      TAttachmentArray = []): Boolean; overload;
+    function CreateComment(PostId: Integer; Message: string; OwnerId: Integer = 0; Attachments: TAttachmentArray = []):
+      Boolean; overload;
   end;
 
 implementation
@@ -128,8 +127,7 @@ begin
   Result := Post(PostId, Message, OwnerId, Attachments);
 end;
 
-function TWallController.Post(var PostId: Integer; Message: string; OwnerId: Integer; Attachments:
-  TAttachmentArray): Boolean;
+function TWallController.Post(var PostId: Integer; Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
 var
   Params: TParams;
   JSONItem: TJSONValue;
@@ -175,8 +173,8 @@ begin
     CommentInfo.Free;
 end;
 
-function TWallController.CreateComment(PostId: Integer; Message: string; OwnerId: Integer;
-  Attachments: TAttachmentArray): Boolean;
+function TWallController.CreateComment(PostId: Integer; Message: string; OwnerId: Integer; Attachments: TAttachmentArray):
+  Boolean;
 var
   CommentInfo: TVkCommentInfo;
   Params: TVkCommentCreateParams;

@@ -3,9 +3,8 @@ unit VK.FMX.Captcha;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Edit,
-  FMX.Objects, FMX.Layouts, FMX.StdCtrls, FMX.Controls.Presentation;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, FMX.Types, FMX.Controls, FMX.Forms,
+  FMX.Graphics, FMX.Dialogs, FMX.Edit, FMX.Objects, FMX.Layouts, FMX.StdCtrls, FMX.Controls.Presentation;
 
 type
   TFormFMXCaptcha = class(TForm)

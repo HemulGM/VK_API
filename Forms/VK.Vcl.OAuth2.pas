@@ -3,9 +3,8 @@ unit VK.VCL.OAuth2;
 interface
 
 uses
-  Windows, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.OleCtrls, Vcl.StdCtrls, Vcl.ExtCtrls,
-  SHDocVw;
+  Windows, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.OleCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, SHDocVw;
 
 type
   TFormOAuth2 = class;
@@ -58,7 +57,7 @@ procedure FixIE;
 implementation
 
 uses
-  WinInet, Registry, UrlMon, DateUtils, System.Net.HttpClient, HGM.Common.Base64;
+  WinInet, Registry, UrlMon, DateUtils, System.Net.HttpClient;
 
 {$R *.dfm}
 
@@ -249,8 +248,9 @@ begin
 
   if not FProxyUserName.IsEmpty then
   begin
-    Base64EncodeStr(FProxyUserName + ':' + FProxyPassword, S);
-    Browser.Navigate2(AURL, EmptyParam{Flags}, EmptyParam{TargetFrameName}, EmptyParam{PostData}, 'Proxy-Authorization: BASIC ' + S + #13#10 + 'X-StopHandling: 1' + #13#10);
+    //Base64EncodeStr(FProxyUserName + ':' + FProxyPassword, S);
+    Browser.Navigate2(AURL, EmptyParam{Flags}, EmptyParam{TargetFrameName}, EmptyParam{PostData},
+      'Proxy-Authorization: BASIC ' + S + #13#10 + 'X-StopHandling: 1' + #13#10);
   end
   else
     Browser.Navigate(AURL);

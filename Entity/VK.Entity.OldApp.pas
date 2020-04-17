@@ -23,7 +23,7 @@ type
 
 implementation
 
-{TVkGraffiti}
+{TVkOldApp}
 
 function TVkOldApp.ToJsonString: string;
 begin

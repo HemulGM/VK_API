@@ -3,16 +3,16 @@ unit VK.Uploader;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, System.Net.Mime,
-  VK.Entity.Photo.Upload, VK.Entity.Audio.Upload;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON,
+  System.Net.HttpClient, VK.Types, System.Net.Mime, VK.Entity.Photo.Upload, VK.Entity.Audio.Upload;
 
 type
   TUploader = class
     function Upload(UploadUrl: string; FileName: string; var Response: string): Boolean; overload;
     function UploadPhotos(UploadUrl, FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
     function UploadAudio(UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean; overload;
-    function UploadPhotos(UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
+    function UploadPhotos(UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse):
+      Boolean; overload;
   end;
 
 implementation
@@ -121,7 +121,8 @@ begin
   end;
 end;
 
-function TUploader.UploadPhotos(UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse): Boolean;
+function TUploader.UploadPhotos(UploadUrl: string; Stream: TStream; FileName: string; var Response:
+  TVkPhotoUploadResponse): Boolean;
 var
   HTTP: THTTPClient;
   Data: TMultipartFormData;

@@ -3,8 +3,8 @@ unit VK.LongPollServer;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client,
-  System.JSON, System.Net.HttpClient, VK.Types, VK.Handler, System.Generics.Collections;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON,
+  System.Net.HttpClient, VK.Types, VK.Handler, System.Generics.Collections;
 
 type
   TLongPollData = record
@@ -67,9 +67,8 @@ const
 implementation
 
 uses
-  FMX.Types,
   {$IF DECLARED(FireMonkeyVersion)}
-  FMX.Forms,
+  FMX.Forms, FMX.Types,
   {$ELSE}
   Vcl.Forms,
   {$ENDIF}

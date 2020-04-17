@@ -3,8 +3,7 @@ unit VK.Utils;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, System.JSON;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON;
 
 type
   TUtilsController = class(TVkController)
