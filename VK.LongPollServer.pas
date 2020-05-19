@@ -67,7 +67,7 @@ const
 implementation
 
 uses
-  {$IF DECLARED(FireMonkeyVersion)}
+  {$IFDEF NEEDFMX}
   FMX.Forms, FMX.Types,
   {$ELSE}
   Vcl.Forms,

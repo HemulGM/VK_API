@@ -27,6 +27,7 @@ type
   TVkPlaylistParams = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
+    function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
   end;
 
@@ -474,6 +475,11 @@ end;
 function TVkPlaylistParams.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value.ToString);
+end;
+
+function TVkPlaylistParams.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
 end;
 
 function TVkPlaylistParams.OwnerId(Value: Integer): Integer;

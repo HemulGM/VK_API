@@ -340,6 +340,12 @@ type
     class function Create(Value: string): TVkPeerType; static;
   end;
 
+  TVkPostType = (ptSuggests, ptPostponed, ptOwner, ptOthers, ptAll);
+
+  TVkPostTypeHelper = record helper for TVkPostType
+    function ToConst: string; inline;
+  end;
+
   TVkNameCase = (ncNom, ncGen, ncDat, ncAcc, ncIns, ncAbl);
 
   TVkNameCaseHelper = record helper for TVkNameCase
@@ -549,6 +555,7 @@ var
     'Оскорбление участников', 'Мат', 'Разговоры не по теме');
   VKGroupJoinType: array[TVkGroupJoinType] of string = ('', 'join', 'unsure',
     'accepted', 'approved', 'request');
+  VKPostType: array[TVkPostType] of string = ('suggests', 'postponed', 'owner', 'others', 'all');
   VkUserField: array[TVkUserField] of string = ('sex', 'bdate', 'city', 'country', 'photo_50',
     'photo_100', 'photo_200_orig',
     'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig', 'online',
@@ -1283,6 +1290,13 @@ end;
 function TVkPeerTypeHelper.ToConst: string;
 begin
   Result := VkPeerType[Self];
+end;
+
+{ TVkPostTypeHelper }
+
+function TVkPostTypeHelper.ToConst: string;
+begin
+  Result := VKPostType[Self];
 end;
 
 end.

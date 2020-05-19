@@ -7,7 +7,7 @@ uses
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
   VK.Utils, System.Types,
-  {$IF DECLARED(FireMonkeyVersion)}
+  {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
   VK.Vcl.Captcha,
@@ -93,17 +93,20 @@ type
     procedure DoErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
     function Login: Boolean; overload;
     function Login(ALogin, APassword: string): Boolean; overload;
-    procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
-    procedure CallMethod(MethodName: string; Param: string; Value: string; Callback: TCallMethodCallback = nil); overload;
     procedure CallMethod(MethodName: string; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Param, Value: string; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethodAsync(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// ”ниверсальный метод, который позвол€ет запускать последовательность других методов, сохран€€ и фильтру€ промежуточные результаты.
     /// https://vk.com/dev/execute
     /// </summary>
     /// <param name="Code">код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагаетс€ совместимость с ECMAScript). јлгоритм должен завершатьс€ командой return %выражение%. ќператоры должны быть разделены точкой с зап€той. </param>
     function Execute(Code: string): TResponse;
+    procedure ExecuteAsync(Code: string; Callback: TCallMethodCallback = nil);
     procedure SetProxy(IP: string; Port: Integer; UserName: string = ''; Password: string = '');
     property PermissionsList: TPermissions read FPermissionsList write SetPermissionsList;
+    //Tools
     property Uploader: TUploader read FUploader;
     //√руппы методов
     property Account: TAccountController read FAccount;
@@ -166,7 +169,26 @@ begin
   end;
 end;
 
-procedure TCustomVK.CallMethod(MethodName: string; Param: string; Value: string; Callback: TCallMethodCallback);
+procedure TCustomVK.CallMethodAsync(MethodName: string; Params: TParams; Callback: TCallMethodCallback);
+begin
+  TThread.CreateAnonymousThread(
+    procedure
+    var
+      Response: TResponse;
+    begin
+      Response := Handler.Execute(MethodName, Params);
+      if Assigned(Callback) then
+      begin
+        TThread.Synchronize(nil,
+          procedure
+          begin
+            Callback(Response);
+          end);
+      end;
+    end).Start;
+end;
+
+procedure TCustomVK.CallMethod(MethodName: string; Param, Value: string; Callback: TCallMethodCallback);
 var
   Response: TResponse;
 begin
@@ -280,7 +302,7 @@ begin
   end
   else
   begin
-    {$IF DECLARED(FireMonkeyVersion)}
+    {$IFDEF NEEDFMX}
     TFormFMXCaptcha.Execute(CaptchaImg, Answer);
     {$ELSE}
     TFormCaptcha.Execute(CaptchaImg, Answer);
@@ -290,14 +312,19 @@ end;
 
 function TCustomVK.Execute(Code: string): TResponse;
 var
-  Resp: TResponse;
+  ExecuteResponse: TResponse;
 begin
   CallMethod('execute', [['code', Code]],
     procedure(Response: TResponse)
     begin
-      Resp := Response;
+      ExecuteResponse := Response;
     end);
-  Result := Resp;
+  Result := ExecuteResponse;
+end;
+
+procedure TCustomVK.ExecuteAsync(Code: string; Callback: TCallMethodCallback);
+begin
+  CallMethodAsync('execute', [['code', Code]], Callback);
 end;
 
 procedure TCustomVK.FLog(Sender: TObject; const Value: string);

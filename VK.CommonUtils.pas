@@ -85,8 +85,7 @@ var
 begin
   //Создание, открытие файла
   try
-    TFile.Create(FileName).Free;
-    Mem := TFileStream.Create(FileName, fmOpenWrite);
+    Mem := TFileStream.Create(FileName, fmCreate);
   except
     begin
       raise Exception.Create('Не возможно создать файл');
@@ -109,4 +108,5 @@ begin
 end;
 
 end.
+
 

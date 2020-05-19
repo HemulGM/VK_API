@@ -4,14 +4,14 @@ interface
 
 uses
   System.SysUtils, System.Classes, VK.GroupEvents,
-  {$IF DECLARED(FireMonkeyVersion)}
+  {$IFDEF NEEDFMX}
   FMX.Types,
   {$ELSE}
   System.Types,
   {$ENDIF}  VK.API, VK.UserEvents;
 
 type
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidAndroid)]
+  [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVK = class(TCustomVK)
   published
     property AppID;
@@ -32,7 +32,7 @@ type
     property Logging;
   end;
 
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidAndroid)]
+  [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVkUserEvents = class(TCustomUserEvents)
   published
     property VK;
@@ -55,7 +55,7 @@ type
     property OnNotifyChange;
   end;
 
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidAndroid)]
+  [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVkGroupEvents = class(TCustomGroupEvents)
   private
     FActualVersion: string;
@@ -108,7 +108,8 @@ type
     property OnGroupAppPayload;
   end;
 
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32 or pidiOSSimulator or pidiOSDevice or pidAndroid)]
+  [ComponentPlatformsAttribute(pidAllPlatforms)]
+  [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVkGroupEventsController = class(TCustomGroupEventControl)
   private
     FActualVersion: string;

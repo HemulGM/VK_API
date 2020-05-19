@@ -15,8 +15,6 @@ type
 
   TVkPost = class;
 
-  TVkPostCopyHistory = class;
-
   TVkAttachment = class
   private
     FType: string;
@@ -100,42 +98,17 @@ type
     class function FromJsonString(AJsonString: string): TVkComment;
   end;
 
-  TVkPostCopyHistory = class
-  private
-    FAttachments: TArray<TVkAttachment>;
-    FDate: Extended;
-    FFrom_id: Extended;
-    FId: Extended;
-    FOwner_id: Extended;
-    FPost_source: TVkPostSource;
-    FPost_type: string;
-    FText: string;
-  public
-    property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
-    property Date: Extended read FDate write FDate;
-    property FromId: Extended read FFrom_id write FFrom_id;
-    property Id: Extended read FId write FId;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
-    property PostSource: TVkPostSource read FPost_source write FPost_source;
-    property PostType: string read FPost_type write FPost_type;
-    property Text: string read FText write FText;
-    constructor Create;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPostCopyHistory;
-  end;
-
   TVkPost = class
   private
-    FId: Extended;
-    FOwner_id: Extended;
-    FFrom_id: Extended;
+    FId: Integer;
+    FOwner_id: Integer;
+    FFrom_id: Integer;
     FCreated_by: Extended;
-    FDate: Extended;
+    FDate: Int64;
     FText: string;
-    FReply_owner_id: Extended;
-    FReply_post_id: Extended;
-    FFriends_only: Extended;
+    FReply_owner_id: Integer;
+    FReply_post_id: Integer;
+    FFriends_only: Integer;
     FComments: TVkCommentsInfo;
     FLikes: TVkLikesInfo;
     FReposts: TVkRepostsInfo;
@@ -144,26 +117,28 @@ type
     FPost_source: TVkPostSource;
     FAttachments: TArray<TVkAttachment>;
     FGeo: TVkGeo;
-    FSigner_id: Extended;
-    FCopy_history: TArray<TVkPostCopyHistory>;
-    FCan_pin: Extended;
-    FCan_delete: Extended;
-    FCan_edit: Extended;
-    FIs_pinned: Extended;
-    FMarked_as_ads: Extended;
+    FSigner_id: Integer;
+    FCopy_history: TArray<TVkPost>;
+    FCan_pin: Integer;
+    FCan_delete: Integer;
+    FCan_edit: Integer;
+    FIs_pinned: Integer;
+    FMarked_as_ads: Integer;
     FIs_favorite: Boolean;
-    FPostponed_id: Extended;
-    FTo_id: Extended;
+    FPostponed_id: Integer;
+    FTo_id: Integer;
+    function GetDate: TDateTime;
+    procedure SetDate(const Value: TDateTime);
   public
-    property Id: Extended read FId write FId;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
-    property FromId: Extended read FFrom_id write FFrom_id;
+    property Id: Integer read FId write FId;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property FromId: Integer read FFrom_id write FFrom_id;
     property CreatedBy: Extended read FCreated_by write FCreated_by;
-    property Date: Extended read FDate write FDate;
+    property Date: TDateTime read GetDate write SetDate;
     property Text: string read FText write FText;
-    property ReplyOwnerId: Extended read FReply_owner_id write FReply_owner_id;
-    property ReplyPostId: Extended read FReply_post_id write FReply_post_id;
-    property FriendsOnly: Extended read FFriends_only write FFriends_only;
+    property ReplyOwnerId: Integer read FReply_owner_id write FReply_owner_id;
+    property ReplyPostId: Integer read FReply_post_id write FReply_post_id;
+    property FriendsOnly: Integer read FFriends_only write FFriends_only;
     property Comments: TVkCommentsInfo read FComments write FComments;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
@@ -172,20 +147,32 @@ type
     property PostSource: TVkPostSource read FPost_source write FPost_source;
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
     property Geo: TVkGeo read FGeo write FGeo;
-    property SignerId: Extended read FSigner_id write FSigner_id;
-    property CopyHistory: TArray<TVkPostCopyHistory> read FCopy_history write FCopy_history;
-    property CanPin: Extended read FCan_pin write FCan_pin;
-    property CanDelete: Extended read FCan_delete write FCan_delete;
-    property CanEdit: Extended read FCan_edit write FCan_edit;
-    property IsPinned: Extended read FIs_pinned write FIs_pinned;
-    property MarkedAsAds: Extended read FMarked_as_ads write FMarked_as_ads;
+    property SignerId: Integer read FSigner_id write FSigner_id;
+    property CopyHistory: TArray<TVkPost> read FCopy_history write FCopy_history;
+    property CanPin: Integer read FCan_pin write FCan_pin;
+    property CanDelete: Integer read FCan_delete write FCan_delete;
+    property CanEdit: Integer read FCan_edit write FCan_edit;
+    property IsPinned: Integer read FIs_pinned write FIs_pinned;
+    property MarkedAsAds: Integer read FMarked_as_ads write FMarked_as_ads;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
-    property PostponedId: Extended read FPostponed_id write FPostponed_id;
-    property ToId: Extended read FTo_id write FTo_id;
+    property PostponedId: Integer read FPostponed_id write FPostponed_id;
+    property ToId: Integer read FTo_id write FTo_id;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPost;
+  end;
+
+  TVkPosts = class
+  private
+    FCount: Integer;
+    FItems: TArray<TVkPost>;
+  public
+    destructor Destroy; override;
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkPost> read FItems write FItems;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkPosts;
   end;
 
   TVkAttachments = TArray<TVkAttachment>;
@@ -193,6 +180,9 @@ type
 function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArray<string>;
 
 implementation
+
+uses
+  System.DateUtils;
 
 function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArray<string>;
 var
@@ -325,37 +315,6 @@ begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-
-{TVkPostCopyHistory}
-
-constructor TVkPostCopyHistory.Create;
-begin
-  inherited;
-  FPost_source := TVkPostSource.Create();
-end;
-
-destructor TVkPostCopyHistory.Destroy;
-var
-  LattachmentsItem: TVkAttachment;
-begin
-
-  for LattachmentsItem in FAttachments do
-    LattachmentsItem.Free;
-
-  FPost_source.Free;
-  inherited;
-end;
-
-function TVkPostCopyHistory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPostCopyHistory.FromJsonString(AJsonString: string): TVkPostCopyHistory;
-begin
-  result := TJson.JsonToObject<TVkPostCopyHistory>(AJsonString)
-end;
-
 {TVkPost}
 
 constructor TVkPost.Create;
@@ -369,7 +328,7 @@ end;
 
 destructor TVkPost.Destroy;
 var
-  Lcopy_historyItem: TVkPostCopyHistory;
+  Lcopy_historyItem: TVkPost;
   LAttachment: TVkAttachment;
 begin
 
@@ -393,7 +352,38 @@ end;
 
 class function TVkPost.FromJsonString(AJsonString: string): TVkPost;
 begin
-  result := TJson.JsonToObject<TVkPost>(AJsonString)
+  result := TJson.JsonToObject<TVkPost>(AJsonString);
+end;
+
+function TVkPost.GetDate: TDateTime;
+begin
+  Result := UnixToDateTime(FDate, False);
+end;
+
+procedure TVkPost.SetDate(const Value: TDateTime);
+begin
+  FDate := DateTimeToUnix(Value, False);
+end;
+
+{ TVkPosts }
+
+destructor TVkPosts.Destroy;
+var
+  i: Integer;
+begin
+  for i := Low(FItems) to High(FItems) do
+    FItems[i].Free;
+  inherited;
+end;
+
+class function TVkPosts.FromJsonString(AJsonString: string): TVkPosts;
+begin
+  result := TJson.JsonToObject<TVkPosts>(AJsonString);
+end;
+
+function TVkPosts.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

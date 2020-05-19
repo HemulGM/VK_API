@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils,
-  {$IF DECLARED(FireMonkeyVersion)}
+  {$IFDEF NEEDFMX}
   FMX.Types, FMX.Forms,
   {$ELSE}
   Vcl.Forms,
