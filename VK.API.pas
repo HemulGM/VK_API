@@ -88,6 +88,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetOAuth2RequestURI: string;
     procedure DoLog(Sender: TObject; Text: string);
     procedure DoError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure DoErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
@@ -400,23 +401,30 @@ begin
   end;  }
 end;
 
-function TCustomVK.Login: Boolean;
-var
-  AToken, APasswordHash: string;
-  ATokenExpiry: Int64;
+function TCustomVK.GetOAuth2RequestURI: string;
 begin
-  Result := False;
   //FOAuth2Authenticator.AccessToken := EmptyStr;
   FOAuth2Authenticator.ClientID := FAppID;
   FOAuth2Authenticator.ClientSecret := FAppKey;
   FOAuth2Authenticator.ResponseType := TOAuth2ResponseType.rtTOKEN;
   FOAuth2Authenticator.AuthorizationEndpoint := FEndPoint;
   FOAuth2Authenticator.Scope := PermissionsList.ToString;
+  Result := FOAuth2Authenticator.AuthorizationRequestURI;
+end;
+
+function TCustomVK.Login: Boolean;
+var
+  AToken, APasswordHash: string;
+  ATokenExpiry: Int64;
+  AuthUrl: string;
+begin
+  Result := False;
+  AuthUrl := GetOAuth2RequestURI;
   APasswordHash := '';
   AToken := Token;
   ATokenExpiry := TokenExpiry;
   if Assigned(FOnAuth) then
-    FOnAuth(Self, FOAuth2Authenticator.AuthorizationRequestURI, AToken, ATokenExpiry, APasswordHash);
+    FOnAuth(Self, AuthUrl, AToken, ATokenExpiry, APasswordHash);
 
   if not AToken.IsEmpty then
   begin

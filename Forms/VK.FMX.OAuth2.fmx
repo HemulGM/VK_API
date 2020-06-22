@@ -16,4 +16,15 @@ object FormFMXOAuth2: TFormFMXOAuth2
     Size.PlatformDefault = False
     OnDidFinishLoad = BrowserDidFinishLoad
   end
+  object LayoutLoad: TLayout
+    Align = Contents
+    Size.Width = 550.000000000000000000
+    Size.Height = 600.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object AniIndicatorLoad: TAniIndicator
+      Align = Center
+      Enabled = True
+    end
+  end
 end

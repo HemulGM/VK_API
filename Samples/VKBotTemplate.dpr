@@ -2,150 +2,68 @@ program VKBotTemplate;
 
 {$APPTYPE CONSOLE}
 
-{$R *.res}
-
 uses
-  Winapi.Windows,
-  Winapi.Messages,
   System.SysUtils,
-  System.UITypes,
-  System.Variants,
-  System.Classes,
   System.StrUtils,
-  Vcl.Forms,
-  VK.API,
-  VK.Components,
-  VK.Entity.Message,
-  VK.Entity.ClientInfo,
   VK.Bot,
-  VK.Types;
-
-procedure AddLine(Text: string; AColor: ShortInt = 0); overload;
-begin
-  if AColor = 0 then
-    AColor := FOREGROUND_RED or FOREGROUND_GREEN or FOREGROUND_BLUE;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), AColor);
-  Writeln(Text);
-end;
-
-procedure AddText(Text: string; AColor: ShortInt = 0); overload;
-begin
-  if AColor = 0 then
-    AColor := FOREGROUND_RED or FOREGROUND_GREEN or FOREGROUND_BLUE;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), AColor);
-  Write(Text);
-end;
-
-procedure AddLine(AItems: array of string; AColor: ShortInt); overload;
-var
-  Str, AText: string;
-begin
-  for Str in AItems do
-    AText := AText + ', ' + Str;
-  Delete(AText, 1, 2);
-  AddLine(AText, AColor);
-end;
+  VK.Types,
+  VK.Bot.Utils,
+  VK.Entity.Message,
+  VK.Entity.ClientInfo;
 
 begin
+  ReportMemoryLeaksOnShutdown := True;
   try
-    //Use
-    //TVkBot.GetInstance<TVkBotChat>.
-    //or
-    //TVkBotChat.GetInstance.
-    //Найстрока бота
-    TVkBotChat.GetInstance.OnInit :=
-      procedure(Bot: TVkBot)
-      begin
-        Bot.Token := ''; //Укажите токен
-        Bot.GroupId := 0;  //Укажите ид группы бота
-      end;
-
-    //Событие при закрытии бота
-    TVkBotChat.GetInstance.OnDestroy :=
-      procedure(Bot: TVkBot)
-      begin
-        //DoSomething
-      end;
-
-    //Событие при возникновении ошибки
-    TVkBotChat.GetInstance.OnError :=
-      procedure(Bot: TVkBot; E: Exception; Code: Integer; Text: string)
-      begin
-        AddLine(Text, FOREGROUND_RED);
-      end;
-
-    //Событие нового сообщения
-    TVkBotChat.GetInstance.OnMessage :=
-      procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
-      var
-        NewMessage: TVkMessage;
-      begin
-        NewMessage := TVkMessage.FromJsonString(Message.ToJsonString);
-        AddLine(['Сообщение', NewMessage.PeerId.ToString, NewMessage.FromId.ToString, IfThen(NewMessage.Text.IsEmpty,
-          '<вложение>', NewMessage.Text)], FOREGROUND_BLUE or FOREGROUND_GREEN);
-
-        TThread.CreateAnonymousThread(
-          procedure
-          begin
-            try
-              try
-                //DoSomething with NewMessage
-              finally
-                NewMessage.Free;
-              end;
-            except
-            end;
-          end).Start;
-      end;
-
-    //Событие редактирования сообщения
-    TVkBotChat.GetInstance.OnMessageEdit :=
-      procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage)
-      var
-        NewMessage: TVkMessage;
-      begin
-        NewMessage := TVkMessage.FromJsonString(Message.ToJsonString);
-        AddLine(['Редактирование', NewMessage.PeerId.ToString, NewMessage.FromId.ToString, IfThen(NewMessage.Text.IsEmpty,
-          '<вложение>', NewMessage.Text)], FOREGROUND_BLUE);
-
-        TThread.CreateAnonymousThread(
-          procedure
-          begin
-            try
-              try
-                //DoSomething with NewMessage
-              finally
-                NewMessage.Free;
-              end;
-            except
-            end;
-          end).Start;
-      end;
-
-    //Запуск бота
-    AddText('Initializate...');
-    if TVkBotChat.GetInstance.Run then
-      AddLine('Done!', FOREGROUND_GREEN)
-    else if TVkBotChat.GetInstance.VK.Token.IsEmpty then
-      AddLine('Error! Token Need', FOREGROUND_RED)
-    else
-      AddLine('Error!', FOREGROUND_RED);
-
-    //Рабочий цикл
-    while not Application.Terminated do
+    with TVkBotChat.GetInstance do
     begin
-      Application.ProcessMessages;
-      CheckSynchronize;
-      Application.DoApplicationIdle;
-    end;
+      Token := 'cfd849da38b35fd5182fed5fb3254877c98edc414907cc0e861c8ddbb925650ff2c81c19c96a145eb1194'; //Bot Token
+      GroupId := 145962568;  //Bot Group Id
 
-    //Освобождение бота
-    TVkBotChat.GetInstance.Free;
+      OnMessage :=
+        procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
+        begin
+          Console.AddLine(['Message', Message.PeerId.ToString, Message.ConversationMessageId.ToString,
+            IfThen(Message.Text.IsEmpty, '<attach>', Message.Text)], BLUE or GREEN);
+          //DoSomething with NewMessage async
+          Bot.API.Messages.Send(Message.PeerId, '=)');
+        end;
+
+      OnMessageEdit :=
+        procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage)
+        begin
+          Console.AddLine(['Message', Message.PeerId.ToString, Message.ConversationMessageId.ToString,
+            IfThen(Message.Text.IsEmpty, '<attach>', Message.Text)], BLUE or GREEN);
+          //DoSomething with EditMessage async
+          Bot.API.Messages.Send(Message.PeerId, '=|');
+        end;
+
+      OnJoin :=
+        procedure(Bot: TVkBot; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; EventId: string)
+        begin
+          //Bot.API.Messages.Send(Message.PeerId, '=|');
+        end;
+
+      OnError :=
+        procedure(Bot: TVkBot; E: Exception; Code: Integer; Text: string)
+        begin
+          Console.AddLine(['Error:', Text, Code.ToString], RED);
+        end;
+
+      if Init and Run then
+      begin
+        Console.Run(
+          procedure(Command: string; var Quit: Boolean)
+          begin
+            Quit := Command = 'exit';
+          end);
+      end;
+
+      Free;
+    end;
   except
     on E: Exception do
     begin
-      AddLine([E.ClassName, E.Message], FOREGROUND_RED);
-      Readln;
+      Console.AddLineWait([E.ClassName, E.Message], RED);
     end;
   end;
 end.

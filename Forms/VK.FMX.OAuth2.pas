@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, FMX.Types, FMX.Controls, FMX.Forms,
-  FMX.Graphics, FMX.Dialogs, FMX.WebBrowser, FMX.Controls.Presentation, FMX.Edit;
+  FMX.Graphics, FMX.Dialogs, FMX.WebBrowser, FMX.Controls.Presentation, FMX.Edit, FMX.StdCtrls, FMX.Layouts;
 
 type
   TFormFMXOAuth2 = class;
@@ -13,6 +13,8 @@ type
 
   TFormFMXOAuth2 = class(TForm)
     Browser: TWebBrowser;
+    LayoutLoad: TLayout;
+    AniIndicatorLoad: TAniIndicator;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure BrowserDidFinishLoad(ASender: TObject);
@@ -29,6 +31,7 @@ type
     FTokenExpiry: Int64;
     FChangePasswordHash: string;
     FProc: TAuthResult;
+    FExecuteCompleted: Boolean;
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: Boolean);
     procedure SetChangePasswordHash(const Value: string);
     procedure SetToken(const Value: string);
@@ -38,7 +41,7 @@ type
     property Token: string read FToken write SetToken;
     property TokenExpiry: Int64 read FTokenExpiry write SetTokenExpiry;
     property ChangePasswordHash: string read FChangePasswordHash write SetChangePasswordHash;
-    class procedure Execute(Url: string; Proc: TAuthResult);
+    class procedure Execute(Url: string; Proc: TAuthResult; AStyleBook: TStyleBook = nil);
   end;
 
 var
@@ -51,12 +54,14 @@ uses
 
 {$R *.fmx}
 
-class procedure TFormFMXOAuth2.Execute(Url: string; Proc: TAuthResult);
+class procedure TFormFMXOAuth2.Execute(Url: string; Proc: TAuthResult; AStyleBook: TStyleBook);
 var
   Form: TFormFMXOAuth2;
 begin
   Form := TFormFMXOAuth2.Create(Application);
   Form.FProc := Proc;
+  Form.FExecuteCompleted := False;
+  Form.StyleBook := AStyleBook;
   Form.ShowWithURL(Url, False);
 end;
 
@@ -74,7 +79,18 @@ begin
   if LDoCloseForm then
   begin
     FNeedShow := False;
-    Close;
+    if not FExecuteCompleted then
+    begin
+      FExecuteCompleted := True;
+      Close;
+    end;
+  end
+  else
+  begin
+    LayoutLoad.Visible := False;
+    AniIndicatorLoad.Enabled := False;
+    Browser.Visible := True;
+    Show;
   end;
 end;
 
@@ -106,6 +122,7 @@ begin
       Params.Free;
     end;
   end;
+  DoCloseWebView := not FToken.IsEmpty;
 end;
 
 procedure TFormFMXOAuth2.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -135,6 +152,9 @@ begin
   FLastURL := AURL;
   FToken := '';
   FTokenExpiry := 0;
+  Browser.Visible := False;
+  LayoutLoad.Visible := True;
+  AniIndicatorLoad.Enabled := True;
 
   if not FProxyUserName.IsEmpty then
   begin
@@ -152,7 +172,7 @@ begin
   end
   else
   begin
-    Show;
+    //Show;
     BringToFront;
   end;
 end;

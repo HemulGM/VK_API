@@ -254,6 +254,7 @@ type
     destructor Destroy; override;
     procedure Stop;
     function Start: Boolean;
+    property LongPollServer: TLongPollServer read FLongPollServer;
     property VK: TCustomVK read FVK write SetVK;
     property GroupID: Integer read FGroupID write SetGroupID;
     property IsWork: Boolean read GetIsWork;

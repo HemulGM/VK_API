@@ -118,7 +118,8 @@ contains
   VK.Utils in 'Controllers\VK.Utils.pas',
   VK.Video in 'Controllers\VK.Video.pas',
   VK.Bot in 'VK.Bot.pas',
-  VK.Entity.Video.Save in 'Entity\VK.Entity.Video.Save.pas';
+  VK.Entity.Video.Save in 'Entity\VK.Entity.Video.Save.pas',
+  VK.Bot.Utils in 'Utils\VK.Bot.Utils.pas';
 
 end.
 

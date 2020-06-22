@@ -32,6 +32,7 @@ type
     FOnUpdate: TOnLongPollServerUpdate;
     FHandler: TVkHandler;
     FFullLog: Boolean;
+    FDoSync: Boolean;
     function QueryLongPollServer: Boolean;
     procedure DoError(E: Exception);
     procedure OnLongPollRecieve(Updates: TJSONArray);
@@ -44,6 +45,7 @@ type
     function GetIsWork: Boolean;
     procedure SetHandler(const Value: TVkHandler);
     procedure SetFullLog(const Value: Boolean);
+    procedure SetDoSync(const Value: Boolean);
   public
     function Start: Boolean;
     procedure Stop;
@@ -59,6 +61,8 @@ type
     property Params: TParams read FParams write SetParams;
     property IsWork: Boolean read GetIsWork;
     property FullLog: Boolean read FFullLog write SetFullLog;
+    property Thread: TThread read FThread;
+    property DoSync: Boolean read FDoSync write SetDoSync;
   end;
 
 const
@@ -79,6 +83,7 @@ uses
 constructor TLongPollServer.Create(AClient: TRESTClient; AMethod: string; AParams: TParams);
 begin
   inherited Create;
+  FDoSync := True;
   Method := AMethod;
   Params := AParams;
 end;
@@ -86,6 +91,7 @@ end;
 constructor TLongPollServer.Create;
 begin
   inherited;
+  FDoSync := True;
   FFullLog := False;
   FInterval := DefaultLongPollServerInterval;
 end;
@@ -169,6 +175,11 @@ begin
         DoError(E);
     end;
   end;
+end;
+
+procedure TLongPollServer.SetDoSync(const Value: Boolean);
+begin
+  FDoSync := Value;
 end;
 
 procedure TLongPollServer.SetFullLog(const Value: Boolean);
@@ -284,30 +295,54 @@ begin
               if JSON.TryGetValue<TJSONArray>('updates', Updates) then
               begin
                 //Отдаем обработку обновлений в основной поток
-                TThread.Synchronize(TThread.Current,
-                  procedure
-                  begin
-                    if not FLongPollNeedStop then
+                if FDoSync then
+                begin
+                  TThread.Synchronize(nil,
+                    procedure
                     begin
-                      OnLongPollRecieve(Updates);
-                    end;
-                  end);
+                      if not FLongPollNeedStop then
+                      begin
+                        OnLongPollRecieve(Updates);
+                      end;
+                    end);
+                end
+                else
+                begin
+                  if not FLongPollNeedStop then
+                  begin
+                    OnLongPollRecieve(Updates);
+                  end;
+                end;
               end
               else //Ошибка при парсинге
               begin
                 //Если ошибка, то пробуем переподключиться к лонгпул серверу
-                TThread.Synchronize(TThread.Current,
-                  procedure
-                  begin
-                    if not FLongPollNeedStop then
+                if FDoSync then
+                begin
+                  TThread.Synchronize(nil,
+                    procedure
                     begin
-                      if not QueryLongPollServer then
+                      if not FLongPollNeedStop then
                       begin
-                        DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: '
-                          + Stream.DataString));
+                        if not QueryLongPollServer then
+                        begin
+                          DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: '
+                            + Stream.DataString));
+                        end;
                       end;
+                    end);
+                end
+                else
+                begin
+                  if not FLongPollNeedStop then
+                  begin
+                    if not QueryLongPollServer then
+                    begin
+                      DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: '
+                        + Stream.DataString));
                     end;
-                  end);
+                  end;
+                end;
               end;
               JSON.Free;
             end;
