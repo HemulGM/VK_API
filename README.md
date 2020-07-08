@@ -1,5 +1,11 @@
 # VKAPI
  VK API
+ 
+**Внимание**
+Если вы уже использовали обертку (до 08.07.2020) и недавно затянули изменения, то вы вероятно получите ошибку при открытии формы. Для её решения нужно закарыть форму с ошибкой без сохранения и исправать файл формы dfm/fmx. Заменить значение свойства Permissions компонента TVK с "'friends,messages'.." на "[Friends,Messages]". Т.е. изменить тип со строки к множеству.
+
+**Warning**
+If you have already used a wrapper (before 07/08/2020) and recently tightened the changes, then you will probably get an error when opening the form. To solve it, you need to close the form with an error without saving and fix the dfm/fmx form file. Replace the value of the Permissions property of the TVK component from "'friends, messages' .." to "[Friends, Messages]". Those. change type from string to set.
 
 API для Вконтакте
 
