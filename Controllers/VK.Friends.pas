@@ -16,7 +16,7 @@ type
   mobile — возвращает выше тех друзей, у которых установлены мобильные приложения.
   name — сортировать по имени. Данный тип сортировки работает медленно, так как сервер будет получать всех друзей а не только указанное количество count. (работает только при переданном параметре fields).}
 
-  TVkFriendsGetParams = record
+  TVkParamsFriendsGet = record
     List: TParams;
     function UserId(Value: Integer): Integer;
     function Order(Value: TVkFriendsSort): Integer;
@@ -50,7 +50,7 @@ type
     /// Возвращает список идентификаторов друзей пользователя или расширенную
     /// информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Users: TVkUsers; Params: TVkFriendsGetParams): Boolean; overload;
+    function Get(var Users: TVkUsers; Params: TVkParamsFriendsGet): Boolean; overload;
   end;
 
 implementation
@@ -80,13 +80,16 @@ begin
   Result := Get(Users, Params);
 end;
 
-function TFriendsController.Get(var Users: TVkUsers; Params: TVkFriendsGetParams): Boolean;
+function TFriendsController.Get(var Users: TVkUsers; Params: TVkParamsFriendsGet): Boolean;
 begin
   Result := Get(Users, Params.List);
 end;
 
 function TFriendsController.Get(var Users: TVkUsers; Params: TParams): Boolean;
 begin
+  if not Params.KeyExists('fields') then
+    Params.Add('fields', 'domian');
+
   with Handler.Execute('friends.get', Params) do
   begin
     Result := Success;
@@ -101,42 +104,42 @@ end;
 
 { TVkFriendsGetParams }
 
-function TVkFriendsGetParams.Count(Value: Integer): Integer;
+function TVkParamsFriendsGet.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkFriendsGetParams.Fields(Value: string): Integer;
+function TVkParamsFriendsGet.Fields(Value: string): Integer;
 begin
   Result := List.Add('fields', Value);
 end;
 
-function TVkFriendsGetParams.ListId(Value: Integer): Integer;
+function TVkParamsFriendsGet.ListId(Value: Integer): Integer;
 begin
   Result := List.Add('list_id', Value);
 end;
 
-function TVkFriendsGetParams.NameCase(Value: TVkNameCase): Integer;
+function TVkParamsFriendsGet.NameCase(Value: TVkNameCase): Integer;
 begin
   Result := List.Add('name_case', Value.ToConst);
 end;
 
-function TVkFriendsGetParams.Offset(Value: Integer): Integer;
+function TVkParamsFriendsGet.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkFriendsGetParams.Order(Value: TVkFriendsSort): Integer;
+function TVkParamsFriendsGet.Order(Value: TVkFriendsSort): Integer;
 begin
   Result := List.Add('order', Value.ToConst);
 end;
 
-function TVkFriendsGetParams.Ref(Value: string): Integer;
+function TVkParamsFriendsGet.Ref(Value: string): Integer;
 begin
   Result := List.Add('ref', Value);
 end;
 
-function TVkFriendsGetParams.UserId(Value: Integer): Integer;
+function TVkParamsFriendsGet.UserId(Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
 end;

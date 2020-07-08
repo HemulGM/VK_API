@@ -276,17 +276,6 @@ begin
   result := TJson.JsonToObject<TVkAudioAlbum>(AJsonString)
 end;
 
-{ TVkAudiosHelper }
-      {
-function TVkAudiosHelper.ToAudioIndexes: TVkAudioIndexes;
-var
-  i: Integer;
-begin
-  SetLength(Result, Length(Self));
-  for i := Low(Self) to High(Self) do
-    Result[i] := [Self[i].OwnerId, Self[i].Id];
-end;  }
-
 { TVkAudios }
 
 procedure TVkAudios.Append(Audios: TVkAudios);

@@ -142,8 +142,10 @@ type
     function Add(Param: TParam): Integer; overload; inline;
     function Add(Key, Value: string): Integer; overload; inline;
     function Add(Key: string; Value: Integer): Integer; overload; inline;
+    function Add(Key: string; Value: TArrayOfString): Integer; overload; inline;
     function Add(Key: string; Value: Boolean): Integer; overload; inline;
-    function Add(Key: string; Value: TIds): Integer; overload; inline;
+    function Add(Key: string; Value: TArrayOfInteger): Integer; overload; inline;
+    function KeyExists(Key: string): Boolean; inline;
   end;
 
   TPremission = string;
@@ -459,6 +461,102 @@ type
     function ToString: string; overload; inline;
   end;
 
+  TVkPermission = (Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline,
+    Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage);
+
+  TVkPermissionHelper = record helper for TVkPermission
+    function ToString: string; overload; inline;
+  end;
+
+  TVkPermissions = set of TVkPermission;
+
+  TVkPermissionsHelper = record helper for TVkPermissions
+    function ToString: string; overload; inline;
+  end;
+  {
+  notify
+(+1)
+(1 << 0)	Пользователь разрешил отправлять ему уведомления (для flash/iframe-приложений).
+friends
+(+2)
+(1 << 1)	Доступ к друзьям.
+photos
+(+4)
+(1 << 2)	Доступ к фотографиям.
+audio
+(+8)
+(1 << 3)	Доступ к аудиозаписям.
+video
+(+16)
+(1 << 4)	Доступ к видеозаписям.
+stories
+(+64)
+(1 << 6)	Доступ к историям.
+pages
+(+128)
+(1 << 7)	Доступ к wiki-страницам.
+(+256)
+(1 << 8)	Добавление ссылки на приложение в меню слева.
+status
+(+1024)
+(1 << 10)	Доступ к статусу пользователя.
+notes
+(+2048)
+(1 << 11)	Доступ к заметкам пользователя.
+messages
+(+4096)
+(1 << 12)	Доступ к расширенным методам работы с сообщениями (только для Standalone-приложений, прошедших модерацию).
+wall
+(+8192)
+(1 << 13)	Доступ к обычным и расширенным методам работы со стеной.
+Данное право доступа по умолчанию недоступно для сайтов (игнорируется при попытке авторизации для приложений с типом «Веб-сайт» или по схеме Authorization Code Flow).
+ads
+(+32768)
+(1 << 15)	Доступ к расширенным методам работы с рекламным API. Доступно для авторизации по схеме Implicit Flow или Authorization Code Flow.
+offline
+(+65536)
+(1 << 16)	Доступ к API в любое время (при использовании этой опции параметр expires_in, возвращаемый вместе с access_token, содержит 0 — токен бессрочный). Не применяется в Open API.
+docs
+(+131072)
+(1 << 17)	Доступ к документам.
+groups
+(+262144)
+(1 << 18)	Доступ к группам пользователя.
+notifications
+(+524288)
+(1 << 19)	Доступ к оповещениям об ответах пользователю.
+stats
+(+1048576)
+(1 << 20)	Доступ к статистике групп и приложений пользователя, администратором которых он является.
+email
+(+4194304)
+(1 << 22)	Доступ к email пользователя.
+market
+(+134217728)
+(1 << 27)	Доступ к товара
+
+--------------
+
+stories
+(+1)
+(1 << 0)	Доступ к историям.
+photos
+(+4)
+(1 << 2)	Доступ к фотографиям.
+app_widget
+(+64)
+(1 << 6)	Доступ к виджетам приложений сообществ. Это право можно запросить только с помощью метода Client API showGroupSettingsBox.
+messages
+(+4096)
+(1 << 12)	Доступ к сообщениям сообщества.
+docs
+(+131072)
+(1 << 17)	Доступ к документам.
+manage
+(+262144)
+(1 << 18)	Доступ к администрированию сообщества.
+  }
+
   TOnLogin = procedure(Sender: TObject) of object;
 
   TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash:
@@ -553,9 +651,12 @@ var
     'Редактор', 'Администратор');
   VkUserBlockReason: array[TVkUserBlockReason] of string = ('Другое', 'Спам',
     'Оскорбление участников', 'Мат', 'Разговоры не по теме');
-  VKGroupJoinType: array[TVkGroupJoinType] of string = ('', 'join', 'unsure',
+  VkGroupJoinType: array[TVkGroupJoinType] of string = ('', 'join', 'unsure',
     'accepted', 'approved', 'request');
-  VKPostType: array[TVkPostType] of string = ('suggests', 'postponed', 'owner', 'others', 'all');
+  VkPostType: array[TVkPostType] of string = ('suggests', 'postponed', 'owner', 'others', 'all');
+  VkPremissionStr: array[TVkPermission] of string = ('notify', 'friends', 'photos', 'audio',
+    'video', 'stories', 'pages', 'status', 'notes', 'messages', 'wall', 'ads', 'offline',
+    'docs', 'groups', 'notifications', 'stats', 'email', 'market', 'app_widget', 'manage');
   VkUserField: array[TVkUserField] of string = ('sex', 'bdate', 'city', 'country', 'photo_50',
     'photo_100', 'photo_200_orig',
     'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig', 'online',
@@ -1034,9 +1135,24 @@ begin
   Result := AddParam(Self, [Key, BoolToString(Value)]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: TIds): Integer;
+function TParamsHelper.Add(Key: string; Value: TArrayOfInteger): Integer;
 begin
   Result := AddParam(Self, [Key, Value.ToString]);
+end;
+
+function TParamsHelper.Add(Key: string; Value: TArrayOfString): Integer;
+begin
+  Result := AddParam(Self, [Key, Value.ToString]);
+end;
+
+function TParamsHelper.KeyExists(Key: string): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := Low(Self) to High(Self) do
+    if Self[i][0] = Key then
+      Exit(True);
 end;
 
 { TMessageFlagHelper }
@@ -1297,6 +1413,26 @@ end;
 function TVkPostTypeHelper.ToConst: string;
 begin
   Result := VKPostType[Self];
+end;
+
+{ TVkPermissionHelper }
+
+function TVkPermissionHelper.ToString: string;
+begin
+  Result := VkPremissionStr[Self];
+end;
+
+{ TVkPermissionsHelper }
+
+function TVkPermissionsHelper.ToString: string;
+var
+  Item: TVkPermission;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
 end;
 
 end.

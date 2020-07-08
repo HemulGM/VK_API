@@ -30,6 +30,7 @@ type
     property OnCaptcha;
     property OnConfirm;
     property Logging;
+    property TestMode default False;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]

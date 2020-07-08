@@ -37,7 +37,7 @@ type
     property Params: TParams read FParams write SetParams;
   end;
 
-  TParamConversation = record
+  TVkParamsConversationsGet = record
     List: TParams;
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
@@ -183,7 +183,7 @@ type
     /// ¬озвращает список бесед пользовател€.
     /// </summary>
     /// <returns>¬озвращает True, если запрос успешно выполнен</returns>
-    function GetConversations(var Conversations: TVkConversationItems; Params: TParamConversation): Boolean;
+    function GetConversations(var Conversations: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean;
     /// <summary>
     /// ¬озвращает историю сообщений дл€ указанного диалога.
     /// </summary>
@@ -356,7 +356,7 @@ begin
   end;
 end;
 
-function TMessagesController.GetConversations(var Conversations: TVkConversationItems; Params: TParamConversation): Boolean;
+function TMessagesController.GetConversations(var Conversations: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean;
 begin
   with Handler.Execute('messages.getConversations', Params.List) do
   begin
@@ -630,44 +630,44 @@ begin
   Result := Self;
 end;
 
-{ TParamConversation }
+{ TVkGetConversationParams }
 
-function TParamConversation.Count(Value: Integer): Integer;
+function TVkParamsConversationsGet.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TParamConversation.Extended(Value: Boolean): Integer;
+function TVkParamsConversationsGet.Extended(Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;
 
-function TParamConversation.Fields(Value: string): Integer;
+function TVkParamsConversationsGet.Fields(Value: string): Integer;
 begin
   Result := List.Add('fields', Value);
 end;
 
-function TParamConversation.Filter(Value: string): Integer;
+function TVkParamsConversationsGet.Filter(Value: string): Integer;
 begin
   Result := List.Add('filter', Value);
 end;
 
-function TParamConversation.GroupID(Value: Integer): Integer;
+function TVkParamsConversationsGet.GroupID(Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TParamConversation.MajorSortId(Value: Integer): Integer;
+function TVkParamsConversationsGet.MajorSortId(Value: Integer): Integer;
 begin
   Result := List.Add('major_sort_id', Value);
 end;
 
-function TParamConversation.Offset(Value: Integer): Integer;
+function TVkParamsConversationsGet.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TParamConversation.StartMessageId(Value: Integer): Integer;
+function TVkParamsConversationsGet.StartMessageId(Value: Integer): Integer;
 begin
   Result := List.Add('start_message_id', Value);
 end;

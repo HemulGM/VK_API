@@ -119,7 +119,13 @@ contains
   VK.Video in 'Controllers\VK.Video.pas',
   VK.Bot in 'VK.Bot.pas',
   VK.Entity.Video.Save in 'Entity\VK.Entity.Video.Save.pas',
-  VK.Bot.Utils in 'Utils\VK.Bot.Utils.pas';
+  VK.Bot.Utils in 'Utils\VK.Bot.Utils.pas',
+  VK.Market in 'Controllers\VK.Market.pas',
+  VK.Fave in 'Controllers\VK.Fave.pas',
+  VK.Entity.Fave in 'Entity\VK.Entity.Fave.pas',
+  VK.Notes in 'Controllers\VK.Notes.pas',
+  VK.Entity.Privacy in 'Entity\VK.Entity.Privacy.pas',
+  VK.Entity.Board in 'Entity\VK.Entity.Board.pas';
 
 end.
 

@@ -26,7 +26,7 @@ type
     FSticker: TVkSticker;
     FGift: TVkGift;
     FMarket_album: TVkMarketAlbum;
-    FMarket: TVkMarket;
+    FMarket: TVkProduct;
     FDoc: TVkDocument;
     FAudio: TVkAudio;
     FVideo: TVkVideo;
@@ -47,11 +47,11 @@ type
     property PostedPhoto: TVkPostedPhoto read FPosted_photo write FPosted_photo;
     property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
     property WallReply: TVkComment read FWall_reply write FWall_reply;
-    property Wall: TvkPost read FWall write FWall;
+    property Wall: TVkPost read FWall write FWall;
     property Sticker: TVkSticker read FSticker write FSticker;
     property Gift: TVkGift read FGift write FGift;
     property MarketAlbum: TVkMarketAlbum read FMarket_album write FMarket_album;
-    property Market: TVkMarket read FMarket write FMarket;
+    property Market: TVkProduct read FMarket write FMarket;
     property Doc: TVkDocument read FDoc write FDoc;
     property Audio: TVkAudio read FAudio write FAudio;
     property Video: TVkVideo read FVideo write FVideo;

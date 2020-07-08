@@ -3,22 +3,24 @@ object FormFMXOAuth2: TFormFMXOAuth2
   Top = 0
   Caption = #1040#1074#1090#1086#1088#1080#1079#1072#1094#1080#1103' OAuth2'
   ClientHeight = 600
-  ClientWidth = 550
+  ClientWidth = 800
+  Position = MainFormCenter
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
   OnClose = FormClose
   DesignerMasterStyle = 0
   object Browser: TWebBrowser
     Align = Client
-    Size.Width = 550.000000000000000000
+    Size.Width = 800.000000000000000000
     Size.Height = 600.000000000000000000
     Size.PlatformDefault = False
     OnDidFinishLoad = BrowserDidFinishLoad
   end
   object LayoutLoad: TLayout
     Align = Contents
-    Size.Width = 550.000000000000000000
+    Size.Width = 800.000000000000000000
     Size.Height = 600.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0

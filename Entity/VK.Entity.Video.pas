@@ -124,6 +124,23 @@ type
     class function FromJsonString(AJsonString: string): TVkVideo;
   end;
 
+  TVkVideos = class
+  private
+    FItems: TArray<TVkVideo>;
+    FCount: Integer;
+    FSaveObjects: Boolean;
+    procedure SetSaveObjects(const Value: Boolean);
+  public
+    property Items: TArray<TVkVideo> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
+    procedure Append(Users: TVkVideos);
+    constructor Create;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkVideos;
+  end;
+
 implementation
 
 {TVkVideoFiles}
@@ -182,6 +199,51 @@ end;
 class function TVkVideo.FromJsonString(AJsonString: string): TVkVideo;
 begin
   result := TJson.JsonToObject<TVkVideo>(AJsonString)
+end;
+
+{TVkVideos}
+
+procedure TVkVideos.Append(Users: TVkVideos);
+var
+  OldLen: Integer;
+begin
+  OldLen := Length(Items);
+  SetLength(FItems, OldLen + Length(Users.Items));
+  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkVideo));
+end;
+
+constructor TVkVideos.Create;
+begin
+  inherited;
+  FSaveObjects := False;
+end;
+
+destructor TVkVideos.Destroy;
+var
+  LItemsItem: TVkVideo;
+begin
+  if not FSaveObjects then
+  begin
+    for LItemsItem in FItems do
+      LItemsItem.Free;
+  end;
+
+  inherited;
+end;
+
+function TVkVideos.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkVideos.FromJsonString(AJsonString: string): TVkVideos;
+begin
+  result := TJson.JsonToObject<TVkVideos>(AJsonString);
+end;
+
+procedure TVkVideos.SetSaveObjects(const Value: Boolean);
+begin
+  FSaveObjects := Value;
 end;
 
 end.

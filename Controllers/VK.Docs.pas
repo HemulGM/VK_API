@@ -4,10 +4,21 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Doc.Save, VK.Entity.Video.Save;
+  VK.Entity.Doc.Save, VK.Entity.Video.Save, VK.Entity.Doc;
 
 type
   TVkDocUploadType = (dutDoc, dutAudioMessage);
+
+  TVkDocTypeFilter = (vdtAll, vdtText, vdtArchives, vdtGIF, vdtPictures, vdtAudios, vdtVideos, vdtBooks, vdtOther);
+
+  TVkParamsDocsGet = record
+    List: TParams;
+    function OwnerId(Value: Integer): Integer;
+    function TypeFilter(Value: TVkDocTypeFilter): Integer;
+    function ReturnTags(Value: Boolean): Integer;
+    function Offset(Value: Integer): Integer;
+    function Count(Value: Integer): Integer;
+  end;
 
   TDocController = class(TVkController)
   public
@@ -29,6 +40,8 @@ type
     //
     function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0;
       ReturnTags: Boolean = False): Boolean;
+    function Get(var Docs: TVkDocuments; Params: TParams): Boolean; overload;
+    function Get(var Docs: TVkDocuments; Params: TVkParamsDocsGet): Boolean; overload;
   end;
 
 implementation
@@ -65,6 +78,27 @@ begin
       Result := not UploadUrl.IsEmpty;
     end;
   end;
+end;
+
+function TDocController.Get(var Docs: TVkDocuments; Params: TParams): Boolean;
+begin
+  with Handler.Execute('docs.get', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Docs := TVkDocuments.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TDocController.Get(var Docs: TVkDocuments; Params: TVkParamsDocsGet): Boolean;
+begin
+  Result := Get(Docs, Params.List);
 end;
 
 function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType): Boolean;
@@ -132,6 +166,33 @@ begin
     else
       TCustomVK(VK).DoError(Self, TVkException.Create(Response), -1, Response);
   end;
+end;
+
+{ TVkParamsDocsGet }
+
+function TVkParamsDocsGet.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsDocsGet.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TVkParamsDocsGet.OwnerId(Value: Integer): Integer;
+begin
+  Result := List.Add('owner_id', Value);
+end;
+
+function TVkParamsDocsGet.ReturnTags(Value: Boolean): Integer;
+begin
+  Result := List.Add('return_tags', Value);
+end;
+
+function TVkParamsDocsGet.TypeFilter(Value: TVkDocTypeFilter): Integer;
+begin
+  Result := List.Add('type', Ord(Value));
 end;
 
 end.

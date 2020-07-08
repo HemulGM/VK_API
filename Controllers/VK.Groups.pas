@@ -4,12 +4,12 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller, VK.Types,
-  VK.Entity.User, System.Classes, VK.Entity.Group;
+  VK.Entity.User, System.Classes, VK.Entity.Group, VK.CommonUtils;
 
 type
-  TVkGetMembersParams = record
+  TVkParamsGroupsGetMembers = record
     List: TParams;
-    function GroupId(Value: string): Integer;
+    function GroupId(Value: Integer): Integer;
     function Filter(Value: string): Integer;
     {friends — будут возвращены только друзья в этом сообществе.
      unsure — будут возвращены пользователи, которые выбрали «Возможно пойду» (если сообщество относится к мероприятиям).
@@ -24,9 +24,31 @@ type
       time_desc }
   end;
 
+  TVkParamsGroupsGet = record
+    List: TParams;
+    function UserId(Value: string): Integer;
+    {список фильтров сообществ, которые необходимо вернуть, перечисленные через запятую.
+    Доступны значения admin, editor, moder, advertiser, groups, publics, events, hasAddress.
+    По умолчанию возвращаются все сообщества пользователя.
+    hasAddress - вернутся сообщества, в которых указаны адреса в соответствующем блоке,
+    admin - будут возвращены сообщества, в которых пользователь является администратором,
+    editor — администратором или редактором,
+    moder — администратором, редактором или модератором,
+    advertiser — рекламодателем.
+    Если передано несколько фильтров, то их результат объединяется.}
+    function Filter(Value: string): Integer;
+    {city, country, place, description, wiki_page, members_count, counters,
+    start_date, finish_date, can_post, can_see_all_posts, activity, status,
+    contacts, links, fixed_post, verified, site, can_create_topic}
+    function Fields(Value: string): Integer;
+    function Count(Value: Integer): Integer;
+    function Extended(Value: Boolean): Integer;
+    function Offset(Value: Integer): Integer;
+  end;
+
   TGroupsController = class(TVkController)
   public
-    function GetMembers(var Users: TVkUsers; GroupId: string; Params: TVkGetMembersParams): Boolean;
+    function GetMembers(var Users: TVkUsers; Params: TVkParamsGroupsGetMembers): Boolean;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
@@ -35,6 +57,14 @@ type
     function EnableOnline(GroupId: Integer): Boolean;
     function DisableOnline(GroupId: Integer): Boolean;
     function GetOnlineStatus(var Status: TVkGroupStatus; GroupId: Integer): Boolean;
+    /// <summary>
+    /// Возвращает список сообществ указанного пользователя.
+    /// </summary>
+    function Get(var Groups: TVkGroups; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Возвращает список сообществ указанного пользователя.
+    /// </summary>
+    function Get(var Groups: TVkGroups; Params: TVkParamsGroupsGet): Boolean; overload;
   end;
 
 implementation
@@ -58,14 +88,43 @@ begin
     Result := Success and (Response = '1');
 end;
 
-function TGroupsController.GetMembers(var Users: TVkUsers; GroupId: string; Params: TVkGetMembersParams): Boolean;
+function TGroupsController.Get(var Groups: TVkGroups; Params: TVkParamsGroupsGet): Boolean;
 begin
+  Result := Get(Groups, Params.List);
+end;
+
+function TGroupsController.Get(var Groups: TVkGroups; Params: TParams): Boolean;
+begin
+  if not Params.KeyExists('fields') then
+    Params.Add('fields', 'description');
+  with Handler.Execute('groups.get', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Groups := TVkGroups.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TGroupsController.GetMembers(var Users: TVkUsers; Params: TVkParamsGroupsGetMembers): Boolean;
+begin
+  if not Params.List.KeyExists('fields') then
+    Params.List.Add('fields', 'domian');
   with Handler.Execute('groups.getMembers', Params.List) do
   begin
     Result := Success;
     if Result then
     begin
-      Users := TVkUsers.FromJsonString(Response);
+      try
+        Users := TVkUsers.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
@@ -131,25 +190,30 @@ begin
       Res := Success;
       if Res then
       begin
-        JsonValue := TJSONObject.ParseJSONValue(Response);
         try
-          FNeedCount := JsonValue.GetValue<Integer>('count', 0);
-          if Length(Users) <> FNeedCount then
-            SetLength(Users, FNeedCount);
-          JArray := JsonValue.GetValue<TJSONArray>('items', nil);
-          if Assigned(JArray) then
-          begin
-            FCount := FCount + JArray.Count;
-            for i := 0 to JArray.Count - 1 do
+          JsonValue := TJSONObject.ParseJSONValue(Response);
+          try
+            FNeedCount := JsonValue.GetValue<Integer>('count', 0);
+            if Length(Users) <> FNeedCount then
+              SetLength(Users, FNeedCount);
+            JArray := JsonValue.GetValue<TJSONArray>('items', nil);
+            if Assigned(JArray) then
             begin
-              Users[FCur] := JArray.Items[i].GetValue<Integer>;
-              Inc(FCur);
-            end;
-          end
-          else
-            Res := False;
-        finally
-          JsonValue.Free;
+              FCount := FCount + JArray.Count;
+              for i := 0 to JArray.Count - 1 do
+              begin
+                Users[FCur] := JArray.Items[i].GetValue<Integer>;
+                Inc(FCur);
+              end;
+            end
+            else
+              Res := False;
+          finally
+            JsonValue.Free;
+          end;
+        except
+          Res := False;
+          Break;
         end;
       end
       else
@@ -169,41 +233,77 @@ begin
     Result := Success;
     if Result then
     begin
-      Status := TVkGroupStatus.FromJsonString(Response);
+      try
+        Status := TVkGroupStatus.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
 
 { TVkGetMembersParams }
 
-function TVkGetMembersParams.Count(Value: Integer): Integer;
+function TVkParamsGroupsGetMembers.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkGetMembersParams.Fields(Value: string): Integer;
+function TVkParamsGroupsGetMembers.Fields(Value: string): Integer;
 begin
   Result := List.Add('fields', Value);
 end;
 
-function TVkGetMembersParams.Filter(Value: string): Integer;
+function TVkParamsGroupsGetMembers.Filter(Value: string): Integer;
 begin
   Result := List.Add('filter', Value);
 end;
 
-function TVkGetMembersParams.GroupId(Value: string): Integer;
+function TVkParamsGroupsGetMembers.GroupId(Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkGetMembersParams.Offset(Value: Integer): Integer;
+function TVkParamsGroupsGetMembers.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkGetMembersParams.Sort(Value: string): Integer;
+function TVkParamsGroupsGetMembers.Sort(Value: string): Integer;
 begin
   Result := List.Add('sort', Value);
+end;
+
+{ TVkGroupsGetParams }
+
+function TVkParamsGroupsGet.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsGroupsGet.Extended(Value: Boolean): Integer;
+begin
+  Result := List.Add('extended', Value);
+end;
+
+function TVkParamsGroupsGet.Fields(Value: string): Integer;
+begin
+  Result := List.Add('fields', Value);
+end;
+
+function TVkParamsGroupsGet.Filter(Value: string): Integer;
+begin
+  Result := List.Add('filter', Value);
+end;
+
+function TVkParamsGroupsGet.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TVkParamsGroupsGet.UserId(Value: string): Integer;
+begin
+  Result := List.Add('user_id', Value);
 end;
 
 end.
