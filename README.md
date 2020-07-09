@@ -170,13 +170,13 @@ VKAPI.Walk(
      Audios: TVkAudios;
      Params: TVkParamsAudio;
    begin
-     Result := 0;
+     Result := 0;  //Метод должн вернуть кол-во фактически полученных элементов
      Params.Count(100);
      Params.Offset(Offset);
      if VKAPI.Audio.Get(Audios, Params) then
      begin
        Cnt := Audios.Count;
-       Result := Length(Audios.Items);
+       Result := Length(Audios.Items);  //Возвращение кол-во полученных элементов
        for Audio in Audios.Items do
        begin
          //Do somethings with Audio
@@ -185,7 +185,7 @@ VKAPI.Walk(
      end
      else
        Cancel := True;
-   end, 100);
+   end, 100);  // 100 - параметр шага запроса, должен соответстовать параметру метода "Params.Count(100);"
 ```        
   
 <!--stackedit_data:
