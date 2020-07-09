@@ -40,7 +40,7 @@ var
   Users: TVkUsers;
   i: Integer;
 begin
-  if VK.Users.Get(Users, '286400863,415730216', UserFieldsAll, '') then
+  if VK.Users.Get(Users, [286400863, 415730216], VkUserFieldsAll) then
   begin
     for i := Low(Users.Items) to High(Users.Items) do
     begin
@@ -144,7 +144,7 @@ end;
 ```Pascal
 var
   List: TVkAudios;
-  Params: TVkAudioParams;
+  Params: TVkParamsAudio;
   i: Integer;
 begin
   Params.OwnerId(415730216);
