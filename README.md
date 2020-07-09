@@ -159,6 +159,34 @@ begin
   end;
 end;    
 ```
+
+**Использование метода Walk, для выполнения методов с параметрами Count и Offset**
+
+```Pascal
+VKAPI.Walk(
+   function(Offset: Integer; var Cancel: Boolean): Integer
+   var
+     Audio: TVkAudio;
+     Audios: TVkAudios;
+     Params: TVkParamsAudio;
+   begin
+     Result := 0;
+     Params.Count(100);
+     Params.Offset(Offset);
+     if VKAPI.Audio.Get(Audios, Params) then
+     begin
+       Cnt := Audios.Count;
+       Result := Length(Audios.Items);
+       for Audio in Audios.Items do
+       begin
+         //Do somethings with Audio
+       end;
+       Audios.Free;
+     end
+     else
+       Cancel := True;
+   end, 100);
+```        
   
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbLTY2MDExNDI1Miw5MzcyNjYxMzQsMzQ1Mj
