@@ -3,7 +3,7 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy;
 
 type
   TVkVideoFiles = class
@@ -141,6 +141,41 @@ type
     class function FromJsonString(AJsonString: string): TVkVideos;
   end;
 
+  TVkVideoAlbum = class
+  private
+    FCount: Integer;
+    FId: Integer;
+    FImage: TArray<TVkVideoImage>;
+    FOwner_id: Integer;
+    FPrivacy: TVkPrivacy;
+    FTitle: string;
+    FUpdated_time: Int64;
+  public
+    property Count: Integer read FCount write FCount;
+    property Id: Integer read FId write FId;
+    property Image: TArray<TVkVideoImage> read FImage write FImage;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property Privacy: TVkPrivacy read FPrivacy write FPrivacy;
+    property Title: string read FTitle write FTitle;
+    property UpdatedTime: Int64 read FUpdated_time write FUpdated_time;
+    constructor Create;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkVideoAlbum;
+  end;
+
+  TVkVideoAlbums = class
+  private
+    FCount: Integer;
+    FItems: TArray<TVkVideoAlbum>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkVideoAlbum> read FItems write FItems;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkVideoAlbums;
+  end;
+
 implementation
 
 {TVkVideoFiles}
@@ -244,6 +279,59 @@ end;
 procedure TVkVideos.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
+end;
+
+{TVkVideoAlbum}
+
+constructor TVkVideoAlbum.Create;
+begin
+  inherited;
+  FPrivacy := TVkPrivacy.Create();
+end;
+
+destructor TVkVideoAlbum.Destroy;
+var
+  LimageItem: TVkVideoImage;
+begin
+
+  for LimageItem in FImage do
+    LimageItem.Free;
+
+  FPrivacy.Free;
+  inherited;
+end;
+
+function TVkVideoAlbum.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkVideoAlbum.FromJsonString(AJsonString: string): TVkVideoAlbum;
+begin
+  result := TJson.JsonToObject<TVkVideoAlbum>(AJsonString)
+end;
+
+{TVkVideoAlbums}
+
+destructor TVkVideoAlbums.Destroy;
+var
+  LitemsItem: TVkVideoAlbum;
+begin
+
+  for LitemsItem in FItems do
+    LitemsItem.Free;
+
+  inherited;
+end;
+
+function TVkVideoAlbums.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkVideoAlbums.FromJsonString(AJsonString: string): TVkVideoAlbums;
+begin
+  result := TJson.JsonToObject<TVkVideoAlbums>(AJsonString)
 end;
 
 end.

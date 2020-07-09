@@ -62,6 +62,17 @@ type
     class function FromJsonString(AJsonString: string): TVkPhoto;
   end;
 
+  TVkCropPhoto = class
+  private
+    FCrop: TVkCrop;
+    FPhoto: TVkPhoto;
+    FRect: TVkRect;
+  public
+    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property Crop: TVkCrop read FCrop write FCrop;
+    property Rect: TVkRect read FRect write FRect;
+  end;
+
   TVkPostedPhoto = class
   private
     FId: Extended;

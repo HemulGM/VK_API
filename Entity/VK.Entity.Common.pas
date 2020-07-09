@@ -21,6 +21,37 @@ type
     class function FromJsonString(AJsonString: string): TVkRect;
   end;
 
+  TVkAddresses = class
+  private
+    FIs_enabled: Integer;
+    function GetIs_enabled: Boolean;
+    procedure SetIs_enabled(const Value: Boolean);
+  public
+    property IsEnabled: Boolean read GetIs_enabled write SetIs_enabled;
+  end;
+
+  TVkContact = class
+  private
+    FEmail: string;
+    FPhone: string;
+    FDesc: string;
+    FUser_id: Integer;
+  public
+    property UserId: Integer read FUser_id write FUser_id;
+    property Desc: string read FDesc write FDesc;
+    property Phone: string read FPhone write FPhone;
+    property Email: string read FEmail write FEmail;
+  end;
+
+  TVkBanInfo = class
+  private
+    FEnd_date: Integer;
+    FComment: string;
+  public
+    property EndDate: Integer read FEnd_date write FEnd_date;
+    property Comment: string read FComment write FComment;
+  end;
+
   TVkCrop = class(TVkRect);
 
   TVkTags = class
@@ -197,16 +228,20 @@ type
     FLatitude: Extended; // Ч географическа€ широта;
     FLongitude: Extended; // Ч географическа€ долгота;
     FCreated: integer; // Ч дата создани€ (если назначено);
-    FIcon: string; // Ч URL изображени€-иконки;
+    FIcon: string;
+    FType: string;
+    FAddress: string; // Ч URL изображени€-иконки;
   public
-    property City: string read FCity write FCity;
-    property Country: string read FCountry write FCountry;
-    property Title: string read FTitle write FTitle;
     property Id: integer read FId write FId;
+    property Title: string read FTitle write FTitle;
     property Latitude: Extended read FLatitude write FLatitude;
     property Longitude: Extended read FLongitude write FLongitude;
+    property &Type: string read FType write FType;
+    property Country: string read FCountry write FCountry;
+    property City: string read FCity write FCity;
     property Created: integer read FCreated write FCreated;
     property Icon: string read FIcon write FIcon;
+    property Address: string read FAddress write FAddress;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPlace;
   end;
@@ -224,10 +259,10 @@ type
 
   TVkCity = class
   private
-    FId: Extended;
+    FId: Integer;
     FTitle: string;
   public
-    property Id: Extended read FId write FId;
+    property Id: Integer read FId write FId;
     property Title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCity;
@@ -267,7 +302,7 @@ var
 implementation
 
 uses
-  System.SysUtils;
+  System.SysUtils, VK.CommonUtils;
 
 {TVkCountry}
 
@@ -546,6 +581,19 @@ begin
       if Self[i].FType = Value then
         Exit(Self[i]);
   end;
+end;
+
+
+{ TVkAddresses }
+
+function TVkAddresses.GetIs_enabled: Boolean;
+begin
+  Result := FIs_enabled = 1;
+end;
+
+procedure TVkAddresses.SetIs_enabled(const Value: Boolean);
+begin
+  FIs_enabled := BoolToInt(Value);
 end;
 
 end.

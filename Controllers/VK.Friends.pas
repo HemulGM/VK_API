@@ -23,7 +23,8 @@ type
     function ListId(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
-    function Fields(Value: string): Integer;
+    function Fields(Value: string): Integer; overload;
+    function Fields(Value: TVkFriendFields): Integer; overload;
     function NameCase(Value: TVkNameCase): Integer;
     function Ref(Value: string): Integer;
   end;
@@ -93,11 +94,11 @@ begin
   with Handler.Execute('friends.get', Params) do
   begin
     Result := Success;
+    if Result then
     try
-      if Result then
-        Users := TVkUsers.FromJsonString(Response);
+      Users := TVkUsers.FromJsonString(Response);
     except
-      raise TVkParserException.Create('Ошибка преобразования объектов Json');
+      Result := False;
     end;
   end;
 end;
@@ -112,6 +113,11 @@ end;
 function TVkParamsFriendsGet.Fields(Value: string): Integer;
 begin
   Result := List.Add('fields', Value);
+end;
+
+function TVkParamsFriendsGet.Fields(Value: TVkFriendFields): Integer;
+begin
+  Result := List.Add('fields', Value.ToString);
 end;
 
 function TVkParamsFriendsGet.ListId(Value: Integer): Integer;

@@ -17,11 +17,13 @@ type
     property AppID;
     property AppKey;
     property EndPoint;    // default 'https://oauth.vk.com/authorize';
-    property Permissions; // default 'groups,friends,wall,photos,video,docs,notes,market';
+    property Permissions nodefault; // default 'groups,friends,wall,photos,video,docs,notes,market';
     property APIVersion;  // default '5.103';
     property BaseURL;     // default 'https://api.vk.com/method';
     property ServiceKey;
     property UseServiceKeyOnly default False;
+    property Logging default False;
+    property TestMode default False;
     property OnAuth;
     property OnLogin;
     property OnLog;
@@ -29,8 +31,6 @@ type
     property OnErrorLogin;
     property OnCaptcha;
     property OnConfirm;
-    property Logging;
-    property TestMode default False;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]

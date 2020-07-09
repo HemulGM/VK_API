@@ -159,14 +159,14 @@ begin
   end;
 end;
 
-function TPhotosController.Get(var Photos: TVkPhotos; Params: TVkParamsPhotosGet): Boolean;
-begin
-  Result := Get(Photos, Params.List);
-end;
-
 function TPhotosController.GetAlbums(var Items: TVkPhotoAlbums; Params: TVkParamsAlbumsGet): Boolean;
 begin
   Result := GetAlbums(Items, Params.List);
+end;
+
+function TPhotosController.Get(var Photos: TVkPhotos; Params: TVkParamsPhotosGet): Boolean;
+begin
+  Result := Get(Photos, Params.List);
 end;
 
 function TPhotosController.GetAll(var Photos: TVkPhotos; Params: TVkParamsPhotosGetAll): Boolean;

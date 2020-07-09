@@ -40,7 +40,8 @@ type
     {city, country, place, description, wiki_page, members_count, counters,
     start_date, finish_date, can_post, can_see_all_posts, activity, status,
     contacts, links, fixed_post, verified, site, can_create_topic}
-    function Fields(Value: string): Integer;
+    function Fields(Value: string): Integer; overload;
+    function Fields(Value: TVkGroupFields): Integer; overload;
     function Count(Value: Integer): Integer;
     function Extended(Value: Boolean): Integer;
     function Offset(Value: Integer): Integer;
@@ -95,8 +96,8 @@ end;
 
 function TGroupsController.Get(var Groups: TVkGroups; Params: TParams): Boolean;
 begin
-  if not Params.KeyExists('fields') then
-    Params.Add('fields', 'description');
+  if not Params.KeyExists('extended') then
+    Params.Add('extended', True);
   with Handler.Execute('groups.get', Params) do
   begin
     Result := Success;
@@ -289,6 +290,11 @@ end;
 function TVkParamsGroupsGet.Fields(Value: string): Integer;
 begin
   Result := List.Add('fields', Value);
+end;
+
+function TVkParamsGroupsGet.Fields(Value: TVkGroupFields): Integer;
+begin
+  Result := List.Add('fields', Value.ToString);
 end;
 
 function TVkParamsGroupsGet.Filter(Value: string): Integer;

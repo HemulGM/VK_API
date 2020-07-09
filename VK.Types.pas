@@ -203,10 +203,71 @@ type
     class function Create(Value: Integer): TAudioGenre;
   end;
 
-  TVkUserField = (ufSex, ufBDate, ufCity, ufCountry, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig,
-    ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufOnlineMobile, ufLists, ufDomain, ufHasMobile, ufContacts, ufConnections,
-    ufSite, ufEducation, ufUniversities, ufSchools, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage,
-    ufStatus, ufLastSeen, ufCommonCount, ufRelation, ufRelatives);
+  TVkFollowerField = (flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50,
+    flPhoto100, flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain,
+    flHasMobile, flContacts, flSite, flEducation, flUniversities, flSchools, flStatus, flLastSeen, flFollowersCount,
+    flCommonCount, flOccupation, flNickName, flRelatives, flRelation, flPersonal, flConnections, flExports,
+    flWallComments, flActivities, flInterests, flMusic, flMovies, flTV, flBooks, flGames, flAbout, flQuotes, flCanPost,
+    flCanSeeAllPosts, flCanSeeAudio, flCanWritePrivateMessage, flCanSendFriendRequest, flIsFavorite, flIsHiddenFromFeed,
+    flTimeZone, flScreenName, flMaidenName, flCropPhoto, flIsFriend, flFriendStatus, flCareer, flMilitary, flBlacklisted,
+    flBlacklistedByMe);
+
+  TVkFollowerFieldHelper = record helper for TVkFollowerField
+    function ToString: string; inline;
+  end;
+
+  TVkFollowerFields = set of TVkFollowerField;
+
+  TVkFollowerFieldsHelper = record helper for TVkFollowerFields
+    function ToString: string; inline;
+  end;
+
+  TVkUserField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
+    ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile,
+    ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount,
+    ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests,
+    ufMusic, ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio,
+    ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName,
+    ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe,
+    ufCanBeInvitedGroup);
+
+  TVkUserFieldHelper = record helper for TVkUserField
+    function ToString: string; inline;
+  end;
+
+  TVkUserFields = set of TVkUserField;
+
+  TVkUserFieldsHelper = record helper for TVkUserFields
+    function ToString: string; inline;
+  end;
+
+  TVkFriendField = (ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100,
+    ffPhoto200, ffHasMobile, ffContacts, ffEducation, ffOnline, ffRelation, ffLastSeen, ffStatus,
+    ffCanWritePrivateMessage, ffCanSeeAllPosts, ffCanPost, ffUniversities);
+
+  TVkFriendFieldHelper = record helper for TVkFriendField
+    function ToString: string; inline;
+  end;
+
+  TVkFriendFields = set of TVkFriendField;
+
+  TVkFriendFieldsHelper = record helper for TVkFriendFields
+    function ToString: string; inline;
+  end;
+
+  TVkGroupField = (gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate,
+    gfFinishDate, gfCanPost, gfCanSeeAllPosts, gfActivity, gfStatus, gfContacts, gfLinks, gfFixedPost, gfVerified,
+    gfSite, gfCanCreateTopic);
+
+  TVkGroupFieldHelper = record helper for TVkGroupField
+    function ToString: string; inline;
+  end;
+
+  TVkGroupFields = set of TVkGroupField;
+
+  TVkGroupFieldsHelper = record helper for TVkGroupFields
+    function ToString: string; inline;
+  end;
 
   TVkMessageInfo = class
   private
@@ -473,89 +534,6 @@ type
   TVkPermissionsHelper = record helper for TVkPermissions
     function ToString: string; overload; inline;
   end;
-  {
-  notify
-(+1)
-(1 << 0)	Пользователь разрешил отправлять ему уведомления (для flash/iframe-приложений).
-friends
-(+2)
-(1 << 1)	Доступ к друзьям.
-photos
-(+4)
-(1 << 2)	Доступ к фотографиям.
-audio
-(+8)
-(1 << 3)	Доступ к аудиозаписям.
-video
-(+16)
-(1 << 4)	Доступ к видеозаписям.
-stories
-(+64)
-(1 << 6)	Доступ к историям.
-pages
-(+128)
-(1 << 7)	Доступ к wiki-страницам.
-(+256)
-(1 << 8)	Добавление ссылки на приложение в меню слева.
-status
-(+1024)
-(1 << 10)	Доступ к статусу пользователя.
-notes
-(+2048)
-(1 << 11)	Доступ к заметкам пользователя.
-messages
-(+4096)
-(1 << 12)	Доступ к расширенным методам работы с сообщениями (только для Standalone-приложений, прошедших модерацию).
-wall
-(+8192)
-(1 << 13)	Доступ к обычным и расширенным методам работы со стеной.
-Данное право доступа по умолчанию недоступно для сайтов (игнорируется при попытке авторизации для приложений с типом «Веб-сайт» или по схеме Authorization Code Flow).
-ads
-(+32768)
-(1 << 15)	Доступ к расширенным методам работы с рекламным API. Доступно для авторизации по схеме Implicit Flow или Authorization Code Flow.
-offline
-(+65536)
-(1 << 16)	Доступ к API в любое время (при использовании этой опции параметр expires_in, возвращаемый вместе с access_token, содержит 0 — токен бессрочный). Не применяется в Open API.
-docs
-(+131072)
-(1 << 17)	Доступ к документам.
-groups
-(+262144)
-(1 << 18)	Доступ к группам пользователя.
-notifications
-(+524288)
-(1 << 19)	Доступ к оповещениям об ответах пользователю.
-stats
-(+1048576)
-(1 << 20)	Доступ к статистике групп и приложений пользователя, администратором которых он является.
-email
-(+4194304)
-(1 << 22)	Доступ к email пользователя.
-market
-(+134217728)
-(1 << 27)	Доступ к товара
-
---------------
-
-stories
-(+1)
-(1 << 0)	Доступ к историям.
-photos
-(+4)
-(1 << 2)	Доступ к фотографиям.
-app_widget
-(+64)
-(1 << 6)	Доступ к виджетам приложений сообществ. Это право можно запросить только с помощью метода Client API showGroupSettingsBox.
-messages
-(+4096)
-(1 << 12)	Доступ к сообщениям сообщества.
-docs
-(+131072)
-(1 << 17)	Доступ к документам.
-manage
-(+262144)
-(1 << 18)	Доступ к администрированию сообщества.
-  }
 
   TOnLogin = procedure(Sender: TObject) of object;
 
@@ -606,14 +584,6 @@ manage
 
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
 
-const
-  AllUserFields = 'sex, bdate, city, country, photo_50, photo_100, photo_200_orig, ' +
-    'photo_200, photo_400_orig, photo_max, photo_max_orig, online, ' +
-    'online_mobile, lists, domain, has_mobile, contacts, connections, ' +
-    'site, education, universities, schools, can_post, can_see_all_posts, ' +
-    'can_see_audio, can_write_private_message, status, last_seen, ' +
-    'common_count, relation, relatives';
-
 var
   VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8,
     MF_UNKNOWN_7, MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN,
@@ -657,13 +627,32 @@ var
   VkPremissionStr: array[TVkPermission] of string = ('notify', 'friends', 'photos', 'audio',
     'video', 'stories', 'pages', 'status', 'notes', 'messages', 'wall', 'ads', 'offline',
     'docs', 'groups', 'notifications', 'stats', 'email', 'market', 'app_widget', 'manage');
-  VkUserField: array[TVkUserField] of string = ('sex', 'bdate', 'city', 'country', 'photo_50',
-    'photo_100', 'photo_200_orig',
-    'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig', 'online',
-    'online_mobile', 'lists', 'domain', 'has_mobile', 'contacts', 'connections',
-    'site', 'education', 'universities', 'schools', 'can_post', 'can_see_all_posts',
-    'can_see_audio', 'can_write_private_message', 'status', 'last_seen',
-    'common_count', 'relation', 'relatives');
+  VkUserField: array[TVkUserField] of string = (
+    'photo_id', 'verified', 'sex', 'bdate', 'city', 'country', 'home_town', 'has_photo', 'photo_50',
+    'photo_100', 'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig',
+    'online', 'domain', 'has_mobile', 'contacts', 'site', 'education', 'universities', 'schools',
+    'status', 'last_seen', 'followers_count', 'common_count', 'occupation', 'nickname',
+    'relatives', 'relation', 'personal', 'connections', 'exports', 'activities', 'interests',
+    'music', 'movies', 'tv', 'books', 'games', 'about', 'quotes', 'can_post', 'can_see_all_posts',
+    'can_see_audio', 'can_write_private_message', 'can_send_friend_request', 'is_favorite',
+    'is_hidden_from_feed', 'timezone', 'screen_name', 'maiden_name', 'crop_photo', 'is_friend',
+    'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me', 'can_be_invited_group');
+  VkFollowerField: array[TVkFollowerField] of string = (
+    'photo_id', 'verified', 'sex', 'bdate', 'city', 'country', 'home_town', 'has_photo', 'photo_50',
+    'photo_100', 'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig',
+    'online', 'lists', 'domain', 'has_mobile', 'contacts', 'site', 'education', 'universities',
+    'schools', 'status', 'last_seen', 'followers_count', 'common_count', 'occupation', 'nickname',
+    'relatives', 'relation', 'personal', 'connections', 'exports', 'wall_comments', 'activities',
+    'interests', 'music', 'movies', 'tv', 'books', 'games', 'about', 'quotes', 'can_post', 'can_see_all_posts',
+    'can_see_audio', 'can_write_private_message', 'can_send_friend_request', 'is_favorite',
+    'is_hidden_from_feed', 'timezone', 'screen_name', 'maiden_name', 'crop_photo', 'is_friend',
+    'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me');
+  VkFriendField: array[TVkFriendField] of string = ('nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone',
+    'photo_50', 'photo_100', 'photo_200_orig', 'has_mobile', 'contacts', 'education', 'online', 'relation', 'last_seen', 'status',
+    'can_write_private_message', 'can_see_all_posts', 'can_post', 'universities');
+  VkGroupField: array[TVkGroupField] of string = ('city', 'country', 'place', 'description', 'wiki_page', 'members_count',
+    'counters', 'start_date', 'finish_date', 'can_post', 'can_see_all_posts', 'activity', 'status',
+    'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic');
 
 function FieldsToString(Fields: TFields): string;
 
@@ -1427,6 +1416,86 @@ end;
 function TVkPermissionsHelper.ToString: string;
 var
   Item: TVkPermission;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkFriendFieldHelper }
+
+function TVkFriendFieldHelper.ToString: string;
+begin
+  Result := VkFriendField[Self];
+end;
+
+{ TVkFriendFieldsHelper }
+
+function TVkFriendFieldsHelper.ToString: string;
+var
+  Item: TVkFriendField;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkGroupFieldHelper }
+
+function TVkGroupFieldHelper.ToString: string;
+begin
+  Result := VkGroupField[Self];
+end;
+
+{ TVkGroupFieldsHelper }
+
+function TVkGroupFieldsHelper.ToString: string;
+var
+  Item: TVkGroupField;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkUserFieldsHelper }
+
+function TVkUserFieldsHelper.ToString: string;
+var
+  Item: TVkUserField;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkUserFieldHelper }
+
+function TVkUserFieldHelper.ToString: string;
+begin
+  Result := VkUserField[Self];
+end;
+
+{ TVkFollowerFieldHelper }
+
+function TVkFollowerFieldHelper.ToString: string;
+begin
+  Result := VkFollowerField[Self];
+end;
+
+{ TVkFollowerFieldsHelper }
+
+function TVkFollowerFieldsHelper.ToString: string;
+var
+  Item: TVkFollowerField;
 begin
   for Item in Self do
   begin

@@ -356,7 +356,8 @@ begin
   end;
 end;
 
-function TMessagesController.GetConversations(var Conversations: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean;
+function TMessagesController.GetConversations(var Conversations: TVkConversationItems; Params: TVkParamsConversationsGet):
+  Boolean;
 begin
   with Handler.Execute('messages.getConversations', Params.List) do
   begin
@@ -381,7 +382,11 @@ begin
     Result := Success;
     if Result then
     begin
-      History := TVkMessageHistory.FromJsonString(Response);
+      try
+        History := TVkMessageHistory.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;

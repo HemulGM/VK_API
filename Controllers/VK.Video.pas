@@ -17,6 +17,15 @@ type
     function Videos(Value: TArrayOfString): Integer;
   end;
 
+  TVkParamsVideoAlbumsGet = record
+    List: TParams;
+    function OwnerId(Value: Integer): Integer;
+    function Count(Value: Integer): Integer;
+    function Offset(Value: Integer): Integer;
+    function Extended(Value: Boolean): Integer;
+    function NeedSystem(Value: Boolean): Integer;
+  end;
+
   TVideoController = class(TVkController)
   public
     /// <summary>
@@ -27,6 +36,8 @@ type
     function Save(var VideoSaved: TVkVideoSaved; Link: string): Boolean; overload;
     function Get(var Videos: TVkVideos; Params: TParams): Boolean; overload;
     function Get(var Videos: TVkVideos; Params: TVkParamsVideosGet): Boolean; overload;
+    function GetAlbums(var Items: TVkVideoAlbums; Params: TParams): Boolean; overload;
+    function GetAlbums(var Items: TVkVideoAlbums; Params: TVkParamsVideoAlbumsGet): Boolean; overload;
   end;
 
 implementation
@@ -35,6 +46,27 @@ uses
   VK.API, VK.CommonUtils;
 
 { TVideoController }
+
+function TVideoController.GetAlbums(var Items: TVkVideoAlbums; Params: TParams): Boolean;
+begin
+  with Handler.Execute('video.getAlbums', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkVideoAlbums.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TVideoController.GetAlbums(var Items: TVkVideoAlbums; Params: TVkParamsVideoAlbumsGet): Boolean;
+begin
+  Result := GetAlbums(Items, Params.List);
+end;
 
 function TVideoController.Get(var Videos: TVkVideos; Params: TParams): Boolean;
 begin
@@ -118,6 +150,33 @@ end;
 function TVkParamsVideosGet.Videos(Value: TArrayOfString): Integer;
 begin
   Result := List.Add('videos', Value.ToString);
+end;
+
+{ TVkParamsVideoAlbumsGet }
+
+function TVkParamsVideoAlbumsGet.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsVideoAlbumsGet.Extended(Value: Boolean): Integer;
+begin
+  Result := List.Add('extended', Value);
+end;
+
+function TVkParamsVideoAlbumsGet.NeedSystem(Value: Boolean): Integer;
+begin
+  Result := List.Add('need_system', Value);
+end;
+
+function TVkParamsVideoAlbumsGet.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TVkParamsVideoAlbumsGet.OwnerId(Value: Integer): Integer;
+begin
+  Result := List.Add('owner_id', Value);
 end;
 
 end.

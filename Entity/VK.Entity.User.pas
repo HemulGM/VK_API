@@ -262,6 +262,7 @@ type
     FVerified: Extended;
     FTrending: Extended;
     FActivity: string;
+    FCity: TVkCity;
     function GetRefer: string;
     function FGetFullName: string;
   public
@@ -281,6 +282,7 @@ type
     property CanWritePrivateMessage: Extended read FCan_write_private_message write FCan_write_private_message;
     property Career: TArray<TVkCareer> read FCareer write FCareer;
     property CommonCount: Extended read FCommon_count write FCommon_count;
+    property City: TVkCity read FCity write FCity;
     property Country: TVkCountry read FCountry write FCountry;
     property CropPhoto: TVkCropPhoto read FCrop_photo write FCrop_photo;
     property Domain: string read FDomain write FDomain;
@@ -511,6 +513,7 @@ constructor TVkUser.Create;
 begin
   inherited;
   FCountry := TVkCountry.Create();
+  FCity := TVkCity.Create();
   FLast_seen := TVkLastSeen.Create();
   FCrop_photo := TVkCropPhoto.Create();
   FOccupation := TVkOccupation.Create();
@@ -539,6 +542,7 @@ begin
     LrelativesItem.Free;
 
   FCountry.Free;
+  FCity.Free;
   FLast_seen.Free;
   FCrop_photo.Free;
   FOccupation.Free;
