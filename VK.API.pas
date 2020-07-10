@@ -3,116 +3,147 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
-  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
-  VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
-  VK.Market, VK.Fave, VK.Notes, VK.Utils, System.Types,
+  System.SysUtils, System.Variants, System.Classes, REST.Client,
+  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
+  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
+  VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board,
+  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave,
+  VK.Notes, VK.Utils, VK.Video,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
   VK.Vcl.Captcha,
   {$ENDIF}
-  VK.Video;
+System.Types;
 
 type
   TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
 
   TCustomVK = class(TComponent)
+    type
+      TVkProxy = class(TPersistent)
+      private
+        FOwner: TCustomVK;
+        procedure SetIP(const Value: string);
+        procedure SetPassword(const Value: string);
+        procedure SetPort(const Value: Integer);
+        procedure SetUserName(const Value: string);
+        function GetIP: string;
+        function GetPassword: string;
+        function GetPort: Integer;
+        function GetUserName: string;
+      public
+        constructor Create(AOwner: TCustomVK);
+        procedure SetProxy(AIP: string; APort: Integer; AUserName: string = ''; APassword: string = '');
+      published
+        property IP: string read GetIP write SetIP;
+        property Port: Integer read GetPort write SetPort;
+        property UserName: string read GetUserName write SetUserName;
+        property Password: string read GetPassword write SetPassword;
+      end;
   private
-    FOAuth2Authenticator: TOAuth2Authenticator;
-    FOnLogin: TOnLogin;
+    FAccount: TAccountController;
+    FAPIVersion: string;
     FAppID: string;
     FAppKey: string;
-    FEndPoint: string;
-    FHandler: TVkHandler;
-    FBaseURL: string;
-    FAPIVersion: string;
-    FAccount: TAccountController;
-    FAuth: TAuthController;
-    FServiceKey: string;
-    FUseServiceKeyOnly: Boolean;
-    FIsLogin: Boolean;
-    FOnError: TOnVKError;
-    FOnLog: TOnLog;
-    FOnErrorLogin: TOnVKError;
-    FChangePasswordHash: string;
-    FUsers: TUsersController;
-    FOnCaptcha: TOnCaptcha;
-    FOnConfirm: TOnConfirm;
-    FOnAuth: TOnAuth;
-    FMessages: TMessagesController;
-    FStatus: TStatusController;
-    FWall: TWallController;
-    FUploader: TUploader;
-    FDoc: TDocController;
-    FLikes: TLikesController;
     FAudio: TAudioController;
+    FAuth: TAuthController;
+    FBaseURL: string;
     FBoard: TBoardController;
+    FCatalog: TCatalogController;
+    FChangePasswordHash: string;
+    FDoc: TDocController;
+    FEndPoint: string;
+    FFave: TFaveController;
     FFriends: TFriendsController;
     FGroups: TGroupsController;
-    FPhotos: TPhotosController;
-    FCatalog: TCatalogController;
-    FUtils: TUtilsController;
-    FVideo: TVideoController;
+    FHandler: TVkHandler;
+    FIsLogin: Boolean;
+    FLang: TVkLang;
+    FLikes: TLikesController;
     FLogging: Boolean;
     FMarket: TMarketController;
-    FFave: TFaveController;
+    FMessages: TMessagesController;
     FNotes: TNotesController;
-    FUserId: Integer;
+    FOAuth2Authenticator: TOAuth2Authenticator;
+    FOnAuth: TOnAuth;
+    FOnCaptcha: TOnCaptcha;
+    FOnConfirm: TOnConfirm;
+    FOnError: TOnVKError;
+    FOnErrorLogin: TOnVKError;
+    FOnLog: TOnLog;
+    FOnLogin: TOnLogin;
     FPermissions: TVkPermissions;
+    FPhotos: TPhotosController;
+    FProxy: TVkProxy;
+    FServiceKey: string;
+    FStatus: TStatusController;
+    FUploader: TUploader;
+    FUserId: Integer;
+    FUsers: TUsersController;
+    FUseServiceKeyOnly: Boolean;
+    FUtils: TUtilsController;
+    FVideo: TVideoController;
+    FWall: TWallController;
+    function CheckAuth: Boolean;
+    function GetIsWorking: Boolean;
+    function GetTestMode: Boolean;
+    function GetToken: string;
+    function GetTokenExpiry: Int64;
+    procedure DoLogin;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAuthError(const AText: string; AStatusCode: Integer);
     procedure FLog(Sender: TObject; const Value: string);
     procedure FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
-    procedure SetOnLogin(const Value: TOnLogin);
-    procedure DoLogin;
+    procedure SetAPIVersion(const Value: string);
     procedure SetAppID(const Value: string);
     procedure SetAppKey(const Value: string);
+    procedure SetBaseURL(const Value: string);
     procedure SetEndPoint(const Value: string);
     procedure SetHandler(const Value: TVkHandler);
-    procedure SetBaseURL(const Value: string);
-    procedure SetAPIVersion(const Value: string);
-    procedure SetServiceKey(const Value: string);
-    procedure SetUseServiceKeyOnly(const Value: Boolean);
-    procedure SetOnError(const Value: TOnVKError);
-    procedure SetOnLog(const Value: TOnLog);
-    procedure SetOnErrorLogin(const Value: TOnVKError);
+    procedure SetLang(const Value: TVkLang);
+    procedure SetLogging(const Value: Boolean);
+    procedure SetOnAuth(const Value: TOnAuth);
     procedure SetOnCaptcha(const Value: TOnCaptcha);
     procedure SetOnConfirm(const Value: TOnConfirm);
-    procedure SetOnAuth(const Value: TOnAuth);
-    function GetToken: string;
-    procedure FVKErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
-    procedure SetToken(const Value: string);
-    function CheckAuth: Boolean;
-    function GetTokenExpiry: Int64;
-    procedure SetTokenExpiry(const Value: Int64);
-    procedure SetLogging(const Value: Boolean);
-    function GetIsWorking: Boolean;
-    function GetTestMode: Boolean;
-    procedure SetTestMode(const Value: Boolean);
+    procedure SetOnError(const Value: TOnVKError);
+    procedure SetOnErrorLogin(const Value: TOnVKError);
+    procedure SetOnLog(const Value: TOnLog);
+    procedure SetOnLogin(const Value: TOnLogin);
     procedure SetPermissions(const Value: TVkPermissions);
+    procedure SetServiceKey(const Value: string);
+    procedure SetTestMode(const Value: Boolean);
+    procedure SetToken(const Value: string);
+    procedure SetTokenExpiry(const Value: Int64);
+    procedure SetUseServiceKeyOnly(const Value: Boolean);
+    procedure SetUsePseudoAsync(const Value: Boolean);
+    function GetUsePseudoAsync: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetOAuth2RequestURI: string;
     function LoadUserInfo: Boolean;
-    procedure DoLog(Sender: TObject; Text: string);
-    procedure DoError(Sender: TObject; E: Exception; Code: Integer; Text: string);
-    procedure DoErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
     function Login: Boolean; overload;
     function Login(ALogin, APassword: string): Boolean; overload;
+    procedure DoLog(Sender: TObject; Text: string);
+    procedure DoError(Sender: TObject; E: Exception; Code: Integer; Text: string = '');
     procedure CallMethod(MethodName: string; Callback: TCallMethodCallback = nil); overload;
-    procedure CallMethod(MethodName: string; Param, Value: string; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Param: TParam; Callback: TCallMethodCallback = nil); overload;
     procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
     procedure CallMethodAsync(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
     /// https://vk.com/dev/execute
     /// </summary>
-    /// <param name="Code">код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагается совместимость с ECMAScript). Алгоритм должен завершаться командой return %выражение%. Операторы должны быть разделены точкой с запятой. </param>
+    /// <param name="Code: string">Код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагается совместимость с ECMAScript). Алгоритм должен завершаться командой return %выражение%. Операторы должны быть разделены точкой с запятой. </param>
     function Execute(Code: string): TResponse;
+    /// <summary>
+    /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
+    /// https://vk.com/dev/execute
+    /// </summary>
+    /// <param name="Code: string">Код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагается совместимость с ECMAScript). Алгоритм должен завершаться командой return %выражение%. Операторы должны быть разделены точкой с запятой. </param>
+    /// <param name="Callback: TCallMethodCallback = nil"> Метод, который будет выполнен после выполнения Execute </param>
     procedure ExecuteAsync(Code: string; Callback: TCallMethodCallback = nil);
-    procedure SetProxy(IP: string; Port: Integer; UserName: string = ''; Password: string = '');
     procedure Walk(Method: TWalkMethod; Count: Integer);
     //Tools
     property Uploader: TUploader read FUploader;
@@ -162,12 +193,19 @@ type
     property IsWorking: Boolean read GetIsWorking;
     property TestMode: Boolean read GetTestMode write SetTestMode;
     property Permissions: TVkPermissions read FPermissions write SetPermissions;
+    property Lang: TVkLang read FLang write SetLang;
+    property Proxy: TVkProxy read FProxy;
+    property UsePseudoAsync: Boolean read GetUsePseudoAsync write SetUsePseudoAsync;
   end;
+
+const
+  ERROR_INTERNAL = -1;
 
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.User;
+  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils,
+  VK.Entity.User;
 
 { TCustomVK }
 
@@ -192,20 +230,16 @@ begin
       Response := Handler.Execute(MethodName, Params);
       if Assigned(Callback) then
       begin
-        TThread.Synchronize(nil,
-          procedure
-          begin
-            Callback(Response);
-          end);
+        Callback(Response);
       end;
     end).Start;
 end;
 
-procedure TCustomVK.CallMethod(MethodName: string; Param, Value: string; Callback: TCallMethodCallback);
+procedure TCustomVK.CallMethod(MethodName: string; Param: TParam; Callback: TCallMethodCallback);
 var
   Response: TResponse;
 begin
-  Response := Handler.Execute(MethodName, [Param, Value]);
+  Response := Handler.Execute(MethodName, [Param]);
   if Assigned(Callback) then
   begin
     Callback(Response);
@@ -228,7 +262,9 @@ begin
   inherited;
   FIsLogin := False;
   FLogging := False;
+  FLang := vlAuto;
   FUseServiceKeyOnly := False;
+  FProxy := TVkProxy.Create(Self);
   FOAuth2Authenticator := TOAuth2Authenticator.Create(Self);
   FHandler := TVkHandler.Create(Self);
   FHandler.OnError := FVKError;
@@ -262,7 +298,7 @@ begin
   FMarket := TMarketController.Create(FHandler);
   FFave := TFaveController.Create(FHandler);
   FNotes := TNotesController.Create(FHandler);
-  //
+  //Tools
   FUploader := TUploader.Create;
 end;
 
@@ -288,6 +324,7 @@ begin
   FAccount.Free;
   FAuth.Free;
   FMessages.Free;
+  FProxy.Free;
   FHandler.Free;
   inherited;
 end;
@@ -295,11 +332,6 @@ end;
 procedure TCustomVK.DoError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
   FVKError(Sender, E, Code, Text);
-end;
-
-procedure TCustomVK.DoErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
-begin
-  FVKErrorLogin(Sender, E, Code, Text);
 end;
 
 procedure TCustomVK.DoLog(Sender: TObject; Text: string);
@@ -327,6 +359,7 @@ begin
     {$ELSE}
     TFormCaptcha.Execute(CaptchaImg, Answer);
     {$ENDIF}
+
   end;
 end;
 
@@ -384,18 +417,6 @@ begin
     raise E;
 end;
 
-procedure TCustomVK.FVKErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
-begin
-  if Assigned(FOnErrorLogin) then
-  begin
-    FOnErrorLogin(Self, E, Code, Text);
-    if Assigned(E) then
-      E.Free;
-  end
-  else
-    raise E;
-end;
-
 function TCustomVK.LoadUserInfo: Boolean;
 var
   User: TVkUser;
@@ -415,25 +436,12 @@ begin
 end;
 
 function TCustomVK.Login(ALogin, APassword: string): Boolean;
-{var
-  HTTP: THTTPClient;  }
 begin
-  raise TVkException.Create('Метод в разработке');
- { HTTP := THTTPClient.Create;
-  try
-    try
-      //HTTP.
-    finally
-      HTTP.Free;
-    end;
-  except
-
-  end;  }
+  raise TVkException.Create('RU: Метод в разработке / EN: Method in development');
 end;
 
 function TCustomVK.GetOAuth2RequestURI: string;
 begin
-  //FOAuth2Authenticator.AccessToken := EmptyStr;
   FOAuth2Authenticator.ClientID := FAppID;
   FOAuth2Authenticator.ClientSecret := FAppKey;
   FOAuth2Authenticator.ResponseType := TOAuth2ResponseType.rtTOKEN;
@@ -527,6 +535,15 @@ begin
   FHandler := Value;
 end;
 
+procedure TCustomVK.SetLang(const Value: TVkLang);
+begin
+  FLang := Value;
+  if FLang <> vlAuto then
+    FHandler.Client.AddParameter('lang', Ord(Value).ToString)
+  else
+    FHandler.Client.Params.Delete('lang');
+end;
+
 procedure TCustomVK.SetLogging(const Value: Boolean);
 begin
   FLogging := Value;
@@ -593,10 +610,18 @@ end;
 function TCustomVK.GetTokenExpiry: Int64;
 begin
   try
-    Result := DateTimeToUnix(FOAuth2Authenticator.AccessTokenExpiry, False);
+    if FOAuth2Authenticator.AccessTokenExpiry <> 0 then
+      Result := DateTimeToUnix(FOAuth2Authenticator.AccessTokenExpiry, False)
+    else
+      Result := 0;
   except
     Result := 0;
   end;
+end;
+
+function TCustomVK.GetUsePseudoAsync: Boolean;
+begin
+  Result := FHandler.UsePseudoAsync;
 end;
 
 procedure TCustomVK.SetPermissions(const Value: TVkPermissions);
@@ -604,12 +629,9 @@ begin
   FPermissions := Value;
 end;
 
-procedure TCustomVK.SetProxy(IP: string; Port: Integer; UserName, Password: string);
+procedure TCustomVK.SetUsePseudoAsync(const Value: Boolean);
 begin
-  FHandler.Client.ProxyServer := IP;
-  FHandler.Client.ProxyPort := Port;
-  FHandler.Client.ProxyUsername := UserName;
-  FHandler.Client.ProxyPassword := Password;
+  FHandler.UsePseudoAsync := Value;
 end;
 
 procedure TCustomVK.SetUseServiceKeyOnly(const Value: Boolean);
@@ -642,11 +664,67 @@ begin
     repeat
       Cnt := Method(Offset, Cancel);
       Inc(Offset, Count);
-    until (Cnt <= 0) or Cancel;
+    until (Cnt < Count) or Cancel;
   except
     on E: Exception do
-      DoLog(Self, E.Message);
+      DoError(Self, E, ERROR_INTERNAL);
   end;
+end;
+
+{ TCustomVK.TVkProxy }
+
+constructor TCustomVK.TVkProxy.Create(AOwner: TCustomVK);
+begin
+  inherited Create;
+  FOwner := AOwner;
+end;
+
+function TCustomVK.TVkProxy.GetIP: string;
+begin
+  Result := FOwner.Handler.Client.ProxyServer;
+end;
+
+function TCustomVK.TVkProxy.GetPassword: string;
+begin
+  Result := FOwner.Handler.Client.ProxyPassword;
+end;
+
+function TCustomVK.TVkProxy.GetPort: Integer;
+begin
+  Result := FOwner.Handler.Client.ProxyPort;
+end;
+
+function TCustomVK.TVkProxy.GetUserName: string;
+begin
+  Result := FOwner.Handler.Client.ProxyUsername;
+end;
+
+procedure TCustomVK.TVkProxy.SetIP(const Value: string);
+begin
+  FOwner.Handler.Client.ProxyServer := Value;
+end;
+
+procedure TCustomVK.TVkProxy.SetPassword(const Value: string);
+begin
+  FOwner.Handler.Client.ProxyPassword := Value;
+end;
+
+procedure TCustomVK.TVkProxy.SetPort(const Value: Integer);
+begin
+  FOwner.Handler.Client.ProxyPort := Value;
+end;
+
+procedure TCustomVK.TVkProxy.SetUserName(const Value: string);
+begin
+  FOwner.Handler.Client.ProxyUsername := Value;
+end;
+
+procedure TCustomVK.TVkProxy.SetProxy(AIP: string; APort: Integer; AUserName, APassword: string);
+begin
+  IP := AIP;
+  Port := APort;
+  Username := AUserName;
+  Password := APassword;
 end;
 
 end.

@@ -101,8 +101,19 @@ uses
 { TUserEvents }
 
 constructor TCustomUserEvents.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited;
+  if Assigned(AOwner) and (csDesigning in ComponentState) then
+  begin
+    for i := 0 to AOwner.ComponentCount - 1 do
+      if AOwner.Components[i] is TCustomVK then
+      begin
+        FVK := AOwner.Components[i] as TCustomVK;
+        Break;
+      end;
+  end;
   FLongPollServer := TLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;

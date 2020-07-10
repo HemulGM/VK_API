@@ -8,22 +8,26 @@ uses
   FMX.Types,
   {$ELSE}
   System.Types,
-  {$ENDIF}  VK.API, VK.UserEvents;
+  {$ENDIF}  VK.API, VK.Types, VK.UserEvents;
 
 type
   [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVK = class(TCustomVK)
   published
-    property AppID;
-    property AppKey;
+    property AppID;       // default empty
+    property AppKey;      // default empty
     property EndPoint;    // default 'https://oauth.vk.com/authorize';
     property Permissions nodefault; // default 'groups,friends,wall,photos,video,docs,notes,market';
     property APIVersion;  // default '5.103';
     property BaseURL;     // default 'https://api.vk.com/method';
-    property ServiceKey;
+    property ServiceKey;  // default empty
     property UseServiceKeyOnly default False;
     property Logging default False;
     property TestMode default False;
+    property Token;
+    property Lang default vlAuto;
+    property UsePseudoAsync default True;
+    property Proxy;
     property OnAuth;
     property OnLogin;
     property OnLog;
