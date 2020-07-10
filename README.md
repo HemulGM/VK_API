@@ -28,15 +28,48 @@ VK.Login(<родитель для окна, необяз.>);
 2 . Авторизация напрямую, используя токен (пользовательский или бота)
     
 ```Pascal
-procedure TFormMain.VKAuth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
 begin
   Token := '<здесь токен>';
 end;   
+```
+
+Или можно использовать форму авторизации OAuth2
+Для FMX - VK.FMX.OAuth2 - TFormFMXOAuth2
+Для VCL - VK.VCL.OAuth2 - TFormOAuth2
+```
+...
+var 
+  FToken: string;
+  FChangePasswordHash: string;
+  FTokenExpiry: Int64;
+...
+
+procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+begin
+  if FToken.IsEmpty then
+  begin
+    TFormFMXOAuth2.Execute(Url,
+      procedure(Form: TFormFMXOAuth2)
+      begin
+        FToken := Form.Token;
+        FTokenExpiry := Form.TokenExpiry;
+        FChangePasswordHash := Form.ChangePasswordHash;
+        if not FToken.IsEmpty then
+          VK.Login;
+      end);
+  end
+  else
+  begin
+    Token := FToken;
+    TokenExpiry := FTokenExpiry;
+  end;
+end;
 
 procdure TFormMain.FormCreate(Sender: TObject);
 begin
   VK.Login;
-end;  
+end;
 ```
 
 3 . Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
