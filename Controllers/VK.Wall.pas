@@ -7,7 +7,7 @@ uses
   VK.Entity.Media, VK.Entity.CommentInfo;
 
 type
-  TVkWallParams = record
+  TVkParamsWallPost = record
     List: TParams;
     function Message(Value: string): Integer;
     function Attachments(Value: TAttachmentArray): Integer;
@@ -26,7 +26,7 @@ type
     function Signed(Value: Boolean): Integer;
   end;
 
-  TVkWallGetParams = record
+  TVkParamsWallGet = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function Domain(Value: string): Integer;
@@ -73,11 +73,11 @@ type
     /// <summary>
     /// Позволяет создать запись на своей стене
     /// </summary>
-    function Post(var PostId: Integer; Params: TVkWallParams): Boolean; overload;
+    function Post(var PostId: Integer; Params: TVkParamsWallPost): Boolean; overload;
     /// <summary>
     /// Позволяет создать запись на своей стене
     /// </summary>
-    function Post(Params: TVkWallParams): Boolean; overload;
+    function Post(Params: TVkParamsWallPost): Boolean; overload;
     /// <summary>
     /// Добавляет комментарий к записи на стене.
     /// </summary>
@@ -91,7 +91,7 @@ type
     /// </summary>
     function CreateComment(PostId: Integer; Message: string; OwnerId: Integer = 0; Attachments: TAttachmentArray = []):
       Boolean; overload;
-    function Get(var Posts: TVkPosts; Params: TVkWallGetParams): Boolean; overload;
+    function Get(var Posts: TVkPosts; Params: TVkParamsWallGet): Boolean; overload;
     function Get(var Posts: TVkPosts; OwnerId: Integer; Offset, Count: Integer): Boolean; overload;
   end;
 
@@ -205,7 +205,7 @@ end;
 
 function TWallController.Get(var Posts: TVkPosts; OwnerId, Offset, Count: Integer): Boolean;
 var
-  Params: TVkWallGetParams;
+  Params: TVkParamsWallGet;
 begin
   Params.OwnerId(OwnerId);
   Params.Offset(Offset);
@@ -213,7 +213,7 @@ begin
   Result := Get(Posts, Params);
 end;
 
-function TWallController.Get(var Posts: TVkPosts; Params: TVkWallGetParams): Boolean;
+function TWallController.Get(var Posts: TVkPosts; Params: TVkParamsWallGet): Boolean;
 begin
   with Handler.Execute('wall.get', Params.List) do
   begin
@@ -225,14 +225,14 @@ begin
   end;
 end;
 
-function TWallController.Post(Params: TVkWallParams): Boolean;
+function TWallController.Post(Params: TVkParamsWallPost): Boolean;
 var
   PostId: Integer;
 begin
   Result := Post(PostId, Params);
 end;
 
-function TWallController.Post(var PostId: Integer; Params: TVkWallParams): Boolean;
+function TWallController.Post(var PostId: Integer; Params: TVkParamsWallPost): Boolean;
 var
   JSONItem: TJSONValue;
 begin
@@ -253,78 +253,78 @@ end;
 
 { TVkWallParams }
 
-function TVkWallParams.Attachments(Value: TAttachmentArray): Integer;
+function TVkParamsWallPost.Attachments(Value: TAttachmentArray): Integer;
 begin
   Result := List.Add('attachments', Value.ToString);
 end;
 
-function TVkWallParams.CloseComments(Value: Boolean): Integer;
+function TVkParamsWallPost.CloseComments(Value: Boolean): Integer;
 begin
   Result := List.Add('close_comments', BoolToString(Value));
 end;
 
-function TVkWallParams.FriendsOnly(Value: Boolean): Integer;
+function TVkParamsWallPost.FriendsOnly(Value: Boolean): Integer;
 begin
   Result := List.Add('friends_only', BoolToString(Value));
 end;
 
-function TVkWallParams.FromGroup(Value: Boolean): Integer;
+function TVkParamsWallPost.FromGroup(Value: Boolean): Integer;
 begin
   Result := List.Add('from_group', Value);
 end;
 
-function TVkWallParams.Guid(Value: string): Integer;
+function TVkParamsWallPost.Guid(Value: string): Integer;
 begin
   Result := List.Add('guid', Value);
 end;
 
-function TVkWallParams.LatLong(Lat, Long: Extended): Integer;
+function TVkParamsWallPost.LatLong(Lat, Long: Extended): Integer;
 begin
   List.Add('lat', Lat.ToString);
   Result := List.Add('long', Long.ToString);
 end;
 
-function TVkWallParams.MarkAsAds(Value: Boolean): Integer;
+function TVkParamsWallPost.MarkAsAds(Value: Boolean): Integer;
 begin
   Result := List.Add('mark_as_ads', BoolToString(Value));
 end;
 
-function TVkWallParams.Message(Value: string): Integer;
+function TVkParamsWallPost.Message(Value: string): Integer;
 begin
   Result := List.Add('message', Value);
 end;
 
-function TVkWallParams.MuteNotifications(Value: Boolean): Integer;
+function TVkParamsWallPost.MuteNotifications(Value: Boolean): Integer;
 begin
   Result := List.Add('mute_notifications', BoolToString(Value));
 end;
 
-function TVkWallParams.OwnerId(Value: Integer): Integer;
+function TVkParamsWallPost.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value.ToString);
 end;
 
-function TVkWallParams.PlaceId(Value: Integer): Integer;
+function TVkParamsWallPost.PlaceId(Value: Integer): Integer;
 begin
   Result := List.Add('place_id', Value.ToString);
 end;
 
-function TVkWallParams.PostId(Value: Integer): Integer;
+function TVkParamsWallPost.PostId(Value: Integer): Integer;
 begin
   Result := List.Add('post_id', Value.ToString);
 end;
 
-function TVkWallParams.PublishDate(Value: TDateTime): Integer;
+function TVkParamsWallPost.PublishDate(Value: TDateTime): Integer;
 begin
   Result := List.Add('publish_date', DateTimeToUnix(Value));
 end;
 
-function TVkWallParams.Services(Value: TArrayOfString): Integer;
+function TVkParamsWallPost.Services(Value: TArrayOfString): Integer;
 begin
   Result := List.Add('services', Value.ToString);
 end;
 
-function TVkWallParams.Signed(Value: Boolean): Integer;
+function TVkParamsWallPost.Signed(Value: Boolean): Integer;
 begin
   Result := List.Add('signed', Value);
 end;
@@ -373,37 +373,37 @@ end;
 
 { TVkWallGetParams }
 
-function TVkWallGetParams.Count(Value: Integer): Integer;
+function TVkParamsWallGet.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkWallGetParams.Domain(Value: string): Integer;
+function TVkParamsWallGet.Domain(Value: string): Integer;
 begin
   Result := List.Add('domain', Value);
 end;
 
-function TVkWallGetParams.Extended(Value: Boolean): Integer;
+function TVkParamsWallGet.Extended(Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkWallGetParams.Fields(Value: string): Integer;
+function TVkParamsWallGet.Fields(Value: string): Integer;
 begin
   Result := List.Add('fields', Value);
 end;
 
-function TVkWallGetParams.Filter(Value: TVkPostType): Integer;
+function TVkParamsWallGet.Filter(Value: TVkPostType): Integer;
 begin
   Result := List.Add('value', Value.ToConst);
 end;
 
-function TVkWallGetParams.Offset(Value: Integer): Integer;
+function TVkParamsWallGet.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkWallGetParams.OwnerId(Value: Integer): Integer;
+function TVkParamsWallGet.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;

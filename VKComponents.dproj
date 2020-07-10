@@ -196,6 +196,12 @@
         <DCCReference Include="VK.Bot.pas"/>
         <DCCReference Include="Entity\VK.Entity.Video.Save.pas"/>
         <DCCReference Include="Utils\VK.Bot.Utils.pas"/>
+        <DCCReference Include="Controllers\VK.Market.pas"/>
+        <DCCReference Include="Controllers\VK.Fave.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Fave.pas"/>
+        <DCCReference Include="Controllers\VK.Notes.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Privacy.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Board.pas"/>
         <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

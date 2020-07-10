@@ -1,4 +1,4 @@
-unit VK.FMX.OAuth2;
+﻿unit VK.FMX.OAuth2;
 
 interface
 
@@ -41,6 +41,7 @@ type
     property Token: string read FToken write SetToken;
     property TokenExpiry: Int64 read FTokenExpiry write SetTokenExpiry;
     property ChangePasswordHash: string read FChangePasswordHash write SetChangePasswordHash;
+    property LastUrl: string read FLastURL;
     class procedure Execute(Url: string; Proc: TAuthResult; AStyleBook: TStyleBook = nil);
   end;
 
@@ -50,7 +51,7 @@ var
 implementation
 
 uses
-  System.Net.HttpClient;
+  System.Net.HttpClient, Winapi.UrlMon;
 
 {$R *.fmx}
 
@@ -132,11 +133,14 @@ begin
 end;
 
 procedure TFormFMXOAuth2.FormCreate(Sender: TObject);
+const
+  UserAgent = 'Mozilla/5.0 (Windows Phone 10.0;  Android 4.2.1; Nokia; Lumia 520) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Mobile Safari/537.36 Edge/12.0';
 begin
   FLastTitle := '';
   FIsError := False;
   FBrakeAll := False;
   FLastURL := '';
+  UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, PAnsiChar(AnsiString(UserAgent)), Length(UserAgent), 0);
 end;
 
 procedure TFormFMXOAuth2.FormKeyPress(Sender: TObject; var Key: Char);
@@ -161,6 +165,7 @@ begin
     //Base64EncodeStr(FProxyUserName + ':' + FProxyPassword, S);
     //Browser.Navigate(
     //Browser.Navigate2(AURL, EmptyParam{Flags}, EmptyParam{TargetFrameName}, EmptyParam{PostData}, 'Proxy-Authorization: BASIC ' + S + #13#10 + 'X-StopHandling: 1' + #13#10);
+    Browser.Navigate(AURL)
   end
   else
     Browser.Navigate(AURL);

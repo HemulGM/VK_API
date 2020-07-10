@@ -283,7 +283,7 @@ end;
 
 procedure TFormMain.Button19Click(Sender: TObject);
 var
-  Params: TVkWallParams;
+  Params: TVkParamsWallPost;
 begin
 //  VK1.Wall.Post('', -145962568, ['video58553419_456239240']);
   Params.Message('Test Text');
@@ -331,7 +331,7 @@ var
   List: TVkAudios;
   i: Integer;
 var
-  Params: TVkAudioParams;
+  Params: TVkParamsAudio;
 begin
   Params.OwnerId(415730216);
   Params.AlbumId(86751037);
@@ -380,7 +380,7 @@ procedure TFormMain.Button24Click(Sender: TObject);
 var
   List: TVkAudios;
   i: Integer;
-  Params: TVkAudioParams;
+  Params: TVkParamsAudio;
 begin
   Params.AlbumId(-1);
   if VK1.Audio.GetRecommendations(List, Params) then
@@ -468,7 +468,7 @@ end;
 procedure TFormMain.Button27Click(Sender: TObject);
 var
   List: TVkConversationItems;
-  Params: TParamConversation;
+  Params: TVkParamsConversationsGet;
   Item: TVkConversationItem;
 begin
   if VK1.Messages.GetConversations(List, Params) then

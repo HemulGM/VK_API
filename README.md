@@ -1,5 +1,10 @@
 # VKAPI
- VK API
+ 
+**Внимание**
+Если вы уже использовали обертку (до 08.07.2020) и недавно затянули изменения, то вы вероятно получите ошибку при открытии формы. Для её решения нужно закарыть форму с ошибкой без сохранения и исправать файл формы dfm/fmx. Заменить значение свойства Permissions компонента TVK с "'friends,messages..'" на "[Friends,Messages]". Т.е. изменить тип со строки к множеству.
+
+**Warning**
+If you have already used a wrapper (before 07/08/2020) and recently tightened the changes, then you will probably get an error when opening the form. To solve it, you need to close the form with an error without saving and fix the dfm/fmx form file. Replace the value of the Permissions property of the TVK component from "'friends,messages..'" to "[Friends,Messages]". Those. change type from string to set.
 
 API для Вконтакте
 
@@ -35,7 +40,7 @@ var
   Users: TVkUsers;
   i: Integer;
 begin
-  if VK.Users.Get(Users, '286400863,415730216', UserFieldsAll, '') then
+  if VK.Users.Get(Users, [286400863, 415730216], VkUserFieldsAll) then
   begin
     for i := Low(Users.Items) to High(Users.Items) do
     begin
@@ -139,7 +144,7 @@ end;
 ```Pascal
 var
   List: TVkAudios;
-  Params: TVkAudioParams;
+  Params: TVkParamsAudio;
   i: Integer;
 begin
   Params.OwnerId(415730216);
@@ -154,6 +159,40 @@ begin
   end;
 end;    
 ```
+
+**Использование метода Walk, для выполнения методов с параметрами Count и Offset**
+
+Это простой цикл, который вызывает наш метод регулируя Offset. Cancel позволяет закончить цикл.
+
+Метод позволяет получить все элементы определённого метода с Count и Offset
+Достаточно написать стандартную конструкцию получения данных с помощью искомого метода внутри 
+передаваемой анонимной функции в Walk и указать шаг получения кол-ва элементов.
+
+```Pascal
+VKAPI.Walk(
+   function(Offset: Integer; var Cancel: Boolean): Integer
+   var
+     Audio: TVkAudio;
+     Audios: TVkAudios;
+     Params: TVkParamsAudio;
+   begin
+     Result := 0;  //Метод должн вернуть кол-во фактически полученных элементов
+     Params.Count(100);
+     Params.Offset(Offset);
+     if VKAPI.Audio.Get(Audios, Params) then
+     begin
+       Cnt := Audios.Count;
+       Result := Length(Audios.Items);  //Возвращение кол-во полученных элементов
+       for Audio in Audios.Items do
+       begin
+         //Do somethings with Audio
+       end;
+       Audios.Free;
+     end
+     else
+       Cancel := True;
+   end, 100);  // 100 - параметр шага запроса, должен соответстовать параметру метода "Params.Count(100);"
+```        
   
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbLTY2MDExNDI1Miw5MzcyNjYxMzQsMzQ1Mj

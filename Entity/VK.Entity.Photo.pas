@@ -17,7 +17,7 @@ type
     FLikes: TVkLikesInfo;
     FOwner_id: Integer;
     FReposts: TVkRepostsInfo;
-    FSizes: TArray<TVkSizes>;
+    FSizes: TVkSizes;
     FTags: TVkTags;
     FText: string;
     FUser_id: Integer;
@@ -37,7 +37,7 @@ type
     property UserId: Integer read FUser_id write FUser_id;
     property Text: string read FText write FText;
     property Date: Extended read FDate write FDate;
-    property Sizes: TArray<TVkSizes> read FSizes write FSizes;
+    property Sizes: TVkSizes read FSizes write FSizes;
     property Width: Integer read FWidth write FWidth;
     property Height: Integer read FHeight write FHeight;
     //
@@ -60,6 +60,17 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPhoto;
+  end;
+
+  TVkCropPhoto = class
+  private
+    FCrop: TVkCrop;
+    FPhoto: TVkPhoto;
+    FRect: TVkRect;
+  public
+    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property Crop: TVkCrop read FCrop write FCrop;
+    property Rect: TVkRect read FRect write FRect;
   end;
 
   TVkPostedPhoto = class
@@ -109,7 +120,7 @@ end;
 
 destructor TVkPhoto.Destroy;
 var
-  LsizesItem: TVkSizes;
+  LsizesItem: TVkSize;
 begin
 
   for LsizesItem in FSizes do
