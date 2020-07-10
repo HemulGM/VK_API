@@ -8,6 +8,11 @@ If you have already used a wrapper (before 07/08/2020) and recently tightened th
 
 API для Вконтакте
 
+**Заметки**
+Для использования FMX необходимо добавить директиву NEEDFMX в проект.
+**Note**
+To use FMX, you need to add the NEEDFMX directive to the project.
+
 **Способы авторизации:**
 
 1 . Авторизация через OAuth2 форму
