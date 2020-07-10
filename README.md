@@ -21,20 +21,6 @@ To use FMX, you need to add the NEEDFMX directive to the project.
 
 1 . Авторизация через OAuth2 форму
 
-```Pascal
-VK.Login(<родитель для окна, необяз.>);
-```
-
-2 . Авторизация напрямую, используя токен (пользовательский или бота)
-    
-```Pascal
-procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
-begin
-  Token := '<здесь токен>';
-end;   
-```
-
-Или можно использовать форму авторизации OAuth2
 ```
 Для FMX - VK.FMX.OAuth2 - TFormFMXOAuth2
 Для VCL - VK.VCL.OAuth2 - TFormOAuth2
@@ -69,10 +55,17 @@ begin
   end;
 end;
 
-procdure TFormMain.FormCreate(Sender: TObject);
+VK.Login(<родитель для окна для VCL, необяз.>);
+
+```
+
+2 . Авторизация напрямую, используя токен (пользовательский или бота)
+    
+```Pascal
+procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
 begin
-  VK.Login;
-end;
+  Token := '<здесь токен>';
+end;   
 ```
 
 3 . Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
