@@ -33,8 +33,9 @@ begin
   Token := '<здесь токен>';
 end;   
 ```
-```
+
 Или можно использовать форму авторизации OAuth2
+```
 Для FMX - VK.FMX.OAuth2 - TFormFMXOAuth2
 Для VCL - VK.VCL.OAuth2 - TFormOAuth2
 ```
