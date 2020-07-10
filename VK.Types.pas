@@ -205,6 +205,7 @@ type
 
   TVkFollowerFieldsHelper = record helper for TVkFollowerFields
     function ToString: string; inline;
+    class function All: TVkFollowerFields; static; inline;
   end;
 
   TVkUserField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames,
@@ -217,7 +218,9 @@ type
   TVkUserFields = set of TVkUserField;
 
   TVkUserFieldsHelper = record helper for TVkUserFields
+  public
     function ToString: string; inline;
+    class function All: TVkUserFields; static; inline;
   end;
 
   TVkFriendField = (ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100, ffPhoto200, ffHasMobile, ffContacts, ffEducation, ffOnline, ffRelation, ffLastSeen, ffStatus, ffCanWritePrivateMessage, ffCanSeeAllPosts, ffCanPost, ffUniversities);
@@ -1436,6 +1439,12 @@ end;
 
 { TVkUserFieldsHelper }
 
+class function TVkUserFieldsHelper.All: TVkUserFields;
+begin
+  Result := [ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames,
+    ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup];
+end;
+
 function TVkUserFieldsHelper.ToString: string;
 var
   Item: TVkUserField;
@@ -1462,6 +1471,12 @@ begin
 end;
 
 { TVkFollowerFieldsHelper }
+
+class function TVkFollowerFieldsHelper.All: TVkFollowerFields;
+begin
+  Result := [flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50, flPhoto100, flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain, flHasMobile, flContacts, flSite, flEducation, flUniversities, flSchools, flStatus, flLastSeen, flFollowersCount, flCommonCount, flOccupation, flNickName, flRelatives, flRelation, flPersonal, flConnections, flExports, flWallComments, flActivities, flInterests, flMusic, flMovies,
+    flTV, flBooks, flGames, flAbout, flQuotes, flCanPost, flCanSeeAllPosts, flCanSeeAudio, flCanWritePrivateMessage, flCanSendFriendRequest, flIsFavorite, flIsHiddenFromFeed, flTimeZone, flScreenName, flMaidenName, flCropPhoto, flIsFriend, flFriendStatus, flCareer, flMilitary, flBlacklisted, flBlacklistedByMe];
+end;
 
 function TVkFollowerFieldsHelper.ToString: string;
 var
