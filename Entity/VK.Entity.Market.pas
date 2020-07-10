@@ -60,13 +60,13 @@ type
 
   TVkProduct = class
   private
-    FAvailability: Extended;
+    FAvailability: Integer;
     FCategory: TVkProductCategory;
-    FDate: Extended;
+    FDate: Int64;
     FDescription: string;
     FExternal_id: string;
-    FId: Extended;
-    FOwner_id: Extended;
+    FId: Integer;
+    FOwner_id: Integer;
     FPrice: TVkProductPrice;
     FThumb_photo: string;
     FTitle: string;
@@ -78,13 +78,13 @@ type
     FLikes: TVkLikesInfo;
     FReposts: TVkRepostsInfo;
   public
-    property Availability: Extended read FAvailability write FAvailability;
+    property Availability: Integer read FAvailability write FAvailability;
     property Category: TVkProductCategory read FCategory write FCategory;
-    property Date: Extended read FDate write FDate;
+    property Date: Int64 read FDate write FDate;
     property Description: string read FDescription write FDescription;
     property ExternalId: string read FExternal_id write FExternal_id;
-    property Id: Extended read FId write FId;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property Id: Integer read FId write FId;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
     property Price: TVkProductPrice read FPrice write FPrice;
     property ThumbPhoto: string read FThumb_photo write FThumb_photo;
     property Title: string read FTitle write FTitle;

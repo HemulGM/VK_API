@@ -16,11 +16,13 @@ type
     FTitle: string;
     FView_url: string;
     FText: string;
+    function GetDate: TDateTime;
+    procedure SetDate(const Value: TDateTime);
   public
     property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Comments: Integer read FComments write FComments;
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read GetDate write SetDate;
     property ReadComments: Integer read FRead_comments write FRead_comments;
     property Title: string read FTitle write FTitle;
     property Text: string read FText write FText;
@@ -43,7 +45,20 @@ type
 
 implementation
 
+uses
+  System.DateUtils;
+
 {TVkNote}
+
+function TVkNote.GetDate: TDateTime;
+begin
+  Result := UnixToDateTime(FDate, False);
+end;
+
+procedure TVkNote.SetDate(const Value: TDateTime);
+begin
+  FDate := DateTimeToUnix(Value, False);
+end;
 
 function TVkNote.ToJsonString: string;
 begin

@@ -3,8 +3,8 @@ unit VK.Wall;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Media, VK.Entity.CommentInfo;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
+  VK.Entity.CommentInfo;
 
 type
   TVkParamsWallPost = record
@@ -172,7 +172,11 @@ begin
     Result := Success;
     if Result then
     begin
-      CommentInfo := TVkCommentInfo.FromJsonString(Response);
+      try
+        CommentInfo := TVkCommentInfo.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;

@@ -236,7 +236,7 @@ type
     property Title: string read FTitle write FTitle;
     property Latitude: Extended read FLatitude write FLatitude;
     property Longitude: Extended read FLongitude write FLongitude;
-    property &Type: string read FType write FType;
+    property&Type: string read FType write FType;
     property Country: string read FCountry write FCountry;
     property City: string read FCity write FCity;
     property Created: integer read FCreated write FCreated;
@@ -294,6 +294,17 @@ type
     property Photo200: string read FPhoto_200 write FPhoto_200; // Ч URL изображени€ 200x200px;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkChatPhoto;
+  end;
+
+  TVkIdList = class
+  private
+    FCount: Integer;
+    FItems: TArray<Integer>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<Integer> read FItems write FItems;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkIdList;
   end;
 
 var
@@ -594,6 +605,18 @@ end;
 procedure TVkAddresses.SetIs_enabled(const Value: Boolean);
 begin
   FIs_enabled := BoolToInt(Value);
+end;
+
+{ TVkIdList }
+
+class function TVkIdList.FromJsonString(AJsonString: string): TVkIdList;
+begin
+  result := TJson.JsonToObject<TVkIdList>(AJsonString)
+end;
+
+function TVkIdList.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

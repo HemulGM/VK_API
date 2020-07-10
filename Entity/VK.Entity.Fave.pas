@@ -28,8 +28,10 @@ type
     FVideo: TVkVideo;
     FProduct: TVkProduct;
     FPhoto: TVkPhoto;
+    function GetAdded_date: TDateTime;
+    procedure SetAdded_date(const Value: TDateTime);
   public
-    property AddedDate: Int64 read FAdded_date write FAdded_date;
+    property AddedDate: TDateTime read GetAdded_date write SetAdded_date;
     property Link: TVkLink read FLink write FLink;
     property Post: TVkPost read FPost write FPost;
     property Video: TVkVideo read FVideo write FVideo;
@@ -57,6 +59,9 @@ type
   end;
 
 implementation
+
+uses
+  System.DateUtils;
 
 {TTagsClass}
 
@@ -107,6 +112,16 @@ end;
 class function TVkFave.FromJsonString(AJsonString: string): TVkFave;
 begin
   result := TJson.JsonToObject<TVkFave>(AJsonString)
+end;
+
+function TVkFave.GetAdded_date: TDateTime;
+begin
+  Result := UnixToDateTime(FAdded_date, False);
+end;
+
+procedure TVkFave.SetAdded_date(const Value: TDateTime);
+begin
+  FAdded_date := DateTimeToUnix(Value, False);
 end;
 
 {TVkFaves}

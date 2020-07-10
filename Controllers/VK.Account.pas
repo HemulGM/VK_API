@@ -114,7 +114,7 @@ end;
 
 function TAccountController.GetInfo(var Info: TVkAccountInfo; Fields: TFields = []): Boolean;
 begin
-  with Handler.Execute('account.getInfo', ['fields', FieldsToString(Fields)]) do
+  with Handler.Execute('account.getInfo', ['fields', Fields.ToString]) do
   begin
     Result := Success;
     if Result then

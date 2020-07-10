@@ -257,7 +257,7 @@ type
 
   TVkGroupField = (gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate,
     gfFinishDate, gfCanPost, gfCanSeeAllPosts, gfActivity, gfStatus, gfContacts, gfLinks, gfFixedPost, gfVerified,
-    gfSite, gfCanCreateTopic);
+    gfSite, gfCanCreateTopic, gfPhoto50);
 
   TVkGroupFieldHelper = record helper for TVkGroupField
     function ToString: string; inline;
@@ -266,6 +266,18 @@ type
   TVkGroupFields = set of TVkGroupField;
 
   TVkGroupFieldsHelper = record helper for TVkGroupFields
+    function ToString: string; inline;
+  end;
+
+  TVkGroupFilter = (gftAdmin, gftEditor, gftModer, gftAdvertiser, gftGroups, gftPublics, gftEvents, gftHasAddress);
+
+  TVkGroupFilterHelper = record helper for TVkGroupFilter
+    function ToString: string; inline;
+  end;
+
+  TVkGroupFilters = set of TVkGroupFilter;
+
+  TVkGroupFiltersHelper = record helper for TVkGroupFilters
     function ToString: string; inline;
   end;
 
@@ -584,6 +596,16 @@ type
 
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
 
+const
+  VkUserFieldsAll =[ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
+    ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile,
+    ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount,
+    ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests,
+    ufMusic, ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio,
+    ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName,
+    ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe,
+    ufCanBeInvitedGroup];
+
 var
   VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8,
     MF_UNKNOWN_7, MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN,
@@ -652,9 +674,9 @@ var
     'can_write_private_message', 'can_see_all_posts', 'can_post', 'universities');
   VkGroupField: array[TVkGroupField] of string = ('city', 'country', 'place', 'description', 'wiki_page', 'members_count',
     'counters', 'start_date', 'finish_date', 'can_post', 'can_see_all_posts', 'activity', 'status',
-    'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic');
-
-function FieldsToString(Fields: TFields): string;
+    'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50');
+  VkGroupFilter: array[TVkGroupFilter] of string = ('admin', 'editor', 'moder', 'advertiser', 'groups', 'publics',
+    'events', 'hasAddress');
 
 function VKErrorString(ErrorCode: Integer): string;
 
@@ -726,18 +748,6 @@ begin
   Result := Length(Dest) + 1;
   SetLength(Dest, Result);
   Dest[Result - 1] := Param;
-end;
-
-function FieldsToString(Fields: TFields): string;
-var
-  i: Integer;
-begin
-  for i := Low(Fields) to High(Fields) do
-  begin
-    if i <> Low(Fields) then
-      Result := Result + ',';
-    Result := Result + Fields[i];
-  end;
 end;
 
 function VKErrorString(ErrorCode: Integer): string;
@@ -1496,6 +1506,26 @@ end;
 function TVkFollowerFieldsHelper.ToString: string;
 var
   Item: TVkFollowerField;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkGroupFilterHelper }
+
+function TVkGroupFilterHelper.ToString: string;
+begin
+  Result := VkGroupFilter[Self];
+end;
+
+{ TVkGroupFiltersHelper }
+
+function TVkGroupFiltersHelper.ToString: string;
+var
+  Item: TVkGroupFilter;
 begin
   for Item in Self do
   begin

@@ -7,7 +7,7 @@ uses
   REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload;
 
 type
-  TVkParamsAudio = record
+  TVkParamsAudioGet = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function AlbumId(Value: Integer): Integer;
@@ -69,14 +69,14 @@ type
     /// Возвращает информацию об аудиозаписях
     /// </summary>
     /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="Params: TVkAudioParams">Параметры запроса</param>
-    function Get(var Audios: TVkAudios; Params: TVkParamsAudio): Boolean; overload;
+    /// <param name="Params: TVkParamsAudioGet">Параметры запроса</param>
+    function Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
     /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
     /// <param name="Params: TVkAudioParams">Параметры запроса</param>
-    function GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudio): Boolean; overload;
+    function GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
@@ -249,7 +249,7 @@ end;
 
 function TAudioController.Get(var Audios: TVkAudios; OwnerId: Integer): Boolean;
 var
-  Params: TVkParamsAudio;
+  Params: TVkParamsAudioGet;
 begin
   if OwnerId <> 0 then
     Params.OwnerId(OwnerId);
@@ -303,7 +303,7 @@ begin
   end;
 end;
 
-function TAudioController.Get(var Audios: TVkAudios; Params: TVkParamsAudio): Boolean;
+function TAudioController.Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean;
 begin
   with Handler.Execute('audio.get', Params.List) do
   begin
@@ -361,14 +361,14 @@ end;
 
 function TAudioController.GetRecommendations(var Audios: TVkAudios; OwnerId: Integer): Boolean;
 var
-  Params: TVkParamsAudio;
+  Params: TVkParamsAudioGet;
 begin
   if OwnerId <> 0 then
     Params.OwnerId(OwnerId);
   Result := GetRecommendations(Audios, Params);
 end;
 
-function TAudioController.GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudio): Boolean;
+function TAudioController.GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean;
 begin
   with Handler.Execute('audio.getRecommendations', Params.List) do
   begin
@@ -481,27 +481,27 @@ end;
 
 { TVkAudioParams }
 
-function TVkParamsAudio.AlbumId(Value: Integer): Integer;
+function TVkParamsAudioGet.AlbumId(Value: Integer): Integer;
 begin
   Result := List.Add('album_id', Value);
 end;
 
-function TVkParamsAudio.AudioIds(Value: TIds): Integer;
+function TVkParamsAudioGet.AudioIds(Value: TIds): Integer;
 begin
   Result := List.Add('audio_ids', Value);
 end;
 
-function TVkParamsAudio.Count(Value: Integer): Integer;
+function TVkParamsAudioGet.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsAudio.Offset(Value: Integer): Integer;
+function TVkParamsAudioGet.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsAudio.OwnerId(Value: Integer): Integer;
+function TVkParamsAudioGet.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
