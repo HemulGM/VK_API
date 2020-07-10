@@ -10,6 +10,7 @@ API для Вконтакте
 
 **Заметки**
 Для использования FMX необходимо добавить директиву NEEDFMX в проект.
+
 **Note**
 To use FMX, you need to add the NEEDFMX directive to the project.
 
