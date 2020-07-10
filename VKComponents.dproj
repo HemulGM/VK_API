@@ -44,6 +44,12 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
@@ -70,6 +76,7 @@
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_UsePackage>rtl;vcl;vclie;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;vclimg;PngComponents;HGMComponents;fmx;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_Description>VK API wrapper</DCC_Description>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_UsePackage>rtl;vcl;vclie;CustomIPTransport;IndyIPCommon;IndySystem;IndyProtocols;IndyCore;IndyIPClient;bindengine;bindcomp;RESTComponents;vclimg;PngComponents;fmx;$(DCC_UsePackage)</DCC_UsePackage>
@@ -84,12 +91,18 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>0</DCC_DebugInformation>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -181,15 +194,12 @@
         <DCCReference Include="Controllers\VK.Wall.pas"/>
         <DCCReference Include="Forms\VK.Vcl.OAuth2.pas">
             <Form>FormOAuth2</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Forms\VK.FMX.OAuth2.pas">
             <Form>FormFMXOAuth2</Form>
-            <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="Forms\VK.FMX.Captcha.pas">
             <Form>FormFMXCaptcha</Form>
-            <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="Controllers\VK.Utils.pas"/>
         <DCCReference Include="Controllers\VK.Video.pas"/>
@@ -203,6 +213,22 @@
         <DCCReference Include="Entity\VK.Entity.Privacy.pas"/>
         <DCCReference Include="Entity\VK.Entity.Board.pas"/>
         <None Include="include.inc"/>
+        <RcItem Include="Media\vk_icon.bmp">
+            <ResourceType>BITMAP</ResourceType>
+            <ResourceId>TVK</ResourceId>
+        </RcItem>
+        <RcItem Include="Media\vk group - копия.bmp">
+            <ResourceType>BITMAP</ResourceType>
+            <ResourceId>TVkGroupEventsController</ResourceId>
+        </RcItem>
+        <RcItem Include="Media\vk group.bmp">
+            <ResourceType>BITMAP</ResourceType>
+            <ResourceId>TVkGroupEvents</ResourceId>
+        </RcItem>
+        <RcItem Include="Media\vk user.bmp">
+            <ResourceType>BITMAP</ResourceType>
+            <ResourceId>TVkUserEvents</ResourceId>
+        </RcItem>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -223,6 +249,10 @@
                 <Source>
                     <Source Name="MainSource">VKComponents.dpk</Source>
                 </Source>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k260.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp260.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
@@ -240,7 +270,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKComponents.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

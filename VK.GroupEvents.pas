@@ -3,9 +3,11 @@ unit VK.GroupEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo, VK.Entity.GroupSettings;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  REST.Client, System.JSON, VK.Types, System.Generics.Collections,
+  VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
+  VK.Entity.GroupSettings;
 
 type
   TVkObjectInfo = record
@@ -68,8 +70,7 @@ type
     GroupId: Integer;
   end;
 
-  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId:
-    string) of object;
+  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId: string) of object;
 
   TOnCommentDelete = procedure(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string) of object;
 
@@ -79,15 +80,13 @@ type
 
   TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; EventId: string) of object;
 
-  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId:
-    string) of object;
+  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId: string) of object;
 
   TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string) of object;
 
   TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; EventId: string) of object;
 
-  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string)
-    of object;
+  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string) of object;
 
   TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction; EventId: string) of object;
 
@@ -103,15 +102,13 @@ type
 
   TOnAudioNew = procedure(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string) of object;
 
-  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo;
-    EventId: string) of object;
+  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string) of object;
 
   TOnGroupMessageAction = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string) of object;
 
   TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string; EventId: string) of object;
 
-  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId:
-    string) of object;
+  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId: string) of object;
 
   TCustomGroupEvents = class(TComponent)
   private
@@ -457,8 +454,19 @@ uses
 { TUserEvents }
 
 constructor TCustomGroupEvents.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited;
+  if Assigned(AOwner) and (csDesigning in ComponentState) then
+  begin
+    for i := 0 to AOwner.ComponentCount - 1 do
+      if AOwner.Components[i] is TCustomVK then
+      begin
+        FVK := AOwner.Components[i] as TCustomVK;
+        Break;
+      end;
+  end;
   FLongPollServer := TLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
@@ -1524,8 +1532,19 @@ begin
 end;
 
 constructor TCustomGroupEventControl.Create(AOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited;
+  if Assigned(AOwner) and (csDesigning in ComponentState) then
+  begin
+    for i := 0 to AOwner.ComponentCount - 1 do
+      if AOwner.Components[i] is TCustomVK then
+      begin
+        FVK := AOwner.Components[i] as TCustomVK;
+        Break;
+      end;
+  end;
   FReaded := False;
   FItems := TGroupEventsItems.Create;
   FGroups := TStringList.Create;

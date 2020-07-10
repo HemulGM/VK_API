@@ -44,10 +44,6 @@ object FormMain: TFormMain
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button20: TButton
           Left = 3
           Top = 3
@@ -443,7 +439,7 @@ object FormMain: TFormMain
     AppID = '6121396'
     AppKey = 'AlVXZFMUqyrnABp8ncuU'
     EndPoint = 'https://oauth.vk.com/authorize'
-    Permissions = [Groups,Friends,Wall,Photos,Video,Docs,Notes,Market,Audio]
+    Permissions = [Friends, Photos, Audio, Video, Notes, Wall, Docs, Groups, Market]
     APIVersion = '5.103'
     BaseURL = 'https://api.vk.com/method'
     ServiceKey = 'fcsdfbvdsbvfcsbdvfcasdgfhgasdfjkshadgfbdsmfgbmdsfngbmdfsgb'
@@ -452,7 +448,6 @@ object FormMain: TFormMain
     OnLog = VK1Log
     OnError = VK1Error
     OnErrorLogin = VK1ErrorLogin
-    Logging = False
     Left = 96
     Top = 56
   end
