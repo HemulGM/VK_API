@@ -37,8 +37,9 @@ end;
 Или можно использовать форму авторизации OAuth2
 Для FMX - VK.FMX.OAuth2 - TFormFMXOAuth2
 Для VCL - VK.VCL.OAuth2 - TFormOAuth2
-```
-...Pascal
+
+```Pascal
+...
 var 
   FToken: string;
   FChangePasswordHash: string;
