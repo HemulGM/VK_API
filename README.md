@@ -1,4 +1,6 @@
 # VKAPI
+
+API для Вконтакте
  
 **Внимание**
 Если вы уже использовали обертку (до 08.07.2020) и недавно затянули изменения, то вы вероятно получите ошибку при открытии формы. Для её решения нужно закарыть форму с ошибкой без сохранения и исправать файл формы dfm/fmx. Заменить значение свойства Permissions компонента TVK с "'friends,messages..'" на "[Friends,Messages]". Т.е. изменить тип со строки к множеству.
@@ -6,28 +8,64 @@
 **Warning**
 If you have already used a wrapper (before 07/08/2020) and recently tightened the changes, then you will probably get an error when opening the form. To solve it, you need to close the form with an error without saving and fix the dfm/fmx form file. Replace the value of the Permissions property of the TVK component from "'friends,messages..'" to "[Friends,Messages]". Those. change type from string to set.
 
-API для Вконтакте
+
+**Заметки**
+
+Для использования FMX необходимо добавить директиву NEEDFMX в проект.
+
+**Note**
+
+To use FMX, you need to add the NEEDFMX directive to the project.
 
 **Способы авторизации:**
 
 1 . Авторизация через OAuth2 форму
 
+```
+Для FMX - VK.FMX.OAuth2 - TFormFMXOAuth2
+Для VCL - VK.VCL.OAuth2 - TFormOAuth2
+```
+
 ```Pascal
-VK.Login(<родитель для окна, необяз.>);
+...
+var 
+  FToken: string;
+  FChangePasswordHash: string;
+  FTokenExpiry: Int64;
+...
+
+procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+begin
+  if FToken.IsEmpty then
+  begin
+    TFormFMXOAuth2.Execute(Url,
+      procedure(Form: TFormFMXOAuth2)
+      begin
+        FToken := Form.Token;
+        FTokenExpiry := Form.TokenExpiry;
+        FChangePasswordHash := Form.ChangePasswordHash;
+        if not FToken.IsEmpty then
+          VK.Login;
+      end);
+  end
+  else
+  begin
+    Token := FToken;
+    TokenExpiry := FTokenExpiry;
+  end;
+end;
+
+VK.Login(<родитель для окна для VCL, необяз.>);
+
 ```
 
 2 . Авторизация напрямую, используя токен (пользовательский или бота)
     
 ```Pascal
-procedure TFormMain.VKAuth(Sender: TObject; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
 begin
   Token := '<здесь токен>';
 end;   
-
-procdure TFormMain.FormCreate(Sender: TObject);
-begin
-  VK.Login;
-end;  
 ```
 
 3 . Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
