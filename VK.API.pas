@@ -3,16 +3,18 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
-  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
-  VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
-  VK.Utils, System.Types,
+  System.SysUtils, System.Variants, System.Classes, REST.Client,
+  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
+  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
+  VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board,
+  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Utils,
+  System.Types,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
   VK.Vcl.Captcha,
   {$ENDIF}
-  VK.Video;
+VK.Video;
 
 type
   TCustomVK = class(TComponent)
@@ -308,6 +310,7 @@ begin
     {$ELSE}
     TFormCaptcha.Execute(CaptchaImg, Answer);
     {$ENDIF}
+
   end;
 end;
 
@@ -569,7 +572,11 @@ end;
 
 function TCustomVK.GetTokenExpiry: Int64;
 begin
-  Result := DateTimeToUnix(FOAuth2Authenticator.AccessTokenExpiry, False);
+  try
+    Result := DateTimeToUnix(FOAuth2Authenticator.AccessTokenExpiry, False);
+  except
+    Result := 0;
+  end;
 end;
 
 procedure TCustomVK.SetPermissionsList(const Value: TPermissions);
