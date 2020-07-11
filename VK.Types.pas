@@ -5,8 +5,7 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections,
-  System.JSON;
+  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections, System.JSON;
 
 type
   TVkException = Exception;
@@ -103,7 +102,6 @@ type
   TArrayOfString = TArray<string>;
   {$ENDIF}
 
-
   TArrayOfStringHelper = record helper for TArrayOfString
     function ToString: string; overload; inline;
     procedure Assign(Source: TStrings); overload;
@@ -116,7 +114,6 @@ type
 
   TArrayOfInteger = TArray<Integer>;
   {$ENDIF}
-
 
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
     function ToString: string; overload; inline;
@@ -144,7 +141,6 @@ type
   TParamsInt = TArray<TParamInt>;
   {$ENDIF}
 
-
   TParamsHelper = record helper for TParams
     function Add(Param: TParam): Integer; overload; inline;
     function Add(Key, Value: string): Integer; overload; inline;
@@ -158,7 +154,9 @@ type
   TAttachmentArray = TArrayOfString;
 
   //‘лаги сообщений
-  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden, mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted, mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
+  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden,
+    mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted,
+    mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
 
   TMessageFlagHelper = record helper for TMessageFlag
     function ToString: string; inline;
@@ -181,7 +179,9 @@ type
 
   //∆анры музыки
 
-  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
+  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
+    agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
+    agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 
   TAudioGenreHelper = record helper for TAudioGenre
     function ToConst: Integer;
@@ -194,8 +194,14 @@ type
 
   TVkLang = (vlAuto = -1, vlRU = 0, vlUK = 1, vlBE = 2, vlEN = 3, vlES = 4, vlFI = 5, vlDE = 6, vlIT = 7);
 
-  TVkFollowerField = (flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50, flPhoto100, flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain, flHasMobile, flContacts, flSite, flEducation, flUniversities, flSchools, flStatus, flLastSeen, flFollowersCount, flCommonCount, flOccupation, flNickName, flRelatives, flRelation, flPersonal, flConnections, flExports, flWallComments, flActivities, flInterests, flMusic, flMovies,
-    flTV, flBooks, flGames, flAbout, flQuotes, flCanPost, flCanSeeAllPosts, flCanSeeAudio, flCanWritePrivateMessage, flCanSendFriendRequest, flIsFavorite, flIsHiddenFromFeed, flTimeZone, flScreenName, flMaidenName, flCropPhoto, flIsFriend, flFriendStatus, flCareer, flMilitary, flBlacklisted, flBlacklistedByMe);
+  TVkFollowerField = (flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50,
+    flPhoto100, flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain,
+    flHasMobile, flContacts, flSite, flEducation, flUniversities, flSchools, flStatus, flLastSeen, flFollowersCount,
+    flCommonCount, flOccupation, flNickName, flRelatives, flRelation, flPersonal, flConnections, flExports,
+    flWallComments, flActivities, flInterests, flMusic, flMovies, flTV, flBooks, flGames, flAbout, flQuotes, flCanPost,
+    flCanSeeAllPosts, flCanSeeAudio, flCanWritePrivateMessage, flCanSendFriendRequest, flIsFavorite, flIsHiddenFromFeed,
+    flTimeZone, flScreenName, flMaidenName, flCropPhoto, flIsFriend, flFriendStatus, flCareer, flMilitary, flBlacklisted,
+    flBlacklistedByMe);
 
   TVkFollowerFieldHelper = record helper for TVkFollowerField
     function ToString: string; inline;
@@ -208,8 +214,14 @@ type
     class function All: TVkFollowerFields; static; inline;
   end;
 
-  TVkUserField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames,
-    ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
+  TVkUserField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
+    ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile,
+    ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount,
+    ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests,
+    ufMusic, ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio,
+    ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName,
+    ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe,
+    ufCanBeInvitedGroup);
 
   TVkUserFieldHelper = record helper for TVkUserField
     function ToString: string; inline;
@@ -223,7 +235,9 @@ type
     class function All: TVkUserFields; static; inline;
   end;
 
-  TVkFriendField = (ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100, ffPhoto200, ffHasMobile, ffContacts, ffEducation, ffOnline, ffRelation, ffLastSeen, ffStatus, ffCanWritePrivateMessage, ffCanSeeAllPosts, ffCanPost, ffUniversities);
+  TVkFriendField = (ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100,
+    ffPhoto200, ffHasMobile, ffContacts, ffEducation, ffOnline, ffRelation, ffLastSeen, ffStatus,
+    ffCanWritePrivateMessage, ffCanSeeAllPosts, ffCanPost, ffUniversities);
 
   TVkFriendFieldHelper = record helper for TVkFriendField
     function ToString: string; inline;
@@ -233,6 +247,7 @@ type
 
   TVkFriendFieldsHelper = record helper for TVkFriendFields
     function ToString: string; inline;
+    class function All: TVkFriendFields; static; inline;
   end;
 
   TVkGroupField = (gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate,
@@ -247,6 +262,7 @@ type
 
   TVkGroupFieldsHelper = record helper for TVkGroupFields
     function ToString: string; inline;
+    class function All: TVkGroupFields; static; inline;
   end;
 
   TVkGroupFilter = (gftAdmin, gftEditor, gftModer, gftAdvertiser, gftGroups, gftPublics, gftEvents, gftHasAddress);
@@ -259,6 +275,7 @@ type
 
   TVkGroupFiltersHelper = record helper for TVkGroupFilters
     function ToString: string; inline;
+    class function All: TVkGroupFilters; static; inline;
   end;
 
   TVkMessageInfo = class
@@ -372,14 +389,16 @@ type
   end;
 
   //“ипы объектов
-  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment, itTopicComment, itMarketComment, itSitepage);
+  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment,
+    itTopicComment, itMarketComment, itSitepage);
 
   TVkItemTypeHelper = record helper for TVkItemType
     function ToConst: string; inline;
   end;
 
   //“ипы объектов
-  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWalReply, atSticker, atGift, atCall, atAudioMessage);
+  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWalReply,
+    atSticker, atGift, atCall, atAudioMessage);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToConst: string; inline;
@@ -416,7 +435,8 @@ type
   TVkBirthDateVisibility = (dvVisible, dvDayMonOnly, dvHidden);
 
   //ќтношени€
-  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove, rnCivilMarriage);
+  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove,
+    rnCivilMarriage);
    {0 Ч не указано.
     1 Ч не женат/не замужем;
     2 Ч есть друг/есть подруга;
@@ -511,7 +531,8 @@ type
     function ToString: string; overload; inline;
   end;
 
-  TVkPermission = (Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage);
+  TVkPermission = (Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline,
+    Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage);
 
   TVkPermissionHelper = record helper for TVkPermission
     function ToString: string; overload; inline;
@@ -525,7 +546,8 @@ type
 
   TOnLogin = procedure(Sender: TObject) of object;
 
-  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string) of object;
+  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash:
+    string) of object;
 
   TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
 
@@ -570,16 +592,6 @@ type
   TOnUsersTyping = procedure(Sender: TObject; Data: TChatTypingData) of object;
 
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
-
-const
-  VkUserFieldsAll =[ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
-    ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile,
-    ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount,
-    ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests,
-    ufMusic, ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio,
-    ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName,
-    ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe,
-    ufCanBeInvitedGroup];
 
 var
   VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8,
@@ -1418,6 +1430,13 @@ end;
 
 { TVkFriendFieldsHelper }
 
+class function TVkFriendFieldsHelper.All: TVkFriendFields;
+begin
+  Result := [ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100, ffPhoto200,
+    ffHasMobile, ffContacts, ffEducation, ffOnline, ffRelation, ffLastSeen, ffStatus, ffCanWritePrivateMessage,
+    ffCanSeeAllPosts, ffCanPost, ffUniversities];
+end;
+
 function TVkFriendFieldsHelper.ToString: string;
 var
   Item: TVkFriendField;
@@ -1438,6 +1457,13 @@ end;
 
 { TVkGroupFieldsHelper }
 
+class function TVkGroupFieldsHelper.All: TVkGroupFields;
+begin
+  Result := [gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate,
+    gfFinishDate, gfCanPost, gfCanSeeAllPosts, gfActivity, gfStatus, gfContacts, gfLinks, gfFixedPost, gfVerified,
+    gfSite, gfCanCreateTopic, gfPhoto50];
+end;
+
 function TVkGroupFieldsHelper.ToString: string;
 var
   Item: TVkGroupField;
@@ -1453,7 +1479,11 @@ end;
 
 class function TVkUserFieldsHelper.All: TVkUserFields;
 begin
-  Result := [ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames,
+  Result := [ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100,
+    ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile, ufContacts,
+    ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation,
+    ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests, ufMusic,
+    ufMovies, ufTV, ufBooks, ufGames,
     ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup];
 end;
 
@@ -1486,7 +1516,11 @@ end;
 
 class function TVkFollowerFieldsHelper.All: TVkFollowerFields;
 begin
-  Result := [flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50, flPhoto100, flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain, flHasMobile, flContacts, flSite, flEducation, flUniversities, flSchools, flStatus, flLastSeen, flFollowersCount, flCommonCount, flOccupation, flNickName, flRelatives, flRelation, flPersonal, flConnections, flExports, flWallComments, flActivities, flInterests, flMusic, flMovies,
+  Result := [flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50, flPhoto100,
+    flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain, flHasMobile,
+    flContacts, flSite, flEducation, flUniversities, flSchools, flStatus, flLastSeen, flFollowersCount, flCommonCount,
+    flOccupation, flNickName, flRelatives, flRelation, flPersonal, flConnections, flExports, flWallComments,
+    flActivities, flInterests, flMusic, flMovies,
     flTV, flBooks, flGames, flAbout, flQuotes, flCanPost, flCanSeeAllPosts, flCanSeeAudio, flCanWritePrivateMessage, flCanSendFriendRequest, flIsFavorite, flIsHiddenFromFeed, flTimeZone, flScreenName, flMaidenName, flCropPhoto, flIsFriend, flFriendStatus, flCareer, flMilitary, flBlacklisted, flBlacklistedByMe];
 end;
 
@@ -1509,6 +1543,11 @@ begin
 end;
 
 { TVkGroupFiltersHelper }
+
+class function TVkGroupFiltersHelper.All: TVkGroupFilters;
+begin
+  Result := [gftAdmin, gftEditor, gftModer, gftAdvertiser, gftGroups, gftPublics, gftEvents, gftHasAddress];
+end;
 
 function TVkGroupFiltersHelper.ToString: string;
 var
