@@ -84,9 +84,13 @@ type
     /// </summary>
     function RemoveLink(LinkId: Integer): Boolean;
     /// <summary>
-    /// Удаляет из закладок сообщество или страницу пользователя.
+    /// Удаляет из закладок страницу пользователя.
     /// </summary>
-    function RemovePage(UserId, GroupId: Integer): Boolean;
+    function RemoveUserPage(UserId: Integer): Boolean;
+    /// <summary>
+    /// Удаляет из закладок сообщество.
+    /// </summary>
+    function RemoveGroupPage(GroupId: Integer): Boolean;
     /// <summary>
     /// Удаляет из закладок запись на стене пользователя или сообщества.
     /// </summary>
@@ -128,11 +132,11 @@ type
     /// </summary>
     function SetTags(Params: TVkParamsFaveTagsSet): Boolean;
     /// <summary>
-    /// Устанавливает страницу пользователя или сообщества в топ закладок.
+    /// Устанавливает страницу пользователя в топ закладок.
     /// </summary>
     function TrackPageInteractionUser(UserId: Integer): Boolean;
     /// <summary>
-    /// Устанавливает страницу пользователя или сообщества в топ закладок.
+    /// Устанавливает страницу сообщества в топ закладок.
     /// </summary>
     function TrackPageInteractionGroup(GroupId: Integer): Boolean;
     /// <summary>
@@ -337,17 +341,17 @@ begin
   end;
 end;
 
-function TFaveController.RemoveLink(LinkId: Integer): Boolean;
+function TFaveController.RemoveGroupPage(GroupId: Integer): Boolean;
 begin
-  with Handler.Execute('fave.removeLink', ['link_id', LinkId.ToString]) do
+  with Handler.Execute('fave.removePage', ['group_id', GroupId.ToString]) do
   begin
     Result := Success and (Response = '1');
   end;
 end;
 
-function TFaveController.RemovePage(UserId, GroupId: Integer): Boolean;
+function TFaveController.RemoveLink(LinkId: Integer): Boolean;
 begin
-  with Handler.Execute('fave.removePage', [['user_id', UserId.ToString], ['group_id', GroupId.ToString]]) do
+  with Handler.Execute('fave.removeLink', ['link_id', LinkId.ToString]) do
   begin
     Result := Success and (Response = '1');
   end;
@@ -372,6 +376,14 @@ end;
 function TFaveController.RemoveTag(Id: Integer): Boolean;
 begin
   with Handler.Execute('fave.removeTag', ['id', Id.ToString]) do
+  begin
+    Result := Success and (Response = '1');
+  end;
+end;
+
+function TFaveController.RemoveUserPage(UserId: Integer): Boolean;
+begin
+  with Handler.Execute('fave.removePage', ['user_id', UserId.ToString]) do
   begin
     Result := Success and (Response = '1');
   end;

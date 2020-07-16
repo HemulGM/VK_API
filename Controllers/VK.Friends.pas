@@ -76,12 +76,12 @@ type
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkUsers; UserId: Integer = -1; Fields: string = ''; Order: TVkFriendsSort = fsNone):
+    function Get(var Items: TVkUsers; UserId: Integer; Fields: TVkFriendFields = []; Order: TVkFriendsSort = fsNone):
       Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkUsers; Fields: string; Order: TVkFriendsSort = fsNone): Boolean; overload;
+    function Get(var Items: TVkUsers; Fields: TVkFriendFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
@@ -163,24 +163,49 @@ uses
 
 { TFriendsController }
 
-function TFriendsController.Get(var Items: TVkUsers; Fields: string; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkUsers; Fields: TVkFriendFields; Order: TVkFriendsSort): Boolean;
+var
+  Params: TVkParamsFriendsGet;
 begin
-  Result := Get(Items, -1, Fields, Order);
+  if Fields <> [] then
+    Params.Fields(Fields);
+  if Order <> fsNone then
+    Params.Order(Order);
+  Result := Get(Items, Params);
 end;
 
-function TFriendsController.Get(var Items: TVkUsers; UserId: Integer; Fields: string; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkUsers; UserId: Integer; Fields: TVkFriendFields; Order: TVkFriendsSort): Boolean;
 var
-  Params: TParams;
+  Params: TVkParamsFriendsGet;
 begin
-  if UserId > 0 then
-    Params.Add('user_id', UserId);
-  if not Fields.IsEmpty then
-    Params.Add('fields', Fields)
-  else
-    Params.Add('fields', 'domian');
+  Params.UserId(UserId);
+  if Fields <> [] then
+    Params.Fields(Fields);
   if Order <> fsNone then
-    Params.Add('order', Order.ToConst);
+    Params.Order(Order);
   Result := Get(Items, Params);
+end;
+
+function TFriendsController.Get(var Items: TVkUsers; Params: TVkParamsFriendsGet): Boolean;
+begin
+  Result := Get(Items, Params.List);
+end;
+
+function TFriendsController.Get(var Items: TVkUsers; Params: TParams): Boolean;
+begin
+  if not Params.KeyExists('fields') then
+    Params.Add('fields', 'domian');
+
+  with Handler.Execute('friends.get', Params) do
+  begin
+    Result := Success;
+    if Result then
+    try
+      Items := TVkUsers.FromJsonString(Response);
+    except
+      Result := False;
+    end;
+  end;
 end;
 
 function TFriendsController.Add(var Info: TVkFriendAddInfo; UserId: Integer; Text: string; Follow: Boolean): Boolean;
@@ -295,11 +320,6 @@ begin
   end;
 end;
 
-function TFriendsController.Get(var Items: TVkUsers; Params: TVkParamsFriendsGet): Boolean;
-begin
-  Result := Get(Items, Params.List);
-end;
-
 function TFriendsController.GetAppUsers(var Items: TIds): Boolean;
 var
   RespJson: TJSONValue;
@@ -399,23 +419,6 @@ begin
       except
         Result := False;
       end;
-    end;
-  end;
-end;
-
-function TFriendsController.Get(var Items: TVkUsers; Params: TParams): Boolean;
-begin
-  if not Params.KeyExists('fields') then
-    Params.Add('fields', 'domian');
-
-  with Handler.Execute('friends.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkUsers.FromJsonString(Response);
-    except
-      Result := False;
     end;
   end;
 end;
