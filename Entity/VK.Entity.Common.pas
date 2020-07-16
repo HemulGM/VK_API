@@ -169,9 +169,10 @@ type
     function GetPrevSize(Value: string; Circular: Boolean): string;
     function GetNextSize(Value: string; Circular: Boolean): string;
   public
+    function Get(Value: string): TVkSize;
     function GetSize(Value: string; Circular: Boolean = True): TVkSize;
-    function GetSizeMin(Value: string; Circular: Boolean = False): TVkSize;
-    function GetSizeMax(Value: string; Circular: Boolean = False): TVkSize;
+    function GetSizeMin(Value: string = 's'; Circular: Boolean = False): TVkSize;
+    function GetSizeMax(Value: string = 'w'; Circular: Boolean = False): TVkSize;
   end;
 
   TVkRelationPartner = class
@@ -270,11 +271,11 @@ type
 
   TVkGeo = class
   private
-    FCoordinates: TVkCoordinates;
+    FCoordinates: string;
     FPlace: TVkPlace;
     FType: string;
   public
-    property Coordinates: TVkCoordinates read FCoordinates write FCoordinates;
+    property Coordinates: string read FCoordinates write FCoordinates;
     property Place: TVkPlace read FPlace write FPlace;
     property&Type: string read FType write FType;
     constructor Create;
@@ -500,13 +501,11 @@ end;
 constructor TVkGeo.Create;
 begin
   inherited;
-  FCoordinates := TVkCoordinates.Create();
   FPlace := TVkPlace.Create();
 end;
 
 destructor TVkGeo.Destroy;
 begin
-  FCoordinates.Free;
   FPlace.Free;
   inherited;
 end;
@@ -522,6 +521,16 @@ begin
 end;
 
 { TVkSizesHelper }
+
+function TVkSizesHelper.Get(Value: string): TVkSize;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := Low(Self) to High(Self) do
+    if Self[i].FType = Value then
+      Exit(Self[i]);
+end;
 
 function TVkSizesHelper.GetNextSize(Value: string; Circular: Boolean): string;
 var
@@ -543,7 +552,7 @@ var
   i: Integer;
 begin
   Result := VkSizes[0];
-  for i := 0 to 5 do
+  for i := 5 downto 0 do
     if VkSizes[i] = Value then
     begin
       if i > 0 then
@@ -554,21 +563,15 @@ begin
 end;
 
 function TVkSizesHelper.GetSize(Value: string; Circular: Boolean): TVkSize;
-var
-  i: Integer;
 begin
-  Result := nil;
-  for i := Low(Self) to High(Self) do
-    if Self[i].FType = Value then
-      Exit(Self[i]);
-
-  Value := GetNextSize(Value, Circular);
-  if not Value.IsEmpty then
-  begin
-    for i := Low(Self) to High(Self) do
-      if Self[i].FType = Value then
-        Exit(Self[i]);
-  end;
+  Result := Get(Value);
+  if Assigned(Result) then
+    Exit;
+  repeat
+    Value := GetNextSize(Value, Circular);
+    if not Value.IsEmpty then
+      Result := Get(Value);
+  until Assigned(Result);
 end;
 
 function TVkSizesHelper.GetSizeMax(Value: string; Circular: Boolean): TVkSize;
@@ -577,21 +580,16 @@ begin
 end;
 
 function TVkSizesHelper.GetSizeMin(Value: string; Circular: Boolean): TVkSize;
-var
-  i: Integer;
 begin
-  Result := nil;
-  for i := Low(Self) to High(Self) do
-    if Self[i].FType = Value then
-      Exit(Self[i]);
+  Result := Get(Value);
+  if Assigned(Result) then
+    Exit;
 
-  Value := GetPrevSize(Value, Circular);
-  if not Value.IsEmpty then
-  begin
-    for i := Low(Self) to High(Self) do
-      if Self[i].FType = Value then
-        Exit(Self[i]);
-  end;
+  repeat
+    Value := GetPrevSize(Value, Circular);
+    if not Value.IsEmpty then
+      Result := Get(Value);
+  until Assigned(Result);
 end;
 
 

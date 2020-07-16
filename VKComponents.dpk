@@ -1,7 +1,6 @@
 package VKComponents;
 
 {$R *.res}
-{$R *.dres}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -127,7 +126,11 @@ contains
   VK.Entity.Fave in 'Entity\VK.Entity.Fave.pas',
   VK.Notes in 'Controllers\VK.Notes.pas',
   VK.Entity.Privacy in 'Entity\VK.Entity.Privacy.pas',
-  VK.Entity.Board in 'Entity\VK.Entity.Board.pas';
+  VK.Entity.Board in 'Entity\VK.Entity.Board.pas',
+  VK.Entity.Board.Comment in 'Entity\VK.Entity.Board.Comment.pas',
+  VK.Entity.Account.Banned in 'Entity\VK.Entity.Account.Banned.pas',
+  VK.Entity.Doc.Types in 'Entity\VK.Entity.Doc.Types.pas',
+  VK.Entity.Fave.Pages in 'Entity\VK.Entity.Fave.Pages.pas';
 
 end.
 

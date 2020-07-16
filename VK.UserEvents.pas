@@ -9,7 +9,7 @@ uses
 type
   TCustomUserEvents = class(TComponent)
   private
-    FLongPollServer: TLongPollServer;
+    FLongPollServer: TVkLongPollServer;
     FOnUsersRecording: TOnUsersRecording;
     FOnDeleteMessages: TOnRecoverOrDeleteMessages;
     FOnUserOnline: TOnUserOnline;
@@ -28,6 +28,7 @@ type
     FOnUserCall: TOnUserCall;
     FOnCountChange: TOnCountChange;
     FOnNotifyChange: TOnNotifyChange;
+    FVersion: string;
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
     procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer;
@@ -67,6 +68,7 @@ type
     procedure SetOnNotifyChange(const Value: TOnNotifyChange);
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     function GetIsWork: Boolean;
+    procedure SetVersion(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -91,6 +93,7 @@ type
     property OnUserCall: TOnUserCall read FOnUserCall write SetOnUserCall;
     property OnCountChange: TOnCountChange read FOnCountChange write SetOnCountChange;
     property OnNotifyChange: TOnNotifyChange read FOnNotifyChange write SetOnNotifyChange;
+    property Version: string read FVersion write SetVersion;
   end;
 
 implementation
@@ -114,7 +117,8 @@ begin
         Break;
       end;
   end;
-  FLongPollServer := TLongPollServer.Create;
+  FVersion := '3';
+  FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
 
@@ -442,6 +446,11 @@ begin
   FOnUserTyping := Value;
 end;
 
+procedure TCustomUserEvents.SetVersion(const Value: string);
+begin
+  FVersion := Value;
+end;
+
 procedure TCustomUserEvents.SetVK(const Value: TCustomVK);
 begin
   FVK := Value;
@@ -453,7 +462,7 @@ begin
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
   FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'messages.getLongPollServer';
-  FLongPollServer.Params := [['lp_version', '3']];
+  FLongPollServer.Params.Add('lp_version', FVersion);
   FLongPollServer.OnError := FOnError;
   Result := FLongPollServer.Start;
   if Result then

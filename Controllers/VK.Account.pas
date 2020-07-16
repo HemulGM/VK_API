@@ -5,10 +5,10 @@ interface
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.AccountInfo,
   VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
-  VK.Entity.AccountInfoRequest;
+  VK.Entity.AccountInfoRequest, VK.Entity.Account.Banned, VK.CommonUtils;
 
 type
-  TVkRegisterDeviceParams = record
+  TVkParamsRegisterDevice = record
     List: TParams;
     function Token(Value: string): Integer;
     function DeviceModel(Value: string): Integer;
@@ -19,7 +19,7 @@ type
     function Sandbox(Value: string): Integer;
   end;
 
-  TVkProfileInfoParams = record
+  TVkParamsProfileInfo = record
     List: TParams;
     function FirstName(Value: string): Integer;
     function LastName(Value: string): Integer;
@@ -39,86 +39,187 @@ type
 
   TAccountController = class(TVkController)
   public
-    function GetInfo(var Info: TVkAccountInfo; Fields: TFields = []): Boolean;
-    function SetInfo(const Name, Value: string): Boolean;
-    function GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
+    /// <summary>
+    /// Добавляет пользователя или группу в черный список.
+    /// </summary>
     function Ban(const OwnerID: Integer): Boolean;
-    function UnBan(const OwnerID: Integer): Boolean;
-    function ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword:
-      string): Boolean;
-    function GetActiveOffers(var Offers: TVkActiveOffers; Offset: Integer; Count: Integer = 100): Boolean;
-    function GetAppPermissions(var Mask: Int64; UserId: Integer): Boolean;
-    function GetCounters(var Counters: TVkCounters; Filter: string = ''): Boolean;
+    /// <summary>
+    /// Позволяет сменить пароль пользователя после успешного восстановления доступа к аккаунту через СМС, используя метод Auth.Restore.
+    /// </summary>
+    function ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string):
+      Boolean;
+    /// <summary>
+    /// Возвращает список активных рекламных предложений (офферов), выполнив которые пользователь сможет получить соответствующее количество голосов на свой счёт внутри приложения.
+    /// </summary>
+    function GetActiveOffers(var Items: TVkActiveOffers; Count: Integer = 100; Offset: Integer = 0): Boolean;
+    /// <summary>
+    /// Получает настройки текущего пользователя в данном приложении.
+    /// </summary>
+    function GetAppPermissions(var Mask: Integer; UserId: Integer): Boolean;
+    /// <summary>
+    /// Возвращает список пользователей, находящихся в черном списке.
+    /// </summary>
+    function GetBanned(var Items: TVkBannedList; Count: Integer = 20; Offset: Integer = 0): Boolean;
+    /// <summary>
+    /// Возвращает ненулевые значения счетчиков пользователя.
+    /// </summary>
+    function GetCounters(var Counters: TVkCounters; Filter: TVkCounterFilters): Boolean;
+    /// <summary>
+    /// Возвращает информацию о текущем аккаунте.
+    /// </summary>
+    function GetInfo(var Info: TVkAccountInfo; Fields: TVkInfoFilters = []): Boolean;
+    /// <summary>
+    /// Возвращает информацию о текущем профиле.
+    /// </summary>
+    function GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
+    /// <summary>
+    /// Позволяет получать настройки Push-уведомлений.
+    /// </summary>
     function GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
-    function RegisterDevice(const Data: TVkRegisterDeviceParams): Boolean;
-    function SaveProfileInfo(const Data: TVkProfileInfoParams; var Request: TVkAccountInfoRequest): Boolean;
+    /// <summary>
+    /// Подписывает устройство на базе iOS, Android, Windows Phone или Mac на получение Push-уведомлений.
+    /// </summary>
+    function RegisterDevice(const Data: TVkParamsRegisterDevice): Boolean;
+    /// <summary>
+    /// Редактирует информацию текущего профиля.
+    /// </summary>
+    function SaveProfileInfo(const Data: TVkParamsProfileInfo; var Request: TVkAccountInfoRequest): Boolean;
+    /// <summary>
+    /// Позволяет редактировать информацию о текущем аккаунте.
+    /// </summary>
+    function SetInfo(const Name, Value: string): Boolean;
+    /// <summary>
+    /// Устанавливает короткое название приложения (до 17 символов), которое выводится пользователю в левом меню.
+    /// </summary>
     function SetNameInMenu(const UserId: Integer; Name: string): Boolean;
-    function SetOffline(): Boolean;
+    /// <summary>
+    /// Помечает текущего пользователя как offline (только в текущем приложении).
+    /// </summary>
+    function SetOffline: Boolean;
+    /// <summary>
+    /// Помечает текущего пользователя как online на 5 минут.
+    /// </summary>
     function SetOnline(Voip: Boolean = False): Boolean;
+    /// <summary>
+    /// Изменяет настройку Push-уведомлений.
+    /// </summary>
     function SetPushSettings(const DeviceId, Settings, Key, Value: string): Boolean;
+    /// <summary>
+    /// Отключает push-уведомления на заданный промежуток времени.
+    /// </summary>
     function SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
+    /// <summary>
+    /// Удаляет пользователя или группу из черного списка.
+    /// </summary>
+    function UnBan(const OwnerID: Integer): Boolean;
+    /// <summary>
+    /// Отписывает устройство от Push уведомлений.
+    /// </summary>
     function UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
   end;
 
 implementation
 
+uses
+  System.Json;
+
 { TAccountController }
 
-function TAccountController.ChangePassword(var Response: TResponse; NewPassword: string; RestoreSid, ChangePasswordHash,
+function TAccountController.ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash,
   OldPassword: string): Boolean;
+var
+  JsonResp: TJSONValue;
 begin
-  Response := Handler.Execute('account.changePassword', [
-    ['new_password', NewPassword],
-    ['restore_sid', RestoreSid],
-    ['change_password_hash', ChangePasswordHash],
-    ['old_password', OldPassword]]);
-  Result := Response.Success;
+  with Handler.Execute('account.changePassword', [['new_password', NewPassword], ['restore_sid', RestoreSid], ['change_password_hash',
+    ChangePasswordHash], ['old_password', OldPassword]]) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        JsonResp := TJSONObject.ParseJSONValue(JSON);
+        try
+          Token := JsonResp.GetValue<string>('token', '');
+          Result := not Token.IsEmpty;
+        finally
+          JsonResp.Free;
+        end;
+      except
+        Result := False;
+      end;
+    end;
+  end;
 end;
 
-function TAccountController.GetActiveOffers(var Offers: TVkActiveOffers; Offset: Integer; Count: Integer = 100): Boolean;
+function TAccountController.GetActiveOffers(var Items: TVkActiveOffers; Count: Integer; Offset: Integer): Boolean;
 begin
-  if (Count > 100) or (Count < 0) then
-    raise TVkWrongParamException.Create('Count - положительное число, по умолчанию 100, максимальное значение 100');
-  if (Offset < 0) then
-    raise TVkWrongParamException.Create('Count - положительное число, по умолчанию 0');
   with Handler.Execute('account.getActiveOffers', [['offset', Offset.ToString], ['count', Count.ToString]]) do
   begin
     Result := Success;
     if Result then
-      Offers := TVkActiveOffers.FromJsonString(Response);
+    begin
+      try
+        Items := TVkActiveOffers.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
   end;
 end;
 
-function TAccountController.GetAppPermissions(var Mask: Int64; UserId: Integer): Boolean;
+function TAccountController.GetAppPermissions(var Mask: Integer; UserId: Integer): Boolean;
 begin
   with Handler.Execute('account.getAppPermissions', ['user_id', UserId.ToString]) do
   begin
-    Result := Success;
-    if Result then
-      Mask := StrToIntDef(Response, 0);
+    Result := Success and TryStrToInt(Response, Mask);
   end;
 end;
 
-function TAccountController.GetCounters(var Counters: TVkCounters; Filter: string = ''): Boolean;
+function TAccountController.GetBanned(var Items: TVkBannedList; Count, Offset: Integer): Boolean;
 begin
-  if Filter = '' then
-    Filter :=
-      'friends, messages, photos, videos, notes, gifts, events, groups, notifications, sdk, app_requests, friends_recommendations';
-  with Handler.Execute('account.getCounters', ['filter', Filter]) do
+  with Handler.Execute('account.getBanned', [['count', Count.ToString], ['offset', Offset.ToString]]) do
   begin
     Result := Success;
     if Result then
-      Counters := TVkCounters.FromJsonString(Response);
+    begin
+      try
+        Items := TVkBannedList.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
   end;
 end;
 
-function TAccountController.GetInfo(var Info: TVkAccountInfo; Fields: TFields = []): Boolean;
+function TAccountController.GetCounters(var Counters: TVkCounters; Filter: TVkCounterFilters): Boolean;
+begin
+  with Handler.Execute('account.getCounters', ['filter', Filter.ToString]) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Counters := TVkCounters.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TAccountController.GetInfo(var Info: TVkAccountInfo; Fields: TVkInfoFilters = []): Boolean;
 begin
   with Handler.Execute('account.getInfo', ['fields', Fields.ToString]) do
   begin
     Result := Success;
     if Result then
-      Info := TVkAccountInfo.FromJsonString(Response);
+    begin
+      try
+        Info := TVkAccountInfo.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
   end;
 end;
 
@@ -128,7 +229,13 @@ begin
   begin
     Result := Success;
     if Result then
-      ProfileInfo := TVkProfileInfo.FromJsonString(Response);
+    begin
+      try
+        ProfileInfo := TVkProfileInfo.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
   end;
 end;
 
@@ -138,23 +245,35 @@ begin
   begin
     Result := Success;
     if Result then
-      PushSettings := TVkPushSettings.FromJsonString(Response);
+    begin
+      try
+        PushSettings := TVkPushSettings.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
   end;
 end;
 
-function TAccountController.RegisterDevice(const Data: TVkRegisterDeviceParams): Boolean;
+function TAccountController.RegisterDevice(const Data: TVkParamsRegisterDevice): Boolean;
 begin
   with Handler.Execute('account.registerDevice', Data.List) do
     Result := Success and (Response = '1');
 end;
 
-function TAccountController.SaveProfileInfo(const Data: TVkProfileInfoParams; var Request: TVkAccountInfoRequest): Boolean;
+function TAccountController.SaveProfileInfo(const Data: TVkParamsProfileInfo; var Request: TVkAccountInfoRequest): Boolean;
 begin
   with Handler.Execute('account.saveProfileInfo', Data.List) do
   begin
     Result := Success;
     if Result then
-      Request := TVkAccountInfoRequest.FromJsonString(Response);
+    begin
+      try
+        Request := TVkAccountInfoRequest.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
   end;
 end;
 
@@ -178,7 +297,7 @@ end;
 
 function TAccountController.SetOnline(Voip: Boolean): Boolean;
 begin
-  with Handler.Execute('account.setOnline', ['voip', Ord(Voip).ToString]) do
+  with Handler.Execute('account.setOnline', ['voip', BoolToString(Voip)]) do
     Result := Success and (Response = '1');
 end;
 
@@ -230,116 +349,116 @@ begin
     AddParam(Params, ['device_id', DeviceId]);
   if not Token.IsEmpty then
     AddParam(Params, ['token', Token]);
-  AddParam(Params, ['sandbox', Ord(Sandbox).ToString]);
+  AddParam(Params, ['sandbox', BoolToString(Sandbox)]);
   with Handler.Execute('account.unregisterDevice', Params) do
     Result := Success and (Response = '1');
 end;
 
 { TVkRegisterDeviceParams }
 
-function TVkRegisterDeviceParams.DeviceId(Value: string): Integer;
+function TVkParamsRegisterDevice.DeviceId(Value: string): Integer;
 begin
   Result := List.Add('device_id', Value);
 end;
 
-function TVkRegisterDeviceParams.DeviceModel(Value: string): Integer;
+function TVkParamsRegisterDevice.DeviceModel(Value: string): Integer;
 begin
   Result := List.Add('device_model', Value);
 end;
 
-function TVkRegisterDeviceParams.DeviceYear(Value: Integer): Integer;
+function TVkParamsRegisterDevice.DeviceYear(Value: Integer): Integer;
 begin
   Result := List.Add('device_year', Value);
 end;
 
-function TVkRegisterDeviceParams.Sandbox(Value: string): Integer;
+function TVkParamsRegisterDevice.Sandbox(Value: string): Integer;
 begin
   Result := List.Add('sandbox', Value);
 end;
 
-function TVkRegisterDeviceParams.Settings(Value: string): Integer;
+function TVkParamsRegisterDevice.Settings(Value: string): Integer;
 begin
   Result := List.Add('settings', Value);
 end;
 
-function TVkRegisterDeviceParams.SystemVersion(Value: string): Integer;
+function TVkParamsRegisterDevice.SystemVersion(Value: string): Integer;
 begin
   Result := List.Add('system_version', Value);
 end;
 
-function TVkRegisterDeviceParams.Token(Value: string): Integer;
+function TVkParamsRegisterDevice.Token(Value: string): Integer;
 begin
   Result := List.Add('token', Value);
 end;
 
 { TVkProfileInfoParams }
 
-function TVkProfileInfoParams.BirthDate(Value: TDateTime): Integer;
+function TVkParamsProfileInfo.BirthDate(Value: TDateTime): Integer;
 begin
   Result := List.Add('bdate', FormatDateTime('DD.MM.YYYY', Value));
 end;
 
-function TVkProfileInfoParams.BirthDateVisibility(Value: TVkBirthDateVisibility): Integer;
+function TVkParamsProfileInfo.BirthDateVisibility(Value: TVkBirthDateVisibility): Integer;
 begin
   Result := List.Add('bdate_visibility', Ord(Value).ToString);
 end;
 
-function TVkProfileInfoParams.CancelRequestId(Value: Integer): Integer;
+function TVkParamsProfileInfo.CancelRequestId(Value: Integer): Integer;
 begin
   Result := List.Add('cancel_request_id', Value);
 end;
 
-function TVkProfileInfoParams.CityId(Value: Integer): Integer;
+function TVkParamsProfileInfo.CityId(Value: Integer): Integer;
 begin
   Result := List.Add('cancel_request_id', Value);
 end;
 
-function TVkProfileInfoParams.CountryId(Value: Integer): Integer;
+function TVkParamsProfileInfo.CountryId(Value: Integer): Integer;
 begin
   Result := List.Add('country_id', Value);
 end;
 
-function TVkProfileInfoParams.FirstName(Value: string): Integer;
+function TVkParamsProfileInfo.FirstName(Value: string): Integer;
 begin
   Result := List.Add('first_name', Value);
 end;
 
-function TVkProfileInfoParams.HomeTown(Value: string): Integer;
+function TVkParamsProfileInfo.HomeTown(Value: string): Integer;
 begin
   Result := List.Add('home_town', Value);
 end;
 
-function TVkProfileInfoParams.LastName(Value: string): Integer;
+function TVkParamsProfileInfo.LastName(Value: string): Integer;
 begin
   Result := List.Add('last_name', Value);
 end;
 
-function TVkProfileInfoParams.MaidenName(Value: string): Integer;
+function TVkParamsProfileInfo.MaidenName(Value: string): Integer;
 begin
   Result := List.Add('maiden_name', Value);
 end;
 
-function TVkProfileInfoParams.Relation(Value: TVkRelation): Integer;
+function TVkParamsProfileInfo.Relation(Value: TVkRelation): Integer;
 begin
   Result := List.Add('relation', Ord(Value).ToString);
 end;
 
-function TVkProfileInfoParams.RelationPartnerId(Value: Integer): Integer;
+function TVkParamsProfileInfo.RelationPartnerId(Value: Integer): Integer;
 begin
   Result := List.Add('relation_partner_id', Value);
 end;
 
-function TVkProfileInfoParams.ScreenName(Value: string): Integer;
+function TVkParamsProfileInfo.ScreenName(Value: string): Integer;
 begin
   Result := List.Add('screen_name', Value);
 end;
 
-function TVkProfileInfoParams.Sex(Value: TVkSex): Integer;
+function TVkParamsProfileInfo.Sex(Value: TVkSex): Integer;
 begin
   Result := List.Add('sex', Ord(Value).ToString);
 end;
 
-function TVkProfileInfoParams.Status(Value: string): Integer;
+function TVkParamsProfileInfo.Status(Value: string): Integer;
 begin
   Result := List.Add('status', Value);
 end;

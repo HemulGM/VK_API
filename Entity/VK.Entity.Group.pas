@@ -68,6 +68,63 @@ type
     property Photo_100: string read FPhoto_100 write FPhoto_100;
   end;
 
+  TVkGroupMemberState = class
+  private
+    FMember: Integer;
+    FUser_id: Integer;
+    FCan_invite: Integer;
+    FRequest: Integer;
+    FInvitation: Integer;
+    FCan_recall: Integer;
+    function GetCan_invite: Boolean;
+    function GetCan_recall: Boolean;
+    function GetInvitation: Boolean;
+    function GetMember: Boolean;
+    function GetRequest: Boolean;
+    procedure SetCan_invite(const Value: Boolean);
+    procedure SetCan_recall(const Value: Boolean);
+    procedure SetInvitation(const Value: Boolean);
+    procedure SetMember(const Value: Boolean);
+    procedure SetRequest(const Value: Boolean);
+  public
+    /// <summary>
+    /// явл€етс€ ли пользователь участником сообщества
+    /// </summary>
+    property Member: Boolean read GetMember write SetMember;
+    /// <summary>
+    /// ≈сть ли неприн€та€ за€вка от пользовател€ на вступление в группу (такую за€вку можно отозвать методом Groups.Leave)
+    /// </summary>
+    property Request: Boolean read GetRequest write SetRequest;
+    /// <summary>
+    /// ѕриглашЄн ли пользователь в группу или встречу
+    /// </summary>
+    property Invitation: Boolean read GetInvitation write SetInvitation;
+    /// <summary>
+    /// ћожет ли автор запроса приглашать пользовател€ в группу
+    /// </summary>
+    property CanInvite: Boolean read GetCan_invite write SetCan_invite;
+    /// <summary>
+    /// ћожет ли автор отменить приглашение. ѕо€вл€етс€, если Invitation: True
+    /// </summary>
+    property CanRecall: Boolean read GetCan_recall write SetCan_recall;
+    /// <summary>
+    /// »дентификатор пользовател€.
+    /// </summary>
+    property UserId: Integer read FUser_id write FUser_id;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkGroupMemberState;
+  end;
+
+  TVkGroupMemberStates = class
+  private
+    FItems: TArray<TVkGroupMemberState>;
+  public
+    property Items: TArray<TVkGroupMemberState> read FItems write FItems;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkGroupMemberStates;
+  end;
+
   TVkGroupMarket = class
   private
     FName: string;
@@ -81,10 +138,10 @@ type
     FCurrency: TVkProductCurrency;
   public
     property Enabled: Integer read FEnabled write FEnabled;
-    property Price_min: Integer read FPrice_min write FPrice_min;
-    property Price_max: Integer read FPrice_max write FPrice_max;
-    property Main_album_id: Integer read FMain_album_id write FMain_album_id;
-    property Contact_id: Integer read FContact_id write FContact_id;
+    property PriceMin: Integer read FPrice_min write FPrice_min;
+    property PriceMax: Integer read FPrice_max write FPrice_max;
+    property MainAlbumId: Integer read FMain_album_id write FMain_album_id;
+    property ContactId: Integer read FContact_id write FContact_id;
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Id: Integer read FId write FId;
     property Name: string read FName write FName;
@@ -156,9 +213,9 @@ type
     property Activity: string read FActivity write FActivity;
     property AdminLevel: Extended read FAdmin_level write FAdmin_level;
     property Addresses: TVkAddresses read FAddresses write FAddresses;
-     {1 Ч нет;
-      2 Ч 16+;
-      3 Ч 18+.}
+    /// <summary>
+    /// 1 Ч нет; 2 Ч 16+; 3 Ч 18+.
+    /// </summary>
     property AgeLimits: Integer read FAge_limits write FAge_limits;
     property BanInfo: TVkBanInfo read FBan_info write FBan_info;
     property CanCreateTopic: Integer read Fcan_create_topic write Fcan_create_topic;
@@ -403,6 +460,89 @@ begin
 end;
 
 function TVkGroups.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkGroupMemberStates }
+
+destructor TVkGroupMemberStates.Destroy;
+var
+  LItemsItem: TVkGroupMemberState;
+begin
+  for LItemsItem in FItems do
+    LItemsItem.Free;
+  inherited;
+end;
+
+class function TVkGroupMemberStates.FromJsonString(AJsonString: string): TVkGroupMemberStates;
+begin
+  result := TJson.JsonToObject<TVkGroupMemberStates>(AJsonString);
+end;
+
+function TVkGroupMemberStates.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkGroupMemberState }
+
+class function TVkGroupMemberState.FromJsonString(AJsonString: string): TVkGroupMemberState;
+begin
+  result := TJson.JsonToObject<TVkGroupMemberState>(AJsonString);
+end;
+
+function TVkGroupMemberState.GetCan_invite: Boolean;
+begin
+  Result := FCan_invite = 1;
+end;
+
+function TVkGroupMemberState.GetCan_recall: Boolean;
+begin
+  Result := FCan_recall = 1;
+end;
+
+function TVkGroupMemberState.GetInvitation: Boolean;
+begin
+  Result := FInvitation = 1;
+end;
+
+function TVkGroupMemberState.GetMember: Boolean;
+begin
+  Result := FMember = 1;
+end;
+
+function TVkGroupMemberState.GetRequest: Boolean;
+begin
+  Result := FRequest = 1;
+end;
+
+procedure TVkGroupMemberState.SetCan_invite(const Value: Boolean);
+begin
+  FCan_invite := BoolToInt(Value);
+end;
+
+procedure TVkGroupMemberState.SetCan_recall(const Value: Boolean);
+begin
+  FCan_recall := BoolToInt(Value);
+end;
+
+procedure TVkGroupMemberState.SetInvitation(const Value: Boolean);
+begin
+  FInvitation := BoolToInt(Value);
+end;
+
+procedure TVkGroupMemberState.SetMember(const Value: Boolean);
+begin
+  FMember := BoolToInt(Value);
+end;
+
+procedure TVkGroupMemberState.SetRequest(const Value: Boolean);
+begin
+  FRequest := BoolToInt(Value);
+end;
+
+function TVkGroupMemberState.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

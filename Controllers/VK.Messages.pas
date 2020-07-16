@@ -3,34 +3,34 @@ unit VK.Messages;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types, VK.Handler,
-  VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.User, VK.Entity.Group;
+  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
+  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.User, VK.Entity.Group;
 
 type
   TMessagesController = class;
 
-  TNewMessage = class
+  TVkMessageNew = class
   private
     FHandler: TVkHandler;
     FParams: TParams;
     procedure SetParams(const Value: TParams);
   public
-    function PeerId(Id: Integer): TNewMessage;
-    function UserId(Id: Integer): TNewMessage;
-    function ChatId(Id: Integer): TNewMessage;
-    function UserIds(Ids: TUserIds): TNewMessage;
-    function UserDomian(Domian: string): TNewMessage;
-    function Message(Text: string): TNewMessage;
-    function Payload(Value: string): TNewMessage;
-    function Intent(Value: string): TNewMessage;
-    function Keyboard(Value: TVkKeyboardConstructor): TNewMessage;
-    function DontParseLinks(Value: Boolean): TNewMessage;
-    function DisableMentions(Value: Boolean): TNewMessage;
-    function StickerId(Id: Integer): TNewMessage;
-    function GroupId(Id: Integer): TNewMessage;
-    function ReplyTo(Id: Integer): TNewMessage;
-    function ForwardMessages(Ids: TArrayOfInteger): TNewMessage;
-    function Attachment(Attachments: TAttachmentArray): TNewMessage;
+    function PeerId(Id: Integer): TVkMessageNew;
+    function UserId(Id: Integer): TVkMessageNew;
+    function ChatId(Id: Integer): TVkMessageNew;
+    function UserIds(Ids: TUserIds): TVkMessageNew;
+    function UserDomian(Domian: string): TVkMessageNew;
+    function Message(Text: string): TVkMessageNew;
+    function Payload(Value: string): TVkMessageNew;
+    function Intent(Value: string): TVkMessageNew;
+    function Keyboard(Value: TVkKeyboardConstructor): TVkMessageNew;
+    function DontParseLinks(Value: Boolean): TVkMessageNew;
+    function DisableMentions(Value: Boolean): TVkMessageNew;
+    function StickerId(Id: Integer): TVkMessageNew;
+    function GroupId(Id: Integer): TVkMessageNew;
+    function ReplyTo(Id: Integer): TVkMessageNew;
+    function ForwardMessages(Ids: TArrayOfInteger): TVkMessageNew;
+    function Attachment(Attachments: TAttachmentArray): TVkMessageNew;
     function Send: TVkMessageSendResponses;
     constructor Create(Controller: TMessagesController);
     property Handler: TVkHandler read FHandler;
@@ -49,17 +49,26 @@ type
     function StartMessageId(Value: Integer): Integer;
   end;
 
-  TParamGet = record
+  TVkParamsMessageDelete = record
+    List: TParams;
+    function GroupId(Value: Integer): Integer;
+    function MessageIds(Value: TIds): Integer; overload;
+    function MessageId(Value: Integer): Integer; overload;
+    function Spam(Value: Boolean): Integer;
+    function DeleteForAll(Value: Boolean): Integer;
+  end;
+
+  TVkParamsMessageGet = record
     List: TParams;
     function MessageIds(Value: TIds): Integer; overload;
-    function MessageIds(Value: Integer): Integer; overload;
+    function MessageId(Value: Integer): Integer; overload;
     function PreviewLength(Value: Integer): Integer;
     function Extended(Value: Boolean): Integer;
     function Fields(Value: string): Integer;
     function GroupId(Value: Integer): Integer;
   end;
 
-  TParamMessageHistory = record
+  TVkParamsMessageHistory = record
     List: TParams;
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
@@ -118,14 +127,14 @@ type
     /// Send.PeerId(123456).ReplyTo(12345)...Message('Текст').Send.Free;
     /// </summary>
     /// <returns>Возвращает конструктор сообщений. Метод Send в этом конструкторе, возвращает результат в виде класса</returns>
-    function New: TNewMessage; overload;
+    function New: TVkMessageNew; overload;
     /// <summary>
     /// Возвращает сообщения по их идентификаторам.
     /// </summary>
     /// <param name="var Messages: TVkMessages">Список сообщений</param>
     /// <param name="Params: TParamGet">Параметры</param>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function GetById(var Messages: TVkMessages; Params: TParamGet): Boolean; overload;
+    function GetById(var Messages: TVkMessages; Params: TVkParamsMessageGet): Boolean; overload;
     /// <summary>
     /// Возвращает сообщения по их идентификаторам.
     /// </summary>
@@ -165,14 +174,24 @@ type
     /// Удаляет сообщения
     /// </summary>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function Delete(MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam: Boolean = False):
-      Boolean; overload;
+    function Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False;
+      Spam: Boolean = False): Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function Delete(MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam: Boolean = False):
-      Boolean; overload;
+    function Delete(var Items: TVkMessageDelete; MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False;
+      Spam: Boolean = False): Boolean; overload;
+    /// <summary>
+    /// Удаляет сообщение
+    /// </summary>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
+    function Delete(var Items: TVkMessageDelete; Params: TVkParamsMessageDelete): Boolean; overload;
+    /// <summary>
+    /// Удаляет сообщение
+    /// </summary>
+    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
+    function Delete(var Items: TVkMessageDelete; Params: TParams): Boolean; overload;
     /// <summary>
     /// Получает ссылку для приглашения пользователя в беседу.
     /// Только создатель беседы имеет доступ к ссылке на беседу.
@@ -190,7 +209,7 @@ type
     /// <param name="var History: TVkMessageHistory">История</param>
     /// <param name="Params: TParamMessageHistory">Параметры</param>
     /// <returns>Возвращает True, если запрос успешно выполнен</returns>
-    function GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory): Boolean; overload;
+    function GetHistory(var History: TVkMessageHistory; Params: TVkParamsMessageHistory): Boolean; overload;
   end;
 
 implementation
@@ -204,11 +223,11 @@ function TMessagesController.Send(PeerId: Integer; Message: string; Attachments:
 var
   Params: TParams;
 begin
-  Params.Add(['peer_id', PeerId.ToString]);
-  Params.Add(['message', Message]);
-  Params.Add(['random_id', GetRandomId.ToString]);
+  Params.Add('peer_id', PeerId);
+  Params.Add('message', Message);
+  Params.Add('random_id', GetRandomId);
   if Length(Attachments) <> 0 then
-    Params.Add(['attachment', Attachments.ToString]);
+    Params.Add('attachment', Attachments);
 
   with Handler.Execute('messages.send', Params) do
   begin
@@ -244,49 +263,61 @@ begin
   end;
 end;
 
-function TMessagesController.Delete(MessageIds: TIds; GroupID: Integer; DeleteForAll, Spam: Boolean): Boolean;
+function TMessagesController.Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer; DeleteForAll, Spam:
+  Boolean): Boolean;
 var
-  Params: TParams;
-  RespJSON: TJSONValue;
-  i, DelRes: Integer;
+  Params: TVkParamsMessageDelete;
 begin
-  if GroupID < 0 then
-    raise TVkException.Create('GroupID должен быть положительным числом');
-  Params.Add('message_ids', MessageIds.ToString);
+  Params.MessageIds(MessageIds);
   if DeleteForAll then
-    Params.Add('delete_for_all', DeleteForAll);
-  if DeleteForAll then
-    Params.Add('spam', Spam);
-  if GroupID > 0 then
-    Params.Add('group_id', GroupID.ToString);
+    Params.DeleteForAll(DeleteForAll);
+  if Spam then
+    Params.Spam(Spam);
+  if GroupID <> 0 then
+    Params.GroupId(GroupID);
+  Result := Delete(Items, Params.List);
+end;
+
+function TMessagesController.Delete(var Items: TVkMessageDelete; MessageId, GroupID: Integer; DeleteForAll, Spam:
+  Boolean): Boolean;
+begin
+  Result := Delete(Items, [MessageId], GroupID, DeleteForAll, Spam);
+end;
+
+function TMessagesController.Delete(var Items: TVkMessageDelete; Params: TParams): Boolean;
+var
+  RespJSON: TJSONValue;
+  Ids: TStringList;
+  i: Integer;
+begin
   with Handler.Execute('messages.delete', Params) do
   begin
-    if not Success then
-      Exit(False)
-    else
+    Result := Success;
+    if Result then
     begin
-      RespJSON := TJSONObject.ParseJSONValue(Response);
+      Ids := TStringList.Create;
+      Ids.Delimiter := ',';
+      Ids.DelimitedText := Params.GetValue('message_ids');
+      Items := TVkMessageDelete.Create;
       try
-        Result := True;
-        for i := Low(MessageIds) to High(MessageIds) do
+        RespJSON := TJSONObject.ParseJSONValue(Response);
+        for i := 0 to Ids.Count - 1 do
         begin
-          if RespJSON.TryGetValue<Integer>(MessageIds[i].ToString, DelRes) then
-            Result := DelRes = 1
-          else
-            Result := False;
-          if not Result then
-            Break;
+          Items.Items.Add(Ids[i], RespJSON.GetValue<Integer>(Ids[i], 0) = 1);
         end;
-      finally
         RespJSON.Free;
+      except
+        Items.Free;
+        Result := False;
       end;
+      Ids.Free;
     end;
   end;
 end;
 
-function TMessagesController.Delete(MessageId, GroupID: Integer; DeleteForAll, Spam: Boolean): Boolean;
+function TMessagesController.Delete(var Items: TVkMessageDelete; Params: TVkParamsMessageDelete): Boolean;
 begin
-  Result := Delete([MessageId], GroupID, DeleteForAll, Spam);
+  Result := Delete(Items, Params.List);
 end;
 
 function TMessagesController.GetById(var Message: TVkMessage; Id: Integer; PreviewLength, GroupId: Integer): Boolean;
@@ -307,7 +338,7 @@ end;
 function TMessagesController.GetById(var Message: TVkMessage; var Profiles: TArray<TVkUser>; var Groups: TArray<TVkGroup
   >; Id: Integer; PreviewLength, GroupId: Integer): Boolean;
 var
-  Params: TParamGet;
+  Params: TVkParamsMessageGet;
   Items: TVkMessages;
 begin
   Params.MessageIds([Id]);
@@ -334,7 +365,7 @@ end;
 
 function TMessagesController.GetById(var Messages: TVkMessages; Ids: TIds; PreviewLength, GroupId: Integer): Boolean;
 var
-  Params: TParamGet;
+  Params: TVkParamsMessageGet;
 begin
   Params.MessageIds(Ids);
   if PreviewLength > 0 then
@@ -344,7 +375,7 @@ begin
   Result := GetById(Messages, Params);
 end;
 
-function TMessagesController.GetById(var Messages: TVkMessages; Params: TParamGet): Boolean;
+function TMessagesController.GetById(var Messages: TVkMessages; Params: TVkParamsMessageGet): Boolean;
 begin
   with Handler.Execute('messages.getById', Params.List) do
   begin
@@ -375,7 +406,7 @@ begin
   end;
 end;
 
-function TMessagesController.GetHistory(var History: TVkMessageHistory; Params: TParamMessageHistory): Boolean;
+function TMessagesController.GetHistory(var History: TVkMessageHistory; Params: TVkParamsMessageHistory): Boolean;
 begin
   with Handler.Execute('messages.getHistory', Params.List) do
   begin
@@ -417,9 +448,9 @@ begin
   end;
 end;
 
-function TMessagesController.New: TNewMessage;
+function TMessagesController.New: TVkMessageNew;
 begin
-  Result := TNewMessage.Create(Self);
+  Result := TVkMessageNew.Create(Self);
 end;
 
 function TMessagesController.SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray): Integer;
@@ -509,12 +540,12 @@ end;
 
 { TNewMessage }
 
-constructor TNewMessage.Create(Controller: TMessagesController);
+constructor TVkMessageNew.Create(Controller: TMessagesController);
 begin
   FHandler := Controller.Handler;
 end;
 
-function TNewMessage.Send: TVkMessageSendResponses;
+function TVkMessageNew.Send: TVkMessageSendResponses;
 var
   Value: Integer;
 begin
@@ -534,102 +565,102 @@ begin
   Free;
 end;
 
-procedure TNewMessage.SetParams(const Value: TParams);
+procedure TVkMessageNew.SetParams(const Value: TParams);
 begin
   FParams := Value;
 end;
 
-function TNewMessage.DisableMentions(Value: Boolean): TNewMessage;
+function TVkMessageNew.DisableMentions(Value: Boolean): TVkMessageNew;
 begin
   Params.Add('disable_mentions', Value);
   Result := Self;
 end;
 
-function TNewMessage.DontParseLinks(Value: Boolean): TNewMessage;
+function TVkMessageNew.DontParseLinks(Value: Boolean): TVkMessageNew;
 begin
   Params.Add('dont_parse_links', Value);
   Result := Self;
 end;
 
-function TNewMessage.StickerId(Id: Integer): TNewMessage;
+function TVkMessageNew.StickerId(Id: Integer): TVkMessageNew;
 begin
   Params.Add('sticker_id', Id);
   Result := Self;
 end;
 
-function TNewMessage.ForwardMessages(Ids: TArrayOfInteger): TNewMessage;
+function TVkMessageNew.ForwardMessages(Ids: TArrayOfInteger): TVkMessageNew;
 begin
   Params.Add('forward_messages', Ids.ToString);
   Result := Self;
 end;
 
-function TNewMessage.GroupID(Id: Integer): TNewMessage;
+function TVkMessageNew.GroupID(Id: Integer): TVkMessageNew;
 begin
   Params.Add('group_id', Id);
   Result := Self;
 end;
 
-function TNewMessage.Intent(Value: string): TNewMessage;
+function TVkMessageNew.Intent(Value: string): TVkMessageNew;
 begin
   Params.Add('intent', Value);
   Result := Self;
 end;
 
-function TNewMessage.Keyboard(Value: TVkKeyboardConstructor): TNewMessage;
+function TVkMessageNew.Keyboard(Value: TVkKeyboardConstructor): TVkMessageNew;
 begin
   Params.Add('keyboard', Value.ToJsonString);
   Result := Self;
 end;
 
-function TNewMessage.Attachment(Attachments: TAttachmentArray): TNewMessage;
+function TVkMessageNew.Attachment(Attachments: TAttachmentArray): TVkMessageNew;
 begin
   Params.Add('attachment', Attachments.ToString);
   Result := Self;
 end;
 
-function TNewMessage.ChatId(Id: Integer): TNewMessage;
+function TVkMessageNew.ChatId(Id: Integer): TVkMessageNew;
 begin
   Params.Add('chat_id', Id);
   Result := Self;
 end;
 
-function TNewMessage.Message(Text: string): TNewMessage;
+function TVkMessageNew.Message(Text: string): TVkMessageNew;
 begin
   Params.Add('message', Text);
   Result := Self;
 end;
 
-function TNewMessage.Payload(Value: string): TNewMessage;
+function TVkMessageNew.Payload(Value: string): TVkMessageNew;
 begin
   Params.Add('payload', Value);
   Result := Self;
 end;
 
-function TNewMessage.PeerId(Id: Integer): TNewMessage;
+function TVkMessageNew.PeerId(Id: Integer): TVkMessageNew;
 begin
   Params.Add('peer_id', Id);
   Result := Self;
 end;
 
-function TNewMessage.ReplyTo(Id: Integer): TNewMessage;
+function TVkMessageNew.ReplyTo(Id: Integer): TVkMessageNew;
 begin
   Params.Add('reply_to', Id);
   Result := Self;
 end;
 
-function TNewMessage.UserDomian(Domian: string): TNewMessage;
+function TVkMessageNew.UserDomian(Domian: string): TVkMessageNew;
 begin
   Params.Add('domian', Domian);
   Result := Self;
 end;
 
-function TNewMessage.UserId(Id: Integer): TNewMessage;
+function TVkMessageNew.UserId(Id: Integer): TVkMessageNew;
 begin
   Params.Add('user_id', Id);
   Result := Self;
 end;
 
-function TNewMessage.UserIds(Ids: TUserIds): TNewMessage;
+function TVkMessageNew.UserIds(Ids: TUserIds): TVkMessageNew;
 begin
   Params.Add('user_ids', Ids.ToString);
   Result := Self;
@@ -679,81 +710,108 @@ end;
 
 { TParamMessageHistory }
 
-function TParamMessageHistory.Count(Value: Integer): Integer;
+function TVkParamsMessageHistory.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TParamMessageHistory.Extended(Value: Boolean): Integer;
+function TVkParamsMessageHistory.Extended(Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;
 
-function TParamMessageHistory.Fields(Value: string): Integer;
+function TVkParamsMessageHistory.Fields(Value: string): Integer;
 begin
   Result := List.Add('fields', Value);
 end;
 
-function TParamMessageHistory.GroupID(Value: Integer): Integer;
+function TVkParamsMessageHistory.GroupID(Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TParamMessageHistory.Offset(Value: Integer): Integer;
+function TVkParamsMessageHistory.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TParamMessageHistory.PeerId(Value: Integer): Integer;
+function TVkParamsMessageHistory.PeerId(Value: Integer): Integer;
 begin
   Result := List.Add('peer_id', Value);
 end;
 
-function TParamMessageHistory.Rev(Value: Boolean): Integer;
+function TVkParamsMessageHistory.Rev(Value: Boolean): Integer;
 begin
   Result := List.Add('rev', Value);
 end;
 
-function TParamMessageHistory.StartMessageId(Value: Integer): Integer;
+function TVkParamsMessageHistory.StartMessageId(Value: Integer): Integer;
 begin
   Result := List.Add('start_message_id', Value);
 end;
 
-function TParamMessageHistory.UserId(Value: Integer): Integer;
+function TVkParamsMessageHistory.UserId(Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
 end;
 
 { TParamGet }
 
-function TParamGet.Extended(Value: Boolean): Integer;
+function TVkParamsMessageGet.Extended(Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;
 
-function TParamGet.Fields(Value: string): Integer;
+function TVkParamsMessageGet.Fields(Value: string): Integer;
 begin
   Result := List.Add('fields', Value);
 end;
 
-function TParamGet.GroupID(Value: Integer): Integer;
+function TVkParamsMessageGet.GroupID(Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TParamGet.MessageIds(Value: Integer): Integer;
+function TVkParamsMessageGet.MessageId(Value: Integer): Integer;
 begin
   Result := List.Add('message_ids', Value);
 end;
 
-function TParamGet.MessageIds(Value: TIds): Integer;
+function TVkParamsMessageGet.MessageIds(Value: TIds): Integer;
 begin
   Result := List.Add('message_ids', Value);
 end;
 
-function TParamGet.PreviewLength(Value: Integer): Integer;
+function TVkParamsMessageGet.PreviewLength(Value: Integer): Integer;
 begin
   Result := List.Add('preview_length', Value);
+end;
+
+{ TVkParamsMessageDelete }
+
+function TVkParamsMessageDelete.DeleteForAll(Value: Boolean): Integer;
+begin
+  Result := List.Add('delete_for_all', Value);
+end;
+
+function TVkParamsMessageDelete.GroupID(Value: Integer): Integer;
+begin
+  Result := List.Add('group_id', Value);
+end;
+
+function TVkParamsMessageDelete.MessageId(Value: Integer): Integer;
+begin
+  Result := List.Add('message_ids', Value);
+end;
+
+function TVkParamsMessageDelete.MessageIds(Value: TIds): Integer;
+begin
+  Result := List.Add('message_ids', Value);
+end;
+
+function TVkParamsMessageDelete.Spam(Value: Boolean): Integer;
+begin
+  Result := List.Add('spam', Value);
 end;
 
 end.

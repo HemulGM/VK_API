@@ -58,6 +58,7 @@ type
     property OnUserCall;
     property OnCountChange;
     property OnNotifyChange;
+    property Version;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]
@@ -111,9 +112,9 @@ type
     property OnGroupChangePhoto;
     property OnGroupPayTransaction;
     property OnGroupAppPayload;
+    property Version;
   end;
 
-  [ComponentPlatformsAttribute(pidAllPlatforms)]
   [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVkGroupEventsController = class(TCustomGroupEventControl)
   private
@@ -165,6 +166,7 @@ type
     property OnGroupChangePhoto;
     property OnGroupPayTransaction;
     property OnGroupAppPayload;
+    property Version;
   end;
 
 procedure Register;

@@ -7,7 +7,7 @@ uses
   System.Net.HttpClient, VK.Types, VK.Handler, System.Generics.Collections;
 
 type
-  TLongPollData = record
+  TVkLongPollData = record
     Key: string;
     Wait: string;
     TS: string;
@@ -18,12 +18,12 @@ type
     function Request: string;
   end;
 
-  TLongPollServer = class
+  TVkLongPollServer = class
   private
     FThread: TThread;
     FLongPollNeedStop: Boolean;
     FLongPollStopped: Boolean;
-    FLongPollData: TLongPollData;
+    FLongPollData: TVkLongPollData;
     FParams: TParams;
     FMethod: string;
     FOnError: TOnVKError;
@@ -80,7 +80,7 @@ uses
 
 { TLongPollServer }
 
-constructor TLongPollServer.Create(AClient: TRESTClient; AMethod: string; AParams: TParams);
+constructor TVkLongPollServer.Create(AClient: TRESTClient; AMethod: string; AParams: TParams);
 begin
   inherited Create;
   FDoSync := True;
@@ -88,7 +88,7 @@ begin
   Params := AParams;
 end;
 
-constructor TLongPollServer.Create;
+constructor TVkLongPollServer.Create;
 begin
   inherited;
   FDoSync := True;
@@ -96,24 +96,24 @@ begin
   FInterval := DefaultLongPollServerInterval;
 end;
 
-destructor TLongPollServer.Destroy;
+destructor TVkLongPollServer.Destroy;
 begin
   Stop;
   inherited;
 end;
 
-procedure TLongPollServer.DoError(E: Exception);
+procedure TVkLongPollServer.DoError(E: Exception);
 begin
   if Assigned(FOnError) then
     FOnError(Self, E, -10000, E.Message);
 end;
 
-function TLongPollServer.GetIsWork: Boolean;
+function TVkLongPollServer.GetIsWork: Boolean;
 begin
   Result := not FLongPollNeedStop;
 end;
 
-function TLongPollServer.QueryLongPollServer: Boolean;
+function TVkLongPollServer.QueryLongPollServer: Boolean;
 var
   JSText: string;
   ResponseJSON: TJSONValue;
@@ -159,7 +159,7 @@ begin
   end;
 end;
 
-procedure TLongPollServer.OnLongPollRecieve(Updates: TJSONArray);
+procedure TVkLongPollServer.OnLongPollRecieve(Updates: TJSONArray);
 var
   i: Integer;
 begin
@@ -177,47 +177,47 @@ begin
   end;
 end;
 
-procedure TLongPollServer.SetDoSync(const Value: Boolean);
+procedure TVkLongPollServer.SetDoSync(const Value: Boolean);
 begin
   FDoSync := Value;
 end;
 
-procedure TLongPollServer.SetFullLog(const Value: Boolean);
+procedure TVkLongPollServer.SetFullLog(const Value: Boolean);
 begin
   FFullLog := Value;
 end;
 
-procedure TLongPollServer.SetGroupID(const Value: string);
+procedure TVkLongPollServer.SetGroupID(const Value: string);
 begin
   FGroupID := Value;
 end;
 
-procedure TLongPollServer.SetHandler(const Value: TVkHandler);
+procedure TVkLongPollServer.SetHandler(const Value: TVkHandler);
 begin
   FHandler := Value;
 end;
 
-procedure TLongPollServer.SetInterval(const Value: Integer);
+procedure TVkLongPollServer.SetInterval(const Value: Integer);
 begin
   FInterval := Value;
 end;
 
-procedure TLongPollServer.SetMethod(const Value: string);
+procedure TVkLongPollServer.SetMethod(const Value: string);
 begin
   FMethod := Value;
 end;
 
-procedure TLongPollServer.SetOnError(const Value: TOnVKError);
+procedure TVkLongPollServer.SetOnError(const Value: TOnVKError);
 begin
   FOnError := Value;
 end;
 
-procedure TLongPollServer.SetOnUpdate(const Value: TOnLongPollServerUpdate);
+procedure TVkLongPollServer.SetOnUpdate(const Value: TOnLongPollServerUpdate);
 begin
   FOnUpdate := Value;
 end;
 
-procedure TLongPollServer.SetParams(const Value: TParams);
+procedure TVkLongPollServer.SetParams(const Value: TParams);
 var
   Param: TParam;
 begin
@@ -228,7 +228,7 @@ begin
       FGroupID := Param[1];
 end;
 
-function TLongPollServer.Start: Boolean;
+function TVkLongPollServer.Start: Boolean;
 begin
   Result := False;
   FLongPollNeedStop := False;
@@ -379,7 +379,7 @@ begin
   Result := True;
 end;
 
-procedure TLongPollServer.Stop;
+procedure TVkLongPollServer.Stop;
 begin
   FLongPollNeedStop := True;
   if Assigned(FThread) then
@@ -399,7 +399,7 @@ end;
 
 { TLongPollData }
 
-function TLongPollData.Request: string;
+function TVkLongPollData.Request: string;
 begin
   Result := Server +
     '?act=' + Action +

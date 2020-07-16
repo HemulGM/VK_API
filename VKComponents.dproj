@@ -212,23 +212,10 @@
         <DCCReference Include="Controllers\VK.Notes.pas"/>
         <DCCReference Include="Entity\VK.Entity.Privacy.pas"/>
         <DCCReference Include="Entity\VK.Entity.Board.pas"/>
-        <None Include="include.inc"/>
-        <RcItem Include="Media\vk_icon.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>TVK</ResourceId>
-        </RcItem>
-        <RcItem Include="Media\vk group - копия.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>TVkGroupEventsController</ResourceId>
-        </RcItem>
-        <RcItem Include="Media\vk group.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>TVkGroupEvents</ResourceId>
-        </RcItem>
-        <RcItem Include="Media\vk user.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>TVkUserEvents</ResourceId>
-        </RcItem>
+        <DCCReference Include="Entity\VK.Entity.Board.Comment.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Account.Banned.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Doc.Types.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Fave.Pages.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -270,7 +257,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKComponents.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

@@ -62,120 +62,75 @@ type
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
     function Get(var Audios: TVkAudios; OwnerId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="Params: TVkParamsAudioGet">Параметры запроса</param>
     function Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="Params: TVkAudioParams">Параметры запроса</param>
     function GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
     function GetRecommendations(var Audios: TVkAudios; OwnerId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Returns a list of audio files from the "Popular".
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
     function GetPopular(var Audios: TVkAudios; Params: TVkParamsPopAudio): Boolean; overload;
     /// <summary>
     /// Returns a list of audio files from the "Popular".
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="OnlyEng: Boolean">Только иностранные</param>
-    /// <param name="GenreId: TAudioGenre">Жанр</param>
-    /// <param name="Count: Integer">Количество</param>
-    /// <param name="Offset: Integer">Смещение</param>
     function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TAudioGenre = agNone; Count: Integer =
       0; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
-    /// <param name="var Items: TVkPlaylists">Список плейлистов</param>
-    /// <param name="Params: TVkAudioParams">Параметры запроса</param>
     function GetPlaylists(var Items: TVkPlaylists; Params: TVkParamsPlaylist): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об плейлистах
     /// </summary>
-    /// <param name="var Items: TVkPlaylists">Список плейлистов</param>
-    /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
     function GetPlaylists(var Items: TVkPlaylists; OwnerID: Integer): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="List: TVkAudioIndexes">Список идентификаторов аудиозаписей</param>
     function GetById(var Audios: TVkAudios; List: TVkAudioIndexes): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписи
     /// </summary>
-    /// <param name="var Audio: TVkAudio">Аудиозапись</param>
-    /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
-    /// <param name="AudioId: Integer">Идентификатор аудиозаписи</param>
     function GetById(var Audio: TVkAudio; OwnerId, AudioId: Integer; AccessKey: string = ''): Boolean; overload;
     /// <summary>
     /// Возвращает адрес сервера для загрузки аудиозаписей
     /// </summary>
-    /// <param name="var UploadUrl: string">Полученный сервер</param>
     function GetUploadServer(var UploadUrl: string): Boolean;
     /// <summary>
     /// Возвращает список аудиозаписей в соответствии (нестрогий поиск)
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="Query: string">Поисковый запрос</param>
     function Search(var Audios: TVkAudios; Query: string): Boolean; overload;
     /// <summary>
     /// Возвращает список аудиозаписей в соответствии с заданным критерием поиска
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="Query: string">Поисковый запрос</param>
-    /// <param name="PerformerOnly: Boolean">Поиск только по названию</param>
-    /// <param name="AutoComplete: Boolean">Нестрогий поиск</param>
     function Search(var Audios: TVkAudios; Query: string; AutoComplete, PerformerOnly: Boolean): Boolean; overload;
     /// <summary>
     /// Возвращает список аудиозаписей в соответствии с заданным критерием поиска
     /// </summary>
-    /// <param name="var Audios: TVkAudios">Список аудиозаписей</param>
-    /// <param name="Params: TParams"></param>
     function Search(var Audios: TVkAudios; Params: TVkParamsAudioSearch): Boolean; overload;
     /// <summary>
     /// Сохраняет аудиозаписи после успешной загрузки.
     /// </summary>
-    /// <param name="var Audio: TVkAudio">Загруженная аудиозапись</param>
-    /// <param name="AudioSaveData: TVkAudioUploadResponse">Данные для сохренения</param>
     function Save(var Audio: TVkAudio; AudioSaveData: TVkAudioUploadResponse): Boolean;
     /// <summary>
     /// Копирует аудиозапись на страницу пользователя или группы.
     /// </summary>
-    /// <param name="var Id: Integer">Ид полученной аудиозаписи</param>
-    /// <param name="AudioId: Integer">Идентификатор аудиозаписи</param>
-    /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
-    /// <param name="GroupId: Integer">Идентификатор сообщества (если аудиозапись необходимо скопировать в список сообщества)</param>
-    /// <param name="AlbumId: Integer">Идентификатор альбома, в который нужно переместить аудиозапись</param>
     function Add(var Id: Integer; AudioId, OwnerId: Integer; GroupId: Integer = 0; AlbumId: Integer = -1): Boolean;
     /// <summary>
     /// Удаляет аудиозапись со страницы пользователя или сообщества.
     /// </summary>
-    /// <param name="AudioId: Integer">Идентификатор аудиозаписи</param>
-    /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
     function Delete(AudioId, OwnerId: Integer): Boolean;
     /// <summary>
     /// Редактирует данные аудиозаписи на странице пользователя или сообщества.
     /// </summary>
-    /// <param name="AudioId: Integer">Идентификатор аудиозаписи</param>
-    /// <param name="OwnerId: Integer">Идентификатор пользователя или сообщества</param>
-    /// <param name="Params: TVkAudioEditParams">Параметры</param>
     function Edit(AudioId, OwnerId: Integer; Params: TVkParamsAudioEdit): Boolean;
   end;
 
@@ -281,11 +236,7 @@ function TAudioController.Delete(AudioId, OwnerId: Integer): Boolean;
 begin
   with Handler.Execute('audio.delete', [['audio_id', AudioId.ToString], ['owner_id', OwnerId.ToString]]) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      Result := Response = '1';
-    end;
+    Result := Success and (Response = '1');
   end;
 end;
 
@@ -295,11 +246,7 @@ begin
   Params.OwnerId(OwnerId);
   with Handler.Execute('audio.edit', Params.List) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      Result := Response <> '0';
-    end;
+    Result := Success and (Response <> '0');
   end;
 end;
 

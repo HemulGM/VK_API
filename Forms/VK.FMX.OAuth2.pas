@@ -51,7 +51,10 @@ var
 implementation
 
 uses
-  System.Net.HttpClient, Winapi.UrlMon;
+  {$IFDEF MSWINDOWS}
+  Winapi.UrlMon,
+  {$ENDIF}
+  System.Net.HttpClient;
 
 {$R *.fmx}
 
@@ -133,14 +136,19 @@ begin
 end;
 
 procedure TFormFMXOAuth2.FormCreate(Sender: TObject);
+  {$IFDEF MSWINDOWS}
 const
-  UserAgent = 'Mozilla/5.0 (Windows Phone 10.0;  Android 4.2.1; Nokia; Lumia 520) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Mobile Safari/537.36 Edge/12.0';
+  UserAgent =
+    'Mozilla/5.0 (Windows Phone 10.0;  Android 4.2.1; Nokia; Lumia 520) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Mobile Safari/537.36 Edge/12.0';
+  {$ENDIF}
 begin
   FLastTitle := '';
   FIsError := False;
   FBrakeAll := False;
   FLastURL := '';
+  {$IFDEF MSWINDOWS}
   UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, PAnsiChar(AnsiString(UserAgent)), Length(UserAgent), 0);
+  {$ENDIF}
 end;
 
 procedure TFormFMXOAuth2.FormKeyPress(Sender: TObject; var Key: Char);

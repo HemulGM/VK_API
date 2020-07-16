@@ -144,29 +144,92 @@ type
     /// <param name="Code: string">Код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагается совместимость с ECMAScript). Алгоритм должен завершаться командой return %выражение%. Операторы должны быть разделены точкой с запятой. </param>
     /// <param name="Callback: TCallMethodCallback = nil"> Метод, который будет выполнен после выполнения Execute </param>
     procedure ExecuteAsync(Code: string; Callback: TCallMethodCallback = nil);
+    /// <summary>
+    /// Вспомогательный метод, для выполнения методов с Count и Offset
+    /// </summary>
     procedure Walk(Method: TWalkMethod; Count: Integer);
     //Tools
+    /// <summary>
+    /// Методы для загрузки файлов на сервера ВК
+    /// </summary>
     property Uploader: TUploader read FUploader;
     //Группы методов
+    /// <summary>
+    /// Методы для работы с аккаунтом.
+    /// </summary>
     property Account: TAccountController read FAccount;
+    /// <summary>
+    /// Методы для работы с авторизацией.
+    /// </summary>
     property Auth: TAuthController read FAuth;
-    property Users: TUsersController read FUsers;
-    property Messages: TMessagesController read FMessages;
-    property Status: TStatusController read FStatus;
-    property Wall: TWallController read FWall;
-    property Docs: TDocController read FDoc;
-    property Likes: TLikesController read FLikes;
+    /// <summary>
+    /// Методы для работы с аудиозаписями.
+    /// </summary>
     property Audio: TAudioController read FAudio;
+    /// <summary>
+    /// Методы для работы с обсуждениями.
+    /// </summary>
     property Board: TBoardController read FBoard;
-    property Friends: TFriendsController read FFriends;
-    property Groups: TGroupsController read FGroups;
-    property Photos: TPhotosController read FPhotos;
+    /// <summary>
+    /// Методы для работы с каталогом рекомендация.
+    /// </summary>
     property Catalog: TCatalogController read FCatalog;
-    property Utils: TUtilsController read FUtils;
-    property Video: TVideoController read FVideo;
-    property Market: TMarketController read FMarket;
+    /// <summary>
+    /// Методы для работы с документами.
+    /// </summary>
+    property Docs: TDocController read FDoc;
+    /// <summary>
+    /// Методы для работы с закладками.
+    /// </summary>
     property Fave: TFaveController read FFave;
+    /// <summary>
+    /// Методы для работы с друзьями.
+    /// </summary>
+    property Friends: TFriendsController read FFriends;
+    /// <summary>
+    /// Методы для работы с сообществами.
+    /// </summary>
+    property Groups: TGroupsController read FGroups;
+    /// <summary>
+    /// Методы для работы с отметками «Мне нравится».
+    /// </summary>
+    property Likes: TLikesController read FLikes;
+    /// <summary>
+    /// Методы market позволяют работать с товарами в сообществах.
+    /// </summary>
+    property Market: TMarketController read FMarket;
+    /// <summary>
+    /// Методы для работы с личными сообщениями.
+    /// </summary>
+    property Messages: TMessagesController read FMessages;
+    /// <summary>
+    /// Методы для работы с заметками.
+    /// </summary>
     property Notes: TNotesController read FNotes;
+    /// <summary>
+    /// Методы для работы с фотографиями.
+    /// </summary>
+    property Photos: TPhotosController read FPhotos;
+    /// <summary>
+    /// Методы для работы со статусом.
+    /// </summary>
+    property Status: TStatusController read FStatus;
+    /// <summary>
+    /// Методы для работы с данными пользователей.
+    /// </summary>
+    property Users: TUsersController read FUsers;
+    /// <summary>
+    /// Служебные методы.
+    /// </summary>
+    property Utils: TUtilsController read FUtils;
+    /// <summary>
+    /// Методы для работы с видеозаписями.
+    /// </summary>
+    property Video: TVideoController read FVideo;
+    /// <summary>
+    /// Методы для работы с записями на стене.
+    /// </summary>
+    property Wall: TWallController read FWall;
     //
     property AppID: string read FAppID write SetAppID;
     property AppKey: string read FAppKey write SetAppKey;

@@ -149,6 +149,7 @@ type
     function Add(Key: string; Value: Boolean): Integer; overload; inline;
     function Add(Key: string; Value: TArrayOfInteger): Integer; overload; inline;
     function KeyExists(Key: string): Boolean; inline;
+    function GetValue(Key: string): string; inline;
   end;
 
   TAttachmentArray = TArrayOfString;
@@ -192,7 +193,24 @@ type
     class function Create(Value: Integer): TAudioGenre;
   end;
 
+  TVkSortIdTime = (sitIdAsc, sitIdDesc, sitTimeAsc, sitTimeDesc);
+
+  TVkSortIdTimeHelper = record helper for TVkSortIdTime
+    function ToString: string; overload; inline;
+  end;
+
   TVkLang = (vlAuto = -1, vlRU = 0, vlUK = 1, vlBE = 2, vlEN = 3, vlES = 4, vlFI = 5, vlDE = 6, vlIT = 7);
+
+  /// <summary>
+  ///  <b>friends</b> — будут возвращены только друзья в этом сообществе.
+  ///  <b>unsure</b> — будут возвращены пользователи, которые выбрали «Возможно пойду» (если сообщество относится к мероприятиям).
+  ///  <b>managers</b> — будут возвращены только руководители сообщества (доступно при запросе с передачей access_token от имени администратора сообщества).
+  /// </summary>
+  TVkGroupMembersFilter = (gmfFriends, mgfUnsure, gmfManagers);
+
+  TVkGroupMembersFilterHelper = record helper for TVkGroupMembersFilter
+    function ToString: string; inline;
+  end;
 
   TVkFollowerField = (flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50,
     flPhoto100, flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain,
@@ -233,6 +251,23 @@ type
   public
     function ToString: string; inline;
     class function All: TVkUserFields; static; inline;
+  end;
+
+  TVkGroupMemberField = (mfSex, mfBdate, mfCity, mfCountry, mfPhoto50, mfPhoto100, mfPhoto200orig, mfPhoto200,
+    mfPhoto400orig, mfPhotoMax, mfPhotoMaxOrig, mfOnline, mfOnlineMobile, mfLists, mfDomain, mfHasMobile, mfContacts,
+    mfConnections, mfSite, mfEducation, mfUniversities, mfSchools, mfCanPost, mfCanSeeAllPosts, mfCanSeeAudio,
+    mfCanWritePrivateMessage, mfStatus, mfLastSeen, mfCommonCount, mfRelation, mfRelatives);
+
+  TVkGroupMemberFieldHelper = record helper for TVkGroupMemberField
+    function ToString: string; inline;
+  end;
+
+  TVkGroupMemberFields = set of TVkGroupMemberField;
+
+  TVkGroupMemberFieldsHelper = record helper for TVkGroupMemberFields
+  public
+    function ToString: string; inline;
+    class function All: TVkGroupMemberFields; static; inline;
   end;
 
   TVkFriendField = (ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100,
@@ -531,6 +566,31 @@ type
     function ToString: string; overload; inline;
   end;
 
+  TVkCounterFilter = (cfFriends, cfMessages, cfPhotos, cfVideos, cfNotes, cfGifts, cfEvents, cfGroups, cfNotifications,
+    cfSdk, cfAppRequests, cfFriendsRecommendations);
+
+  TVkCounterFilterHelper = record helper for TVkCounterFilter
+    function ToString: string; overload; inline;
+  end;
+
+  TVkCounterFilters = set of TVkCounterFilter;
+
+  TVkCounterFiltersHelper = record helper for TVkCounterFilters
+    function ToString: string; overload; inline;
+  end;
+
+  TVkInfoFilter = (ifCountry, ifHttpsRequired, ifOwnPostsDefault, ifNoWallReplies, ifIntro, ifLang);
+
+  TVkInfoFilterHelper = record helper for TVkInfoFilter
+    function ToString: string; overload; inline;
+  end;
+
+  TVkInfoFilters = set of TVkInfoFilter;
+
+  TVkInfoFiltersHelper = record helper for TVkInfoFilters
+    function ToString: string; overload; inline;
+  end;
+
   TVkPermission = (Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline,
     Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage);
 
@@ -664,6 +724,15 @@ var
     'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50');
   VkGroupFilter: array[TVkGroupFilter] of string = ('admin', 'editor', 'moder', 'advertiser', 'groups', 'publics',
     'events', 'hasAddress');
+  VkGroupMemberField: array[TVkGroupMemberField] of string = ('sex', 'bdate', 'city', 'country', 'photo_50', 'photo_100',
+    'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max',
+    'photo_max_orig', 'online', 'online_mobile', 'lists', 'domain', 'has_mobile', 'contacts', 'connections', 'site', 'education',
+    'universities', 'schools', 'can_post', 'can_see_all_posts', 'can_see_audio', 'can_write_private_message', 'status',
+    'last_seen', 'common_count', 'relation', 'relatives');
+  VkCounterFilter: array[TVkCounterFilter] of string = ('friends', 'messages', 'photos', 'videos', 'notes',
+    'gifts', 'events', 'groups', 'notifications', 'sdk', 'app_requests', 'friends_recommendations');
+  VkInfoFilter: array[TVkInfoFilter] of string = ('country', 'https_required', 'own_posts_default', 'no_wall_replies',
+    'intro', 'lang');
 
 function VKErrorString(ErrorCode: Integer): string;
 
@@ -1126,6 +1195,16 @@ begin
   Result := AddParam(Self, [Key, Value.ToString]);
 end;
 
+function TParamsHelper.GetValue(Key: string): string;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := Low(Self) to High(Self) do
+    if Self[i][0] = Key then
+      Exit(Self[i][1]);
+end;
+
 function TParamsHelper.Add(Key: string; Value: TArrayOfString): Integer;
 begin
   Result := AddParam(Self, [Key, Value.ToString]);
@@ -1552,6 +1631,108 @@ end;
 function TVkGroupFiltersHelper.ToString: string;
 var
   Item: TVkGroupFilter;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkGroupMemberFieldHelper }
+
+function TVkGroupMemberFieldHelper.ToString: string;
+begin
+  Result := VkGroupMemberField[Self];
+end;
+
+{ TVkGroupMemberFieldsHelper }
+
+class function TVkGroupMemberFieldsHelper.All: TVkGroupMemberFields;
+begin
+  Result := [mfSex, mfBdate, mfCity, mfCountry, mfPhoto50, mfPhoto100, mfPhoto200orig, mfPhoto200,
+    mfPhoto400orig, mfPhotoMax, mfPhotoMaxOrig, mfOnline, mfOnlineMobile, mfLists, mfDomain, mfHasMobile, mfContacts,
+    mfConnections, mfSite, mfEducation, mfUniversities, mfSchools, mfCanPost, mfCanSeeAllPosts, mfCanSeeAudio,
+    mfCanWritePrivateMessage, mfStatus, mfLastSeen, mfCommonCount, mfRelation, mfRelatives];
+end;
+
+function TVkGroupMemberFieldsHelper.ToString: string;
+var
+  Item: TVkGroupMemberField;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkGroupMembersFilterHelper }
+
+function TVkGroupMembersFilterHelper.ToString: string;
+begin
+  case Self of
+    gmfFriends:
+      Exit('friends');
+    mgfUnsure:
+      Exit('unsure');
+    gmfManagers:
+      Exit('managers');
+  else
+    Result := '';
+  end;
+end;
+
+{ TVkSortIdTimeHelper }
+
+function TVkSortIdTimeHelper.ToString: string;
+begin
+  case Self of
+    sitIdAsc:
+      Exit('id_asc');
+    sitIdDesc:
+      Exit('id_desc');
+    sitTimeAsc:
+      Exit('time_asc');
+    sitTimeDesc:
+      Exit('time_desc');
+  else
+    Result := '';
+  end;
+end;
+
+{ TVkCounterFilterHelper }
+
+function TVkCounterFilterHelper.ToString: string;
+begin
+  Result := VkCounterFilter[Self];
+end;
+
+{ TVkCounterFiltersHelper }
+
+function TVkCounterFiltersHelper.ToString: string;
+var
+  Item: TVkCounterFilter;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkInfoFilterHelper }
+
+function TVkInfoFilterHelper.ToString: string;
+begin
+
+end;
+
+{ TVkInfoFiltersHelper }
+
+function TVkInfoFiltersHelper.ToString: string;
+var
+  Item: TVkInfoFilter;
 begin
   for Item in Self do
   begin

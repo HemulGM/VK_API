@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
   VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
   VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event;
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.User, VK.Entity.Group;
 
 type
   TVkAttachment = class;
@@ -103,7 +103,7 @@ type
     FId: Integer;
     FOwner_id: Integer;
     FFrom_id: Integer;
-    FCreated_by: Extended;
+    FCreated_by: Integer;
     FDate: Int64;
     FText: string;
     FReply_owner_id: Integer;
@@ -133,7 +133,7 @@ type
     property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property FromId: Integer read FFrom_id write FFrom_id;
-    property CreatedBy: Extended read FCreated_by write FCreated_by;
+    property CreatedBy: Integer read FCreated_by write FCreated_by;
     property Date: TDateTime read GetDate write SetDate;
     property Text: string read FText write FText;
     property ReplyOwnerId: Integer read FReply_owner_id write FReply_owner_id;
@@ -167,10 +167,14 @@ type
   private
     FCount: Integer;
     FItems: TArray<TVkPost>;
+    FProfiles: TArray<TVkUser>;
+    FGroups: TArray<TVkGroup>;
   public
     destructor Destroy; override;
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkPost> read FItems write FItems;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPosts;
   end;
@@ -243,8 +247,6 @@ begin
     FPoll.Free;
   if Assigned(FPage) then
     FPage.Free;
-  if Assigned(FAlbum) then
-    FAlbum.Free;
   if Assigned(FAlbum) then
     FAlbum.Free;
   if Assigned(FPretty_cards) then
@@ -324,6 +326,7 @@ begin
   FComments := TVkCommentsInfo.Create();
   FLikes := TVkLikesInfo.Create();
   FReposts := TVkRepostsInfo.Create();
+  FGeo := TVkGeo.Create;
 end;
 
 destructor TVkPost.Destroy;
@@ -336,7 +339,7 @@ begin
     Lcopy_historyItem.Free;
   for LAttachment in FAttachments do
     LAttachment.Free;
-
+  FGeo.Free;
   FPost_source.Free;
   FComments.Free;
   FLikes.Free;
@@ -373,6 +376,10 @@ var
 begin
   for i := Low(FItems) to High(FItems) do
     FItems[i].Free;
+  for i := Low(FGroups) to High(FGroups) do
+    FGroups[i].Free;
+  for i := Low(FProfiles) to High(FProfiles) do
+    FProfiles[i].Free;
   inherited;
 end;
 

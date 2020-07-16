@@ -34,8 +34,12 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkUser; UserId: Integer = 0; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom):
-      Boolean; overload;
+    function Get(var User: TVkUser; UserId: Integer; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean;
+      overload;
+    /// <summary>
+    /// Возвращает расширенную информацию о пользователях.
+    /// </summary>
+    function Get(var User: TVkUser; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
@@ -63,17 +67,15 @@ uses
 
 function TUsersController.Get(var User: TVkUser; UserId: Integer; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
 var
-  Params: TParams;
+  Params: TVkParamsUsersGet;
   Users: TVkUsers;
 begin
-  if UserId < 0 then
-    Exit(False);
   if UserId <> 0 then
-    Params.Add('user_ids', UserId);
+    Params.UserIds([UserId]);
   if Fields <> [] then
-    Params.Add('fields', Fields.ToString);
-  Params.Add('num', NameCase.ToConst);
-  with Handler.Execute('users.get', Params) do
+    Params.Fields(Fields);
+  Params.NameCase(NameCase);
+  with Handler.Execute('users.get', Params.List) do
   begin
     Result := Success;
     if Result then
@@ -124,6 +126,11 @@ end;
 function TUsersController.Get(var Users: TVkUsers; Params: TVkParamsUsersGet): Boolean;
 begin
   Result := Get(Users, Params.List);
+end;
+
+function TUsersController.Get(var User: TVkUser; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
+begin
+  Result := Get(User, 0, Fields, NameCase);
 end;
 
 function TUsersController.GetFollowers(var Users: TVkUsers; Params: TVkParamsUsersGetFollowers): Boolean;

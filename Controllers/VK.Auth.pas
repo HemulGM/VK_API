@@ -11,22 +11,14 @@ type
     /// <summary>
     /// ѕровер€ет правильность введЄнного номера (возможность его использовани€ дл€ регистрации или авторизации).
     /// </summary>
-    /// <param name="Phone">номер телефона регистрируемого пользовател€</param>
-    /// <param name="ClientId">идентификатор ¬ашего приложени€</param>
-    /// <param name="ClientSecret">секретный ключ приложени€, доступный в разделе редактировани€ приложени€</param>
-    /// <param name="AuthByPhone">True Ч проверить правильность номера дл€ авторизации,
-    ///                           а не дл€ регистрации нового аккаунта. ѕо умолчанию: False.</param>
     function CheckPhone(Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean = False): Boolean; overload;
     /// <summary>
     /// ѕровер€ет правильность введЄнного номера (возможность его использовани€ дл€ регистрации или авторизации).
     /// — указанием текущих данных приложени€ ClientId и ClientSecret
     /// </summary>
-    /// <param name="Phone">номер телефона регистрируемого пользовател€</param>
-    /// <param name="AuthByPhone">True Ч проверить правильность номера дл€ авторизации,
-    ///                           а не дл€ регистрации нового аккаунта. ѕо умолчанию: False.</param>
     function CheckPhone(Phone: string; AuthByPhone: Boolean = False): Boolean; overload;
     /// <summary>
-    /// https://vk.com/dev/auth.restore
+    /// ѕозвол€ет восстановить доступ к аккаунту, использу€ код, полученный через SMS.
     /// </summary>
     function Restore(Phone, LastName: string): TResponse;
   end;

@@ -6,13 +6,25 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Media, VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo;
 
 type
-  TVkFaveTags = class
+  TVkFaveTag = class
   private
     FId: Integer;
     FName: string;
   public
     property Id: Integer read FId write FId;
     property Name: string read FName write FName;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkFaveTag;
+  end;
+
+  TVkFaveTags = class
+  private
+    FCount: Integer;
+    FItems: TArray<TVkFaveTag>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkFaveTag> read FItems write FItems;
+    destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkFaveTags;
   end;
@@ -21,7 +33,7 @@ type
   private
     FAdded_date: Int64;
     FSeen: Boolean;
-    FTags: TArray<TVkFaveTags>;
+    FTags: TArray<TVkFaveTag>;
     FType: string;
     FLink: TVkLink;
     FPost: TVkPost;
@@ -38,7 +50,7 @@ type
     property Photo: TVkPhoto read FPhoto write FPhoto;
     property Product: TVkProduct read FProduct write FProduct;
     property Seen: Boolean read FSeen write FSeen;
-    property Tags: TArray<TVkFaveTags> read FTags write FTags;
+    property Tags: TArray<TVkFaveTag> read FTags write FTags;
     property&Type: string read FType write FType;
     constructor Create;
     destructor Destroy; override;
@@ -65,14 +77,14 @@ uses
 
 {TTagsClass}
 
-function TVkFaveTags.ToJsonString: string;
+function TVkFaveTag.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TVkFaveTags.FromJsonString(AJsonString: string): TVkFaveTags;
+class function TVkFaveTag.FromJsonString(AJsonString: string): TVkFaveTag;
 begin
-  result := TJson.JsonToObject<TVkFaveTags>(AJsonString)
+  result := TJson.JsonToObject<TVkFaveTag>(AJsonString)
 end;
 
 {TItemsClass}
@@ -85,7 +97,7 @@ end;
 
 destructor TVkFave.Destroy;
 var
-  LtagsItem: TVkFaveTags;
+  LtagsItem: TVkFaveTag;
 begin
 
   for LtagsItem in FTags do
@@ -145,6 +157,29 @@ end;
 class function TVkFaves.FromJsonString(AJsonString: string): TVkFaves;
 begin
   result := TJson.JsonToObject<TVkFaves>(AJsonString)
+end;
+
+{ TVkFaveTags }
+
+destructor TVkFaveTags.Destroy;
+var
+  LitemsItem: TVkFaveTag;
+begin
+
+  for LitemsItem in FItems do
+    LitemsItem.Free;
+
+  inherited;
+end;
+
+class function TVkFaveTags.FromJsonString(AJsonString: string): TVkFaveTags;
+begin
+  result := TJson.JsonToObject<TVkFaveTags>(AJsonString)
+end;
+
+function TVkFaveTags.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

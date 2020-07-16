@@ -63,6 +63,14 @@ type
     class function FromJsonString(AJsonString: string): TVkMessageAction;
   end;
 
+  TVkMessageDelete = class
+  private
+    FItems: TDictionary<string, Boolean>;
+    procedure SetItems(const Value: TDictionary<string, Boolean>);
+  public
+    property Items: TDictionary<string, Boolean> read FItems write SetItems;
+  end;
+
   TVkMessage = class
   private
     FAttachments: TArray<TVkAttachment>;
@@ -341,6 +349,13 @@ end;
 procedure TVkMessages.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
+end;
+
+{ TVkMessageDelete }
+
+procedure TVkMessageDelete.SetItems(const Value: TDictionary<string, Boolean>);
+begin
+  FItems := Value;
 end;
 
 end.

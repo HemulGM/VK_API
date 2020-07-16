@@ -48,7 +48,7 @@ type
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     property Tags: TVkTags read FTags write FTags;
     property AccessKey: string read FAccess_key write FAccess_key;
-    //
+    // old field api < 5.77
     property Photo1280: string read FPhoto_1280 write FPhoto_1280;
     property Photo130: string read FPhoto_130 write FPhoto_130;
     property Photo2560: string read FPhoto_2560 write FPhoto_2560;

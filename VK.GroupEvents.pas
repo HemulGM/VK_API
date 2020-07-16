@@ -112,7 +112,7 @@ type
 
   TCustomGroupEvents = class(TComponent)
   private
-    FLongPollServer: TLongPollServer;
+    FLongPollServer: TVkLongPollServer;
     FVK: TCustomVK;
     FGroupID: Integer;
     FOnWallReplyNew: TOnCommentAction;
@@ -156,6 +156,7 @@ type
     FOnGroupPayTransaction: TOnGroupPayTransaction;
     FOnGroupAppPayload: TOnGroupAppPayload;
     FOnMessageTypingState: TOnGroupMessageTypingState;
+    FVersion: string;
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
@@ -246,12 +247,13 @@ type
     procedure SetOnGroupPayTransaction(const Value: TOnGroupPayTransaction);
     procedure SetOnMessageTypingState(const Value: TOnGroupMessageTypingState);
     function GetIsWork: Boolean;
+    procedure SetVersion(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Stop;
     function Start: Boolean;
-    property LongPollServer: TLongPollServer read FLongPollServer;
+    property LongPollServer: TVkLongPollServer read FLongPollServer;
     property VK: TCustomVK read FVK write SetVK;
     property GroupID: Integer read FGroupID write SetGroupID;
     property IsWork: Boolean read GetIsWork;
@@ -297,6 +299,7 @@ type
     property OnGroupChangePhoto: TOnGroupChangePhoto read FOnGroupChangePhoto write SetOnGroupChangePhoto;
     property OnGroupPayTransaction: TOnGroupPayTransaction read FOnGroupPayTransaction write SetOnGroupPayTransaction;
     property OnGroupAppPayload: TOnGroupAppPayload read FOnGroupAppPayload write SetOnGroupAppPayload;
+    property Version: string read FVersion write SetVersion;
   end;
 
   TGroupEventsItems = TList<TCustomGroupEvents>;
@@ -348,6 +351,7 @@ type
     FOnGroupPayTransaction: TOnGroupPayTransaction;
     FOnGroupAppPayload: TOnGroupAppPayload;
     FOnMessageTypingState: TOnGroupMessageTypingState;
+    FVersion: string;
     procedure SetItems(const Value: TGroupEventsItems);
     procedure SetGroups(const Value: TStrings);
     procedure SetVK(const Value: TCustomVK);
@@ -392,6 +396,7 @@ type
     procedure SetOnGroupAppPayload(const Value: TOnGroupAppPayload);
     procedure SetOnGroupPayTransaction(const Value: TOnGroupPayTransaction);
     procedure SetOnMessageTypingState(const Value: TOnGroupMessageTypingState);
+    procedure SetVersion(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -444,6 +449,7 @@ type
     property OnGroupChangePhoto: TOnGroupChangePhoto read FOnGroupChangePhoto write SetOnGroupChangePhoto;
     property OnGroupPayTransaction: TOnGroupPayTransaction read FOnGroupPayTransaction write SetOnGroupPayTransaction;
     property OnGroupAppPayload: TOnGroupAppPayload read FOnGroupAppPayload write SetOnGroupAppPayload;
+    property Version: string read FVersion write SetVersion;
   end;
 
 implementation
@@ -467,7 +473,8 @@ begin
         Break;
       end;
   end;
-  FLongPollServer := TLongPollServer.Create;
+  FVersion := '3';
+  FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
   {$IFDEF FULLLOG}
@@ -1456,6 +1463,11 @@ begin
   FOnWallRepost := Value;
 end;
 
+procedure TCustomGroupEvents.SetVersion(const Value: string);
+begin
+  FVersion := Value;
+end;
+
 procedure TCustomGroupEvents.SetVK(const Value: TCustomVK);
 begin
   FVK := Value;
@@ -1467,7 +1479,8 @@ begin
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
   FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'groups.getLongPollServer';
-  FLongPollServer.Params := [['lp_version', '3'], ['group_id', FGroupID.ToString]];
+  FLongPollServer.Params.Add('lp_version', FVersion);
+  FLongPollServer.Params.Add('group_id', FGroupID);
   Result := FLongPollServer.Start;
   if Result then
     FVK.DoLog(FLongPollServer, FGroupID.ToString + ' started')
@@ -1545,6 +1558,7 @@ begin
         Break;
       end;
   end;
+  FVersion := '3';
   FReaded := False;
   FItems := TGroupEventsItems.Create;
   FGroups := TStringList.Create;
@@ -1798,6 +1812,15 @@ begin
   FOnWallRepost := Value;
 end;
 
+procedure TCustomGroupEventControl.SetVersion(const Value: string);
+var
+  i: Integer;
+begin
+  FVersion := Value;
+  for i := 0 to FItems.Count - 1 do
+    FItems[i].Version := FVersion;
+end;
+
 procedure TCustomGroupEventControl.SetVK(const Value: TCustomVK);
 var
   i: Integer;
@@ -1813,7 +1836,10 @@ var
 begin
   Result := False;
   for i := 0 to FItems.Count - 1 do
+  begin
+    FItems[i].Version := FVersion;
     Result := FItems[i].Start or Result;
+  end;
 end;
 
 procedure TCustomGroupEventControl.Stop;
