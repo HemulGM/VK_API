@@ -5,19 +5,62 @@ interface
 uses
   Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Photo;
 
-const
-  UserFieldsAll = 'photo_id, verified, sex, bdate, city, country, home_town, has_photo, ' +
-    'photo_50, photo_100, photo_200_orig, photo_200, photo_400_orig, photo_max, ' +
-    'photo_max_orig, online, domain, has_mobile, contacts, site, education, ' +
-    'universities, schools, status, last_seen, followers_count, common_count, ' +
-    'occupation, nickname, relatives, relation, personal, connections, exports, ' +
-    'activities, interests, music, movies, tv, books, games, about, quotes, ' +
-    'can_post, can_see_all_posts, can_see_audio, can_write_private_message, ' +
-    'can_send_friend_request, is_favorite, is_hidden_from_feed, timezone, ' +
-    'screen_name, maiden_name, crop_photo, is_friend, friend_status, career, ' +
-    'military, blacklisted, blacklisted_by_me, can_be_invited_group';
-
 type
+  TVkFriendsOnline = class
+  private
+    FOnline: TArray<Integer>;
+    FOnline_mobile: TArray<Integer>;
+  public
+    property Online: TArray<Integer> read FOnline write FOnline;
+    property OnlineMobile: TArray<Integer> read FOnline_mobile write FOnline_mobile;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkFriendsOnline;
+  end;
+
+  TVkFriendInfo = class
+  private
+    FFriend_status: Integer;
+    FSign: string;
+    FUser_id: Integer;
+    FIs_request_unread: Boolean;
+  public
+    property FriendStatus: Integer read FFriend_status write FFriend_status;
+    property IsRequestUnread: Boolean read FIs_request_unread write FIs_request_unread;
+    property Sign: string read FSign write FSign;
+    property UserId: Integer read FUser_id write FUser_id;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkFriendInfo;
+  end;
+
+  TVkFriendInfos = class
+  private
+    FItems: TArray<TVkFriendInfo>;
+  public
+    property Items: TArray<TVkFriendInfo> read FItems write FItems;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkFriendInfos;
+  end;
+
+  TVkFriendDeleteInfo = class
+  private
+    FSuccess: Integer;
+    Fout_request_deleted: Integer;
+    Fin_request_deleted: Integer;
+    Fsuggestion_deleted: Integer;
+    Ffriend_deleted: Integer;
+    function GetSuccess: Boolean;
+    procedure SetSuccess(const Value: Boolean);
+  public
+    property Success: Boolean read GetSuccess write SetSuccess;
+    property FriendDeleted: Integer read Ffriend_deleted write Ffriend_deleted;
+    property OutRequestDeleted: Integer read Fout_request_deleted write Fout_request_deleted;
+    property InRequestDeleted: Integer read Fin_request_deleted write Fin_request_deleted;
+    property SuggestionDeleted: Integer read Fsuggestion_deleted write Fsuggestion_deleted;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkFriendDeleteInfo;
+  end;
+
   TVkRelative = class
   private
     FId: Extended;
@@ -369,9 +412,35 @@ type
     class function FromJsonString(AJsonString: string): TVkUsers;
   end;
 
+  TVkFriendsList = class
+  private
+    FId: Integer;
+    FName: string;
+  public
+    property Id: Integer read FId write FId;
+    property Name: string read FName write FName;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkFriendsList;
+  end;
+
+  TVkFriendsLists = class
+  private
+    FCount: Integer;
+    FItems: TArray<TVkFriendsList>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkFriendsList> read FItems write FItems;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkFriendsLists;
+  end;
+
 function FindUser(Id: Integer; List: TArray<TVkUser>): Integer;
 
 implementation
+
+uses
+  VK.CommonUtils;
 
 function FindUser(Id: Integer; List: TArray<TVkUser>): Integer;
 var
@@ -614,6 +683,106 @@ end;
 procedure TVkUsers.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
+end;
+
+{ TVkFriendInfo }
+
+class function TVkFriendInfo.FromJsonString(AJsonString: string): TVkFriendInfo;
+begin
+  result := TJson.JsonToObject<TVkFriendInfo>(AJsonString);
+end;
+
+function TVkFriendInfo.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkFriendInfos }
+
+destructor TVkFriendInfos.Destroy;
+var
+  LItemsItem: TVkFriendInfo;
+begin
+  for LItemsItem in FItems do
+    LItemsItem.Free;
+  inherited;
+end;
+
+class function TVkFriendInfos.FromJsonString(AJsonString: string): TVkFriendInfos;
+begin
+  result := TJson.JsonToObject<TVkFriendInfos>(AJsonString);
+end;
+
+function TVkFriendInfos.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkFriendDeleteInfo }
+
+class function TVkFriendDeleteInfo.FromJsonString(AJsonString: string): TVkFriendDeleteInfo;
+begin
+  result := TJson.JsonToObject<TVkFriendDeleteInfo>(AJsonString);
+end;
+
+function TVkFriendDeleteInfo.GetSuccess: Boolean;
+begin
+  Result := FSuccess = 1;
+end;
+
+procedure TVkFriendDeleteInfo.SetSuccess(const Value: Boolean);
+begin
+  FSuccess := BoolToInt(Value);
+end;
+
+function TVkFriendDeleteInfo.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkFriendsList }
+
+class function TVkFriendsList.FromJsonString(AJsonString: string): TVkFriendsList;
+begin
+  result := TJson.JsonToObject<TVkFriendsList>(AJsonString);
+end;
+
+function TVkFriendsList.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkFriendsLists }
+
+destructor TVkFriendsLists.Destroy;
+var
+  Item: TVkFriendsList;
+begin
+  for Item in FItems do
+    Item.Free;
+  inherited;
+end;
+
+class function TVkFriendsLists.FromJsonString(AJsonString: string): TVkFriendsLists;
+begin
+  result := TJson.JsonToObject<TVkFriendsLists>(AJsonString);
+end;
+
+function TVkFriendsLists.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkFriendsOnline }
+
+class function TVkFriendsOnline.FromJsonString(AJsonString: string): TVkFriendsOnline;
+begin
+  result := TJson.JsonToObject<TVkFriendsOnline>(AJsonString);
+end;
+
+function TVkFriendsOnline.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
 end;
 
 end.
