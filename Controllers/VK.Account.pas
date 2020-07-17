@@ -63,7 +63,7 @@ type
     /// <summary>
     /// Возвращает ненулевые значения счетчиков пользователя.
     /// </summary>
-    function GetCounters(var Counters: TVkCounters; Filter: TVkCounterFilters): Boolean;
+    function GetCounters(var Counters: TVkCounters; Filter: TVkCounterFilters = []): Boolean;
     /// <summary>
     /// Возвращает информацию о текущем аккаунте.
     /// </summary>

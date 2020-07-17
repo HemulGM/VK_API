@@ -41,7 +41,8 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
+    function GroupId(Value: Integer): Integer; overload;
+    function GroupId(Value: string): Integer; overload;
     function Filter(Value: TVkGroupMembersFilter): Integer;
     function Fields(Value: TVkGroupMemberFields): Integer;
     function Count(Value: Integer = 1000): Integer;
@@ -1415,6 +1416,11 @@ end;
 function TVkParamsGroupsGetMembers.Filter(Value: TVkGroupMembersFilter): Integer;
 begin
   Result := List.Add('filter', Value.ToString);
+end;
+
+function TVkParamsGroupsGetMembers.GroupId(Value: string): Integer;
+begin
+  Result := List.Add('group_id', Value);
 end;
 
 function TVkParamsGroupsGetMembers.GroupId(Value: Integer): Integer;
