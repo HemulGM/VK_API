@@ -6,16 +6,7 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common;
 
 type
-  TVkProductCurrency = class
-  private
-    FId: Extended;
-    FName: string;
-  public
-    property Id: Extended read FId write FId;
-    property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProductCurrency;
-  end;
+  TVkMarketSection = TVkBasicObject;
 
   TVkProductPrice = class
   private
@@ -30,17 +21,6 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkProductPrice;
-  end;
-
-  TVkMarketSection = class
-  private
-    FId: Extended;
-    FName: string;
-  public
-    property Id: Extended read FId write FId;
-    property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMarketSection;
   end;
 
   TVkProductCategory = class
@@ -149,18 +129,6 @@ type
 
 implementation
 
-{TVkMarketCurrency}
-
-function TVkProductCurrency.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProductCurrency.FromJsonString(AJsonString: string): TVkProductCurrency;
-begin
-  result := TJson.JsonToObject<TVkProductCurrency>(AJsonString)
-end;
-
 {TVkMarketPrice}
 
 constructor TVkProductPrice.Create;
@@ -183,18 +151,6 @@ end;
 class function TVkProductPrice.FromJsonString(AJsonString: string): TVkProductPrice;
 begin
   result := TJson.JsonToObject<TVkProductPrice>(AJsonString)
-end;
-
-{TVkMarketSection}
-
-function TVkMarketSection.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkMarketSection.FromJsonString(AJsonString: string): TVkMarketSection;
-begin
-  result := TJson.JsonToObject<TVkMarketSection>(AJsonString)
 end;
 
 {TVkMarketCategory}

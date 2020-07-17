@@ -399,7 +399,7 @@ end;
 
 function TVkParamsWallGet.Filter(Value: TVkPostType): Integer;
 begin
-  Result := List.Add('value', Value.ToConst);
+  Result := List.Add('value', Value.ToString);
 end;
 
 function TVkParamsWallGet.Offset(Value: Integer): Integer;

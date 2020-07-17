@@ -130,7 +130,16 @@ contains
   VK.Entity.Board.Comment in 'Entity\VK.Entity.Board.Comment.pas',
   VK.Entity.Account.Banned in 'Entity\VK.Entity.Account.Banned.pas',
   VK.Entity.Doc.Types in 'Entity\VK.Entity.Doc.Types.pas',
-  VK.Entity.Fave.Pages in 'Entity\VK.Entity.Fave.Pages.pas';
+  VK.Entity.Fave.Pages in 'Entity\VK.Entity.Fave.Pages.pas',
+  VK.Gifts in 'Controllers\VK.Gifts.pas',
+  VK.Entity.Group.TimeTable in 'Entity\VK.Entity.Group.TimeTable.pas',
+  VK.Entity.Group.Ban in 'Entity\VK.Entity.Group.Ban.pas',
+  VK.Entity.Group.CallBackServer in 'Entity\VK.Entity.Group.CallBackServer.pas',
+  VK.Entity.Group.CallbackSettings in 'Entity\VK.Entity.Group.CallbackSettings.pas',
+  VK.Entity.Group.Categories in 'Entity\VK.Entity.Group.Categories.pas',
+  VK.Entity.Group.Longpoll in 'Entity\VK.Entity.Group.Longpoll.pas',
+  VK.Entity.Group.LongpollSettings in 'Entity\VK.Entity.Group.LongpollSettings.pas',
+  VK.Entity.Group.TokenPermissions in 'Entity\VK.Entity.Group.TokenPermissions.pas';
 
 end.
 

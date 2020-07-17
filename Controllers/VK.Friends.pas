@@ -3,7 +3,7 @@ unit VK.Friends;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.User;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.User, VK.Entity.Common;
 
 type
   /// <summary>
@@ -15,7 +15,7 @@ type
   TVkFriendsSort = (fsNone, fsHints, fsRandom, fsMobile, fsName);
 
   TVkFriendsSortHelper = record helper for TVkFriendsSort
-    function ToConst: string; inline;
+    function ToString: string; inline;
   end;
 
   TVkFriendAddInfo = (faiSuccess = 1, faiApproved = 2, faiResended = 4);
@@ -36,8 +36,7 @@ type
     function Order(Value: TVkFriendsSort): Integer;
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
-    function Fields(Value: string): Integer; overload;
-    function Fields(Value: TVkFriendFields): Integer; overload;
+    function Fields(Value: TVkFriendFields): Integer;
     function NameCase(Value: TVkNameCase): Integer;
     function Ref(Value: string): Integer;
   end;
@@ -71,6 +70,37 @@ type
     function Offset(Value: Integer): Integer;
   end;
 
+  TVkParamsFriendsGetRequests = record
+    List: TParams;
+    function Count(Value: Integer): Integer;
+    function Offset(Value: Integer): Integer;
+    function NeedMutual(Value: Boolean): Integer;
+    function &Out(Value: Boolean = False): Integer;
+    function Sort(Value: Boolean): Integer;
+    function NeedViewed(Value: Boolean): Integer;
+    function Suggested(Value: Boolean): Integer;
+    function Fields(Value: TVkFriendFields): Integer;
+  end;
+
+  TVkParamsFriendsGetSuggestions = record
+    List: TParams;
+    function Count(Value: Integer): Integer;
+    function Offset(Value: Integer): Integer;
+    function Fields(Value: TVkFriendFields): Integer;
+    function FilterMutual(Value: Boolean): Integer;
+    function NameCase(Value: TVkNameCase): Integer;
+  end;
+
+  TVkParamsFriendsSearch = record
+    List: TParams;
+    function UserId(Value: Integer): Integer;
+    function Query(Value: string): Integer;
+    function Count(Value: Integer): Integer;
+    function Offset(Value: Integer): Integer;
+    function Fields(Value: TVkFriendFields): Integer;
+    function NameCase(Value: TVkNameCase): Integer;
+  end;
+
   TFriendsController = class(TVkController)
   public
     /// <summary>
@@ -90,6 +120,10 @@ type
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
     function Get(var Items: TVkUsers; Params: TVkParamsFriendsGet): Boolean; overload;
+    /// <summary>
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// </summary>
+    function GetIds(var Items: TVkIdList; Params: TVkParamsFriendsGet): Boolean; overload;
     /// <summary>
     /// Одобряет или создает заявку на добавление в друзья.
     /// </summary>
@@ -133,7 +167,7 @@ type
     /// <summary>
     /// Возвращает список идентификаторов друзей текущего пользователя, которые установили данное приложение.
     /// </summary>
-    function GetAppUsers(var Items: TIds): Boolean;
+    function GetAppUsers(var Items: TVkIdList): Boolean;
     /// <summary>
     /// Возвращает список друзей пользователя, у которых завалидированные или указанные в профиле телефонные номера входят в заданный список.
     /// </summary>
@@ -145,7 +179,7 @@ type
     /// <summary>
     /// Возвращает список идентификаторов общих друзей между парой пользователей.
     /// </summary>
-    function GetMutual(var Items: TIds; Params: TVkParamsFriendsGetMutual): Boolean;
+    function GetMutual(var Items: TVkIdList; Params: TVkParamsFriendsGetMutual): Boolean;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя, находящихся на сайте.
     /// </summary>
@@ -153,7 +187,35 @@ type
     /// <summary>
     /// Возвращает список идентификаторов недавно добавленных друзей текущего пользователя.
     /// </summary>
-    function GetRecent(var Items: TIds; Count: Integer = 100): Boolean;
+    function GetRecent(var Items: TVkIdList; Count: Integer = 100): Boolean;
+    /// <summary>
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// </summary>
+    function GetRequests(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// </summary>
+    function GetRequests(var Items: TVkUsers; Params: TVkParamsFriendsGetRequests): Boolean; overload;
+    /// <summary>
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// </summary>
+    function GetRequestsIds(var Items: TVkIdList; Params: TVkParamsFriendsGetRequests): Boolean; overload;
+    /// <summary>
+    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя.
+    /// </summary>
+    function GetSuggestions(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя.
+    /// </summary>
+    function GetSuggestions(var Items: TVkUsers; Params: TVkParamsFriendsGetSuggestions): Boolean; overload;
+    /// <summary>
+    /// Позволяет искать по списку друзей пользователей.
+    /// </summary>
+    function Search(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Позволяет искать по списку друзей пользователей.
+    /// </summary>
+    function Search(var Items: TVkUsers; Params: TVkParamsFriendsSearch): Boolean; overload;
   end;
 
 implementation
@@ -200,10 +262,12 @@ begin
   begin
     Result := Success;
     if Result then
-    try
-      Items := TVkUsers.FromJsonString(Response);
-    except
-      Result := False;
+    begin
+      try
+        Items := TVkUsers.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
@@ -239,10 +303,12 @@ begin
   begin
     Result := Success;
     if Result then
-    try
-      Items := TVkFriendInfo.FromJsonString(AppendItemsTag(Response));
-    except
-      Result := False;
+    begin
+      try
+        Items := TVkFriendInfo.FromJsonString(AppendItemsTag(Response));
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
@@ -320,9 +386,7 @@ begin
   end;
 end;
 
-function TFriendsController.GetAppUsers(var Items: TIds): Boolean;
-var
-  RespJson: TJSONValue;
+function TFriendsController.GetAppUsers(var Items: TVkIdList): Boolean;
 begin
   with Handler.Execute('friends.getAppUsers') do
   begin
@@ -330,9 +394,7 @@ begin
     if Result then
     begin
       try
-        RespJson := TJSONObject.ParseJSONValue(JSON);
-        Items := RespJson.GetValue<TIds>('response', []);
-        RespJson.Free;
+        Items := TVkIdList.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -346,11 +408,29 @@ begin
   begin
     Result := Success;
     if Result then
-    try
-      Items := TVkUsers.FromJsonString(AppendItemsTag(Response));
-      Items.Count := Length(Items.Items);
-    except
-      Result := False;
+    begin
+      try
+        Items := TVkUsers.FromJsonString(AppendItemsTag(Response));
+        Items.Count := Length(Items.Items);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TFriendsController.GetIds(var Items: TVkIdList; Params: TVkParamsFriendsGet): Boolean;
+begin
+  with Handler.Execute('friends.get', Params.List) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkIdList.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
@@ -361,17 +441,17 @@ begin
   begin
     Result := Success;
     if Result then
-    try
-      Items := TVkFriendsList.FromJsonString(Response);
-    except
-      Result := False;
+    begin
+      try
+        Items := TVkFriendsList.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
 
-function TFriendsController.GetMutual(var Items: TIds; Params: TVkParamsFriendsGetMutual): Boolean;
-var
-  RespJson: TJSONValue;
+function TFriendsController.GetMutual(var Items: TVkIdList; Params: TVkParamsFriendsGetMutual): Boolean;
 begin
   with Handler.Execute('friends.getMutual') do
   begin
@@ -379,9 +459,7 @@ begin
     if Result then
     begin
       try
-        RespJson := TJSONObject.ParseJSONValue(JSON);
-        Items := RespJson.GetValue<TIds>('response', []);
-        RespJson.Free;
+        Items := TVkIdList.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -395,17 +473,17 @@ begin
   begin
     Result := Success;
     if Result then
-    try
-      Items := TVkFriendsOnline.FromJsonString(Response);
-    except
-      Result := False;
+    begin
+      try
+        Items := TVkFriendsOnline.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
 
-function TFriendsController.GetRecent(var Items: TIds; Count: Integer): Boolean;
-var
-  RespJson: TJSONValue;
+function TFriendsController.GetRecent(var Items: TVkIdList; Count: Integer): Boolean;
 begin
   with Handler.Execute('friends.getRecent', ['count', Count.ToString]) do
   begin
@@ -413,9 +491,87 @@ begin
     if Result then
     begin
       try
-        RespJson := TJSONObject.ParseJSONValue(JSON);
-        Items := RespJson.GetValue<TIds>('response', []);
-        RespJson.Free;
+        Items := TVkIdList.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TFriendsController.GetRequests(var Items: TVkUsers; Params: TVkParamsFriendsGetRequests): Boolean;
+begin
+  Result := GetRequests(Items, Params.List);
+end;
+
+function TFriendsController.GetRequestsIds(var Items: TVkIdList; Params: TVkParamsFriendsGetRequests): Boolean;
+begin
+  with Handler.Execute('friends.getRequests', Params.List) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkIdList.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TFriendsController.GetSuggestions(var Items: TVkUsers; Params: TVkParamsFriendsGetSuggestions): Boolean;
+begin
+  Result := GetSuggestions(Items, Params.List);
+end;
+
+function TFriendsController.Search(var Items: TVkUsers; Params: TVkParamsFriendsSearch): Boolean;
+begin
+  Result := Search(Items, Params.List);
+end;
+
+function TFriendsController.Search(var Items: TVkUsers; Params: TParams): Boolean;
+begin
+  with Handler.Execute('friends.search', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkUsers.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TFriendsController.GetSuggestions(var Items: TVkUsers; Params: TParams): Boolean;
+begin
+  with Handler.Execute('friends.getSuggestions', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkUsers.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TFriendsController.GetRequests(var Items: TVkUsers; Params: TParams): Boolean;
+begin
+  Params.Add('extended', True);
+  with Handler.Execute('friends.getRequests', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkUsers.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -430,11 +586,6 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGet.Fields(Value: string): Integer;
-begin
-  Result := List.Add('fields', Value);
-end;
-
 function TVkParamsFriendsGet.Fields(Value: TVkFriendFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
@@ -447,7 +598,7 @@ end;
 
 function TVkParamsFriendsGet.NameCase(Value: TVkNameCase): Integer;
 begin
-  Result := List.Add('name_case', Value.ToConst);
+  Result := List.Add('name_case', Value.ToString);
 end;
 
 function TVkParamsFriendsGet.Offset(Value: Integer): Integer;
@@ -457,7 +608,7 @@ end;
 
 function TVkParamsFriendsGet.Order(Value: TVkFriendsSort): Integer;
 begin
-  Result := List.Add('order', Value.ToConst);
+  Result := List.Add('order', Value.ToString);
 end;
 
 function TVkParamsFriendsGet.Ref(Value: string): Integer;
@@ -472,7 +623,7 @@ end;
 
 { TVkFriendsSortHelper }
 
-function TVkFriendsSortHelper.ToConst: string;
+function TVkFriendsSortHelper.ToString: string;
 begin
   case Self of
     fsHints:
@@ -592,6 +743,110 @@ begin
 end;
 
 function TVkParamsFriendsGetOnline.UserId(Value: Integer): Integer;
+begin
+  Result := List.Add('user_id', Value);
+end;
+
+{ TVkParamsFriendsGetRequests }
+
+function TVkParamsFriendsGetRequests.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsFriendsGetRequests.Fields(Value: TVkFriendFields): Integer;
+begin
+  Result := List.Add('fields', Value.ToString);
+end;
+
+function TVkParamsFriendsGetRequests.NeedMutual(Value: Boolean): Integer;
+begin
+  Result := List.Add('need_mutual', Value);
+end;
+
+function TVkParamsFriendsGetRequests.NeedViewed(Value: Boolean): Integer;
+begin
+  Result := List.Add('need_viewed', Value);
+end;
+
+function TVkParamsFriendsGetRequests.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TVkParamsFriendsGetRequests.out(Value: Boolean): Integer;
+begin
+  Result := List.Add('out', Value);
+end;
+
+function TVkParamsFriendsGetRequests.Sort(Value: Boolean): Integer;
+begin
+  Result := List.Add('sort', Value);
+end;
+
+function TVkParamsFriendsGetRequests.Suggested(Value: Boolean): Integer;
+begin
+  Result := List.Add('suggested', Value);
+end;
+
+{ TVkParamsFriendsGetSuggestions }
+
+function TVkParamsFriendsGetSuggestions.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsFriendsGetSuggestions.Fields(Value: TVkFriendFields): Integer;
+begin
+  Result := List.Add('fields', Value.ToString);
+end;
+
+function TVkParamsFriendsGetSuggestions.FilterMutual(Value: Boolean): Integer;
+begin
+  if Value then
+    Result := List.Add('filter', 'mutual')
+  else
+    Result := List.Add('filter', '');
+end;
+
+function TVkParamsFriendsGetSuggestions.NameCase(Value: TVkNameCase): Integer;
+begin
+  Result := List.Add('name_case', Value.ToString);
+end;
+
+function TVkParamsFriendsGetSuggestions.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+{ TVkParamsFriendsSearch }
+
+function TVkParamsFriendsSearch.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsFriendsSearch.Fields(Value: TVkFriendFields): Integer;
+begin
+  Result := List.Add('fields', Value.ToString);
+end;
+
+function TVkParamsFriendsSearch.NameCase(Value: TVkNameCase): Integer;
+begin
+  Result := List.Add('name_case', Value.ToString);
+end;
+
+function TVkParamsFriendsSearch.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TVkParamsFriendsSearch.Query(Value: string): Integer;
+begin
+  Result := List.Add('q', Value);
+end;
+
+function TVkParamsFriendsSearch.UserId(Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
 end;

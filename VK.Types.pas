@@ -145,11 +145,14 @@ type
     function Add(Param: TParam): Integer; overload; inline;
     function Add(Key, Value: string): Integer; overload; inline;
     function Add(Key: string; Value: Integer): Integer; overload; inline;
+    function Add(Key: string; Value: Extended): Integer; overload; inline;
+    function Add(Key: string; Value: TDateTime): Integer; overload; inline;
     function Add(Key: string; Value: TArrayOfString): Integer; overload; inline;
     function Add(Key: string; Value: Boolean): Integer; overload; inline;
     function Add(Key: string; Value: TArrayOfInteger): Integer; overload; inline;
     function KeyExists(Key: string): Boolean; inline;
     function GetValue(Key: string): string; inline;
+    function Remove(Key: string): string; inline;
   end;
 
   TAttachmentArray = TArrayOfString;
@@ -272,7 +275,7 @@ type
 
   TVkFriendField = (ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100,
     ffPhoto200, ffHasMobile, ffContacts, ffEducation, ffOnline, ffRelation, ffLastSeen, ffStatus,
-    ffCanWritePrivateMessage, ffCanSeeAllPosts, ffCanPost, ffUniversities);
+    ffCanWritePrivateMessage, ffCanSeeAllPosts, ffCanPost, ffUniversities, ffCanSeeAudio);
 
   TVkFriendFieldHelper = record helper for TVkFriendField
     function ToString: string; inline;
@@ -298,6 +301,55 @@ type
   TVkGroupFieldsHelper = record helper for TVkGroupFields
     function ToString: string; inline;
     class function All: TVkGroupFields; static; inline;
+  end;
+
+  TVkGroupAddressField = (gafTitle, gafAddress, gafAdditionalAddress, gafCountryId, gafCityId, gafMetroStationId,
+    gafLatitude, gafLongitude, gafWorkInfoStatus, gafTimeOffset);
+
+  TVkGroupAddressFieldHelper = record helper for TVkGroupAddressField
+    function ToString: string; inline;
+  end;
+
+  TVkGroupAddressFields = set of TVkGroupAddressField;
+
+  TVkGroupAddressFieldsHelper = record helper for TVkGroupAddressFields
+    function ToString: string; inline;
+    class function All: TVkGroupAddressFields; static; inline;
+  end;
+
+  TVkGroupAccess = (gaOpen, gaClose, gaPrivate);
+
+  TVkGroupAccessHelper = record helper for TVkGroupAccess
+    function ToConst: Integer; inline;
+  end;
+
+  TVkGroupRole = (grModerator, grEditor, grAdmin);
+
+  TVkGroupRoleHelper = record helper for TVkGroupRole
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// Тут список цветов -> VkGroupTagColors
+  /// </summary>
+  TVkGroupTagColor = string;
+
+  TVkAgeLimits = (alNone = 1, al16Plus = 2, al18Plus = 3);
+
+  TVkAgeLimitsHelper = record helper for TVkAgeLimits
+    function ToConst: Integer; inline;
+  end;
+
+  TVkCurrency = (mcRUB, mcUAH, mcKZT, mcEUR, mcUSD);
+
+  TVkMarketCurrencyHelper = record helper for TVkCurrency
+    function ToConst: Integer; inline;
+  end;
+
+  TVkGroupType = (gtGroup, gtEvent, gtPublic);
+
+  TVkGroupTypeHelper = record helper for TVkGroupType
+    function ToString: string; inline;
   end;
 
   TVkGroupFilter = (gftAdmin, gftEditor, gftModer, gftAdvertiser, gftGroups, gftPublics, gftEvents, gftHasAddress);
@@ -428,7 +480,7 @@ type
     itTopicComment, itMarketComment, itSitepage);
 
   TVkItemTypeHelper = record helper for TVkItemType
-    function ToConst: string; inline;
+    function ToString: string; inline;
   end;
 
   //Типы объектов
@@ -436,27 +488,27 @@ type
     atSticker, atGift, atCall, atAudioMessage);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
-    function ToConst: string; inline;
+    function ToString: string; inline;
     class function Create(Value: string): TVkAttachmentType; static;
   end;
 
   TVkPeerType = (ptUnknown, ptUser, ptChat, ptGroup, ptEmail);
 
   TVkPeerTypeHelper = record helper for TVkPeerType
-    function ToConst: string; inline;
+    function ToString: string; inline;
     class function Create(Value: string): TVkPeerType; static;
   end;
 
   TVkPostType = (ptSuggests, ptPostponed, ptOwner, ptOthers, ptAll);
 
   TVkPostTypeHelper = record helper for TVkPostType
-    function ToConst: string; inline;
+    function ToString: string; inline;
   end;
 
   TVkNameCase = (ncNom, ncGen, ncDat, ncAcc, ncIns, ncAbl);
 
   TVkNameCaseHelper = record helper for TVkNameCase
-    function ToConst: string; inline;
+    function ToString: string; inline;
   end;
   {
   именительный – nom, родительный – gen, дательный – dat, винительный – acc, творительный – ins, предложный – abl. По умолчанию nom.
@@ -544,10 +596,11 @@ type
     TimeStamp: TDateTime;
   end;
 
-  TVkUserBlockReason = (brOther, brSpam, btInsultingParticipants, btObsceneExpressions, btOffTopic);
+  TVkUserBlockReason = (brOther, brSpam, brInsultingParticipants, brObsceneExpressions, brOffTopic);
 
   TUserBlockReasonHelper = record helper for TVkUserBlockReason
     function ToString: string; overload; inline;
+    function ToConst: Integer; overload; inline;
   end;
 
   TVkGroupJoinType = (jtUnknown, jtJoin, jtUnsure, jtAccepted, jtApproved, jtRequest);
@@ -654,6 +707,13 @@ type
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
 
 var
+  VkUserActive: array[Boolean] of string = ('Бездействие', 'Покинул сайт');
+  VkGroupLevel: array[TVkGroupLevel] of string = ('Участник', 'Модератор',
+    'Редактор', 'Администратор');
+  VkUserBlockReason: array[TVkUserBlockReason] of string = ('Другое', 'Спам',
+    'Оскорбление участников', 'Мат', 'Разговоры не по теме');
+
+var
   VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8,
     MF_UNKNOWN_7, MF_UNKNOWN_6, MF_NOT_DELIVERED, MF_DELETE_FOR_ALL, MF_HIDDEN,
     MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2,
@@ -675,7 +735,6 @@ var
     'Ethnic', 'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech',
     'ElectropopAndDisco', 'Other');
   VkDialogFlags: array[TDialogFlag] of Integer = (GR_UNANSWERED, GR_IMPORTANT);
-  VkUserActive: array[Boolean] of string = ('Бездействие', 'Покинул сайт');
   VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone',
     'iPad', 'Android', 'Windows Phone', 'Windows', 'Web');
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video',
@@ -686,10 +745,6 @@ var
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo',
     'audio', 'video', 'note', 'market', 'photo_comment', 'video_comment',
     'topic_comment', 'market_comment', 'sitepage');
-  VkGroupLevel: array[TVkGroupLevel] of string = ('Участник', 'Модератор',
-    'Редактор', 'Администратор');
-  VkUserBlockReason: array[TVkUserBlockReason] of string = ('Другое', 'Спам',
-    'Оскорбление участников', 'Мат', 'Разговоры не по теме');
   VkGroupJoinType: array[TVkGroupJoinType] of string = ('', 'join', 'unsure',
     'accepted', 'approved', 'request');
   VkPostType: array[TVkPostType] of string = ('suggests', 'postponed', 'owner', 'others', 'all');
@@ -718,12 +773,14 @@ var
     'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me');
   VkFriendField: array[TVkFriendField] of string = ('nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone',
     'photo_50', 'photo_100', 'photo_200_orig', 'has_mobile', 'contacts', 'education', 'online', 'relation', 'last_seen', 'status',
-    'can_write_private_message', 'can_see_all_posts', 'can_post', 'universities');
+    'can_write_private_message', 'can_see_all_posts', 'can_post', 'universities', 'can_see_audio');
   VkGroupField: array[TVkGroupField] of string = ('city', 'country', 'place', 'description', 'wiki_page', 'members_count',
     'counters', 'start_date', 'finish_date', 'can_post', 'can_see_all_posts', 'activity', 'status',
     'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50');
   VkGroupFilter: array[TVkGroupFilter] of string = ('admin', 'editor', 'moder', 'advertiser', 'groups', 'publics',
     'events', 'hasAddress');
+  VkGroupType: array[TVkGroupType] of string = ('group', 'event', 'public');
+  VkGroupRole: array[TVkGroupRole] of string = ('moderator', 'editor', 'administrator');
   VkGroupMemberField: array[TVkGroupMemberField] of string = ('sex', 'bdate', 'city', 'country', 'photo_50', 'photo_100',
     'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max',
     'photo_max_orig', 'online', 'online_mobile', 'lists', 'domain', 'has_mobile', 'contacts', 'connections', 'site', 'education',
@@ -733,6 +790,11 @@ var
     'gifts', 'events', 'groups', 'notifications', 'sdk', 'app_requests', 'friends_recommendations');
   VkInfoFilter: array[TVkInfoFilter] of string = ('country', 'https_required', 'own_posts_default', 'no_wall_replies',
     'intro', 'lang');
+  VkCurrencyId: array[TVkCurrency] of Integer = (643, 980, 398, 978, 840);
+  VkGroupAddressField: array[TVkGroupAddressField] of string = ('title', 'address', 'additional_address', 'country_id',
+    'city_id', 'metro_station_id', 'latitude', 'longitude', 'work_info_status', 'time_offset');
+  VkGroupTagColors: array of string = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a',
+    '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
 
 function VKErrorString(ErrorCode: Integer): string;
 
@@ -753,7 +815,7 @@ function PeerIdIsGroup(Value: Integer): Boolean;
 implementation
 
 uses
-  VK.CommonUtils;
+  VK.CommonUtils, System.DateUtils;
 
 function PeerIdIsChat(Value: Integer): Boolean;
 begin
@@ -893,9 +955,18 @@ begin
     101:
       ErrStr :=
         'Неверный API ID приложения. Найдите приложение в списке администрируемых на странице https://vk.com/apps?act=settings и укажите в запросе верный API_ID (идентификатор приложения).';
+    103:
+      ErrStr :=
+        'Out of limits';
+    104:
+      ErrStr :=
+        'Not found';
     113:
       ErrStr :=
         'Неверный идентификатор пользователя. Убедитесь, что Вы используете верный идентификатор. Получить ID по короткому имени можно методом utils.resolveScreenName.';
+    125:
+      ErrStr :=
+        'Invalid group id';
     148:
       ErrStr :=
         'Пользователь не установил приложение в левое меню';
@@ -914,6 +985,9 @@ begin
     221:
       ErrStr :=
         'Пользователь выключил трансляцию названий аудио в статус';
+    260:
+      ErrStr :=
+        'Access to the groups list is denied due to the user''s privacy settings';
     300:
       ErrStr :=
         'Альбом переполнен. Перед продолжением работы нужно удалить лишние объекты из альбома или использовать другой альбом.';
@@ -926,9 +1000,36 @@ begin
     603:
       ErrStr :=
         'Произошла ошибка при работе с рекламным кабинетом.';
+    700:
+      ErrStr :=
+        'Невозможно изменить полномочия создателя.';
+    701:
+      ErrStr :=
+        'Пользователь должен состоять в сообществе.';
+    702:
+      ErrStr :=
+        'Достигнут лимит на количество руководителей в сообществе.';
+    703:
+      ErrStr :=
+        'You need to enable 2FA for this action';
+    704:
+      ErrStr :=
+        'Вы не можете назначить пользователя руководителем, если у Вас не подключена функция подтверждения входа.';
+    706:
+      ErrStr :=
+        'Too many addresses in club';
     1260:
       ErrStr :=
         'Invalid screen name';
+    1310:
+      ErrStr :=
+        'Каталог не доступен для пользователя';
+    1311:
+      ErrStr :=
+        'Категории каталога не доступны для пользователя';
+    2000:
+      ErrStr :=
+        'Нельзя добавить больше 10 серверов';
     3300:
       ErrStr :=
         'Recaptcha needed';
@@ -1195,6 +1296,16 @@ begin
   Result := AddParam(Self, [Key, Value.ToString]);
 end;
 
+function TParamsHelper.Add(Key: string; Value: TDateTime): Integer;
+begin
+  Result := AddParam(Self, [Key, DateTimeToUnix(Value).ToString]);
+end;
+
+function TParamsHelper.Add(Key: string; Value: Extended): Integer;
+begin
+  Result := AddParam(Self, [Key, Value.ToString]);
+end;
+
 function TParamsHelper.GetValue(Key: string): string;
 var
   i: Integer;
@@ -1218,6 +1329,19 @@ begin
   for i := Low(Self) to High(Self) do
     if Self[i][0] = Key then
       Exit(True);
+end;
+
+function TParamsHelper.Remove(Key: string): string;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := Low(Self) to High(Self) do
+    if Self[i][0] = Key then
+    begin
+      Delete(Self, i, 1);
+      Break;
+    end;
 end;
 
 { TMessageFlagHelper }
@@ -1300,6 +1424,11 @@ end;
 
 { TUserBlockReasonHelper }
 
+function TUserBlockReasonHelper.ToConst: Integer;
+begin
+  Result := Ord(Self);
+end;
+
 function TUserBlockReasonHelper.ToString: string;
 begin
   Result := VkUserBlockReason[Self];
@@ -1314,14 +1443,14 @@ end;
 
 { TVkItemTypeHelper }
 
-function TVkItemTypeHelper.ToConst: string;
+function TVkItemTypeHelper.ToString: string;
 begin
   Result := VkItemType[Self];
 end;
 
 { TVkNameCaseHelper }
 
-function TVkNameCaseHelper.ToConst: string;
+function TVkNameCaseHelper.ToString: string;
 begin
   Result := VkNameCase[Self];
 end;
@@ -1451,7 +1580,7 @@ begin
       Exit(i);
 end;
 
-function TVkAttachmentTypeHelper.ToConst: string;
+function TVkAttachmentTypeHelper.ToString: string;
 begin
   Result := VkAttachmentType[Self];
 end;
@@ -1468,14 +1597,14 @@ begin
       Exit(i);
 end;
 
-function TVkPeerTypeHelper.ToConst: string;
+function TVkPeerTypeHelper.ToString: string;
 begin
   Result := VkPeerType[Self];
 end;
 
 { TVkPostTypeHelper }
 
-function TVkPostTypeHelper.ToConst: string;
+function TVkPostTypeHelper.ToString: string;
 begin
   Result := VKPostType[Self];
 end;
@@ -1725,7 +1854,7 @@ end;
 
 function TVkInfoFilterHelper.ToString: string;
 begin
-
+  Result := VkInfoFilter[Self];
 end;
 
 { TVkInfoFiltersHelper }
@@ -1733,6 +1862,67 @@ end;
 function TVkInfoFiltersHelper.ToString: string;
 var
   Item: TVkInfoFilter;
+begin
+  for Item in Self do
+  begin
+    Result := Result + Item.ToString + ',';
+  end;
+  Result.TrimRight([',']);
+end;
+
+{ TVkGroupTypeHelper }
+
+function TVkGroupTypeHelper.ToString: string;
+begin
+  Result := VkGroupType[Self];
+end;
+
+{ TVkGroupAccessHelper }
+
+function TVkGroupAccessHelper.ToConst: Integer;
+begin
+  Result := Ord(Self);
+end;
+
+{ TVkAgeLimitsHelper }
+
+function TVkAgeLimitsHelper.ToConst: Integer;
+begin
+  Result := Ord(Self);
+end;
+
+{ TVkMarketCurrencyHelper }
+
+function TVkMarketCurrencyHelper.ToConst: Integer;
+begin
+  Result := VkCurrencyId[Self];
+end;
+
+{ TVkGroupRoleHelper }
+
+function TVkGroupRoleHelper.ToString: string;
+begin
+  Result := VkGroupRole[Self];
+end;
+
+{ TVkGroupAddressFieldHelper }
+
+function TVkGroupAddressFieldHelper.ToString: string;
+begin
+  Result := VkGroupAddressField[Self];
+end;
+
+{ TVkGroupAddressFieldsHelper }
+
+class function TVkGroupAddressFieldsHelper.All: TVkGroupAddressFields;
+begin
+  Result := [gafTitle, gafAddress, gafAdditionalAddress, gafCountryId, gafCityId, gafMetroStationId,
+    gafLatitude, gafLongitude, gafWorkInfoStatus, gafTimeOffset];
+end;
+
+function TVkGroupAddressFieldsHelper.ToString: string;
+var
+  Item: TVkGroupAddressField;
 begin
   for Item in Self do
   begin

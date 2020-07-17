@@ -89,126 +89,80 @@ type
     /// Для групповой беседы: 2000000000 + id беседы.
     /// Для сообщества: -id сообщества.
     /// </summary>
-    /// <param name="PeerId">Ид чата</param>
-    /// <param name="Message">Текст сообщения</param>
-    /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
     function Send(PeerId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение пользователю
     /// </summary>
-    /// <param name="UserId">Ид пользователя</param>
-    /// <param name="Message">Текст сообщения</param>
-    /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
     function SendToUser(UserId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение пользователю
     /// </summary>
-    /// <param name="UserDomain">Короткий адрес пользователя (например, illarionov)</param>
-    /// <param name="Message">Текст сообщения</param>
-    /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
     function SendToUser(UserDomain: string; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение в беседу
     /// </summary>
-    /// <param name="ChatId">Ид беседы</param>
-    /// <param name="Message">Текст сообщения</param>
-    /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
     function SendToChat(ChatId: Integer; Message: string; Attachments: TAttachmentArray = []): Integer; overload;
     /// <summary>
     /// Отправить сообщение нескольким пользователям (Доступно только для ключа доступа сообщества)
     /// </summary>
-    /// <param name="UserIds">Ид пользователей</param>
-    /// <param name="Message">Текст сообщения</param>
-    /// <param name="Attachemts">Вложения. Массив идентификторов вида: [type][owner_id]_[media_id]_[access_key, если есть]. Например, video85635407_165186811_69dff3de4372ae9b6e </param>
     function SendToUsers(UserIds: TUserIds; Message: string; Attachments: TAttachmentArray = []):
       TVkMessageSendResponses; overload;
     /// <summary>
     /// Универсальный метод отправки сообщений (Fluent Method)
     /// Send.PeerId(123456).ReplyTo(12345)...Message('Текст').Send.Free;
     /// </summary>
-    /// <returns>Возвращает конструктор сообщений. Метод Send в этом конструкторе, возвращает результат в виде класса</returns>
     function New: TVkMessageNew; overload;
     /// <summary>
     /// Возвращает сообщения по их идентификаторам.
     /// </summary>
-    /// <param name="var Messages: TVkMessages">Список сообщений</param>
-    /// <param name="Params: TParamGet">Параметры</param>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetById(var Messages: TVkMessages; Params: TVkParamsMessageGet): Boolean; overload;
     /// <summary>
     /// Возвращает сообщения по их идентификаторам.
     /// </summary>
-    /// <param name="var Messages: TVkMessages">Список сообщений</param>
-    /// <param name="Ids: TIds">Идентификаторы сообщений</param>
-    /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
-    /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetById(var Messages: TVkMessages; Ids: TIds; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает сообщение по идентификатору.
     /// </summary>
-    /// <param name="var Message: TVkMessages">Сообщение</param>
-    /// <param name="var Profiles: TArray(TVkUser)">Список профилей (Extended)</param>
-    /// <param name="var Groups: TArray(TVkGroup)">Список групп (Extended)</param>
-    /// <param name="Id: TId">Идентификатор сообщения</param>
-    /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
-    /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetById(var Message: TVkMessage; var Profiles: TArray<TVkUser>; var Groups: TArray<TVkGroup>; Id: Integer;
       PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает сообщение по идентификатору.
     /// </summary>
-    /// <param name="var Message: TVkMessages">Сообщение</param>
-    /// <param name="Id: TId">Идентификатор сообщения</param>
-    /// <param name="PreviewLength: Integer = 0">Обрезать текст сообщений</param>
-    /// <param name="GroupId: Integer = 0">Группа, для которой необходимо получить сообщения</param>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetById(var Message: TVkMessage; Id: Integer; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Добавляет в мультидиалог нового пользователя.
     /// </summary>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function AddChatUser(ChatId, UserId: Integer; VisibleMessagesCount: Integer = 0): Boolean;
     /// <summary>
     /// Удаляет сообщения
     /// </summary>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False;
       Spam: Boolean = False): Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function Delete(var Items: TVkMessageDelete; MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False;
       Spam: Boolean = False): Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function Delete(var Items: TVkMessageDelete; Params: TVkParamsMessageDelete): Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function Delete(var Items: TVkMessageDelete; Params: TParams): Boolean; overload;
     /// <summary>
     /// Получает ссылку для приглашения пользователя в беседу.
     /// Только создатель беседы имеет доступ к ссылке на беседу.
     /// </summary>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean = False; GroupId: Integer = 0): Boolean;
     /// <summary>
     /// Возвращает список бесед пользователя.
     /// </summary>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetConversations(var Conversations: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean;
     /// <summary>
     /// Возвращает историю сообщений для указанного диалога.
     /// </summary>
-    /// <param name="var History: TVkMessageHistory">История</param>
-    /// <param name="Params: TParamMessageHistory">Параметры</param>
-    /// <returns>Возвращает True, если запрос успешно выполнен</returns>
     function GetHistory(var History: TVkMessageHistory; Params: TVkParamsMessageHistory): Boolean; overload;
   end;
 
@@ -538,7 +492,7 @@ begin
   end;
 end;
 
-{ TNewMessage }
+{ TVkMessageNew }
 
 constructor TVkMessageNew.Create(Controller: TMessagesController);
 begin
@@ -666,7 +620,7 @@ begin
   Result := Self;
 end;
 
-{ TVkGetConversationParams }
+{ TVkParamsConversationsGet }
 
 function TVkParamsConversationsGet.Count(Value: Integer): Integer;
 begin
@@ -708,7 +662,7 @@ begin
   Result := List.Add('start_message_id', Value);
 end;
 
-{ TParamMessageHistory }
+{ TVkParamsMessageHistory }
 
 function TVkParamsMessageHistory.Count(Value: Integer): Integer;
 begin
@@ -755,7 +709,7 @@ begin
   Result := List.Add('user_id', Value);
 end;
 
-{ TParamGet }
+{ TVkParamsMessageGet }
 
 function TVkParamsMessageGet.Extended(Value: Boolean): Integer;
 begin

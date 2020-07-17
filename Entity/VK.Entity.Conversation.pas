@@ -269,7 +269,7 @@ end;
 
 procedure TVkPeer.SetType(const Value: TVkPeerType);
 begin
-  FType := Value.ToConst;
+  FType := Value.ToString;
 end;
 
 function TVkPeer.ToJsonString: string;

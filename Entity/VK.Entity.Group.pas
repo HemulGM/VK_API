@@ -3,10 +3,12 @@ unit VK.Entity.Group;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market, VK.Entity.User;
 
 type
   TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
+
+  TVkGroupSubject = TVkBasicObject;
 
   TVkGroupStatus = class
   private
@@ -59,6 +61,8 @@ type
     FUrl: string;
     FDesc: string;
     FPhoto_100: string;
+    FEdit_title: Integer;
+    FImage_processing: Integer;
   public
     property Id: Integer read FId write FId;
     property Url: string read FUrl write FUrl;
@@ -66,6 +70,10 @@ type
     property Desc: string read FDesc write FDesc;
     property Photo_50: string read FPhoto_50 write FPhoto_50;
     property Photo_100: string read FPhoto_100 write FPhoto_100;
+    property EditTitle: Integer read FEdit_title write FEdit_title;
+    property ImageProcessing: Integer read FImage_processing write FImage_processing;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkGroupLink;
   end;
 
   TVkGroupMemberState = class
@@ -146,6 +154,45 @@ type
     property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     property Currency_text: string read FCurrency_text write FCurrency_text;
+  end;
+
+  TVkGroupAddress = class
+  private
+    FAdditional_address: string;
+    FAddress: string;
+    FCity_id: Integer;
+    FCountry_id: Integer;
+    FId: Integer;
+    FLatitude: Extended;
+    FLongitude: Extended;
+    FMetro_station_id: Integer;
+    FTime_offset: Integer;
+    FTitle: string;
+    FWork_info_status: string;
+  public
+    property Additional_address: string read FAdditional_address write FAdditional_address;
+    property Address: string read FAddress write FAddress;
+    property CityId: Integer read FCity_id write FCity_id;
+    property CountryId: Integer read FCountry_id write FCountry_id;
+    property Id: Integer read FId write FId;
+    property Latitude: Extended read FLatitude write FLatitude;
+    property Longitude: Extended read FLongitude write FLongitude;
+    property MetroStationId: Integer read FMetro_station_id write FMetro_station_id;
+    property TimeOffset: Integer read FTime_offset write FTime_offset;
+    property Title: string read FTitle write FTitle;
+    property WorkInfoStatus: string read FWork_info_status write FWork_info_status;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkGroupAddress;
+  end;
+
+  TVkGroupAddresses = class
+  private
+    FItems: TArray<TVkGroupAddress>;
+  public
+    property Items: TArray<TVkGroupAddress> read FItems write FItems;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkGroupAddresses;
   end;
 
   TVkGroup = class
@@ -283,6 +330,47 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkGroups;
+  end;
+
+  TVkInvitesGroups = class
+  private
+    FItems: TArray<TVkGroup>;
+    FCount: Integer;
+    FGroups: TArray<TVkGroup>;
+    FProfiles: TArray<TVkUser>;
+  public
+    property Items: TArray<TVkGroup> read FItems write FItems;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Count: Integer read FCount write FCount;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkInvitesGroups;
+  end;
+
+  TVkGroupTag = class
+  private
+    FColor: string;
+    FId: Integer;
+    FName: string;
+  public
+    property Color: string read FColor write FColor;
+    property Id: Integer read FId write FId;
+    property Name: string read FName write FName;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkGroupTag;
+  end;
+
+  TVkGroupTags = class
+  private
+    FItems: TArray<TVkGroupTag>;
+    FCount: Integer;
+  public
+    property Items: TArray<TVkGroupTag> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkGroupTags;
   end;
 
 function FindGroup(Id: Integer; List: TArray<TVkGroup>): Integer;
@@ -543,6 +631,111 @@ begin
 end;
 
 function TVkGroupMemberState.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkGroupAddress }
+
+class function TVkGroupAddress.FromJsonString(AJsonString: string): TVkGroupAddress;
+begin
+  result := TJson.JsonToObject<TVkGroupAddress>(AJsonString);
+end;
+
+function TVkGroupAddress.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkGroupLink }
+
+class function TVkGroupLink.FromJsonString(AJsonString: string): TVkGroupLink;
+begin
+  result := TJson.JsonToObject<TVkGroupLink>(AJsonString);
+end;
+
+function TVkGroupLink.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkGroupAddresses }
+
+destructor TVkGroupAddresses.Destroy;
+var
+  LItemsItem: TVkGroupAddress;
+begin
+  for LItemsItem in FItems do
+    LItemsItem.Free;
+  inherited;
+end;
+
+class function TVkGroupAddresses.FromJsonString(AJsonString: string): TVkGroupAddresses;
+begin
+  result := TJson.JsonToObject<TVkGroupAddresses>(AJsonString);
+end;
+
+function TVkGroupAddresses.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkInvitesGroups }
+
+destructor TVkInvitesGroups.Destroy;
+var
+  LItemsItem: TVkGroup;
+  LItemsUser: TVkUser;
+begin
+  for LItemsItem in FItems do
+    LItemsItem.Free;
+  for LItemsItem in FGroups do
+    LItemsItem.Free;
+  for LItemsUser in FProfiles do
+    LItemsUser.Free;
+
+  inherited;
+end;
+
+class function TVkInvitesGroups.FromJsonString(AJsonString: string): TVkInvitesGroups;
+begin
+  result := TJson.JsonToObject<TVkInvitesGroups>(AJsonString);
+end;
+
+function TVkInvitesGroups.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkGroupTag }
+
+class function TVkGroupTag.FromJsonString(AJsonString: string): TVkGroupTag;
+begin
+  result := TJson.JsonToObject<TVkGroupTag>(AJsonString);
+end;
+
+function TVkGroupTag.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkGroupTags }
+
+destructor TVkGroupTags.Destroy;
+var
+  LItemsItem: TVkGroupTag;
+begin
+  for LItemsItem in FItems do
+    LItemsItem.Free;
+  inherited;
+end;
+
+class function TVkGroupTags.FromJsonString(AJsonString: string): TVkGroupTags;
+begin
+  result := TJson.JsonToObject<TVkGroupTags>(AJsonString);
+end;
+
+function TVkGroupTags.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

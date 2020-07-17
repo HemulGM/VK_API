@@ -6,6 +6,20 @@ uses
   Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Photo;
 
 type
+  TVkUser = class;
+
+  TVkFriendsMutual = class
+  private
+    FCount: Integer;
+    FUsers: TArray<TVkUser>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Users: TArray<TVkUser> read FUsers write FUsers;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkFriendsMutual;
+  end;
+
   TVkFriendsOnline = class
   private
     FOnline: TArray<Integer>;
@@ -63,10 +77,10 @@ type
 
   TVkRelative = class
   private
-    FId: Extended;
+    FId: Integer;
     FType: string;
   public
-    property Id: Extended read FId write FId;
+    property Id: Integer read FId write FId;
     property TypeRelative: string read FType write FType;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRelative;
@@ -74,53 +88,53 @@ type
 
   TVkSchool = class
   private
-    FCity: Extended;
+    FCity: Integer;
     FClass: string;
-    FCountry: Extended;
+    FCountry: Integer;
     FId: string;
     FName: string;
     FSpeciality: string;
-    FYear_from: Extended;
-    FYear_graduated: Extended;
-    FYear_to: Extended;
+    FYear_from: Integer;
+    FYear_graduated: Integer;
+    FYear_to: Integer;
   public
-    property City: Extended read FCity write FCity;
+    property City: Integer read FCity write FCity;
     property ClassNum: string read FClass write FClass;
-    property Country: Extended read FCountry write FCountry;
+    property Country: Integer read FCountry write FCountry;
     property Id: string read FId write FId;
     property Name: string read FName write FName;
     property Speciality: string read FSpeciality write FSpeciality;
-    property YearFrom: Extended read FYear_from write FYear_from;
-    property YearGraduated: Extended read FYear_graduated write FYear_graduated;
-    property YearTo: Extended read FYear_to write FYear_to;
+    property YearFrom: Integer read FYear_from write FYear_from;
+    property YearGraduated: Integer read FYear_graduated write FYear_graduated;
+    property YearTo: Integer read FYear_to write FYear_to;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkSchool;
   end;
 
   TVkUniversities = class
   private
-    FChair: Extended;
+    FChair: Integer;
     FChair_name: string;
-    FCity: Extended;
-    FCountry: Extended;
+    FCity: Integer;
+    FCountry: Integer;
     FEducation_form: string;
     FEducation_status: string;
-    FFaculty: Extended;
+    FFaculty: Integer;
     FFaculty_name: string;
-    FGraduation: Extended;
-    FId: Extended;
+    FGraduation: Integer;
+    FId: Integer;
     FName: string;
   public
-    property Chair: Extended read FChair write FChair;
+    property Chair: Integer read FChair write FChair;
     property ChairName: string read FChair_name write FChair_name;
-    property City: Extended read FCity write FCity;
-    property Country: Extended read FCountry write FCountry;
+    property City: Integer read FCity write FCity;
+    property Country: Integer read FCountry write FCountry;
     property EducationForm: string read FEducation_form write FEducation_form;
     property EducationStatus: string read FEducation_status write FEducation_status;
-    property Faculty: Extended read FFaculty write FFaculty;
+    property Faculty: Integer read FFaculty write FFaculty;
     property FacultyName: string read FFaculty_name write FFaculty_name;
-    property Graduation: Extended read FGraduation write FGraduation;
-    property Id: Extended read FId write FId;
+    property Graduation: Integer read FGraduation write FGraduation;
+    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkUniversities;
@@ -128,42 +142,42 @@ type
 
   TVkPersonal = class
   private
-    FAlcohol: Extended;
+    FAlcohol: Integer;
     FInspired_by: string;
     FLangs: TArray<string>;
-    FLife_main: Extended;
-    FPeople_main: Extended;
-    FPolitical: Extended;
+    FLife_main: Integer;
+    FPeople_main: Integer;
+    FPolitical: Integer;
     FReligion: string;
-    FReligion_id: Extended;
-    FSmoking: Extended;
+    FReligion_id: Integer;
+    FSmoking: Integer;
   public
-    property Alcohol: Extended read FAlcohol write FAlcohol;
+    property Alcohol: Integer read FAlcohol write FAlcohol;
     property InspiredBy: string read FInspired_by write FInspired_by;
     property Langs: TArray<string> read FLangs write FLangs;
-    property LifeMain: Extended read FLife_main write FLife_main;
-    property PeopleMain: Extended read FPeople_main write FPeople_main;
-    property Political: Extended read FPolitical write FPolitical;
+    property LifeMain: Integer read FLife_main write FLife_main;
+    property PeopleMain: Integer read FPeople_main write FPeople_main;
+    property Political: Integer read FPolitical write FPolitical;
     property Religion: string read FReligion write FReligion;
-    property ReligionId: Extended read FReligion_id write FReligion_id;
-    property Smoking: Extended read FSmoking write FSmoking;
+    property ReligionId: Integer read FReligion_id write FReligion_id;
+    property Smoking: Integer read FSmoking write FSmoking;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPersonal;
   end;
 
   TVkMilitary = class
   private
-    FCountry_id: Extended;
-    FFrom: Extended;
+    FCountry_id: Integer;
+    FFrom: Integer;
     FUnit: string;
-    FUnit_id: Extended;
-    FUntil: Extended;
+    FUnit_id: Integer;
+    FUntil: Int64;
   public
-    property CountryId: Extended read FCountry_id write FCountry_id;
-    property From: Extended read FFrom write FFrom;
+    property CountryId: Integer read FCountry_id write FCountry_id;
+    property From: Integer read FFrom write FFrom;
     property&Unit: string read FUnit write FUnit;
-    property UnitId: Extended read FUnit_id write FUnit_id;
-    property UntilDate: Extended read FUntil write FUntil;
+    property UnitId: Integer read FUnit_id write FUnit_id;
+    property UntilDate: Int64 read FUntil write FUntil;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMilitary;
   end;
@@ -231,18 +245,18 @@ type
     FAbout: string;
     FActivities: string;
     FBdate: string;
-    FBlacklisted: Extended;
-    FBlacklisted_by_me: Extended;
+    FBlacklisted: Integer;
+    FBlacklisted_by_me: Integer;
     FBooks: string;
     FCan_access_closed: Boolean;
     FCan_be_invited_group: Boolean;
-    FCan_post: Extended;
-    FCan_see_all_posts: Extended;
+    FCan_post: Integer;
+    FCan_see_all_posts: Integer;
     FCan_see_audio: integer;
-    FCan_send_friend_request: Extended;
-    FCan_write_private_message: Extended;
+    FCan_send_friend_request: Integer;
+    FCan_write_private_message: Integer;
     FCareer: TArray<TVkCareer>;
-    FCommon_count: Extended;
+    FCommon_count: Integer;
     FCountry: TVkCountry;
     FCrop_photo: TVkCropPhoto;
     FDomain: string;
@@ -250,24 +264,24 @@ type
     FEducation_status: string;
     FFacebook: string;
     FFacebook_name: string;
-    FFaculty: Extended;
+    FFaculty: Integer;
     FFaculty_name: string;
     FFirst_name: string;
-    FFollowers_count: Extended;
-    FFriend_status: Extended;
+    FFollowers_count: Integer;
+    FFriend_status: Integer;
     FGames: string;
-    FGraduation: Extended;
-    FHas_mobile: Extended;
-    FHas_photo: Extended;
+    FGraduation: Integer;
+    FHas_mobile: Integer;
+    FHas_photo: Integer;
     FHome_phone: string;
     FHome_town: string;
     FId: Integer;
     FInstagram: string;
     FInterests: string;
     FIs_closed: Boolean;
-    FIs_favorite: Extended;
-    FIs_friend: Extended;
-    FIs_hidden_from_feed: Extended;
+    FIs_favorite: Integer;
+    FIs_friend: Integer;
+    FIs_hidden_from_feed: Integer;
     FLast_name: string;
     FLast_seen: TVkLastSeen;
     FMilitary: TArray<TVkMilitary>;
@@ -276,7 +290,7 @@ type
     FMusic: string;
     FNickname: string;
     FOccupation: TVkOccupation;
-    FOnline: Extended;
+    FOnline: Integer;
     FPersonal: TVkPersonal;
     FPhoto_100: string;
     FPhoto_200: string;
@@ -287,25 +301,27 @@ type
     FPhoto_max: string;
     FPhoto_max_orig: string;
     FQuotes: string;
-    FRelation: Extended;
+    FRelation: Integer;
     FRelation_partner: TVkRelationPartner;
     FRelatives: TArray<TVkRelative>;
     FSchools: TArray<TVkSchool>;
     FScreen_name: string;
-    FSex: Extended;
+    FSex: Integer;
     FSite: string;
     FSkype: string;
     FStatus: string;
-    FTimezone: Extended;
+    FTimezone: Integer;
     FTv: string;
     FTwitter: string;
     FUniversities: TArray<TVkUniversities>;
-    FUniversity: Extended;
+    FUniversity: Integer;
     FUniversity_name: string;
-    FVerified: Extended;
-    FTrending: Extended;
+    FVerified: Integer;
+    FTrending: Integer;
     FActivity: string;
     FCity: TVkCity;
+    FMutual: TVkFriendsMutual;
+    FFound_with: string;
     function GetRefer: string;
     function FGetFullName: string;
   public
@@ -313,18 +329,18 @@ type
     property Activity: string read FActivity write FActivity;
     property Activities: string read FActivities write FActivities;
     property BirthDate: string read FBdate write FBdate;
-    property Blacklisted: Extended read FBlacklisted write FBlacklisted;
-    property BlacklistedByMe: Extended read FBlacklisted_by_me write FBlacklisted_by_me;
+    property Blacklisted: Integer read FBlacklisted write FBlacklisted;
+    property BlacklistedByMe: Integer read FBlacklisted_by_me write FBlacklisted_by_me;
     property Books: string read FBooks write FBooks;
     property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
     property CanBeInvitedGroup: Boolean read FCan_be_invited_group write FCan_be_invited_group;
-    property CanPost: Extended read FCan_post write FCan_post;
-    property CanSeeAllPosts: Extended read FCan_see_all_posts write FCan_see_all_posts;
+    property CanPost: Integer read FCan_post write FCan_post;
+    property CanSeeAllPosts: Integer read FCan_see_all_posts write FCan_see_all_posts;
     property CanSeeAudio: integer read FCan_see_audio write FCan_see_audio;
-    property CanSendFriendRequest: Extended read FCan_send_friend_request write FCan_send_friend_request;
-    property CanWritePrivateMessage: Extended read FCan_write_private_message write FCan_write_private_message;
+    property CanSendFriendRequest: Integer read FCan_send_friend_request write FCan_send_friend_request;
+    property CanWritePrivateMessage: Integer read FCan_write_private_message write FCan_write_private_message;
     property Career: TArray<TVkCareer> read FCareer write FCareer;
-    property CommonCount: Extended read FCommon_count write FCommon_count;
+    property CommonCount: Integer read FCommon_count write FCommon_count;
     property City: TVkCity read FCity write FCity;
     property Country: TVkCountry read FCountry write FCountry;
     property CropPhoto: TVkCropPhoto read FCrop_photo write FCrop_photo;
@@ -333,24 +349,24 @@ type
     property EducationStatus: string read FEducation_status write FEducation_status;
     property Facebook: string read FFacebook write FFacebook;
     property FacebookName: string read FFacebook_name write FFacebook_name;
-    property Faculty: Extended read FFaculty write FFaculty;
+    property Faculty: Integer read FFaculty write FFaculty;
     property FacultyName: string read FFaculty_name write FFaculty_name;
     property FirstName: string read FFirst_name write FFirst_name;
-    property FollowersCount: Extended read FFollowers_count write FFollowers_count;
-    property FriendStatus: Extended read FFriend_status write FFriend_status;
+    property FollowersCount: Integer read FFollowers_count write FFollowers_count;
+    property FriendStatus: Integer read FFriend_status write FFriend_status;
     property Games: string read FGames write FGames;
-    property Graduation: Extended read FGraduation write FGraduation;
-    property HasMobile: Extended read FHas_mobile write FHas_mobile;
-    property HasPhoto: Extended read FHas_photo write FHas_photo;
+    property Graduation: Integer read FGraduation write FGraduation;
+    property HasMobile: Integer read FHas_mobile write FHas_mobile;
+    property HasPhoto: Integer read FHas_photo write FHas_photo;
     property HomePhone: string read FHome_phone write FHome_phone;
     property HomeTown: string read FHome_town write FHome_town;
     property Id: Integer read FId write FId;
     property Instagram: string read FInstagram write FInstagram;
     property Interests: string read FInterests write FInterests;
     property IsClosed: Boolean read FIs_closed write FIs_closed;
-    property IsFavorite: Extended read FIs_favorite write FIs_favorite;
-    property IsFriend: Extended read FIs_friend write FIs_friend;
-    property IsHiddenFromFeed: Extended read FIs_hidden_from_feed write FIs_hidden_from_feed;
+    property IsFavorite: Integer read FIs_favorite write FIs_favorite;
+    property IsFriend: Integer read FIs_friend write FIs_friend;
+    property IsHiddenFromFeed: Integer read FIs_hidden_from_feed write FIs_hidden_from_feed;
     property LastName: string read FLast_name write FLast_name;
     property LastSeen: TVkLastSeen read FLast_seen write FLast_seen;
     property Military: TArray<TVkMilitary> read FMilitary write FMilitary;
@@ -359,7 +375,7 @@ type
     property Music: string read FMusic write FMusic;
     property NickName: string read FNickname write FNickname;
     property Occupation: TVkOccupation read FOccupation write FOccupation;
-    property Online: Extended read FOnline write FOnline;
+    property Online: Integer read FOnline write FOnline;
     property Personal: TVkPersonal read FPersonal write FPersonal;
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;
@@ -370,23 +386,26 @@ type
     property PhotoMax: string read FPhoto_max write FPhoto_max;
     property PhotoMax_Orig: string read FPhoto_max_orig write FPhoto_max_orig;
     property Quotes: string read FQuotes write FQuotes;
-    property Relation: Extended read FRelation write FRelation;
+    property Relation: Integer read FRelation write FRelation;
     property RelationPartner: TVkRelationPartner read FRelation_partner write FRelation_partner;
     property Relatives: TArray<TVkRelative> read FRelatives write FRelatives;
     property Schools: TArray<TVkSchool> read FSchools write FSchools;
     property ScreenName: string read FScreen_name write FScreen_name;
-    property Sex: Extended read FSex write FSex;
+    property Sex: Integer read FSex write FSex;
     property Site: string read FSite write FSite;
     property Skype: string read FSkype write FSkype;
     property Status: string read FStatus write FStatus;
-    property TimeZone: Extended read FTimezone write FTimezone;
+    property TimeZone: Integer read FTimezone write FTimezone;
     property TV: string read FTv write FTv;
     property Twitter: string read FTwitter write FTwitter;
     property Universities: TArray<TVkUniversities> read FUniversities write FUniversities;
-    property University: Extended read FUniversity write FUniversity;
+    property University: Integer read FUniversity write FUniversity;
     property UniversityName: string read FUniversity_name write FUniversity_name;
-    property Verified: Extended read FVerified write FVerified;
-    property Trending: Extended read FTrending write FTrending;
+    property Verified: Integer read FVerified write FVerified;
+    property Trending: Integer read FTrending write FTrending;
+    property Mutual: TVkFriendsMutual read FMutual write FMutual;
+    property FoundWith: string read FFound_with write FFound_with;
+    //
     property Refer: string read GetRefer;
     property GetFullName: string read FGetFullName;
     constructor Create;
@@ -588,6 +607,7 @@ begin
   FOccupation := TVkOccupation.Create();
   FRelation_partner := TVkRelationPartner.Create();
   FPersonal := TVkPersonal.Create();
+  FMutual := TVkFriendsMutual.Create();
 end;
 
 destructor TVkUser.Destroy;
@@ -617,6 +637,7 @@ begin
   FOccupation.Free;
   FRelation_partner.Free;
   FPersonal.Free;
+  FMutual.Free;
   inherited;
 end;
 
@@ -781,6 +802,27 @@ begin
 end;
 
 function TVkFriendsOnline.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkFriendsMutual }
+
+destructor TVkFriendsMutual.Destroy;
+var
+  Item: TVkUser;
+begin
+  for Item in FUsers do
+    Item.Free;
+  inherited;
+end;
+
+class function TVkFriendsMutual.FromJsonString(AJsonString: string): TVkFriendsMutual;
+begin
+  result := TJson.JsonToObject<TVkFriendsMutual>(AJsonString);
+end;
+
+function TVkFriendsMutual.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

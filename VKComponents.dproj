@@ -216,6 +216,15 @@
         <DCCReference Include="Entity\VK.Entity.Account.Banned.pas"/>
         <DCCReference Include="Entity\VK.Entity.Doc.Types.pas"/>
         <DCCReference Include="Entity\VK.Entity.Fave.Pages.pas"/>
+        <DCCReference Include="Controllers\VK.Gifts.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.TimeTable.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Ban.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.CallBackServer.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.CallbackSettings.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Categories.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Longpoll.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.LongpollSettings.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.TokenPermissions.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

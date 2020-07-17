@@ -12,9 +12,6 @@ type
     /// <summary>
     /// Получает текст статуса пользователя или сообщества.
     /// </summary>
-    /// <param name="Status">Возвращается статус (текст и аудио, если есть)</param>
-    /// <param name="Id">идентификатор пользователя или сообщества, информацию о статусе которого нужно получить</param>
-    /// <param name="IsGroup">если нужно получить статус сообщества</param>
     function GetAudio(var Catalog: TVkCatalog; NeedBlocks: Boolean = False): Boolean;
     function GetSection(var Section: TVkSectionData; SectionId: string; NeedBlocks: Boolean = False): Boolean;
   end;
@@ -38,7 +35,11 @@ begin
     Result := Success;
     if Result then
     begin
-      Catalog := TVkCatalog.FromJsonString(Response);
+      try
+        Catalog := TVkCatalog.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
@@ -56,7 +57,11 @@ begin
     Result := Success;
     if Result then
     begin
-      Section := TVkSectionData.FromJsonString(Response);
+      try
+        Section := TVkSectionData.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;

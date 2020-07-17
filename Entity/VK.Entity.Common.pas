@@ -6,6 +6,19 @@ uses
   Generics.Collections, Rest.Json;
 
 type
+  TVkBasicObject = class
+  private
+    FId: Integer;
+    FName: string;
+  public
+    property Id: Integer read FId write FId;
+    property Name: string read FName write FName;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkBasicObject;
+  end;
+
+  TVkProductCurrency = TVkBasicObject;
+
   TVkRect = class
   private
     FX: Extended;
@@ -24,10 +37,12 @@ type
   TVkAddresses = class
   private
     FIs_enabled: Integer;
+    FMain_address_id: Integer;
     function GetIs_enabled: Boolean;
     procedure SetIs_enabled(const Value: Boolean);
   public
     property IsEnabled: Boolean read GetIs_enabled write SetIs_enabled;
+    property MainAddressId: Integer read FMain_address_id write FMain_address_id;
   end;
 
   TVkContact = class
@@ -52,7 +67,7 @@ type
     property Comment: string read FComment write FComment;
   end;
 
-  TVkCrop = class(TVkRect);
+  TVkCrop = TVkRect;
 
   TVkTags = class
   private
@@ -231,8 +246,10 @@ type
     FCreated: integer; // Ч дата создани€ (если назначено);
     FIcon: string;
     FType: string;
-    FAddress: string; // Ч URL изображени€-иконки;
+    FAddress: string;
+    FCheckins: Integer; // Ч URL изображени€-иконки;
   public
+    property Checkins: Integer read FCheckins write FCheckins;
     property Id: integer read FId write FId;
     property Title: string read FTitle write FTitle;
     property Latitude: Extended read FLatitude write FLatitude;
@@ -613,6 +630,18 @@ begin
 end;
 
 function TVkIdList.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkBasicObject }
+
+class function TVkBasicObject.FromJsonString(AJsonString: string): TVkBasicObject;
+begin
+  result := TJson.JsonToObject<TVkBasicObject>(AJsonString)
+end;
+
+function TVkBasicObject.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

@@ -40,7 +40,7 @@ type
     function PhotoIds(Value: TArrayOfInteger): Integer;
     function Extended(Value: Boolean): Integer;
     function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): Integer;
+    function Offset(Value: Integer): TVkParamsPhotosGet;
     function PhotoSizes(Value: Boolean): Integer;
     function FeedType(Value: TVkPhotoFeedType): Integer;
     function Feed(Value: Integer): Integer;
@@ -64,19 +64,14 @@ type
     /// <summary>
     /// Возвращает адрес сервера для загрузки фотографии в личное сообщение
     /// </summary>
-    /// <param name="var UploadUrl">искомый адрес сервера</param>
-    /// <param name="PeerId">идентификатор назначения</param>
     function GetMessagesUploadServer(var UploadUrl: string; PeerId: Integer): Boolean; overload;
     /// <summary>
     /// Возвращает адрес сервера для загрузки фотографии в личное сообщение
     /// </summary>
-    /// <param name="var Upload: TVkPhotoGetUploadResponse">Объект с полями UploadUrl, AlbumId (id альбома), GroupId (идентификатор сообщества, если используются сообщения сообщества).</param>
-    /// <param name="PeerId: Integer">идентификатор назначения</param>
     function GetMessagesUploadServer(var Upload: TVkPhotoGetUploadResponse; PeerId: Integer): Boolean; overload;
     /// <summary>
     /// Сохраняет фотографию после успешной загрузки на URI, полученный методом Photos.GetMessagesUploadServer.
     /// </summary>
-    /// <param name="PeerId: Integer">идентификатор назначения</param>
     function SaveMessagesPhoto(PhotoSaveData: TVkPhotoUploadResponse; var Photos: TVkPhotos): Boolean;
     /// <summary>
     /// https://vk.com/dev/photos.get
@@ -330,9 +325,10 @@ begin
   Result := List.Add('feed_type', Value.ToString);
 end;
 
-function TVkParamsPhotosGet.Offset(Value: Integer): Integer;
+function TVkParamsPhotosGet.Offset(Value: Integer): TVkParamsPhotosGet;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
 function TVkParamsPhotosGet.OwnerId(Value: Integer): Integer;

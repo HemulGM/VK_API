@@ -105,7 +105,7 @@ begin
     Params.Add('user_ids', UserIds);
   if Fields <> [] then
     Params.Add('fields', Fields.ToString);
-  Params.Add('num', NameCase.ToConst);
+  Params.Add('num', NameCase.ToString);
   Result := Get(Users, Params);
 end;
 
@@ -166,7 +166,7 @@ end;
 
 function TVkParamsUsersGet.NameCase(Value: TVkNameCase): Integer;
 begin
-  Result := List.Add('name_case', Value.ToConst);
+  Result := List.Add('name_case', Value.ToString);
 end;
 
 function TVkParamsUsersGet.UserIds(Value: TIds): Integer;
@@ -193,7 +193,7 @@ end;
 
 function TVkParamsUsersGetFollowers.NameCase(Value: TVkNameCase): Integer;
 begin
-  Result := List.Add('name_case', Value.ToConst);
+  Result := List.Add('name_case', Value.ToString);
 end;
 
 function TVkParamsUsersGetFollowers.Offset(Value: Integer): Integer;

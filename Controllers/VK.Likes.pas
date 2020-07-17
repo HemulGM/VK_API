@@ -13,52 +13,27 @@ type
 
   TVkLikesParams = record
     List: TParams;
-    function ItemType(Value: TVkItemType): Integer;
+    function &Type(Value: TVkItemType): Integer;
     function OwnerId(Value: Integer): Integer;
     function ItemId(Value: Integer): Integer;
     function PageUrl(Value: string): Integer;
     function Filter(Copies: Boolean): Integer;
     function FriendsOnly(Value: Boolean): Integer;
     function Count(Value: Integer): Integer;
+    function Offset(Value: Integer): Integer;
     function SkipOwn(Value: Boolean): Integer;
   end;
 
   TLikesController = class(TVkController)
   public
     /// <summary>
-    /// Получает список идентификаторов пользователей, которые добавили заданный объект в свой список Мне нравится.
+    /// Получает список идентификаторов пользователей, которые добавили заданный объект в свой список Мне нравится
     /// </summary>
-    /// <param name="var Likes: TVkLikesCount">Возвращается кол-во лайков и список лайкнувших</param>
-    /// <param name="ItemType: TVkItemType">Тип элемента</param>
-    /// <param name="ItemId: Integer">ИД элемента</param>
-    /// <param name="OwnerId: Integer">Владелец элемента</param>
-    function GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer; OwnerId: Integer = 0): Boolean; overload;
+    function GetList(var Items: TVkLikesCount; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Получает список идентификаторов пользователей, которые добавили заданный объект в свой список Мне нравится.
+    /// Получает список идентификаторов пользователей, которые добавили заданный объект в свой список Мне нравится
     /// </summary>
-    /// <param name="var Likes: TVkLikesCount">Возвращается кол-во лайков и список лайкнувших</param>
-    /// <param name="ItemType: TVkItemType">Тип элемента</param>
-    /// <param name="ItemId: Integer">ИД элемента</param>
-    /// <param name="Copies: Boolean">Только репосты</param>
-    /// <param name="OwnerId: Integer">Владелец элемента</param>
-    function GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer; Copies: Boolean; OwnerId: Integer
-      = 0): Boolean; overload;
-    /// <summary>
-    /// Получает список идентификаторов пользователей, которые добавили заданный
-    /// объект в свой список Мне нравится. Для виджетов
-    /// </summary>
-    /// <param name="var Likes: TVkLikesCount">Возвращается кол-во лайков и список лайкнувших</param>
-    /// <param name="ItemId: Integer">ИД элемента</param>
-    /// <param name="OwnerId: Integer">Владелец элемента</param>
-    /// <param name="PageUrl: string">Адрес сраницы</param>
-    function GetList(var Likes: TVkLikesCount; ItemId: Integer; OwnerId: Integer; PageUrl: string): Boolean; overload;
-    /// <summary>
-    /// Получает список идентификаторов пользователей, которые добавили заданный
-    /// объект в свой список Мне нравится
-    /// </summary>
-    /// <param name="var Likes: TVkLikesCount">Возвращается кол-во лайков и список лайкнувших</param>
-    /// <param name="Params: TVkLikesParams">Параметры</param>
-    function GetList(var Likes: TVkLikesCount; Params: TVkLikesParams): Boolean; overload;
+    function GetList(var Items: TVkLikesCount; Params: TVkLikesParams): Boolean; overload;
   end;
 
 implementation
@@ -68,62 +43,31 @@ uses
 
 { TLikesController }
 
-function TLikesController.GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId, OwnerId: Integer): Boolean;
-var
-  Params: TVkLikesParams;
+function TLikesController.GetList(var Items: TVkLikesCount; Params: TVkLikesParams): Boolean;
 begin
-  if OwnerId <> 0 then
-    Params.OwnerId(OwnerId);
-  Params.ItemType(ItemType);
-  Params.ItemId(ItemId);
-  Result := GetList(Likes, Params);
+  Result := GetList(Items, Params.List);
 end;
 
-function TLikesController.GetList(var Likes: TVkLikesCount; ItemId, OwnerId: Integer; PageUrl: string): Boolean;
-var
-  Params: TVkLikesParams;
-begin
-  if OwnerId <> 0 then
-    Params.OwnerId(OwnerId);
-  Params.ItemType(TVkItemType.itSitepage);
-  Params.ItemId(ItemId);
-  Params.PageUrl(PageUrl);
-  Result := GetList(Likes, Params);
-end;
-
-function TLikesController.GetList(var Likes: TVkLikesCount; ItemType: TVkItemType; ItemId: Integer; Copies: Boolean;
-  OwnerId: Integer): Boolean;
-var
-  Params: TVkLikesParams;
-begin
-  if OwnerId <> 0 then
-    Params.OwnerId(OwnerId);
-  if Copies then
-    Params.Filter(True);
-  Params.ItemType(ItemType);
-  Params.ItemId(ItemId);
-  Result := GetList(Likes, Params);
-end;
-
-function TLikesController.GetList(var Likes: TVkLikesCount; Params: TVkLikesParams): Boolean;
+function TLikesController.GetList(var Items: TVkLikesCount; Params: TParams): Boolean;
 var
   JSONItem: TJSONValue;
   JArray: TJSONArray;
   i: Integer;
 begin
-  with Handler.Execute('likes.getList', Params.List) do
+  Params.Add('extended', True);
+  with Handler.Execute('likes.getList', Params) do
   begin
     Result := Success;
     if Result then
     begin
       JSONItem := TJSONObject.ParseJSONValue(Response);
-      Likes.Count := JSONItem.GetValue<Integer>('count', -1);
+      Items.Count := JSONItem.GetValue<Integer>('count', -1);
       JArray := JSONItem.GetValue<TJSONArray>('items', nil);
       if Assigned(JArray) then
       begin
-        SetLength(Likes.Users, JArray.Count);
+        SetLength(Items.Users, JArray.Count);
         for i := 0 to JArray.Count - 1 do
-          Likes.Users[i] := JArray.Items[i].GetValue<Integer>();
+          Items.Users[i] := JArray.Items[i].GetValue<Integer>();
         JArray.Free;
       end
       else
@@ -137,7 +81,7 @@ end;
 
 function TVkLikesParams.Count(Value: Integer): Integer;
 begin
-  Result := List.Add('count', Value.ToString);
+  Result := List.Add('count', Value);
 end;
 
 function TVkLikesParams.Filter(Copies: Boolean): Integer;
@@ -145,7 +89,10 @@ begin
   if Copies then
     Result := List.Add('filter', 'copies')
   else
+  begin
+    List.Remove('filter');
     Result := -1;
+  end;
 end;
 
 function TVkLikesParams.FriendsOnly(Value: Boolean): Integer;
@@ -155,17 +102,22 @@ end;
 
 function TVkLikesParams.ItemId(Value: Integer): Integer;
 begin
-  Result := List.Add('item_id', Value.ToString);
+  Result := List.Add('item_id', Value);
 end;
 
-function TVkLikesParams.ItemType(Value: TVkItemType): Integer;
+function TVkLikesParams.&Type(Value: TVkItemType): Integer;
 begin
-  Result := List.Add('type', Value.ToConst);
+  Result := List.Add('type', Value.ToString);
+end;
+
+function TVkLikesParams.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
 end;
 
 function TVkLikesParams.OwnerId(Value: Integer): Integer;
 begin
-  Result := List.Add('owner_id', Value.ToString);
+  Result := List.Add('owner_id', Value);
 end;
 
 function TVkLikesParams.PageUrl(Value: string): Integer;

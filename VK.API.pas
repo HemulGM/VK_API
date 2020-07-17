@@ -3,18 +3,16 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client,
-  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
-  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
-  VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board,
-  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave,
-  VK.Notes, VK.Utils, VK.Video,
+  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
+  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
+  VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
+  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
   VK.Vcl.Captcha,
   {$ENDIF}
-System.Types;
+  System.Types;
 
 type
   TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
@@ -85,6 +83,7 @@ type
     FUtils: TUtilsController;
     FVideo: TVideoController;
     FWall: TWallController;
+    FGifts: TGiftsController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
@@ -187,6 +186,10 @@ type
     /// </summary>
     property Friends: TFriendsController read FFriends;
     /// <summary>
+    /// Ìועמהû הכÿ נאבמעû ס ןמהאנךאלט.
+    /// </summary>
+    property Gifts: TGiftsController read FGifts;
+    /// <summary>
     /// Ìועמהû הכÿ נאבמעû ס סממבשוסעגאלט.
     /// </summary>
     property Groups: TGroupsController read FGroups;
@@ -267,8 +270,7 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils,
-  VK.Entity.User;
+  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.User;
 
 { TCustomVK }
 
@@ -354,6 +356,7 @@ begin
   FBoard := TBoardController.Create(FHandler);
   FFriends := TFriendsController.Create(FHandler);
   FGroups := TGroupsController.Create(FHandler);
+  FGifts := TGiftsController.Create(FHandler);
   FPhotos := TPhotosController.Create(FHandler);
   FCatalog := TCatalogController.Create(FHandler);
   FUtils := TUtilsController.Create(FHandler);
@@ -370,6 +373,7 @@ begin
   FBoard.Free;
   FFriends.Free;
   FGroups.Free;
+  FGifts.Free;
   FPhotos.Free;
   FCatalog.Free;
   FUtils.Free;
@@ -422,7 +426,6 @@ begin
     {$ELSE}
     TFormCaptcha.Execute(CaptchaImg, Answer);
     {$ENDIF}
-
   end;
 end;
 

@@ -302,7 +302,7 @@ end;
 
 procedure TVkAttachment.SetType(const Value: TVkAttachmentType);
 begin
-  FType := Value.ToConst;
+  FType := Value.ToString;
 end;
 
 { TVkComment }
