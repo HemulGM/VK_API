@@ -477,7 +477,7 @@ type
 
   //Типы объектов
   TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment,
-    itTopicComment, itMarketComment, itSitepage);
+    itTopicComment, itMarketComment, itSitepage, itStory);
 
   TVkItemTypeHelper = record helper for TVkItemType
     function ToString: string; inline;
@@ -744,7 +744,7 @@ var
   VkNameCase: array[TVkNameCase] of string = ('nom', 'gen', 'dat', 'acc', 'ins', 'abl');
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo',
     'audio', 'video', 'note', 'market', 'photo_comment', 'video_comment',
-    'topic_comment', 'market_comment', 'sitepage');
+    'topic_comment', 'market_comment', 'sitepage', 'story');
   VkGroupJoinType: array[TVkGroupJoinType] of string = ('', 'join', 'unsure',
     'accepted', 'approved', 'request');
   VkPostType: array[TVkPostType] of string = ('suggests', 'postponed', 'owner', 'others', 'all');

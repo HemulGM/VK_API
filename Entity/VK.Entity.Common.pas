@@ -126,6 +126,17 @@ type
     class function FromJsonString(AJsonString: string): TVkViewsInfo;
   end;
 
+  TVkLiked = class
+  private
+    FCopied: Integer;
+    FLiked: Integer;
+  public
+    property Copied: Integer read FCopied write FCopied;
+    property Liked: Integer read FLiked write FLiked;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkLiked;
+  end;
+
   TVkLikesInfo = class
   private
     FCan_like: Extended;
@@ -642,6 +653,18 @@ begin
 end;
 
 function TVkBasicObject.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkLiked }
+
+class function TVkLiked.FromJsonString(AJsonString: string): TVkLiked;
+begin
+  result := TJson.JsonToObject<TVkLiked>(AJsonString)
+end;
+
+function TVkLiked.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

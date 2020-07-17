@@ -3,14 +3,9 @@ unit VK.Likes;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON;
+  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.User, System.JSON;
 
 type
-  TVkLikesCount = record
-    Count: Integer;
-    Users: TUserIds;
-  end;
-
   TVkLikesParams = record
     List: TParams;
     function &Type(Value: TVkItemType): Integer;
@@ -27,13 +22,29 @@ type
   TLikesController = class(TVkController)
   public
     /// <summary>
-    /// Получает список идентификаторов пользователей, которые добавили заданный объект в свой список Мне нравится
+    /// Получает список пользователей, которые добавили заданный объект в свой список Мне нравится
     /// </summary>
-    function GetList(var Items: TVkLikesCount; Params: TParams): Boolean; overload;
+    function GetList(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Получает список пользователей, которые добавили заданный объект в свой список Мне нравится
+    /// </summary>
+    function GetList(var Items: TVkUsers; Params: TVkLikesParams): Boolean; overload;
     /// <summary>
     /// Получает список идентификаторов пользователей, которые добавили заданный объект в свой список Мне нравится
     /// </summary>
-    function GetList(var Items: TVkLikesCount; Params: TVkLikesParams): Boolean; overload;
+    function GetListIds(var Items: TVkIdList; Params: TVkLikesParams): Boolean; overload;
+    /// <summary>
+    /// Получает список пользователей, которые добавили заданный объект в свой список Мне нравится
+    /// </summary>
+    function Add(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string = ''): Boolean; overload;
+    /// <summary>
+    /// Удаляет указанный объект из списка Мне нравится текущего пользователя
+    /// </summary>
+    function Delete(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string = ''): Boolean; overload;
+    /// <summary>
+    /// Проверяет, находится ли объект в списке Мне нравится заданного пользователя.
+    /// </summary>
+    function IsLiked(var Item: TVkLiked; UserId: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer): Boolean; overload;
   end;
 
 implementation
@@ -43,16 +54,60 @@ uses
 
 { TLikesController }
 
-function TLikesController.GetList(var Items: TVkLikesCount; Params: TVkLikesParams): Boolean;
+function TLikesController.Add(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
+begin
+  with Handler.Execute('likes.add', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
+    ['access_key', AccessKey]]) do
+    Result := Success and TryStrToInt(Response, Items);
+end;
+
+function TLikesController.Delete(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
+begin
+  with Handler.Execute('likes.delete', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
+    ['access_key', AccessKey]]) do
+    Result := Success and TryStrToInt(Response, Items);
+end;
+
+function TLikesController.GetList(var Items: TVkUsers; Params: TVkLikesParams): Boolean;
 begin
   Result := GetList(Items, Params.List);
 end;
 
-function TLikesController.GetList(var Items: TVkLikesCount; Params: TParams): Boolean;
-var
-  JSONItem: TJSONValue;
-  JArray: TJSONArray;
-  i: Integer;
+function TLikesController.GetListIds(var Items: TVkIdList; Params: TVkLikesParams): Boolean;
+begin
+  Params.List.Add('extended', False);
+  with Handler.Execute('likes.getList', Params.List) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkIdList.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TLikesController.IsLiked(var Item: TVkLiked; UserId: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer): Boolean;
+begin
+  with Handler.Execute('likes.isLiked', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
+    ['user_id', UserId.ToString]]) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Item := TVkLiked.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TLikesController.GetList(var Items: TVkUsers; Params: TParams): Boolean;
 begin
   Params.Add('extended', True);
   with Handler.Execute('likes.getList', Params) do
@@ -60,19 +115,11 @@ begin
     Result := Success;
     if Result then
     begin
-      JSONItem := TJSONObject.ParseJSONValue(Response);
-      Items.Count := JSONItem.GetValue<Integer>('count', -1);
-      JArray := JSONItem.GetValue<TJSONArray>('items', nil);
-      if Assigned(JArray) then
-      begin
-        SetLength(Items.Users, JArray.Count);
-        for i := 0 to JArray.Count - 1 do
-          Items.Users[i] := JArray.Items[i].GetValue<Integer>();
-        JArray.Free;
-      end
-      else
+      try
+        Items := TVkUsers.FromJsonString(Response);
+      except
         Result := False;
-      JSONItem.Free;
+      end;
     end;
   end;
 end;
