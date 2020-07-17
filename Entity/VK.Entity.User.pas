@@ -322,6 +322,8 @@ type
     FCity: TVkCity;
     FMutual: TVkFriendsMutual;
     FFound_with: string;
+    FType: string;
+    FInvited_by: Integer;
     function GetRefer: string;
     function FGetFullName: string;
   public
@@ -363,6 +365,7 @@ type
     property Id: Integer read FId write FId;
     property Instagram: string read FInstagram write FInstagram;
     property Interests: string read FInterests write FInterests;
+    property InvitedBy: Integer read FInvited_by write FInvited_by;
     property IsClosed: Boolean read FIs_closed write FIs_closed;
     property IsFavorite: Integer read FIs_favorite write FIs_favorite;
     property IsFriend: Integer read FIs_friend write FIs_friend;
@@ -396,6 +399,7 @@ type
     property Skype: string read FSkype write FSkype;
     property Status: string read FStatus write FStatus;
     property TimeZone: Integer read FTimezone write FTimezone;
+    property &Type: string read FType write FType;
     property TV: string read FTv write FTv;
     property Twitter: string read FTwitter write FTwitter;
     property Universities: TArray<TVkUniversities> read FUniversities write FUniversities;

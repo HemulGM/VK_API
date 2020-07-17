@@ -181,14 +181,14 @@ type
 
   TVkAttachments = TArray<TVkAttachment>;
 
-function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArray<string>;
+function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArrayOfString;
 
 implementation
 
 uses
   System.DateUtils;
 
-function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArray<string>;
+function AttachmentInfoToAttachemnts(Source: TVkMessageAttachmentInfo): TArrayOfString;
 var
   i: Integer;
 begin
@@ -203,14 +203,11 @@ end;
 
 constructor TVkAttachment.Create;
 begin
-  //Не создаем объекты вложений, их создаст JSON парсер
-  //Создан будет только один объект
   inherited;
 end;
 
 destructor TVkAttachment.Destroy;
 begin
-  //Ну а тут, уничтожим, то что было создано
   if Assigned(FLink) then
     FLink.Free;
   if Assigned(FPosted_photo) then

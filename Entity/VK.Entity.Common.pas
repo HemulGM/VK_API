@@ -237,13 +237,24 @@ type
 
   TVkCountry = class
   private
-    FId: Extended;
+    FId: Integer;
     FTitle: string;
   public
-    property Id: Extended read FId write FId;
+    property Id: Integer read FId write FId;
     property Title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCountry;
+  end;
+
+  TVkEmail = class
+  private
+    FId: Integer;
+    FAddress: string;
+  public
+    property Id: Integer read FId write FId;
+    property Address: string read FAddress write FAddress;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkEmail;
   end;
 
   TVkPlace = class
@@ -665,6 +676,18 @@ begin
 end;
 
 function TVkLiked.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkEmail }
+
+class function TVkEmail.FromJsonString(AJsonString: string): TVkEmail;
+begin
+  result := TJson.JsonToObject<TVkEmail>(AJsonString)
+end;
+
+function TVkEmail.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

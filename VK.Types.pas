@@ -1018,6 +1018,51 @@ begin
     706:
       ErrStr :=
         'Too many addresses in club';
+    901:
+      ErrStr :=
+        'Ќельз€ первым писать пользователю от имени сообщества';
+    909:
+      ErrStr :=
+        'Ќевозможно отредактировать сообщение после 24 часов';
+    910:
+      ErrStr :=
+        'Ќевозможно отредактировать сообщение, поскольку оно слишком большое';
+    911:
+      ErrStr :=
+        'Keyboard format is invalid';
+    912:
+      ErrStr :=
+        'This is a chat bot feature, change this status in settings';
+    914:
+      ErrStr :=
+        '—ообщение слишком длинное';
+    917:
+      ErrStr :=
+        '” вас нет доступа в эту беседу';
+    920:
+      ErrStr :=
+        'Ќевозможно отредактировать сообщение такого типа';
+    924:
+      ErrStr :=
+        'Ќевозможно удалить сообщение дл€ получателей';
+    925:
+      ErrStr :=
+        'You are not admin of this chat';
+    936:
+      ErrStr :=
+        'Contact not found';
+    940:
+      ErrStr :=
+        'Too many posts in messages';
+    945:
+      ErrStr :=
+        'Chat was disabled';
+    946:
+      ErrStr :=
+        'Chat not supported';
+    949:
+      ErrStr :=
+        'Can''t edit pinned message yet';
     1260:
       ErrStr :=
         'Invalid screen name';

@@ -139,7 +139,8 @@ contains
   VK.Entity.Group.Categories in 'Entity\VK.Entity.Group.Categories.pas',
   VK.Entity.Group.Longpoll in 'Entity\VK.Entity.Group.Longpoll.pas',
   VK.Entity.Group.LongpollSettings in 'Entity\VK.Entity.Group.LongpollSettings.pas',
-  VK.Entity.Group.TokenPermissions in 'Entity\VK.Entity.Group.TokenPermissions.pas';
+  VK.Entity.Group.TokenPermissions in 'Entity\VK.Entity.Group.TokenPermissions.pas',
+  VK.Entity.Message.Chat in 'Entity\VK.Entity.Message.Chat.pas';
 
 end.
 

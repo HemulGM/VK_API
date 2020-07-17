@@ -25,12 +25,12 @@ type
     FItems: TArray<TVkMessageSendResponse>;
     Fsuccess: Boolean;
     Fresponse: Integer;
-    procedure Setsuccess(const Value: Boolean);
-    procedure Setresponse(const Value: Integer);
+    procedure SetSuccess(const Value: Boolean);
+    procedure SetResponse(const Value: Integer);
   public
     property Items: TArray<TVkMessageSendResponse> read FItems write FItems;
-    property Success: Boolean read Fsuccess write Setsuccess;
-    property Response: Integer read Fresponse write Setresponse;
+    property Success: Boolean read Fsuccess write SetSuccess;
+    property Response: Integer read Fresponse write SetResponse;
     constructor CreateFalse;
     constructor CreateTrue(ARespone: Integer);
     function ToJsonString: string;
@@ -285,12 +285,12 @@ begin
   Result.Response := -1;
 end;
 
-procedure TVkMessageSendResponses.Setresponse(const Value: Integer);
+procedure TVkMessageSendResponses.SetResponse(const Value: Integer);
 begin
   Fresponse := Value;
 end;
 
-procedure TVkMessageSendResponses.Setsuccess(const Value: Boolean);
+procedure TVkMessageSendResponses.SetSuccess(const Value: Boolean);
 begin
   Fsuccess := Value;
 end;
