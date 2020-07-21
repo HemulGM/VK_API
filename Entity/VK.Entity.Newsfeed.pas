@@ -107,12 +107,16 @@ type
     FProfiles: TArray<TVkUser>;
     FGroups: TArray<TVkGroup>;
     FNext_from: string;
+    FCount: Integer;
+    FTotal_count: Integer;
   public
-    destructor Destroy; override;
     property Items: TArray<TVkNewsItem> read FItems write FItems;
     property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property NextFrom: string read FNext_from write FNext_from;
+    property Count: Integer read FCount write FCount;
+    property TotalCount: Integer read FTotal_count write FTotal_count;
+    destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkNews;
   end;
@@ -165,6 +169,56 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkNewsfeedLists;
+  end;
+
+  TVkSuggestedItem = class
+  private
+    FCan_access_closed: Boolean;
+    FFirst_name: string;
+    FId: Integer;
+    FIs_closed: Boolean;
+    FLast_name: string;
+    FPhoto_100: string;
+    FPhoto_200: string;
+    FPhoto_50: string;
+    FScreen_name: string;
+    FType: string;
+    FIs_member: Integer;
+    FName: string;
+    FIs_advertiser: Integer;
+    FIs_admin: Integer;
+  public
+    //common
+    property Id: Integer read FId write FId;
+    property&Type: string read FType write FType;
+    property Photo50: string read FPhoto_50 write FPhoto_50;
+    property IsClosed: Boolean read FIs_closed write FIs_closed;
+    //profile
+    property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
+    property FirstName: string read FFirst_name write FFirst_name;
+    property LastName: string read FLast_name write FLast_name;
+    property Photo100: string read FPhoto_100 write FPhoto_100;
+    property Photo200: string read FPhoto_200 write FPhoto_200;
+    property ScreenName: string read FScreen_name write FScreen_name;
+    //page, group
+    property IsAdmin: Integer read FIs_admin write FIs_admin;
+    property IsAdvertiser: Integer read FIs_advertiser write FIs_advertiser;
+    property IsMember: Integer read FIs_member write FIs_member;
+    property Name: string read FName write FName;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkSuggestedItem;
+  end;
+
+  TVkSuggestedList = class
+  private
+    FCount: Integer;
+    FItems: TArray<TVkSuggestedItem>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkSuggestedItem> read FItems write FItems;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkSuggestedList;
   end;
 
 implementation
@@ -326,6 +380,40 @@ begin
 end;
 
 function TVkNewsfeedList.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkSuggestedList }
+
+destructor TVkSuggestedList.Destroy;
+var
+  i: Integer;
+begin
+  for i := Low(FItems) to High(FItems) do
+    FItems[i].Free;
+  inherited;
+  inherited;
+end;
+
+class function TVkSuggestedList.FromJsonString(AJsonString: string): TVkSuggestedList;
+begin
+  result := TJson.JsonToObject<TVkSuggestedList>(AJsonString);
+end;
+
+function TVkSuggestedList.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkSuggestedItem }
+
+class function TVkSuggestedItem.FromJsonString(AJsonString: string): TVkSuggestedItem;
+begin
+  result := TJson.JsonToObject<TVkSuggestedItem>(AJsonString);
+end;
+
+function TVkSuggestedItem.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

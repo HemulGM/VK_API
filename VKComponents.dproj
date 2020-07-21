@@ -230,6 +230,7 @@
         <DCCReference Include="Entity\VK.Entity.Message.LongPoll.pas"/>
         <DCCReference Include="Controllers\VK.Newsfeed.pas"/>
         <DCCReference Include="Entity\VK.Entity.Newsfeed.pas"/>
+        <DCCReference Include="Controllers\VK.Notifications.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

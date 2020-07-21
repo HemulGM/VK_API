@@ -30,6 +30,20 @@ type
   end;
 
   /// <summary>
+  /// wall — запись на стене;
+  /// photo — фотография;
+  /// tag — отметка на фотографии;
+  /// profilephoto — фотография профиля;
+  /// video — видеозапись;
+  /// audio — аудиозапись.
+  /// </summary>
+  TVkNewsfeedIgnoreType = (nitWall, nitPhoto, nitPhotoTag, nitProfilePhoto, nitVideo, nitAudio);
+
+  TVkNewsfeedIgnoreTypeHelper = record Helper for TVkNewsfeedIgnoreType
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
   /// post — новые комментарии к записям со стен;
   /// photo — новые комментарии к фотографиям;
   /// video — новые комментарии к видеозаписям;
@@ -93,6 +107,29 @@ type
     function EndTime(Value: TDateTime): Integer;
   end;
 
+  TVkParamsNewsfeedGetRecommended = record
+    List: TParams;
+    function Fields(const Value: TVkUserFields = []): Integer;
+    function Count(Value: Integer): Integer;
+    function StartTime(Value: TDateTime): Integer;
+    function EndTime(Value: TDateTime): Integer;
+    function StartFrom(Value: string): Integer;
+    function MaxPhotos(Value: Integer): Integer;
+  end;
+
+  TVkParamsNewsfeedSearch = record
+    List: TParams;
+    function Query(Value: string): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Count(Value: Integer): Integer;
+    function StartTime(Value: TDateTime): Integer;
+    function EndTime(Value: TDateTime): Integer;
+    function StartFrom(Value: string): Integer;
+    function Latitude(Value: Extended): Integer;
+    function Longitude(Value: Extended): Integer;
+    function Extended(Value: Boolean): Integer;
+  end;
+
   TNewsfeedController = class(TVkController)
   public
     /// <summary>
@@ -143,6 +180,43 @@ type
     /// Возвращает список записей пользователей на своих стенах, в которых упоминается указанный пользователь.
     /// </summary>
     function GetMentions(var Items: TVkPosts; Params: TVkParamsNewsfeedGetMentions): Boolean; overload;
+    /// <summary>
+    /// Получает список новостей, рекомендованных пользователю.
+    /// </summary>
+    function GetRecommended(var Items: TVkNews; Params: TVkParamsNewsfeedGetRecommended): Boolean;
+    /// <summary>
+    /// Возвращает сообщества и пользователей, на которые текущему пользователю рекомендуется подписаться.
+    /// </summary>
+    function GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean = False; Count: Integer = 20; Offset:
+      Integer = 0): Boolean;
+    /// <summary>
+    /// Позволяет скрыть объект из ленты новостей.
+    /// </summary>
+    function IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer): Boolean;
+    /// <summary>
+    /// Метод позволяет создавать или редактировать пользовательские списки для просмотра новостей.
+    /// </summary>
+    function SaveList(var ListId: Integer; Title: string; SourceIds: TIds; NoReposts: Boolean = False): Boolean; overload;
+    /// <summary>
+    /// Метод позволяет создавать или редактировать пользовательские списки для просмотра новостей.
+    /// </summary>
+    function SaveList(const ListId: Integer; SourceIds: TIds; NoReposts: Boolean = False): Boolean; overload;
+    /// <summary>
+    /// Возвращает результаты поиска по статусам. Новости возвращаются в порядке от более новых к более старым.
+    /// </summary>
+    function Search(var Items: TVkNews; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Возвращает результаты поиска по статусам. Новости возвращаются в порядке от более новых к более старым.
+    /// </summary>
+    function Search(var Items: TVkNews; Params: TVkParamsNewsfeedSearch): Boolean; overload;
+    /// <summary>
+    /// Позволяет вернуть ранее скрытый объект в ленту новостей.
+    /// </summary>
+    function UnignoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer; TrackCode: string = ''): Boolean;
+    /// <summary>
+    /// Отписывает текущего пользователя от комментариев к заданному объекту.
+    /// </summary>
+    function Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId, ItemId: Integer): Boolean;
   end;
 
 implementation
@@ -228,6 +302,122 @@ end;
 function TNewsfeedController.GetMentions(var Items: TVkPosts; Params: TVkParamsNewsfeedGetMentions): Boolean;
 begin
   Result := GetMentions(Items, Params.List);
+end;
+
+function TNewsfeedController.GetRecommended(var Items: TVkNews; Params: TVkParamsNewsfeedGetRecommended): Boolean;
+begin
+  with Handler.Execute('newsfeed.getRecommended', Params.List) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkNews.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TNewsfeedController.GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean; Count, Offset: Integer): Boolean;
+begin
+  with Handler.Execute('newsfeed.getSuggestedSources', [['shuffle', BoolToString(Shuffle)], ['count', Count.ToString], ['offset',
+    Offset.ToString]]) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkSuggestedList.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TNewsfeedController.IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer): Boolean;
+begin
+  with Handler.Execute('newsfeed.ignoreItem', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id',
+    ItemId.ToString]]) do
+    Result := Success and (Response = '1');
+end;
+
+function TNewsfeedController.SaveList(const ListId: Integer; SourceIds: TIds; NoReposts: Boolean): Boolean;
+var
+  Items: TVkNewsfeedLists;
+  Id: Integer;
+begin
+  {TODO -oHemulGM -cGeneral : Тут используется костыль, который запрашивает название листа, т.к. в ВК почему-то оно требуется даже для просто добавления новых источников}
+  Result := GetLists(Items, [ListId], False);
+  if Result then
+  begin
+    try
+      try
+        Result := (Length(Items.Items) > 0) and SaveList(Id, Items.Items[0].Title, SourceIds, NoReposts);
+      finally
+        Items.Free;
+      end;
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TNewsfeedController.Search(var Items: TVkNews; Params: TVkParamsNewsfeedSearch): Boolean;
+begin
+  Result := Search(Items, Params.List);
+end;
+
+function TNewsfeedController.UnignoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer; TrackCode: string): Boolean;
+var
+  Params: TParams;
+begin
+  Params.Add('type', ItemType.ToString);
+  Params.Add('owner_id', OwnerId);
+  Params.Add('item_id', ItemId);
+  if not TrackCode.IsEmpty then
+    Params.Add('track_code', TrackCode);
+  with Handler.Execute('newsfeed.unignoreItem', Params) do
+    Result := Success and (Response = '1');
+end;
+
+function TNewsfeedController.Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId, ItemId: Integer): Boolean;
+begin
+  with Handler.Execute('newsfeed.unsubscribe', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id',
+    ItemId.ToString]]) do
+    Result := Success and (Response = '1');
+end;
+
+function TNewsfeedController.Search(var Items: TVkNews; Params: TParams): Boolean;
+begin
+  with Handler.Execute('newsfeed.search', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkNews.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TNewsfeedController.SaveList(var ListId: Integer; Title: string; SourceIds: TIds; NoReposts: Boolean): Boolean;
+var
+  Params: TParams;
+begin
+  if ListId >= 0 then
+    Params.Add('list_id', ListId);
+  Params.Add('Title', Title);
+  if Length(SourceIds) > 0 then
+    Params.Add('source_ids', SourceIds);
+  Params.Add('no_reposts', NoReposts);
+  with Handler.Execute('newsfeed.saveList', Params) do
+    Result := Success and (TryStrToInt(Response, ListId));
 end;
 
 function TNewsfeedController.GetMentions(var Items: TVkPosts; Params: TParams): Boolean;
@@ -503,6 +693,107 @@ begin
 end;
 
 function TVkParamsNewsfeedGetMentions.StartTime(Value: TDateTime): Integer;
+begin
+  Result := List.Add('start_time', Value);
+end;
+
+{ TVkParamsNewsfeedGetRecommended }
+
+function TVkParamsNewsfeedGetRecommended.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsNewsfeedGetRecommended.EndTime(Value: TDateTime): Integer;
+begin
+  Result := List.Add('end_time', Value);
+end;
+
+function TVkParamsNewsfeedGetRecommended.Fields(const Value: TVkUserFields): Integer;
+begin
+  Result := List.Add('fields', Value.ToString);
+end;
+
+function TVkParamsNewsfeedGetRecommended.MaxPhotos(Value: Integer): Integer;
+begin
+  Result := List.Add('max_photos', Value);
+end;
+
+function TVkParamsNewsfeedGetRecommended.StartFrom(Value: string): Integer;
+begin
+  Result := List.Add('start_from', Value);
+end;
+
+function TVkParamsNewsfeedGetRecommended.StartTime(Value: TDateTime): Integer;
+begin
+  Result := List.Add('start_time', Value);
+end;
+
+{ TVkNewsfeedIgnoreTypeHelper }
+
+function TVkNewsfeedIgnoreTypeHelper.ToString: string;
+begin
+  case Self of
+    nitWall:
+      Result := 'wall';
+    nitPhoto:
+      Result := 'photo';
+    nitPhotoTag:
+      Result := 'tag';
+    nitProfilePhoto:
+      Result := 'profilephoto ';
+    nitVideo:
+      Result := 'video';
+    nitAudio:
+      Result := 'audio';
+  else
+    Result := '';
+  end;
+end;
+
+{ TVkParamsNewsfeedSearch }
+
+function TVkParamsNewsfeedSearch.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsNewsfeedSearch.EndTime(Value: TDateTime): Integer;
+begin
+  Result := List.Add('end_time', Value);
+end;
+
+function TVkParamsNewsfeedSearch.Extended(Value: Boolean): Integer;
+begin
+  Result := List.Add('extended', Value);
+end;
+
+function TVkParamsNewsfeedSearch.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+begin
+  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+end;
+
+function TVkParamsNewsfeedSearch.Latitude(Value: Extended): Integer;
+begin
+  Result := List.Add('latitude', Value);
+end;
+
+function TVkParamsNewsfeedSearch.Longitude(Value: Extended): Integer;
+begin
+  Result := List.Add('longitude', Value);
+end;
+
+function TVkParamsNewsfeedSearch.Query(Value: string): Integer;
+begin
+  Result := List.Add('q', Value);
+end;
+
+function TVkParamsNewsfeedSearch.StartFrom(Value: string): Integer;
+begin
+  Result := List.Add('start_from', Value);
+end;
+
+function TVkParamsNewsfeedSearch.StartTime(Value: TDateTime): Integer;
 begin
   Result := List.Add('start_time', Value);
 end;
