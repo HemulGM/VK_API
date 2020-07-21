@@ -2,7 +2,7 @@
 
 API для Вконтакте
 
-Completed - 64%
+Покрытие методов - **34%**
  
 **Внимание**
 Если вы уже использовали обертку (до 08.07.2020) и недавно затянули изменения, то вы вероятно получите ошибку при открытии формы. Для её решения нужно закарыть форму с ошибкой без сохранения и исправать файл формы dfm/fmx. Заменить значение свойства Permissions компонента TVK с "'friends,messages..'" на "[Friends,Messages]". Т.е. изменить тип со строки к множеству.
@@ -80,7 +80,7 @@ var
   Users: TVkUsers;
   i: Integer;
 begin
-  if VK.Users.Get(Users, [286400863, 415730216], VkUserFieldsAll) then
+  if VK.Users.Get(Users, [286400863, 415730216], TVkUserFields.All) then
   begin
     for i := Low(Users.Items) to High(Users.Items) do
     begin
