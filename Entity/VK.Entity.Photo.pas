@@ -71,6 +71,8 @@ type
     property Photo: TVkPhoto read FPhoto write FPhoto;
     property Crop: TVkCrop read FCrop write FCrop;
     property Rect: TVkRect read FRect write FRect;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkCropPhoto;
   end;
 
   TVkPostedPhoto = class
@@ -198,6 +200,18 @@ end;
 procedure TVkPhotos.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
+end;
+
+{ TVkCropPhoto }
+
+class function TVkCropPhoto.FromJsonString(AJsonString: string): TVkCropPhoto;
+begin
+  result := TJson.JsonToObject<TVkCropPhoto>(AJsonString);
+end;
+
+function TVkCropPhoto.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

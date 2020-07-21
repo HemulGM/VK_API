@@ -19,19 +19,6 @@ type
     function SkipHidden(Value: Boolean): Integer;
   end;
 
-  TVkPhotoFeedType = (ftPhoto, ftPhotoTag);
-
-  TVkPhotoFeedTypeHelper = record helper for TVkPhotoFeedType
-    function ToString: string; inline;
-  end;
-
-  TVkPhotoSystemAlbum = (saWall, saSaved, saProfile);
-
-  TVkPhotoSystemAlbumHelper = record helper for TVkPhotoSystemAlbum
-    function ToString: string; inline;
-    function ToVkId: Integer; inline;
-  end;
-
   TVkParamsPhotosGet = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
@@ -40,7 +27,7 @@ type
     function PhotoIds(Value: TArrayOfInteger): Integer;
     function Extended(Value: Boolean): Integer;
     function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): TVkParamsPhotosGet;
+    function Offset(Value: Integer): Integer;
     function PhotoSizes(Value: Boolean): Integer;
     function FeedType(Value: TVkPhotoFeedType): Integer;
     function Feed(Value: Integer): Integer;
@@ -201,7 +188,7 @@ begin
     if Result then
     begin
       try
-        Photos := TVkPhotos.FromJsonString('{"Items":' + Response + '}');
+        Photos := TVkPhotos.FromJsonString(AppendItemsTag(Response));
       except
         Result := False;
       end;
@@ -325,10 +312,9 @@ begin
   Result := List.Add('feed_type', Value.ToString);
 end;
 
-function TVkParamsPhotosGet.Offset(Value: Integer): TVkParamsPhotosGet;
+function TVkParamsPhotosGet.Offset(Value: Integer): Integer;
 begin
-  List.Add('offset', Value);
-  Result := Self;
+  Result := List.Add('offset', Value);
 end;
 
 function TVkParamsPhotosGet.OwnerId(Value: Integer): Integer;
@@ -349,50 +335,6 @@ end;
 function TVkParamsPhotosGet.Rev(Value: Boolean): Integer;
 begin
   Result := List.Add('rev', Value);
-end;
-
-{ TVkPhotoSystemAlbumHelper }
-
-function TVkPhotoSystemAlbumHelper.ToString: string;
-begin
-  case Self of
-    saWall:
-      Exit('wall');
-    saSaved:
-      Exit('saved');
-    saProfile:
-      Exit('profile');
-  else
-    Result := '';
-  end;
-end;
-
-function TVkPhotoSystemAlbumHelper.ToVkId: Integer;
-begin
-  case Self of
-    saWall:
-      Exit(-7);
-    saSaved:
-      Exit(-15);
-    saProfile:
-      Exit(-6);
-  else
-    Result := 0;
-  end;
-end;
-
-{ TVkPhotoFeedTypeHelper }
-
-function TVkPhotoFeedTypeHelper.ToString: string;
-begin
-  case Self of
-    ftPhoto:
-      Exit('photo');
-    ftPhotoTag:
-      Exit('photo_tag');
-  else
-    Result := '';
-  end;
 end;
 
 end.

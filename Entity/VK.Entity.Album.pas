@@ -31,22 +31,26 @@ type
 
   TVkPhotoAlbum = class
   private
-    FCreated: Extended;
+    FCreated: Int64;
     FDescription: string;
     FId: integer;
     FOwner_id: Integer;
     FSize: Integer;
     FThumb: TVkAlbumThumb;
     FTitle: string;
-    FUpdated: Extended;
+    FUpdated: Int64;
     FThumb_id: integer;
     FThumb_is_last: Integer;
     FPrivacy_view: TVkPrivacy;
     FPrivacy_comment: TVkPrivacy;
     FSizes: TVkSizes;
     FThumb_src: string;
+    function GetCreated: TDateTime;
+    function GetUpdated: TDateTime;
+    procedure SetCreated(const Value: TDateTime);
+    procedure SetUpdated(const Value: TDateTime);
   public
-    property Created: Extended read FCreated write FCreated;
+    property Created: TDateTime read GetCreated write SetCreated;
     property Description: string read FDescription write FDescription;
     property Id: integer read FId write FId;
     property ThumbId: integer read FThumb_id write FThumb_id;
@@ -56,7 +60,7 @@ type
     property Sizes: TVkSizes read FSizes write FSizes;
     property Title: string read FTitle write FTitle;
     property ThumbSrc: string read FThumb_src write FThumb_src;
-    property Updated: Extended read FUpdated write FUpdated;
+    property Updated: TDateTime read GetUpdated write SetUpdated;
     property ThumbIsLast: Integer read FThumb_is_last write FThumb_is_last;
     property PrivacyView: TVkPrivacy read FPrivacy_view write FPrivacy_view;
     property PrivacyComment: TVkPrivacy read FPrivacy_comment write FPrivacy_comment;
@@ -79,6 +83,9 @@ type
   end;
 
 implementation
+
+uses
+  System.DateUtils;
 
 {TVkPhotoAlbum}
 
@@ -111,6 +118,26 @@ end;
 class function TVkPhotoAlbum.FromJsonString(AJsonString: string): TVkPhotoAlbum;
 begin
   result := TJson.JsonToObject<TVkPhotoAlbum>(AJsonString)
+end;
+
+function TVkPhotoAlbum.GetCreated: TDateTime;
+begin
+  Result := UnixToDateTime(FCreated, False);
+end;
+
+function TVkPhotoAlbum.GetUpdated: TDateTime;
+begin
+  Result := UnixToDateTime(FUpdated, False);
+end;
+
+procedure TVkPhotoAlbum.SetCreated(const Value: TDateTime);
+begin
+  FCreated := DateTimeToUnix(Value, False);
+end;
+
+procedure TVkPhotoAlbum.SetUpdated(const Value: TDateTime);
+begin
+  FUpdated := DateTimeToUnix(Value, False);
 end;
 
 {TVkAlbumThumb}

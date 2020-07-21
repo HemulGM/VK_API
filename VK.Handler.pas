@@ -9,7 +9,7 @@ uses
   {$ELSE}
   Vcl.Forms,
   {$ENDIF}
-REST.Client, REST.Json, JSON, VK.Types;
+  REST.Client, REST.Json, JSON, VK.Types;
 
 type
   TRequestConstruct = class
@@ -35,6 +35,7 @@ type
     FExecuting: Integer;
     FUsePseudoAsync: Boolean;
     function DoConfirm(Answer: string): Boolean;
+    function DoProcError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     procedure ProcError(Code: Integer; Text: string = ''); overload;
     procedure ProcError(E: Exception); overload;
     procedure ProcError(Msg: string); overload;
@@ -104,7 +105,8 @@ end;
 { TVkHandler }
 
 function TVkHandler.AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
-var FRes: string;
+var
+  FRes: string;
 begin
   Result := False;
   if Assigned(FOnCaptcha) then
@@ -170,6 +172,24 @@ begin
           FOnConfirm(Self, Answer, FRes);
         end);
       Result := FRes;
+    end;
+  end;
+end;
+
+function TVkHandler.DoProcError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
+begin
+  Result := Assigned(FOnError);
+  if Result then
+  begin
+    if TThread.Current.ThreadID = MainThreadID then
+      FOnError(Sender, E, Code, Text)
+    else
+    begin
+      TThread.Synchronize(nil,
+        procedure
+        begin
+          FOnError(Sender, E, Code, Text);
+        end);
     end;
   end;
 end;
@@ -317,7 +337,7 @@ begin
         end;
       6: //Превышено кол-во запросов в сек
         begin
-          ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, Enter %d, StartRequest %d, LastRequest %d)', [FRequests,
+          ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests,
             RequestLimit, FStartRequest]));
           WaitTime(1000);
           Result := Execute(Request);
@@ -337,7 +357,9 @@ begin
         Result.JSON := Request.Response.JSONText;
         Result.Success := True;
       end;
-    end;
+    end
+    else
+      ProcError(TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString));
   end;
 end;
 
@@ -397,24 +419,23 @@ end;
 
 procedure TVkHandler.ProcError(Msg: string);
 begin
-  if Assigned(FOnError) then
-    FOnError(Self, TVkHandlerException.Create(Msg), ERROR_VK_UNKNOWN, Msg);
+  DoProcError(Self, TVkHandlerException.Create(Msg), ERROR_VK_UNKNOWN, Msg);
 end;
 
 procedure TVkHandler.ProcError(Code: Integer; Text: string);
 begin
-  if Assigned(FOnError) then
-  begin
-    if Text = '' then
-      Text := VKErrorString(Code);
-    FOnError(Self, TVkHandlerException.Create(Text), Code, Text);
-  end;
+  if Text.IsEmpty then
+    Text := VKErrorString(Code);
+  DoProcError(Self, TVkHandlerException.Create(Text), Code, Text);
 end;
 
 procedure TVkHandler.ProcError(E: Exception);
 begin
-  if Assigned(FOnError) then
-    FOnError(Self, TVkHandlerException.Create(E.Message), ERROR_VK_UNKNOWN, E.Message);
+  try
+    DoProcError(Self, TVkHandlerException.Create(E.Message), ERROR_VK_UNKNOWN, E.Message);
+  finally
+    E.Free;
+  end;
 end;
 
 end.

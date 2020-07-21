@@ -240,6 +240,21 @@ type
     class function FromJsonString(AJsonString: string): TVkLastSeen;
   end;
 
+  TVkUserOnlineInfo = class
+  private
+    FIs_mobile: Boolean;
+    FIs_online: Boolean;
+    FLast_seen: Int64;
+    FVisible: Boolean;
+  public
+    property IsMobile: Boolean read FIs_mobile write FIs_mobile;
+    property IsOnline: Boolean read FIs_online write FIs_online;
+    property LastSeen: Int64 read FLast_seen write FLast_seen;
+    property Visible: Boolean read FVisible write FVisible;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkUserOnlineInfo;
+  end;
+
   TVkUser = class
   private
     FAbout: string;
@@ -324,12 +339,16 @@ type
     FFound_with: string;
     FType: string;
     FInvited_by: Integer;
+    FOnline_info: TVkUserOnlineInfo;
+    FPhoto_medium_rec: string;
+    FPhoto: string;
     function GetRefer: string;
     function FGetFullName: string;
   public
+    property&Type: string read FType write FType;
     property About: string read FAbout write FAbout;
-    property Activity: string read FActivity write FActivity;
     property Activities: string read FActivities write FActivities;
+    property Activity: string read FActivity write FActivity;
     property BirthDate: string read FBdate write FBdate;
     property Blacklisted: Integer read FBlacklisted write FBlacklisted;
     property BlacklistedByMe: Integer read FBlacklisted_by_me write FBlacklisted_by_me;
@@ -342,8 +361,8 @@ type
     property CanSendFriendRequest: Integer read FCan_send_friend_request write FCan_send_friend_request;
     property CanWritePrivateMessage: Integer read FCan_write_private_message write FCan_write_private_message;
     property Career: TArray<TVkCareer> read FCareer write FCareer;
-    property CommonCount: Integer read FCommon_count write FCommon_count;
     property City: TVkCity read FCity write FCity;
+    property CommonCount: Integer read FCommon_count write FCommon_count;
     property Country: TVkCountry read FCountry write FCountry;
     property CropPhoto: TVkCropPhoto read FCrop_photo write FCrop_photo;
     property Domain: string read FDomain write FDomain;
@@ -355,6 +374,7 @@ type
     property FacultyName: string read FFaculty_name write FFaculty_name;
     property FirstName: string read FFirst_name write FFirst_name;
     property FollowersCount: Integer read FFollowers_count write FFollowers_count;
+    property FoundWith: string read FFound_with write FFound_with;
     property FriendStatus: Integer read FFriend_status write FFriend_status;
     property Games: string read FGames write FGames;
     property Graduation: Integer read FGraduation write FGraduation;
@@ -376,18 +396,22 @@ type
     property MobilePhone: string read FMobile_phone write FMobile_phone;
     property Movies: string read FMovies write FMovies;
     property Music: string read FMusic write FMusic;
+    property Mutual: TVkFriendsMutual read FMutual write FMutual;
     property NickName: string read FNickname write FNickname;
     property Occupation: TVkOccupation read FOccupation write FOccupation;
     property Online: Integer read FOnline write FOnline;
+    property OnlineInfo: TVkUserOnlineInfo read FOnline_info write FOnline_info;
     property Personal: TVkPersonal read FPersonal write FPersonal;
+    property Photo: string read FPhoto write FPhoto;
+    property Photo50: string read FPhoto_50 write FPhoto_50;
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property Photo200_Orig: string read FPhoto_200_orig write FPhoto_200_orig;
     property Photo400_Orig: string read FPhoto_400_orig write FPhoto_400_orig;
-    property Photo50: string read FPhoto_50 write FPhoto_50;
     property PhotoId: string read FPhoto_id write FPhoto_id;
     property PhotoMax: string read FPhoto_max write FPhoto_max;
     property PhotoMax_Orig: string read FPhoto_max_orig write FPhoto_max_orig;
+    property PhotoMediumRec: string read FPhoto_medium_rec write FPhoto_medium_rec;
     property Quotes: string read FQuotes write FQuotes;
     property Relation: Integer read FRelation write FRelation;
     property RelationPartner: TVkRelationPartner read FRelation_partner write FRelation_partner;
@@ -399,16 +423,13 @@ type
     property Skype: string read FSkype write FSkype;
     property Status: string read FStatus write FStatus;
     property TimeZone: Integer read FTimezone write FTimezone;
-    property &Type: string read FType write FType;
+    property Trending: Integer read FTrending write FTrending;
     property TV: string read FTv write FTv;
     property Twitter: string read FTwitter write FTwitter;
     property Universities: TArray<TVkUniversities> read FUniversities write FUniversities;
     property University: Integer read FUniversity write FUniversity;
     property UniversityName: string read FUniversity_name write FUniversity_name;
     property Verified: Integer read FVerified write FVerified;
-    property Trending: Integer read FTrending write FTrending;
-    property Mutual: TVkFriendsMutual read FMutual write FMutual;
-    property FoundWith: string read FFound_with write FFound_with;
     //
     property Refer: string read GetRefer;
     property GetFullName: string read FGetFullName;
@@ -612,6 +633,7 @@ begin
   FRelation_partner := TVkRelationPartner.Create();
   FPersonal := TVkPersonal.Create();
   FMutual := TVkFriendsMutual.Create();
+  FOnline_info := TVkUserOnlineInfo.Create;
 end;
 
 destructor TVkUser.Destroy;
@@ -634,6 +656,7 @@ begin
   for LrelativesItem in FRelatives do
     LrelativesItem.Free;
 
+  FOnline_info.Free;
   FCountry.Free;
   FCity.Free;
   FLast_seen.Free;
@@ -827,6 +850,18 @@ begin
 end;
 
 function TVkFriendsMutual.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkUserOnlineInfo }
+
+class function TVkUserOnlineInfo.FromJsonString(AJsonString: string): TVkUserOnlineInfo;
+begin
+  result := TJson.JsonToObject<TVkUserOnlineInfo>(AJsonString);
+end;
+
+function TVkUserOnlineInfo.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

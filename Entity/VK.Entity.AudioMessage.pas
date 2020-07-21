@@ -9,7 +9,7 @@ type
   TVkAudioMessage = class
   private
     FAccess_key: string;
-    FDuration: Extended;
+    FDuration: Int64;
     FId: Integer;
     FLink_mp3: string;
     FLink_ogg: string;
@@ -17,7 +17,7 @@ type
     FWaveform: TArray<Integer>;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
-    property Duration: Extended read FDuration write FDuration;
+    property Duration: Int64 read FDuration write FDuration;
     property Id: Integer read FId write FId;
     property LinkMp3: string read FLink_mp3 write FLink_mp3;
     property LinkOgg: string read FLink_ogg write FLink_ogg;

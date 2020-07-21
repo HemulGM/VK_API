@@ -1,6 +1,7 @@
 package VKComponents;
 
 {$R *.res}
+{$R *.dres}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -140,7 +141,11 @@ contains
   VK.Entity.Group.Longpoll in 'Entity\VK.Entity.Group.Longpoll.pas',
   VK.Entity.Group.LongpollSettings in 'Entity\VK.Entity.Group.LongpollSettings.pas',
   VK.Entity.Group.TokenPermissions in 'Entity\VK.Entity.Group.TokenPermissions.pas',
-  VK.Entity.Message.Chat in 'Entity\VK.Entity.Message.Chat.pas';
+  VK.Entity.Message.Chat in 'Entity\VK.Entity.Message.Chat.pas',
+  VK.Entity.Call in 'Entity\VK.Entity.Call.pas',
+  VK.Entity.Message.LongPoll in 'Entity\VK.Entity.Message.LongPoll.pas',
+  VK.Newsfeed in 'Controllers\VK.Newsfeed.pas',
+  VK.Entity.Newsfeed in 'Entity\VK.Entity.Newsfeed.pas';
 
 end.
 

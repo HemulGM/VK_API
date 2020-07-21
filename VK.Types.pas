@@ -32,6 +32,7 @@ const
   //Inner VK errors
   ERROR_VK_UNKNOWN = -1;
   ERROR_VK_NOTOKEN = -2;
+  ERROR_VK_INTERNAL = -3;
 
   //Message Flags
   MF_UNREAD = 1;
@@ -126,8 +127,6 @@ type
 
   TParamInt = TArrayOfInteger;
 
-  TUserIds = TArrayOfInteger;
-
   TIds = TArrayOfInteger;
 
   {$IFDEF OLD_VERSION}
@@ -156,6 +155,19 @@ type
   end;
 
   TAttachmentArray = TArrayOfString;
+
+  TVkPhotoFeedType = (ftPhoto, ftPhotoTag);
+
+  TVkPhotoFeedTypeHelper = record helper for TVkPhotoFeedType
+    function ToString: string; inline;
+  end;
+
+  TVkPhotoSystemAlbum = (saWall, saSaved, saProfile);
+
+  TVkPhotoSystemAlbumHelper = record helper for TVkPhotoSystemAlbum
+    function ToString: string; inline;
+    function ToVkId: Integer; inline;
+  end;
 
   //Флаги сообщений
   TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden,
@@ -436,6 +448,7 @@ type
     property Count: Integer read GetCount;
     property Attachments[Index: Integer]: TAttachInfoType read GetAttachments;
     function ToArray: TArray<TAttachInfoType>;
+    function ToArrayOfString: TArrayOfString;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMessageAttachmentInfo;
   end;
@@ -484,8 +497,9 @@ type
   end;
 
   //Типы объектов
-  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWalReply,
-    atSticker, atGift, atCall, atAudioMessage);
+  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWallReply,
+    atSticker, atGift, atCall, atAudioMessage, atPostedPhoto, atGraffiti, atNote, atApp, atPoll, atPage, atAlbum,
+    atPhotosList, atPrettyCards, atEvent);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToString: string; inline;
@@ -585,13 +599,13 @@ type
   end;
 
   TChatTypingData = record
-    UserIds: TUserIds;
+    UserIds: TIds;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
 
   TChatRecordingData = record
-    UserIds: TUserIds;
+    UserIds: TIds;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
@@ -712,6 +726,11 @@ var
     'Редактор', 'Администратор');
   VkUserBlockReason: array[TVkUserBlockReason] of string = ('Другое', 'Спам',
     'Оскорбление участников', 'Мат', 'Разговоры не по теме');
+  VkMessageFlagTypes: array[TMessageFlag] of string = ('Unknown_9', 'Unknown_8',
+    'Unknown_7', 'Unknown_6', 'NotDelivered', 'DeleteForAll', 'Hidden',
+    'Unknown_5', 'Unknown_4', 'UnreadMultichat', 'Unknown_3', 'Unknown_2',
+    'Unknown_1', 'Media', 'Fixed', 'Deleted', 'Spam', 'Friends', 'Chat',
+    'Important', 'Replied', 'Outbox', 'Unread');
 
 var
   VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8,
@@ -719,11 +738,6 @@ var
     MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2,
     MF_UNKNOWN_1, MF_MEDIA, MF_FIXED, MF_DELЕTЕD, MF_SPAM, MF_FRIENDS, MF_CHAT,
     MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
-  VkMessageFlagTypes: array[TMessageFlag] of string = ('Unknown_9', 'Unknown_8',
-    'Unknown_7', 'Unknown_6', 'NotDelivered', 'DeleteForAll', 'Hidden',
-    'Unknown_5', 'Unknown_4', 'UnreadMultichat', 'Unknown_3', 'Unknown_2',
-    'Unknown_1', 'Media', 'Fixed', 'Deleted', 'Spam', 'Friends', 'Chat',
-    'Important', 'Replied', 'Outbox', 'Unread');
   VkAudioGenres: array[TAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP,
     AG_RAPANDHIPHOP, AG_EASYLISTENING, AG_HOUSEANDDANCE, AG_INSTRUMENTAL,
     AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS,
@@ -739,7 +753,8 @@ var
     'iPad', 'Android', 'Windows Phone', 'Windows', 'Web');
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video',
     'audio', 'doc', 'link', 'market', 'market_album', 'wall', 'wall_reply',
-    'sticker', 'gift', 'call', 'audio_message');
+    'sticker', 'gift', 'call', 'audio_message', 'posted_photo', 'graffiti', 'note',
+    'app', 'poll', 'page', 'album', 'photos_list', 'pretty_cards', 'event');
   VkPeerType: array[TVkPeerType] of string = ('', 'user', 'chat', 'group', 'email');
   VkNameCase: array[TVkNameCase] of string = ('nom', 'gen', 'dat', 'acc', 'ins', 'abl');
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo',
@@ -928,6 +943,9 @@ begin
     21:
       ErrStr :=
         'Данное действие разрешено только для Standalone и Open API приложений.';
+    22:
+      ErrStr :=
+        'Ошибка загрузки.';
     23:
       ErrStr :=
         'Метод был выключен. Все актуальные методы ВК API, которые доступны в настоящий момент, перечислены здесь: https://vk.com/dev/methods.';
@@ -957,7 +975,7 @@ begin
         'Неверный API ID приложения. Найдите приложение в списке администрируемых на странице https://vk.com/apps?act=settings и укажите в запросе верный API_ID (идентификатор приложения).';
     103:
       ErrStr :=
-        'Out of limits';
+        'Лимит вступлений исчерпан';
     104:
       ErrStr :=
         'Not found';
@@ -1018,9 +1036,21 @@ begin
     706:
       ErrStr :=
         'Too many addresses in club';
+    900:
+      ErrStr :=
+        'Нельзя отправлять сообщение пользователю из черного списка';
     901:
       ErrStr :=
         'Нельзя первым писать пользователю от имени сообщества';
+    902:
+      ErrStr :=
+        'Нельзя отправлять сообщения этому пользователю в связи с настройками приватности';
+    907:
+      ErrStr :=
+        'Значение ts или pts слишком маленькое, получите новое значение.';
+    908:
+      ErrStr :=
+        'Значение ts или pts слишком большое, получите новое значение.';
     909:
       ErrStr :=
         'Невозможно отредактировать сообщение после 24 часов';
@@ -1033,27 +1063,54 @@ begin
     912:
       ErrStr :=
         'This is a chat bot feature, change this status in settings';
+    913:
+      ErrStr :=
+        'Слишком много пересланных сообщений';
     914:
       ErrStr :=
         'Сообщение слишком длинное';
     917:
       ErrStr :=
         'У вас нет доступа в эту беседу';
+    919:
+      ErrStr :=
+        'Вам недоступны ссылки для приглашения в этот чат.';
     920:
       ErrStr :=
         'Невозможно отредактировать сообщение такого типа';
+    921:
+      ErrStr :=
+        'Невозможно переслать выбранные сообщения';
     924:
       ErrStr :=
         'Невозможно удалить сообщение для получателей';
     925:
       ErrStr :=
         'You are not admin of this chat';
+    931:
+      ErrStr :=
+        'You can''t change invite link for this chat';
+    932:
+      ErrStr :=
+        'Your community can''t interact with this peer';
+    935:
+      ErrStr :=
+        'Такого пользователя в чате нет.';
     936:
       ErrStr :=
         'Contact not found';
     940:
       ErrStr :=
         'Too many posts in messages';
+    942:
+      ErrStr :=
+        'Cannot pin one-time story';
+    943:
+      ErrStr :=
+        'Cannot use this intent';
+    944:
+      ErrStr :=
+        'Limits overflow for this intent';
     945:
       ErrStr :=
         'Chat was disabled';
@@ -1063,6 +1120,12 @@ begin
     949:
       ErrStr :=
         'Can''t edit pinned message yet';
+    950:
+      ErrStr :=
+        'Can''t send message, reply timed out';
+    1160:
+      ErrStr :=
+        'Оригинал фотографии был изменен.';
     1260:
       ErrStr :=
         'Invalid screen name';
@@ -1149,6 +1212,50 @@ begin
       Result := 'Reset';
   else
     Exit('');
+  end;
+end;
+
+{ TVkPhotoSystemAlbumHelper }
+
+function TVkPhotoSystemAlbumHelper.ToString: string;
+begin
+  case Self of
+    saWall:
+      Exit('wall');
+    saSaved:
+      Exit('saved');
+    saProfile:
+      Exit('profile');
+  else
+    Result := '';
+  end;
+end;
+
+function TVkPhotoSystemAlbumHelper.ToVkId: Integer;
+begin
+  case Self of
+    saWall:
+      Exit(-7);
+    saSaved:
+      Exit(-15);
+    saProfile:
+      Exit(-6);
+  else
+    Result := 0;
+  end;
+end;
+
+{ TVkPhotoFeedTypeHelper }
+
+function TVkPhotoFeedTypeHelper.ToString: string;
+begin
+  case Self of
+    ftPhoto:
+      Exit('photo');
+    ftPhotoTag:
+      Exit('photo_tag');
+  else
+    Result := '';
   end;
 end;
 
@@ -1573,6 +1680,15 @@ begin
   SetLength(Result, Count);
   for i := 0 to Count - 1 do
     Result[i] := Attachments[i];
+end;
+
+function TVkMessageAttachmentInfo.ToArrayOfString: TArrayOfString;
+var
+  i: Integer;
+begin
+  SetLength(Result, Self.Count);
+  for i := 0 to Self.Count - 1 do
+    Result[i] := Self.Attachments[i].Attach;
 end;
 
 function TVkMessageAttachmentInfo.ToJsonString: string;

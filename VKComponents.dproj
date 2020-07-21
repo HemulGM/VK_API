@@ -226,6 +226,26 @@
         <DCCReference Include="Entity\VK.Entity.Group.LongpollSettings.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.TokenPermissions.pas"/>
         <DCCReference Include="Entity\VK.Entity.Message.Chat.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Call.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Message.LongPoll.pas"/>
+        <DCCReference Include="Controllers\VK.Newsfeed.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Newsfeed.pas"/>
+        <RcItem Include="Media\vk group 2.bmp">
+            <ResourceType>BITMAP</ResourceType>
+            <ResourceId>TVkGroupEventsController</ResourceId>
+        </RcItem>
+        <RcItem Include="Media\vk group.bmp">
+            <ResourceType>BITMAP</ResourceType>
+            <ResourceId>TVkGroupEvents</ResourceId>
+        </RcItem>
+        <RcItem Include="Media\vk user.bmp">
+            <ResourceType>BITMAP</ResourceType>
+            <ResourceId>TVkUserEvents</ResourceId>
+        </RcItem>
+        <RcItem Include="Media\vk_icon.bmp">
+            <ResourceType>BITMAP</ResourceType>
+            <ResourceId>TVK</ResourceId>
+        </RcItem>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

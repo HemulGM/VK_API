@@ -25,7 +25,10 @@ begin
           Console.AddLine(['Message', Message.PeerId.ToString, Message.ConversationMessageId.ToString,
             IfThen(Message.Text.IsEmpty, '<attach>', Message.Text)], BLUE or GREEN);
           //DoSomething with NewMessage async
-          Bot.API.Messages.Send(Message.PeerId, '=)');
+          if Message.Action.&Type = 'chat_invite_user' then
+            Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome')
+          else
+            Bot.API.Messages.SendToPeer(Message.PeerId, '=)');
         end;
 
       OnMessageEdit :=
@@ -34,13 +37,7 @@ begin
           Console.AddLine(['Message', Message.PeerId.ToString, Message.ConversationMessageId.ToString,
             IfThen(Message.Text.IsEmpty, '<attach>', Message.Text)], BLUE or GREEN);
           //DoSomething with EditMessage async
-          Bot.API.Messages.Send(Message.PeerId, '=|');
-        end;
-
-      OnJoin :=
-        procedure(Bot: TVkBot; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; EventId: string)
-        begin
-          //Bot.API.Messages.Send(Message.PeerId, '=|');
+          Bot.API.Messages.SendToPeer(Message.PeerId, '=|');
         end;
 
       OnError :=

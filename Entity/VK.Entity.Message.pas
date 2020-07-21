@@ -93,6 +93,7 @@ type
     FKeyboard: TVkKeyboard;
     FReply_message: TVkMessage;
     FAction: TVkMessageAction;
+    FWas_listened: Boolean;
     function GetPayloadButton: TVkPayloadButton;
     function GetOut: Boolean;
     procedure SetOut(const Value: Boolean);
@@ -109,6 +110,7 @@ type
     property RefSource: string read FRef_source write FRef_source;
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
     property Important: Boolean read FImportant write FImportant;
+    property WasListened: Boolean read FWas_listened write FWas_listened;
     property Geo: TVkGeo read FGeo write FGeo;
     property Payload: string read FPayload write FPayload;
     property Keyboard: TVkKeyboard read FKeyboard write FKeyboard;
@@ -117,10 +119,10 @@ type
     property Action: TVkMessageAction read FAction write FAction;
     property PayloadButton: TVkPayloadButton read GetPayloadButton;
     //
+    function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
     property&Out: Boolean read GetOut write SetOut;
-    function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMessage;
@@ -145,6 +147,23 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMessages;
+  end;
+
+  TVkLongPollHistory = class
+  private
+    FHistory: TArray<TArray<Integer>>;
+    FMessages: TVkMessages;
+    FProfiles: TArray<TVkUser>;
+    FNew_pts: Integer;
+  public
+    property History: TArray<TArray<Integer>> read FHistory write FHistory;
+    property Messages: TVkMessages read FMessages write FMessages;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property NewPts: Integer read FNew_pts write FNew_pts;
+    constructor Create;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkLongPollHistory;
   end;
 
 implementation
@@ -189,6 +208,24 @@ begin
   inherited;
 end;
 
+function TVkMessage.GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
+var
+  i, c: Integer;
+begin
+  c := -1;
+  Result := False;
+  for i := Low(FAttachments) to High(FAttachments) do
+    if FAttachments[i].&Type in [atPhoto, atVideo] then
+    begin
+      Inc(c);
+      if c = Index then
+      begin
+        Url := FAttachments[i].GetPreviewUrl;
+        Exit(True);
+      end;
+    end;
+end;
+
 function TVkMessage.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
@@ -221,24 +258,6 @@ begin
   except
     Exit(nil);
   end;
-end;
-
-function TVkMessage.GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
-var
-  i, c: Integer;
-begin
-  c := -1;
-  Result := False;
-  for i := Low(FAttachments) to High(FAttachments) do
-    if FAttachments[i].&Type in [atPhoto, atVideo] then
-    begin
-      Inc(c);
-      if c = Index then
-      begin
-        Url := FAttachments[i].GetPreviewUrl;
-        Exit(True);
-      end;
-    end;
 end;
 
 procedure TVkMessage.SetDate(const Value: TDateTime);
@@ -356,6 +375,33 @@ end;
 procedure TVkMessageDelete.SetItems(const Value: TDictionary<string, Boolean>);
 begin
   FItems := Value;
+end;
+
+{ TVkLongPollHistory }
+
+constructor TVkLongPollHistory.Create;
+begin
+  FMessages := TVkMessages.Create;
+end;
+
+destructor TVkLongPollHistory.Destroy;
+var
+  LUserItem: TVkUser;
+begin
+  for LUserItem in FProfiles do
+    LUserItem.Free;
+  FMessages.Free;
+  inherited;
+end;
+
+class function TVkLongPollHistory.FromJsonString(AJsonString: string): TVkLongPollHistory;
+begin
+  result := TJson.JsonToObject<TVkLongPollHistory>(AJsonString);
+end;
+
+function TVkLongPollHistory.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

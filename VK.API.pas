@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
-  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts,
+  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -84,12 +84,14 @@ type
     FVideo: TVideoController;
     FWall: TWallController;
     FGifts: TGiftsController;
+    FNewsfeed: TNewsfeedController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
     function GetToken: string;
     function GetTokenExpiry: Int64;
     procedure DoLogin;
+    function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAuthError(const AText: string; AStatusCode: Integer);
     procedure FLog(Sender: TObject; const Value: string);
@@ -205,6 +207,10 @@ type
     /// Методы для работы с личными сообщениями.
     /// </summary>
     property Messages: TMessagesController read FMessages;
+    /// <summary>
+    /// Методы для работы с новостной лентой пользователя.
+    /// </summary>
+    property Newsfeed: TNewsfeedController read FNewsfeed;
     /// <summary>
     /// Методы для работы с заметками.
     /// </summary>
@@ -348,6 +354,7 @@ begin
   FAuth := TAuthController.Create(FHandler);
   FUsers := TUsersController.Create(FHandler);
   FMessages := TMessagesController.Create(FHandler);
+  FNewsfeed := TNewsfeedController.Create(FHandler);
   FStatus := TStatusController.Create(FHandler);
   FWall := TWallController.Create(FHandler);
   FDoc := TDocController.Create(FHandler);
@@ -372,6 +379,7 @@ destructor TCustomVK.Destroy;
 begin
   FBoard.Free;
   FFriends.Free;
+  FNewsfeed.Free;
   FGroups.Free;
   FGifts.Free;
   FPhotos.Free;
@@ -411,6 +419,19 @@ begin
   FIsLogin := True;
   if Assigned(FOnLogin) then
     FOnLogin(Self);
+end;
+
+function TCustomVK.DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
+begin
+  Result := Assigned(FOnError);
+  if Result then
+  begin
+    try
+      FOnError(Sender, E, Code, Text);
+    except
+      //Ну зачем так?
+    end;
+  end;
 end;
 
 procedure TCustomVK.FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
@@ -473,9 +494,8 @@ end;
 
 procedure TCustomVK.FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
-  if Assigned(FOnError) then
+  if DoOnError(Self, E, Code, Text) then
   begin
-    FOnError(Self, E, Code, Text);
     if Assigned(E) then
       E.Free;
   end

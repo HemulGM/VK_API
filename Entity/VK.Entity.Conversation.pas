@@ -3,8 +3,7 @@ unit VK.Entity.Conversation;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.User,
-  VK.Entity.Group, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.User, VK.Entity.Group, VK.Types;
 
 type
   TVkChatAccess = class
@@ -17,40 +16,75 @@ type
     FCan_moderate: Boolean;
     FCan_promote_users: Boolean;
     FCan_see_invite_link: Boolean;
+    FCan_call: Boolean;
+    FCan_use_mass_mentions: Boolean;
+    FCan_change_service_type: Boolean;
   public
+    property CanCall: Boolean read FCan_call write FCan_call;
     property CanChangeInfo: Boolean read FCan_change_info write FCan_change_info;
     property CanChangeInviteLink: Boolean read FCan_change_invite_link write FCan_change_invite_link;
     property CanChangePin: Boolean read FCan_change_pin write FCan_change_pin;
+    property CanChangeServiceType: Boolean read FCan_change_service_type write FCan_change_service_type;
     property CanCopyChat: Boolean read FCan_copy_chat write FCan_copy_chat;
     property CanInvite: Boolean read FCan_invite write FCan_invite;
     property CanModerate: Boolean read FCan_moderate write FCan_moderate;
     property CanPromoteUsers: Boolean read FCan_promote_users write FCan_promote_users;
     property CanSeeInviteLink: Boolean read FCan_see_invite_link write FCan_see_invite_link;
+    property CanUseMassMentions: Boolean read FCan_use_mass_mentions write FCan_use_mass_mentions;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkChatAccess;
+  end;
+
+  TVkChatPermissions = class
+  private
+    FCall: string;
+    FChange_admins: string;
+    FChange_info: string;
+    FChange_pin: string;
+    FInvite: string;
+    FSee_invite_link: string;
+    FUse_mass_mentions: string;
+  public
+    property Call: string read FCall write FCall;
+    property ChangeAdmins: string read FChange_admins write FChange_admins;
+    property ChangeInfo: string read FChange_info write FChange_info;
+    property ChangePin: string read FChange_pin write FChange_pin;
+    property Invite: string read FInvite write FInvite;
+    property SeeInviteLink: string read FSee_invite_link write FSee_invite_link;
+    property UseMassMentions: string read FUse_mass_mentions write FUse_mass_mentions;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkChatPermissions;
   end;
 
   TVkChatSettings = class
   private
     FAcl: TVkChatAccess;
-    FActive_ids: TArray<Extended>;
-    FAdmin_ids: TArray<Extended>;
-    FMembers_count: Extended;
-    FOwner_id: Extended;
+    FActive_ids: TArray<Integer>;
+    FAdmin_ids: TArray<Integer>;
+    FMembers_count: Integer;
+    FOwner_id: Integer;
     FPhoto: TVkChatPhoto;
     FPinned_message: TVkMessage;
     FState: string;
     FTitle: string;
+    FIs_group_channel: Boolean;
+    FPermissions: TVkChatPermissions;
+    FIs_disappearing: Boolean;
+    FIs_service: Boolean;
   public
     property ACL: TVkChatAccess read FAcl write FAcl;
-    property ActiveIds: TArray<Extended> read FActive_ids write FActive_ids;
-    property AdminIds: TArray<Extended> read FAdmin_ids write FAdmin_ids;
-    property MembersCount: Extended read FMembers_count write FMembers_count;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property ActiveIds: TArray<Integer> read FActive_ids write FActive_ids;
+    property AdminIds: TArray<Integer> read FAdmin_ids write FAdmin_ids;
+    property MembersCount: Integer read FMembers_count write FMembers_count;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property IsGroupChannel: Boolean read FIs_group_channel write FIs_group_channel;
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
     property PinnedMessage: TVkMessage read FPinned_message write FPinned_message;
     property State: string read FState write FState;
     property Title: string read FTitle write FTitle;
+    property Permissions: TVkChatPermissions read FPermissions write FPermissions;
+    property IsDisappearing: Boolean read FIs_disappearing write FIs_disappearing;
+    property IsService: Boolean read FIs_service write FIs_service;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -100,6 +134,17 @@ type
     class function FromJsonString(AJsonString: string): TVkPeer;
   end;
 
+  TVkConversationSort = class
+  private
+    FMinor_id: Integer;
+    FMajor_id: Integer;
+  public
+    property MajorId: Integer read FMajor_id write FMajor_id;
+    property MinorId: Integer read FMinor_id write FMinor_id;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkConversationSort;
+  end;
+
   TVkConversation = class
   private
     FCan_write: TVkCanWrite;
@@ -113,6 +158,8 @@ type
     FImportant: Boolean;
     FCan_send_money: Boolean;
     FCan_receive_money: Boolean;
+    FSort_id: TVkConversationSort;
+    FIs_marked_unread: Boolean;
     function GetIsChat: Boolean;
     function GetIsUser: Boolean;
   public
@@ -122,6 +169,8 @@ type
     property LastMessageId: Integer read FLast_message_id write FLast_message_id;
     property OutRead: Integer read FOut_read write FOut_read;
     property Peer: TVkPeer read FPeer write FPeer;
+    property SortId: TVkConversationSort read FSort_id write FSort_id;
+    property IsMarkedUnread: Boolean read FIs_marked_unread write FIs_marked_unread;
     property UnreadCount: Integer read FUnread_count write FUnread_count;
     property Unanswered: Boolean read FUnanswered write FUnanswered;
     property Important: Boolean read FImportant write FImportant;
@@ -133,6 +182,22 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkConversation;
+  end;
+
+  TVkConversations = class
+  private
+    FCount: Integer;
+    FItems: TArray<TVkConversation>;
+    FProfiles: TArray<TVkUser>;
+    FGroups: TArray<TVkGroup>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkConversation> read FItems write FItems;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkConversations;
   end;
 
   TVkConversationItem = class
@@ -183,12 +248,30 @@ type
     property Conversations: TArray<TVkConversation> read FConversations write FConversations;
     property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    //
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     property SaveMessages: Boolean read FSaveMessages write SetSaveMessages;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMessageHistory;
+  end;
+
+  TVkImportantMessages = class
+  private
+    FMessages: TVkMessages;
+    FProfiles: TArray<TVkUser>;
+    FGroups: TArray<TVkGroup>;
+    FConversations: TArray<TVkConversation>;
+  public
+    property Messages: TVkMessages read FMessages write FMessages;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    property Conversations: TArray<TVkConversation> read FConversations write FConversations;
+    constructor Create;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkImportantMessages;
   end;
 
 implementation
@@ -212,6 +295,7 @@ begin
   inherited;
   FAcl := TVkChatAccess.Create();
   FPhoto := TVkChatPhoto.Create();
+  FPermissions := TVkChatPermissions.Create;
 end;
 
 destructor TVkChatSettings.Destroy;
@@ -220,6 +304,7 @@ begin
   if Assigned(FPinned_message) then
     FPinned_message.Free;
   FPhoto.Free;
+  FPermissions.Free;
   inherited;
 end;
 
@@ -429,6 +514,94 @@ begin
 end;
 
 function TVkMessageHistory.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkConversationSort }
+
+class function TVkConversationSort.FromJsonString(AJsonString: string): TVkConversationSort;
+begin
+  result := TJson.JsonToObject<TVkConversationSort>(AJsonString);
+end;
+
+function TVkConversationSort.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkChatPermissions }
+
+class function TVkChatPermissions.FromJsonString(AJsonString: string): TVkChatPermissions;
+begin
+  result := TJson.JsonToObject<TVkChatPermissions>(AJsonString);
+end;
+
+function TVkChatPermissions.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkConversations }
+
+destructor TVkConversations.Destroy;
+var
+  LItemsItem: TVkConversation;
+  LuserItem: TVkUser;
+  LgroupItem: TVkGroup;
+begin
+  for LItemsItem in FItems do
+    LItemsItem.Free;
+
+  for LuserItem in FProfiles do
+    LuserItem.Free;
+
+  for LgroupItem in FGroups do
+    LgroupItem.Free;
+  inherited;
+end;
+
+class function TVkConversations.FromJsonString(AJsonString: string): TVkConversations;
+begin
+  result := TJson.JsonToObject<TVkConversations>(AJsonString);
+end;
+
+function TVkConversations.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkImportantMessages }
+
+constructor TVkImportantMessages.Create;
+begin
+  FMessages := TVkMessages.Create;
+end;
+
+destructor TVkImportantMessages.Destroy;
+var
+  LItemsItem: TVkConversation;
+  LuserItem: TVkUser;
+  LgroupItem: TVkGroup;
+begin
+  for LItemsItem in FConversations do
+    LItemsItem.Free;
+
+  for LuserItem in FProfiles do
+    LuserItem.Free;
+
+  for LgroupItem in FGroups do
+    LgroupItem.Free;
+  FMessages.Free;
+  inherited;
+end;
+
+class function TVkImportantMessages.FromJsonString(AJsonString: string): TVkImportantMessages;
+begin
+  result := TJson.JsonToObject<TVkImportantMessages>(AJsonString);
+end;
+
+function TVkImportantMessages.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
