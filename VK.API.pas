@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
-  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed,
+  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -85,6 +85,8 @@ type
     FWall: TWallController;
     FGifts: TGiftsController;
     FNewsfeed: TNewsfeedController;
+    FLogResponse: Boolean;
+    FNotifications: TNotificationsController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
@@ -119,6 +121,7 @@ type
     procedure SetUseServiceKeyOnly(const Value: Boolean);
     procedure SetUsePseudoAsync(const Value: Boolean);
     function GetUsePseudoAsync: Boolean;
+    procedure SetLogResponse(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -216,6 +219,10 @@ type
     /// </summary>
     property Notes: TNotesController read FNotes;
     /// <summary>
+    /// Notifications
+    /// </summary>
+    property Notifications: TNotificationsController read FNotifications;
+    /// <summary>
     /// Ìועמהû הכÿ נאבמעû ס פמעמדנאפטÿלט.
     /// </summary>
     property Photos: TPhotosController read FPhotos;
@@ -244,7 +251,7 @@ type
     property AppKey: string read FAppKey write SetAppKey;
     property EndPoint: string read FEndPoint write SetEndPoint;
     property Handler: TVkHandler read FHandler write SetHandler;
-    property APIVersion: string read FAPIVersion write SetAPIVersion;
+    property APIVersion: string read FAPIVersion;
     property BaseURL: string read FBaseURL write SetBaseURL;
     property ServiceKey: string read FServiceKey write SetServiceKey;
     property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
@@ -262,6 +269,7 @@ type
     property Token: string read GetToken write SetToken;
     property TokenExpiry: Int64 read GetTokenExpiry write SetTokenExpiry;
     property Logging: Boolean read FLogging write SetLogging;
+    property LogResponse: Boolean read FLogResponse write SetLogResponse;
     property IsWorking: Boolean read GetIsWorking;
     property TestMode: Boolean read GetTestMode write SetTestMode;
     property Permissions: TVkPermissions read FPermissions write SetPermissions;
@@ -346,9 +354,16 @@ begin
   //Defaults
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
-  APIVersion := '5.103';
-  Permissions := [TVkPermission.Groups, TVkPermission.Friends, TVkPermission.Wall, TVkPermission.Photos,
-    TVkPermission.Video, TVkPermission.Docs, TVkPermission.Notes, TVkPermission.Market];
+  SetAPIVersion('5.120');
+  Permissions := [
+    TVkPermission.Groups,
+    TVkPermission.Friends,
+    TVkPermission.Wall,
+    TVkPermission.Photos,
+    TVkPermission.Video,
+    TVkPermission.Docs,
+    TVkPermission.Notes,
+    TVkPermission.Market];
   //Controllers
   FAccount := TAccountController.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
@@ -371,6 +386,7 @@ begin
   FMarket := TMarketController.Create(FHandler);
   FFave := TFaveController.Create(FHandler);
   FNotes := TNotesController.Create(FHandler);
+  FNotifications := TNotificationsController.Create(FHandler);
   //Tools
   FUploader := TUploader.Create;
 end;
@@ -399,6 +415,7 @@ begin
   FAccount.Free;
   FAuth.Free;
   FMessages.Free;
+  FNotifications.Free;
   FProxy.Free;
   FHandler.Free;
   inherited;
@@ -633,6 +650,13 @@ end;
 procedure TCustomVK.SetLogging(const Value: Boolean);
 begin
   FLogging := Value;
+  FHandler.Logging := Value;
+end;
+
+procedure TCustomVK.SetLogResponse(const Value: Boolean);
+begin
+  FLogResponse := Value;
+  FHandler.LogResponse := Value;
 end;
 
 procedure TCustomVK.SetBaseURL(const Value: string);

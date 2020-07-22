@@ -67,6 +67,10 @@ type
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
+    function Get(var Audios: TVkAudios; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Возвращает информацию об аудиозаписях
+    /// </summary>
     function Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
@@ -362,9 +366,9 @@ begin
   end;
 end;
 
-function TAudioController.Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean;
+function TAudioController.Get(var Audios: TVkAudios; Params: TParams): Boolean;
 begin
-  with Handler.Execute('audio.get', Params.List) do
+  with Handler.Execute('audio.get', Params) do
   begin
     Result := Success;
     if Result then
@@ -376,6 +380,11 @@ begin
       end;
     end;
   end;
+end;
+
+function TAudioController.Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean;
+begin
+  Result := Get(Audios, Params.List);
 end;
 
 function TAudioController.GetPlaylists(var Items: TVkPlaylists; OwnerID: Integer): Boolean;

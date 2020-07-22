@@ -3,11 +3,9 @@ unit VK.GroupEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  REST.Client, System.JSON, VK.Types, System.Generics.Collections,
-  VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
-  VK.Entity.GroupSettings;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON, VK.Types,
+  System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo, VK.Entity.GroupSettings;
 
 type
   TVkObjectInfo = record
@@ -70,7 +68,8 @@ type
     GroupId: Integer;
   end;
 
-  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId: string) of object;
+  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId:
+    string) of object;
 
   TOnCommentDelete = procedure(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string) of object;
 
@@ -80,13 +79,15 @@ type
 
   TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; EventId: string) of object;
 
-  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId: string) of object;
+  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId:
+    string) of object;
 
   TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string) of object;
 
   TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; EventId: string) of object;
 
-  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string) of object;
+  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string)
+    of object;
 
   TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction; EventId: string) of object;
 
@@ -102,13 +103,15 @@ type
 
   TOnAudioNew = procedure(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string) of object;
 
-  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string) of object;
+  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo;
+    EventId: string) of object;
 
   TOnGroupMessageAction = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string) of object;
 
   TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string; EventId: string) of object;
 
-  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId: string) of object;
+  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId:
+    string) of object;
 
   TCustomGroupEvents = class(TComponent)
   private
@@ -157,6 +160,7 @@ type
     FOnGroupAppPayload: TOnGroupAppPayload;
     FOnMessageTypingState: TOnGroupMessageTypingState;
     FVersion: string;
+    FLogging: Boolean;
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
@@ -248,6 +252,7 @@ type
     procedure SetOnMessageTypingState(const Value: TOnGroupMessageTypingState);
     function GetIsWork: Boolean;
     procedure SetVersion(const Value: string);
+    procedure SetLogging(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -257,6 +262,7 @@ type
     property VK: TCustomVK read FVK write SetVK;
     property GroupID: Integer read FGroupID write SetGroupID;
     property IsWork: Boolean read GetIsWork;
+    property Logging: Boolean read FLogging write SetLogging;
     //
     property OnWallReplyNew: TOnCommentAction read FOnWallReplyNew write SetOnWallReplyNew;
     property OnWallReplyEdit: TOnCommentAction read FOnWallReplyEdit write SetOnWallReplyEdit;
@@ -352,6 +358,7 @@ type
     FOnGroupAppPayload: TOnGroupAppPayload;
     FOnMessageTypingState: TOnGroupMessageTypingState;
     FVersion: string;
+    FLogging: Boolean;
     procedure SetItems(const Value: TGroupEventsItems);
     procedure SetGroups(const Value: TStrings);
     procedure SetVK(const Value: TCustomVK);
@@ -397,6 +404,7 @@ type
     procedure SetOnGroupPayTransaction(const Value: TOnGroupPayTransaction);
     procedure SetOnMessageTypingState(const Value: TOnGroupMessageTypingState);
     procedure SetVersion(const Value: string);
+    procedure SetLogging(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -408,6 +416,7 @@ type
     property Items: TGroupEventsItems read FItems write SetItems;
     property VK: TCustomVK read FVK write SetVK;
     property Groups: TStrings read FGroups write SetGroups;
+    property Logging: Boolean read FLogging write SetLogging;
     property OnWallReplyNew: TOnCommentAction read FOnWallReplyNew write SetOnWallReplyNew;
     property OnWallReplyEdit: TOnCommentAction read FOnWallReplyEdit write SetOnWallReplyEdit;
     property OnWallReplyRestore: TOnCommentAction read FOnWallReplyRestore write SetOnWallReplyRestore;
@@ -477,9 +486,7 @@ begin
   FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
-  {$IFDEF FULLLOG}
-  FLongPollServer.FullLog := True;
-  {$ENDIF}
+  FLongPollServer.Logging := True;
 end;
 
 destructor TCustomGroupEvents.Destroy;
@@ -1258,6 +1265,12 @@ begin
   FGroupID := Abs(Value);
 end;
 
+procedure TCustomGroupEvents.SetLogging(const Value: Boolean);
+begin
+  FLogging := Value;
+  FLongPollServer.Logging := Value;
+end;
+
 procedure TCustomGroupEvents.SetOnAudioNew(const Value: TOnAudioNew);
 begin
   FOnAudioNew := Value;
@@ -1552,11 +1565,13 @@ begin
   if Assigned(AOwner) and (csDesigning in ComponentState) then
   begin
     for i := 0 to AOwner.ComponentCount - 1 do
+    begin
       if AOwner.Components[i] is TCustomVK then
       begin
         FVK := AOwner.Components[i] as TCustomVK;
         Break;
       end;
+    end;
   end;
   FVersion := '3';
   FReaded := False;
@@ -1579,9 +1594,7 @@ var
   i: Integer;
 begin
   for i := 0 to FItems.Count - 1 do
-  begin
     FItems[i].Free;
-  end;
   FItems.Free;
   FGroups.Free;
   inherited;
@@ -1605,6 +1618,15 @@ end;
 procedure TCustomGroupEventControl.SetItems(const Value: TGroupEventsItems);
 begin
   FItems := Value;
+end;
+
+procedure TCustomGroupEventControl.SetLogging(const Value: Boolean);
+var
+  i: Integer;
+begin
+  FLogging := Value;
+  for i := 0 to FItems.Count - 1 do
+    FItems[i].Logging := Value;
 end;
 
 procedure TCustomGroupEventControl.SetOnAudioNew(const Value: TOnAudioNew);

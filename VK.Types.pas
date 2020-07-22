@@ -1048,6 +1048,9 @@ begin
     706:
       ErrStr :=
         'Too many addresses in club';
+    711:
+      ErrStr :=
+        'Application is not installed in community';
     900:
       ErrStr :=
         'Нельзя отправлять сообщение пользователю из черного списка';

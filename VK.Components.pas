@@ -18,11 +18,12 @@ type
     property AppKey;      // default empty
     property EndPoint;    // default 'https://oauth.vk.com/authorize';
     property Permissions nodefault; // default 'groups,friends,wall,photos,video,docs,notes,market';
-    property APIVersion;  // default '5.103';
+    property APIVersion;  // readonly
     property BaseURL;     // default 'https://api.vk.com/method';
     property ServiceKey;  // default empty
     property UseServiceKeyOnly default False;
     property Logging default False;
+    property LogResponse default False;
     property TestMode default False;
     property Token;
     property Lang default vlAuto;
@@ -59,6 +60,7 @@ type
     property OnCountChange;
     property OnNotifyChange;
     property Version;
+    property Logging default False;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]
@@ -113,6 +115,7 @@ type
     property OnGroupPayTransaction;
     property OnGroupAppPayload;
     property Version;
+    property Logging default False;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]
@@ -167,6 +170,7 @@ type
     property OnGroupPayTransaction;
     property OnGroupAppPayload;
     property Version;
+    property Logging default False;
   end;
 
 procedure Register;

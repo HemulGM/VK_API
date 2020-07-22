@@ -13,12 +13,6 @@ type
     function ToString: string; inline;
   end;
 
-  TVkFaveTypeGet = (ftPost, ftVideo, ftProduct, ftArticle, ftLink);
-
-  TVkFaveTypeGetHelper = record helper for TVkFaveTypeGet
-    function ToString: string; inline;
-  end;
-
   TVkFavePageType = (ftUsers, ftGroups, ftHints);
 
   TVkFavePageTypeHelper = record helper for TVkFavePageType
@@ -28,7 +22,7 @@ type
   TVkParamsFaveGet = record
     List: TParams;
     function TagId(Value: Integer): Integer;
-    function ItemType(Value: TVkFaveTypeGet): Integer;
+    function ItemType(Value: TVkFaveType): Integer;
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
     function Fields(Value: TArrayOfString): Integer;
@@ -52,7 +46,7 @@ type
 
   TVkParamsFaveTagsSet = record
     List: TParams;
-    function ItemType(Value: TVkFaveTypeGet): Integer;
+    function ItemType(Value: TVkFaveType): Integer;
     function ItemOwnerId(Value: Integer): Integer;
     function ItemId(Value: Integer): Integer;
     function TagIds(Value: TArrayOfInteger): Integer;
@@ -475,7 +469,7 @@ begin
   Result := List.Add('is_from_snackbar', Value);
 end;
 
-function TVkParamsFaveGet.ItemType(Value: TVkFaveTypeGet): Integer;
+function TVkParamsFaveGet.ItemType(Value: TVkFaveType): Integer;
 begin
   Result := List.Add('item_type', Value.ToString);
 end;
@@ -488,24 +482,6 @@ end;
 function TVkParamsFaveGet.TagId(Value: Integer): Integer;
 begin
   Result := List.Add('tag_id', Value);
-end;
-
-{ TVkFaveTypeGetHelper }
-
-function TVkFaveTypeGetHelper.ToString: string;
-begin
-  case Self of
-    ftPost:
-      Result := 'post';
-    ftVideo:
-      Result := 'video';
-    ftProduct:
-      Result := 'product';
-    ftArticle:
-      Result := 'article';
-    ftLink:
-      Result := 'link';
-  end;
 end;
 
 { TVkParamsFavePageTagsSet }
@@ -537,7 +513,7 @@ begin
   Result := List.Add('item_owner_id', Value);
 end;
 
-function TVkParamsFaveTagsSet.ItemType(Value: TVkFaveTypeGet): Integer;
+function TVkParamsFaveTagsSet.ItemType(Value: TVkFaveType): Integer;
 begin
   Result := List.Add('item_type', Value.ToString);
 end;

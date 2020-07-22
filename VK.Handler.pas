@@ -34,6 +34,11 @@ type
     FOnCaptcha: TOnCaptcha;
     FExecuting: Integer;
     FUsePseudoAsync: Boolean;
+    FLogging: Boolean;
+    FLogResponse: Boolean;
+    FCaptchaWait: Boolean;
+    FCancelAll: Boolean;
+    FWaitCount: Integer;
     function DoConfirm(Answer: string): Boolean;
     function DoProcError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     procedure ProcError(Code: Integer; Text: string = ''); overload;
@@ -41,9 +46,7 @@ type
     procedure ProcError(Msg: string); overload;
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure SetOnError(const Value: TOnVKError);
-    {$IFDEF FULLLOG}
     procedure FLog(const Value: string);
-    {$ENDIF}
     procedure SetOnLog(const Value: TOnLog);
     procedure SetUseServiceKeyOnly(const Value: Boolean);
     procedure SetOwner(const Value: TObject);
@@ -53,6 +56,11 @@ type
     procedure SetUsePseudoAsync(const Value: Boolean);
     procedure WaitForQueue;
     function ProcessResponse(Request: TRESTRequest): TResponse;
+    procedure SetLogging(const Value: Boolean);
+    procedure SetLogResponse(const Value: Boolean);
+    procedure WaitTime(MS: Int64);
+    function GetWaiting: Boolean;
+    property Waiting: Boolean read GetWaiting;
   public
     constructor Create(AOwner: TObject);
     destructor Destroy; override;
@@ -71,19 +79,28 @@ type
     property Owner: TObject read FOwner write SetOwner;
     property Executing: Boolean read GetExecuting;
     property UsePseudoAsync: Boolean read FUsePseudoAsync write SetUsePseudoAsync;
+    property Logging: Boolean read FLogging write SetLogging;
+    property LogResponse: Boolean read FLogResponse write SetLogResponse;
   end;
+
+var
+  TestCaptcha: Boolean = False;
 
 implementation
 
-procedure WaitTime(MS: Int64);
+procedure TVkHandler.WaitTime(MS: Int64);
 var
   TS: Cardinal;
 begin
   if MS <= 0 then
     Exit;
-  TS := TThread.GetTickCount;
-  while TS + MS > TThread.GetTickCount do
+  Inc(FWaitCount);
+  while FCaptchaWait do
     Sleep(100);
+  TS := TThread.GetTickCount;
+  while (TS + MS > TThread.GetTickCount) do
+    Sleep(100);
+  Dec(FWaitCount);
 end;
 
 { TRequsetConstruct }
@@ -133,6 +150,7 @@ constructor TVkHandler.Create(AOwner: TObject);
 begin
   inherited Create;
   FOwner := AOwner;
+  FCaptchaWait := False;
   FExecuting := 0;
   FStartRequest := 0;
   FRequests := 0;
@@ -215,6 +233,11 @@ begin
     Inc(FExecuting);
     Result := FExecute(Request);
   finally
+    if not Waiting then
+    begin
+      FCancelAll := False;
+      FCaptchaWait := False;
+    end;
     if FreeRequset then
       Request.Free;
     Dec(FExecuting);
@@ -242,9 +265,8 @@ var
   Er: Exception;
 begin
   Result.Success := False;
-  {$IFDEF FULLLOG}
-  FLog(Request.GetFullRequestURL);
-  {$ENDIF}
+  if FLogging then
+    FLog(Request.GetFullRequestURL);
   try
     Request.Response := TRESTResponse.Create(Request);
     if (TThread.Current.ThreadID = MainThreadID) and FUsePseudoAsync then
@@ -255,13 +277,16 @@ begin
         procedure
         begin
           WaitForQueue;
-          try
-            Request.Execute;
-          except
-            on E: Exception do
-            begin
-              IsError := True;
-              Er := E;
+          if not FCancelAll then
+          begin
+            try
+              Request.Execute;
+            except
+              on E: Exception do
+              begin
+                IsError := True;
+                Er := E;
+              end;
             end;
           end;
           IsDone := True;
@@ -277,15 +302,26 @@ begin
     else
     begin
       WaitForQueue;
-      Request.Execute;
+      if not FCancelAll then
+        Request.Execute;
     end;
 
-    if not Application.Terminated then
+    if FCancelAll then
     begin
-      {$IFDEF FULLLOG}
-      FLog(Request.Response.JSONText);
-      {$ENDIF}
-      Result := ProcessResponse(Request);
+      if not Waiting then
+        FCancelAll := False;
+      if FLogging then
+        FLog(Request.GetFullRequestURL + ' - canceled');
+      Result.Success := False;
+    end
+    else
+    begin
+      if not Application.Terminated then
+      begin
+        if FLogResponse then
+          FLog(Request.Response.JSONText);
+        Result := ProcessResponse(Request);
+      end;
     end;
   except
     on E: Exception do
@@ -300,13 +336,24 @@ var
   CaptchaImg: string;
   CaptchaAns: string;
 begin
-  if Request.Response.JSONValue.TryGetValue<TJSONValue>('error', JS) then
+  if TestCaptcha or Request.Response.JSONValue.TryGetValue<TJSONValue>('error', JS) then
   begin
+    Result.Success := False;
     Result.Error.Code := JS.GetValue<Integer>('error_code', -1);
     Result.Error.Text := JS.GetValue<string>('error_msg', VKErrorString(Result.Error.Code));
+    if TestCaptcha then
+    begin
+      Result.Error.Code := 14;
+      TestCaptcha := False;
+    end;
     case Result.Error.Code of
       14: //Капча
         begin
+          if FCaptchaWait then
+          begin
+            Exit(Execute(Request));
+          end;
+          FCaptchaWait := True;
           CaptchaSID := JS.GetValue<string>('captcha_sid', '');
           CaptchaImg := JS.GetValue<string>('captcha_img', '');
 
@@ -314,13 +361,17 @@ begin
           begin
             Request.Params.AddItem('captcha_sid', CaptchaSID);
             Request.Params.AddItem('captcha_key', CaptchaAns);
+            FCaptchaWait := False;
             Result := Execute(Request);
             Request.Params.Delete('captcha_sid');
             Request.Params.Delete('captcha_key');
-            Exit;
           end
           else
+          begin
+            FCancelAll := True;
+            FCaptchaWait := False;
             ProcError(Result.Error.Code, Result.Error.Text);
+          end;
         end;
       24: //Подтверждение для ВК
         begin
@@ -330,7 +381,6 @@ begin
             Request.Params.AddItem('confirm', '1');
             Result := Execute(Request);
             Request.Params.Delete('confirm');
-            Exit;
           end
           else
             ProcError(Result.Error.Code, Result.Error.Text);
@@ -341,7 +391,11 @@ begin
             RequestLimit, FStartRequest]));
           WaitTime(1000);
           Result := Execute(Request);
-          Exit;
+        end;
+      10: //Internal Server Error
+        begin
+          WaitTime(1000);
+          Result := Execute(Request);
         end;
     else
       ProcError(Result.Error.Code, Result.Error.Text);
@@ -363,17 +417,20 @@ begin
   end;
 end;
 
-{$IFDEF FULLLOG}
 procedure TVkHandler.FLog(const Value: string);
 begin
   if Assigned(FOnLog) then
     FOnLog(Self, Value);
 end;
-{$ENDIF}
 
 function TVkHandler.GetExecuting: Boolean;
 begin
   Result := FExecuting > 0;
+end;
+
+function TVkHandler.GetWaiting: Boolean;
+begin
+  Result := FWaitCount > 0;
 end;
 
 procedure TVkHandler.Log(Sender: TObject; const Text: string);
@@ -405,6 +462,16 @@ end;
 procedure TVkHandler.SetUseServiceKeyOnly(const Value: Boolean);
 begin
   FUseServiceKeyOnly := Value;
+end;
+
+procedure TVkHandler.SetLogging(const Value: Boolean);
+begin
+  FLogging := Value;
+end;
+
+procedure TVkHandler.SetLogResponse(const Value: Boolean);
+begin
+  FLogResponse := Value;
 end;
 
 procedure TVkHandler.SetOnCaptcha(const Value: TOnCaptcha);

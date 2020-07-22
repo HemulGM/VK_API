@@ -48,15 +48,79 @@ type
 var
   FormFMXOAuth2: TFormFMXOAuth2;
 
+
+{$IFDEF MSWINDOWS}
+procedure FixIE;
+
+procedure DeleteCache(URLContains: string);
+{$ENDIF}
+
 implementation
 
 uses
   {$IFDEF MSWINDOWS}
-  Winapi.UrlMon,
+  Winapi.Windows, Winapi.UrlMon, Winapi.WinInet, System.Win.Registry,
   {$ENDIF}
   System.Net.HttpClient;
 
 {$R *.fmx}
+
+{$IFDEF MSWINDOWS}
+procedure FixIE;
+const
+  IEVersion = 11001;
+var
+  Reg: TRegistry;
+begin
+  try
+    Reg := TRegIniFile.Create(KEY_WRITE);
+    try
+      Reg.RootKey := HKEY_CURRENT_USER;
+      if Reg.OpenKey('SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION', True) then
+      begin
+        try
+          Reg.WriteInteger(ExtractFileName(ParamStr(0)), IEVersion);
+          //Reg.DeleteKey(ExtractFileName(ParamStr(0)));
+        except
+        end;
+      end;
+      Reg.CloseKey;
+    finally
+      Reg.Free;
+    end;
+  except
+  end;
+end;
+
+procedure DeleteCache(URLContains: string);
+var
+  lpEntryInfo: PInternetCacheEntryInfo;
+  hCacheDir: LongWord;
+  dwEntrySize: LongWord;
+begin
+  dwEntrySize := 0;
+  FindFirstUrlCacheEntry(nil, TInternetCacheEntryInfo(nil^), dwEntrySize);
+  GetMem(lpEntryInfo, dwEntrySize);
+  if dwEntrySize > 0 then
+    lpEntryInfo^.dwStructSize := dwEntrySize;
+  hCacheDir := FindFirstUrlCacheEntry(nil, lpEntryInfo^, dwEntrySize);
+  if hCacheDir <> 0 then
+  begin
+    repeat
+      if (URLContains = '') or (Pos(URLContains, lpEntryInfo^.lpszSourceUrlName) <> 0) then
+        DeleteUrlCacheEntry(lpEntryInfo^.lpszSourceUrlName);
+      FreeMem(lpEntryInfo, dwEntrySize);
+      dwEntrySize := 0;
+      FindNextUrlCacheEntry(hCacheDir, TInternetCacheEntryInfo(nil^), dwEntrySize);
+      GetMem(lpEntryInfo, dwEntrySize);
+      if dwEntrySize > 0 then
+        lpEntryInfo^.dwStructSize := dwEntrySize;
+    until not FindNextUrlCacheEntry(hCacheDir, lpEntryInfo^, dwEntrySize);
+  end;
+  FreeMem(lpEntryInfo, dwEntrySize);
+  FindCloseUrlCache(hCacheDir);
+end;
+{$ENDIF}
 
 class procedure TFormFMXOAuth2.Execute(Url: string; Proc: TAuthResult; AStyleBook: TStyleBook);
 var

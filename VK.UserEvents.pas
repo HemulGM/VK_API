@@ -29,6 +29,7 @@ type
     FOnCountChange: TOnCountChange;
     FOnNotifyChange: TOnNotifyChange;
     FVersion: string;
+    FLogging: Boolean;
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
     procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer;
@@ -69,6 +70,7 @@ type
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     function GetIsWork: Boolean;
     procedure SetVersion(const Value: string);
+    procedure SetLogging(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -76,6 +78,7 @@ type
     function Start: Boolean;
     property VK: TCustomVK read FVK write SetVK;
     property IsWork: Boolean read GetIsWork;
+    property Logging: Boolean read FLogging write SetLogging;
     property OnNewMessage: TOnNewMessage read FOnNewMessage write SetOnNewMessage;
     property OnEditMessage: TOnEditMessage read FOnEditMessage write SetOnEditMessage;
     property OnUserOnline: TOnUserOnline read FOnUserOnline write SetOnUserOnline;
@@ -121,10 +124,6 @@ begin
   FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
-
-  {$IFDEF FULLLOG}
-  FLongPollServer.FullLog := True;
-  {$ENDIF}
 end;
 
 destructor TCustomUserEvents.Destroy;
@@ -359,6 +358,12 @@ end;
 function TCustomUserEvents.GetIsWork: Boolean;
 begin
   Result := FLongPollServer.IsWork;
+end;
+
+procedure TCustomUserEvents.SetLogging(const Value: Boolean);
+begin
+  FLogging := Value;
+  FLongPollServer.Logging := Value;
 end;
 
 procedure TCustomUserEvents.SetOnChangeDialogFlags(const Value: TOnChangeDialogFlags);

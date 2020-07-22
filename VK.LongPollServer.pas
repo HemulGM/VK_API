@@ -31,7 +31,7 @@ type
     FGroupID: string;
     FOnUpdate: TOnLongPollServerUpdate;
     FHandler: TVkHandler;
-    FFullLog: Boolean;
+    FLogging: Boolean;
     FDoSync: Boolean;
     function QueryLongPollServer: Boolean;
     procedure DoError(E: Exception);
@@ -44,7 +44,7 @@ type
     procedure SetParams(const Value: TParams);
     function GetIsWork: Boolean;
     procedure SetHandler(const Value: TVkHandler);
-    procedure SetFullLog(const Value: Boolean);
+    procedure SetLogging(const Value: Boolean);
     procedure SetDoSync(const Value: Boolean);
   public
     function Start: Boolean;
@@ -60,7 +60,7 @@ type
     property Method: string read FMethod write SetMethod;
     property Params: TParams read FParams write SetParams;
     property IsWork: Boolean read GetIsWork;
-    property FullLog: Boolean read FFullLog write SetFullLog;
+    property Logging: Boolean read FLogging write SetLogging;
     property Thread: TThread read FThread;
     property DoSync: Boolean read FDoSync write SetDoSync;
   end;
@@ -92,7 +92,7 @@ constructor TVkLongPollServer.Create;
 begin
   inherited;
   FDoSync := True;
-  FFullLog := False;
+  FLogging := False;
   FInterval := DefaultLongPollServerInterval;
 end;
 
@@ -166,7 +166,7 @@ begin
   for i := 0 to Updates.Count - 1 do
   begin
     try
-      if FFullLog then
+      if FLogging then
         FHandler.Log(Self, Updates.Items[i].ToString);
 
       FOnUpdate(Self, FGroupID, Updates.Items[i]);
@@ -182,9 +182,9 @@ begin
   FDoSync := Value;
 end;
 
-procedure TVkLongPollServer.SetFullLog(const Value: Boolean);
+procedure TVkLongPollServer.SetLogging(const Value: Boolean);
 begin
-  FFullLog := Value;
+  FLogging := Value;
 end;
 
 procedure TVkLongPollServer.SetGroupID(const Value: string);
@@ -257,16 +257,16 @@ begin
           //Очистим результат запроса с прошлого раза
           Stream.Clear;
           //Выполняем запрос
+          ReqCode := 0;
           try
             ReqCode := HTTP.Get(FLongPollData.Request, Stream).StatusCode;
           except
+            on E: Exception do
             begin
-              ReqCode := 0;
-              TThread.Synchronize(TThread.Current,
+              TThread.ForceQueue(nil,
                 procedure
                 begin
-                  DoError(TVkLongPollServerHTTPException.Create('HTTP error, status code: ' +
-                    ReqCode.ToString));
+                  DoError(TVkLongPollServerHTTPException.Create(E.Message));
                 end);
             end;
           end;
@@ -350,7 +350,7 @@ begin
           else
           begin
             //Если ошибка, то пробуем переподключиться к лонгпул серверу
-            TThread.Synchronize(TThread.Current,
+            TThread.Synchronize(nil,
               procedure
               begin
                 if not FLongPollNeedStop then
