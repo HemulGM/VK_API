@@ -439,6 +439,10 @@ type
     /// Сохраняет фотографию после успешной загрузки на URI, полученный методом photos.getMessagesUploadServer.
     /// </summary>
     function SaveMessagesPhoto(var Items: TVkPhotos; Server:Integer; Photo, Hash: string): Boolean; overload;
+    /// <summary>
+    /// Сохраняет изображение для обложки сообщества после успешной загрузки.
+    /// </summary>
+    //function SaveOwnerCoverPhoto(var Items: TVkPhotos; Photo, Hash: string): Boolean; overload;
   end;
 
 implementation
