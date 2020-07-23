@@ -45,6 +45,9 @@ type
     FPrivacy_comment: TVkPrivacy;
     FSizes: TVkSizes;
     FThumb_src: string;
+    FUpload_by_admins_only: Boolean;
+    FComments_disabled: Boolean;
+    FCan_upload: Boolean;
     function GetCreated: TDateTime;
     function GetUpdated: TDateTime;
     procedure SetCreated(const Value: TDateTime);
@@ -64,6 +67,9 @@ type
     property ThumbIsLast: Integer read FThumb_is_last write FThumb_is_last;
     property PrivacyView: TVkPrivacy read FPrivacy_view write FPrivacy_view;
     property PrivacyComment: TVkPrivacy read FPrivacy_comment write FPrivacy_comment;
+    property UploadByAdminsOnly: Boolean read FUpload_by_admins_only write FUpload_by_admins_only;
+    property CommentsDisabled: Boolean read FComments_disabled write FComments_disabled;
+    property CanUpload: Boolean read FCan_upload write FCan_upload;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;

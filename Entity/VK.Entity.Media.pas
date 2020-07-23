@@ -105,31 +105,92 @@ type
     class function FromJsonString(AJsonString: string): TVkAttachmentHistory;
   end;
 
+  TVkAttachments = class
+  private
+    FItems: TArray<TVkAttachment>;
+    FCount: Integer;
+  public
+    property Items: TArray<TVkAttachment> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkAttachments;
+  end;
+
+  TVkCommentThread = class
+  private
+    FItems: TArray<TVkComment>;
+    FCount: Integer;
+    FCan_post: Boolean;
+    FShow_reply_button: Boolean;
+    FGroups_can_post: Boolean;
+  public
+    property Items: TArray<TVkComment> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    property CanPost: Boolean read FCan_post write FCan_post;
+    property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
+    property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkCommentThread;
+  end;
+
   TVkComment = class
   private
-    FDate: Extended;
-    FFrom_id: Extended;
-    FId: Extended;
-    FPost_id: Extended;
-    FPost_owner_id: Extended;
-    FReply_to_comment: Extended;
-    FReply_to_user: Extended;
+    FDate: Int64;
+    FFrom_id: Integer;
+    FId: Integer;
+    FPost_id: Integer;
+    FPost_owner_id: Integer;
+    FReply_to_comment: Integer;
+    FReply_to_user: Integer;
     FText: string;
-    FOwner_id: Extended;
-    FAttachments: TVkAttachment;
+    FOwner_id: Integer;
+    FAttachments: TVkAttachments;
+    FDeleted: Boolean;
+    FParents_stack: TArray<Integer>;
+    FLikes: TVkLikesInfo;
+    FThread: TVkCommentThread;
+    FPid: Integer;
   public
-    property Date: Extended read FDate write FDate;
-    property FromId: Extended read FFrom_id write FFrom_id;
-    property Id: Extended read FId write FId;
-    property PostId: Extended read FPost_id write FPost_id;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
-    property PostOwnerId: Extended read FPost_owner_id write FPost_owner_id;
-    property ReplyToComment: Extended read FReply_to_comment write FReply_to_comment;
-    property ReplyToUser: Extended read FReply_to_user write FReply_to_user;
+    property Date: Int64 read FDate write FDate;
+    property FromId: Integer read FFrom_id write FFrom_id;
+    property Id: Integer read FId write FId;
+    /// <summary>
+    ///  Идентификатор фотографии, к которой был оставлен комментарий
+    /// </summary>
+    property Pid: Integer read FPid write FPid;
+    property PostId: Integer read FPost_id write FPost_id;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property PostOwnerId: Integer read FPost_owner_id write FPost_owner_id;
+    property ReplyToComment: Integer read FReply_to_comment write FReply_to_comment;
+    property ReplyToUser: Integer read FReply_to_user write FReply_to_user;
     property Text: string read FText write FText;
-    property Attachments: TVkAttachment read FAttachments write FAttachments;
+    property Likes: TVkLikesInfo read FLikes write FLikes;
+    property ParentsStack: TArray<Integer> read FParents_stack write FParents_stack;
+    property Deleted: Boolean read FDeleted write FDeleted;
+    property Attachments: TVkAttachments read FAttachments write FAttachments;
+    property Thread: TVkCommentThread read FThread write FThread;
+    constructor Create;
+    destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkComment;
+  end;
+
+  TVkComments = class
+  private
+    FCount: Integer;
+    FItems: TArray<TVkComment>;
+    FProfiles: TArray<TVkUser>;
+    FGroups: TArray<TVkGroup>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkComment> read FItems write FItems;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkComments;
   end;
 
   TVkPost = class
@@ -212,8 +273,6 @@ type
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPosts;
   end;
-
-  TVkAttachments = TArray<TVkAttachment>;
 
 implementation
 
@@ -328,6 +387,21 @@ begin
 end;
 
 { TVkComment }
+
+constructor TVkComment.Create;
+begin
+  FAttachments := TVkAttachments.Create;
+  FLikes := TVkLikesInfo.Create;
+  FThread := TVkCommentThread.Create;
+end;
+
+destructor TVkComment.Destroy;
+begin
+  FThread.Free;
+  FAttachments.Free;
+  FLikes.Free;
+  inherited;
+end;
 
 class function TVkComment.FromJsonString(AJsonString: string): TVkComment;
 begin
@@ -459,6 +533,73 @@ begin
 end;
 
 function TVkAttachmentHistoryItem.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkComments }
+
+destructor TVkComments.Destroy;
+var
+  i: Integer;
+begin
+  for i := Low(FItems) to High(FItems) do
+    FItems[i].Free;
+  for i := Low(FGroups) to High(FGroups) do
+    FGroups[i].Free;
+  for i := Low(FProfiles) to High(FProfiles) do
+    FProfiles[i].Free;
+  inherited;
+end;
+
+class function TVkComments.FromJsonString(AJsonString: string): TVkComments;
+begin
+  result := TJson.JsonToObject<TVkComments>(AJsonString);
+end;
+
+function TVkComments.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkAttachments }
+
+destructor TVkAttachments.Destroy;
+var
+  i: Integer;
+begin
+  for i := Low(FItems) to High(FItems) do
+    FItems[i].Free;
+  inherited;
+end;
+
+class function TVkAttachments.FromJsonString(AJsonString: string): TVkAttachments;
+begin
+  result := TJson.JsonToObject<TVkAttachments>(AJsonString);
+end;
+
+function TVkAttachments.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkCommentThread }
+
+destructor TVkCommentThread.Destroy;
+var
+  i: Integer;
+begin
+  for i := Low(FItems) to High(FItems) do
+    FItems[i].Free;
+  inherited;
+end;
+
+class function TVkCommentThread.FromJsonString(AJsonString: string): TVkCommentThread;
+begin
+  result := TJson.JsonToObject<TVkCommentThread>(AJsonString);
+end;
+
+function TVkCommentThread.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

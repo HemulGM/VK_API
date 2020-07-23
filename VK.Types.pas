@@ -208,6 +208,12 @@ type
     class function Create(Value: Integer): TAudioGenre;
   end;
 
+  TVkSort = (stAsc, stDesc);
+
+  TVkSortHelper = record helper for TVkSort
+    function ToString: string; overload; inline;
+  end;
+
   TVkSortIdTime = (sitIdAsc, sitIdDesc, sitTimeAsc, sitTimeDesc);
 
   TVkSortIdTimeHelper = record helper for TVkSortIdTime
@@ -617,6 +623,13 @@ type
     function ToConst: Integer; overload; inline;
   end;
 
+  TVkPhotoReportReason = (prSpam, prChildPorn, prExtremism, prViolence, prDrug, prAdults, prInsult);
+
+  TVkPhotoReportReasonHelper = record helper for TVkPhotoReportReason
+    function ToString: string; overload; inline;
+    function ToConst: Integer; overload; inline;
+  end;
+
   TVkGroupJoinType = (jtUnknown, jtJoin, jtUnsure, jtAccepted, jtApproved, jtRequest);
 
   TGroupJoinTypeHelper = record helper for TVkGroupJoinType
@@ -726,6 +739,8 @@ var
     'Редактор', 'Администратор');
   VkUserBlockReason: array[TVkUserBlockReason] of string = ('Другое', 'Спам',
     'Оскорбление участников', 'Мат', 'Разговоры не по теме');
+  VkPhotoReportReason: array[TVkPhotoReportReason] of string = ('Спам', 'Детская порнография', 'Экстремизм', 'Насилие',
+    'Пропаганда наркотиков', 'Материал для взрослых', 'Оскорбление');
   VkMessageFlagTypes: array[TMessageFlag] of string = ('Unknown_9', 'Unknown_8',
     'Unknown_7', 'Unknown_6', 'NotDelivered', 'DeleteForAll', 'Hidden',
     'Unknown_5', 'Unknown_4', 'UnreadMultichat', 'Unknown_3', 'Unknown_2',
@@ -982,9 +997,24 @@ begin
     113:
       ErrStr :=
         'Неверный идентификатор пользователя. Убедитесь, что Вы используете верный идентификатор. Получить ID по короткому имени можно методом utils.resolveScreenName.';
+    114:
+      ErrStr :=
+        'Недопустимый идентификатор альбома.';
+    118:
+      ErrStr :=
+        'Недопустимый сервер.';
+    121:
+      ErrStr :=
+        'Неверный хэш.';
+    122:
+      ErrStr :=
+        'Неверные идентификаторы фотографий.';
     125:
       ErrStr :=
         'Invalid group id';
+    129:
+      ErrStr :=
+        'Недопустимый формат фотографии';
     148:
       ErrStr :=
         'Пользователь не установил приложение в левое меню';
@@ -1021,6 +1051,9 @@ begin
     300:
       ErrStr :=
         'Альбом переполнен. Перед продолжением работы нужно удалить лишние объекты из альбома или использовать другой альбом.';
+    302:
+      ErrStr :=
+        'Создано максимальное количество альбомов.';
     500:
       ErrStr :=
         'Действие запрещено. Вы должны включить переводы голосов в настройках приложения. Проверьте настройки приложения: https://vk.com/editapp?id={Ваш API_ID}&section=payments';
@@ -1056,7 +1089,7 @@ begin
         'Нельзя отправлять сообщение пользователю из черного списка';
     901:
       ErrStr :=
-        'Нельзя первым писать пользователю от имени сообщества';
+        'Пользователь не давал разрешения на отправку сообщений';
     902:
       ErrStr :=
         'Нельзя отправлять сообщения этому пользователю в связи с настройками приватности';
@@ -2108,6 +2141,32 @@ begin
     Result := Result + Item.ToString + ',';
   end;
   Result.TrimRight([',']);
+end;
+
+{ TVkSortHelper }
+
+function TVkSortHelper.ToString: string;
+begin
+  case Self of
+    stAsc:
+      Result := 'asc';
+    stDesc:
+      Result := 'desc';
+  else
+    Result := '';
+  end;
+end;
+
+{ TVkPhotoReportReasonHelper }
+
+function TVkPhotoReportReasonHelper.ToConst: Integer;
+begin
+  Result := Ord(Self);
+end;
+
+function TVkPhotoReportReasonHelper.ToString: string;
+begin
+  Result := VkPhotoReportReason[Self];
 end;
 
 end.
