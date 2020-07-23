@@ -373,12 +373,14 @@ constructor TVkConversation.Create;
 begin
   inherited;
   FPeer := TVkPeer.Create();
+  FSort_id := TVkConversationSort.Create;
   FCan_write := TVkCanWrite.Create();
 end;
 
 destructor TVkConversation.Destroy;
 begin
   FPeer.Free;
+  FSort_id.Free;
   FCan_write.Free;
   if Assigned(FChat_settings) then
     FChat_settings.Free;
