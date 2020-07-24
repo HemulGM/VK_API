@@ -35,15 +35,9 @@ requires
   vclie,
   RESTComponents,
   vclimg,
-  IndyIPCommon,
-  IndySystem,
-  IndyProtocols,
-  IndyCore,
-  IndyIPClient,
   fmx;
 
 contains
-  VK.Vcl.Captcha in 'Forms\VK.Vcl.Captcha.pas' {FormCaptcha},
   pbInput in 'Utils\pbInput.pas',
   pbOutput in 'Utils\pbOutput.pas',
   pbPublic in 'Utils\pbPublic.pas',
@@ -114,6 +108,7 @@ contains
   VK.Status in 'Controllers\VK.Status.pas',
   VK.Users in 'Controllers\VK.Users.pas',
   VK.Wall in 'Controllers\VK.Wall.pas',
+  VK.Vcl.Captcha in 'Forms\VK.Vcl.Captcha.pas' {FormCaptcha},
   VK.Vcl.OAuth2 in 'Forms\VK.Vcl.OAuth2.pas' {FormOAuth2},
   VK.FMX.OAuth2 in 'Forms\VK.FMX.OAuth2.pas' {FormFMXOAuth2},
   VK.FMX.Captcha in 'Forms\VK.FMX.Captcha.pas' {FormFMXCaptcha},

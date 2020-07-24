@@ -367,6 +367,25 @@ type
     class function FromJsonString(AJsonString: string): TVkIdList;
   end;
 
+  TVkOwnerPhoto = class
+  private
+    Fphoto_src: string;
+    Fphoto_src_small: string;
+    Fphoto_src_big: string;
+    Fpost_id: Integer;
+    Fphoto_hash: string;
+    Fsaved: Boolean;
+  public
+    property PhotoHash: string read Fphoto_hash write Fphoto_hash;
+    property PhotoSrc: string read Fphoto_src write Fphoto_src;
+    property PhotoSrcBig: string read Fphoto_src_big write Fphoto_src_big;
+    property PhotoSrcSmall: string read Fphoto_src_small write Fphoto_src_small;
+    property Saved: Boolean read Fsaved write Fsaved;
+    property PostId: Integer read Fpost_id write Fpost_id;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkOwnerPhoto;
+  end;
+
 var
   VkSizes: array[0..5] of Char = ('s', 'm', 'x', 'y', 'z', 'w');
 
@@ -732,6 +751,18 @@ begin
 end;
 
 function TVkBasicIndexItems.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkOwnerPhoto }
+
+class function TVkOwnerPhoto.FromJsonString(AJsonString: string): TVkOwnerPhoto;
+begin
+  result := TJson.JsonToObject<TVkOwnerPhoto>(AJsonString)
+end;
+
+function TVkOwnerPhoto.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

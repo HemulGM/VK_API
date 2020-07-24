@@ -3,8 +3,8 @@ unit VK.Photos;
 interface
 
 uses
-  System.SysUtils, System.Types, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Album,
-  System.JSON, REST.Json, VK.Entity.Photo.Upload, VK.Entity.Photo, VK.Entity.Media;
+  System.SysUtils, System.Types, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Album, System.JSON,
+  REST.Json, VK.Entity.Photo.Upload, VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkParamsPhotosGetAll = record
@@ -185,6 +185,34 @@ type
     function Hash(Value: string): Integer;
     function CropData(Value: string): Integer;
     function CropHash(Value: string): Integer;
+  end;
+
+  TVkParamsPhotosSaveWallPhoto = record
+    List: TParams;
+    function UserId(Value: Integer): Integer;
+    function GroupId(Value: Integer): Integer;
+    function Photo(Value: string): Integer;
+    function Server(Value: string): Integer;
+    function Hash(Value: string): Integer;
+    function Latitude(Value: Extended): Integer;
+    function Longitude(Value: Extended): Integer;
+    function Caption(Value: string): Integer;
+  end;
+
+  TVkParamsPhotosSearch = record
+    List: TParams;
+    function Query(Value: string): Integer;
+    function Latitude(Value: Extended): Integer;
+    function Longitude(Value: Extended): Integer;
+    function StartTime(Value: TDateTime): Integer;
+    function EndTime(Value: TDateTime): Integer;
+    function Sort(Value: Boolean): Integer;
+    function Offset(Value: Integer): Integer;
+    function Count(Value: Integer): Integer;
+    /// <summary>
+    /// Радиус поиска в метрах. (работает очень приближенно, поэтому реальное расстояние до цели может отличаться от заданного). Может принимать значения: 10, 100, 800, 6000, 50000
+    /// </summary>
+    function Radius(Value: Integer = 5000): Integer;
   end;
 
   TPhotosController = class(TVkController)
@@ -438,17 +466,37 @@ type
     /// <summary>
     /// Сохраняет фотографию после успешной загрузки на URI, полученный методом photos.getMessagesUploadServer.
     /// </summary>
-    function SaveMessagesPhoto(var Items: TVkPhotos; Server:Integer; Photo, Hash: string): Boolean; overload;
+    function SaveMessagesPhoto(var Items: TVkPhotos; Server: Integer; Photo, Hash: string): Boolean; overload;
     /// <summary>
     /// Сохраняет изображение для обложки сообщества после успешной загрузки.
     /// </summary>
-    //function SaveOwnerCoverPhoto(var Items: TVkPhotos; Photo, Hash: string): Boolean; overload;
+    function SaveOwnerCoverPhoto(var Items: TVkCoverImages; Photo, Hash: string): Boolean;
+    /// <summary>
+    /// Позволяет сохранить главную фотографию пользователя или сообщества. Адрес для загрузки фотографии Вы можете получить с помощью метода photos.getOwnerPhotoUploadServer.
+    /// </summary>
+    function SaveOwnerPhoto(var Info: TVkOwnerPhoto; Server: Integer; Photo, Hash: string): Boolean;
+    /// <summary>
+    /// Сохраняет фотографии после успешной загрузки на URI, полученный методом photos.getWallUploadServer.
+    /// </summary>
+    function SaveWallPhoto(var Item: TVkPhoto; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Сохраняет фотографии после успешной загрузки на URI, полученный методом photos.getWallUploadServer.
+    /// </summary>
+    function SaveWallPhoto(var Item: TVkPhoto; Params: TVkParamsPhotosSaveWallPhoto): Boolean; overload;
+    /// <summary>
+    /// Осуществляет поиск изображений по местоположению или описанию.
+    /// </summary>
+    function Search(var Items: TVkPhotos; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Осуществляет поиск изображений по местоположению или описанию.
+    /// </summary>
+    function Search(var Items: TVkPhotos; Params: TVkParamsPhotosSearch): Boolean; overload;
   end;
 
 implementation
 
 uses
-  VK.API, VK.CommonUtils;
+  VK.API, VK.CommonUtils, System.DateUtils;
 
 { TPhotosController }
 
@@ -1124,7 +1172,7 @@ begin
   Result := SaveMarketPhoto(Items, Params.List);
 end;
 
-function TPhotosController.SaveMessagesPhoto(var Items: TVkPhotos; Server:Integer; Photo, Hash: string): Boolean;
+function TPhotosController.SaveMessagesPhoto(var Items: TVkPhotos; Server: Integer; Photo, Hash: string): Boolean;
 var
   Params: TParams;
 begin
@@ -1138,6 +1186,89 @@ begin
     begin
       try
         Items := TVkPhotos.FromJsonString(AppendItemsTag(Response));
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TPhotosController.SaveOwnerCoverPhoto(var Items: TVkCoverImages; Photo, Hash: string): Boolean;
+var
+  Params: TParams;
+begin
+  Params.Add('photo', Photo);
+  Params.Add('hash', Hash);
+  with Handler.Execute('photos.saveOwnerCoverPhoto', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkCoverImages.FromJsonString(AppendItemsTag(Response));
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TPhotosController.SaveOwnerPhoto(var Info: TVkOwnerPhoto; Server: Integer; Photo, Hash: string): Boolean;
+var
+  Params: TParams;
+begin
+  Params.Add('photo', Photo);
+  Params.Add('server', Server);
+  Params.Add('hash', Hash);
+  with Handler.Execute('photos.saveOwnerPhoto', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Info := TVkOwnerPhoto.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TPhotosController.SaveWallPhoto(var Item: TVkPhoto; Params: TVkParamsPhotosSaveWallPhoto): Boolean;
+begin
+  Result := SaveWallPhoto(Item, Params.List);
+end;
+
+function TPhotosController.Search(var Items: TVkPhotos; Params: TVkParamsPhotosSearch): Boolean;
+begin
+  Result := Search(Items, Params.List);
+end;
+
+function TPhotosController.Search(var Items: TVkPhotos; Params: TParams): Boolean;
+begin
+  with Handler.Execute('photos.search', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkPhotos.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TPhotosController.SaveWallPhoto(var Item: TVkPhoto; Params: TParams): Boolean;
+begin
+  with Handler.Execute('photos.saveWallPhoto', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Item := TVkPhoto.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -1771,6 +1902,95 @@ end;
 function TVkParamsPhotosSaveMarketPhoto.Server(Value: Integer): Integer;
 begin
   Result := List.Add('server', Value);
+end;
+
+{ TVkParamsPhotosSaveWallPhoto }
+
+function TVkParamsPhotosSaveWallPhoto.Caption(Value: string): Integer;
+begin
+  Result := List.Add('caption', Value);
+end;
+
+function TVkParamsPhotosSaveWallPhoto.GroupId(Value: Integer): Integer;
+begin
+  Result := List.Add('group_id', Value);
+end;
+
+function TVkParamsPhotosSaveWallPhoto.Hash(Value: string): Integer;
+begin
+  Result := List.Add('hash', Value);
+end;
+
+function TVkParamsPhotosSaveWallPhoto.Latitude(Value: Extended): Integer;
+begin
+  Result := List.Add('latitude', Value);
+end;
+
+function TVkParamsPhotosSaveWallPhoto.Longitude(Value: Extended): Integer;
+begin
+  Result := List.Add('longitude', Value);
+end;
+
+function TVkParamsPhotosSaveWallPhoto.Photo(Value: string): Integer;
+begin
+  Result := List.Add('photo', Value);
+end;
+
+function TVkParamsPhotosSaveWallPhoto.Server(Value: string): Integer;
+begin
+  Result := List.Add('server', Value);
+end;
+
+function TVkParamsPhotosSaveWallPhoto.UserId(Value: Integer): Integer;
+begin
+  Result := List.Add('user_id', Value);
+end;
+
+{ TVkParamsPhotosSearch }
+
+function TVkParamsPhotosSearch.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsPhotosSearch.EndTime(Value: TDateTime): Integer;
+begin
+  Result := List.Add('end_time', Value);
+end;
+
+function TVkParamsPhotosSearch.Latitude(Value: Extended): Integer;
+begin
+  Result := List.Add('lat', Value);
+end;
+
+function TVkParamsPhotosSearch.Longitude(Value: Extended): Integer;
+begin
+  Result := List.Add('long', Value);
+end;
+
+function TVkParamsPhotosSearch.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offse', Value);
+end;
+
+function TVkParamsPhotosSearch.Query(Value: string): Integer;
+begin
+  Result := List.Add('q', Value);
+end;
+
+function TVkParamsPhotosSearch.Radius(Value: Integer): Integer;
+begin
+  Result := List.Add('radius', Value);
+end;
+
+function TVkParamsPhotosSearch.Sort(Value: Boolean): Integer;
+begin
+  Result := List.Add('sort', Value);
+end;
+
+function TVkParamsPhotosSearch.StartTime(Value: TDateTime): Integer;
+begin
+  Result := List.Add('start_time', Value);
 end;
 
 end.

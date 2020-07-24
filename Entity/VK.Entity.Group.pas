@@ -44,6 +44,15 @@ type
     property Height: Integer read FHeight write FHeight;
   end;
 
+  TVkCoverImages = class
+  private
+    FItems: TArray<TVkCoverImage>;
+  public
+    property Items: TArray<TVkCoverImage> read FItems write FItems;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkCoverImages;
+  end;
+
   TVkCover = class
   private
     FEnabled: Integer;
@@ -736,6 +745,18 @@ begin
 end;
 
 function TVkGroupTags.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkCoverImages }
+
+class function TVkCoverImages.FromJsonString(AJsonString: string): TVkCoverImages;
+begin
+  result := TJson.JsonToObject<TVkCoverImages>(AJsonString);
+end;
+
+function TVkCoverImages.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

@@ -274,7 +274,7 @@ type
     property TestMode: Boolean read GetTestMode write SetTestMode;
     property Permissions: TVkPermissions read FPermissions write SetPermissions;
     property Lang: TVkLang read FLang write SetLang;
-    property Proxy: TVkProxy read FProxy;
+    property Proxy: TVkProxy read FProxy write FProxy;
     property UsePseudoAsync: Boolean read GetUsePseudoAsync write SetUsePseudoAsync;
   end;
 

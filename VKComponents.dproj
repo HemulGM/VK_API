@@ -113,15 +113,7 @@
         <DCCReference Include="vclie.dcp"/>
         <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
-        <DCCReference Include="IndyIPCommon.dcp"/>
-        <DCCReference Include="IndySystem.dcp"/>
-        <DCCReference Include="IndyProtocols.dcp"/>
-        <DCCReference Include="IndyCore.dcp"/>
-        <DCCReference Include="IndyIPClient.dcp"/>
         <DCCReference Include="fmx.dcp"/>
-        <DCCReference Include="Forms\VK.Vcl.Captcha.pas">
-            <Form>FormCaptcha</Form>
-        </DCCReference>
         <DCCReference Include="Utils\pbInput.pas"/>
         <DCCReference Include="Utils\pbOutput.pas"/>
         <DCCReference Include="Utils\pbPublic.pas"/>
@@ -192,6 +184,9 @@
         <DCCReference Include="Controllers\VK.Status.pas"/>
         <DCCReference Include="Controllers\VK.Users.pas"/>
         <DCCReference Include="Controllers\VK.Wall.pas"/>
+        <DCCReference Include="Forms\VK.Vcl.Captcha.pas">
+            <Form>FormCaptcha</Form>
+        </DCCReference>
         <DCCReference Include="Forms\VK.Vcl.OAuth2.pas">
             <Form>FormOAuth2</Form>
         </DCCReference>
