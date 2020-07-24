@@ -462,7 +462,7 @@ type
     /// <summary>
     /// Сохраняет фотографию после успешной загрузки на URI, полученный методом photos.getMessagesUploadServer.
     /// </summary>
-    function SaveMessagesPhoto(var Items: TVkPhotos; PhotoSaveData: TVkPhotoUploadResponse): Boolean; overload;
+    function SaveMessagesPhoto(var Items: TVkPhotos; Data: TVkPhotoUploadResponse): Boolean; overload;
     /// <summary>
     /// Сохраняет фотографию после успешной загрузки на URI, полученный методом photos.getMessagesUploadServer.
     /// </summary>
@@ -474,7 +474,15 @@ type
     /// <summary>
     /// Позволяет сохранить главную фотографию пользователя или сообщества. Адрес для загрузки фотографии Вы можете получить с помощью метода photos.getOwnerPhotoUploadServer.
     /// </summary>
-    function SaveOwnerPhoto(var Info: TVkOwnerPhoto; Server: Integer; Photo, Hash: string): Boolean;
+    function SaveOwnerPhoto(var Info: TVkOwnerPhoto; Server: Integer; Photo, Hash: string): Boolean; overload;
+    /// <summary>
+    /// Позволяет сохранить главную фотографию пользователя или сообщества. Адрес для загрузки фотографии Вы можете получить с помощью метода photos.getOwnerPhotoUploadServer.
+    /// </summary>
+    function SaveOwnerPhoto(var Info: TVkOwnerPhoto; Data: TVkPhotoUploadResponse): Boolean; overload;
+    /// <summary>
+    /// Позволяет сохранить главную фотографию пользователя или сообщества. Адрес для загрузки фотографии Вы можете получить с помощью метода photos.getOwnerPhotoUploadServer.
+    /// </summary>
+    function SaveOwnerPhoto(FileName: string): Boolean; overload;
     /// <summary>
     /// Сохраняет фотографии после успешной загрузки на URI, полученный методом photos.getWallUploadServer.
     /// </summary>
@@ -1213,6 +1221,39 @@ begin
   end;
 end;
 
+function TPhotosController.SaveOwnerPhoto(FileName: string): Boolean;
+var
+  VKAPI: TCustomVK;
+var
+  Server: string;
+  Upload: TVkPhotoUploadResponse;
+  Info: TVkOwnerPhoto;
+begin
+  Result := False;
+  VKAPI := TCustomVK(VK);
+  if VKAPI.Photos.GetOwnerPhotoUploadServer(Server) then
+  begin
+    if VKAPI.Uploader.UploadPhotos(Server, FileName, Upload) then
+    begin
+      if VKAPI.Photos.SaveOwnerPhoto(Info, Upload) then
+      begin
+        try
+          Result := Info.Saved;
+        except
+          Result := False;
+        end;
+        Info.Free;
+      end;
+      Upload.Free;
+    end;
+  end;
+end;
+
+function TPhotosController.SaveOwnerPhoto(var Info: TVkOwnerPhoto; Data: TVkPhotoUploadResponse): Boolean;
+begin
+  Result := SaveOwnerPhoto(Info, Data.Server, Data.Photo, Data.Hash);
+end;
+
 function TPhotosController.SaveOwnerPhoto(var Info: TVkOwnerPhoto; Server: Integer; Photo, Hash: string): Boolean;
 var
   Params: TParams;
@@ -1292,9 +1333,9 @@ begin
   end;
 end;
 
-function TPhotosController.SaveMessagesPhoto(var Items: TVkPhotos; PhotoSaveData: TVkPhotoUploadResponse): Boolean;
+function TPhotosController.SaveMessagesPhoto(var Items: TVkPhotos; Data: TVkPhotoUploadResponse): Boolean;
 begin
-  Result := SaveMessagesPhoto(Items, PhotoSaveData.Server, PhotoSaveData.Photo, PhotoSaveData.Hash);
+  Result := SaveMessagesPhoto(Items, Data.Server, Data.Photo, Data.Hash);
 end;
 
 function TPhotosController.СonfirmTag(PhotoId, TagId, OwnerId: Integer): Boolean;
