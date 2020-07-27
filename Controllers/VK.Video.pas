@@ -20,7 +20,7 @@ type
     class function All: TVkVideosFilters; static; inline;
   end;
 
-  TVkParamsVideosGet = record
+  TVkParamsVideoGet = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function AlbumId(Value: Integer): Integer;
@@ -39,7 +39,7 @@ type
     function NeedSystem(Value: Boolean): Integer;
   end;
 
-  TVkParamsVideosAddToAlbum = record
+  TVkParamsVideoAddToAlbum = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function TargetId(Value: Integer): Integer;
@@ -48,7 +48,7 @@ type
     function VideoId(Value: Integer): Integer;
   end;
 
-  TVkParamsVideosCreateComment = record
+  TVkParamsVideoCreateComment = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function VideoId(Value: Integer): Integer;
@@ -60,7 +60,7 @@ type
     function Guid(Value: string): Integer;
   end;
 
-  TVkParamsVideosEdit = record
+  TVkParamsVideoEdit = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function VideoId(Value: Integer): Integer;
@@ -72,7 +72,7 @@ type
     function &Repeat(Value: Boolean): Integer;
   end;
 
-  TVkParamsVideosEditAlbum = record
+  TVkParamsVideoEditAlbum = record
     List: TParams;
     function GroupId(Value: Integer): Integer;
     function AlbumId(Value: Integer): Integer;
@@ -80,7 +80,7 @@ type
     function Privacy(Value: TArrayOfString): Integer;
   end;
 
-  TVkParamsVideosEditComment = record
+  TVkParamsVideoEditComment = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function CommentId(Value: Integer): Integer;
@@ -130,7 +130,7 @@ type
     function AfterVideoId(Value: Integer): Integer;
   end;
 
-  TVkParamsVideosReport = record
+  TVkParamsVideoReport = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function VideoId(Value: Integer): Integer;
@@ -139,7 +139,7 @@ type
     function SearchQuery(Value: string): Integer;
   end;
 
-  TVkParamsVideosSave = record
+  TVkParamsVideoSave = record
     List: TParams;
     function Name(Value: string): Integer;
     function Description(Value: string): Integer;
@@ -155,7 +155,7 @@ type
     function Compression(Value: Boolean): Integer;
   end;
 
-  TVkParamsVideosSearch = record
+  TVkParamsVideoSearch = record
     List: TParams;
     function Query(Value: string): Integer;
     function Sort(Value: Integer): Integer;
@@ -187,7 +187,7 @@ type
     /// <summary>
     /// Позволяет добавить видеозапись в альбом.
     /// </summary>
-    function AddToAlbum(Params: TVkParamsVideosAddToAlbum): Boolean; overload;
+    function AddToAlbum(Params: TVkParamsVideoAddToAlbum): Boolean; overload;
     /// <summary>
     /// Cоздает новый комментарий к видеозаписи
     /// </summary>
@@ -195,7 +195,7 @@ type
     /// <summary>
     /// Cоздает новый комментарий к видеозаписи
     /// </summary>
-    function CreateComment(var CommentId: Integer; Params: TVkParamsVideosCreateComment): Boolean; overload;
+    function CreateComment(var CommentId: Integer; Params: TVkParamsVideoCreateComment): Boolean; overload;
     /// <summary>
     /// Удаляет видеозапись со страницы пользователя.
     /// </summary>
@@ -215,7 +215,7 @@ type
     /// <summary>
     /// Cоздает новый комментарий к видеозаписи
     /// </summary>
-    function Edit(Params: TVkParamsVideosEdit): Boolean; overload;
+    function Edit(Params: TVkParamsVideoEdit): Boolean; overload;
     /// <summary>
     /// Редактирует альбом с видео.
     /// </summary>
@@ -223,7 +223,7 @@ type
     /// <summary>
     /// Редактирует альбом с видео.
     /// </summary>
-    function EditAlbum(Params: TVkParamsVideosEditAlbum): Boolean; overload;
+    function EditAlbum(Params: TVkParamsVideoEditAlbum): Boolean; overload;
     /// <summary>
     /// Изменяет текст комментария к видеозаписи.
     /// </summary>
@@ -231,7 +231,7 @@ type
     /// <summary>
     /// Изменяет текст комментария к видеозаписи.
     /// </summary>
-    function EditComment(Params: TVkParamsVideosEditComment): Boolean; overload;
+    function EditComment(Params: TVkParamsVideoEditComment): Boolean; overload;
     /// <summary>
     /// Возвращает информацию о видеозаписях.
     /// </summary>
@@ -239,7 +239,7 @@ type
     /// <summary>
     /// Возвращает информацию о видеозаписях.
     /// </summary>
-    function Get(var Items: TVkVideos; Params: TVkParamsVideosGet): Boolean; overload;
+    function Get(var Items: TVkVideos; Params: TVkParamsVideoGet): Boolean; overload;
     /// <summary>
     /// Позволяет получить информацию об альбоме с видео.
     /// </summary>
@@ -296,7 +296,7 @@ type
     /// <summary>
     /// Позволяет пожаловаться на видеозапись.
     /// </summary>
-    function Report(Params: TVkParamsVideosReport): Boolean; overload;
+    function Report(Params: TVkParamsVideoReport): Boolean; overload;
     /// <summary>
     /// Позволяет пожаловаться на комментарий к видеозаписи.
     /// </summary>
@@ -316,7 +316,7 @@ type
     /// <summary>
     /// Возвращает адрес сервера, необходимый для загрузки, и данные видеозаписи.
     /// </summary>
-    function Save(var VideoSaved: TVkVideoSaved; Params: TVkParamsVideosSave): Boolean; overload;
+    function Save(var VideoSaved: TVkVideoSaved; Params: TVkParamsVideoSave): Boolean; overload;
     /// <summary>
     /// Возвращает адрес сервера, необходимый для загрузки, и данные видеозаписи.
     /// </summary>
@@ -328,7 +328,7 @@ type
     /// <summary>
     /// Возвращает список видеозаписей в соответствии с заданным критерием поиска.
     /// </summary>
-    function Search(var Items: TVkVideos; Params: TVkParamsVideosSearch): Boolean; overload;
+    function Search(var Items: TVkVideos; Params: TVkParamsVideoSearch): Boolean; overload;
   end;
 
 implementation
@@ -403,7 +403,7 @@ begin
   Result := ReorderVideos(Params.List);
 end;
 
-function TVideoController.Report(Params: TVkParamsVideosReport): Boolean;
+function TVideoController.Report(Params: TVkParamsVideoReport): Boolean;
 begin
   Result := Report(Params.List);
 end;
@@ -441,7 +441,7 @@ begin
     Result := Success and (Response = '1');
 end;
 
-function TVideoController.Save(var VideoSaved: TVkVideoSaved; Params: TVkParamsVideosSave): Boolean;
+function TVideoController.Save(var VideoSaved: TVkVideoSaved; Params: TVkParamsVideoSave): Boolean;
 begin
   Result := Save(VideoSaved, Params.List);
 end;
@@ -538,7 +538,7 @@ begin
   end;
 end;
 
-function TVideoController.Get(var Items: TVkVideos; Params: TVkParamsVideosGet): Boolean;
+function TVideoController.Get(var Items: TVkVideos; Params: TVkParamsVideoGet): Boolean;
 begin
   Result := Get(Items, Params.List);
 end;
@@ -568,12 +568,12 @@ begin
     Result := Success and TryStrToInt(Response, AlbumId);
 end;
 
-function TVideoController.AddToAlbum(Params: TVkParamsVideosAddToAlbum): Boolean;
+function TVideoController.AddToAlbum(Params: TVkParamsVideoAddToAlbum): Boolean;
 begin
   Result := AddToAlbum(Params.List);
 end;
 
-function TVideoController.CreateComment(var CommentId: Integer; Params: TVkParamsVideosCreateComment): Boolean;
+function TVideoController.CreateComment(var CommentId: Integer; Params: TVkParamsVideoCreateComment): Boolean;
 begin
   Result := CreateComment(CommentId, Params.List);
 end;
@@ -612,17 +612,17 @@ begin
     Result := Success and (Response = '1');
 end;
 
-function TVideoController.Edit(Params: TVkParamsVideosEdit): Boolean;
+function TVideoController.Edit(Params: TVkParamsVideoEdit): Boolean;
 begin
   Result := Edit(Params.List);
 end;
 
-function TVideoController.EditAlbum(Params: TVkParamsVideosEditAlbum): Boolean;
+function TVideoController.EditAlbum(Params: TVkParamsVideoEditAlbum): Boolean;
 begin
   Result := EditAlbum(Params.List);
 end;
 
-function TVideoController.EditComment(Params: TVkParamsVideosEditComment): Boolean;
+function TVideoController.EditComment(Params: TVkParamsVideoEditComment): Boolean;
 begin
   Result := EditComment(Params.List);
 end;
@@ -688,7 +688,7 @@ begin
   end;
 end;
 
-function TVideoController.Search(var Items: TVkVideos; Params: TVkParamsVideosSearch): Boolean;
+function TVideoController.Search(var Items: TVkVideos; Params: TVkParamsVideoSearch): Boolean;
 begin
   Result := Search(Items, Params.List);
 end;
@@ -711,32 +711,32 @@ end;
 
 { TVkVideosGetParams }
 
-function TVkParamsVideosGet.AlbumId(Value: Integer): Integer;
+function TVkParamsVideoGet.AlbumId(Value: Integer): Integer;
 begin
   Result := List.Add('album_id', Value);
 end;
 
-function TVkParamsVideosGet.Count(Value: Integer): Integer;
+function TVkParamsVideoGet.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsVideosGet.Extended(Value: Boolean): Integer;
+function TVkParamsVideoGet.Extended(Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsVideosGet.Offset(Value: Integer): Integer;
+function TVkParamsVideoGet.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsVideosGet.OwnerId(Value: Integer): Integer;
+function TVkParamsVideoGet.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
 
-function TVkParamsVideosGet.Videos(Value: TArrayOfString): Integer;
+function TVkParamsVideoGet.Videos(Value: TArrayOfString): Integer;
 begin
   Result := List.Add('videos', Value.ToString);
 end;
@@ -770,155 +770,155 @@ end;
 
 { TVkParamsVideosAddToAlbum }
 
-function TVkParamsVideosAddToAlbum.AlbumId(Value: Integer): Integer;
+function TVkParamsVideoAddToAlbum.AlbumId(Value: Integer): Integer;
 begin
   Result := List.Add('album_id', Value);
 end;
 
-function TVkParamsVideosAddToAlbum.AlbumIds(Value: TIds): Integer;
+function TVkParamsVideoAddToAlbum.AlbumIds(Value: TIds): Integer;
 begin
   Result := List.Add('album_ids', Value);
 end;
 
-function TVkParamsVideosAddToAlbum.OwnerId(Value: Integer): Integer;
+function TVkParamsVideoAddToAlbum.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
 
-function TVkParamsVideosAddToAlbum.TargetId(Value: Integer): Integer;
+function TVkParamsVideoAddToAlbum.TargetId(Value: Integer): Integer;
 begin
   Result := List.Add('target_id', Value);
 end;
 
-function TVkParamsVideosAddToAlbum.VideoId(Value: Integer): Integer;
+function TVkParamsVideoAddToAlbum.VideoId(Value: Integer): Integer;
 begin
   Result := List.Add('video_id', Value);
 end;
 
 { TVkParamsVideosCreateComment }
 
-function TVkParamsVideosCreateComment.OwnerId(Value: Integer): Integer;
+function TVkParamsVideoCreateComment.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
 
-function TVkParamsVideosCreateComment.VideoId(Value: Integer): Integer;
+function TVkParamsVideoCreateComment.VideoId(Value: Integer): Integer;
 begin
   Result := List.Add('video_id', Value);
 end;
 
-function TVkParamsVideosCreateComment.Message(Value: string): Integer;
+function TVkParamsVideoCreateComment.Message(Value: string): Integer;
 begin
   Result := List.Add('message', Value);
 end;
 
-function TVkParamsVideosCreateComment.Attachments(Value: TAttachmentArray): Integer;
+function TVkParamsVideoCreateComment.Attachments(Value: TAttachmentArray): Integer;
 begin
   Result := List.Add('attachments', Value);
 end;
 
-function TVkParamsVideosCreateComment.FromGroup(Value: Integer): Integer;
+function TVkParamsVideoCreateComment.FromGroup(Value: Integer): Integer;
 begin
   Result := List.Add('from_group', Value);
 end;
 
-function TVkParamsVideosCreateComment.ReplyToComment(Value: Integer): Integer;
+function TVkParamsVideoCreateComment.ReplyToComment(Value: Integer): Integer;
 begin
   Result := List.Add('reply_to_comment', Value);
 end;
 
-function TVkParamsVideosCreateComment.StickerId(Value: Integer): Integer;
+function TVkParamsVideoCreateComment.StickerId(Value: Integer): Integer;
 begin
   Result := List.Add('sticker_id', Value);
 end;
 
-function TVkParamsVideosCreateComment.Guid(Value: string): Integer;
+function TVkParamsVideoCreateComment.Guid(Value: string): Integer;
 begin
   Result := List.Add('guid', Value);
 end;
 
 { TVkParamsVideosEdit }
 
-function TVkParamsVideosEdit.OwnerId(Value: Integer): Integer;
+function TVkParamsVideoEdit.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
 
-function TVkParamsVideosEdit.VideoId(Value: Integer): Integer;
+function TVkParamsVideoEdit.VideoId(Value: Integer): Integer;
 begin
   Result := List.Add('video_id', Value);
 end;
 
-function TVkParamsVideosEdit.Name(Value: string): Integer;
+function TVkParamsVideoEdit.Name(Value: string): Integer;
 begin
   Result := List.Add('name', Value);
 end;
 
-function TVkParamsVideosEdit.Desc(Value: string): Integer;
+function TVkParamsVideoEdit.Desc(Value: string): Integer;
 begin
   Result := List.Add('desc', Value);
 end;
 
-function TVkParamsVideosEdit.PrivacyView(Value: TArrayOfString): Integer;
+function TVkParamsVideoEdit.PrivacyView(Value: TArrayOfString): Integer;
 begin
   Result := List.Add('privacy_view', Value);
 end;
 
-function TVkParamsVideosEdit.PrivacyComment(Value: TArrayOfString): Integer;
+function TVkParamsVideoEdit.PrivacyComment(Value: TArrayOfString): Integer;
 begin
   Result := List.Add('privacy_comment', Value);
 end;
 
-function TVkParamsVideosEdit.NoComments(Value: Boolean): Integer;
+function TVkParamsVideoEdit.NoComments(Value: Boolean): Integer;
 begin
   Result := List.Add('no_comments', Value);
 end;
 
-function TVkParamsVideosEdit.&Repeat(Value: Boolean): Integer;
+function TVkParamsVideoEdit.&Repeat(Value: Boolean): Integer;
 begin
   Result := List.Add('repeat', Value);
 end;
 
 { TVkParamsVideosEditAlbum }
 
-function TVkParamsVideosEditAlbum.GroupId(Value: Integer): Integer;
+function TVkParamsVideoEditAlbum.GroupId(Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsVideosEditAlbum.AlbumId(Value: Integer): Integer;
+function TVkParamsVideoEditAlbum.AlbumId(Value: Integer): Integer;
 begin
   Result := List.Add('album_id', Value);
 end;
 
-function TVkParamsVideosEditAlbum.Title(Value: string): Integer;
+function TVkParamsVideoEditAlbum.Title(Value: string): Integer;
 begin
   Result := List.Add('title', Value);
 end;
 
-function TVkParamsVideosEditAlbum.Privacy(Value: TArrayOfString): Integer;
+function TVkParamsVideoEditAlbum.Privacy(Value: TArrayOfString): Integer;
 begin
   Result := List.Add('privacy', Value);
 end;
 
 { TVkParamsVideosEditComment }
 
-function TVkParamsVideosEditComment.OwnerId(Value: Integer): Integer;
+function TVkParamsVideoEditComment.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
 
-function TVkParamsVideosEditComment.CommentId(Value: Integer): Integer;
+function TVkParamsVideoEditComment.CommentId(Value: Integer): Integer;
 begin
   Result := List.Add('comment_id', Value);
 end;
 
-function TVkParamsVideosEditComment.Message(Value: string): Integer;
+function TVkParamsVideoEditComment.Message(Value: string): Integer;
 begin
   Result := List.Add('message', Value);
 end;
 
-function TVkParamsVideosEditComment.Attachments(Value: TIds): Integer;
+function TVkParamsVideoEditComment.Attachments(Value: TIds): Integer;
 begin
   Result := List.Add('attachments', Value);
 end;
@@ -1063,89 +1063,89 @@ end;
 
 { TVkParamsVideosReport }
 
-function TVkParamsVideosReport.OwnerId(Value: Integer): Integer;
+function TVkParamsVideoReport.OwnerId(Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
 
-function TVkParamsVideosReport.VideoId(Value: Integer): Integer;
+function TVkParamsVideoReport.VideoId(Value: Integer): Integer;
 begin
   Result := List.Add('video_id', Value);
 end;
 
-function TVkParamsVideosReport.Reason(Value: TVkMediaReportReason): Integer;
+function TVkParamsVideoReport.Reason(Value: TVkMediaReportReason): Integer;
 begin
   Result := List.Add('reason', Value.ToConst.ToString);
 end;
 
-function TVkParamsVideosReport.Comment(Value: string): Integer;
+function TVkParamsVideoReport.Comment(Value: string): Integer;
 begin
   Result := List.Add('comment', Value);
 end;
 
-function TVkParamsVideosReport.SearchQuery(Value: string): Integer;
+function TVkParamsVideoReport.SearchQuery(Value: string): Integer;
 begin
   Result := List.Add('search_query', Value);
 end;
 
 { TVkParamsVideosSave }
 
-function TVkParamsVideosSave.Name(Value: string): Integer;
+function TVkParamsVideoSave.Name(Value: string): Integer;
 begin
   Result := List.Add('name', Value);
 end;
 
-function TVkParamsVideosSave.Description(Value: string): Integer;
+function TVkParamsVideoSave.Description(Value: string): Integer;
 begin
   Result := List.Add('description', Value);
 end;
 
-function TVkParamsVideosSave.IsPrivate(Value: Boolean): Integer;
+function TVkParamsVideoSave.IsPrivate(Value: Boolean): Integer;
 begin
   Result := List.Add('is_private', Value);
 end;
 
-function TVkParamsVideosSave.Wallpost(Value: Boolean): Integer;
+function TVkParamsVideoSave.Wallpost(Value: Boolean): Integer;
 begin
   Result := List.Add('wallpost', Value);
 end;
 
-function TVkParamsVideosSave.Link(Value: string): Integer;
+function TVkParamsVideoSave.Link(Value: string): Integer;
 begin
   Result := List.Add('link', Value);
 end;
 
-function TVkParamsVideosSave.GroupId(Value: Integer): Integer;
+function TVkParamsVideoSave.GroupId(Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsVideosSave.AlbumId(Value: Integer): Integer;
+function TVkParamsVideoSave.AlbumId(Value: Integer): Integer;
 begin
   Result := List.Add('album_id', Value);
 end;
 
-function TVkParamsVideosSave.PrivacyView(Value: TArrayOfString): Integer;
+function TVkParamsVideoSave.PrivacyView(Value: TArrayOfString): Integer;
 begin
   Result := List.Add('privacy_view', Value);
 end;
 
-function TVkParamsVideosSave.PrivacyComment(Value: TArrayOfString): Integer;
+function TVkParamsVideoSave.PrivacyComment(Value: TArrayOfString): Integer;
 begin
   Result := List.Add('privacy_comment', Value);
 end;
 
-function TVkParamsVideosSave.NoComments(Value: Boolean): Integer;
+function TVkParamsVideoSave.NoComments(Value: Boolean): Integer;
 begin
   Result := List.Add('no_comments', Value);
 end;
 
-function TVkParamsVideosSave.&Repeat(Value: Boolean): Integer;
+function TVkParamsVideoSave.&Repeat(Value: Boolean): Integer;
 begin
   Result := List.Add('repeat', Value);
 end;
 
-function TVkParamsVideosSave.Compression(Value: Boolean): Integer;
+function TVkParamsVideoSave.Compression(Value: Boolean): Integer;
 begin
   Result := List.Add('compression', Value);
 end;
@@ -1190,57 +1190,57 @@ end;
 
 { TVkParamsVideosSearch }
 
-function TVkParamsVideosSearch.Query(Value: string): Integer;
+function TVkParamsVideoSearch.Query(Value: string): Integer;
 begin
   Result := List.Add('q', Value);
 end;
 
-function TVkParamsVideosSearch.Sort(Value: Integer): Integer;
+function TVkParamsVideoSearch.Sort(Value: Integer): Integer;
 begin
   Result := List.Add('sort', Value);
 end;
 
-function TVkParamsVideosSearch.Hd(Value: Integer): Integer;
+function TVkParamsVideoSearch.Hd(Value: Integer): Integer;
 begin
   Result := List.Add('hd', Value);
 end;
 
-function TVkParamsVideosSearch.Adult(Value: Boolean): Integer;
+function TVkParamsVideoSearch.Adult(Value: Boolean): Integer;
 begin
   Result := List.Add('adult', Value);
 end;
 
-function TVkParamsVideosSearch.Filters(Value: TVkVideosFilters): Integer;
+function TVkParamsVideoSearch.Filters(Value: TVkVideosFilters): Integer;
 begin
   Result := List.Add('filters', Value.ToString);
 end;
 
-function TVkParamsVideosSearch.SearchOwn(Value: Boolean): Integer;
+function TVkParamsVideoSearch.SearchOwn(Value: Boolean): Integer;
 begin
   Result := List.Add('search_own', Value);
 end;
 
-function TVkParamsVideosSearch.Offset(Value: Integer): Integer;
+function TVkParamsVideoSearch.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsVideosSearch.Longer(Value: Integer): Integer;
+function TVkParamsVideoSearch.Longer(Value: Integer): Integer;
 begin
   Result := List.Add('longer', Value);
 end;
 
-function TVkParamsVideosSearch.Shorter(Value: Integer): Integer;
+function TVkParamsVideoSearch.Shorter(Value: Integer): Integer;
 begin
   Result := List.Add('shorter', Value);
 end;
 
-function TVkParamsVideosSearch.Count(Value: Integer): Integer;
+function TVkParamsVideoSearch.Count(Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsVideosSearch.Extended(Value: Boolean): Integer;
+function TVkParamsVideoSearch.Extended(Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;

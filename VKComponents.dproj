@@ -227,6 +227,7 @@
         <DCCReference Include="Entity\VK.Entity.Newsfeed.pas"/>
         <DCCReference Include="Controllers\VK.Notifications.pas"/>
         <DCCReference Include="Entity\VK.Entity.Notifications.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Subscription.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

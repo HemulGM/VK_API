@@ -547,6 +547,8 @@ type
 
   TVkSex = (sxMale, sxFemale);
 
+  TVkSexSearch = (sxsAny, sxsMale, sxsFemale);
+
   //Âèäèìîñòü äàòû ðîæäåíèÿ
   TVkBirthDateVisibility = (dvVisible, dvDayMonOnly, dvHidden);
 
@@ -623,6 +625,12 @@ type
     UserIds: TIds;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
+  end;
+
+  TVkUserReport = (urPorn, urSpam, urInsult, urAdvertisåment);
+
+  TVkUserReportHelper = record helper for TVkUserReport
+    function ToString: string; overload; inline;
   end;
 
   TVkUserBlockReason = (brOther, brSpam, brInsultingParticipants, brObsceneExpressions, brOffTopic);
@@ -2207,6 +2215,24 @@ end;
 procedure TVkMethodException.SetCode(const Value: Integer);
 begin
   FCode := Value;
+end;
+
+{ TVkUserReportHelper }
+
+function TVkUserReportHelper.ToString: string;
+begin
+  case Self of
+    urPorn:
+      Result := 'porn';
+    urSpam:
+      Result := 'spam';
+    urInsult:
+      Result := 'insult';
+    urAdvertisåment:
+      Result := 'advertisåment';
+  else
+    Result := ''
+  end;
 end;
 
 end.

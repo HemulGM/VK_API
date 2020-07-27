@@ -142,7 +142,8 @@ contains
   VK.Newsfeed in 'Controllers\VK.Newsfeed.pas',
   VK.Entity.Newsfeed in 'Entity\VK.Entity.Newsfeed.pas',
   VK.Notifications in 'Controllers\VK.Notifications.pas',
-  VK.Entity.Notifications in 'Entity\VK.Entity.Notifications.pas';
+  VK.Entity.Notifications in 'Entity\VK.Entity.Notifications.pas',
+  VK.Entity.Subscription in 'Entity\VK.Entity.Subscription.pas';
 
 end.
 
