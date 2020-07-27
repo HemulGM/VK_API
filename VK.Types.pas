@@ -16,6 +16,15 @@ type
 
   TVkHandlerException = TVkException;
 
+  TVkMethodException = class(TVkException)
+  private
+    FCode: Integer;
+    procedure SetCode(const Value: Integer);
+  public
+    property Code: Integer read FCode write SetCode;
+    constructor Create(const Msg: string; Code: Integer);
+  end;
+
   TVkWrongParamException = TVkException;
 
   TVkLongPollServerException = TVkException;
@@ -623,9 +632,9 @@ type
     function ToConst: Integer; overload; inline;
   end;
 
-  TVkPhotoReportReason = (prSpam, prChildPorn, prExtremism, prViolence, prDrug, prAdults, prInsult);
+  TVkMediaReportReason = (prSpam, prChildPorn, prExtremism, prViolence, prDrug, prAdults, prInsult);
 
-  TVkPhotoReportReasonHelper = record helper for TVkPhotoReportReason
+  TVkMediaReportReasonHelper = record helper for TVkMediaReportReason
     function ToString: string; overload; inline;
     function ToConst: Integer; overload; inline;
   end;
@@ -739,7 +748,7 @@ var
     'Редактор', 'Администратор');
   VkUserBlockReason: array[TVkUserBlockReason] of string = ('Другое', 'Спам',
     'Оскорбление участников', 'Мат', 'Разговоры не по теме');
-  VkPhotoReportReason: array[TVkPhotoReportReason] of string = ('Спам', 'Детская порнография', 'Экстремизм', 'Насилие',
+  VkPhotoReportReason: array[TVkMediaReportReason] of string = ('Спам', 'Детская порнография', 'Экстремизм', 'Насилие',
     'Пропаганда наркотиков', 'Материал для взрослых', 'Оскорбление');
   VkMessageFlagTypes: array[TMessageFlag] of string = ('Unknown_9', 'Unknown_8',
     'Unknown_7', 'Unknown_6', 'NotDelivered', 'DeleteForAll', 'Hidden',
@@ -1042,6 +1051,15 @@ begin
     203:
       ErrStr :=
         'Доступ к группе запрещён. Убедитесь, что текущий пользователь является участником или руководителем сообщества (для закрытых и частных групп и встреч).';
+    204:
+      ErrStr :=
+        'Нет доступа.';
+    214:
+      ErrStr :=
+        'Нет прав на добавление поста.';
+    219:
+      ErrStr :=
+        'Рекламный пост уже недавно добавлялся.';
     221:
       ErrStr :=
         'Пользователь выключил трансляцию названий аудио в статус';
@@ -1057,6 +1075,9 @@ begin
     500:
       ErrStr :=
         'Действие запрещено. Вы должны включить переводы голосов в настройках приложения. Проверьте настройки приложения: https://vk.com/editapp?id={Ваш API_ID}&section=payments';
+    504:
+      ErrStr :=
+        'Not enough money on owner''s balance';
     600:
       ErrStr :=
         'Нет прав на выполнение данных операций с рекламным кабинетом.';
@@ -1084,6 +1105,12 @@ begin
     711:
       ErrStr :=
         'Application is not installed in community';
+    800:
+      ErrStr :=
+        'Это видео уже добавлено.';
+    801:
+      ErrStr :=
+        'Comments for this video are closed';
     900:
       ErrStr :=
         'Нельзя отправлять сообщение пользователю из черного списка';
@@ -2159,14 +2186,27 @@ end;
 
 { TVkPhotoReportReasonHelper }
 
-function TVkPhotoReportReasonHelper.ToConst: Integer;
+function TVkMediaReportReasonHelper.ToConst: Integer;
 begin
   Result := Ord(Self);
 end;
 
-function TVkPhotoReportReasonHelper.ToString: string;
+function TVkMediaReportReasonHelper.ToString: string;
 begin
   Result := VkPhotoReportReason[Self];
+end;
+
+{ TVkMethodException }
+
+constructor TVkMethodException.Create(const Msg: string; Code: Integer);
+begin
+  inherited Create(Msg);
+  FCode := Code;
+end;
+
+procedure TVkMethodException.SetCode(const Value: Integer);
+begin
+  FCode := Value;
 end;
 
 end.

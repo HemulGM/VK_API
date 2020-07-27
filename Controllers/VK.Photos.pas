@@ -426,11 +426,11 @@ type
     /// <summary>
     /// Позволяет пожаловаться на фотографию.
     /// </summary>
-    function Report(OwnerId, PhotoId: Integer; Reason: TVkPhotoReportReason): Boolean;
+    function Report(OwnerId, PhotoId: Integer; Reason: TVkMediaReportReason): Boolean;
     /// <summary>
     /// Позволяет пожаловаться на комментарий к фотографии.
     /// </summary>
-    function ReportComment(OwnerId, CommentId: Integer; Reason: TVkPhotoReportReason): Boolean;
+    function ReportComment(OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
     /// <summary>
     /// Восстанавливает удаленную фотографию.
     /// </summary>
@@ -1049,14 +1049,14 @@ begin
     Result := Success and (Response = '1');
 end;
 
-function TPhotosController.Report(OwnerId, PhotoId: Integer; Reason: TVkPhotoReportReason): Boolean;
+function TPhotosController.Report(OwnerId, PhotoId: Integer; Reason: TVkMediaReportReason): Boolean;
 begin
   with Handler.Execute('photos.report', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString], ['reason',
     Reason.ToConst.ToString]]) do
     Result := Success and (Response = '1');
 end;
 
-function TPhotosController.ReportComment(OwnerId, CommentId: Integer; Reason: TVkPhotoReportReason): Boolean;
+function TPhotosController.ReportComment(OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
 begin
   with Handler.Execute('photos.reportComment', [['owner_id', OwnerId.ToString], ['comment_id', CommentId.ToString], ['reason',
     Reason.ToConst.ToString]]) do

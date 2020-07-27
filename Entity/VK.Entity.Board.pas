@@ -17,9 +17,11 @@ type
     FTitle: string;
     FUpdated: Int64;
     FUpdated_by: Integer;
+    function GetCreated: TDateTime;
+    procedure SetCreated(const Value: TDateTime);
   public
     property Comments: Integer read FComments write FComments;
-    property Created: Int64 read FCreated write FCreated;
+    property Created: TDateTime read GetCreated write SetCreated;
     property CreatedBy: Integer read FCreated_by write FCreated_by;
     property Id: Integer read FId write FId;
     property IsClosed: Integer read FIs_closed write FIs_closed;
@@ -51,7 +53,20 @@ type
 
 implementation
 
+uses
+  System.DateUtils;
+
 {TVkBoardTopic}
+
+function TVkBoardTopic.GetCreated: TDateTime;
+begin
+  Result := UnixToDateTime(FCreated, False);
+end;
+
+procedure TVkBoardTopic.SetCreated(const Value: TDateTime);
+begin
+  FCreated := DateTimeToUnix(Value, False);
+end;
 
 function TVkBoardTopic.ToJsonString: string;
 begin

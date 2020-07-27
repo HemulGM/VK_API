@@ -42,6 +42,8 @@ begin
         Result := False;
       end;
     end;
+   { if (not Result) and GenerateException then
+      raise TVkMethodException.Create(Error.Text, Error.Code);     }
   end;
 end;
 
