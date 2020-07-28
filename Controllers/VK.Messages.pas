@@ -530,6 +530,10 @@ type
     /// </summary>
     function MarkAsRead(const Params: TVkParamsMessageMark): Boolean; overload;
     /// <summary>
+    /// Помечает сообщения как непрочитанные.
+    /// </summary>
+    function MarkAsUnreadConversation(const PeerId: Integer; MessageIds: TIds = []): Boolean;
+    /// <summary>
     /// Закрепляет сообщение.
     /// </summary>
     function Pin(var Message: TVkMessage; PeerId, MessageId: Integer): Boolean; overload;
@@ -556,7 +560,7 @@ type
     /// <summary>
     /// Позволяет искать диалоги.
     /// </summary>
-    function SearchConversations(var Items: TVkConversations; Params: TVkParamsMessageSearchConversations): Boolean; overload;
+    function SearchConversations(var Items: TVkConversations; Params: TVkParamsMessageSearchConversations): Boolean;
     /// <summary>
     /// Отправляет событие с действием, которое произойдет при нажатии на callback-кнопку.
     /// </summary>
@@ -1114,6 +1118,17 @@ end;
 function TMessagesController.MarkAsRead(const Params: TVkParamsMessageMark): Boolean;
 begin
   Result := MarkAsRead(Params.List);
+end;
+
+function TMessagesController.MarkAsUnreadConversation(const PeerId: Integer; MessageIds: TIds): Boolean;
+var
+  Params: TParams;
+begin
+  Params.Add('peer_id', PeerId);
+  if Length(MessageIds) > 0 then
+    Params.Add('message_ids', MessageIds);
+  with Handler.Execute('messages.markAsUnreadConversation', Params) do
+    Result := Success and (Response = '1');
 end;
 
 function TMessagesController.MarkAsRead(const Params: TParams): Boolean;
