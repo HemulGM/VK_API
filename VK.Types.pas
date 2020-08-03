@@ -99,6 +99,10 @@ const
 
   //Error Codes
   VK_ERROR_INVALID_TOKEN = 5;
+  VK_ERROR_CAPTCHA = 14;
+  VK_ERROR_CONFIRM = 24;
+  VK_ERROR_REQUESTLIMIT = 6;
+  VK_ERROR_INTERNAL_SERVER = 10;
 
   //
   VK_CHAT_ID_START = 2000000000;
@@ -116,6 +120,7 @@ type
     function ToString: string; overload; inline;
     procedure Assign(Source: TStrings); overload;
     function IsEmpty: Boolean;
+    function Length: Integer;
   end;
 
   {$IFDEF OLD_VERSION}
@@ -128,6 +133,8 @@ type
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
     function ToString: string; overload; inline;
     function Add(Value: Integer): Integer;
+    function IsEmpty: Boolean;
+    function Length: Integer;
   end;
 
   TFields = TArrayOfString;
@@ -163,7 +170,18 @@ type
     function Remove(Key: string): string; inline;
   end;
 
-  TAttachmentArray = TArrayOfString;
+  Attachment = class
+  public
+    class function Album(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Doc(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Video(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Audio(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Create(&Type: string; OwnerId, Id: Integer; AccessKey: string): string; static;
+  end;
+
+  TAttachment = string;
+
+  TAttachmentArray = TArray<TAttachment>;
 
   TVkPhotoFeedType = (ftPhoto, ftPhotoTag);
 
@@ -239,6 +257,21 @@ type
   TVkGroupMembersFilter = (gmfFriends, mgfUnsure, gmfManagers);
 
   TVkGroupMembersFilterHelper = record helper for TVkGroupMembersFilter
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// (автовыбор), Запустить, Играть, Перейти, Открыть, Подробнее, Позвонить, Забронировать, Записаться,
+  /// Зарегистрироваться, Купить, Купить билет, Заказать, Создать, Установить, Связаться, Заполнить,
+  /// Подписаться, Я пойду, Вступить, Связаться, Написать, Начать, Получить, Смотреть, Скачать, Участвовать,
+  /// Играть, Подать заявку, Получить предложение, Написать, Откликнуться
+  /// Подробное описание тут https://vk.com/dev/wall.postAdsStealth
+  /// </summary>
+  TVkPostLinkButton = (lbAuto, lbAppJoin, lbAppGameJoin, lbOpenUrl, lbOpen, lbMore, lbCall, lbBook, lbEnroll, lbRegister,
+    lbBuy, lbBuyTicket, lbOrder, lbCreate, lbInstall, lbContact, lbFill, lbJoinPublic, lbJoinEvent, lbJoin, lbIM, lbIM2,
+    lbBegin, lbGet, lbWatch, lbDownload, lbParticipate, lbPlay, lbApply, lbGetAnOffer, lbToWrite, lbReply);
+
+  TVkPostLinkButtonHelper = record helper for TVkPostLinkButton
     function ToString: string; inline;
   end;
 
@@ -602,8 +635,12 @@ type
     Response: string;
     JSON: string;
     Error: TResponseError;
+    function ResponseIsTrue: Boolean;
+    function ResponseIsFalse: Boolean;
+    function ResponseIsInt(var Value: Integer): Boolean;
     function GetJSONValue: TJSONValue;
     function GetJSONResponse: TJSONValue;
+    function GetValue<T>(const Field: string; var Value: T): Boolean;
   end;
 
   TEventExtraFields = record
@@ -640,7 +677,7 @@ type
     function ToConst: Integer; overload; inline;
   end;
 
-  TVkMediaReportReason = (prSpam, prChildPorn, prExtremism, prViolence, prDrug, prAdults, prInsult);
+  TVkMediaReportReason = (prSpam, prChildPorn, prExtremism, prViolence, prDrug, prAdults, prInsult, prCallForSuicide);
 
   TVkMediaReportReasonHelper = record helper for TVkMediaReportReason
     function ToString: string; overload; inline;
@@ -757,7 +794,7 @@ var
   VkUserBlockReason: array[TVkUserBlockReason] of string = ('Другое', 'Спам',
     'Оскорбление участников', 'Мат', 'Разговоры не по теме');
   VkPhotoReportReason: array[TVkMediaReportReason] of string = ('Спам', 'Детская порнография', 'Экстремизм', 'Насилие',
-    'Пропаганда наркотиков', 'Материал для взрослых', 'Оскорбление');
+    'Пропаганда наркотиков', 'Материал для взрослых', 'Оскорбление', 'Призыв к суициду');
   VkMessageFlagTypes: array[TMessageFlag] of string = ('Unknown_9', 'Unknown_8',
     'Unknown_7', 'Unknown_6', 'NotDelivered', 'DeleteForAll', 'Hidden',
     'Unknown_5', 'Unknown_4', 'UnreadMultichat', 'Unknown_3', 'Unknown_2',
@@ -818,6 +855,10 @@ var
     'can_see_audio', 'can_write_private_message', 'can_send_friend_request', 'is_favorite',
     'is_hidden_from_feed', 'timezone', 'screen_name', 'maiden_name', 'crop_photo', 'is_friend',
     'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me');
+  VKPostLinkButton: array[TVkPostLinkButton] of string = (
+    'auto', 'app_join', 'app_game_join', 'open_url', 'open', 'more', 'call', 'book', 'enroll', 'register', 'buy', 'buy_ticket', 'order', 'create', 'install', 'contact', 'fill',
+    'join_public', 'join_event', 'join', 'im', 'im2', 'begin', 'get', 'watch', 'download', 'participate', 'play',
+    'apply', 'get_an_offer', 'to_write', 'reply');
   VkFriendField: array[TVkFriendField] of string = ('nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone',
     'photo_50', 'photo_100', 'photo_200_orig', 'has_mobile', 'contacts', 'education', 'online', 'relation', 'last_seen', 'status',
     'can_write_private_message', 'can_see_all_posts', 'can_post', 'universities', 'can_see_audio');
@@ -846,8 +887,6 @@ var
 function VKErrorString(ErrorCode: Integer): string;
 
 function AddParam(var Dest: TParams; Param: TParam): Integer;
-
-function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string = ''): string;
 
 function AppendItemsTag(JSON: string): string;
 
@@ -891,13 +930,6 @@ end;
 function AppendItemsTag(JSON: string): string;
 begin
   Result := '{"Items": ' + JSON + '}';
-end;
-
-function CreateAttachment(&Type: string; OwnerId, Id: Integer; AccessKey: string): string;
-begin
-  Result := &Type + OwnerId.ToString + '_' + Id.ToString;
-  if not AccessKey.IsEmpty then
-    Result := Result + '_' + AccessKey;
 end;
 
 function AddParam(var Dest: TParams; Param: TParam): Integer;
@@ -969,6 +1001,9 @@ begin
     18:
       ErrStr :=
         'Страница удалена или заблокирована. Страница пользователя была удалена или заблокирована';
+    19:
+      ErrStr :=
+        'Контент недоступен.';
     20:
       ErrStr :=
         'Данное действие запрещено для не Standalone приложений. Если ошибка возникает несмотря на то, что Ваше приложение имеет тип Standalone, убедитесь, что при авторизации Вы используете redirect_uri=https://oauth.vk.com/blank.html.';
@@ -1062,15 +1097,36 @@ begin
     204:
       ErrStr :=
         'Нет доступа.';
+    210:
+      ErrStr :=
+        'Нет доступа к записи.';
+    211:
+      ErrStr :=
+        'Нет доступа к комментариям на этой стене.';
+    212:
+      ErrStr :=
+        'Access to post comments denied.';
     214:
       ErrStr :=
         'Нет прав на добавление поста.';
     219:
       ErrStr :=
         'Рекламный пост уже недавно добавлялся.';
+    220:
+      ErrStr :=
+        'Слишком много получателей.';
     221:
       ErrStr :=
         'Пользователь выключил трансляцию названий аудио в статус';
+    222:
+      ErrStr :=
+        'Запрещено размещать ссылки.';
+    224:
+      ErrStr :=
+        'Too many ads posts';
+    225:
+      ErrStr :=
+        'Donut is disabled';
     260:
       ErrStr :=
         'Access to the groups list is denied due to the user''s privacy settings';
@@ -1224,6 +1280,9 @@ begin
     2000:
       ErrStr :=
         'Нельзя добавить больше 10 серверов';
+    3102:
+      ErrStr :=
+        'Specified link is incorrect (can''t find source)';
     3300:
       ErrStr :=
         'Recaptcha needed';
@@ -1433,9 +1492,19 @@ end;
 
 function TArrayOfIntegerHelper.Add(Value: Integer): Integer;
 begin
-  Result := Length(Self) + 1;
+  Result := System.Length(Self) + 1;
   SetLength(Self, Result);
   Self[Result - 1] := Value;
+end;
+
+function TArrayOfIntegerHelper.IsEmpty: Boolean;
+begin
+  Result := System.Length(Self) = 0;
+end;
+
+function TArrayOfIntegerHelper.Length: Integer;
+begin
+  Result := System.Length(Self);
 end;
 
 function TArrayOfIntegerHelper.ToString: string;
@@ -1454,7 +1523,12 @@ end;
 
 function TArrayOfStringHelper.IsEmpty: Boolean;
 begin
-  Result := Length(Self) = 0;
+  Result := System.Length(Self) = 0;
+end;
+
+function TArrayOfStringHelper.Length: Integer;
+begin
+  Result := System.Length(Self);
 end;
 
 function TArrayOfStringHelper.ToString: string;
@@ -1804,6 +1878,37 @@ begin
     Result := TJSONObject.ParseJSONValue(UTF8ToString(JSON))
   else
     Result := nil;
+end;
+
+function TResponse.GetValue<T>(const Field: string; var Value: T): Boolean;
+var
+  JSONItem: TJSONValue;
+begin
+  try
+    JSONItem := TJSONObject.ParseJSONValue(Response);
+    try
+      Result := JSONItem.TryGetValue<T>(Field, Value);
+    finally
+      JSONItem.Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function TResponse.ResponseIsFalse: Boolean;
+begin
+  Result := Response = '0';
+end;
+
+function TResponse.ResponseIsInt(var Value: Integer): Boolean;
+begin
+  Result := TryStrToInt(Response, Value);
+end;
+
+function TResponse.ResponseIsTrue: Boolean;
+begin
+  Result := Response = '1';
 end;
 
 function TResponse.GetJSONResponse: TJSONValue;
@@ -2233,6 +2338,42 @@ begin
   else
     Result := ''
   end;
+end;
+
+{ Attachment }
+
+class function Attachment.Audio(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('audio', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.Create(&Type: string; OwnerId, Id: Integer; AccessKey: string): string;
+begin
+  Result := &Type + OwnerId.ToString + '_' + Id.ToString;
+  if not AccessKey.IsEmpty then
+    Result := Result + '_' + AccessKey;
+end;
+
+class function Attachment.Doc(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('doc', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.Video(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('video', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.Album(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('album', Id, OwnerId, AccessKey);
+end;
+
+{ TVkPostLinkButtonHelper }
+
+function TVkPostLinkButtonHelper.ToString: string;
+begin
+  Result := VKPostLinkButton[Self];
 end;
 
 end.

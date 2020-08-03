@@ -343,11 +343,11 @@ begin
     Result.Error.Text := JS.GetValue<string>('error_msg', VKErrorString(Result.Error.Code));
     if TestCaptcha then
     begin
-      Result.Error.Code := 14;
+      Result.Error.Code := VK_ERROR_CAPTCHA;
       TestCaptcha := False;
     end;
     case Result.Error.Code of
-      14: //Капча
+      VK_ERROR_CAPTCHA: //Капча
         begin
           if FCaptchaWait then
           begin
@@ -373,7 +373,7 @@ begin
             ProcError(Result.Error.Code, Result.Error.Text);
           end;
         end;
-      24: //Подтверждение для ВК
+      VK_ERROR_CONFIRM: //Подтверждение для ВК
         begin
           CaptchaAns := JS.GetValue<string>('confirmation_text', '');
           if DoConfirm(CaptchaAns) then
@@ -385,14 +385,14 @@ begin
           else
             ProcError(Result.Error.Code, Result.Error.Text);
         end;
-      6: //Превышено кол-во запросов в сек
+      VK_ERROR_REQUESTLIMIT: //Превышено кол-во запросов в сек
         begin
           ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests,
             RequestLimit, FStartRequest]));
           WaitTime(1000);
           Result := Execute(Request);
         end;
-      10: //Internal Server Error
+      VK_ERROR_INTERNAL_SERVER: //Internal Server Error
         begin
           WaitTime(1000);
           Result := Execute(Request);

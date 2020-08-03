@@ -220,8 +220,17 @@ type
     FPhoto: TVkPhoto;
     FRect: TVkRect;
   public
+    /// <summary>
+    /// Вырезанная фотография сообщества.
+    /// </summary>
     property Crop: TVkCrop read FCrop write FCrop;
+    /// <summary>
+    /// Объект photo фотографии пользователя, из которой вырезается главное фото сообщества.
+    /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
+    /// <summary>
+    /// Миниатюрная квадратная фотография, вырезанная из фотографии crop. Содержит набор полей, аналогичный объекту crop.
+    /// </summary>
     property Rect: TVkRect read FRect write FRect;
     constructor Create;
     destructor Destroy; override;

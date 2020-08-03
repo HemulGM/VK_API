@@ -983,7 +983,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkGroups.FromJsonString(Response);
+        Items := TVkGroups.FromJsonString(AppendItemsTag(Response));
       except
         Result := False;
       end;

@@ -183,8 +183,16 @@ type
     FItems: TArray<TVkComment>;
     FProfiles: TArray<TVkUser>;
     FGroups: TArray<TVkGroup>;
+    FCurrent_level_count: Integer;
+    FCan_post: Boolean;
+    FShow_reply_button: Boolean;
+    FGroups_can_post: Boolean;
   public
     property Count: Integer read FCount write FCount;
+    property CurrentLevelCount: Integer read FCurrent_level_count write FCurrent_level_count;
+    property CanPost: Boolean read FCan_post write FCan_post;
+    property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
+    property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
     property Items: TArray<TVkComment> read FItems write FItems;
     property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
@@ -265,13 +273,28 @@ type
     FProfiles: TArray<TVkUser>;
     FGroups: TArray<TVkGroup>;
   public
-    destructor Destroy; override;
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkPost> read FItems write FItems;
     property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPosts;
+  end;
+
+  TVkRepostInfo = class
+  private
+    FLikes_count: Integer;
+    FPost_id: Integer;
+    FReposts_count: Integer;
+    FSuccess: Boolean;
+  public
+    property LikesCount: Integer read FLikes_count write FLikes_count;
+    property PostId: Integer read FPost_id write FPost_id;
+    property RepostsCount: Integer read FReposts_count write FReposts_count;
+    property Success: Boolean read FSuccess write FSuccess;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkRepostInfo;
   end;
 
 implementation
@@ -600,6 +623,18 @@ begin
 end;
 
 function TVkCommentThread.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkRepostInfo }
+
+class function TVkRepostInfo.FromJsonString(AJsonString: string): TVkRepostInfo;
+begin
+  result := TJson.JsonToObject<TVkRepostInfo>(AJsonString);
+end;
+
+function TVkRepostInfo.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

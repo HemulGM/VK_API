@@ -228,6 +228,8 @@
         <DCCReference Include="Controllers\VK.Notifications.pas"/>
         <DCCReference Include="Entity\VK.Entity.Notifications.pas"/>
         <DCCReference Include="Entity\VK.Entity.Subscription.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Counters.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Audio.Catalog.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

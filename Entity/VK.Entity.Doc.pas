@@ -158,7 +158,7 @@ end;
 
 function TVkDocument.ToAttachment: string;
 begin
-  Result := CreateAttachment('doc', FOwner_id, FId, FAccess_key);
+  Result := Attachment.Doc(FId, FOwner_id, FAccess_key);
 end;
 
 function TVkDocument.ToJsonString: string;

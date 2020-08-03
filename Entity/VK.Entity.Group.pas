@@ -3,7 +3,8 @@ unit VK.Entity.Group;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market, VK.Entity.User;
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market, VK.Entity.User,
+  VK.Entity.Group.Counters;
 
 type
   TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
@@ -55,10 +56,10 @@ type
 
   TVkCover = class
   private
-    FEnabled: Integer;
+    FEnabled: Boolean;
     FImages: TArray<TVkCoverImage>;
   public
-    property Enabled: Integer read FEnabled write FEnabled;
+    property Enabled: Boolean read FEnabled write FEnabled;
     property Images: TArray<TVkCoverImage> read FImages write FImages;
   end;
 
@@ -204,23 +205,26 @@ type
     class function FromJsonString(AJsonString: string): TVkGroupAddresses;
   end;
 
+  TVkGroupState = (gsOpen = 0, gsClose = 1, gsPrivate = 2);
+
   TVkGroup = class
   private
-    FAdmin_level: Extended;
-    FId: Int64;
-    FIs_admin: Integer;
-    FIs_advertiser: Integer;
+    FAdmin_level: Integer;
+    FId: Integer;
+    FIs_admin: Boolean;
+    FIs_advertiser: Boolean;
+    //[JsonEnumValues('0,1,2')]
     FIs_closed: Integer;
-    FIs_member: Integer;
+    FIs_member: Boolean;
     FName: string;
     FPhoto_100: string;
     FPhoto_200: string;
     FPhoto_50: string;
     FScreen_name: string;
     FType: string;
-    FTrending: Integer;
+    FTrending: Boolean;
     FMembers_count: Integer;
-    FVerified: Integer;
+    FVerified: Boolean;
     FCountry: TVkCountry;
     FMember_status: Integer;
     FCity: TVkCity;
@@ -230,21 +234,21 @@ type
     FAddresses: TVkAddresses;
     FAge_limits: Integer;
     FBan_info: TVkBanInfo;
-    Fcan_create_topic: Integer;
-    Fcan_message: Integer;
-    Fcan_post: Integer;
-    Fcan_see_all_posts: Integer;
-    Fcan_upload_doc: Integer;
-    Fcan_upload_video: Integer;
+    Fcan_create_topic: Boolean;
+    Fcan_message: Boolean;
+    Fcan_post: Boolean;
+    Fcan_see_all_posts: Boolean;
+    Fcan_upload_doc: Boolean;
+    Fcan_upload_video: Boolean;
     FContacts: TArray<TVkContact>;
     FCover: TVkCover;
     FCrop_photo: TVkCropPhoto;
     FDescription: string;
     FFixed_post: Integer;
-    FHas_photo: Integer;
-    FIs_favorite: Integer;
-    FIs_hidden_from_feed: Integer;
-    FIs_messages_blocked: Integer;
+    FHas_photo: Boolean;
+    FIs_favorite: Boolean;
+    FIs_hidden_from_feed: Boolean;
+    FIs_messages_blocked: Boolean;
     FLinks: TArray<TVkGroupLink>;
     FMain_album_id: Integer;
     FMain_section: Integer;
@@ -255,49 +259,146 @@ type
     FStatus: string;
     FWall: Integer;
     FWiki_page: string;
-    function GetIs_admin: Boolean;
-    procedure SetIs_admin(const Value: Boolean);
-    function GetIs_advertiser: Boolean;
-    function GetIs_closed: Boolean;
-    function GetIs_member: Boolean;
-    procedure SetIs_advertiser(const Value: Boolean);
-    procedure SetIs_closed(const Value: Boolean);
-    procedure SetIs_member(const Value: Boolean);
-    function GetVerified: Boolean;
-    procedure SetVerified(const Value: Boolean);
+    FCounters: TVkGroupCounters;
+    function GetIsBanned: Boolean;
+    function GetIsDeleted: Boolean;
+    function GetIsDeactivated: Boolean;
+    function GetFixedPostId: string;
   public
+    /// <summary>
+    /// Строка тематики паблика. У групп возвращается строковое значение, открыта ли группа или нет, а у событий дата начала.
+    /// </summary>
     property Activity: string read FActivity write FActivity;
-    property AdminLevel: Extended read FAdmin_level write FAdmin_level;
+    /// <summary>
+    /// Уровень полномочий текущего пользователя (если is_admin = 1):
+    /// 1 — модератор;
+    /// 2 — редактор;
+    /// 3 — администратор.
+    /// </summary>
+    property AdminLevel: Integer read FAdmin_level write FAdmin_level;
+    /// <summary>
+    /// Информация об адресах сообщества.
+    /// </summary>
     property Addresses: TVkAddresses read FAddresses write FAddresses;
     /// <summary>
+    /// Возрастное ограничение.
     /// 1 — нет; 2 — 16+; 3 — 18+.
     /// </summary>
     property AgeLimits: Integer read FAge_limits write FAge_limits;
+    /// <summary>
+    /// Информация о занесении в черный список сообщества (поле возвращается только при запросе информации об одном сообществе)
+    /// </summary>
     property BanInfo: TVkBanInfo read FBan_info write FBan_info;
-    property CanCreateTopic: Integer read Fcan_create_topic write Fcan_create_topic;
-    property CanMessage: Integer read Fcan_message write Fcan_message;
-    property CanPost: Integer read Fcan_post write Fcan_post;
-    property CanSeeAllPosts: Integer read Fcan_see_all_posts write Fcan_see_all_posts;
-    property CanUploadDoc: Integer read Fcan_upload_doc write Fcan_upload_doc;
-    property CanUploadVideo: Integer read Fcan_upload_video write Fcan_upload_video;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь создать новое обсуждение в группе.
+    /// </summary>
+    property CanCreateTopic: Boolean read Fcan_create_topic write Fcan_create_topic;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь написать сообщение сообществу.
+    /// </summary>
+    property CanMessage: Boolean read Fcan_message write Fcan_message;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь оставлять записи на стене сообщества.
+    /// </summary>
+    property CanPost: Boolean read Fcan_post write Fcan_post;
+    /// <summary>
+    /// Информация о том, разрешено ли видеть чужие записи на стене группы.
+    /// </summary>
+    property CanSeeAllPosts: Boolean read Fcan_see_all_posts write Fcan_see_all_posts;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь загружать документы в группу.
+    /// </summary>
+    property CanUploadDoc: Boolean read Fcan_upload_doc write Fcan_upload_doc;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь загружать видеозаписи в группу.
+    /// </summary>
+    property CanUploadVideo: Boolean read Fcan_upload_video write Fcan_upload_video;
+    /// <summary>
+    /// Город, указанный в информации о сообществе.
+    /// </summary>
     property City: TVkCity read FCity write FCity;
+    /// <summary>
+    /// Информация из блока контактов публичной страницы.
+    /// </summary>
     property Contacts: TArray<TVkContact> read FContacts write FContacts;
+    /// <summary>
+    /// Объект, содержащий счётчики сообщества, может включать любой набор из следующих полей: photos, albums, audios, videos, topics, docs.
+    /// </summary>
+    property Counters: TVkGroupCounters read FCounters write FCounters;
+    /// <summary>
+    /// Страна, указанная в информации о сообществе.
+    /// </summary>
     property Country: TVkCountry read FCountry write FCountry;
+    /// <summary>
+    /// Обложка сообщества.
+    /// </summary>
     property Cover: TVkCover read FCover write FCover;
+    /// <summary>
+    /// Возвращает данные о точках, по которым вырезаны профильная и миниатюрная фотографии сообщества.
+    /// </summary>
     property CropPhoto: TVkCropPhoto read FCrop_photo write FCrop_photo;
+    /// <summary>
+    /// Возвращается в случае, если сообщество удалено или заблокировано. Возможные значения:
+    /// deleted — сообщество удалено;
+    /// banned — сообщество заблокировано;
+    /// </summary>
     property Deactivated: string read FDeactivated write FDeactivated;
+    /// <summary>
+    /// Сообщество удалено
+    /// </summary>
+    property IsDeleted: Boolean read GetIsDeleted;
+    /// <summary>
+    /// Сообщество заблокировано
+    /// </summary>
+    property IsBanned: Boolean read GetIsBanned;
+    /// <summary>
+    /// Сообщество не активно
+    /// </summary>
+    property IsDeactivated: Boolean read GetIsDeactivated;
+    /// <summary>
+    /// Текст описания сообщества.
+    /// </summary>
     property Description: string read FDescription write FDescription;
+    /// <summary>
+    /// Идентификатор закрепленной записи. Получить дополнительные данные о записи можно методом wall.getById, передав в поле posts {group_id}_{post_id}.
+    /// </summary>
     property FixedPost: Integer read FFixed_post write FFixed_post;
-    property HasPhoto: Integer read FHas_photo write FHas_photo;
-    property Id: Int64 read FId write FId;
+    /// <summary>
+    /// Идентификатор закрепленной записи. Получить дополнительные данные о записи можно методом wall.getById, передав в поле posts.
+    /// </summary>
+    property FixedPostId: string read GetFixedPostId;
+    /// <summary>
+    /// Информация о том, установлена ли у сообщества главная фотография.
+    /// </summary>
+    property HasPhoto: Boolean read FHas_photo write FHas_photo;
+    /// <summary>
+    /// Идентификатор сообщества.
+    /// </summary>
+    property Id: Integer read FId write FId;
+    /// <summary>
+    /// Идентификатор пользователя, который отправил приглашение в сообщество.
+    /// Поле возвращается только для метода groups.getInvites.
+    /// </summary>
     property InvitedBy: Integer read FInvited_by write FInvited_by;
-    property IsAdmin: Boolean read GetIs_admin write SetIs_admin;
-    property IsAdvertiser: Boolean read GetIs_advertiser write SetIs_advertiser;
-    property IsClosed: Boolean read GetIs_closed write SetIs_closed;
-    property IsFavorite: Integer read FIs_favorite write FIs_favorite;
-    property IsHiddenFromFeed: Integer read FIs_hidden_from_feed write FIs_hidden_from_feed;
-    property IsMessagesBlocked: Integer read FIs_messages_blocked write FIs_messages_blocked;
-    property IsMember: Boolean read GetIs_member write SetIs_member;
+    /// <summary>
+    /// Информация о том, является ли текущий пользователь руководителем.
+    /// </summary>
+    property IsAdmin: Boolean read FIs_admin write FIs_admin;
+    /// <summary>
+    /// Информация о том, является ли текущий пользователь рекламодателем.
+    /// </summary>
+    property IsAdvertiser: Boolean read FIs_advertiser write FIs_advertiser;
+    /// <summary>
+    /// Является ли сообщество закрытым. Возможные значения:
+    /// 0 — открытое;
+    /// 1 — закрытое;
+    /// 2 — частное.
+    /// </summary>
+    property IsClosed: Integer read FIs_closed write FIs_closed;
+    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
+    property IsHiddenFromFeed: Boolean read FIs_hidden_from_feed write FIs_hidden_from_feed;
+    property IsMessagesBlocked: Boolean read FIs_messages_blocked write FIs_messages_blocked;
+    property IsMember: Boolean read FIs_member write FIs_member;
     property Links: TArray<TVkGroupLink> read FLinks write FLinks;
     property MainAlbumId: Integer read FMain_album_id write FMain_album_id;
     property MainSection: Integer read FMain_section write FMain_section;
@@ -314,8 +415,8 @@ type
     property Site: string read FSite write FSite;
     property Status: string read FStatus write FStatus;
     property&Type: string read FType write FType;
-    property Trending: Integer read FTrending write FTrending;
-    property Verified: Boolean read GetVerified write SetVerified;
+    property Trending: Boolean read FTrending write FTrending;
+    property Verified: Boolean read FVerified write FVerified;
     property Wall: Integer read FWall write FWall;
     property WikiPage: string read FWiki_page write FWiki_page;
     constructor Create;
@@ -431,6 +532,8 @@ begin
     FBan_info.Free;
   if Assigned(FCover) then
     FCover.Free;
+  if Assigned(FCounters) then
+    FCounters.Free;
   if Assigned(FCrop_photo) then
     FCrop_photo.Free;
   if Assigned(FMarket) then
@@ -443,54 +546,25 @@ begin
   result := TJson.JsonToObject<TVkGroup>(AJsonString)
 end;
 
-function TVkGroup.GetIs_admin: Boolean;
+function TVkGroup.GetFixedPostId: string;
 begin
-  Result := FIs_admin = 1;
+  //{group_id}_{post_id}
+  Result := FId.ToString + '_' + FFixed_post.ToString;
 end;
 
-function TVkGroup.GetIs_advertiser: Boolean;
+function TVkGroup.GetIsBanned: Boolean;
 begin
-  Result := FIs_advertiser = 1;
+  Result := FDeactivated = 'banned';
 end;
 
-function TVkGroup.GetIs_closed: Boolean;
+function TVkGroup.GetIsDeactivated: Boolean;
 begin
-  Result := FIs_closed = 1;
+  Result := not FDeactivated.IsEmpty;
 end;
 
-function TVkGroup.GetIs_member: Boolean;
+function TVkGroup.GetIsDeleted: Boolean;
 begin
-  Result := FIs_member = 1;
-end;
-
-function TVkGroup.GetVerified: Boolean;
-begin
-  Result := FVerified = 1;
-end;
-
-procedure TVkGroup.SetIs_admin(const Value: Boolean);
-begin
-  FIs_admin := BoolToInt(Value);
-end;
-
-procedure TVkGroup.SetIs_advertiser(const Value: Boolean);
-begin
-  FIs_advertiser := BoolToInt(Value);
-end;
-
-procedure TVkGroup.SetIs_closed(const Value: Boolean);
-begin
-  FIs_closed := BoolToInt(Value);
-end;
-
-procedure TVkGroup.SetIs_member(const Value: Boolean);
-begin
-  FIs_member := BoolToInt(Value);
-end;
-
-procedure TVkGroup.SetVerified(const Value: Boolean);
-begin
-  FVerified := BoolToInt(Value);
+  Result := FDeactivated = 'deleted';
 end;
 
 { TVkGroupStatus }

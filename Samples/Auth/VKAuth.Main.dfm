@@ -38,16 +38,12 @@ object FormMain: TFormMain
       Top = 19
       Width = 578
       Height = 540
-      ActivePage = TabSheet8
+      ActivePage = TabSheet3
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button20: TButton
           Left = 3
           Top = 3
@@ -114,10 +110,6 @@ object FormMain: TFormMain
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button1: TButton
           Left = 3
           Top = 3
@@ -203,10 +195,6 @@ object FormMain: TFormMain
       object TabSheet2: TTabSheet
         Caption = 'Auth'
         ImageIndex = 1
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button11: TButton
           Left = 3
           Top = 3
@@ -220,10 +208,6 @@ object FormMain: TFormMain
       object TabSheet3: TTabSheet
         Caption = 'Audio'
         ImageIndex = 2
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button21: TButton
           Left = 3
           Top = 3
@@ -269,14 +253,46 @@ object FormMain: TFormMain
           TabOrder = 4
           OnClick = Button30Click
         end
+        object ButtonGetCatalog: TButton
+          Left = 146
+          Top = 3
+          Width = 119
+          Height = 25
+          Caption = 'GetCatalog'
+          TabOrder = 5
+          OnClick = ButtonGetCatalogClick
+        end
+        object ButtonCreatePlaylist: TButton
+          Left = 147
+          Top = 34
+          Width = 119
+          Height = 25
+          Caption = 'CreatePlaylist'
+          TabOrder = 6
+          OnClick = ButtonCreatePlaylistClick
+        end
+        object ButtonEditPlaylist: TButton
+          Left = 146
+          Top = 65
+          Width = 119
+          Height = 25
+          Caption = 'EditPlaylist'
+          TabOrder = 7
+          OnClick = ButtonEditPlaylistClick
+        end
+        object Button31: TButton
+          Left = 146
+          Top = 96
+          Width = 119
+          Height = 25
+          Caption = 'Button31'
+          TabOrder = 8
+          OnClick = Button31Click
+        end
       end
       object TabSheet4: TTabSheet
         Caption = 'Board'
         ImageIndex = 3
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button22: TButton
           Left = 3
           Top = 3
@@ -290,10 +306,6 @@ object FormMain: TFormMain
       object TabSheet5: TTabSheet
         Caption = 'Status'
         ImageIndex = 4
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button17: TButton
           Left = 3
           Top = 3
@@ -316,10 +328,6 @@ object FormMain: TFormMain
       object TabSheet6: TTabSheet
         Caption = 'Wall'
         ImageIndex = 5
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button19: TButton
           Left = 3
           Top = 3
@@ -333,10 +341,6 @@ object FormMain: TFormMain
       object TabSheet7: TTabSheet
         Caption = 'Users'
         ImageIndex = 6
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button12: TButton
           Left = 3
           Top = 3
@@ -350,10 +354,6 @@ object FormMain: TFormMain
       object TabSheet8: TTabSheet
         Caption = 'Groups'
         ImageIndex = 7
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button25: TButton
           Left = 3
           Top = 3
@@ -367,10 +367,6 @@ object FormMain: TFormMain
       object TabSheet10: TTabSheet
         Caption = 'Messages'
         ImageIndex = 9
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button27: TButton
           Left = 3
           Top = 3
@@ -384,10 +380,6 @@ object FormMain: TFormMain
       object TabSheet11: TTabSheet
         Caption = 'Friends'
         ImageIndex = 10
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Button28: TButton
           Left = 3
           Top = 3
@@ -444,9 +436,9 @@ object FormMain: TFormMain
     AppKey = 'AlVXZFMUqyrnABp8ncuU'
     EndPoint = 'https://oauth.vk.com/authorize'
     Permissions = [Friends, Photos, Audio, Video, Notes, Wall, Docs, Groups, Market]
-    APIVersion = '5.103'
     BaseURL = 'https://api.vk.com/method'
     ServiceKey = 'fcsdfbvdsbvfcsbdvfcasdgfhgasdfjkshadgfbdsmfgbmdsfngbmdfsgb'
+    Proxy.Port = 0
     OnAuth = VK1Auth
     OnLogin = VK1Login
     OnLog = VK1Log
@@ -474,6 +466,7 @@ object FormMain: TFormMain
     OnUserCall = VkUserEvents1UserCall
     OnCountChange = VkUserEvents1CountChange
     OnNotifyChange = VkUserEvents1NotifyChange
+    Version = '3'
     Left = 208
     Top = 56
   end
@@ -523,11 +516,13 @@ object FormMain: TFormMain
     OnGroupChangePhoto = VkGroupEventsController1GroupChangePhoto
     OnGroupPayTransaction = VkGroupEventsController1GroupPayTransaction
     OnGroupAppPayload = VkGroupEventsController1GroupAppPayload
+    Version = '3'
     Left = 96
-    Top = 176
+    Top = 120
   end
   object VkGroupEvents1: TVkGroupEvents
     VK = VK1
+    Version = '3'
     Left = 208
     Top = 120
   end

@@ -37,7 +37,7 @@ uses
 
 function TVkAudioMessage.ToAttachment: string;
 begin
-  Result := CreateAttachment('doc', OwnerId, FId, FAccess_key);
+  Result := Attachment.Doc(FId, OwnerId, FAccess_key);
 end;
 
 function TVkAudioMessage.ToJsonString: string;

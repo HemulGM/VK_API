@@ -71,7 +71,8 @@ type
     function GroupId(const Value: Integer): TVkMessageNew;
     function ReplyTo(const Value: Integer): TVkMessageNew;
     function ForwardMessages(const Value: TIds): TVkMessageNew;
-    function Attachment(const Value: TAttachmentArray): TVkMessageNew;
+    function Attachment(const Value: TAttachmentArray): TVkMessageNew; overload;
+    function Attachment(const Value: TAttachment): TVkMessageNew; overload;
     function Send: TVkMessageSendResponses;
     constructor Create(Controller: TMessagesController);
     property Handler: TVkHandler read FHandler;
@@ -614,7 +615,7 @@ begin
 
   with Handler.Execute('messages.addChatUser', Params) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -644,7 +645,7 @@ function TMessagesController.AllowMessagesFromGroup(const GroupId: Integer; Key:
 begin
   with Handler.Execute('messages.allowMessagesFromGroup', [['group_id', GroupId.ToString], ['key', Key]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -653,7 +654,7 @@ begin
   with Handler.Execute('messages.createChat', [['user_ids', UserIds.ToString], ['title', Title], ['group_id', GroupId.ToString]])
     do
   begin
-    Result := Success and TryStrToInt(Response, ChatId);
+    Result := Success and ResponseIsInt(ChatId);
   end;
 end;
 
@@ -710,33 +711,17 @@ begin
 end;
 
 function TMessagesController.DeleteConversation(var LastDeletedId: Integer; Params: TVkParamsMessageDeleteConversation): Boolean;
-var
-  RespJSON: TJSONValue;
 begin
   with Handler.Execute('messages.deleteConversation', Params.List) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        RespJSON := TJSONObject.ParseJSONValue(Response);
-        try
-          LastDeletedId := RespJSON.GetValue<Integer>('last_deleted_id', -1);
-          Result := LastDeletedId <> -1;
-        finally
-          RespJSON.Free;
-        end;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('last_deleted_id', LastDeletedId);
   end;
 end;
 
 function TMessagesController.DenyMessagesFromGroup(const GroupId: Integer): Boolean;
 begin
   with Handler.Execute('messages.denyMessagesFromGroup', ['group_id', GroupId.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.Edit(const Params: TVkParamsMessageEdit): Boolean;
@@ -747,13 +732,13 @@ end;
 function TMessagesController.EditChat(const ChatId: Integer; Title: string): Boolean;
 begin
   with Handler.Execute('messages.editChat', [['', ChatId.ToString], ['title', Title]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.Edit(const Params: TParams): Boolean;
 begin
   with Handler.Execute('messages.edit', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.Delete(var Items: TVkMessageDelete; Params: TVkParamsMessageDelete): Boolean;
@@ -971,7 +956,6 @@ end;
 function TMessagesController.GetInviteLink(var Link: string; PeerId: Integer; Reset: Boolean; GroupId: Integer): Boolean;
 var
   Params: TParams;
-  RespJSON: TJSONValue;
 begin
   Params.Add('peer_id', PeerId);
   if Reset then
@@ -980,21 +964,7 @@ begin
     Params.Add('group_id', GroupId);
   with Handler.Execute('messages.getInviteLink', Params) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        RespJSON := TJSONObject.ParseJSONValue(Response);
-        try
-          Link := RespJSON.GetValue<string>('link', '');
-          Result := not Link.IsEmpty;
-        finally
-          RespJSON.Free;
-        end;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('link', Link);
   end;
 end;
 
@@ -1036,35 +1006,17 @@ begin
 end;
 
 function TMessagesController.IsMessagesFromGroupAllowed(var IsAllowed: Boolean; GroupId, UserId: Integer): Boolean;
-var
-  RespJSON: TJSONValue;
-  i: Integer;
 begin
   with Handler.Execute('messages.isMessagesFromGroupAllowed', [['group_id', GroupId.ToString], ['user_id', UserId.ToString]]) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        RespJSON := TJSONObject.ParseJSONValue(Response);
-        try
-          i := RespJSON.GetValue<Integer>('is_allowed', -1);
-          IsAllowed := i = 1;
-          Result := i <> -1;
-        finally
-          RespJSON.Free;
-        end;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('is_allowed', IsAllowed);
   end;
 end;
 
 function TMessagesController.JoinChatByInviteLink(var ChatId: Integer; const Link: string): Boolean;
 begin
   with Handler.Execute('messages.joinChatByInviteLink', ['link', Link]) do
-    Result := Success and GetValue(Response, 'chat_id', ChatId);
+    Result := Success and GetValue('chat_id', ChatId);
 end;
 
 function TMessagesController.MarkAsAnsweredConversation(const PeerId: Integer; Answered: Boolean; GroupId: Integer): Boolean;
@@ -1076,7 +1028,7 @@ begin
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
   with Handler.Execute('messages.markAsAnsweredConversation', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.MarkAsImportant(var Items: TIds; MessageIds: TIds; Important: Boolean): Boolean;
@@ -1112,7 +1064,7 @@ begin
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
   with Handler.Execute('messages.markAsImportantConversation', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.MarkAsRead(const Params: TVkParamsMessageMark): Boolean;
@@ -1125,16 +1077,16 @@ var
   Params: TParams;
 begin
   Params.Add('peer_id', PeerId);
-  if Length(MessageIds) > 0 then
+  if not MessageIds.IsEmpty then
     Params.Add('message_ids', MessageIds);
   with Handler.Execute('messages.markAsUnreadConversation', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.MarkAsRead(const Params: TParams): Boolean;
 begin
   with Handler.Execute('messages.markAsRead', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.GetLongPollHistory(var Item: TVkLongPollHistory; Params: TParams): Boolean;
@@ -1166,7 +1118,7 @@ end;
 function TMessagesController.RemoveChatUser(const Params: TVkParamsMessageRemoveChatUser): Boolean;
 begin
   with Handler.Execute('messages.removeChatUser', Params.List) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.Restore(const MessageId: Integer; GroupId: Integer): Boolean;
@@ -1177,7 +1129,7 @@ begin
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
   with Handler.Execute('messages.restore', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.Pin(var Message: TVkMessage; PeerId, MessageId: Integer): Boolean;
@@ -1250,7 +1202,7 @@ begin
   if not EventData.IsEmpty then
     Params.Add('event_data', EventData);
   with Handler.Execute('messages.sendMessageEventAnswer', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.Send(var Items: TVkMessageSendResponses; Params: TVkParamsMessageSendIds): Boolean;
@@ -1277,7 +1229,7 @@ begin
   Params.ChatId(ChatId);
   Params.Message(Message);
   Params.RandomId(GetRandomId);
-  if Length(Attachments) <> 0 then
+  if not Attachments.IsEmpty then
     Params.Attachment(Attachments);
 
   Result := Send(Item, Params);
@@ -1300,7 +1252,7 @@ begin
   Params.Add('type', ActivityType.ToString);
   Params.Add('group_id', GroupId);
   with Handler.Execute('messages.setActivity', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.SetChatPhoto(var Info: TVkChatInfoMessage; UploadFile: string): Boolean;
@@ -1326,7 +1278,7 @@ begin
   Params.Add('peer_id', PeerId);
   Params.Add('group_id', GroupId);
   with Handler.Execute('messages.unpin', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TMessagesController.Send(var Item: Integer; Domain: string; Message: string; Attachments: TAttachmentArray): Boolean;
@@ -1336,7 +1288,7 @@ begin
   Params.Domain(Domain);
   Params.Message(Message);
   Params.RandomId(GetRandomId);
-  if Length(Attachments) <> 0 then
+  if not Attachments.IsEmpty then
     Params.Attachment(Attachments);
 
   Result := Send(Item, Params);
@@ -1384,7 +1336,7 @@ begin
   with Handler.Execute('messages.send', Params) do
   begin
     if not Success then
-      Exit(TVkMessageSendResponses.CreateFalse)
+      Result := TVkMessageSendResponses.CreateFalse
     else
     begin
       if TryStrToInt(Response, Value) then
@@ -1450,6 +1402,12 @@ begin
 end;
 
 function TVkMessageNew.Attachment(const Value: TAttachmentArray): TVkMessageNew;
+begin
+  Params.Add('attachment', Value);
+  Result := Self;
+end;
+
+function TVkMessageNew.Attachment(const Value: TAttachment): TVkMessageNew;
 begin
   Params.Add('attachment', Value);
   Result := Self;

@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload;
+  REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload, VK.Entity.Audio.Catalog;
 
 type
   TVkParamsAudioGet = record
@@ -16,6 +16,15 @@ type
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
     function AccessKey(Value: string): Integer;
+  end;
+
+  TVkParamsAudioGetRecomendations = record
+    List: TParams;
+    function TargetAudio(Value: Integer): Integer;
+    function UserId(Value: Integer): Integer;
+    function Offset(Value: Integer): Integer;
+    function Count(Value: Integer): Integer;
+    function Shuffle(Value: Boolean): Integer;
   end;
 
   TVkParamsPopAudio = record
@@ -58,6 +67,23 @@ type
     function NoSearch(Value: Boolean): Integer;
   end;
 
+  TVkParamsAudioEditPlaylist = record
+    List: TParams;
+    function PlaylistId(Value: Integer): Integer;
+    function OwnerId(Value: Integer): Integer;
+    function Description(Value: string): Integer;
+    function Title(Value: string): Integer;
+    function AudioIds(Value: TArrayOfString): Integer;
+  end;
+
+  TVkParamsAudioReorder = record
+    List: TParams;
+    function OwnerId(Value: Integer): Integer;
+    function AudioId(Value: Integer): Integer;
+    function Before(Value: Integer): Integer;
+    function After(Value: Integer): Integer;
+  end;
+
   TAudioController = class(TVkController)
   public
     /// <summary>
@@ -75,11 +101,11 @@ type
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
-    function GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean; overload;
+    function GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGetRecomendations): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
-    function GetRecommendations(var Audios: TVkAudios; OwnerId: Integer = 0): Boolean; overload;
+    function GetRecommendations(var Audios: TVkAudios; UserId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Returns a list of audio files from the "Popular".
     /// </summary>
@@ -128,7 +154,8 @@ type
     /// <summary>
     /// Копирует аудиозапись на страницу пользователя или группы.
     /// </summary>
-    function Add(var Id: Integer; AudioId, OwnerId: Integer; GroupId: Integer = 0; AlbumId: Integer = -1): Boolean;
+    function Add(var Id: Integer; AudioId, OwnerId: Integer; GroupId: Integer = 0; AlbumId: Integer = -1; AccessKey:
+      string = ''): Boolean;
     /// <summary>
     /// Удаляет аудиозапись со страницы пользователя или сообщества.
     /// </summary>
@@ -136,7 +163,40 @@ type
     /// <summary>
     /// Редактирует данные аудиозаписи на странице пользователя или сообщества.
     /// </summary>
-    function Edit(AudioId, OwnerId: Integer; Params: TVkParamsAudioEdit): Boolean;
+    function Edit(Params: TVkParamsAudioEdit): Boolean;
+    /// <summary>
+    /// Создать плейлист
+    /// </summary>
+    function CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string; Description: string
+      = ''; AudioIds: TArrayOfString = []): Boolean;    
+    /// <summary>
+    /// Удалить плейлист
+    /// </summary>
+    function DeletePlaylist(const PlaylistId: Integer; OwnerId: Integer = 0): Boolean;   
+    /// <summary>
+    /// Изменить плейлист
+    /// </summary>
+    function EditPlaylist(Params: TVkParamsAudioEditPlaylist): Boolean;  
+    /// <summary>
+    /// Возвращает информацию об плейлисте
+    /// </summary>
+    function GetPlaylistById(var Item: TVkAudioPlaylist; const PlaylistId: Integer; OwnerId: Integer = 0): Boolean;    
+    /// <summary>
+    /// Восстанавливает аудиозапись
+    /// </summary>
+    function Restore(const AudioId: Integer; OwnerId: Integer = 0): Boolean;        
+    /// <summary>
+    /// Получить каталог аудиозаписей
+    /// </summary>
+    function GetCatalog(var Items: TVkAudioCatalog; Params: TParams = []): Boolean;     
+    /// <summary>
+    /// Позволяет изменить порядок аудио.
+    /// </summary>
+    function Reorder(Params: TVkParamsAudioReorder): Boolean;   
+    /// <summary>
+    /// Удалить плейлист
+    /// </summary>
+    function AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId, PlaylistId: Integer; AudioIds: TArrayOfString): Boolean;
   end;
 
 implementation
@@ -145,15 +205,6 @@ uses
   VK.API;
 
 {
-		var parameters = new VkParameters
-			{
-				{ "extended", extended ,
-				{ "count", count ,
-				{ "fields", fields
-			;
-			return _vk.Call<AudioGetCatalogResult>("audio.getCatalog", parameters);
-}
-{
   var parameters = new VkParameters
   {
     { "audio", audio ,
@@ -161,48 +212,6 @@ uses
   ;
   return _vk.Call<ReadOnlyCollection<long>>("audio.setBroadcast", parameters);
 }
-{
-public AudioPlaylist CreatePlaylist(long ownerId, string title, string description = null, IEnumerable<string> audioIds = null)
-			var parameters = new VkParameters
-				 "owner_id", ownerId ,
-				 "title", title ,
-				 "description", description ,
-				 "audio_ids", audioIds;
-			return _vk.Call<AudioPlaylist>("audio.createPlaylist", parameters);
-}
-
-{
-var parameters = new VkParameters
-			{
-				{ "owner_id", ownerId ,
-				{ "playlist_id", playlistId
-			;
-
-			return _vk.Call<bool>("audio.deletePlaylist", parameters);
-}
-
-{
-var parameters = new VkParameters
-			{
-				{ "owner_id", ownerId ,
-				{ "playlist_id", playlistId ,
-				{ "title", title ,
-				{ "description", description ,
-				{ "audio_ids", audioIds
-			;
-
-			return _vk.Call<bool>("audio.editPlaylist", parameters);
-}
-
-{
-var parameters = new VkParameters
-			{
-				{ "owner_id", ownerId ,
-				{ "playlist_id", playlistId
-			;
-			return _vk.Call<AudioPlaylist>("audio.getPlaylistById", parameters);
-}
-
 {
 var parameters = new VkParameters
 			{
@@ -219,14 +228,6 @@ var parameters = new VkParameters
 			return _vk.Call<Lyrics>("audio.getLyrics", parameters);
 }
 {
-GetRecommendations
-{ "target_audio", targetAudio ,
-				{ "user_id", userId ,
-				{ "offset", offset ,
-				{ "count", count ,
-				{ "shuffle", shuffle
-}
-{
   var parameters = new VkParameters
   {
     { "owner_id", ownerId ,
@@ -234,24 +235,6 @@ GetRecommendations
     { "audio_ids", audioIds
   ;
   return _vk.Call("audio.addToPlaylist", parameters).ToReadOnlyCollectionOf<long>(x => x["audio_id"]);
-}
-{
-var parameters = new VkParameters
-			{
-				{ "audio_id", audioId ,
-				{ "owner_id", ownerId ,
-				{ "before", before ,
-				{ "after", after
-			;
-			return _vk.Call<bool>("audio.reorder", parameters);
-}
-{
-			var parameters = new VkParameters
-			{
-				{ "audio_id", audioId ,
-				{ "owner_id", ownerId
-			;
-			return _vk.Call<Audio>("audio.restore", parameters);
 }
 
 { TAudioController }
@@ -326,24 +309,62 @@ begin
   Result := Get(Audios, Params);
 end;
 
-function TAudioController.Add(var Id: Integer; AudioId, OwnerId, GroupId, AlbumId: Integer): Boolean;
+function TAudioController.Add(var Id: Integer; AudioId, OwnerId, GroupId, AlbumId: Integer; AccessKey: string): Boolean;
 var
   Params: TParams;
 begin
-  Id := -1;
   Params.Add('audio_id', AudioId);
   Params.Add('owner_id', OwnerId);
-  //access_key
+  if not AccessKey.IsEmpty then
+    Params.Add('access_key', AccessKey);
   if GroupId <> 0 then
-    Params.Add('group_id', Abs(GroupId));
+    Params.Add('group_id', GroupId);
   if AlbumId > -1 then
     Params.Add('album_id', AlbumId);
   with Handler.Execute('audio.add', Params) do
   begin
+    Result := Success and ResponseIsInt(Id);
+  end;
+end;
+
+function TAudioController.AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId, PlaylistId: Integer; AudioIds:
+  TArrayOfString): Boolean;
+begin
+  with Handler.Execute('audio.addToPlaylist', [['playlist_id', PlaylistId.ToString], ['owner_id', OwnerId.ToString], ['audio_ids',
+    AudioIds.ToString]]) do
+  begin
     Result := Success;
     if Result then
     begin
-      Result := TryStrToInt(Response, Id);
+      try
+        Items := TVkAudioInfoItems.FromJsonString(AppendItemsTag(Response));
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TAudioController.CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string;
+  Description: string; AudioIds: TArrayOfString): Boolean;
+var
+  Params: TParams;
+begin
+  if not AudioIds.IsEmpty then
+    Params.Add('audio_ids', AudioIds);
+  Params.Add('owner_id', OwnerId);
+  Params.Add('title', Title);
+  Params.Add('description', Description);
+  with Handler.Execute('audio.createPlaylist', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Item := TVkAudioPlaylist.FromJsonString(Response);
+      except
+        Result := False;
+      end;
     end;
   end;
 end;
@@ -352,17 +373,34 @@ function TAudioController.Delete(AudioId, OwnerId: Integer): Boolean;
 begin
   with Handler.Execute('audio.delete', [['audio_id', AudioId.ToString], ['owner_id', OwnerId.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
-function TAudioController.Edit(AudioId, OwnerId: Integer; Params: TVkParamsAudioEdit): Boolean;
+function TAudioController.DeletePlaylist(const PlaylistId: Integer; OwnerId: Integer): Boolean;
+var
+  Params: TParams;
 begin
-  Params.AudioId(AudioId);
-  Params.OwnerId(OwnerId);
+  if OwnerId <> 0 then
+    Params.Add('owner_id', OwnerId);
+  Params.Add('playlist_id', PlaylistId);
+  with Handler.Execute('audio.deletePlaylist', Params) do
+    Result := Success and ResponseIsTrue;
+end;
+
+function TAudioController.Edit(Params: TVkParamsAudioEdit): Boolean;
+begin
   with Handler.Execute('audio.edit', Params.List) do
   begin
-    Result := Success and (Response <> '0');
+    Result := Success and (not ResponseIsFalse);
+  end;
+end;
+
+function TAudioController.EditPlaylist(Params: TVkParamsAudioEditPlaylist): Boolean;
+begin
+  with Handler.Execute('audio.editPlaylist', Params.List) do
+  begin
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -385,6 +423,27 @@ end;
 function TAudioController.Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean;
 begin
   Result := Get(Audios, Params.List);
+end;
+
+function TAudioController.GetPlaylistById(var Item: TVkAudioPlaylist; const PlaylistId: Integer; OwnerId: Integer): Boolean;
+var
+  Params: TParams;
+begin
+  if OwnerId <> 0 then
+    Params.Add('owner_id', OwnerId);
+  Params.Add('playlist_id', PlaylistId);
+  with Handler.Execute('audio.getPlaylistById', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Item := TVkAudioPlaylist.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
 end;
 
 function TAudioController.GetPlaylists(var Items: TVkPlaylists; OwnerID: Integer): Boolean;
@@ -427,16 +486,16 @@ begin
   Result := GetPopular(Audios, Params);
 end;
 
-function TAudioController.GetRecommendations(var Audios: TVkAudios; OwnerId: Integer): Boolean;
+function TAudioController.GetRecommendations(var Audios: TVkAudios; UserId: Integer): Boolean;
 var
-  Params: TVkParamsAudioGet;
+  Params: TVkParamsAudioGetRecomendations;
 begin
-  if OwnerId <> 0 then
-    Params.OwnerId(OwnerId);
+  if UserId <> 0 then
+    Params.UserId(UserId);
   Result := GetRecommendations(Audios, Params);
 end;
 
-function TAudioController.GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean;
+function TAudioController.GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGetRecomendations): Boolean;
 begin
   with Handler.Execute('audio.getRecommendations', Params.List) do
   begin
@@ -497,6 +556,22 @@ begin
   end;
 end;
 
+function TAudioController.GetCatalog(var Items: TVkAudioCatalog; Params: TParams): Boolean;
+begin
+  with Handler.Execute('audio.getCatalog', Params) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Items := TVkAudioCatalog.FromJsonString(Response);
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
 function TAudioController.GetById(var Audios: TVkAudios; List: TVkAudioIndexes): Boolean;
 var
   ListStr: string;
@@ -523,27 +598,23 @@ begin
 end;
 
 function TAudioController.GetUploadServer(var UploadUrl: string): Boolean;
-var
-  JSONItem: TJSONValue;
 begin
   with Handler.Execute('audio.getUploadServer') do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('upload_url', UploadUrl);
   end;
+end;
+
+function TAudioController.Reorder(Params: TVkParamsAudioReorder): Boolean;
+begin
+  with Handler.Execute('audio.reorder', Params.List) do
+    Result := Success and ResponseIsTrue;
+end;
+
+function TAudioController.Restore(const AudioId: Integer; OwnerId: Integer): Boolean;
+begin
+  with Handler.Execute('audio.restore', [['audio_id', AudioId.ToString], ['owner_id', OwnerId.ToString]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 { TVkAudioParams }
@@ -699,6 +770,82 @@ end;
 function TVkParamsAudioSearch.Sort(Value: TVkAudioSort): Integer;
 begin
   Result := List.Add('sort', Ord(Value));
+end;
+
+{ TVkParamsAudioEditPlaylist }
+
+function TVkParamsAudioEditPlaylist.AudioIds(Value: TArrayOfString): Integer;
+begin
+  Result := List.Add('audio_ids', Value);
+end;
+
+function TVkParamsAudioEditPlaylist.Description(Value: string): Integer;
+begin
+  Result := List.Add('description', Value);
+end;
+
+function TVkParamsAudioEditPlaylist.OwnerId(Value: Integer): Integer;
+begin
+  Result := List.Add('owner_id', Value);
+end;
+
+function TVkParamsAudioEditPlaylist.PlaylistId(Value: Integer): Integer;
+begin
+  Result := List.Add('playlist_id', Value);
+end;
+
+function TVkParamsAudioEditPlaylist.Title(Value: string): Integer;
+begin
+  Result := List.Add('title', Value);
+end;
+
+{ TVkParamsAudioGetRecomendations }
+
+function TVkParamsAudioGetRecomendations.Count(Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsAudioGetRecomendations.Offset(Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TVkParamsAudioGetRecomendations.Shuffle(Value: Boolean): Integer;
+begin
+  Result := List.Add('shuffle', Value);
+end;
+
+function TVkParamsAudioGetRecomendations.TargetAudio(Value: Integer): Integer;
+begin
+  Result := List.Add('target_audio', Value);
+end;
+
+function TVkParamsAudioGetRecomendations.UserId(Value: Integer): Integer;
+begin
+  Result := List.Add('user_id', Value);
+end;
+
+{ TVkParamsAudioReorder }
+
+function TVkParamsAudioReorder.After(Value: Integer): Integer;
+begin
+  Result := List.Add('after', Value);
+end;
+
+function TVkParamsAudioReorder.AudioId(Value: Integer): Integer;
+begin
+  Result := List.Add('audio_id', Value);
+end;
+
+function TVkParamsAudioReorder.Before(Value: Integer): Integer;
+begin
+  Result := List.Add('before', Value);
+end;
+
+function TVkParamsAudioReorder.OwnerId(Value: Integer): Integer;
+begin
+  Result := List.Add('owner_id', Value);
 end;
 
 end.

@@ -143,7 +143,9 @@ contains
   VK.Entity.Newsfeed in 'Entity\VK.Entity.Newsfeed.pas',
   VK.Notifications in 'Controllers\VK.Notifications.pas',
   VK.Entity.Notifications in 'Entity\VK.Entity.Notifications.pas',
-  VK.Entity.Subscription in 'Entity\VK.Entity.Subscription.pas';
+  VK.Entity.Subscription in 'Entity\VK.Entity.Subscription.pas',
+  VK.Entity.Group.Counters in 'Entity\VK.Entity.Group.Counters.pas',
+  VK.Entity.Audio.Catalog in 'Entity\VK.Entity.Audio.Catalog.pas';
 
 end.
 

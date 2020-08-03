@@ -122,6 +122,7 @@ type
     procedure SetUsePseudoAsync(const Value: Boolean);
     function GetUsePseudoAsync: Boolean;
     procedure SetLogResponse(const Value: Boolean);
+    function GetUserId: Integer;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -257,7 +258,7 @@ type
     property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
     property IsLogin: Boolean read FIsLogin;
     property ChangePasswordHash: string read FChangePasswordHash;
-    property UserId: Integer read FUserId;
+    property UserId: Integer read GetUserId;
     //
     property OnLogin: TOnLogin read FOnLogin write SetOnLogin;
     property OnError: TOnVKError read FOnError write SetOnError;
@@ -341,6 +342,7 @@ begin
   inherited;
   FIsLogin := False;
   FLogging := False;
+  FUserId := -1;
   FLang := vlAuto;
   FUseServiceKeyOnly := False;
   FProxy := TVkProxy.Create(Self);
@@ -528,6 +530,7 @@ begin
   if Result then
   begin
     FUserId := User.Id;
+    User.Free;
   end;
 end;
 
@@ -732,6 +735,14 @@ end;
 function TCustomVK.GetUsePseudoAsync: Boolean;
 begin
   Result := FHandler.UsePseudoAsync;
+end;
+
+function TCustomVK.GetUserId: Integer;
+begin
+  if (FUserId > 0) or LoadUserInfo then
+    Result := FUserId
+  else
+    Result := -1;
 end;
 
 procedure TCustomVK.SetPermissions(const Value: TVkPermissions);

@@ -62,6 +62,10 @@ type
     Button28: TButton;
     Button29: TButton;
     Button30: TButton;
+    ButtonGetCatalog: TButton;
+    ButtonCreatePlaylist: TButton;
+    ButtonEditPlaylist: TButton;
+    Button31: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -181,6 +185,10 @@ type
     procedure Button29Click(Sender: TObject);
     procedure Button30Click(Sender: TObject);
     procedure VK1Auth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+    procedure ButtonGetCatalogClick(Sender: TObject);
+    procedure ButtonCreatePlaylistClick(Sender: TObject);
+    procedure ButtonEditPlaylistClick(Sender: TObject);
+    procedure Button31Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -198,7 +206,8 @@ uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
   VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
   VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
-  VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups;
+  VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
+  VK.Entity.Audio.Catalog;
 
 {$R *.dfm}
 
@@ -293,7 +302,7 @@ begin
   Params.OwnerId(-145962568);
   Params.FromGroup(True);
   Params.Signed(True);
-  Params.Attachments(['doc58553419_533494309_657138cd5d7842ae0a']);
+  Params.Attachments(Attachment.Doc(533494309, 58553419, '657138cd5d7842ae0a'));
   VK1.Wall.Post(Params);
 end;
 
@@ -383,10 +392,8 @@ procedure TFormMain.Button24Click(Sender: TObject);
 var
   List: TVkAudios;
   i: Integer;
-  Params: TVkParamsAudioGet;
 begin
-  Params.AlbumId(-1);
-  if VK1.Audio.GetRecommendations(List, Params) then
+  if VK1.Audio.GetRecommendations(List) then
   begin
     for i := Low(List.Items) to High(List.Items) do
     begin
@@ -632,6 +639,80 @@ begin
     Memo1.Lines.Add('Error online');
 end;
 
+procedure TFormMain.ButtonCreatePlaylistClick(Sender: TObject);
+var
+  Playlist: TVkAudioPlaylist;
+begin
+  if VK1.Audio.CreatePlaylist(Playlist, VK1.UserId, 'Новый плейлист 2021') then
+  begin
+    Memo1.Lines.Add(Playlist.ToJsonString);
+    Playlist.Free;
+  end;
+end;
+
+procedure TFormMain.ButtonEditPlaylistClick(Sender: TObject);
+var
+  Params: TVkParamsAudioEditPlaylist;
+begin
+  //Params.OwnerId(VK1.UserId);
+  Params.PlaylistId(11);
+  Params.AudioIds(['58553419_456239116']);
+  if VK1.Audio.EditPlaylist(Params) then
+  begin
+    Memo1.Lines.Add('ok');
+  end
+  else
+    Memo1.Lines.Add('error');
+end;
+
+procedure TFormMain.Button31Click(Sender: TObject);
+begin
+  var Str1: TVkAudioInfoItems;
+  if VK1.Audio.AddToPlaylist(Str1, VK1.UserId, 11, ['58553419_456239101']) then
+  begin
+    Memo1.Lines.Add(Str1.ToJsonString);
+    Str1.Free;
+  end
+  else
+    Memo1.Lines.Add('error');
+end;
+
+procedure TFormMain.ButtonGetCatalogClick(Sender: TObject);
+var
+  Catalog: TVkAudioCatalog;
+begin
+  if VK1.Audio.GetCatalog(Catalog) then
+  begin
+    for var i := 0 to Length(Catalog.Items) - 1 do
+    begin
+      Memo1.Lines.Add('');
+      Memo1.Lines.Add(Catalog.Items[i].&Type);
+      if Length(Catalog.Items[i].Audios) > 0 then
+      begin
+        Memo1.Lines.Add('');
+        Memo1.Lines.Add('AUDIOS');
+        for var j := 0 to Length(Catalog.Items[i].Audios) - 1 do
+          Memo1.Lines.Add(Catalog.Items[i].Audios[j].Artist + ' - ' + Catalog.Items[i].Audios[j].Title);
+      end;
+      if Length(Catalog.Items[i].Playlists) > 0 then
+      begin
+        Memo1.Lines.Add('');
+        Memo1.Lines.Add('PLAYLISTS');
+        for var j := 0 to Length(Catalog.Items[i].Playlists) - 1 do
+          Memo1.Lines.Add(Catalog.Items[i].Playlists[j].Title + ' - ' + Catalog.Items[i].Playlists[j].Description);
+      end;
+      if Length(Catalog.Items[i].Items) > 0 then
+      begin
+        Memo1.Lines.Add('');
+        Memo1.Lines.Add('ITEMS');
+        for var j := 0 to Length(Catalog.Items[i].Items) - 1 do
+          Memo1.Lines.Add(Catalog.Items[i].Items[j].Title + ' - ' + Catalog.Items[i].Items[j].Subtitle);
+      end;
+    end;
+    Catalog.Free;
+  end;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
@@ -646,7 +727,7 @@ begin
   //Если определён этот метод, то авторизация происходить не будет, т.к. токен уже есть
   //Для использования обычной OAuth2 авторизации достаточно убрать этот метод
   //Это мой токен, эту строчку нужно убрать
-  //Token := 'd45g656gygvj6y90856j98t3j5d29i43j3459tjd35';
+  //Token := 'd45g6534f6gfsdfygvjcv6y90856j34vvvx98t3jfsd29i43j34fsdvxcvf59tjd35';
 end;
 }
 
@@ -675,7 +756,7 @@ end;
 procedure TFormMain.VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
   ShowMessage('Ошибка: ' + Code.ToString + ' - ' + Text);
-  Memo1.Lines.Add('Ошибка: ' + Code.ToString + ' - ' + Text);
+  MemoLog.Lines.Add('Ошибка: ' + Code.ToString + ' - ' + Text);
 end;
 
 procedure TFormMain.VK1ErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
@@ -1043,7 +1124,7 @@ begin
         New.
         PeerId(MessageData.PeerId).
         Message('Ай яй, так материться').
-        Attachment(['album58553419_234519653']).
+        Attachment(Attachment.Album(58553419, 234519653)).
         Send.
         Free;
     end;

@@ -21,23 +21,25 @@ type
 
   TVkAlbumThumb = class
   private
-    FHeight: Extended;
+    FHeight: Integer;
     FPhoto_135: string;
     FPhoto_270: string;
     FPhoto_300: string;
     FPhoto_34: string;
     FPhoto_600: string;
     FPhoto_68: string;
-    FWidth: Extended;
+    FWidth: Integer;
+    FPhoto_1200: string;
   public
-    property Height: Extended read FHeight write FHeight;
-    property Width: Extended read FWidth write FWidth;
+    property Height: Integer read FHeight write FHeight;
+    property Width: Integer read FWidth write FWidth;
     property Photo135: string read FPhoto_135 write FPhoto_135;
     property Photo270: string read FPhoto_270 write FPhoto_270;
     property Photo300: string read FPhoto_300 write FPhoto_300;
     property Photo34: string read FPhoto_34 write FPhoto_34;
     property Photo600: string read FPhoto_600 write FPhoto_600;
     property Photo68: string read FPhoto_68 write FPhoto_68;
+    property Photo1200: string read FPhoto_1200 write FPhoto_1200;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAlbumThumb;
   end;
@@ -108,6 +110,8 @@ type
     FContent_restricted: Integer;
     FAudio_chart_info: TVkAudioChartInfo;
     FIs_explicit: Boolean;
+    FStories_allowed: Boolean;
+    FShort_videos_allowed: Boolean;
     function GetAudioGenre: TAudioGenre;
     procedure SetAudioGenre(const Value: TAudioGenre);
   public
@@ -133,7 +137,9 @@ type
     property ContentRestricted: Integer read FContent_restricted write FContent_restricted;
     property AudioChartInfo: TVkAudioChartInfo read FAudio_chart_info write FAudio_chart_info;
     property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
-
+    //
+    property ShortVideosAllowed: Boolean read FShort_videos_allowed write FShort_videos_allowed;
+    property StoriesAllowed: Boolean read FStories_allowed write FStories_allowed;
     //
     property Genre: TAudioGenre read GetAudioGenre write SetAudioGenre;
     constructor Create;
@@ -167,7 +173,61 @@ type
     class function FromJsonString(AJsonString: string): TVkAudios;
   end;
 
+  TVkAudioInfo = class
+  private
+    FAudio_id: Integer;
+  public
+    property AudioId: Integer read FAudio_id write FAudio_id;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkAudioInfo;
+  end;
+
+  TVkAudioInfoItems = class
+  private
+    FItems: TArray<TVkAudioInfo>;
+  public
+    property Items: TArray<TVkAudioInfo> read FItems write FItems;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkAudioInfoItems;
+  end;
+
 implementation
+
+{TVkAudioInfo}
+
+function TVkAudioInfo.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkAudioInfo.FromJsonString(AJsonString: string): TVkAudioInfo;
+begin
+  result := TJson.JsonToObject<TVkAudioInfo>(AJsonString)
+end;
+
+{TVkAudioInfoItems}
+
+destructor TVkAudioInfoItems.Destroy;
+var
+  LItemsItem: TVkAudioInfo;
+begin
+
+  for LItemsItem in FItems do
+    LItemsItem.Free;
+
+  inherited;
+end;
+
+function TVkAudioInfoItems.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkAudioInfoItems.FromJsonString(AJsonString: string): TVkAudioInfoItems;
+begin
+  result := TJson.JsonToObject<TVkAudioInfoItems>(AJsonString)
+end;
 
 {TVkAudioAds}
 
