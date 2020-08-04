@@ -7,7 +7,7 @@ uses
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
-  VK.Polls,
+  VK.Polls, VK.Podcasts,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -91,6 +91,7 @@ type
     FOrders: TOrdersController;
     FPages: TPagesController;
     FPolls: TPollsController;
+    FPodcasts: TPodcastsController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
@@ -239,6 +240,10 @@ type
     /// Методы для работы с фотографиями.
     /// </summary>
     property Photos: TPhotosController read FPhotos;
+    /// <summary>
+    /// Методы для работы с подкастами.
+    /// </summary>
+    property Podcasts: TPodcastsController read FPodcasts;
     /// <summary>
     /// Методы для работы с опросами.
     /// </summary>
@@ -398,6 +403,7 @@ begin
   FGroups := TGroupsController.Create(FHandler);
   FGifts := TGiftsController.Create(FHandler);
   FPhotos := TPhotosController.Create(FHandler);
+  FPodcasts := TPodcastsController.Create(FHandler);
   FPolls := TPollsController.Create(FHandler);
   FPages := TPagesController.Create(FHandler);
   FOrders := TOrdersController.Create(FHandler);
@@ -420,6 +426,7 @@ begin
   FGroups.Free;
   FGifts.Free;
   FPhotos.Free;
+  FPodcasts.Free;
   FPolls.Free;
   FOrders.Free;
   FPages.Free;

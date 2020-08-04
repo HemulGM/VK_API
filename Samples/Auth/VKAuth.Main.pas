@@ -68,6 +68,8 @@ type
     Button31: TButton;
     TabSheetPolls: TTabSheet;
     Button32: TButton;
+    TabSheetPodcasts: TTabSheet;
+    Button33: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -192,6 +194,7 @@ type
     procedure ButtonEditPlaylistClick(Sender: TObject);
     procedure Button31Click(Sender: TObject);
     procedure Button32Click(Sender: TObject);
+    procedure Button33Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -210,7 +213,7 @@ uses
   VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
   VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
   VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
-  VK.Entity.Audio.Catalog, VK.Entity.Poll;
+  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast;
 
 {$R *.dfm}
 
@@ -690,6 +693,20 @@ begin
     begin
       Memo1.Lines.Add(Item.Name);
     end;
+    Items.Free;
+  end;
+end;
+
+procedure TFormMain.Button33Click(Sender: TObject);
+var
+  Items: TVkPodcastSearch;
+begin
+  if VK1.Podcasts.Search(Items, 'гонки') then
+  begin
+    for var Podcast in Items.Podcasts do
+      Memo1.Lines.Add(Podcast.OwnerTitle);
+    for var Episode in Items.Episodes do
+      Memo1.Lines.Add(Episode.Title);
     Items.Free;
   end;
 end;

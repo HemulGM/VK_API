@@ -236,6 +236,9 @@
         <DCCReference Include="Controllers\VK.Orders.pas"/>
         <DCCReference Include="Controllers\VK.Pages.pas"/>
         <DCCReference Include="Controllers\VK.Polls.pas"/>
+        <DCCReference Include="Controllers\VK.Podcasts.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Podcast.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Podcast.Episode.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

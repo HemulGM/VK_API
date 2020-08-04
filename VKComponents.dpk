@@ -151,7 +151,10 @@ contains
   VK.Entity.Market.Order in 'Entity\VK.Entity.Market.Order.pas',
   VK.Orders in 'Controllers\VK.Orders.pas',
   VK.Pages in 'Controllers\VK.Pages.pas',
-  VK.Polls in 'Controllers\VK.Polls.pas';
+  VK.Polls in 'Controllers\VK.Polls.pas',
+  VK.Podcasts in 'Controllers\VK.Podcasts.pas',
+  VK.Entity.Podcast in 'Entity\VK.Entity.Podcast.pas',
+  VK.Entity.Podcast.Episode in 'Entity\VK.Entity.Podcast.Episode.pas';
 
 end.
 
