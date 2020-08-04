@@ -637,7 +637,7 @@ type
     Error: TResponseError;
     function ResponseIsTrue: Boolean;
     function ResponseIsFalse: Boolean;
-    function ResponseIsInt(var Value: Integer): Boolean;
+    function ResponseAsInt(var Value: Integer): Boolean;
     function GetJSONValue: TJSONValue;
     function GetJSONResponse: TJSONValue;
     function GetValue<T>(const Field: string; var Value: T): Boolean;
@@ -662,6 +662,13 @@ type
     UserIds: TIds;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
+  end;
+
+  TVkLinkStatusType = (lsNotBanned, lsBanned, lsProcessing);
+
+  TVkLinkStatusTypeHelper = record helper for TVkLinkStatusType
+    function ToString: string; overload; inline;
+    class function FromString(Value: string): TVkLinkStatusType; static; inline;
   end;
 
   TVkUserReport = (urPorn, urSpam, urInsult, urAdvertisеment);
@@ -1277,6 +1284,57 @@ begin
     1311:
       ErrStr :=
         'Категории каталога не доступны для пользователя';
+    1400:
+      ErrStr :=
+        'Товар невозможно восстановить, прошло слишком много времени с момента удаления.';
+    1401:
+      ErrStr :=
+        'Comments for this market are closed';
+    1402:
+      ErrStr :=
+        'Подборка с заданным идентификатором не найдена.';
+    1403:
+      ErrStr :=
+        'Товар с заданным идентификатором не найден.';
+    1404:
+      ErrStr :=
+        'Товар уже добавлен в выбранную подборку.';
+    1405:
+      ErrStr :=
+        'Превышен лимит на количество товаров (15000).';
+    1406:
+      ErrStr :=
+        'Превышен лимит на количество товаров в подборке.';
+    1407:
+      ErrStr :=
+        'Превышен лимит на количество подборок.';
+    1408:
+      ErrStr :=
+        'Недопустимые ссылки в описании товара.';
+    1409:
+      ErrStr :=
+        'Shop not enabled';
+    1416:
+      ErrStr :=
+        'Variant not found';
+    1417:
+      ErrStr :=
+        'Property not found';
+    1425:
+      ErrStr :=
+        'Grouping must have two or more items';
+    1426:
+      ErrStr :=
+        'Item must have distinct properties';
+    1427:
+      ErrStr :=
+        'Cart is empty';
+    1429:
+      ErrStr :=
+        'Specify width, length, height and weight all together';
+    1430:
+      ErrStr :=
+        'VK Pay status can not be changed';
     2000:
       ErrStr :=
         'Нельзя добавить больше 10 серверов';
@@ -1901,7 +1959,7 @@ begin
   Result := Response = '0';
 end;
 
-function TResponse.ResponseIsInt(var Value: Integer): Boolean;
+function TResponse.ResponseAsInt(var Value: Integer): Boolean;
 begin
   Result := TryStrToInt(Response, Value);
 end;
@@ -2374,6 +2432,32 @@ end;
 function TVkPostLinkButtonHelper.ToString: string;
 begin
   Result := VKPostLinkButton[Self];
+end;
+
+{ TVkLinkStatusTypeHelper }
+
+class function TVkLinkStatusTypeHelper.FromString(Value: string): TVkLinkStatusType;
+begin
+  if Value = 'not_banned' then
+    Result := lsNotBanned
+  else if Value = 'banned' then
+    Result := lsBanned
+  else if Value = 'processing' then
+    Result := lsProcessing
+  else
+    Result := lsProcessing;
+end;
+
+function TVkLinkStatusTypeHelper.ToString: string;
+begin
+  case Self of
+    lsNotBanned:
+      Result := 'not_banned';
+    lsBanned:
+      Result := 'banned';
+    lsProcessing:
+      Result := 'processing';
+  end;
 end;
 
 end.

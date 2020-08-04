@@ -654,7 +654,7 @@ begin
   with Handler.Execute('messages.createChat', [['user_ids', UserIds.ToString], ['title', Title], ['group_id', GroupId.ToString]])
     do
   begin
-    Result := Success and ResponseIsInt(ChatId);
+    Result := Success and ResponseAsInt(ChatId);
   end;
 end;
 

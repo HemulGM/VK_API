@@ -25,11 +25,11 @@ type
 
   TVkProductCategory = class
   private
-    FId: Extended;
+    FId: Integer;
     FName: string;
     FSection: TVkMarketSection;
   public
-    property Id: Extended read FId write FId;
+    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     property Section: TVkMarketSection read FSection write FSection;
     constructor Create;
@@ -38,9 +38,21 @@ type
     class function FromJsonString(AJsonString: string): TVkProductCategory;
   end;
 
+  TVkProductCategories = class
+  private
+    FItems: TArray<TVkProductCategory>;
+    FCount: Integer;
+  public
+    property Items: TArray<TVkProductCategory> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    destructor Destroy; override;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkProductCategories;
+  end;
+
   TVkProduct = class
   private
-    FAvailability: Integer;
+    FAvailability: Boolean;
     FCategory: TVkProductCategory;
     FDate: Int64;
     FDescription: string;
@@ -52,13 +64,18 @@ type
     FTitle: string;
     FPhotos: TArray<TVkPhoto>;
     FAlbums_ids: TArray<Integer>;
-    FCan_comment: Integer;
-    FCan_repost: Integer;
+    FCan_comment: Boolean;
+    FCan_repost: Boolean;
     FViews_count: Integer;
     FLikes: TVkLikesInfo;
     FReposts: TVkRepostsInfo;
+    FIs_favorite: Boolean;
+    FIs_main_variant: Boolean;
+    FCart_quantity: Integer;
+    FVariants_grouping_id: Integer;
+    FQuantity: Integer;
   public
-    property Availability: Integer read FAvailability write FAvailability;
+    property Availability: Boolean read FAvailability write FAvailability;
     property Category: TVkProductCategory read FCategory write FCategory;
     property Date: Int64 read FDate write FDate;
     property Description: string read FDescription write FDescription;
@@ -68,13 +85,22 @@ type
     property Price: TVkProductPrice read FPrice write FPrice;
     property ThumbPhoto: string read FThumb_photo write FThumb_photo;
     property Title: string read FTitle write FTitle;
-    property Photos: TArray<TVkPhoto> read FPhotos write FPhotos;
     property AlbumsIds: TArray<Integer> read FAlbums_ids write FAlbums_ids;
-    property CanComment: Integer read FCan_comment write FCan_comment;
-    property CanRepost: Integer read FCan_repost write FCan_repost;
-    property Likes: TVkLikesInfo read FLikes write FLikes;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
+    //
+    property CartQuantity: Integer read FCart_quantity write FCart_quantity;
+    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
+    property IsMainVariant: Boolean read FIs_main_variant write FIs_main_variant;
+    property VariantsGroupingId: Integer read FVariants_grouping_id write FVariants_grouping_id;
+    //Extended
+    property CanComment: Boolean read FCan_comment write FCan_comment;
+    property CanRepost: Boolean read FCan_repost write FCan_repost;
+    property Likes: TVkLikesInfo read FLikes write FLikes;
+    property Photos: TArray<TVkPhoto> read FPhotos write FPhotos;
     property ViewsCount: Integer read FViews_count write FViews_count;
+    //
+    property Quantity: Integer read FQuantity write FQuantity;
+
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -91,40 +117,10 @@ type
     property Items: TArray<TVkProduct> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Audios: TVkProducts);
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkProducts;
-  end;
-
-  TVkMarketAlbum = class
-  private
-    FAvailability: Extended;
-    FCategory: TVkProductCategory;
-    FDate: Extended;
-    FDescription: string;
-    FExternal_id: string;
-    FId: Extended;
-    FOwner_id: Extended;
-    FPrice: TVkProductPrice;
-    FThumb_photo: string;
-    FTitle: string;
-  public
-    property Availability: Extended read FAvailability write FAvailability;
-    property Category: TVkProductCategory read FCategory write FCategory;
-    property Date: Extended read FDate write FDate;
-    property Description: string read FDescription write FDescription;
-    property ExternalId: string read FExternal_id write FExternal_id;
-    property Id: Extended read FId write FId;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
-    property Price: TVkProductPrice read FPrice write FPrice;
-    property ThumbPhoto: string read FThumb_photo write FThumb_photo;
-    property Title: string read FTitle write FTitle;
-    constructor Create;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMarketAlbum;
   end;
 
 implementation
@@ -211,42 +207,7 @@ begin
   result := TJson.JsonToObject<TVkProduct>(AJsonString)
 end;
 
-{TVkMarketAlbum}
-
-constructor TVkMarketAlbum.Create;
-begin
-  inherited;
-  FCategory := TVkProductCategory.Create();
-  FPrice := TVkProductPrice.Create();
-end;
-
-destructor TVkMarketAlbum.Destroy;
-begin
-  FCategory.Free;
-  FPrice.Free;
-  inherited;
-end;
-
-function TVkMarketAlbum.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkMarketAlbum.FromJsonString(AJsonString: string): TVkMarketAlbum;
-begin
-  result := TJson.JsonToObject<TVkMarketAlbum>(AJsonString)
-end;
-
 { TVkMarkets }
-
-procedure TVkProducts.Append(Audios: TVkProducts);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Audios.Items));
-  Move(Audios.Items[0], FItems[OldLen], Length(Audios.Items) * SizeOf(TVkProduct));
-end;
 
 constructor TVkProducts.Create;
 begin
@@ -278,6 +239,27 @@ begin
 end;
 
 function TVkProducts.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkProductCategories }
+
+destructor TVkProductCategories.Destroy;
+var
+  LItemsItem: TVkProductCategory;
+begin
+  for LItemsItem in FItems do
+    LItemsItem.Free;
+  inherited;
+end;
+
+class function TVkProductCategories.FromJsonString(AJsonString: string): TVkProductCategories;
+begin
+  result := TJson.JsonToObject<TVkProductCategories>(AJsonString);
+end;
+
+function TVkProductCategories.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

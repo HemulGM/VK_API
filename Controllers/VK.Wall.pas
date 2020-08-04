@@ -567,7 +567,7 @@ end;
 function TWallController.Edit(var PostId: Integer; Params: TVkParamsWallEdit): Boolean;
 begin
   with Handler.Execute('wall.edit', Params.List) do
-    Result := Success and ResponseIsInt(PostId);
+    Result := Success and ResponseAsInt(PostId);
 end;
 
 function TWallController.EditAdsStealth(Params: TVkParamsWallEditAdsStealth): Boolean;

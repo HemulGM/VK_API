@@ -145,7 +145,10 @@ contains
   VK.Entity.Notifications in 'Entity\VK.Entity.Notifications.pas',
   VK.Entity.Subscription in 'Entity\VK.Entity.Subscription.pas',
   VK.Entity.Group.Counters in 'Entity\VK.Entity.Group.Counters.pas',
-  VK.Entity.Audio.Catalog in 'Entity\VK.Entity.Audio.Catalog.pas';
+  VK.Entity.Audio.Catalog in 'Entity\VK.Entity.Audio.Catalog.pas',
+  VK.Entity.ScreenName in 'Entity\VK.Entity.ScreenName.pas',
+  VK.Entity.Market.Album in 'Entity\VK.Entity.Market.Album.pas',
+  VK.Entity.Market.Order in 'Entity\VK.Entity.Market.Order.pas';
 
 end.
 

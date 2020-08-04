@@ -323,7 +323,7 @@ begin
     Params.Add('album_id', AlbumId);
   with Handler.Execute('audio.add', Params) do
   begin
-    Result := Success and ResponseIsInt(Id);
+    Result := Success and ResponseAsInt(Id);
   end;
 end;
 

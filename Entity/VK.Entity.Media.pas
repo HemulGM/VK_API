@@ -6,7 +6,8 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
   VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
   VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.User, VK.Entity.Group, VK.Entity.Call;
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.User, VK.Entity.Group, VK.Entity.Call,
+  VK.Entity.Market.Album;
 
 type
   TVkAttachment = class;
@@ -189,13 +190,14 @@ type
     FGroups_can_post: Boolean;
   public
     property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkComment> read FItems write FItems;
+    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    //
     property CurrentLevelCount: Integer read FCurrent_level_count write FCurrent_level_count;
     property CanPost: Boolean read FCan_post write FCan_post;
     property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
-    property Items: TArray<TVkComment> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkComments;
