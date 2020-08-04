@@ -150,7 +150,8 @@ contains
   VK.Entity.Market.Album in 'Entity\VK.Entity.Market.Album.pas',
   VK.Entity.Market.Order in 'Entity\VK.Entity.Market.Order.pas',
   VK.Orders in 'Controllers\VK.Orders.pas',
-  VK.Pages in 'Controllers\VK.Pages.pas';
+  VK.Pages in 'Controllers\VK.Pages.pas',
+  VK.Polls in 'Controllers\VK.Polls.pas';
 
 end.
 

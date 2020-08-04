@@ -118,6 +118,7 @@ type
 
   TArrayOfStringHelper = record helper for TArrayOfString
     function ToString: string; overload; inline;
+    function ToJson: string; overload; inline;
     procedure Assign(Source: TStrings); overload;
     function IsEmpty: Boolean;
     function Length: Integer;
@@ -132,6 +133,7 @@ type
 
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
     function ToString: string; overload; inline;
+    function ToJson: string; overload; inline;
     function Add(Value: Integer): Integer;
     function IsEmpty: Boolean;
     function Length: Integer;
@@ -1144,6 +1146,18 @@ begin
     225:
       ErrStr :=
         'Donut is disabled';
+    250:
+      ErrStr :=
+        'Нет доступа к опросу.';
+    251:
+      ErrStr :=
+        'Недопустимый идентификатор опроса.';
+    252:
+      ErrStr :=
+        'Недопустимый идентификатор ответа.';
+    253:
+      ErrStr :=
+        'Access denied, please vote first';
     260:
       ErrStr :=
         'Access to the groups list is denied due to the user''s privacy settings';
@@ -1575,6 +1589,20 @@ begin
   Result := System.Length(Self);
 end;
 
+function TArrayOfIntegerHelper.ToJson: string;
+var
+  i: Integer;
+begin
+  Result := '[';
+  for i := Low(Self) to High(Self) do
+  begin
+    if i <> Low(Self) then
+      Result := Result + ',';
+    Result := Result + '"' + Self[i].ToString + '"';
+  end;
+  Result := Result + ']';
+end;
+
 function TArrayOfIntegerHelper.ToString: string;
 var
   i: Integer;
@@ -1597,6 +1625,20 @@ end;
 function TArrayOfStringHelper.Length: Integer;
 begin
   Result := System.Length(Self);
+end;
+
+function TArrayOfStringHelper.ToJson: string;
+var
+  i: Integer;
+begin
+  Result := '[';
+  for i := Low(Self) to High(Self) do
+  begin
+    if i <> Low(Self) then
+      Result := Result + ',';
+    Result := Result + '"' + Self[i] + '"';
+  end;
+  Result := Result + ']';
 end;
 
 function TArrayOfStringHelper.ToString: string;

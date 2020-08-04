@@ -66,6 +66,8 @@ type
     ButtonCreatePlaylist: TButton;
     ButtonEditPlaylist: TButton;
     Button31: TButton;
+    TabSheetPolls: TTabSheet;
+    Button32: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -189,6 +191,7 @@ type
     procedure ButtonCreatePlaylistClick(Sender: TObject);
     procedure ButtonEditPlaylistClick(Sender: TObject);
     procedure Button31Click(Sender: TObject);
+    procedure Button32Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -207,7 +210,7 @@ uses
   VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
   VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
   VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
-  VK.Entity.Audio.Catalog;
+  VK.Entity.Audio.Catalog, VK.Entity.Poll;
 
 {$R *.dfm}
 
@@ -675,6 +678,20 @@ begin
   end
   else
     Memo1.Lines.Add('error');
+end;
+
+procedure TFormMain.Button32Click(Sender: TObject);
+var
+  Items: TVkPollBackgrounds;
+begin
+  if VK1.Polls.GetBackgrounds(Items) then
+  begin
+    for var Item in Items.Items do
+    begin
+      Memo1.Lines.Add(Item.Name);
+    end;
+    Items.Free;
+  end;
 end;
 
 procedure TFormMain.ButtonGetCatalogClick(Sender: TObject);
