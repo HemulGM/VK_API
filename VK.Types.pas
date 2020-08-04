@@ -638,6 +638,7 @@ type
     function ResponseIsTrue: Boolean;
     function ResponseIsFalse: Boolean;
     function ResponseAsInt(var Value: Integer): Boolean;
+    function ResponseAsStr(var Value: string): Boolean;
     function GetJSONValue: TJSONValue;
     function GetJSONResponse: TJSONValue;
     function GetValue<T>(const Field: string; var Value: T): Boolean;
@@ -1062,6 +1063,9 @@ begin
     118:
       ErrStr :=
         'Недопустимый сервер.';
+    119:
+      ErrStr :=
+        'Недопустимое название.';
     121:
       ErrStr :=
         'Неверный хэш.';
@@ -1074,6 +1078,12 @@ begin
     129:
       ErrStr :=
         'Недопустимый формат фотографии';
+    140:
+      ErrStr :=
+        'Страница не найдена.';
+    141:
+      ErrStr :=
+        'Нет доступа к странице.';
     148:
       ErrStr :=
         'Пользователь не установил приложение в левое меню';
@@ -1962,6 +1972,12 @@ end;
 function TResponse.ResponseAsInt(var Value: Integer): Boolean;
 begin
   Result := TryStrToInt(Response, Value);
+end;
+
+function TResponse.ResponseAsStr(var Value: string): Boolean;
+begin
+  Result := True;
+  Value := Response;
 end;
 
 function TResponse.ResponseIsTrue: Boolean;

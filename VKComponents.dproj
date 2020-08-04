@@ -233,6 +233,8 @@
         <DCCReference Include="Entity\VK.Entity.ScreenName.pas"/>
         <DCCReference Include="Entity\VK.Entity.Market.Album.pas"/>
         <DCCReference Include="Entity\VK.Entity.Market.Order.pas"/>
+        <DCCReference Include="Controllers\VK.Orders.pas"/>
+        <DCCReference Include="Controllers\VK.Pages.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

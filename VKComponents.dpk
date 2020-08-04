@@ -148,7 +148,9 @@ contains
   VK.Entity.Audio.Catalog in 'Entity\VK.Entity.Audio.Catalog.pas',
   VK.Entity.ScreenName in 'Entity\VK.Entity.ScreenName.pas',
   VK.Entity.Market.Album in 'Entity\VK.Entity.Market.Album.pas',
-  VK.Entity.Market.Order in 'Entity\VK.Entity.Market.Order.pas';
+  VK.Entity.Market.Order in 'Entity\VK.Entity.Market.Order.pas',
+  VK.Orders in 'Controllers\VK.Orders.pas',
+  VK.Pages in 'Controllers\VK.Pages.pas';
 
 end.
 

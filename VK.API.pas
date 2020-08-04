@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
-  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications,
+  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -87,6 +87,8 @@ type
     FNewsfeed: TNewsfeedController;
     FLogResponse: Boolean;
     FNotifications: TNotificationsController;
+    FOrders: TOrdersController;
+    FPages: TPagesController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
@@ -223,6 +225,14 @@ type
     /// Notifications
     /// </summary>
     property Notifications: TNotificationsController read FNotifications;
+    /// <summary>
+    /// ћетоды этой секции предоставл€ют дополнительную возможность управлени€ состо€нием заказов, которые были сделаны пользовател€ми в приложени€х.
+    /// </summary>
+    property Orders: TOrdersController read FOrders;
+    /// <summary>
+    /// ћетоды дл€ работы с фотографи€ми.
+    /// </summary>
+    property Pages: TPagesController read FPages;
     /// <summary>
     /// ћетоды дл€ работы с фотографи€ми.
     /// </summary>
@@ -382,6 +392,8 @@ begin
   FGroups := TGroupsController.Create(FHandler);
   FGifts := TGiftsController.Create(FHandler);
   FPhotos := TPhotosController.Create(FHandler);
+  FPages := TPagesController.Create(FHandler);
+  FOrders := TOrdersController.Create(FHandler);
   FCatalog := TCatalogController.Create(FHandler);
   FUtils := TUtilsController.Create(FHandler);
   FVideo := TVideoController.Create(FHandler);
@@ -401,6 +413,8 @@ begin
   FGroups.Free;
   FGifts.Free;
   FPhotos.Free;
+  FOrders.Free;
+  FPages.Free;
   FCatalog.Free;
   FUtils.Free;
   FNotes.Free;
