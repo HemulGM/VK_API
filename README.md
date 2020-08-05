@@ -77,7 +77,7 @@ end;
     
 ```Pascal
 var
-  Users: TVkUsers;
+  Users: TVkProfiles;
   i: Integer;
 begin
   if VK.Users.Get(Users, [286400863, 415730216], TVkUserFields.All) then
