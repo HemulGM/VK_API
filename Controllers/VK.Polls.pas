@@ -70,7 +70,7 @@ type
     function PollId(Value: Integer): Integer;
     function Extended(Value: Boolean): Integer;
     function FriendsCount(Value: Integer = 3): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
     function NameCase(Value: TVkNameCase): Integer;
   end;
 
@@ -83,7 +83,7 @@ type
     function FriendsOnly(Value: Boolean): Integer;
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
     function NameCase(Value: TVkNameCase): Integer;
   end;
 
@@ -468,7 +468,7 @@ begin
   Result := List.Add('friends_count', Value);
 end;
 
-function TVkParamsPollsGetById.Fields(Value: TVkUserFields): Integer;
+function TVkParamsPollsGetById.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -515,7 +515,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsPollsGetVoters.Fields(Value: TVkUserFields): Integer;
+function TVkParamsPollsGetVoters.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;

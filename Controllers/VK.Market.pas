@@ -107,7 +107,7 @@ type
     function Count(Value: Integer): Integer;
     function Sort(Value: TVkSort): Integer;
     function Extended(Value: Boolean): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
   end;
 
   TVkParamsMarketReorderAlbums = record
@@ -1062,7 +1062,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsMarketGetComments.Fields(Value: TVkUserFields): Integer;
+function TVkParamsMarketGetComments.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;

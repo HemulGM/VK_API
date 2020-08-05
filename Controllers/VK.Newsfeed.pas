@@ -68,7 +68,7 @@ type
     List: TParams;
     function Extended(Value: Boolean): Integer;
   public
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function NameCase(Value: TVkNameCase): Integer;
   end;
 
@@ -82,14 +82,14 @@ type
     function SourceIds(Value: TIds): Integer;
     function StartFrom(Value: string): Integer;
     function Count(Value: Integer): Integer;
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function Section(Value: string): Integer;
   end;
 
   TVkParamsNewsfeedGetComments = record
     List: TParams;
     function Filters(Value: TVkNewsfeedCommentsTypes = []): Integer;
-    function Fields(const Value: TVkUserFields = []): Integer;
+    function Fields(const Value: TVkProfileFields = []): Integer;
     function Count(Value: Integer): Integer;
     function LastCommentsCount(Value: Integer): Integer;
     function StartTime(Value: TDateTime): Integer;
@@ -109,7 +109,7 @@ type
 
   TVkParamsNewsfeedGetRecommended = record
     List: TParams;
-    function Fields(const Value: TVkUserFields = []): Integer;
+    function Fields(const Value: TVkProfileFields = []): Integer;
     function Count(Value: Integer): Integer;
     function StartTime(Value: TDateTime): Integer;
     function EndTime(Value: TDateTime): Integer;
@@ -120,7 +120,7 @@ type
   TVkParamsNewsfeedSearch = record
     List: TParams;
     function Query(Value: string): Integer;
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function Count(Value: Integer): Integer;
     function StartTime(Value: TDateTime): Integer;
     function EndTime(Value: TDateTime): Integer;
@@ -536,7 +536,7 @@ begin
   Result := List.Add('end_time', Value);
 end;
 
-function TVkParamsNewsfeedGet.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsNewsfeedGet.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -583,7 +583,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsNewsfeedBanned.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsNewsfeedBanned.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -640,7 +640,7 @@ begin
   Result := List.Add('end_time', Value);
 end;
 
-function TVkParamsNewsfeedGetComments.Fields(const Value: TVkUserFields): Integer;
+function TVkParamsNewsfeedGetComments.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -709,7 +709,7 @@ begin
   Result := List.Add('end_time', Value);
 end;
 
-function TVkParamsNewsfeedGetRecommended.Fields(const Value: TVkUserFields): Integer;
+function TVkParamsNewsfeedGetRecommended.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -768,7 +768,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsNewsfeedSearch.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsNewsfeedSearch.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;

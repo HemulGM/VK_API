@@ -98,7 +98,7 @@ type
     function Count(Value: Integer): Integer;
     function Sort(Value: TVkSort): Integer;
     function Extended(Value: Boolean): Integer;
-    function Fields(UserFields: TVkUserFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsVideoRemoveFromAlbum = record
@@ -965,7 +965,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsVideoGetComments.Fields(UserFields: TVkUserFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsVideoGetComments.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;

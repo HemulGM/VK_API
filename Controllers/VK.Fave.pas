@@ -59,7 +59,7 @@ type
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
     function &Type(Value: TVkFavePageType): Integer;
-    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function TagId(Value: Integer): Integer;
   end;
 
@@ -540,7 +540,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFavePagesGet.Fields(GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsFavePagesGet.Fields(GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;

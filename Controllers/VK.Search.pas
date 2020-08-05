@@ -24,7 +24,7 @@ type
     function Offset(Value: Integer): Integer;
     function Limit(Value: Integer): Integer;
     function Filters(Value: TVkSearchFilters): Integer;
-    function Fields(UserFields: TVkUserFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
     function SearchGlobal(Value: Boolean): Integer;
   end;
 
@@ -105,7 +105,7 @@ begin
   Result := List.Add('filters', Value.ToString);
 end;
 
-function TVkParamsSearch.Fields(UserFields: TVkUserFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;

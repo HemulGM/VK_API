@@ -82,7 +82,7 @@ type
     function Count(Value: Integer): Integer;
     function Filter(Value: TVkPostType): Integer;
     function Extended(Value: Boolean): Integer;
-    function Fields(UserFields: TVkUserFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsWallGetById = record
@@ -90,7 +90,7 @@ type
     function Posts(Value: TArrayOfString): Integer;
     function Extended(Value: Boolean): Integer;
     function CopyHistoryDepth(Value: Integer = 2): Integer;
-    function Fields(UserFields: TVkUserFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsWallGetComment = record
@@ -98,7 +98,7 @@ type
     function OwnerId(Value: Integer): Integer;
     function CommentId(Value: Integer): Integer;
     function Extended(Value: Boolean): Integer;
-    function Fields(UserFields: TVkUserFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkCommentCreateParams = record
@@ -124,7 +124,7 @@ type
     function Sort(Value: TVkSort): Integer;
     function PreviewLength(Value: Integer): Integer;
     function Extended(Value: Boolean): Integer;
-    function Fields(UserFields: TVkUserFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
     function CommentId(Value: Integer): Integer;
     function ThreadItemsCount(Value: Integer): Integer;
   end;
@@ -163,7 +163,7 @@ type
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
     function Extended(Value: Boolean): Integer;
-    function Fields(UserFields: TVkUserFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TWallController = class(TVkController)
@@ -862,7 +862,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsWallGet.Fields(UserFields: TVkUserFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsWallGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -1072,7 +1072,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsWallGetById.Fields(UserFields: TVkUserFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsWallGetById.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -1094,7 +1094,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsWallGetComment.Fields(UserFields: TVkUserFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsWallGetComment.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -1151,7 +1151,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsWallGetComments.Fields(UserFields: TVkUserFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsWallGetComments.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -1293,7 +1293,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsWallSearch.Fields(UserFields: TVkUserFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsWallSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;

@@ -315,7 +315,7 @@ type
     function ToString: string; inline;
   end;
 
-  TVkUserField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
+  TVkProfileField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
     ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufPhotoBig, ufPhotoMedium,
     ufOnline, ufLists, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus,
     usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal,
@@ -324,16 +324,16 @@ type
     ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus,
     ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
 
-  TVkUserFieldHelper = record helper for TVkUserField
+  TVkProfileFieldHelper = record helper for TVkProfileField
     function ToString: string; inline;
   end;
 
-  TVkUserFields = set of TVkUserField;
+  TVkProfileFields = set of TVkProfileField;
 
-  TVkUserFieldsHelper = record helper for TVkUserFields
+  TVkProfileFieldsHelper = record helper for TVkProfileFields
   public
     function ToString: string; inline;
-    class function All: TVkUserFields; static; inline;
+    class function All: TVkProfileFields; static; inline;
   end;
 
   TVkGroupMemberField = (mfSex, mfBdate, mfCity, mfCountry, mfPhoto50, mfPhoto100, mfPhoto200orig, mfPhoto200,
@@ -849,7 +849,7 @@ var
   VkPremissionStr: array[TVkPermission] of string = ('notify', 'friends', 'photos', 'audio',
     'video', 'stories', 'pages', 'status', 'notes', 'messages', 'wall', 'ads', 'offline',
     'docs', 'groups', 'notifications', 'stats', 'email', 'market', 'app_widget', 'manage');
-  VkUserField: array[TVkUserField] of string = (
+  VkProfileField: array[TVkProfileField] of string = (
     'photo_id', 'verified', 'sex', 'bdate', 'city', 'country', 'home_town', 'has_photo', 'photo_50',
     'photo_100', 'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig', 'photo_big', 'photo_medium',
     'online', 'lists', 'domain', 'has_mobile', 'contacts', 'site', 'education', 'universities', 'schools',
@@ -2120,9 +2120,9 @@ begin
   Result.TrimRight([',']);
 end;
 
-{ TVkUserFieldsHelper }
+{ TVkProfileFieldsHelper }
 
-class function TVkUserFieldsHelper.All: TVkUserFields;
+class function TVkProfileFieldsHelper.All: TVkProfileFields;
 begin
   Result := [ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100,
     ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile, ufContacts,
@@ -2132,9 +2132,9 @@ begin
     ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup];
 end;
 
-function TVkUserFieldsHelper.ToString: string;
+function TVkProfileFieldsHelper.ToString: string;
 var
-  Item: TVkUserField;
+  Item: TVkProfileField;
 begin
   for Item in Self do
   begin
@@ -2143,11 +2143,11 @@ begin
   Result.TrimRight([',']);
 end;
 
-{ TVkUserFieldHelper }
+{ TVkProfileFieldHelper }
 
-function TVkUserFieldHelper.ToString: string;
+function TVkProfileFieldHelper.ToString: string;
 begin
-  Result := VkUserField[Self];
+  Result := VkProfileField[Self];
 end;
 
 { TVkGroupFilterHelper }

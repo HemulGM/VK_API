@@ -201,7 +201,7 @@ type
     function ConversationMessageIds(const Value: TIds): Integer; overload;
     function ConversationMessageIds(const Value: Integer): Integer; overload;
     function Extended(const Value: Boolean): Integer;
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function GroupId(const Value: Integer): Integer;
   end;
 
@@ -209,7 +209,7 @@ type
     List: TParams;
     function ChatId(const Value: Integer): Integer;
     function ChatIds(const Value: TIds): Integer;
-    function Fields(const Value: TVkUserFields = []): Integer;
+    function Fields(const Value: TVkProfileFields = []): Integer;
     function NameCase(const Value: TVkNameCase): Integer;
   end;
 
@@ -217,7 +217,7 @@ type
     List: TParams;
     function PeerIds(const Value: TIds): Integer;
     function Extended(const Value: Boolean): Integer;
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function GroupId(const Value: Integer): Integer;
   end;
 
@@ -228,7 +228,7 @@ type
     function StartFrom(const Value: string): Integer;
     function Count(const Value: Integer = 30): Integer; //200
     function PhotoSizes(const Value: Integer): Integer;
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function GroupId(const Value: Integer): Integer;
     function PreserveOrder(const Value: Boolean): Integer;
     function MaxForwardsLevel(const Value: Integer = 45): Integer;
@@ -240,7 +240,7 @@ type
     function Offset(const Value: Integer): Integer;
     function StartMessageId(const Value: Integer): Integer;
     function PreviewLength(const Value: Integer): Integer;
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function Extended(const Value: Boolean): Integer;
     function GroupId(const Value: Integer): Integer;
   end;
@@ -251,7 +251,7 @@ type
     function Pts(const Value: Integer): Integer;
     function PreviewLength(const Value: Integer): Integer;
     function Onlines(const Value: Boolean): Integer;
-    function Fields(const Value: TVkUserFields = []): Integer;
+    function Fields(const Value: TVkProfileFields = []): Integer;
     function EventsLimit(const Value: Integer = 1000): Integer;
     function MsgsLimit(const Value: Integer = 200): Integer;
     function MaxMsgId(const Value: Integer): Integer;
@@ -299,7 +299,7 @@ type
     /// </summary>
     function Count(const Value: Integer = 20): Integer; //100
     function Offset(const Value: Integer): Integer;
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function Extended(const Value: Boolean): Integer;
     function GroupId(const Value: Integer): Integer;
   end;
@@ -308,7 +308,7 @@ type
     List: TParams;
     function Query(const Value: string): Integer;
     function Count(const Value: Integer = 20): Integer;
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function Extended(const Value: Boolean): Integer;
     function GroupId(const Value: Integer): Integer;
   end;
@@ -461,7 +461,7 @@ type
     /// <summary>
     /// Получает данные для превью чата с приглашением по ссылке.
     /// </summary>
-    function GetChatPreview(var Item: TVkChatPreview; PeerId: Integer; Link: string; Fields: TVkUserFields): Boolean; overload;
+    function GetChatPreview(var Item: TVkChatPreview; PeerId: Integer; Link: string; Fields: TVkProfileFields): Boolean; overload;
     /// <summary>
     /// Позволяет получить беседу по её идентификатору.
     /// </summary>
@@ -808,7 +808,7 @@ end;
 function TMessagesController.GetChat(var Items: TVkChats; Params: TParams): Boolean;
 begin
   if not Params.KeyExists('fields') then
-    Params.Add('fields', TVkUserField.ufDomain.ToString);
+    Params.Add('fields', TVkProfileField.ufDomain.ToString);
   with Handler.Execute('messages.getChat', Params) do
   begin
     Result := Success;
@@ -829,7 +829,7 @@ begin
 end;
 
 function TMessagesController.GetChatPreview(var Item: TVkChatPreview; PeerId: Integer; Link: string; Fields:
-  TVkUserFields): Boolean;
+  TVkProfileFields): Boolean;
 var
   Params: TParams;
 begin
@@ -1931,7 +1931,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsMessageGetByConvMesId.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsMessageGetByConvMesId.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -1958,7 +1958,7 @@ begin
   Result := List.Add('chat_ids', Value);
 end;
 
-function TVkParamsMessageGetChat.Fields(const Value: TVkUserFields): Integer;
+function TVkParamsMessageGetChat.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -1975,7 +1975,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsConversationsGetById.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsConversationsGetById.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -2023,7 +2023,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGetHistoryAttachments.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsGetHistoryAttachments.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -2075,7 +2075,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsGetImportantMessages.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsGetImportantMessages.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -2112,7 +2112,7 @@ begin
   Result := List.Add('events_limit', Value);
 end;
 
-function TVkParamsLongPollHistory.Fields(const Value: TVkUserFields): Integer;
+function TVkParamsLongPollHistory.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -2240,7 +2240,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsMessageSearch.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsMessageSearch.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -2282,7 +2282,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsMessageSearchConversations.Fields(const GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsMessageSearchConversations.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;

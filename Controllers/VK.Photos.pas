@@ -141,7 +141,7 @@ type
     function Sort(Value: TVkSort): Integer;
     function AccessKey(Value: string): Integer;
     function Extended(Value: Boolean): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
   end;
 
   TVkParamsPhotosGetMarketUploadServer = record
@@ -1742,7 +1742,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsPhotosGetComments.Fields(Value: TVkUserFields): Integer;
+function TVkParamsPhotosGetComments.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;

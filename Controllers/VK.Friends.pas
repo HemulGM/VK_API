@@ -36,7 +36,7 @@ type
     function Order(Value: TVkFriendsSort): Integer;
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
     function NameCase(Value: TVkNameCase): Integer;
     function Ref(Value: string): Integer;
   end;
@@ -79,14 +79,14 @@ type
     function Sort(Value: Boolean): Integer;
     function NeedViewed(Value: Boolean): Integer;
     function Suggested(Value: Boolean): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
   end;
 
   TVkParamsFriendsGetSuggestions = record
     List: TParams;
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
     function FilterMutual(Value: Boolean): Integer;
     function NameCase(Value: TVkNameCase): Integer;
   end;
@@ -97,7 +97,7 @@ type
     function Query(Value: string): Integer;
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
     function NameCase(Value: TVkNameCase): Integer;
   end;
 
@@ -106,12 +106,12 @@ type
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkUserFields = []; Order: TVkFriendsSort = fsNone):
+    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone):
       Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkProfiles; Fields: TVkUserFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
+    function Get(var Items: TVkProfiles; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
@@ -171,7 +171,7 @@ type
     /// <summary>
     /// Возвращает список друзей пользователя, у которых завалидированные или указанные в профиле телефонные номера входят в заданный список.
     /// </summary>
-    function GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkUserFields): Boolean;
+    function GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkProfileFields): Boolean;
     /// <summary>
     /// Возвращает список меток друзей пользователя.
     /// </summary>
@@ -225,7 +225,7 @@ uses
 
 { TFriendsController }
 
-function TFriendsController.Get(var Items: TVkProfiles; Fields: TVkUserFields; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; Fields: TVkProfileFields; Order: TVkFriendsSort): Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
@@ -236,7 +236,7 @@ begin
   Result := Get(Items, Params);
 end;
 
-function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkUserFields; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields; Order: TVkFriendsSort): Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
@@ -402,7 +402,7 @@ begin
   end;
 end;
 
-function TFriendsController.GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkUserFields): Boolean;
+function TFriendsController.GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkProfileFields): Boolean;
 begin
   with Handler.Execute('friends.getByPhones', [['phones', Phones.ToString], ['fields', Fields.ToString]]) do
   begin
@@ -586,7 +586,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGet.Fields(Value: TVkUserFields): Integer;
+function TVkParamsFriendsGet.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -754,7 +754,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGetRequests.Fields(Value: TVkUserFields): Integer;
+function TVkParamsFriendsGetRequests.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -796,7 +796,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGetSuggestions.Fields(Value: TVkUserFields): Integer;
+function TVkParamsFriendsGetSuggestions.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -826,7 +826,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsSearch.Fields(Value: TVkUserFields): Integer;
+function TVkParamsFriendsSearch.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;

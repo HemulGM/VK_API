@@ -256,7 +256,7 @@ type
     function GroupId(Value: Integer): Integer;
     function Offset(Value: Integer = 0): Integer;
     function Count(Value: Integer = 20): Integer;
-    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkUserFields = []): Integer; overload;
+    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer; overload;
     function OwnerId(Value: Integer): Integer;
   end;
 
@@ -265,7 +265,7 @@ type
     function GroupId(Value: Integer): Integer;
     function Offset(Value: Integer = 0): Integer;
     function Count(Value: Integer = 20): Integer;
-    function Fields(Value: TVkUserFields = []): Integer;
+    function Fields(Value: TVkProfileFields = []): Integer;
     function NameCase(Value: TVkNameCase): Integer;
   end;
 
@@ -594,7 +594,7 @@ type
     /// <summary>
     ///  Возвращает список заявок на вступление в сообщество.
     /// </summary>
-    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkUserFields = [ufDomain]; Count: Integer = 20;
+    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [ufDomain]; Count: Integer = 20;
       Offset: Integer = 0): Boolean; overload;
     /// <summary>
     ///  Возвращает список заявок на вступление в сообщество.
@@ -1162,7 +1162,7 @@ begin
   end;
 end;
 
-function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkUserFields; Count, Offset:
+function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields; Count, Offset:
   Integer): Boolean;
 var
   Params: TParams;
@@ -1953,7 +1953,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGroupsGetBanned.Fields(GroupFields: TVkGroupFields; UserFields: TVkUserFields): Integer;
+function TVkParamsGroupsGetBanned.Fields(GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -1980,7 +1980,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGroupsGetInvitedUsers.Fields(Value: TVkUserFields): Integer;
+function TVkParamsGroupsGetInvitedUsers.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;

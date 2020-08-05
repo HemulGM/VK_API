@@ -11,7 +11,7 @@ type
     List: TParams;
     function UserIds(Value: TIds): Integer;
     function Fields(Value: string): Integer; overload;
-    function Fields(Value: TVkUserFields): Integer; overload;
+    function Fields(Value: TVkProfileFields): Integer; overload;
     function NameCase(Value: TVkNameCase): Integer; overload;
   end;
 
@@ -21,7 +21,7 @@ type
     function Fields(Value: string): Integer; overload;
     function Count(Value: Integer): Integer; overload;
     function Offset(Value: Integer): Integer; overload;
-    function Fields(Value: TVkUserFields): Integer; overload;
+    function Fields(Value: TVkProfileFields): Integer; overload;
     function NameCase(Value: TVkNameCase): Integer; overload;
   end;
 
@@ -31,7 +31,7 @@ type
     function Extended(Value: Boolean): Integer;
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
-    function Fields(UserFields: TVkUserFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsUsersSearch = record
@@ -40,7 +40,7 @@ type
     function Sort(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer): Integer;
-    function Fields(Value: TVkUserFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
     function City(Value: Integer): Integer;
     function Country(Value: Integer): Integer;
     function Hometown(Value: string): Integer;
@@ -75,17 +75,17 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean;
+    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean;
       overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean;
+    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean;
       overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkProfile; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
+    function Get(var User: TVkProfile; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
@@ -131,7 +131,7 @@ uses
 
 { TUsersController }
 
-function TUsersController.Get(var User: TVkProfile; UserId: Integer; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
 var
   Params: TVkParamsUsersGet;
   Users: TVkProfiles;
@@ -163,7 +163,7 @@ begin
   end;
 end;
 
-function TUsersController.Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
 var
   Params: TParams;
 begin
@@ -194,7 +194,7 @@ begin
   Result := Get(Items, Params.List);
 end;
 
-function TUsersController.Get(var User: TVkProfile; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var User: TVkProfile; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
 begin
   Result := Get(User, 0, Fields, NameCase);
 end;
@@ -275,7 +275,7 @@ begin
   Result := List.Add('fields', Value);
 end;
 
-function TVkParamsUsersGet.Fields(Value: TVkUserFields): Integer;
+function TVkParamsUsersGet.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -302,7 +302,7 @@ begin
   Result := List.Add('fields', Value);
 end;
 
-function TVkParamsUsersGetFollowers.Fields(Value: TVkUserFields): Integer;
+function TVkParamsUsersGetFollowers.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
@@ -344,7 +344,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsUsersGetSubscriptions.Fields(UserFields: TVkUserFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsUsersGetSubscriptions.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
@@ -371,7 +371,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsUsersSearch.Fields(Value: TVkUserFields): Integer;
+function TVkParamsUsersSearch.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
