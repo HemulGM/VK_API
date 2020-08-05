@@ -3,7 +3,7 @@ unit VK.Entity.Audio.Catalog;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Group, VK.Entity.User,
+  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Group, VK.Entity.Profile,
   VK.Entity.Catalog.Section;
 
 type
@@ -41,10 +41,10 @@ type
   private
     FGroups: TArray<TVkGroup>;
     FItems: TArray<TVkAudioCatalogItem>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
   public
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Items: TArray<TVkAudioCatalogItem> read FItems write FItems;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -90,7 +90,7 @@ end;
 destructor TVkAudioCatalog.Destroy;
 var
   LgroupsItem: TVkGroup;
-  LprofilesItem: TVkUser;
+  LprofilesItem: TVkProfile;
   LitemsItem: TVkAudioCatalogItem;
 begin
 

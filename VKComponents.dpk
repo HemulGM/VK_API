@@ -92,7 +92,7 @@ contains
   VK.Entity.PushSettings in 'Entity\VK.Entity.PushSettings.pas',
   VK.Entity.Status in 'Entity\VK.Entity.Status.pas',
   VK.Entity.Sticker in 'Entity\VK.Entity.Sticker.pas',
-  VK.Entity.User in 'Entity\VK.Entity.User.pas',
+  VK.Entity.Profile in 'Entity\VK.Entity.Profile.pas',
   VK.Entity.Video in 'Entity\VK.Entity.Video.pas',
   VK.Account in 'Controllers\VK.Account.pas',
   VK.Audio in 'Controllers\VK.Audio.pas',

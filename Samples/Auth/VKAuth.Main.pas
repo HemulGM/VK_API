@@ -216,7 +216,7 @@ implementation
 
 uses
   VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
-  VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
+  VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
   VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
   VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
   VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search, VK.Entity.Database.Regions,
@@ -242,7 +242,7 @@ end;
 
 procedure TFormMain.Button12Click(Sender: TObject);
 var
-  Users: TVkUsers;
+  Users: TVkProfiles;
   i: Integer;
 begin
   if VK1.Users.Get(Users, [286400863, 415730216], TVkUserFields.All) then
@@ -422,7 +422,7 @@ end;
 
 procedure TFormMain.Button25Click(Sender: TObject);
 var
-  Users: TVkUsers;
+  Users: TVkProfiles;
   //Users: TIds;
   TS: Cardinal;
   Param: TVkParamsGroupsGetMembers;
@@ -498,7 +498,7 @@ end;
 
 procedure TFormMain.Button28Click(Sender: TObject);
 var
-  Users: TVkUsers;
+  Users: TVkProfiles;
 begin
   if VK1.Friends.Get(Users) then
   begin

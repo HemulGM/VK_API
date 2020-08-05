@@ -3,7 +3,7 @@ unit VK.Friends;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.User, VK.Entity.Common;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile, VK.Entity.Common;
 
 type
   /// <summary>
@@ -106,20 +106,20 @@ type
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkUsers; UserId: Integer; Fields: TVkUserFields = []; Order: TVkFriendsSort = fsNone):
+    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkUserFields = []; Order: TVkFriendsSort = fsNone):
       Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkUsers; Fields: TVkUserFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
+    function Get(var Items: TVkProfiles; Fields: TVkUserFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function Get(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkUsers; Params: TVkParamsFriendsGet): Boolean; overload;
+    function Get(var Items: TVkProfiles; Params: TVkParamsFriendsGet): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
@@ -171,7 +171,7 @@ type
     /// <summary>
     /// Возвращает список друзей пользователя, у которых завалидированные или указанные в профиле телефонные номера входят в заданный список.
     /// </summary>
-    function GetByPhones(var Items: TVkUsers; Phones: TArrayOfString; Fields: TVkUserFields): Boolean;
+    function GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkUserFields): Boolean;
     /// <summary>
     /// Возвращает список меток друзей пользователя.
     /// </summary>
@@ -191,11 +191,11 @@ type
     /// <summary>
     /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
     /// </summary>
-    function GetRequests(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function GetRequests(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
     /// </summary>
-    function GetRequests(var Items: TVkUsers; Params: TVkParamsFriendsGetRequests): Boolean; overload;
+    function GetRequests(var Items: TVkProfiles; Params: TVkParamsFriendsGetRequests): Boolean; overload;
     /// <summary>
     /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
     /// </summary>
@@ -203,19 +203,19 @@ type
     /// <summary>
     /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя.
     /// </summary>
-    function GetSuggestions(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function GetSuggestions(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя.
     /// </summary>
-    function GetSuggestions(var Items: TVkUsers; Params: TVkParamsFriendsGetSuggestions): Boolean; overload;
+    function GetSuggestions(var Items: TVkProfiles; Params: TVkParamsFriendsGetSuggestions): Boolean; overload;
     /// <summary>
     /// Позволяет искать по списку друзей пользователей.
     /// </summary>
-    function Search(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function Search(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// Позволяет искать по списку друзей пользователей.
     /// </summary>
-    function Search(var Items: TVkUsers; Params: TVkParamsFriendsSearch): Boolean; overload;
+    function Search(var Items: TVkProfiles; Params: TVkParamsFriendsSearch): Boolean; overload;
   end;
 
 implementation
@@ -225,7 +225,7 @@ uses
 
 { TFriendsController }
 
-function TFriendsController.Get(var Items: TVkUsers; Fields: TVkUserFields; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; Fields: TVkUserFields; Order: TVkFriendsSort): Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
@@ -236,7 +236,7 @@ begin
   Result := Get(Items, Params);
 end;
 
-function TFriendsController.Get(var Items: TVkUsers; UserId: Integer; Fields: TVkUserFields; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkUserFields; Order: TVkFriendsSort): Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
@@ -248,12 +248,12 @@ begin
   Result := Get(Items, Params);
 end;
 
-function TFriendsController.Get(var Items: TVkUsers; Params: TVkParamsFriendsGet): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; Params: TVkParamsFriendsGet): Boolean;
 begin
   Result := Get(Items, Params.List);
 end;
 
-function TFriendsController.Get(var Items: TVkUsers; Params: TParams): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   if not Params.KeyExists('fields') then
     Params.Add('fields', 'domian');
@@ -264,7 +264,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(Response);
+        Items := TVkProfiles.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -402,7 +402,7 @@ begin
   end;
 end;
 
-function TFriendsController.GetByPhones(var Items: TVkUsers; Phones: TArrayOfString; Fields: TVkUserFields): Boolean;
+function TFriendsController.GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkUserFields): Boolean;
 begin
   with Handler.Execute('friends.getByPhones', [['phones', Phones.ToString], ['fields', Fields.ToString]]) do
   begin
@@ -410,7 +410,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(AppendItemsTag(Response));
+        Items := TVkProfiles.FromJsonString(AppendItemsTag(Response));
         Items.Count := Length(Items.Items);
       except
         Result := False;
@@ -499,7 +499,7 @@ begin
   end;
 end;
 
-function TFriendsController.GetRequests(var Items: TVkUsers; Params: TVkParamsFriendsGetRequests): Boolean;
+function TFriendsController.GetRequests(var Items: TVkProfiles; Params: TVkParamsFriendsGetRequests): Boolean;
 begin
   Result := GetRequests(Items, Params.List);
 end;
@@ -520,17 +520,17 @@ begin
   end;
 end;
 
-function TFriendsController.GetSuggestions(var Items: TVkUsers; Params: TVkParamsFriendsGetSuggestions): Boolean;
+function TFriendsController.GetSuggestions(var Items: TVkProfiles; Params: TVkParamsFriendsGetSuggestions): Boolean;
 begin
   Result := GetSuggestions(Items, Params.List);
 end;
 
-function TFriendsController.Search(var Items: TVkUsers; Params: TVkParamsFriendsSearch): Boolean;
+function TFriendsController.Search(var Items: TVkProfiles; Params: TVkParamsFriendsSearch): Boolean;
 begin
   Result := Search(Items, Params.List);
 end;
 
-function TFriendsController.Search(var Items: TVkUsers; Params: TParams): Boolean;
+function TFriendsController.Search(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   with Handler.Execute('friends.search', Params) do
   begin
@@ -538,7 +538,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(Response);
+        Items := TVkProfiles.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -546,7 +546,7 @@ begin
   end;
 end;
 
-function TFriendsController.GetSuggestions(var Items: TVkUsers; Params: TParams): Boolean;
+function TFriendsController.GetSuggestions(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   with Handler.Execute('friends.getSuggestions', Params) do
   begin
@@ -554,7 +554,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(Response);
+        Items := TVkProfiles.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -562,7 +562,7 @@ begin
   end;
 end;
 
-function TFriendsController.GetRequests(var Items: TVkUsers; Params: TParams): Boolean;
+function TFriendsController.GetRequests(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   Params.Add('extended', True);
   with Handler.Execute('friends.getRequests', Params) do
@@ -571,7 +571,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(Response);
+        Items := TVkProfiles.FromJsonString(Response);
       except
         Result := False;
       end;

@@ -3,18 +3,18 @@ unit VK.Entity.Account.Banned;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.User;
+  Generics.Collections, Rest.Json, VK.Entity.Profile;
 
 type
   TVkBannedList = class
   private
     FCount: Integer;
     FItems: TArray<Integer>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<Integer> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkBannedList;
@@ -31,7 +31,7 @@ end;
 
 destructor TVkBannedList.Destroy;
 var
-  User: TVkUser;
+  User: TVkProfile;
 begin
 
   for User in FProfiles do

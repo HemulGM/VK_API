@@ -3,7 +3,7 @@ unit VK.Entity.Conversation;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.User, VK.Entity.Group, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group, VK.Types;
 
 type
   TVkChatAccess = class
@@ -188,12 +188,12 @@ type
   private
     FCount: Integer;
     FItems: TArray<TVkConversation>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkConversation> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -217,14 +217,14 @@ type
   private
     FCount: Integer;
     FItems: TArray<TVkConversationItem>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FUnread_count: Integer;
     FGroups: TArray<TVkGroup>;
   public
     property Count: Integer read FCount write FCount;
     property UnreadCount: Integer read FUnread_count write FUnread_count;
     property Items: TArray<TVkConversationItem> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -237,7 +237,7 @@ type
     FCount: Integer;
     FSaveObjects: Boolean;
     FConversations: TArray<TVkConversation>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FSaveMessages: Boolean;
     FGroups: TArray<TVkGroup>;
     procedure SetSaveObjects(const Value: Boolean);
@@ -246,7 +246,7 @@ type
     property Items: TArray<TVkMessage> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     property Conversations: TArray<TVkConversation> read FConversations write FConversations;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     //
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
@@ -260,12 +260,12 @@ type
   TVkImportantMessages = class
   private
     FMessages: TVkMessages;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
     FConversations: TArray<TVkConversation>;
   public
     property Messages: TVkMessages read FMessages write FMessages;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Conversations: TArray<TVkConversation> read FConversations write FConversations;
     constructor Create;
@@ -439,7 +439,7 @@ destructor TVkConversationItems.Destroy;
 var
   LitemsItem: TVkConversationItem;
   LgroupItem: TVkGroup;
-  LuserItem: TVkUser;
+  LuserItem: TVkProfile;
 begin
 
   for LitemsItem in FItems do
@@ -475,7 +475,7 @@ end;
 destructor TVkMessageHistory.Destroy;
 var
   LItemsItem: TVkMessage;
-  LuserItem: TVkUser;
+  LuserItem: TVkProfile;
   LgroupItem: TVkGroup;
   LconversationItem: TVkConversation;
 begin
@@ -549,7 +549,7 @@ end;
 destructor TVkConversations.Destroy;
 var
   LItemsItem: TVkConversation;
-  LuserItem: TVkUser;
+  LuserItem: TVkProfile;
   LgroupItem: TVkGroup;
 begin
   for LItemsItem in FItems do
@@ -583,7 +583,7 @@ end;
 destructor TVkImportantMessages.Destroy;
 var
   LItemsItem: TVkConversation;
-  LuserItem: TVkUser;
+  LuserItem: TVkProfile;
   LgroupItem: TVkGroup;
 begin
   for LItemsItem in FConversations do

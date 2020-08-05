@@ -3,7 +3,7 @@ unit VK.Entity.Board.Comment;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.User, VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
 
 type
   TVkBoardComment = class
@@ -33,13 +33,13 @@ type
   private
     FCount: Integer;
     FItems: TArray<TVkBoardComment>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
     FPoll: TVkPoll;
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkBoardComment> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Poll: TVkPoll read FPoll write FPoll;
     constructor Create;
@@ -90,7 +90,7 @@ end;
 destructor TVkBoardComments.Destroy;
 var
   LitemsItem: TVkBoardComment;
-  User: TVkUser;
+  User: TVkProfile;
   Group: TVkGroup;
 begin
 

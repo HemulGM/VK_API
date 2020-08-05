@@ -1,4 +1,4 @@
-unit VK.Entity.User;
+unit VK.Entity.Profile;
 
 interface
 
@@ -7,15 +7,15 @@ uses
   VK.Entity.Database.Countries;
 
 type
-  TVkUser = class;
+  TVkProfile = class;
 
   TVkFriendsMutual = class
   private
     FCount: Integer;
-    FUsers: TArray<TVkUser>;
+    FUsers: TArray<TVkProfile>;
   public
     property Count: Integer read FCount write FCount;
-    property Users: TArray<TVkUser> read FUsers write FUsers;
+    property Users: TArray<TVkProfile> read FUsers write FUsers;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkFriendsMutual;
@@ -185,17 +185,17 @@ type
 
   TVkCareer = class
   private
-    FCity_id: Extended;
+    FCity_id: Integer;
     FCompany: string;
-    FCountry_id: Extended;
-    FFrom: Extended;
+    FCountry_id: Integer;
+    FFrom: Integer;
     FPosition: string;
     FUntil: Extended;
   public
-    property CityId: Extended read FCity_id write FCity_id;
+    property CityId: Integer read FCity_id write FCity_id;
     property Company: string read FCompany write FCompany;
-    property CountryId: Extended read FCountry_id write FCountry_id;
-    property From: Extended read FFrom write FFrom;
+    property CountryId: Integer read FCountry_id write FCountry_id;
+    property From: Integer read FFrom write FFrom;
     property Position: string read FPosition write FPosition;
     property UntilDate: Extended read FUntil write FUntil;
     function ToJsonString: string;
@@ -204,11 +204,11 @@ type
 
   TVkOccupation = class
   private
-    FId: Extended;
+    FId: Integer;
     FName: string;
     FType: string;
   public
-    property Id: Extended read FId write FId;
+    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     property TypeOcc: string read FType write FType;
     function ToJsonString: string;
@@ -265,7 +265,7 @@ type
     class function FromJsonString(AJsonString: string): TVkUserOnlineInfo;
   end;
 
-  TVkUser = class
+  TVkProfile = class
   private
     FAbout: string;
     FActivities: string;
@@ -450,24 +450,24 @@ type
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkUser;
+    class function FromJsonString(AJsonString: string): TVkProfile;
   end;
 
-  TVkUsers = class
+  TVkProfiles = class
   private
-    FItems: TArray<TVkUser>;
+    FItems: TArray<TVkProfile>;
     FCount: Integer;
     FSaveObjects: Boolean;
     procedure SetSaveObjects(const Value: Boolean);
   public
-    property Items: TArray<TVkUser> read FItems write FItems;
+    property Items: TArray<TVkProfile> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Users: TVkUsers);
+    procedure Append(Users: TVkProfiles);
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkUsers;
+    class function FromJsonString(AJsonString: string): TVkProfiles;
   end;
 
   TVkFriendsList = class
@@ -493,14 +493,14 @@ type
     class function FromJsonString(AJsonString: string): TVkFriendsLists;
   end;
 
-function FindUser(Id: Integer; List: TArray<TVkUser>): Integer;
+function FindUser(Id: Integer; List: TArray<TVkProfile>): Integer;
 
 implementation
 
 uses
   VK.CommonUtils;
 
-function FindUser(Id: Integer; List: TArray<TVkUser>): Integer;
+function FindUser(Id: Integer; List: TArray<TVkProfile>): Integer;
 var
   i: Integer;
 begin
@@ -636,7 +636,7 @@ end;
 
 {TVkUser}
 
-constructor TVkUser.Create;
+constructor TVkProfile.Create;
 begin
   inherited;
   FCountry := TVkCountry.Create();
@@ -650,7 +650,7 @@ begin
   FOnline_info := TVkUserOnlineInfo.Create;
 end;
 
-destructor TVkUser.Destroy;
+destructor TVkProfile.Destroy;
 var
   LcareerItem: TVkCareer;
   LmilitaryItem: TVkMilitary;
@@ -682,46 +682,46 @@ begin
   inherited;
 end;
 
-function TVkUser.ToJsonString: string;
+function TVkProfile.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TVkUser.FromJsonString(AJsonString: string): TVkUser;
+class function TVkProfile.FromJsonString(AJsonString: string): TVkProfile;
 begin
-  result := TJson.JsonToObject<TVkUser>(AJsonString)
+  result := TJson.JsonToObject<TVkProfile>(AJsonString)
 end;
 
-function TVkUser.FGetFullName: string;
+function TVkProfile.FGetFullName: string;
 begin
   Result := FFirst_name + ' ' + FLast_name;
 end;
 
-function TVkUser.GetRefer: string;
+function TVkProfile.GetRefer: string;
 begin
   Result := '[' + Domain + '|' + FirstName + ']';
 end;
 
-{TVkUsers}
+{TVkProfiles}
 
-procedure TVkUsers.Append(Users: TVkUsers);
+procedure TVkProfiles.Append(Users: TVkProfiles);
 var
   OldLen: Integer;
 begin
   OldLen := Length(Items);
   SetLength(FItems, OldLen + Length(Users.Items));
-  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkUser));
+  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkProfile));
 end;
 
-constructor TVkUsers.Create;
+constructor TVkProfiles.Create;
 begin
   inherited;
   FSaveObjects := False;
 end;
 
-destructor TVkUsers.Destroy;
+destructor TVkProfiles.Destroy;
 var
-  LItemsItem: TVkUser;
+  LItemsItem: TVkProfile;
 begin
   if not FSaveObjects then
   begin
@@ -732,17 +732,17 @@ begin
   inherited;
 end;
 
-function TVkUsers.ToJsonString: string;
+function TVkProfiles.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TVkUsers.FromJsonString(AJsonString: string): TVkUsers;
+class function TVkProfiles.FromJsonString(AJsonString: string): TVkProfiles;
 begin
-  result := TJson.JsonToObject<TVkUsers>(AJsonString);
+  result := TJson.JsonToObject<TVkProfiles>(AJsonString);
 end;
 
-procedure TVkUsers.SetSaveObjects(const Value: Boolean);
+procedure TVkProfiles.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
 end;
@@ -851,7 +851,7 @@ end;
 
 destructor TVkFriendsMutual.Destroy;
 var
-  Item: TVkUser;
+  Item: TVkProfile;
 begin
   for Item in FUsers do
     Item.Free;

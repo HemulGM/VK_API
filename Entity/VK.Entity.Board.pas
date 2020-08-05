@@ -3,7 +3,7 @@ unit VK.Entity.Board;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.User;
+  Generics.Collections, Rest.Json, VK.Entity.Profile;
 
 type
   TVkBoardTopic = class
@@ -39,13 +39,13 @@ type
     FItems: TArray<TVkBoardTopic>;
     FDefault_order: Integer;
     FCan_add_topics: Integer;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkBoardTopic> read FItems write FItems;
     property DefaultOrder: Integer read FDefault_order write FDefault_order;
     property CanAddTopics: Integer read FCan_add_topics write FCan_add_topics;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkBoardTopics;
@@ -83,7 +83,7 @@ end;
 destructor TVkBoardTopics.Destroy;
 var
   LitemsItem: TVkBoardTopic;
-  User: TVkUser;
+  User: TVkProfile;
 begin
 
   for User in FProfiles do

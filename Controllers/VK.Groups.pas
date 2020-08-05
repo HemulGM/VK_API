@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller, VK.Types,
-  VK.Entity.User, System.Classes, VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
+  VK.Entity.Profile, System.Classes, VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
   VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer, VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
   VK.Entity.Group.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings, VK.Entity.Group.TokenPermissions;
 
@@ -393,11 +393,11 @@ type
     /// <summary>
     /// ¬озвращает список участников сообщества.
     /// </summary>
-    function GetMembers(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function GetMembers(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// ¬озвращает список участников сообщества.
     /// </summary>
-    function GetMembers(var Items: TVkUsers; Params: TVkParamsGroupsGetMembers): Boolean; overload;
+    function GetMembers(var Items: TVkProfiles; Params: TVkParamsGroupsGetMembers): Boolean; overload;
     /// <summary>
     /// ¬озвращает список id участников сообщества.
     /// </summary>
@@ -577,7 +577,7 @@ type
     /// <summary>
     ///  ¬озвращает список пользователей, которые были приглашены в группу.
     /// </summary>
-    function GetInvitedUsers(var Items: TVkUsers; Params: TVkParamsGroupsGetInvitedUsers): Boolean;
+    function GetInvitedUsers(var Items: TVkProfiles; Params: TVkParamsGroupsGetInvitedUsers): Boolean;
     /// <summary>
     ///  ƒанный метод возвращает список приглашений в сообщества и встречи текущего пользовател€.
     /// </summary>
@@ -594,7 +594,7 @@ type
     /// <summary>
     ///  ¬озвращает список за€вок на вступление в сообщество.
     /// </summary>
-    function GetRequests(var Items: TVkUsers; GroupId: Integer; Fields: TVkUserFields = [ufDomain]; Count: Integer = 20;
+    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkUserFields = [ufDomain]; Count: Integer = 20;
       Offset: Integer = 0): Boolean; overload;
     /// <summary>
     ///  ¬озвращает список за€вок на вступление в сообщество.
@@ -1041,7 +1041,7 @@ begin
   end;
 end;
 
-function TGroupsController.GetInvitedUsers(var Items: TVkUsers; Params: TVkParamsGroupsGetInvitedUsers): Boolean;
+function TGroupsController.GetInvitedUsers(var Items: TVkProfiles; Params: TVkParamsGroupsGetInvitedUsers): Boolean;
 begin
   with Handler.Execute('groups.getInvitedUsers', Params.List) do
   begin
@@ -1049,7 +1049,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(Response);
+        Items := TVkProfiles.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -1106,14 +1106,14 @@ begin
   end;
 end;
 
-function TGroupsController.GetMembers(var Items: TVkUsers; Params: TVkParamsGroupsGetMembers): Boolean;
+function TGroupsController.GetMembers(var Items: TVkProfiles; Params: TVkParamsGroupsGetMembers): Boolean;
 begin
   if not Params.List.KeyExists('fields') then
     Params.Fields([mfDomain]);
   Result := GetMembers(Items, Params.List);
 end;
 
-function TGroupsController.GetMembers(var Items: TVkUsers; Params: TParams): Boolean;
+function TGroupsController.GetMembers(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   with Handler.Execute('groups.getMembers', Params) do
   begin
@@ -1121,7 +1121,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(Response);
+        Items := TVkProfiles.FromJsonString(Response);
       except
         Result := False;
       end;
@@ -1162,7 +1162,7 @@ begin
   end;
 end;
 
-function TGroupsController.GetRequests(var Items: TVkUsers; GroupId: Integer; Fields: TVkUserFields; Count, Offset:
+function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkUserFields; Count, Offset:
   Integer): Boolean;
 var
   Params: TParams;
@@ -1179,7 +1179,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(Response);
+        Items := TVkProfiles.FromJsonString(Response);
       except
         Result := False;
       end;

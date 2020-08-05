@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Entity.Keyboard, VK.Entity.ClientInfo,
-  VK.Entity.User, VK.Entity.Group;
+  VK.Entity.Profile, VK.Entity.Group;
 
 type
   TVkMessageSendResponse = class
@@ -133,12 +133,12 @@ type
     FItems: TArray<TVkMessage>;
     FCount: Integer;
     FSaveObjects: Boolean;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
     procedure SetSaveObjects(const Value: Boolean);
   public
     property Items: TArray<TVkMessage> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
@@ -153,12 +153,12 @@ type
   private
     FHistory: TArray<TArray<Integer>>;
     FMessages: TVkMessages;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FNew_pts: Integer;
   public
     property History: TArray<TArray<Integer>> read FHistory write FHistory;
     property Messages: TVkMessages read FMessages write FMessages;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property NewPts: Integer read FNew_pts write FNew_pts;
     constructor Create;
     destructor Destroy; override;
@@ -340,7 +340,7 @@ destructor TVkMessages.Destroy;
 var
   LItemsItem: TVkMessage;
   LGroupItem: TVkGroup;
-  LUserItem: TVkUser;
+  LUserItem: TVkProfile;
 begin
   if not FSaveObjects then
   begin
@@ -386,7 +386,7 @@ end;
 
 destructor TVkLongPollHistory.Destroy;
 var
-  LUserItem: TVkUser;
+  LUserItem: TVkProfile;
 begin
   for LUserItem in FProfiles do
     LUserItem.Free;

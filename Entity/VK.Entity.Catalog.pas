@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Group,
-  VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.User;
+  VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Profile;
 
 type
   TVkCatalogIcon = class
@@ -158,14 +158,14 @@ type
     FGroups: TArray<TVkGroup>;
     FPlaceholders: TArray<TVkCatalogPlaceholder>;
     FPlaylists: TArray<TVkAudioPlaylist>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
   public
     property Audios: TArray<TVkAudio> read FAudios write FAudios;
     property Catalog: TVkCatalogItem read FCatalog write FCatalog;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Placeholders: TArray<TVkCatalogPlaceholder> read FPlaceholders write FPlaceholders;
     property Playlists: TArray<TVkAudioPlaylist> read FPlaylists write FPlaylists;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -359,7 +359,7 @@ end;
 
 destructor TVkCatalog.Destroy;
 var
-  LprofilesItem: TVkUser;
+  LprofilesItem: TVkProfile;
   LgroupsItem: TVkGroup;
   LaudiosItem: TVkAudio;
   LplaceholdersItem: TVkCatalogPlaceholder;

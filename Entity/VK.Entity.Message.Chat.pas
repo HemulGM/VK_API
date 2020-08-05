@@ -3,12 +3,12 @@ unit VK.Entity.Message.Chat;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.User, VK.Entity.Group, VK.Entity.Common, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Types;
 
 type
   TVkChat = class
   private
-    FAdmin_id: Extended;
+    FAdmin_id: Integer;
     FId: Extended;
     FIs_default_photo: Boolean;
     FMembers_count: Extended;
@@ -17,9 +17,9 @@ type
     FPhoto_50: string;
     FTitle: string;
     FType: string;
-    FUsers: TArray<TVkUser>;
+    FUsers: TArray<TVkProfile>;
   public
-    property AdminId: Extended read FAdmin_id write FAdmin_id;
+    property AdminId: Integer read FAdmin_id write FAdmin_id;
     property Id: Extended read FId write FId;
     property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
     property MembersCount: Extended read FMembers_count write FMembers_count;
@@ -28,7 +28,7 @@ type
     property Photo50: string read FPhoto_50 write FPhoto_50;
     property Title: string read FTitle write FTitle;
     property&Type: string read FType write FType;
-    property Users: TArray<TVkUser> read FUsers write FUsers;
+    property Users: TArray<TVkProfile> read FUsers write FUsers;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkChat;
@@ -92,12 +92,12 @@ type
   TVkChatPreview = class
   private
     FChat: TVkChatPreviewInfo;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
     FEmails: TArray<TVkEmail>;
   public
     property Preview: TVkChatPreviewInfo read FChat write FChat;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Emails: TArray<TVkEmail> read FEmails write FEmails;
     destructor Destroy; override;
@@ -116,7 +116,7 @@ end;
 
 destructor TVkChat.Destroy;
 var
-  LItemsItem: TVkUser;
+  LItemsItem: TVkProfile;
 begin
   for LItemsItem in FUsers do
     LItemsItem.Free;
@@ -201,7 +201,7 @@ end;
 
 destructor TVkChatPreview.Destroy;
 var
-  User: TVkUser;
+  User: TVkProfile;
   Group: TVkGroup;
   Email: TVkEmail;
 begin

@@ -316,7 +316,7 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.User;
+  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile;
 
 { TCustomVK }
 
@@ -567,7 +567,7 @@ end;
 
 function TCustomVK.LoadUserInfo: Boolean;
 var
-  User: TVkUser;
+  User: TVkProfile;
 begin
   Result := Users.Get(User);
   if Result then

@@ -3,7 +3,7 @@ unit VK.Entity.Notifications;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.User, VK.Entity.Group, VK.Entity.Photo;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Photo;
 
 type
   TVkNotificationAction = class
@@ -106,7 +106,7 @@ type
     FLast_viewed: Integer;
     FNext_from: string;
     FPhotos: TArray<TVkPhoto>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FTtl: Integer;
   public
     property Count: Integer read FCount write FCount;
@@ -115,7 +115,7 @@ type
     property LastViewed: Integer read FLast_viewed write FLast_viewed;
     property NextFrom: string read FNext_from write FNext_from;
     property Photos: TArray<TVkPhoto> read FPhotos write FPhotos;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Ttl: Integer read FTtl write FTtl;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -288,7 +288,7 @@ end;
 destructor TVkNotifications.Destroy;
 var
   LitemsItem: TVkNotification;
-  LprofilesItem: TVkUser;
+  LprofilesItem: TVkProfile;
   LgroupsItem: TVkGroup;
   LphotosItem: TVkPhoto;
 begin

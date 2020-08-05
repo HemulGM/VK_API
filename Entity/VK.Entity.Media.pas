@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
   VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
   VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.User, VK.Entity.Group, VK.Entity.Call,
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
   VK.Entity.Market.Album;
 
 type
@@ -94,12 +94,12 @@ type
   private
     FItems: TArray<TVkAttachmentHistoryItem>;
     FNext_from: string;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
   public
     property Items: TArray<TVkAttachmentHistoryItem> read FItems write FItems;
     property NextFrom: string read FNext_from write FNext_from;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -182,7 +182,7 @@ type
   private
     FCount: Integer;
     FItems: TArray<TVkComment>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
     FCurrent_level_count: Integer;
     FCan_post: Boolean;
@@ -191,7 +191,7 @@ type
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkComment> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     //
     property CurrentLevelCount: Integer read FCurrent_level_count write FCurrent_level_count;
@@ -272,12 +272,12 @@ type
   private
     FCount: Integer;
     FItems: TArray<TVkPost>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkPost> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
     function ToJsonString: string;

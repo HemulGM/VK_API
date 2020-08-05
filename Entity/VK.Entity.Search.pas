@@ -3,20 +3,20 @@ unit VK.Entity.Search;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.User, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group;
 
 type
   TVkSearchItem = class
   private
     FDescription: string;
-    FProfile: TVkUser;
+    FProfile: TVkProfile;
     FSection: string;
     FType: string;
     FGroup: TVkGroup;
     FGlobal: Boolean;
   public
     property Description: string read FDescription write FDescription;
-    property Profile: TVkUser read FProfile write FProfile;
+    property Profile: TVkProfile read FProfile write FProfile;
     property Group: TVkGroup read FGroup write FGroup;
     /// <summary>
     /// Возможные значения для сообществ:

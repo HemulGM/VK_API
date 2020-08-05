@@ -3,7 +3,7 @@ unit VK.Likes;
 interface
 
 uses
-  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.User, System.JSON;
+  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.Profile, System.JSON;
 
 type
   TVkLikesParams = record
@@ -24,11 +24,11 @@ type
     /// <summary>
     /// Получает список пользователей, которые добавили заданный объект в свой список Мне нравится
     /// </summary>
-    function GetList(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function GetList(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// Получает список пользователей, которые добавили заданный объект в свой список Мне нравится
     /// </summary>
-    function GetList(var Items: TVkUsers; Params: TVkLikesParams): Boolean; overload;
+    function GetList(var Items: TVkProfiles; Params: TVkLikesParams): Boolean; overload;
     /// <summary>
     /// Получает список идентификаторов пользователей, которые добавили заданный объект в свой список Мне нравится
     /// </summary>
@@ -68,7 +68,7 @@ begin
     Result := Success and TryStrToInt(Response, Items);
 end;
 
-function TLikesController.GetList(var Items: TVkUsers; Params: TVkLikesParams): Boolean;
+function TLikesController.GetList(var Items: TVkProfiles; Params: TVkLikesParams): Boolean;
 begin
   Result := GetList(Items, Params.List);
 end;
@@ -107,7 +107,7 @@ begin
   end;
 end;
 
-function TLikesController.GetList(var Items: TVkUsers; Params: TParams): Boolean;
+function TLikesController.GetList(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   Params.Add('extended', True);
   with Handler.Execute('likes.getList', Params) do
@@ -116,7 +116,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkUsers.FromJsonString(Response);
+        Items := TVkProfiles.FromJsonString(Response);
       except
         Result := False;
       end;

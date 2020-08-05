@@ -3,7 +3,7 @@ unit VK.Entity.Poll;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.User, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group;
 
 type
   TVkPollFriends = class
@@ -94,7 +94,7 @@ type
     FPhoto: TVkPhoto;
     FFriends: TArray<TVkPollFriends>;
     FDisable_unvote: Boolean;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
   public
     property Id: Integer read FId write FId;
@@ -119,7 +119,7 @@ type
     property Friends: TArray<TVkPollFriends> read FFriends write FFriends;
     property DisableUnvote: Boolean read FDisable_unvote write FDisable_unvote;
     //Extended
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     //
     constructor Create;
@@ -131,10 +131,10 @@ type
   TVkPollVoters = class
   private
     FAnswer_id: Integer;
-    FUsers: TVkUsers;
+    FUsers: TVkProfiles;
   public
     property AnswerId: Integer read FAnswer_id write FAnswer_id;
-    property Users: TVkUsers read FUsers write FUsers;
+    property Users: TVkProfiles read FUsers write FUsers;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPollVoters;
   end;

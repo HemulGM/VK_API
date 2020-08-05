@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
   VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
   VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.User, VK.Entity.Group, VK.Entity.Call, VK.Entity.Media;
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call, VK.Entity.Media;
 
 type
   TVkNewsCopyright = class
@@ -104,14 +104,14 @@ type
   TVkNews = class
   private
     FItems: TArray<TVkNewsItem>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
     FNext_from: string;
     FCount: Integer;
     FTotal_count: Integer;
   public
     property Items: TArray<TVkNewsItem> read FItems write FItems;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property NextFrom: string read FNext_from write FNext_from;
     property Count: Integer read FCount write FCount;
@@ -135,10 +135,10 @@ type
   TVkNewsfeedBanned = class
   private
     FGroups: TArray<TVkGroup>;
-    FMembers: TArray<TVkUser>;
+    FMembers: TArray<TVkProfile>;
   public
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    property Members: TArray<TVkUser> read FMembers write FMembers;
+    property Members: TArray<TVkProfile> read FMembers write FMembers;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkNewsfeedBanned;

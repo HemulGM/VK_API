@@ -3,7 +3,7 @@ unit VK.Entity.Podcast;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Podcast.Episode, VK.Entity.User, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Podcast.Episode, VK.Entity.Profile, VK.Entity.Group;
 
 type
   TVkPodcast = class
@@ -33,13 +33,13 @@ type
   private
     FPodcasts: TArray<TVkPodcast>;
     FEpisodes: TArray<TVkPodcastsEpisode>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
     FGroup: TArray<TVkGroup>;
   public
     property Podcasts: TArray<TVkPodcast> read FPodcasts write FPodcasts;
     property Episodes: TArray<TVkPodcastsEpisode> read FEpisodes write FEpisodes;
     property Group: TArray<TVkGroup> read FGroup write FGroup;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPodcastSearch;

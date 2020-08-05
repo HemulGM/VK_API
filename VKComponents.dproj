@@ -168,7 +168,7 @@
         <DCCReference Include="Entity\VK.Entity.PushSettings.pas"/>
         <DCCReference Include="Entity\VK.Entity.Status.pas"/>
         <DCCReference Include="Entity\VK.Entity.Sticker.pas"/>
-        <DCCReference Include="Entity\VK.Entity.User.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Profile.pas"/>
         <DCCReference Include="Entity\VK.Entity.Video.pas"/>
         <DCCReference Include="Controllers\VK.Account.pas"/>
         <DCCReference Include="Controllers\VK.Audio.pas"/>

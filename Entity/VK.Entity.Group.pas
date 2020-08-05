@@ -3,7 +3,7 @@ unit VK.Entity.Group;
 interface
 
 uses
-  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market, VK.Entity.User,
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market, VK.Entity.Profile,
   VK.Entity.Group.Counters, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
 
 type
@@ -448,11 +448,11 @@ type
     FItems: TArray<TVkGroup>;
     FCount: Integer;
     FGroups: TArray<TVkGroup>;
-    FProfiles: TArray<TVkUser>;
+    FProfiles: TArray<TVkProfile>;
   public
     property Items: TArray<TVkGroup> read FItems write FItems;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    property Profiles: TArray<TVkUser> read FProfiles write FProfiles;
+    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -769,7 +769,7 @@ end;
 destructor TVkInvitesGroups.Destroy;
 var
   LItemsItem: TVkGroup;
-  LItemsUser: TVkUser;
+  LItemsUser: TVkProfile;
 begin
   for LItemsItem in FItems do
     LItemsItem.Free;

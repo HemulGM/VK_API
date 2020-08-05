@@ -3,7 +3,7 @@ unit VK.Entity.Group.Ban;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.User, VK.Entity.Group, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Types;
 
 type
   TVkGroupBanInfo = class
@@ -31,12 +31,12 @@ type
   private
     FBan_info: TVkGroupBanInfo;
     FGroup: TVkGroup;
-    FProfile: TVkUser;
+    FProfile: TVkProfile;
     FType: string;
   public
     property BanInfo: TVkGroupBanInfo read FBan_info write FBan_info;
     property Group: TVkGroup read FGroup write FGroup;
-    property Profile: TVkUser read FProfile write FProfile;
+    property Profile: TVkProfile read FProfile write FProfile;
     property&Type: string read FType write FType;
     constructor Create;
     destructor Destroy; override;
@@ -89,7 +89,7 @@ end;
 constructor TVkGroupBan.Create;
 begin
   inherited;
-  FProfile := TVkUser.Create();
+  FProfile := TVkProfile.Create();
   FGroup := TVkGroup.Create();
   FBan_info := TVkGroupBanInfo.Create();
 end;

@@ -3,7 +3,7 @@ unit VK.Users;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.User,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
   VK.Entity.Subscription;
 
 type
@@ -75,33 +75,33 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkUsers; UserIds: TIds; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean;
+    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean;
       overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkUser; UserId: Integer; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean;
+    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean;
       overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkUser; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
+    function Get(var User: TVkProfile; Fields: TVkUserFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function Get(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkUsers; Params: TVkParamsUsersGet): Boolean; overload;
+    function Get(var Items: TVkProfiles; Params: TVkParamsUsersGet): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов пользователей, которые являются подписчиками пользователя.
     /// </summary>
-    function GetFollowers(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function GetFollowers(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов пользователей, которые являются подписчиками пользователя.
     /// </summary>
-    function GetFollowers(var Items: TVkUsers; Params: TVkParamsUsersGetFollowers): Boolean; overload;
+    function GetFollowers(var Items: TVkProfiles; Params: TVkParamsUsersGetFollowers): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов пользователей и публичных страниц, которые входят в список подписок пользователя.
     /// </summary>
@@ -117,11 +117,11 @@ type
     /// <summary>
     /// Возвращает список пользователей в соответствии с заданным критерием поиска.
     /// </summary>
-    function Search(var Items: TVkUsers; Params: TParams): Boolean; overload;
+    function Search(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
     /// Возвращает список пользователей в соответствии с заданным критерием поиска.
     /// </summary>
-    function Search(var Items: TVkUsers; Params: TVkParamsUsersSearch): Boolean; overload;
+    function Search(var Items: TVkProfiles; Params: TVkParamsUsersSearch): Boolean; overload;
   end;
 
 implementation
@@ -131,10 +131,10 @@ uses
 
 { TUsersController }
 
-function TUsersController.Get(var User: TVkUser; UserId: Integer; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var User: TVkProfile; UserId: Integer; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
 var
   Params: TVkParamsUsersGet;
-  Users: TVkUsers;
+  Users: TVkProfiles;
 begin
   if UserId <> 0 then
     Params.UserIds([UserId]);
@@ -147,7 +147,7 @@ begin
     if Result then
     begin
       try
-        Users := TVkUsers.FromJsonString(AppendItemsTag(Response));
+        Users := TVkProfiles.FromJsonString(AppendItemsTag(Response));
         if Length(Users.Items) > 0 then
         begin
           Users.SaveObjects := True;
@@ -163,7 +163,7 @@ begin
   end;
 end;
 
-function TUsersController.Get(var Items: TVkUsers; UserIds: TIds; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
 var
   Params: TParams;
 begin
@@ -175,31 +175,31 @@ begin
   Result := Get(Items, Params);
 end;
 
-function TUsersController.Get(var Items: TVkUsers; Params: TParams): Boolean;
+function TUsersController.Get(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   with Handler.Execute('users.get', Params) do
   begin
     Result := Success;
     if Result then
     try
-      Items := TVkUsers.FromJsonString(AppendItemsTag(Response));
+      Items := TVkProfiles.FromJsonString(AppendItemsTag(Response));
     except
       Result := False;
     end;
   end;
 end;
 
-function TUsersController.Get(var Items: TVkUsers; Params: TVkParamsUsersGet): Boolean;
+function TUsersController.Get(var Items: TVkProfiles; Params: TVkParamsUsersGet): Boolean;
 begin
   Result := Get(Items, Params.List);
 end;
 
-function TUsersController.Get(var User: TVkUser; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var User: TVkProfile; Fields: TVkUserFields; NameCase: TVkNameCase): Boolean;
 begin
   Result := Get(User, 0, Fields, NameCase);
 end;
 
-function TUsersController.GetFollowers(var Items: TVkUsers; Params: TVkParamsUsersGetFollowers): Boolean;
+function TUsersController.GetFollowers(var Items: TVkProfiles; Params: TVkParamsUsersGetFollowers): Boolean;
 begin
   Result := GetFollowers(Items, Params.List);
 end;
@@ -221,19 +221,19 @@ begin
     Result := Success and (Response = '1');
 end;
 
-function TUsersController.Search(var Items: TVkUsers; Params: TVkParamsUsersSearch): Boolean;
+function TUsersController.Search(var Items: TVkProfiles; Params: TVkParamsUsersSearch): Boolean;
 begin
   Result := Search(Items, Params.List);
 end;
 
-function TUsersController.Search(var Items: TVkUsers; Params: TParams): Boolean;
+function TUsersController.Search(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   with Handler.Execute('users.search', Params) do
   begin
     Result := Success;
     if Result then
     try
-      Items := TVkUsers.FromJsonString(Response);
+      Items := TVkProfiles.FromJsonString(Response);
     except
       Result := False;
     end;
@@ -254,14 +254,14 @@ begin
   end;
 end;
 
-function TUsersController.GetFollowers(var Items: TVkUsers; Params: TParams): Boolean;
+function TUsersController.GetFollowers(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   with Handler.Execute('users.getFollowers', Params) do
   begin
     Result := Success;
     if Result then
     try
-      Items := TVkUsers.FromJsonString(Response);
+      Items := TVkProfiles.FromJsonString(Response);
     except
       Result := False;
     end;
