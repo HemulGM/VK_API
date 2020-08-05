@@ -29,6 +29,7 @@ object FormOAuth2: TFormOAuth2
     TabOrder = 0
     OnNavigateComplete2 = BrowserNavigateComplete2
     OnFileDownload = BrowserFileDownload
+    OnNavigateError = BrowserNavigateError
     ExplicitTop = 30
     ExplicitWidth = 742
     ExplicitHeight = 478

@@ -251,6 +251,13 @@
         <DCCReference Include="Entity\VK.Entity.Database.Regions.pas"/>
         <DCCReference Include="Entity\VK.Entity.Database.Schools.pas"/>
         <DCCReference Include="Entity\VK.Entity.Database.Universities.pas"/>
+        <DCCReference Include="Controllers\VK.Storage.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Storage.pas"/>
+        <DCCReference Include="Controllers\VK.DownloadedGames.pas"/>
+        <DCCReference Include="Controllers\VK.Secure.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Secure.pas"/>
+        <DCCReference Include="Controllers\VK.Stats.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Stats.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

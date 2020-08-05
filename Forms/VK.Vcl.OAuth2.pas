@@ -18,6 +18,8 @@ type
     procedure BrowserNavigateComplete2(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BrowserFileDownload(ASender: TObject; ActiveDocument: WordBool; var Cancel: WordBool);
+    procedure BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame, StatusCode: OleVariant;
+      var Cancel: WordBool);
   private
     FLastTitle: string;
     FProxyUserName: string;
@@ -29,11 +31,13 @@ type
     FTokenExpiry: Int64;
     FChangePasswordHash: string;
     FProc: TAuthResult;
+    FErrorCode: Integer;
     procedure SetIsError(const Value: Boolean);
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: Boolean);
     procedure SetToken(const Value: string);
     procedure SetTokenExpiry(const Value: Int64);
     procedure SetChangePasswordHash(const Value: string);
+    procedure SetErrorCode(const Value: Integer);
   public
     procedure ShowWithURL(const AURL: string; Modal: Boolean); overload;
     procedure ShowWithURL(AParent: TWinControl; const AURL: string; Modal: Boolean); overload;
@@ -41,6 +45,7 @@ type
     property LastTitle: string read FLastTitle;
     property LastURL: string read FLastURL;
     property IsError: Boolean read FIsError write SetIsError;
+    property ErrorCode: Integer read FErrorCode write SetErrorCode;
     property Token: string read FToken write SetToken;
     property TokenExpiry: Int64 read FTokenExpiry write SetTokenExpiry;
     property ChangePasswordHash: string read FChangePasswordHash write SetChangePasswordHash;
@@ -73,6 +78,11 @@ end;
 procedure TFormOAuth2.SetChangePasswordHash(const Value: string);
 begin
   FChangePasswordHash := Value;
+end;
+
+procedure TFormOAuth2.SetErrorCode(const Value: Integer);
+begin
+  FErrorCode := Value;
 end;
 
 procedure TFormOAuth2.SetIsError(const Value: Boolean);
@@ -154,7 +164,7 @@ end;
 
 procedure TFormOAuth2.BrowserFileDownload(ASender: TObject; ActiveDocument: WordBool; var Cancel: WordBool);
 begin
-  Cancel := False;
+  Cancel := False; //not ActiveDocument;
 end;
 
 procedure TFormOAuth2.BrowserNavigateComplete2(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
@@ -170,6 +180,14 @@ begin
   begin
     Close;
   end;
+end;
+
+procedure TFormOAuth2.BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame, StatusCode:
+  OleVariant; var Cancel: WordBool);
+begin
+  FIsError := True;
+  FErrorCode := StatusCode;
+  Close;
 end;
 
 procedure TFormOAuth2.FAfterRedirect(const AURL: string; var DoCloseWebView: Boolean);

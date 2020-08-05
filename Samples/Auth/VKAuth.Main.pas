@@ -73,6 +73,8 @@ type
     Button34: TButton;
     Button35: TButton;
     Button36: TButton;
+    Button37: TButton;
+    Button38: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -201,6 +203,8 @@ type
     procedure Button34Click(Sender: TObject);
     procedure Button35Click(Sender: TObject);
     procedure Button36Click(Sender: TObject);
+    procedure Button37Click(Sender: TObject);
+    procedure Button38Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -220,7 +224,7 @@ uses
   VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
   VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
   VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search, VK.Entity.Database.Regions,
-  VK.Entity.Database.Schools;
+  VK.Entity.Database.Schools, VK.Entity.Storage;
 
 {$R *.dfm}
 
@@ -762,6 +766,26 @@ begin
   end;
 end;
 
+procedure TFormMain.Button37Click(Sender: TObject);
+var
+  Value: string;
+begin
+  if VK1.Storage.Get(Value, 'name') then
+  begin
+    Memo1.Lines.Add(Value);
+  end;
+end;
+
+procedure TFormMain.Button38Click(Sender: TObject);
+var
+  Value: Integer;
+begin
+  if VK1.Secure.GetAppBalance(Value) then
+  begin
+    Memo1.Lines.Add(Value.ToString);
+  end;
+end;
+
 procedure TFormMain.ButtonGetCatalogClick(Sender: TObject);
 var
   Catalog: TVkAudioCatalog;
@@ -805,16 +829,12 @@ begin
   //VK1.SetProxy('177.22.24.246', 3128);
   VK1.Login;
 end;
- {
+{
 procedure TFormMain.VK1Auth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var
   ChangePasswordHash: string);
 begin
-  //≈сли определЄн этот метод, то авторизаци€ происходить не будет, т.к. токен уже есть
-  //ƒл€ использовани€ обычной OAuth2 авторизации достаточно убрать этот метод
-  //Ёто мой токен, эту строчку нужно убрать
   //Token := 'd45g6534f6gfsdfygvjcv6y90856j34vvvx98t3jfsd29i43j34fsdvxcvf59tjd35';
-end;
-}
+end;}
 
 procedure TFormMain.VK1Auth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var
   ChangePasswordHash: string);
@@ -828,7 +848,9 @@ begin
         FTokenExpiry := Form.TokenExpiry;
         FChangePasswordHash := Form.ChangePasswordHash;
         if not FToken.IsEmpty then
-          VK1.Login;
+          VK1.Login
+        else
+          ShowMessage('ќшибка: ' + Form.ErrorCode.ToString);
       end);
   end
   else

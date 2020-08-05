@@ -640,6 +640,7 @@ type
     Response: string;
     JSON: string;
     Error: TResponseError;
+    function ResponseWithItems: string;
     function ResponseIsTrue: Boolean;
     function ResponseIsFalse: Boolean;
     function ResponseAsInt(var Value: Integer): Boolean;
@@ -1043,7 +1044,7 @@ begin
         'Неверный API ID приложения. Найдите приложение в списке администрируемых на странице https://vk.com/apps?act=settings и укажите в запросе верный API_ID (идентификатор приложения).';
     103:
       ErrStr :=
-        'Лимит вступлений исчерпан';
+        'Превышено ограничение.';
     104:
       ErrStr :=
         'Not found';
@@ -1290,6 +1291,9 @@ begin
     1170:
       ErrStr :=
         'Слишком много списков новостей (максимум 10)';
+    1251:
+      ErrStr :=
+        'This achievement is already unlocked.';
     1260:
       ErrStr :=
         'Invalid screen name';
@@ -2016,6 +2020,11 @@ end;
 function TResponse.ResponseIsTrue: Boolean;
 begin
   Result := Response = '1';
+end;
+
+function TResponse.ResponseWithItems: string;
+begin
+  Result := AppendItemsTag(Response);
 end;
 
 function TResponse.GetJSONResponse: TJSONValue;

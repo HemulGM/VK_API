@@ -166,7 +166,14 @@ contains
   VK.Entity.Database.MetroStations in 'Entity\VK.Entity.Database.MetroStations.pas',
   VK.Entity.Database.Regions in 'Entity\VK.Entity.Database.Regions.pas',
   VK.Entity.Database.Schools in 'Entity\VK.Entity.Database.Schools.pas',
-  VK.Entity.Database.Universities in 'Entity\VK.Entity.Database.Universities.pas';
+  VK.Entity.Database.Universities in 'Entity\VK.Entity.Database.Universities.pas',
+  VK.Storage in 'Controllers\VK.Storage.pas',
+  VK.Entity.Storage in 'Entity\VK.Entity.Storage.pas',
+  VK.DownloadedGames in 'Controllers\VK.DownloadedGames.pas',
+  VK.Secure in 'Controllers\VK.Secure.pas',
+  VK.Entity.Secure in 'Entity\VK.Entity.Secure.pas',
+  VK.Stats in 'Controllers\VK.Stats.pas',
+  VK.Entity.Stats in 'Entity\VK.Entity.Stats.pas';
 
 end.
 

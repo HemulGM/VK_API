@@ -13,7 +13,7 @@ type
     /// <summary>
     /// Отменяет подписку.
     /// </summary>
-    function CancelSubscription(UserId, SubscriptionId: Integer; PendingCancel: Boolean = False): Boolean;
+    function CancelSubscription(const UserId, SubscriptionId: Integer; PendingCancel: Boolean = False): Boolean;
     /// <summary>
     /// Изменяет состояние заказа.
     /// </summary>
@@ -27,7 +27,7 @@ uses
 
 { TOrdersController }
 
-function TOrdersController.CancelSubscription(UserId, SubscriptionId: Integer; PendingCancel: Boolean): Boolean;
+function TOrdersController.CancelSubscription(const UserId, SubscriptionId: Integer; PendingCancel: Boolean): Boolean;
 begin
   with Handler.Execute('orders.cancelSubscription', [['user_id', UserId.ToString], ['subscription_id', SubscriptionId.ToString],
     ['pending_cancel', BoolToString(PendingCancel)]]) do

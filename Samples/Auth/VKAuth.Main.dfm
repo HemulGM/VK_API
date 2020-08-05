@@ -134,6 +134,24 @@ object FormMain: TFormMain
           TabOrder = 9
           OnClick = Button36Click
         end
+        object Button37: TButton
+          Left = 2
+          Top = 240
+          Width = 137
+          Height = 25
+          Caption = 'Storage.Get'
+          TabOrder = 10
+          OnClick = Button37Click
+        end
+        object Button38: TButton
+          Left = 3
+          Top = 271
+          Width = 137
+          Height = 25
+          Caption = 'Secure.GetBalance'
+          TabOrder = 11
+          OnClick = Button38Click
+        end
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
@@ -485,12 +503,14 @@ object FormMain: TFormMain
     end
   end
   object VK1: TVK
-    AppID = '6121396'
-    AppKey = 'AlVXZFMUqyrnABp8ncuU'
+    AppID = '7558990'
+    AppKey = '8tJ33CtbVjNEdir3EthW'
     EndPoint = 'https://oauth.vk.com/authorize'
-    Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
+    Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     BaseURL = 'https://api.vk.com/method'
-    ServiceKey = 'fcsdfbvdsbvfcsbdvfcasdgfhgasdfjkshadgfbdsmfgbmdsfngbmdfsgb'
+    ServiceKey = 
+      '2138779c2138779c2138779cab2153a500221382138779c7c0df21642e4abed4' +
+      'ecf7414'
     Proxy.Port = 0
     OnAuth = VK1Auth
     OnLogin = VK1Login

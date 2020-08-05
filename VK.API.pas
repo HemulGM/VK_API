@@ -7,7 +7,7 @@ uses
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
-  VK.Polls, VK.Podcasts, VK.Search, VK.Database,
+  VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -94,6 +94,10 @@ type
     FPodcasts: TPodcastsController;
     FSearch: TSearchController;
     FDatabase: TDatabaseController;
+    FStorage: TStorageController;
+    FDownloadedGames: TDownloadedGamesController;
+    FSecure: TSecureController;
+    FStats: TStatsController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
@@ -195,6 +199,10 @@ type
     /// </summary>
     property Docs: TDocController read FDoc;
     /// <summary>
+    /// Список методов секции downloadedGames.
+    /// </summary>
+    property DownloadedGames: TDownloadedGamesController read FDownloadedGames;
+    /// <summary>
     /// Методы для работы с закладками.
     /// </summary>
     property Fave: TFaveController read FFave;
@@ -259,9 +267,21 @@ type
     /// </summary>
     property Search: TSearchController read FSearch;
     /// <summary>
+    /// Методы для работы с поиском.
+    /// </summary>
+    property Secure: TSecureController read FSecure;
+    /// <summary>
     /// Методы для работы со статусом.
     /// </summary>
     property Status: TStatusController read FStatus;
+    /// <summary>
+    /// Методы для работы со статистикой.
+    /// </summary>
+    property Stats: TStatsController read FStats;
+    /// <summary>
+    /// Методы для работы с переменными в приложении.
+    /// </summary>
+    property Storage: TStorageController read FStorage;
     /// <summary>
     /// Методы для работы с данными пользователей.
     /// </summary>
@@ -404,9 +424,13 @@ begin
   FMessages := TMessagesController.Create(FHandler);
   FNewsfeed := TNewsfeedController.Create(FHandler);
   FStatus := TStatusController.Create(FHandler);
+  FStats := TStatsController.Create(FHandler);
+  FStorage := TStorageController.Create(FHandler);
   FSearch := TSearchController.Create(FHandler);
+  FSecure := TSecureController.Create(FHandler);
   FWall := TWallController.Create(FHandler);
   FDoc := TDocController.Create(FHandler);
+  FDownloadedGames := TDownloadedGamesController.Create(FHandler);
   FLikes := TLikesController.Create(FHandler);
   FAudio := TAudioController.Create(FHandler);
   FBoard := TBoardController.Create(FHandler);
@@ -452,10 +476,14 @@ begin
   FLikes.Free;
   FAudio.Free;
   FDoc.Free;
+  FDownloadedGames.Free;
   FUploader.Free;
   FWall.Free;
   FStatus.Free;
   FSearch.Free;
+  FSecure.Free;
+  FStorage.Free;
+  FStats.Free;
   FUsers.Free;
   FAccount.Free;
   FAuth.Free;
