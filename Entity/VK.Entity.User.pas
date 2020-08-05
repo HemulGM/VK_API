@@ -3,7 +3,8 @@ unit VK.Entity.User;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Photo;
+  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Database.Cities,
+  VK.Entity.Database.Countries;
 
 type
   TVkUser = class;
@@ -86,7 +87,7 @@ type
     class function FromJsonString(AJsonString: string): TVkRelative;
   end;
 
-  TVkSchool = class
+  TVkSchoolInfo = class
   private
     FCity: Integer;
     FClass: string;
@@ -108,7 +109,7 @@ type
     property YearGraduated: Integer read FYear_graduated write FYear_graduated;
     property YearTo: Integer read FYear_to write FYear_to;
     function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSchool;
+    class function FromJsonString(AJsonString: string): TVkSchoolInfo;
   end;
 
   TVkUniversities = class
@@ -328,7 +329,7 @@ type
     FRelation: Integer;
     FRelation_partner: TVkRelationPartner;
     FRelatives: TArray<TVkRelative>;
-    FSchools: TArray<TVkSchool>;
+    FSchools: TArray<TVkSchoolInfo>;
     FScreen_name: string;
     FSex: Integer;
     FSite: string;
@@ -351,6 +352,8 @@ type
     FOnline_info: TVkUserOnlineInfo;
     FPhoto_medium_rec: string;
     FPhoto: string;
+    FPhoto_big: string;
+    FPhoto_medium: string;
     function GetRefer: string;
     function FGetFullName: string;
   public
@@ -412,6 +415,8 @@ type
     property OnlineInfo: TVkUserOnlineInfo read FOnline_info write FOnline_info;
     property Personal: TVkPersonal read FPersonal write FPersonal;
     property Photo: string read FPhoto write FPhoto;
+    property PhotoBig: string read FPhoto_big write FPhoto_big;
+    property PhotoMedium: string read FPhoto_medium write FPhoto_medium;
     property Photo50: string read FPhoto_50 write FPhoto_50;
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;
@@ -425,7 +430,7 @@ type
     property Relation: Integer read FRelation write FRelation;
     property RelationPartner: TVkRelationPartner read FRelation_partner write FRelation_partner;
     property Relatives: TArray<TVkRelative> read FRelatives write FRelatives;
-    property Schools: TArray<TVkSchool> read FSchools write FSchools;
+    property Schools: TArray<TVkSchoolInfo> read FSchools write FSchools;
     property ScreenName: string read FScreen_name write FScreen_name;
     property Sex: Integer read FSex write FSex;
     property Site: string read FSite write FSite;
@@ -517,16 +522,16 @@ begin
   result := TJson.JsonToObject<TVkRelative>(AJsonString)
 end;
 
-{TVkSchool}
+{TVkSchoolInfo}
 
-function TVkSchool.ToJsonString: string;
+function TVkSchoolInfo.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;
 
-class function TVkSchool.FromJsonString(AJsonString: string): TVkSchool;
+class function TVkSchoolInfo.FromJsonString(AJsonString: string): TVkSchoolInfo;
 begin
-  result := TJson.JsonToObject<TVkSchool>(AJsonString)
+  result := TJson.JsonToObject<TVkSchoolInfo>(AJsonString)
 end;
 
 {TVkUniversities}
@@ -650,7 +655,7 @@ var
   LcareerItem: TVkCareer;
   LmilitaryItem: TVkMilitary;
   LuniversitiesItem: TVkUniversities;
-  LschoolsItem: TVkSchool;
+  LschoolsItem: TVkSchoolInfo;
   LrelativesItem: TVkRelative;
 begin
 

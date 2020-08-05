@@ -239,6 +239,18 @@
         <DCCReference Include="Controllers\VK.Podcasts.pas"/>
         <DCCReference Include="Entity\VK.Entity.Podcast.pas"/>
         <DCCReference Include="Entity\VK.Entity.Podcast.Episode.pas"/>
+        <DCCReference Include="Controllers\VK.PrettyCards.pas"/>
+        <DCCReference Include="Controllers\VK.Search.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Search.pas"/>
+        <DCCReference Include="Controllers\VK.Database.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Database.Chairs.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Database.Cities.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Database.Countries.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Database.Faculties.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Database.MetroStations.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Database.Regions.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Database.Schools.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Database.Universities.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

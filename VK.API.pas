@@ -7,7 +7,7 @@ uses
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
-  VK.Polls, VK.Podcasts,
+  VK.Polls, VK.Podcasts, VK.Search, VK.Database,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -92,6 +92,8 @@ type
     FPages: TPagesController;
     FPolls: TPollsController;
     FPodcasts: TPodcastsController;
+    FSearch: TSearchController;
+    FDatabase: TDatabaseController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
@@ -185,6 +187,10 @@ type
     /// </summary>
     property Catalog: TCatalogController read FCatalog;
     /// <summary>
+    /// Методы этой секции предоставляют доступ к базе данных учебных заведений ВКонтакте.
+    /// </summary>
+    property Database: TDatabaseController read FDatabase;
+    /// <summary>
     /// Методы для работы с документами.
     /// </summary>
     property Docs: TDocController read FDoc;
@@ -248,6 +254,10 @@ type
     /// Методы для работы с опросами.
     /// </summary>
     property Polls: TPollsController read FPolls;
+    /// <summary>
+    /// Методы для работы с поиском.
+    /// </summary>
+    property Search: TSearchController read FSearch;
     /// <summary>
     /// Методы для работы со статусом.
     /// </summary>
@@ -394,6 +404,7 @@ begin
   FMessages := TMessagesController.Create(FHandler);
   FNewsfeed := TNewsfeedController.Create(FHandler);
   FStatus := TStatusController.Create(FHandler);
+  FSearch := TSearchController.Create(FHandler);
   FWall := TWallController.Create(FHandler);
   FDoc := TDocController.Create(FHandler);
   FLikes := TLikesController.Create(FHandler);
@@ -408,6 +419,7 @@ begin
   FPages := TPagesController.Create(FHandler);
   FOrders := TOrdersController.Create(FHandler);
   FCatalog := TCatalogController.Create(FHandler);
+  FDatabase := TDatabaseController.Create(FHandler);
   FUtils := TUtilsController.Create(FHandler);
   FVideo := TVideoController.Create(FHandler);
   FMarket := TMarketController.Create(FHandler);
@@ -431,6 +443,7 @@ begin
   FOrders.Free;
   FPages.Free;
   FCatalog.Free;
+  FDatabase.Free;
   FUtils.Free;
   FNotes.Free;
   FVideo.Free;
@@ -442,6 +455,7 @@ begin
   FUploader.Free;
   FWall.Free;
   FStatus.Free;
+  FSearch.Free;
   FUsers.Free;
   FAccount.Free;
   FAuth.Free;

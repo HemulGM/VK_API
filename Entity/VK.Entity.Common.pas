@@ -255,17 +255,6 @@ type
     class function FromJsonString(AJsonString: string): TVkRelationRequests;
   end;
 
-  TVkCountry = class
-  private
-    FId: Integer;
-    FTitle: string;
-  public
-    property Id: Integer read FId write FId;
-    property Title: string read FTitle write FTitle;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCountry;
-  end;
-
   TVkEmail = class
   private
     FId: Integer;
@@ -315,17 +304,6 @@ type
     property Longitude: Extended read FLongitude write FLongitude;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCoordinates;
-  end;
-
-  TVkCity = class
-  private
-    FId: Integer;
-    FTitle: string;
-  public
-    property Id: Integer read FId write FId;
-    property Title: string read FTitle write FTitle;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCity;
   end;
 
   TVkGeo = class
@@ -393,18 +371,6 @@ implementation
 
 uses
   System.SysUtils, VK.CommonUtils;
-
-{TVkCountry}
-
-function TVkCountry.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCountry.FromJsonString(AJsonString: string): TVkCountry;
-begin
-  result := TJson.JsonToObject<TVkCountry>(AJsonString)
-end;
 
 {TVkRelationRequests}
 
@@ -500,18 +466,6 @@ end;
 class function TVkLikesInfo.FromJsonString(AJsonString: string): TVkLikesInfo;
 begin
   result := TJson.JsonToObject<TVkLikesInfo>(AJsonString)
-end;
-
-{TVkCity}
-
-function TVkCity.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCity.FromJsonString(AJsonString: string): TVkCity;
-begin
-  result := TJson.JsonToObject<TVkCity>(AJsonString)
 end;
 
 {TVkSizes}

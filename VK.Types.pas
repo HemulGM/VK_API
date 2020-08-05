@@ -315,34 +315,14 @@ type
     function ToString: string; inline;
   end;
 
-  TVkFollowerField = (flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50,
-    flPhoto100, flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain,
-    flHasMobile, flContacts, flSite, flEducation, flUniversities, flSchools, flStatus, flLastSeen, flFollowersCount,
-    flCommonCount, flOccupation, flNickName, flRelatives, flRelation, flPersonal, flConnections, flExports,
-    flWallComments, flActivities, flInterests, flMusic, flMovies, flTV, flBooks, flGames, flAbout, flQuotes, flCanPost,
-    flCanSeeAllPosts, flCanSeeAudio, flCanWritePrivateMessage, flCanSendFriendRequest, flIsFavorite, flIsHiddenFromFeed,
-    flTimeZone, flScreenName, flMaidenName, flCropPhoto, flIsFriend, flFriendStatus, flCareer, flMilitary, flBlacklisted,
-    flBlacklistedByMe);
-
-  TVkFollowerFieldHelper = record helper for TVkFollowerField
-    function ToString: string; inline;
-  end;
-
-  TVkFollowerFields = set of TVkFollowerField;
-
-  TVkFollowerFieldsHelper = record helper for TVkFollowerFields
-    function ToString: string; inline;
-    class function All: TVkFollowerFields; static; inline;
-  end;
-
   TVkUserField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
-    ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile,
-    ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount,
-    ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests,
-    ufMusic, ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio,
-    ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName,
-    ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe,
-    ufCanBeInvitedGroup);
+    ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufPhotoBig, ufPhotoMedium,
+    ufOnline, ufLists, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus,
+    usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal,
+    ufConnections, ufExports, ufWallComments, ufActivities, ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames,
+    ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest,
+    ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus,
+    ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
 
   TVkUserFieldHelper = record helper for TVkUserField
     function ToString: string; inline;
@@ -371,21 +351,6 @@ type
   public
     function ToString: string; inline;
     class function All: TVkGroupMemberFields; static; inline;
-  end;
-
-  TVkFriendField = (ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100,
-    ffPhoto200, ffHasMobile, ffContacts, ffEducation, ffOnline, ffRelation, ffLastSeen, ffStatus,
-    ffCanWritePrivateMessage, ffCanSeeAllPosts, ffCanPost, ffUniversities, ffCanSeeAudio);
-
-  TVkFriendFieldHelper = record helper for TVkFriendField
-    function ToString: string; inline;
-  end;
-
-  TVkFriendFields = set of TVkFriendField;
-
-  TVkFriendFieldsHelper = record helper for TVkFriendFields
-    function ToString: string; inline;
-    class function All: TVkFriendFields; static; inline;
   end;
 
   TVkGroupField = (gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate,
@@ -784,6 +749,7 @@ type
 
   TVkPermissionsHelper = record helper for TVkPermissions
     function ToString: string; overload; inline;
+    procedure Include(Value: TVkPermission); inline;
   end;
 
   TOnLogin = procedure(Sender: TObject) of object;
@@ -885,31 +851,18 @@ var
     'docs', 'groups', 'notifications', 'stats', 'email', 'market', 'app_widget', 'manage');
   VkUserField: array[TVkUserField] of string = (
     'photo_id', 'verified', 'sex', 'bdate', 'city', 'country', 'home_town', 'has_photo', 'photo_50',
-    'photo_100', 'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig',
-    'online', 'domain', 'has_mobile', 'contacts', 'site', 'education', 'universities', 'schools',
+    'photo_100', 'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig', 'photo_big', 'photo_medium',
+    'online', 'lists', 'domain', 'has_mobile', 'contacts', 'site', 'education', 'universities', 'schools',
     'status', 'last_seen', 'followers_count', 'common_count', 'occupation', 'nickname',
-    'relatives', 'relation', 'personal', 'connections', 'exports', 'activities', 'interests',
+    'relatives', 'relation', 'personal', 'connections', 'exports', 'wall_comments', 'activities', 'interests',
     'music', 'movies', 'tv', 'books', 'games', 'about', 'quotes', 'can_post', 'can_see_all_posts',
     'can_see_audio', 'can_write_private_message', 'can_send_friend_request', 'is_favorite',
     'is_hidden_from_feed', 'timezone', 'screen_name', 'maiden_name', 'crop_photo', 'is_friend',
     'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me', 'can_be_invited_group');
-  VkFollowerField: array[TVkFollowerField] of string = (
-    'photo_id', 'verified', 'sex', 'bdate', 'city', 'country', 'home_town', 'has_photo', 'photo_50',
-    'photo_100', 'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig',
-    'online', 'lists', 'domain', 'has_mobile', 'contacts', 'site', 'education', 'universities',
-    'schools', 'status', 'last_seen', 'followers_count', 'common_count', 'occupation', 'nickname',
-    'relatives', 'relation', 'personal', 'connections', 'exports', 'wall_comments', 'activities',
-    'interests', 'music', 'movies', 'tv', 'books', 'games', 'about', 'quotes', 'can_post', 'can_see_all_posts',
-    'can_see_audio', 'can_write_private_message', 'can_send_friend_request', 'is_favorite',
-    'is_hidden_from_feed', 'timezone', 'screen_name', 'maiden_name', 'crop_photo', 'is_friend',
-    'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me');
   VKPostLinkButton: array[TVkPostLinkButton] of string = (
     'auto', 'app_join', 'app_game_join', 'open_url', 'open', 'more', 'call', 'book', 'enroll', 'register', 'buy', 'buy_ticket', 'order', 'create', 'install', 'contact', 'fill',
     'join_public', 'join_event', 'join', 'im', 'im2', 'begin', 'get', 'watch', 'download', 'participate', 'play',
     'apply', 'get_an_offer', 'to_write', 'reply');
-  VkFriendField: array[TVkFriendField] of string = ('nickname', 'domain', 'sex', 'bdate', 'city', 'country', 'timezone',
-    'photo_50', 'photo_100', 'photo_200_orig', 'has_mobile', 'contacts', 'education', 'online', 'relation', 'last_seen', 'status',
-    'can_write_private_message', 'can_see_all_posts', 'can_post', 'universities', 'can_see_audio');
   VkGroupField: array[TVkGroupField] of string = ('city', 'country', 'place', 'description', 'wiki_page', 'members_count',
     'counters', 'start_date', 'finish_date', 'can_post', 'can_see_all_posts', 'activity', 'status',
     'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50');
@@ -2124,36 +2077,14 @@ end;
 
 { TVkPermissionsHelper }
 
+procedure TVkPermissionsHelper.Include(Value: TVkPermission);
+begin
+  System.Include(Self, Value);
+end;
+
 function TVkPermissionsHelper.ToString: string;
 var
   Item: TVkPermission;
-begin
-  for Item in Self do
-  begin
-    Result := Result + Item.ToString + ',';
-  end;
-  Result.TrimRight([',']);
-end;
-
-{ TVkFriendFieldHelper }
-
-function TVkFriendFieldHelper.ToString: string;
-begin
-  Result := VkFriendField[Self];
-end;
-
-{ TVkFriendFieldsHelper }
-
-class function TVkFriendFieldsHelper.All: TVkFriendFields;
-begin
-  Result := [ffNickName, ffDomain, ffSex, ffBirthDate, ffCity, ffCountry, ffTimeZone, ffPhoto50, ffPhoto100, ffPhoto200,
-    ffHasMobile, ffContacts, ffEducation, ffOnline, ffRelation, ffLastSeen, ffStatus, ffCanWritePrivateMessage,
-    ffCanSeeAllPosts, ffCanPost, ffUniversities];
-end;
-
-function TVkFriendFieldsHelper.ToString: string;
-var
-  Item: TVkFriendField;
 begin
   for Item in Self do
   begin
@@ -2217,36 +2148,6 @@ end;
 function TVkUserFieldHelper.ToString: string;
 begin
   Result := VkUserField[Self];
-end;
-
-{ TVkFollowerFieldHelper }
-
-function TVkFollowerFieldHelper.ToString: string;
-begin
-  Result := VkFollowerField[Self];
-end;
-
-{ TVkFollowerFieldsHelper }
-
-class function TVkFollowerFieldsHelper.All: TVkFollowerFields;
-begin
-  Result := [flPhotoId, flVerified, flSex, flBirthDate, flCity, flCountry, flHomeTown, flHasPhoto, flPhoto50, flPhoto100,
-    flPhoto200Orig, flPhoto200, flPhoto400Orig, flPhotoMax, flPhotoMaxOrig, flOnline, flLists, flDomain, flHasMobile,
-    flContacts, flSite, flEducation, flUniversities, flSchools, flStatus, flLastSeen, flFollowersCount, flCommonCount,
-    flOccupation, flNickName, flRelatives, flRelation, flPersonal, flConnections, flExports, flWallComments,
-    flActivities, flInterests, flMusic, flMovies,
-    flTV, flBooks, flGames, flAbout, flQuotes, flCanPost, flCanSeeAllPosts, flCanSeeAudio, flCanWritePrivateMessage, flCanSendFriendRequest, flIsFavorite, flIsHiddenFromFeed, flTimeZone, flScreenName, flMaidenName, flCropPhoto, flIsFriend, flFriendStatus, flCareer, flMilitary, flBlacklisted, flBlacklistedByMe];
-end;
-
-function TVkFollowerFieldsHelper.ToString: string;
-var
-  Item: TVkFollowerField;
-begin
-  for Item in Self do
-  begin
-    Result := Result + Item.ToString + ',';
-  end;
-  Result.TrimRight([',']);
 end;
 
 { TVkGroupFilterHelper }

@@ -70,6 +70,9 @@ type
     Button32: TButton;
     TabSheetPodcasts: TTabSheet;
     Button33: TButton;
+    Button34: TButton;
+    Button35: TButton;
+    Button36: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -195,6 +198,9 @@ type
     procedure Button31Click(Sender: TObject);
     procedure Button32Click(Sender: TObject);
     procedure Button33Click(Sender: TObject);
+    procedure Button34Click(Sender: TObject);
+    procedure Button35Click(Sender: TObject);
+    procedure Button36Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -213,7 +219,8 @@ uses
   VK.Entity.User, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
   VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
   VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
-  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast;
+  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search, VK.Entity.Database.Regions,
+  VK.Entity.Database.Schools;
 
 {$R *.dfm}
 
@@ -707,6 +714,50 @@ begin
       Memo1.Lines.Add(Podcast.OwnerTitle);
     for var Episode in Items.Episodes do
       Memo1.Lines.Add(Episode.Title);
+    Items.Free;
+  end;
+end;
+
+procedure TFormMain.Button34Click(Sender: TObject);
+var
+  Items: TVkSearchItems;
+begin
+  if VK1.Search.GetHints(Items, 'vk') then
+  begin
+    for var Item in Items.Items do
+    begin
+      Memo1.Lines.Add(Item.Description);
+      Memo1.Lines.Add(Item.Section);
+      Memo1.Lines.Add(Item.&Type);
+    end;
+    Items.Free;
+  end;
+end;
+
+procedure TFormMain.Button35Click(Sender: TObject);
+var
+  Items: TVkRegions;
+begin
+  if VK1.Database.GetRegions(Items, 1, 'Алтай') then
+  begin
+    for var Item in Items.Items do
+    begin
+      Memo1.Lines.Add(Item.Title);
+    end;
+    Items.Free;
+  end;
+end;
+
+procedure TFormMain.Button36Click(Sender: TObject);
+var
+  Items: TVkSchoolClasses;
+begin
+  if VK1.Database.GetSchoolClasses(Items) then
+  begin
+    for var Item in Items.Items do
+    begin
+      Memo1.Lines.Add(Item.Text);
+    end;
     Items.Free;
   end;
 end;

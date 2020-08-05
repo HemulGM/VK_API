@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheetPodcasts
+      ActivePage = TabSheet9
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -106,6 +106,33 @@ object FormMain: TFormMain
           Caption = 'CallMethod'
           TabOrder = 6
           OnClick = Button8Click
+        end
+        object Button34: TButton
+          Left = 3
+          Top = 147
+          Width = 137
+          Height = 25
+          Caption = 'Search.GetHints'
+          TabOrder = 7
+          OnClick = Button34Click
+        end
+        object Button35: TButton
+          Left = 2
+          Top = 178
+          Width = 137
+          Height = 25
+          Caption = 'Database.GetRegions'
+          TabOrder = 8
+          OnClick = Button35Click
+        end
+        object Button36: TButton
+          Left = 3
+          Top = 209
+          Width = 137
+          Height = 25
+          Caption = 'Database.GetSchoolClasses'
+          TabOrder = 9
+          OnClick = Button36Click
         end
       end
       object TabSheet1: TTabSheet
@@ -461,7 +488,7 @@ object FormMain: TFormMain
     AppID = '6121396'
     AppKey = 'AlVXZFMUqyrnABp8ncuU'
     EndPoint = 'https://oauth.vk.com/authorize'
-    Permissions = [Friends, Photos, Audio, Video, Notes, Wall, Docs, Groups, Market]
+    Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     BaseURL = 'https://api.vk.com/method'
     ServiceKey = 'fcsdfbvdsbvfcsbdvfcasdgfhgasdfjkshadgfbdsmfgbmdsfngbmdfsgb'
     Proxy.Port = 0

@@ -154,7 +154,19 @@ contains
   VK.Polls in 'Controllers\VK.Polls.pas',
   VK.Podcasts in 'Controllers\VK.Podcasts.pas',
   VK.Entity.Podcast in 'Entity\VK.Entity.Podcast.pas',
-  VK.Entity.Podcast.Episode in 'Entity\VK.Entity.Podcast.Episode.pas';
+  VK.Entity.Podcast.Episode in 'Entity\VK.Entity.Podcast.Episode.pas',
+  VK.PrettyCards in 'Controllers\VK.PrettyCards.pas',
+  VK.Search in 'Controllers\VK.Search.pas',
+  VK.Entity.Search in 'Entity\VK.Entity.Search.pas',
+  VK.Database in 'Controllers\VK.Database.pas',
+  VK.Entity.Database.Chairs in 'Entity\VK.Entity.Database.Chairs.pas',
+  VK.Entity.Database.Cities in 'Entity\VK.Entity.Database.Cities.pas',
+  VK.Entity.Database.Countries in 'Entity\VK.Entity.Database.Countries.pas',
+  VK.Entity.Database.Faculties in 'Entity\VK.Entity.Database.Faculties.pas',
+  VK.Entity.Database.MetroStations in 'Entity\VK.Entity.Database.MetroStations.pas',
+  VK.Entity.Database.Regions in 'Entity\VK.Entity.Database.Regions.pas',
+  VK.Entity.Database.Schools in 'Entity\VK.Entity.Database.Schools.pas',
+  VK.Entity.Database.Universities in 'Entity\VK.Entity.Database.Universities.pas';
 
 end.
 

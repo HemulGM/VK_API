@@ -3,7 +3,7 @@ unit VK.Entity.ProfileInfo;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Database.Countries;
 
 type
   TVkProfileInfo = class

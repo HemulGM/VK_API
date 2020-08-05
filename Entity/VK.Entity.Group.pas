@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market, VK.Entity.User,
-  VK.Entity.Group.Counters;
+  VK.Entity.Group.Counters, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
 
 type
   TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
@@ -213,7 +213,6 @@ type
     FId: Integer;
     FIs_admin: Boolean;
     FIs_advertiser: Boolean;
-    //[JsonEnumValues('0,1,2')]
     FIs_closed: Integer;
     FIs_member: Boolean;
     FName: string;
@@ -260,6 +259,7 @@ type
     FWall: Integer;
     FWiki_page: string;
     FCounters: TVkGroupCounters;
+    FTrack_code: string;
     function GetIsBanned: Boolean;
     function GetIsDeleted: Boolean;
     function GetIsDeactivated: Boolean;
@@ -409,6 +409,7 @@ type
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property Photo50: string read FPhoto_50 write FPhoto_50;
+    property TrackCode: string read FTrack_code write FTrack_code;
     property Place: TVkPlace read FPlace write FPlace;
     property PublicDateLabel: string read FPublic_date_label write FPublic_date_label;
     property ScreenName: string read FScreen_name write FScreen_name;
