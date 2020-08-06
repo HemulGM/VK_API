@@ -19,10 +19,83 @@ function BoolToInt(Value: Boolean): Integer; overload;
 
 function BoolToString(Value: Boolean; TrueValue, FalseValue: string): string; overload;
 
+function GetTokenFromUrl(const Url: string; var Token, ChangePasswordHash, TokenExpiry: string): Boolean;
+
+function GetActionLinkHash(const Html: string; var Hash: string): Boolean;
+
+function CheckForCaptcha(const Html: string; var CaptchaUrl: string): Boolean;
+
 implementation
 
 uses
   System.DateUtils, System.SysUtils, System.IOUtils;
+
+function GetTokenFromUrl(const Url: string; var Token, ChangePasswordHash, TokenExpiry: string): Boolean;
+var
+  i: integer;
+  Str: string;
+  Params: TStringList;
+begin
+  i := Pos('#access_token=', Url);
+  if (i = 0) then
+    i := Pos('&access_token=', Url);
+  if i <> 0 then
+  begin
+    Str := Url;
+    Delete(Str, 1, i);
+    Params := TStringList.Create;
+    try
+      Params.Delimiter := '&';
+      Params.DelimitedText := Str;
+      ChangePasswordHash := Params.Values['change_password_hash'];
+      Token := Params.Values['access_token'];
+      TokenExpiry := Params.Values['expires_in'];
+    finally
+      Params.Free;
+    end;
+  end;
+  Result := not Token.IsEmpty;
+end;
+
+function GetActionLinkHash(const Html: string; var Hash: string): Boolean;
+const
+  Pattern = 'action="/login?act=authcheck_code&hash=';
+var
+  i: Integer;
+begin
+  Hash := '';
+  i := Pos(Pattern, Html);
+  if i > 0 then
+  begin
+    Hash := Copy(Html, i + Pattern.Length, 50);
+    i := Pos('"', Hash);
+    if i > 0 then
+    begin
+      Hash := Copy(Hash, 1, i - 1);
+    end;
+  end;
+  Result := not Hash.IsEmpty;
+end;
+
+function CheckForCaptcha(const Html: string; var CaptchaUrl: string): Boolean;
+const
+  Pattern = 'img src="/captcha.php?sid=';
+var
+  i: Integer;
+begin
+  CaptchaUrl := '';
+  i := Pos(Pattern, Html);
+  if i > 0 then
+  begin
+    CaptchaUrl := Copy(Html, i + Pattern.Length, 50);
+    i := Pos('"', CaptchaUrl);
+    if i > 0 then
+    begin
+      CaptchaUrl := Copy(CaptchaUrl, 1, i - 1);
+    end;
+  end;
+  Result := not CaptchaUrl.IsEmpty;
+end;
 
 function BoolToInt(Value: Boolean): Integer; overload;
 begin
@@ -108,5 +181,4 @@ begin
 end;
 
 end.
-
 

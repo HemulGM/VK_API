@@ -8,6 +8,7 @@ uses
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
   VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
+  VK.Apps,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -16,7 +17,23 @@ uses
   System.Types;
 
 type
+  /// <summary>
+  /// Данные клиента AppId (client_id) + AppKey (client_secret)
+  /// Имеются данные оф. клиентов для использования
+  /// </summary>
+  TVkApplicationData = record
+    AppId: string;
+    AppKey: string;
+    class function Android: TVkApplicationData; static;
+    class function IPhone: TVkApplicationData; static;
+    class function IPad: TVkApplicationData; static;
+    class function WindowsDesktop: TVkApplicationData; static;
+    class function WindowsPhone: TVkApplicationData; static;
+  end;
+
   TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
+
+  TOn2FA = reference to function(var Code: string): Boolean;
 
   TCustomVK = class(TComponent)
     type
@@ -99,6 +116,7 @@ type
     FSecure: TSecureController;
     FStats: TStatsController;
     FStories: TStoriesController;
+    FApps: TAppsController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
@@ -135,18 +153,52 @@ type
     function GetUsePseudoAsync: Boolean;
     procedure SetLogResponse(const Value: Boolean);
     function GetUserId: Integer;
+    procedure SetApplication(const Value: TVkApplicationData);
+    function GetApplication: TVkApplicationData;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    /// <summary>
+    /// Метод возвращает запрос для получения токена через OAuth2
+    /// </summary>
     function GetOAuth2RequestURI: string;
+    /// <summary>
+    /// Загрузить информацию о пользователе
+    /// </summary>
     function LoadUserInfo: Boolean;
+    /// <summary>
+    /// Авторизация рекомендуемым Вконтакте способом - OAuth2 или через имеющийся токен
+    /// <b>Не забывайте сохранять токен при закрытии приложения</b>
+    /// </summary>
     function Login: Boolean; overload;
-    function Login(ALogin, APassword: string): Boolean; overload;
+    /// <summary>
+    /// Авторизация "Client credentials flow" используя AppId и AppKey через логин и пароль
+    /// <b>Не забывайте сохранять токен при закрытии приложения</b>
+    /// </summary>
+    function Login(ALogin, APassword: string; On2FA: TOn2FA = nil): Boolean; overload;
+    /// <summary>
+    /// Генерировать событие лога
+    /// </summary>
     procedure DoLog(Sender: TObject; Text: string);
+    /// <summary>
+    /// Генерировать событие ошибки
+    /// </summary>
     procedure DoError(Sender: TObject; E: Exception; Code: Integer; Text: string = '');
+    /// <summary>
+    /// Выполнить метод
+    /// </summary>
     procedure CallMethod(MethodName: string; Callback: TCallMethodCallback = nil); overload;
+    /// <summary>
+    /// Выполнить метод
+    /// </summary>
     procedure CallMethod(MethodName: string; Param: TParam; Callback: TCallMethodCallback = nil); overload;
+    /// <summary>
+    /// Выполнить метод
+    /// </summary>
     procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
+    /// <summary>
+    /// Выполнить метод асинхронно
+    /// </summary>
     procedure CallMethodAsync(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
@@ -165,16 +217,22 @@ type
     /// Вспомогательный метод, для выполнения методов с Count и Offset
     /// </summary>
     procedure Walk(Method: TWalkMethod; Count: Integer);
+    ////////////////////////////////////////////////////////////////////////////
     //Tools
     /// <summary>
     /// Методы для загрузки файлов на сервера ВК
     /// </summary>
     property Uploader: TUploader read FUploader;
+    ////////////////////////////////////////////////////////////////////////////
     //Группы методов
     /// <summary>
     /// Методы для работы с аккаунтом.
     /// </summary>
     property Account: TAccountController read FAccount;
+    /// <summary>
+    /// Методы для работы с приложениями.
+    /// </summary>
+    property Apps: TAppsController read FApps;
     /// <summary>
     /// Методы для работы с авторизацией.
     /// </summary>
@@ -303,36 +361,123 @@ type
     /// Методы для работы с записями на стене.
     /// </summary>
     property Wall: TWallController read FWall;
-    //
+    ////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// ID приложения
+    /// </summary>
     property AppID: string read FAppID write SetAppID;
+    /// <summary>
+    /// Защищённый ключ приложения
+    /// </summary>
     property AppKey: string read FAppKey write SetAppKey;
+    /// <summary>
+    /// URL, который используется для авторизации через OAuth2
+    /// </summary>
     property EndPoint: string read FEndPoint write SetEndPoint;
+    /// <summary>
+    /// Обработчик запросов. Реализует псевдо асинхронность и очередь выполнения
+    /// </summary>
     property Handler: TVkHandler read FHandler write SetHandler;
+    /// <summary>
+    /// Версия API VK, которая поддеживается текущей оберткой
+    /// </summary>
     property APIVersion: string read FAPIVersion;
+    /// <summary>
+    /// Базовый URL для доступа к метода VK API (https://api.vk.com/method)
+    /// </summary>
     property BaseURL: string read FBaseURL write SetBaseURL;
+    /// <summary>
+    /// Сервисный ключ для доступа к API VK
+    /// </summary>
     property ServiceKey: string read FServiceKey write SetServiceKey;
+    /// <summary>
+    /// Если установлен флаг, то будет использоваться сервисный ключ для доступа к методам ВК
+    /// </summary>
     property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
+    /// <summary>
+    /// True, если авторизация успешна
+    /// </summary>
     property IsLogin: Boolean read FIsLogin;
+    /// <summary>
+    /// Хеш, получаемый для смены пароля ВК
+    /// </summary>
     property ChangePasswordHash: string read FChangePasswordHash;
+    /// <summary>
+    /// Идентификатор пользователя (будет запрошен, если не сохранен)
+    /// </summary>
     property UserId: Integer read GetUserId;
-    //
+    /// <summary>
+    /// Событие, которое происходит, если токен успешно получен и успешно пройдена проверка авторизации
+    /// </summary>
     property OnLogin: TOnLogin read FOnLogin write SetOnLogin;
+    /// <summary>
+    /// Событие, которое происходит при возникновении ошибки
+    /// </summary>
     property OnError: TOnVKError read FOnError write SetOnError;
+    /// <summary>
+    /// Событие, которые происходит при не удачной авторизации
+    /// </summary>
     property OnErrorLogin: TOnVKError read FOnErrorLogin write SetOnErrorLogin;
+    /// <summary>
+    /// Событие, которое происходит при логировании
+    /// </summary>
     property OnLog: TOnLog read FOnLog write SetOnLog;
+    /// <summary>
+    /// Событие, которое происходит когда ВК требует разгадать капчу (по умолчанию используется стандартный диалог)
+    /// </summary>
     property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
+    /// <summary>
+    /// Событие, которое происходит когда ВК требует подтверждения от пользователя (по умолчанию подтверждается)
+    /// </summary>
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
+    /// <summary>
+    /// Событие, которое происходит когда не указан токен и требуется его получить
+    /// </summary>
     property OnAuth: TOnAuth read FOnAuth write SetOnAuth;
+    /// <summary>
+    /// Токен
+    /// </summary>
     property Token: string read GetToken write SetToken;
+    /// <summary>
+    /// Срок действия токена UNIXTIME
+    /// </summary>
     property TokenExpiry: Int64 read GetTokenExpiry write SetTokenExpiry;
+    /// <summary>
+    /// Логировать ли запросы
+    /// </summary>
     property Logging: Boolean read FLogging write SetLogging;
+    /// <summary>
+    /// Логировать ответ запроса
+    /// </summary>
     property LogResponse: Boolean read FLogResponse write SetLogResponse;
+    /// <summary>
+    /// Обработчик запросов выполняет какой-то запрос
+    /// </summary>
     property IsWorking: Boolean read GetIsWorking;
+    /// <summary>
+    /// Передаваемый параметр "Тестовый режим"
+    /// </summary>
     property TestMode: Boolean read GetTestMode write SetTestMode;
+    /// <summary>
+    /// Права приложения, которые будут запрошены при авторизации через OAuth2
+    /// </summary>
     property Permissions: TVkPermissions read FPermissions write SetPermissions;
+    /// <summary>
+    /// Передаваемый параметр языка (ВК)
+    /// </summary>
     property Lang: TVkLang read FLang write SetLang;
+    /// <summary>
+    /// Настройки прокси
+    /// </summary>
     property Proxy: TVkProxy read FProxy write FProxy;
+    /// <summary>
+    /// Использовать "псевдо" асинхронность. Если метод будет вызван в основном потоке и будет включен этот флаг, то будет автоматически создан анонимный поток, завершение которого будет производится путём Application.ProccessMessages;
+    /// </summary>
     property UsePseudoAsync: Boolean read GetUsePseudoAsync write SetUsePseudoAsync;
+    /// <summary>
+    /// Данные клиента AppId (client_id) + AppKey (client_secret)
+    /// </summary>
+    property Application: TVkApplicationData read GetApplication write SetApplication;
   end;
 
 const
@@ -341,7 +486,7 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile;
+  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
 
 { TCustomVK }
 
@@ -412,7 +557,7 @@ begin
   //Defaults
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
-  SetAPIVersion('5.120');
+  SetAPIVersion('5.126');
   Permissions := [
     TVkPermission.Groups,
     TVkPermission.Friends,
@@ -425,6 +570,7 @@ begin
   //Controllers
   FAccount := TAccountController.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
+  FApps := TAppsController.Create(FHandler);
   FUsers := TUsersController.Create(FHandler);
   FMessages := TMessagesController.Create(FHandler);
   FNewsfeed := TNewsfeedController.Create(FHandler);
@@ -493,6 +639,7 @@ begin
   FStories.Free;
   FUsers.Free;
   FAccount.Free;
+  FApps.Free;
   FAuth.Free;
   FMessages.Free;
   FNotifications.Free;
@@ -619,9 +766,105 @@ begin
   Result := Utils.GetServerTime(MT);
 end;
 
-function TCustomVK.Login(ALogin, APassword: string): Boolean;
+function TCustomVK.Login(ALogin, APassword: string; On2FA: TOn2FA): Boolean;
+var
+  HTTP: THTTPClient;
+  Response: TStringStream;
+  EndResponse: IHTTPResponse;
+  FormData: TStringList;
+  Info: TVkLoginInfo;
+  Hash, Code, Url, CaptchaSid: string;
 begin
-  raise TVkException.Create('RU: Метод в разработке / EN: Method in development');
+  Token := '';
+  HTTP := THTTPClient.Create;
+  HTTP.HandleRedirects := True;
+  Response := TStringStream.Create;
+  try
+    Url := Format('https://oauth.vk.com/token?grant_type=password&client_id=%s&scope=wall&client_secret=%s&username=%s&password=%s',
+      [AppID, AppKey, ALogin, APassword]);
+    if HTTP.Get(Url, Response).StatusCode = 401 then
+    begin
+      try
+        Info := TVkLoginInfo.FromJsonString(Response.DataString);
+        try
+          if not Info.Error.IsEmpty then
+          begin
+            if Info.Error = 'need_validation' then
+            begin
+              if Info.ValidationType = '2fa_app' then
+              begin
+                if HTTP.Get(Info.RedirectUri, Response).StatusCode = 200 then
+                begin
+                  if GetActionLinkHash(Response.DataString, Hash) then
+                  begin
+                    if On2FA(Code) then
+                    begin
+                      FormData := TStringList.Create;
+                      try
+                        FormData.AddPair('code', Code);
+                        FormData.AddPair('remember', 'true');
+
+                        HTTP.HandleRedirects := False;
+                        EndResponse := HTTP.Post('https://m.vk.com/login?act=authcheck_code&hash=' + Hash, FormData);
+                        //Response.SaveToFile('D:\temp.txt');
+                        if EndResponse.StatusCode = 200 then
+                        begin
+                          Response.LoadFromStream(EndResponse.ContentStream);
+                          if CheckForCaptcha(Response.DataString, CaptchaSid) then
+                          begin
+                            Code := '';
+                            FAskCaptcha(Self, 'https://vk.com/captcha.php?sid=' + CaptchaSid, Code);
+                            if not Code.IsEmpty then
+                            begin
+                              EndResponse := HTTP.Post('https://m.vk.com/login?act=authcheck_code&hash=' + Hash +
+                                '&captcha_sid=' + CaptchaSid + '&captcha_key=' + Code, FormData);
+                            end;
+                          end;
+                        end;
+
+                        if EndResponse.StatusCode = 302 then
+                        begin
+                          if GetTokenFromUrl(EndResponse.HeaderValue['Location'], Hash, Url, Code) then
+                          begin
+                            Token := Hash;
+                          end;
+                        end;
+                      except
+                        FAuthError(Response.DataString, -1);
+                      end;
+                      FormData.Free;
+                    end;
+                  end;
+                end;
+              end;
+            end;
+          end;
+        finally
+          Info.Free;
+        end;
+      except
+        FAuthError(Response.DataString, -1);
+      end;
+    end;
+  except
+    FAuthError('Login request error', -2);
+  end;
+  Response.Free;
+  HTTP.Free;
+  Result := not Token.IsEmpty;
+  if Result then
+  begin
+    if CheckAuth then
+    begin
+      DoLogin;
+      Exit(True);
+    end
+    else
+    begin
+      Result := False;
+      FAuthError('Ошибка авторизации', -1);
+    end;
+  end;
 end;
 
 function TCustomVK.GetOAuth2RequestURI: string;
@@ -709,6 +952,12 @@ begin
   FAppKey := Value;
 end;
 
+procedure TCustomVK.SetApplication(const Value: TVkApplicationData);
+begin
+  AppID := Value.AppId;
+  AppKey := Value.AppKey;
+end;
+
 procedure TCustomVK.SetEndPoint(const Value: string);
 begin
   FEndPoint := Value;
@@ -779,6 +1028,12 @@ end;
 procedure TCustomVK.SetOnLogin(const Value: TOnLogin);
 begin
   FOnLogin := Value;
+end;
+
+function TCustomVK.GetApplication: TVkApplicationData;
+begin
+  Result.AppId := AppID;
+  Result.AppKey := AppKey;
 end;
 
 function TCustomVK.GetIsWorking: Boolean;
@@ -924,6 +1179,38 @@ begin
   Port := APort;
   Username := AUserName;
   Password := APassword;
+end;
+
+{ TVkApplicationData }
+
+class function TVkApplicationData.Android: TVkApplicationData;
+begin
+  Result.AppId := '2274003';
+  Result.AppKey := 'hHbZxrka2uZ6jB1inYsH';
+end;
+
+class function TVkApplicationData.IPad: TVkApplicationData;
+begin
+  Result.AppId := '3682744';
+  Result.AppKey := 'mY6CDUswIVdJLCD3j15n';
+end;
+
+class function TVkApplicationData.IPhone: TVkApplicationData;
+begin
+  Result.AppId := '3140623';
+  Result.AppKey := 'VeWdmVclDCtn6ihuP1nt';
+end;
+
+class function TVkApplicationData.WindowsDesktop: TVkApplicationData;
+begin
+  Result.AppId := '3697615';
+  Result.AppKey := 'AlVXZFMUqyrnABp8ncuU';
+end;
+
+class function TVkApplicationData.WindowsPhone: TVkApplicationData;
+begin
+  Result.AppId := '3502557';
+  Result.AppKey := 'PEObAuQi6KloPM4T30DV';
 end;
 
 end.

@@ -216,6 +216,7 @@ type
     class function Doc(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
     class function Video(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
     class function Audio(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Photo(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
     class function Create(&Type: string; OwnerId, Id: Integer; AccessKey: string): string; static;
   end;
 
@@ -2427,6 +2428,11 @@ end;
 class function Attachment.Doc(Id, OwnerId: Integer; AccessKey: string): string;
 begin
   Result := Create('doc', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.Photo(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('photo', Id, OwnerId, AccessKey);
 end;
 
 class function Attachment.Video(Id, OwnerId: Integer; AccessKey: string): string;

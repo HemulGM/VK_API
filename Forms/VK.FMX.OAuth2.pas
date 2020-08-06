@@ -61,7 +61,7 @@ uses
   {$IFDEF MSWINDOWS}
   Winapi.Windows, Winapi.UrlMon, Winapi.WinInet, System.Win.Registry,
   {$ENDIF}
-  System.Net.HttpClient;
+  System.Net.HttpClient, VK.CommonUtils;
 
 {$R *.fmx}
 
@@ -164,30 +164,14 @@ end;
 
 procedure TFormFMXOAuth2.FAfterRedirect(const AURL: string; var DoCloseWebView: Boolean);
 var
-  i: integer;
-  Str: string;
-  Params: TStringList;
+  FTokenExpiryStr: string;
 begin
-  i := Pos('#access_token=', AURL);
-  if (i = 0) then
-    i := Pos('&access_token=', AURL);
-  if (i <> 0) and (FToken.IsEmpty) then
+  if FToken.IsEmpty then
   begin
-    Str := AURL;
-    Delete(Str, 1, i);
-    Params := TStringList.Create;
-    try
-      Params.Delimiter := '&';
-      Params.DelimitedText := Str;
-      FChangePasswordHash := Params.Values['change_password_hash'];
-      FToken := Params.Values['access_token'];
-      if Params.IndexOf('expires_in') >= 0 then
-        FTokenExpiry := StrToInt(Params.Values['expires_in'])
-      else
-        FTokenExpiry := 0;
+    if GetTokenFromUrl(AURL, FToken, FChangePasswordHash, FTokenExpiryStr) then
+    begin
+      FTokenExpiry := StrToIntDef(FTokenExpiryStr, 0);
       DoCloseWebView := True;
-    finally
-      Params.Free;
     end;
   end;
   DoCloseWebView := not FToken.IsEmpty;
