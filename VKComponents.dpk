@@ -173,7 +173,13 @@ contains
   VK.Secure in 'Controllers\VK.Secure.pas',
   VK.Entity.Secure in 'Entity\VK.Entity.Secure.pas',
   VK.Stats in 'Controllers\VK.Stats.pas',
-  VK.Entity.Stats in 'Entity\VK.Entity.Stats.pas';
+  VK.Entity.Stats in 'Entity\VK.Entity.Stats.pas',
+  VK.Stories in 'Controllers\VK.Stories.pas',
+  VK.Entity.Stories in 'Entity\VK.Entity.Stories.pas',
+  VK.Entity.Stories.Sticker in 'Entity\VK.Entity.Stories.Sticker.pas',
+  VK.Entity.App in 'Entity\VK.Entity.App.pas',
+  VK.Entity.Stories.Stats in 'Entity\VK.Entity.Stories.Stats.pas',
+  VK.Entity.Stories.Viewed in 'Entity\VK.Entity.Stories.Viewed.pas';
 
 end.
 

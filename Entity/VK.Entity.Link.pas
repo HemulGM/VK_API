@@ -51,12 +51,14 @@ type
     FPhoto: TVkPhoto;
     FTitle: string;
     FUrl: string;
+    FText: string;
   public
     property Button: TVkLinkButton read FButton write FButton;
     property Caption: string read FCaption write FCaption;
     property Description: string read FDescription write FDescription;
     property Photo: TVkPhoto read FPhoto write FPhoto;
     property Title: string read FTitle write FTitle;
+    property Text: string read FText write FText;
     property Url: string read FUrl write FUrl;
     constructor Create;
     destructor Destroy; override;

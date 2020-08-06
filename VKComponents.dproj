@@ -258,6 +258,12 @@
         <DCCReference Include="Entity\VK.Entity.Secure.pas"/>
         <DCCReference Include="Controllers\VK.Stats.pas"/>
         <DCCReference Include="Entity\VK.Entity.Stats.pas"/>
+        <DCCReference Include="Controllers\VK.Stories.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Stories.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Stories.Sticker.pas"/>
+        <DCCReference Include="Entity\VK.Entity.App.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Stories.Stats.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Stories.Viewed.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

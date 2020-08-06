@@ -75,6 +75,7 @@ type
     Button36: TButton;
     Button37: TButton;
     Button38: TButton;
+    Button39: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -205,6 +206,7 @@ type
     procedure Button36Click(Sender: TObject);
     procedure Button37Click(Sender: TObject);
     procedure Button38Click(Sender: TObject);
+    procedure Button39Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -224,7 +226,7 @@ uses
   VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
   VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
   VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search, VK.Entity.Database.Regions,
-  VK.Entity.Database.Schools, VK.Entity.Storage;
+  VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories;
 
 {$R *.dfm}
 
@@ -783,6 +785,31 @@ begin
   if VK1.Secure.GetAppBalance(Value) then
   begin
     Memo1.Lines.Add(Value.ToString);
+  end;
+end;
+
+procedure TFormMain.Button39Click(Sender: TObject);
+var
+  Items: TVkStoriesBlock;
+  i, j: Integer;
+begin
+  if VK1.Stories.Get(Items) then
+  begin
+    for i := Low(Items.Items) to High(Items.Items) do
+    begin
+      Memo1.Lines.Add(Items.Items[i].&Type);
+      if Items.Items[i].IsStories then
+      begin
+        for j := Low(Items.Items[i].Stories) to High(Items.Items[i].Stories) do
+          Memo1.Lines.Add(Items.Items[i].Stories[j].Id.ToString);
+      end;
+      if Items.Items[i].IsCommunityGroupedStories then
+      begin
+        for j := Low(Items.Items[i].Grouped) to High(Items.Items[i].Grouped) do
+          Memo1.Lines.Add(Items.Items[i].Grouped[j].&Type);
+      end;
+    end;
+    Items.Free;
   end;
 end;
 

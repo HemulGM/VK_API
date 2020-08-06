@@ -7,7 +7,7 @@ uses
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
-  VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats,
+  VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -98,6 +98,7 @@ type
     FDownloadedGames: TDownloadedGamesController;
     FSecure: TSecureController;
     FStats: TStatsController;
+    FStories: TStoriesController;
     function CheckAuth: Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
@@ -283,6 +284,10 @@ type
     /// </summary>
     property Storage: TStorageController read FStorage;
     /// <summary>
+    /// Методы для работы со историями.
+    /// </summary>
+    property Stories: TStoriesController read FStories;
+    /// <summary>
     /// Методы для работы с данными пользователей.
     /// </summary>
     property Users: TUsersController read FUsers;
@@ -426,6 +431,7 @@ begin
   FStatus := TStatusController.Create(FHandler);
   FStats := TStatsController.Create(FHandler);
   FStorage := TStorageController.Create(FHandler);
+  FStories := TStoriesController.Create(FHandler);
   FSearch := TSearchController.Create(FHandler);
   FSecure := TSecureController.Create(FHandler);
   FWall := TWallController.Create(FHandler);
@@ -484,6 +490,7 @@ begin
   FSecure.Free;
   FStorage.Free;
   FStats.Free;
+  FStories.Free;
   FUsers.Free;
   FAccount.Free;
   FAuth.Free;
