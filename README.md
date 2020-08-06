@@ -80,7 +80,7 @@ var
   Users: TVkProfiles;
   i: Integer;
 begin
-  if VK.Users.Get(Users, [286400863, 415730216], TVkUserFields.All) then
+  if VK.Users.Get(Users, [286400863, 415730216], TVkProfileFields.All) then
   begin
     for i := Low(Users.Items) to High(Users.Items) do
     begin
