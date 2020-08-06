@@ -58,6 +58,14 @@ begin
 end;
 
 VK.Login(<родитель для окна для VCL, необяз.>);
+...
+VKAPI.Application := TVkApplicationData.Android;  <-- Данные оф. клиента для Android
+VKAPI.Login('+7**********', '*****************',
+  function(var Code: string): Boolean
+  begin
+    Code := InputBox('', '', ''); <-- Код двухэтапной авторизации
+    Result := not Code.IsEmpty;
+  end);
 
 ```
 
