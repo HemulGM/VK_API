@@ -780,71 +780,85 @@ begin
   HTTP.HandleRedirects := True;
   Response := TStringStream.Create;
   try
-    Url := Format('https://oauth.vk.com/token?grant_type=password&client_id=%s&scope=wall&client_secret=%s&username=%s&password=%s',
+    Url := Format('https://oauth.vk.com/token?grant_type=password&client_id=%s&client_secret=%s&username=%s&password=%s',
       [AppID, AppKey, ALogin, APassword]);
-    if HTTP.Get(Url, Response).StatusCode = 401 then
-    begin
-      try
-        Info := TVkLoginInfo.FromJsonString(Response.DataString);
-        try
-          if not Info.Error.IsEmpty then
-          begin
-            if Info.Error = 'need_validation' then
-            begin
-              if Info.ValidationType = '2fa_app' then
+    case HTTP.Get(Url, Response).StatusCode of
+      401:
+        begin
+          try
+            Info := TVkLoginInfo.FromJsonString(Response.DataString);
+            try
+              if not Info.Error.IsEmpty then
               begin
-                if HTTP.Get(Info.RedirectUri, Response).StatusCode = 200 then
+                if Info.Error = 'need_validation' then
                 begin
-                  if GetActionLinkHash(Response.DataString, Hash) then
+                  if Info.ValidationType = '2fa_app' then
                   begin
-                    if On2FA(Code) then
+                    if HTTP.Get(Info.RedirectUri, Response).StatusCode = 200 then
                     begin
-                      FormData := TStringList.Create;
-                      try
-                        FormData.AddPair('code', Code);
-                        FormData.AddPair('remember', 'true');
+                      if GetActionLinkHash(Response.DataString, Hash) then
+                      begin
+                        if On2FA(Code) then
+                        begin
+                          FormData := TStringList.Create;
+                          try
+                            FormData.AddPair('code', Code);
+                            FormData.AddPair('remember', 'true');
 
-                        HTTP.HandleRedirects := False;
-                        EndResponse := HTTP.Post('https://m.vk.com/login?act=authcheck_code&hash=' + Hash, FormData);
+                            HTTP.HandleRedirects := False;
+                            EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash, FormData);
                         //Response.SaveToFile('D:\temp.txt');
-                        if EndResponse.StatusCode = 200 then
-                        begin
-                          Response.LoadFromStream(EndResponse.ContentStream);
-                          if CheckForCaptcha(Response.DataString, CaptchaSid) then
-                          begin
-                            Code := '';
-                            FAskCaptcha(Self, 'https://vk.com/captcha.php?sid=' + CaptchaSid, Code);
-                            if not Code.IsEmpty then
+                            while EndResponse.StatusCode = 200 do
                             begin
-                              EndResponse := HTTP.Post('https://m.vk.com/login?act=authcheck_code&hash=' + Hash +
-                                '&captcha_sid=' + CaptchaSid + '&captcha_key=' + Code, FormData);
+                              Response.LoadFromStream(EndResponse.ContentStream);
+                              if CheckForCaptcha(Response.DataString, CaptchaSid) then
+                              begin
+                                Code := '';
+                                FAskCaptcha(Self, 'https://vk.com/captcha.php?sid=' + CaptchaSid, Code);
+                                if not Code.IsEmpty then
+                                begin
+                                  EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash +
+                                    '&captcha_sid=' + CaptchaSid + '&captcha_key=' + Code, FormData);
+                                end
+                                else
+                                  Break;
+                              end;
                             end;
-                          end;
-                        end;
 
-                        if EndResponse.StatusCode = 302 then
-                        begin
-                          if GetTokenFromUrl(EndResponse.HeaderValue['Location'], Hash, Url, Code) then
-                          begin
-                            Token := Hash;
+                            if EndResponse.StatusCode = 302 then
+                            begin
+                              if GetTokenFromUrl(EndResponse.HeaderValue['Location'], Hash, Url, Code) then
+                              begin
+                                Token := Hash;
+                              end;
+                            end;
+                          except
+                            FAuthError(Response.DataString, -1);
                           end;
+                          FormData.Free;
                         end;
-                      except
-                        FAuthError(Response.DataString, -1);
                       end;
-                      FormData.Free;
                     end;
                   end;
                 end;
+                if Info.Error = 'need_captcha' then
+                begin
+                  //
+                end;
               end;
+            finally
+              Info.Free;
             end;
+          except
+            FAuthError(Response.DataString, -1);
           end;
-        finally
+        end;
+      200:
+        begin
+          Info := TVkLoginInfo.FromJsonString(Response.DataString);
+          Token := Info.AccessToken;
           Info.Free;
         end;
-      except
-        FAuthError(Response.DataString, -1);
-      end;
     end;
   except
     FAuthError('Login request error', -2);

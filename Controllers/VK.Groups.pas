@@ -15,7 +15,7 @@ type
     function ToString: string; inline;
   end;
 
-  TVkNoteText = string[96];
+  TVkNoteText = string;
   /// <summary>
   /// <b>wisNoInformation</b> Ч нет информации о расписании;
   /// <b>wisTemporarilyClosed</b> Ч временно закрыто;

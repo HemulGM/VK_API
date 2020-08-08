@@ -8,18 +8,18 @@ uses
 
 type
   TUploader = class
-    function Upload(UploadUrl: string; FileName: string; var Response: string): Boolean; overload;
-    function UploadPhotos(UploadUrl, FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
-    function UploadAudio(UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean; overload;
-    function UploadPhotos(UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse):
-      Boolean; overload;
+    function Upload(const UploadUrl, FileName: string; var Response: string): Boolean; overload;
+    function UploadPhotos(const UploadUrl, FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
+    function UploadAudio(const UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean; overload;
+    function UploadPhotos(const UploadUrl: string; Stream: TStream; FileName: string; var Response:
+      TVkPhotoUploadResponse): Boolean; overload;
   end;
 
 implementation
 
 { TUploader }
 
-function TUploader.Upload(UploadUrl, FileName: string; var Response: string): Boolean;
+function TUploader.Upload(const UploadUrl, FileName: string; var Response: string): Boolean;
 var
   HTTP: THTTPClient;
   Data: TMultipartFormData;
@@ -61,7 +61,7 @@ begin
   end;
 end;
 
-function TUploader.UploadAudio(UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean;
+function TUploader.UploadAudio(const UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean;
 var
   HTTP: THTTPClient;
   Data: TMultipartFormData;
@@ -91,7 +91,7 @@ begin
   end;
 end;
 
-function TUploader.UploadPhotos(UploadUrl, FileName: string; var Response: TVkPhotoUploadResponse): Boolean;
+function TUploader.UploadPhotos(const UploadUrl, FileName: string; var Response: TVkPhotoUploadResponse): Boolean;
 var
   HTTP: THTTPClient;
   Data: TMultipartFormData;
@@ -121,7 +121,7 @@ begin
   end;
 end;
 
-function TUploader.UploadPhotos(UploadUrl: string; Stream: TStream; FileName: string; var Response:
+function TUploader.UploadPhotos(const UploadUrl: string; Stream: TStream; FileName: string; var Response:
   TVkPhotoUploadResponse): Boolean;
 var
   HTTP: THTTPClient;
