@@ -19,6 +19,8 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure BrowserDidFinishLoad(ASender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure BrowserDidFailLoadWithError(ASender: TObject);
+    procedure BrowserDidStartLoad(ASender: TObject);
   private
     FLastTitle: string;
     FProxyUserName: string;
@@ -32,14 +34,20 @@ type
     FChangePasswordHash: string;
     FProc: TAuthResult;
     FExecuteCompleted: Boolean;
+    FErrorCode: Integer;
+    FClosed: Boolean;
     procedure FAfterRedirect(const AURL: string; var DoCloseWebView: Boolean);
     procedure SetChangePasswordHash(const Value: string);
     procedure SetToken(const Value: string);
     procedure SetTokenExpiry(const Value: Int64);
+    procedure SetErrorCode(const Value: Integer);
+    procedure SetIsError(const Value: Boolean);
   public
     procedure ShowWithURL(const AURL: string; Modal: Boolean); overload;
     property Token: string read FToken write SetToken;
     property TokenExpiry: Int64 read FTokenExpiry write SetTokenExpiry;
+    property IsError: Boolean read FIsError write SetIsError;
+    property ErrorCode: Integer read FErrorCode write SetErrorCode;
     property ChangePasswordHash: string read FChangePasswordHash write SetChangePasswordHash;
     property LastUrl: string read FLastURL;
     class procedure Execute(Url: string; Proc: TAuthResult; AStyleBook: TStyleBook = nil);
@@ -133,6 +141,15 @@ begin
   Form.ShowWithURL(Url, False);
 end;
 
+procedure TFormFMXOAuth2.BrowserDidFailLoadWithError(ASender: TObject);
+begin
+  FIsError := True;
+  FErrorCode := -1;
+  FLastURL := Browser.URL;
+  Browser.Stop;
+  Close;
+end;
+
 procedure TFormFMXOAuth2.BrowserDidFinishLoad(ASender: TObject);
 var
   LDoCloseForm: Boolean;
@@ -162,6 +179,11 @@ begin
   end;
 end;
 
+procedure TFormFMXOAuth2.BrowserDidStartLoad(ASender: TObject);
+begin
+  //
+end;
+
 procedure TFormFMXOAuth2.FAfterRedirect(const AURL: string; var DoCloseWebView: Boolean);
 var
   FTokenExpiryStr: string;
@@ -179,7 +201,11 @@ end;
 
 procedure TFormFMXOAuth2.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  FProc(Self);
+  if not FClosed then
+  begin
+    FClosed := True;
+    FProc(Self);
+  end;
   //Action := TCloseAction.caFree;
 end;
 
@@ -187,7 +213,7 @@ procedure TFormFMXOAuth2.FormCreate(Sender: TObject);
   {$IFDEF MSWINDOWS}
 const
   UserAgent =
-    'Mozilla/5.0 (Windows Phone 10.0;  Android 4.2.1; Nokia; Lumia 520) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Mobile Safari/537.36 Edge/12.0';
+      'Mozilla/5.0 (Windows Phone 10.0;  Android 4.2.1; Nokia; Lumia 520) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Mobile Safari/537.36 Edge/12.0';
   {$ENDIF}
 begin
   FLastTitle := '';
@@ -209,6 +235,7 @@ end;
 
 procedure TFormFMXOAuth2.ShowWithURL(const AURL: string; Modal: Boolean);
 begin
+  FClosed := False;
   FLastURL := AURL;
   FToken := '';
   FTokenExpiry := 0;
@@ -241,6 +268,16 @@ end;
 procedure TFormFMXOAuth2.SetChangePasswordHash(const Value: string);
 begin
   FChangePasswordHash := Value;
+end;
+
+procedure TFormFMXOAuth2.SetErrorCode(const Value: Integer);
+begin
+  FErrorCode := Value;
+end;
+
+procedure TFormFMXOAuth2.SetIsError(const Value: Boolean);
+begin
+  FIsError := Value;
 end;
 
 procedure TFormFMXOAuth2.SetToken(const Value: string);

@@ -17,6 +17,8 @@ type
     FExpires_in: Int64;
     FUser_id: Integer;
     FAccess_token: string;
+    FCaptcha_img: string;
+    FCaptcha_sid: string;
   public
     property Error: string read FError write FError;
     property ErrorDescription: string read FError_description write FError_description;
@@ -27,6 +29,8 @@ type
     property AccessToken: string read FAccess_token write FAccess_token;
     property ExpiresIn: Int64 read FExpires_in write FExpires_in;
     property UserId: Integer read FUser_id write FUser_id;
+    property CaptchaImg: string read FCaptcha_img write FCaptcha_img;
+    property CaptchaSid: string read FCaptcha_sid write FCaptcha_sid;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkLoginInfo;
   end;

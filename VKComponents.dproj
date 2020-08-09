@@ -266,6 +266,7 @@
         <DCCReference Include="Entity\VK.Entity.Stories.Viewed.pas"/>
         <DCCReference Include="Controllers\VK.Apps.pas"/>
         <DCCReference Include="Entity\VK.Entity.Login.pas"/>
+        <DCCReference Include="VK.Clients.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

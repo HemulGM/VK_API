@@ -181,7 +181,8 @@ contains
   VK.Entity.Stories.Stats in 'Entity\VK.Entity.Stories.Stats.pas',
   VK.Entity.Stories.Viewed in 'Entity\VK.Entity.Stories.Viewed.pas',
   VK.Apps in 'Controllers\VK.Apps.pas',
-  VK.Entity.Login in 'Entity\VK.Entity.Login.pas';
+  VK.Entity.Login in 'Entity\VK.Entity.Login.pas',
+  VK.Clients in 'VK.Clients.pas';
 
 end.
 

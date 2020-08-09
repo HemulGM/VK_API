@@ -8,7 +8,7 @@ uses
   VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
   VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
-  VK.Apps,
+  VK.Apps, VK.Clients,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -17,23 +17,15 @@ uses
   System.Types;
 
 type
-  /// <summary>
-  /// Данные клиента AppId (client_id) + AppKey (client_secret)
-  /// Имеются данные оф. клиентов для использования
-  /// </summary>
-  TVkApplicationData = record
-    AppId: string;
-    AppKey: string;
-    class function Android: TVkApplicationData; static;
-    class function IPhone: TVkApplicationData; static;
-    class function IPad: TVkApplicationData; static;
-    class function WindowsDesktop: TVkApplicationData; static;
-    class function WindowsPhone: TVkApplicationData; static;
+  TVkValidationType = (vtUnknown, vtSMS, vtApp);
+
+  TVkValidationTypeHelper = record helper for TVkValidationType
+    class function FromString(const Value: string): TVkValidationType; static;
   end;
 
   TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
 
-  TOn2FA = reference to function(var Code: string): Boolean;
+  TOn2FA = reference to function(const ValidationType: TVkValidationType; var Code: string; var Remember: Boolean): Boolean;
 
   TCustomVK = class(TComponent)
     type
@@ -486,7 +478,8 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
+  System.DateUtils, System.StrUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile,
+  VK.Entity.Login;
 
 { TCustomVK }
 
@@ -773,6 +766,7 @@ var
   EndResponse: IHTTPResponse;
   FormData: TStringList;
   Info: TVkLoginInfo;
+  Remember: Boolean;
   Hash, Code, Url, CaptchaSid: string;
 begin
   Token := '';
@@ -786,28 +780,28 @@ begin
       401:
         begin
           try
-            Info := TVkLoginInfo.FromJsonString(Response.DataString);
+            Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(AnsiString(Response.DataString)));
             try
               if not Info.Error.IsEmpty then
               begin
                 if Info.Error = 'need_validation' then
                 begin
-                  if Info.ValidationType = '2fa_app' then
+                  if TVkValidationType.FromString(Info.ValidationType) <> vtUnknown then
                   begin
                     if HTTP.Get(Info.RedirectUri, Response).StatusCode = 200 then
                     begin
                       if GetActionLinkHash(Response.DataString, Hash) then
                       begin
-                        if On2FA(Code) then
+                        if On2FA(TVkValidationType.FromString(Info.ValidationType), Code, Remember) then
                         begin
                           FormData := TStringList.Create;
                           try
                             FormData.AddPair('code', Code);
-                            FormData.AddPair('remember', 'true');
+                            FormData.AddPair('remember', BoolToString(Remember));
 
                             HTTP.HandleRedirects := False;
                             EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash, FormData);
-                        //Response.SaveToFile('D:\temp.txt');
+                            //Response.SaveToFile('D:\temp.txt');
                             while EndResponse.StatusCode = 200 do
                             begin
                               Response.LoadFromStream(EndResponse.ContentStream);
@@ -822,7 +816,9 @@ begin
                                 end
                                 else
                                   Break;
-                              end;
+                              end
+                              else
+                                Break;
                             end;
 
                             if EndResponse.StatusCode = 302 then
@@ -841,9 +837,23 @@ begin
                     end;
                   end;
                 end;
-                if Info.Error = 'need_captcha' then
+                while Info.Error = 'need_captcha' do
                 begin
-                  //
+                  Code := '';
+                  FAskCaptcha(Self, Info.CaptchaImg, Code);
+                  if not Code.IsEmpty then
+                  begin
+                    EndResponse := HTTP.Get(Url + '&captcha_sid=' + Info.CaptchaSid + '&captcha_key=' + Code, Response);
+                    Info.Free;
+                    Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(AnsiString(Response.DataString)));
+                    Token := Info.AccessToken;
+                  end
+                  else
+                    Break;
+                end;
+                if Info.Error = 'invalid_client' then
+                begin
+                  FAuthError(Info.ErrorDescription, -1);
                 end;
               end;
             finally
@@ -1195,36 +1205,18 @@ begin
   Password := APassword;
 end;
 
-{ TVkApplicationData }
+{ TVkValidationTypeHelper }
 
-class function TVkApplicationData.Android: TVkApplicationData;
+class function TVkValidationTypeHelper.FromString(const Value: string): TVkValidationType;
 begin
-  Result.AppId := '2274003';
-  Result.AppKey := 'hHbZxrka2uZ6jB1inYsH';
-end;
-
-class function TVkApplicationData.IPad: TVkApplicationData;
-begin
-  Result.AppId := '3682744';
-  Result.AppKey := 'mY6CDUswIVdJLCD3j15n';
-end;
-
-class function TVkApplicationData.IPhone: TVkApplicationData;
-begin
-  Result.AppId := '3140623';
-  Result.AppKey := 'VeWdmVclDCtn6ihuP1nt';
-end;
-
-class function TVkApplicationData.WindowsDesktop: TVkApplicationData;
-begin
-  Result.AppId := '3697615';
-  Result.AppKey := 'AlVXZFMUqyrnABp8ncuU';
-end;
-
-class function TVkApplicationData.WindowsPhone: TVkApplicationData;
-begin
-  Result.AppId := '3502557';
-  Result.AppKey := 'PEObAuQi6KloPM4T30DV';
+  case IndexStr(Value, ['2fa_sms', '2fa_app']) of
+    0:
+      Result := vtSMS;
+    1:
+      Result := vtApp;
+  else
+    Result := vtUnknown;
+  end;
 end;
 
 end.
