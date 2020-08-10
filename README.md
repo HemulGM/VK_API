@@ -14,6 +14,7 @@ If you have already used a wrapper (before 07/08/2020) and recently tightened th
 **Заметки**
 
 Для использования FMX необходимо добавить директиву NEEDFMX в проект.
+Для некоторых старых версий среды требуется указать директиву OLD_VERSION.
 
 **Note**
 
