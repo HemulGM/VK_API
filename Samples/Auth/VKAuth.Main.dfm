@@ -471,6 +471,15 @@ object FormMain: TFormMain
         end
       end
     end
+    object ButtonLogin: TButton
+      Left = 635
+      Top = 9
+      Width = 137
+      Height = 25
+      Caption = 'Login'
+      TabOrder = 1
+      OnClick = ButtonLoginClick
+    end
   end
   object Panel2: TPanel
     Left = 0
@@ -512,14 +521,10 @@ object FormMain: TFormMain
     end
   end
   object VK1: TVK
-    AppID = '2274003'
-    AppKey = 'hHbZxrka2uZ6jB1inYsH'
+    AppID = '6121396'
     EndPoint = 'https://oauth.vk.com/authorize'
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     BaseURL = 'https://api.vk.com/method'
-    ServiceKey = 
-      '2138779c2138779c2138779cab2153a500221382138779c7c0df21642e4abed4' +
-      'ecf7414'
     Proxy.Port = 0
     OnAuth = VK1Auth
     OnLogin = VK1Login

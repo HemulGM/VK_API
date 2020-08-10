@@ -12,12 +12,15 @@ type
     AppKey: string;
     //With AppKey
     class function Android: TVkApplicationData; static;
-    class function VKAdmin: TVkApplicationData; static;
     class function IPhone: TVkApplicationData; static;
     class function IPad: TVkApplicationData; static;
     class function WindowsDesktop: TVkApplicationData; static;
     class function WindowsPhone: TVkApplicationData; static;
     //Without AppKey
+    /// <summary>
+    /// Только AppKey
+    /// </summary>
+    class function VKAdmin: TVkApplicationData; static;
     /// <summary>
     /// Только AppKey
     /// </summary>

@@ -76,6 +76,7 @@ type
     Button37: TButton;
     Button38: TButton;
     Button39: TButton;
+    ButtonLogin: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -207,6 +208,7 @@ type
     procedure Button37Click(Sender: TObject);
     procedure Button38Click(Sender: TObject);
     procedure Button39Click(Sender: TObject);
+    procedure ButtonLoginClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -849,6 +851,11 @@ begin
   end;
 end;
 
+procedure TFormMain.ButtonLoginClick(Sender: TObject);
+begin
+  VK1.Login;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
@@ -877,7 +884,10 @@ begin
         if not FToken.IsEmpty then
           VK1.Login
         else
+        begin
+          LabelLogin.Caption := 'login error';
           ShowMessage('Ошибка: ' + Form.ErrorCode.ToString);
+        end;
       end);
   end
   else

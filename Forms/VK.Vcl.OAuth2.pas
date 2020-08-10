@@ -70,7 +70,7 @@ class procedure TFormOAuth2.Execute(Url: string; Proc: TAuthResult; Modal: Boole
 var
   Form: TFormOAuth2;
 begin
-  Form := TFormOAuth2.Create(nil);
+  Form := TFormOAuth2.Create(Application);
   Form.FProc := Proc;
   Form.ShowWithURL(nil, Url, Modal);
 end;
