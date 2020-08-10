@@ -17,16 +17,6 @@ uses
   System.Types;
 
 type
-  TVkValidationType = (vtUnknown, vtSMS, vtApp);
-
-  TVkValidationTypeHelper = record helper for TVkValidationType
-    class function FromString(const Value: string): TVkValidationType; static;
-  end;
-
-  TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
-
-  TOn2FA = reference to function(const ValidationType: TVkValidationType; var Code: string; var Remember: Boolean): Boolean;
-
   TCustomVK = class(TComponent)
     type
       TVkProxy = class(TPersistent)
@@ -110,12 +100,12 @@ type
     FStories: TStoriesController;
     FApps: TAppsController;
     function CheckAuth: Boolean;
+    function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
     function GetTestMode: Boolean;
     function GetToken: string;
     function GetTokenExpiry: Int64;
     procedure DoLogin;
-    function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
     procedure FAuthError(const AText: string; AStatusCode: Integer);
     procedure FLog(Sender: TObject; const Value: string);
@@ -159,12 +149,14 @@ type
     /// </summary>
     function LoadUserInfo: Boolean;
     /// <summary>
-    /// Авторизация рекомендуемым Вконтакте способом - OAuth2 или через имеющийся токен
+    /// Метод выполняет проверку существования Token, если его нет, выполняет OnAuth, после чего, проверяет доступ к API.
+    /// Авторизация рекомендуемым Вконтакте способом - OAuth2 или через имеющийся токен.
     /// <b>Не забывайте сохранять токен при закрытии приложения</b>
     /// </summary>
     function Login: Boolean; overload;
     /// <summary>
-    /// Авторизация "Client credentials flow" используя AppId и AppKey через логин и пароль
+    /// Метод выполняет авторизацию, запрашивая токен у сервера, после чего, проверяет доступ к API.
+    /// Авторизация "Client credentials flow" используя AppId и AppKey через логин и пароль.
     /// <b>Не забывайте сохранять токен при закрытии приложения</b>
     /// </summary>
     function Login(ALogin, APassword: string; On2FA: TOn2FA = nil): Boolean; overload;
@@ -478,8 +470,7 @@ const
 implementation
 
 uses
-  System.DateUtils, System.StrUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile,
-  VK.Entity.Login;
+  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
 
 { TCustomVK }
 
@@ -908,17 +899,20 @@ var
   AuthUrl: string;
 begin
   Result := False;
-  AuthUrl := GetOAuth2RequestURI;
-  APasswordHash := '';
   AToken := Token;
+  APasswordHash := ChangePasswordHash;
   ATokenExpiry := TokenExpiry;
-  if Assigned(FOnAuth) then
-    FOnAuth(Self, AuthUrl, AToken, ATokenExpiry, APasswordHash);
+  if AToken.IsEmpty then
+  begin
+    AuthUrl := GetOAuth2RequestURI;
+    if Assigned(FOnAuth) then
+      FOnAuth(Self, AuthUrl, AToken, ATokenExpiry, APasswordHash);
+  end;
 
   if not AToken.IsEmpty then
   begin
     FChangePasswordHash := APasswordHash;
-    FOAuth2Authenticator.AccessToken := AToken;
+    Token := AToken;
     if ATokenExpiry > 0 then
       FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, ATokenExpiry)
     else
@@ -926,7 +920,7 @@ begin
     if CheckAuth then
     begin
       DoLogin;
-      Exit(True);
+      Result := True;
     end
     else
       FAuthError('Ошибка авторизации', -1);
@@ -1067,9 +1061,9 @@ end;
 
 function TCustomVK.GetTestMode: Boolean;
 begin
-  Result := False;
-  if Assigned(FHandler.Client.Params.ParameterByName('test_mode')) then
-    Result := FHandler.Client.Params.ParameterByName('test_mode').Value = '1';
+  Result :=
+    Assigned(FHandler.Client.Params.ParameterByName('test_mode')) and
+    (FHandler.Client.Params.ParameterByName('test_mode').Value = '1');
 end;
 
 function TCustomVK.GetToken: string;
@@ -1203,20 +1197,6 @@ begin
   Port := APort;
   Username := AUserName;
   Password := APassword;
-end;
-
-{ TVkValidationTypeHelper }
-
-class function TVkValidationTypeHelper.FromString(const Value: string): TVkValidationType;
-begin
-  case IndexStr(Value, ['2fa_sms', '2fa_app']) of
-    0:
-      Result := vtSMS;
-    1:
-      Result := vtApp;
-  else
-    Result := vtUnknown;
-  end;
 end;
 
 end.

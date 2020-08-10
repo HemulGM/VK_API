@@ -490,7 +490,7 @@ begin
   begin
     MessageChangeData.MessageId := MessageId;
     MessageChangeData.ChangeType := ChangeType;
-    MessageChangeData.Flags := MessageFlags.Create(FlagsMasksData);
+    MessageChangeData.Flags := TMessageFlags.Create(FlagsMasksData);
     MessageChangeData.PeerId := ExtraFields.PeerId;
     FOnChangeMessageFlags(Self, MessageChangeData);
   end;
@@ -519,7 +519,7 @@ begin
   if Assigned(FOnNewMessage) then
   begin
     MessageData.MessageId := MessageId;
-    MessageData.Flags := MessageFlags.Create(FlagsMasksData);
+    MessageData.Flags := TMessageFlags.Create(FlagsMasksData);
     MessageData.PeerId := ExtraFields.PeerId;
     MessageData.TimeStamp := UnixToDateTime(ExtraFields.TimeStamp, False);
     MessageData.RandomId := ExtraFields.RandomId;
@@ -567,7 +567,7 @@ begin
   if Assigned(FOnEditMessage) then
   begin
     MessageData.MessageId := MessageId;
-    MessageData.Flags := MessageFlags.Create(FlagsMasksData);
+    MessageData.Flags := TMessageFlags.Create(FlagsMasksData);
     MessageData.PeerId := ExtraFields.PeerId;
     MessageData.TimeStamp := UnixToDateTime(ExtraFields.TimeStamp, False);
     MessageData.Text := ExtraFields.Text;
@@ -671,7 +671,7 @@ begin
   begin
     DialogChangeData.PeerId := PeerId;
     DialogChangeData.ChangeType := ChangeType;
-    DialogChangeData.Flags := DialogFlags.Create(FlagsMasksData);
+    DialogChangeData.Flags := TDialogFlags.Create(FlagsMasksData);
     FOnChangeDialogFlags(Self, DialogChangeData);
   end;
 end;

@@ -20,7 +20,6 @@ type
     procedure BrowserDidFinishLoad(ASender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BrowserDidFailLoadWithError(ASender: TObject);
-    procedure BrowserDidStartLoad(ASender: TObject);
   private
     FLastTitle: string;
     FProxyUserName: string;
@@ -177,11 +176,6 @@ begin
     Browser.Visible := True;
     Show;
   end;
-end;
-
-procedure TFormFMXOAuth2.BrowserDidStartLoad(ASender: TObject);
-begin
-  //
 end;
 
 procedure TFormFMXOAuth2.FAfterRedirect(const AURL: string; var DoCloseWebView: Boolean);

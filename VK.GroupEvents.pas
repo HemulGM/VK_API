@@ -736,7 +736,7 @@ begin
   if Assigned(FOnGroupJoin) then
   begin
     UserId := EventObject.GetValue<Integer>('user_id', -1);
-    JoinType := GroupJoinType.Create(EventObject.GetValue<string>('join_type ', ''));
+    JoinType := TVkGroupJoinType.Create(EventObject.GetValue<string>('join_type ', ''));
     FOnGroupJoin(Self, GroupId, UserId, JoinType, EventId);
   end;
 end;

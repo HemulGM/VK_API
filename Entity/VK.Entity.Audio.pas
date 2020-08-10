@@ -280,7 +280,7 @@ end;
 
 function TVkAudio.GetAudioGenre: TAudioGenre;
 begin
-  Result := AudioGenre.Create(FGenre_Id);
+  Result := TAudioGenre.Create(FGenre_Id);
 end;
 
 procedure TVkAudio.SetAudioGenre(const Value: TAudioGenre);

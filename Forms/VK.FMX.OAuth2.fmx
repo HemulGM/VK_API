@@ -16,7 +16,6 @@ object FormFMXOAuth2: TFormFMXOAuth2
     Size.Width = 800.000000000000000000
     Size.Height = 600.000000000000000000
     Size.PlatformDefault = False
-    OnDidStartLoad = BrowserDidStartLoad
     OnDidFinishLoad = BrowserDidFinishLoad
     OnDidFailLoadWithError = BrowserDidFailLoadWithError
   end

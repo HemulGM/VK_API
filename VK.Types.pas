@@ -149,6 +149,7 @@ const
 type
   {$IFDEF OLD_VERSION}
   TArrayOfString = array of string;
+
   {$ELSE}
 
   TArrayOfString = TArray<string>;
@@ -164,6 +165,7 @@ type
 
   {$IFDEF OLD_VERSION}
   TArrayOfInteger = array of Integer;
+
   {$ELSE}
 
   TArrayOfInteger = TArray<Integer>;
@@ -189,6 +191,7 @@ type
   TParams = array of TParam;
 
   TParamsInt = array of TParamInt;
+
   {$ELSE}
 
   TParams = TArray<TParam>;
@@ -209,6 +212,17 @@ type
     function GetValue(Key: string): string; inline;
     function Remove(Key: string): string; inline;
   end;
+
+type
+  TVkValidationType = (vtUnknown, vtSMS, vtApp);
+
+  TVkValidationTypeHelper = record helper for TVkValidationType
+    class function FromString(const Value: string): TVkValidationType; static;
+  end;
+
+  TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
+
+  TOn2FA = reference to function(const ValidationType: TVkValidationType; var Code: string; var Remember: Boolean): Boolean;
 
   Attachment = class
   public
@@ -237,7 +251,9 @@ type
     function ToVkId: Integer; inline;
   end;
 
-  //‘лаги сообщений
+  /// <summary>
+  ///  ‘лаги сообщений
+  /// </summary>
   TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden,
     mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted,
     mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
@@ -250,18 +266,13 @@ type
 
   TMessageFlagsHelper = record helper for TMessageFlags
     function ToString: string; overload; inline;
+    class function FlagDataToFlag(FlagData: Integer): TMessageFlag; static;
+    class function Create(Data: Integer): TMessageFlags; static;
   end;
 
-  {$WARNINGS OFF}
-  MessageFlags = class
-  public
-    class function FlagDataToFlag(FlagData: Integer): TMessageFlag;
-    class function Create(Data: Integer): TMessageFlags;
-    class function ToString(Flags: TMessageFlags): string;
-  end;
-  {$WARNINGS ON}
-
-  //∆анры музыки
+  /// <summary>
+  ///  ∆анры музыки
+  /// </summary>
 
   TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
     agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
@@ -270,10 +281,7 @@ type
   TAudioGenreHelper = record helper for TAudioGenre
     function ToConst: Integer;
     function ToString: string; inline;
-  end;
-
-  AudioGenre = class
-    class function Create(Value: Integer): TAudioGenre;
+    class function Create(Value: Integer): TAudioGenre; static;
   end;
 
   TVkSort = (stAsc, stDesc);
@@ -507,24 +515,22 @@ type
     class function FromJsonString(AJsonString: string): TVkMessageAttachmentInfo;
   end;
 
-  //‘лаги диалогов
+  /// <summary>
+  ///  ‘лаги диалогов
+  /// </summary>
   TDialogFlag = (dfImportant, dfUnanswered);
 
   TDialogFlags = set of TDialogFlag;
 
   TDialogFlagsHelper = record helper for TDialogFlags
     function ToString: string; overload; inline;
+    class function FlagDataToFlag(FlagData: Integer): TDialogFlag; static;
+    class function Create(Data: Integer): TDialogFlags; static;
   end;
 
-  {$WARNINGS OFF}
-  DialogFlags = class
-    class function FlagDataToFlag(FlagData: Integer): TDialogFlag;
-    class function Create(Data: Integer): TDialogFlags;
-    class function ToString(Flags: TDialogFlags): string;
-  end;
-  {$WARNINGS ON}
-
-  //»дентификатор типа изменени€ в чате
+  /// <summary>
+  ///  »дентификатор типа изменени€ в чате
+  /// </summary>
 
   TChatChangeInfoType = (citNone, citName, citPic, citNewAdmin, citFixMessage, citJoin, citLeave, citKick, citUnadmin);
 
@@ -532,17 +538,23 @@ type
     function ToString: string; overload; inline;
   end;
 
-  //ѕлатформы
+  /// <summary>
+  ///  ѕлатформы
+  /// </summary>
   TVkPlatform = (pfUnknown, pfMobile, pfIPhone, pfIPad, pfAndroid, pfWindowsPhone, pfWindows, pfWeb);
 
-  //“ип смены флагов
+  /// <summary>
+  ///  “ип смены флагов
+  /// </summary>
   TFlagsChangeType = (fcFlagsReplace, fcFlagsSet, fcFlagsReset);
 
   TMessageChangeTypeHelper = record helper for TFlagsChangeType
     function ToString: string; overload; inline;
   end;
 
-  //“ипы объектов
+  /// <summary>
+  ///  “ипы объектов
+  /// </summary>
   TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment,
     itTopicComment, itMarketComment, itSitepage, itStory);
 
@@ -550,7 +562,9 @@ type
     function ToString: string; inline;
   end;
 
-  //“ипы объектов
+  /// <summary>
+  ///  “ипы вложений
+  /// </summary>
   TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWallReply,
     atSticker, atGift, atCall, atAudioMessage, atPostedPhoto, atGraffiti, atNote, atApp, atPoll, atPage, atAlbum,
     atPhotosList, atPrettyCards, atEvent);
@@ -573,40 +587,48 @@ type
     function ToString: string; inline;
   end;
 
+  /// <summary>
+  /// именительный Ц nom, родительный Ц gen, дательный Ц dat, винительный Ц acc, творительный Ц ins, предложный Ц abl
+  /// </summary>
   TVkNameCase = (ncNom, ncGen, ncDat, ncAcc, ncIns, ncAbl);
 
   TVkNameCaseHelper = record helper for TVkNameCase
     function ToString: string; inline;
   end;
-  {
-  именительный Ц nom, родительный Ц gen, дательный Ц dat, винительный Ц acc, творительный Ц ins, предложный Ц abl. ѕо умолчанию nom.
-  }
 
-  //ѕол
-
+  /// <summary>
+  ///  ѕол
+  /// </summary>
   TVkSex = (sxMale, sxFemale);
 
+  /// <summary>
+  ///  ѕол - поиск
+  /// </summary>
   TVkSexSearch = (sxsAny, sxsMale, sxsFemale);
 
-  //¬идимость даты рождени€
+  /// <summary>
+  ///  ¬идимость даты рождени€
+  /// </summary>
   TVkBirthDateVisibility = (dvVisible, dvDayMonOnly, dvHidden);
 
-  //ќтношени€
+  /// <summary>
+  /// ќтношени€.
+  ///  rnNone Ч не указано.
+  ///  rnNotMarried Ч не женат/не замужем;
+  ///  rnHaveFriend Ч есть друг/есть подруга;
+  ///  rnAffiance Ч помолвлен/помолвлена;
+  ///  rnMarried Ч женат/замужем;
+  ///  rnComplicated Ч всЄ сложно;
+  ///  rnnActivelyLooking Ч в активном поиске;
+  ///  rnInLove Ч влюблЄн/влюблена;
+  ///  rnCivilMarriage Ч в гражданском браке;
+  /// </summary>
   TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove,
     rnCivilMarriage);
-   {0 Ч не указано.
-    1 Ч не женат/не замужем;
-    2 Ч есть друг/есть подруга;
-    3 Ч помолвлен/помолвлена;
-    4 Ч женат/замужем;
-    5 Ч всЄ сложно;
-    6 Ч в активном поиске;
-    7 Ч влюблЄн/влюблена;
-    8 Ч в гражданском браке;}
 
-
-  //—труктура событи€ вход€щего сообщени€
-
+  /// <summary>
+  /// —труктура событи€ вход€щего сообщени€
+  /// </summary>
   TMessageData = record
     MessageId: Integer;
     Flags: TMessageFlags;
@@ -703,10 +725,7 @@ type
 
   TGroupJoinTypeHelper = record helper for TVkGroupJoinType
     function ToString: string; overload; inline;
-  end;
-
-  GroupJoinType = class
-    class function Create(Value: string): TVkGroupJoinType;
+    class function Create(Value: string): TVkGroupJoinType; static;
   end;
 
   TVkGroupLevel = (glNone, glModer, glEditor, glAdmin);
@@ -904,7 +923,7 @@ function PeerIdIsGroup(Value: Integer): Boolean;
 implementation
 
 uses
-  VK.CommonUtils, System.DateUtils;
+  VK.CommonUtils, System.DateUtils, System.StrUtils;
 
 function PeerIdIsChat(Value: Integer): Boolean;
 begin
@@ -1393,41 +1412,6 @@ begin
   Result := ErrStr;
 end;
 
-{ MessageFlags }
-
-class function MessageFlags.Create(Data: Integer): TMessageFlags;
-var
-  i: TMessageFlag;
-begin
-  Result := [];
-  for i := Low(VkMessageFlags) to High(VkMessageFlags) do
-  begin
-    if (Data - VkMessageFlags[i]) >= 0 then
-    begin
-      Include(Result, FlagDataToFlag(VkMessageFlags[i]));
-      Data := Data - VkMessageFlags[i];
-    end;
-  end;
-end;
-
-class function MessageFlags.FlagDataToFlag(FlagData: Integer): TMessageFlag;
-var
-  i: TMessageFlag;
-begin
-  Result := mfChat;
-  for i := Low(VkMessageFlags) to High(VkMessageFlags) do
-    if VkMessageFlags[i] = FlagData then
-      Exit(i);
-end;
-
-class function MessageFlags.ToString(Flags: TMessageFlags): string;
-var
-  Flag: TMessageFlag;
-begin
-  for Flag in Flags do
-    Result := Result + Flag.ToString + ' ';
-end;
-
 { TMessageChangeTypeHelper }
 
 function TMessageChangeTypeHelper.ToString: string;
@@ -1488,9 +1472,44 @@ begin
   end;
 end;
 
-{ DialogFlags }
+{ TMessageFlagsHelper }
 
-class function DialogFlags.Create(Data: Integer): TDialogFlags;
+class function TMessageFlagsHelper.Create(Data: Integer): TMessageFlags;
+var
+  i: TMessageFlag;
+begin
+  Result := [];
+  for i := Low(VkMessageFlags) to High(VkMessageFlags) do
+  begin
+    if (Data - VkMessageFlags[i]) >= 0 then
+    begin
+      Include(Result, FlagDataToFlag(VkMessageFlags[i]));
+      Data := Data - VkMessageFlags[i];
+    end;
+  end;
+end;
+
+class function TMessageFlagsHelper.FlagDataToFlag(FlagData: Integer): TMessageFlag;
+var
+  i: TMessageFlag;
+begin
+  Result := mfChat;
+  for i := Low(VkMessageFlags) to High(VkMessageFlags) do
+    if VkMessageFlags[i] = FlagData then
+      Exit(i);
+end;
+
+function TMessageFlagsHelper.ToString: string;
+var
+  Flag: TMessageFlag;
+begin
+  for Flag in Self do
+    Result := Result + Flag.ToString + ' ';
+end;
+
+{ TDialogFlagsHelper }
+
+class function TDialogFlagsHelper.Create(Data: Integer): TDialogFlags;
 var
   i: Integer;
 begin
@@ -1505,7 +1524,7 @@ begin
   end;
 end;
 
-class function DialogFlags.FlagDataToFlag(FlagData: Integer): TDialogFlag;
+class function TDialogFlagsHelper.FlagDataToFlag(FlagData: Integer): TDialogFlag;
 begin
   case FlagData of
     GR_IMPORTANT:
@@ -1517,31 +1536,17 @@ begin
   end;
 end;
 
-class function DialogFlags.ToString(Flags: TDialogFlags): string;
+function TDialogFlagsHelper.ToString: string;
 var
   Flag: TDialogFlag;
 begin
-  for Flag in Flags do
+  for Flag in Self do
     case Flag of
       dfImportant:
         Result := Result + 'Important ';
       dfUnanswered:
         Result := Result + 'Unanswered ';
     end;
-end;
-
-{ TMessageFlagsHelper }
-
-function TMessageFlagsHelper.ToString: string;
-begin
-  Result := MessageFlags.ToString(Self);
-end;
-
-{ TDialogFlagsHelper }
-
-function TDialogFlagsHelper.ToString: string;
-begin
-  Result := DialogFlags.ToString(Self);
 end;
 
 { TChatChangeInfoTypeHelper }
@@ -1664,35 +1669,6 @@ begin
     Self[i] := Source[i];
 end;
 
-{ TPermissionsHelper }
-
-{$IFDEF OLD_VERSION}
-
-function TPermissionsHelper.ToString: string;
-var
-  i: Integer;
-begin
-  for i := Low(Self) to High(Self) do
-  begin
-    if i <> Low(Self) then
-      Result := Result + ',';
-    Result := Result + Self[i];
-  end;
-end;
-
-procedure TPermissionsHelper.Assign(Source: TStrings);
-var
-  i: Integer;
-begin
-  SetLength(Self, Source.Count);
-  for i := 0 to Source.Count - 1 do
-  begin
-    Self[i] := Source[i];
-  end;
-end;
-
-{$ENDIF}
-
 { TParamsHelper }
 
 function TParamsHelper.Add(Param: TParam): Integer;
@@ -1777,6 +1753,16 @@ end;
 
 { TAudioGenreHelper }
 
+class function TAudioGenreHelper.Create(Value: Integer): TAudioGenre;
+var
+  i: TAudioGenre;
+begin
+  Result := agOther;
+  for i := Low(VkAudioGenres) to High(VkAudioGenres) do
+    if VkAudioGenres[i] = Value then
+      Exit(i);
+end;
+
 function TAudioGenreHelper.ToConst: Integer;
 begin
   Result := VkAudioGenres[Self];
@@ -1787,19 +1773,23 @@ begin
   Result := VkAudioGenresStr[Self];
 end;
 
-{ AudioGenre }
-
-class function AudioGenre.Create(Value: Integer): TAudioGenre;
-var
-  i: TAudioGenre;
-begin
-  Result := agOther;
-  for i := Low(VkAudioGenres) to High(VkAudioGenres) do
-    if VkAudioGenres[i] = Value then
-      Exit(i);
-end;
-
 { TGroupJoinTypeHelper }
+
+class function TGroupJoinTypeHelper.Create(Value: string): TVkGroupJoinType;
+begin
+  Value := LowerCase(Value);
+  if Value = 'join' then
+    Exit(jtJoin);
+  if Value = 'unsure' then
+    Exit(jtUnsure);
+  if Value = 'accepted' then
+    Exit(jtAccepted);
+  if Value = 'approved' then
+    Exit(jtApproved);
+  if Value = 'request' then
+    Exit(jtRequest);
+  Result := jtUnknown;
+end;
 
 function TGroupJoinTypeHelper.ToString: string;
 begin
@@ -1826,24 +1816,6 @@ begin
   else
     Exit('');
   end;
-end;
-
-{ GroupJoinType }
-
-class function GroupJoinType.Create(Value: string): TVkGroupJoinType;
-begin
-  Value := LowerCase(Value);
-  if Value = 'join' then
-    Exit(jtJoin);
-  if Value = 'unsure' then
-    Exit(jtUnsure);
-  if Value = 'accepted' then
-    Exit(jtAccepted);
-  if Value = 'approved' then
-    Exit(jtApproved);
-  if Value = 'request' then
-    Exit(jtRequest);
-  Result := jtUnknown;
 end;
 
 { TUserBlockReasonHelper }
@@ -2475,6 +2447,20 @@ begin
       Result := 'banned';
     lsProcessing:
       Result := 'processing';
+  end;
+end;
+
+{ TVkValidationTypeHelper }
+
+class function TVkValidationTypeHelper.FromString(const Value: string): TVkValidationType;
+begin
+  case IndexStr(Value, ['2fa_sms', '2fa_app']) of
+    0:
+      Result := vtSMS;
+    1:
+      Result := vtApp;
+  else
+    Result := vtUnknown;
   end;
 end;
 
