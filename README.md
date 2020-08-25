@@ -125,7 +125,7 @@ begin
   Params.OwnerId(-145962568);
   Params.FromGroup(True);
   Params.Signed(True);
-  Params.Attachments(['doc58553419_533494309_657138cd5d7842ae0a']);
+  Params.Attachments([Attachment.Doc(58553419, 533494309, '657138cd5d7842ae0a')]);
   VK.Wall.Post(Params);
 end;  
 ```
@@ -175,7 +175,7 @@ begin
     begin
       if VK.Photos.SaveMessagesPhoto(Response, Photos) then
       begin
-        FileName := CreateAttachment('photo', Photos.Items[0].OwnerId, Photos.Items[0].Id, Photos.Items[0].AccessKey);
+        FileName := Photos.Items[0].ToAttachment;
         Vk.Messages.
           Send.
           PeerId(PeerId).
