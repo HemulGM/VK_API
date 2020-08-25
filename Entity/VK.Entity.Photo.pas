@@ -3,7 +3,7 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Attachment;
 
 type
   TVkPhotoTag = class
@@ -45,14 +45,13 @@ type
     class function FromJsonString(AJsonString: string): TVkPhotoTags;
   end;
 
-  TVkPhoto = class
+  TVkPhoto = class(TVkObject, IAttachment)
   private
     FAlbum_id: Integer;
     FCan_comment: Integer;
     FCan_repost: Integer;
     FComments: TVkCommentsInfo;
     FDate: Int64;
-    FId: Integer;
     FLikes: TVkLikesInfo;
     FOwner_id: Integer;
     FReposts: TVkRepostsInfo;
@@ -74,7 +73,6 @@ type
     FPlacer_id: Integer;
     FTag_id: Integer;
   public
-    property Id: Integer read FId write FId;
     property AlbumId: Integer read FAlbum_id write FAlbum_id;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property UserId: Integer read FUser_id write FUser_id;
@@ -104,8 +102,9 @@ type
     property TagCreated: Int64 read FTag_created write FTag_created;
     property TagId: Integer read FTag_id write FTag_id;
     //
-    constructor Create;
+    constructor Create();
     destructor Destroy; override;
+    function ToAttachment: string;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPhoto;
   end;
@@ -157,9 +156,12 @@ type
 
 implementation
 
+uses
+  VK.Types;
+
 {TVkPhoto}
 
-constructor TVkPhoto.Create;
+constructor TVkPhoto.Create();
 begin
   inherited;
   FLikes := TVkLikesInfo.Create();
@@ -181,6 +183,11 @@ begin
   FComments.Free;
   FTags.Free;
   inherited;
+end;
+
+function TVkPhoto.ToAttachment: string;
+begin
+  Attachment.Photo(Id, OwnerId, AccessKey);
 end;
 
 function TVkPhoto.ToJsonString: string;

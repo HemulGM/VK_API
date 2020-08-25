@@ -3,7 +3,7 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Privacy;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Privacy;
 
 type
   TVkAlbumThumb = class
@@ -29,7 +29,7 @@ type
     class function FromJsonString(AJsonString: string): TVkAlbumThumb;
   end;
 
-  TVkPhotoAlbum = class
+  TVkPhotoAlbum = class(TVkObject, IAttachment)
   private
     FCreated: Int64;
     FDescription: string;
@@ -48,6 +48,7 @@ type
     FUpload_by_admins_only: Boolean;
     FComments_disabled: Boolean;
     FCan_upload: Boolean;
+    FAccess_key: string;
     function GetCreated: TDateTime;
     function GetUpdated: TDateTime;
     procedure SetCreated(const Value: TDateTime);
@@ -70,9 +71,11 @@ type
     property UploadByAdminsOnly: Boolean read FUpload_by_admins_only write FUpload_by_admins_only;
     property CommentsDisabled: Boolean read FComments_disabled write FComments_disabled;
     property CanUpload: Boolean read FCan_upload write FCan_upload;
+    property AccessKey: string read FAccess_key write FAccess_key;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
+    function ToAttachment: string;
     class function FromJsonString(AJsonString: string): TVkPhotoAlbum;
   end;
 
@@ -91,7 +94,7 @@ type
 implementation
 
 uses
-  System.DateUtils;
+  System.DateUtils, VK.Types;
 
 {TVkPhotoAlbum}
 
@@ -114,6 +117,11 @@ begin
   FPrivacy_view.Free;
   FPrivacy_comment.Free;
   inherited;
+end;
+
+function TVkPhotoAlbum.ToAttachment: string;
+begin
+  Result := Attachment.Album(Id, OwnerId, AccessKey);
 end;
 
 function TVkPhotoAlbum.ToJsonString: string;

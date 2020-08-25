@@ -6,11 +6,18 @@ uses
   Generics.Collections, Rest.Json, System.Json;
 
 type
+  TVkKeyboardButtonColor = (bcPositive, bcNegative, bcPrimary, bcSecondary);
+
+  TVkKeyboardButtonColorHelper = record helper for TVkKeyboardButtonColor
+    function ToString: string; inline;
+  end;
+
   TVkKeyboardConstructor = record
     FList: TArray<TArray<string>>;
     FOneTime: Boolean;
     FInline: Boolean;
-    procedure AddButtonText(Group: Integer; Caption, Payload, Color: string);
+    procedure AddButtonText(Group: Integer; Caption, Payload, Color: string); overload;
+    procedure AddButtonText(Group: Integer; Caption, Payload: string; Color: TVkKeyboardButtonColor); overload;
     procedure AddButtonOpenLink(Group: Integer; Link, Caption, Payload: string);
     procedure SetOneTime(Value: Boolean);
     procedure SetInline(Value: Boolean);
@@ -166,6 +173,11 @@ begin
   JS.Free;
 end;
 
+procedure TVkKeyboardConstructor.AddButtonText(Group: Integer; Caption, Payload: string; Color: TVkKeyboardButtonColor);
+begin
+  AddButtonText(Group, Caption, Payload, Color.ToString);
+end;
+
 procedure TVkKeyboardConstructor.SetInline(Value: Boolean);
 begin
   FInline := Value;
@@ -217,6 +229,24 @@ end;
 function TVkPayloadButton.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkKeyboardButtonColorHelper }
+
+function TVkKeyboardButtonColorHelper.ToString: string;
+begin
+  case Self of
+    bcPositive:
+      Result := 'positive';
+    bcNegative:
+      Result := 'negative';
+    bcPrimary:
+      Result := 'primary';
+    bcSecondary:
+      Result := 'secondary';
+  else
+    Result := ''
+  end;
 end;
 
 end.

@@ -3,7 +3,7 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Attachment;
 
 type
   TVkPreviewPhoto = class
@@ -27,7 +27,7 @@ type
     class function FromJsonString(AJsonString: string): TVkPreview;
   end;
 
-  TVkDocument = class
+  TVkDocument = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
     FDate: Int64;

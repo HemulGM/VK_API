@@ -3,7 +3,7 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Types;
+  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment;
 
 type
   TVkAudioArtist = class
@@ -87,7 +87,7 @@ type
     class function FromJsonString(AJsonString: string): TVkAudioChartInfo;
   end;
 
-  TVkAudio = class
+  TVkAudio = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
     FAds: TVkAudioAds;
@@ -145,6 +145,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
+    function ToAttachment: string;
     class function FromJsonString(AJsonString: string): TVkAudio;
     class function FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
   end;
@@ -261,6 +262,11 @@ begin
   if Assigned(FAds) then
     FAds.Free;
   inherited;
+end;
+
+function TVkAudio.ToAttachment: string;
+begin
+  Result := Attachment.Audio(Id, OwnerId, AccessKey);
 end;
 
 function TVkAudio.ToJsonString: string;

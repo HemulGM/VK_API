@@ -6,6 +6,13 @@ uses
   Generics.Collections, Rest.Json;
 
 type
+  TVkObject = class(TInterfacedObject)
+  private
+    FId: Integer;
+  public
+    property Id: Integer read FId write FId;
+  end;
+
   TVkLastActivity = class
   private
     FOnline: Integer;

@@ -228,7 +228,7 @@ uses
   VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages, VK.Entity.Audio.Upload,
   VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
   VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search, VK.Entity.Database.Regions,
-  VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories;
+  VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories, REST.Json;
 
 {$R *.dfm}
 
@@ -862,6 +862,8 @@ begin
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
   VK1.Login;
+
+
 end;
 {
 procedure TFormMain.VK1Auth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var
