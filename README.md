@@ -143,10 +143,10 @@ var
   Keys: TVkKeyboardConstructor;
 begin
   Keys.SetOneTime(True);
-  Keys.AddButtonText(0, 'Погода', 'weather', 'positive');
-  Keys.AddButtonText(0, 'Отмена', 'cancel', 'negative');
-  Keys.AddButtonText(1, 'Информация', 'info', 'primary');
-  Keys.AddButtonText(1, 'Команды', 'commands', 'secondary');
+  Keys.AddButtonText(0, 'Погода', 'weather', bcPositive);
+  Keys.AddButtonText(0, 'Отмена', 'cancel', bcNegative);
+  Keys.AddButtonText(1, 'Информация', 'info', bcPrimary);
+  Keys.AddButtonText(1, 'Команды', 'commands', bcSecondary);
   Vk.Messages.
     Send.
     PeerId(PeerId).
