@@ -337,7 +337,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkAudioInfoItems.FromJsonString(AppendItemsTag(Response));
+        Items := TVkAudioInfoItems.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -463,7 +463,7 @@ begin
     if Result then
     begin
       try
-        Audios := TVkAudios.FromJsonString(AppendItemsTag(Response));
+        Audios := TVkAudios.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;

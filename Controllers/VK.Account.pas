@@ -305,9 +305,9 @@ function TAccountController.SetPushSettings(const DeviceId, Settings, Key, Value
 var
   Params: TParams;
 begin
-  Params.Add(['device_id', DeviceId]);
+  Params.Add('device_id', DeviceId);
   if not Settings.IsEmpty then
-    Params.Add(['settings', Settings]);
+    Params.Add('settings', Settings);
   if not Key.IsEmpty then
   begin
     Params.Add(['key', Key]);
@@ -321,10 +321,10 @@ function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer
 var
   Params: TParams;
 begin
-  Params.Add(['device_id', DeviceId]);
-  Params.Add(['time', Time.ToString]);
-  Params.Add(['peer_id', PeerId]);
-  Params.Add(['sound', Ord(Sound).ToString]);
+  Params.Add('device_id', DeviceId);
+  Params.Add('time', Time);
+  Params.Add('peer_id', PeerId);
+  Params.Add('sound', Sound);
   with Handler.Execute('account.setSilenceMode', Params) do
     Result := Success and (Response = '1');
 end;
@@ -346,10 +346,10 @@ var
   Params: TParams;
 begin
   if not DeviceId.IsEmpty then
-    AddParam(Params, ['device_id', DeviceId]);
+    Params.Add('device_id', DeviceId);
   if not Token.IsEmpty then
-    AddParam(Params, ['token', Token]);
-  AddParam(Params, ['sandbox', BoolToString(Sandbox)]);
+    Params.Add('token', Token);
+  Params.Add('sandbox', Sandbox);
   with Handler.Execute('account.unregisterDevice', Params) do
     Result := Success and (Response = '1');
 end;

@@ -141,7 +141,7 @@ begin
     if Result then
     begin
       try
-        Status := TVkNotificationMessageStatuses.FromJsonString(AppendItemsTag(Response));
+        Status := TVkNotificationMessageStatuses.FromJsonString(ResponseAsItems);
         Status.Count := Length(Status.Items);
       except
         Result := False;

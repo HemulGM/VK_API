@@ -200,8 +200,11 @@ type
   {$ENDIF}
 
   TParamsHelper = record helper for TParams
+  private
+    function AddParam(var Dest: TParams; Param: TParam): Integer; inline;
+  public
     function Add(Param: TParam): Integer; overload; inline;
-    function Add(Key, Value: string): Integer; overload; inline;
+    function Add(Key: string; Value: string): Integer; overload; inline;
     function Add(Key: string; Value: Integer): Integer; overload; inline;
     function Add(Key: string; Value: Extended): Integer; overload; inline;
     function Add(Key: string; Value: TDateTime): Integer; overload; inline;
@@ -226,11 +229,18 @@ type
 
   Attachment = class
   public
-    class function Album(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
-    class function Doc(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Photo(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
     class function Video(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
     class function Audio(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
-    class function Photo(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Doc(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Link(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Market(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function MarketAlbum(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Wall(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function WallReply(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Sticker(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Gift(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
+    class function Album(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
     class function Create(&Type: string; OwnerId, Id: Integer; AccessKey: string): string; static;
   end;
 
@@ -258,14 +268,9 @@ type
     mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted,
     mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
 
-  TMessageFlagHelper = record helper for TMessageFlag
-    function ToString: string; inline;
-  end;
-
   TMessageFlags = set of TMessageFlag;
 
   TMessageFlagsHelper = record helper for TMessageFlags
-    function ToString: string; overload; inline;
     class function FlagDataToFlag(FlagData: Integer): TMessageFlag; static;
     class function Create(Data: Integer): TMessageFlags; static;
   end;
@@ -273,7 +278,6 @@ type
   /// <summary>
   ///  Жанры музыки
   /// </summary>
-
   TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
     agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
     agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
@@ -659,11 +663,14 @@ type
   end;
 
   TResponse = record
+  private
+    function AppendItemsTag(JSON: string): string; inline;
+  public
     Success: Boolean;
     Response: string;
     JSON: string;
     Error: TResponseError;
-    function ResponseWithItems: string;
+    function ResponseAsItems: string;
     function ResponseIsTrue: Boolean;
     function ResponseIsFalse: Boolean;
     function ResponseAsInt(var Value: Integer): Boolean;
@@ -824,6 +831,8 @@ type
 
 var
   VkUserActive: array[Boolean] of string = ('Бездействие', 'Покинул сайт');
+  VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone',
+    'iPad', 'Android', 'Windows Phone', 'Windows', 'Web');
   VkGroupLevel: array[TVkGroupLevel] of string = ('Участник', 'Модератор',
     'Редактор', 'Администратор');
   VkUserBlockReason: array[TVkUserBlockReason] of string = ('Другое', 'Спам',
@@ -835,6 +844,11 @@ var
     'Unknown_5', 'Unknown_4', 'UnreadMultichat', 'Unknown_3', 'Unknown_2',
     'Unknown_1', 'Media', 'Fixed', 'Deleted', 'Spam', 'Friends', 'Chat',
     'Important', 'Replied', 'Outbox', 'Unread');
+  VkAudioGenresStr: array[TAudioGenre] of string = ('', 'Rock', 'Pop',
+    'RapAndHipHop', 'EasyListening', 'HouseAndDance', 'Instrumental', 'Metal',
+    'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson',
+    'Ethnic', 'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech',
+    'ElectropopAndDisco', 'Other');
 
 var
   VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8,
@@ -847,14 +861,8 @@ var
     AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS,
     AG_TRANCE, AG_CHANSON, AG_ETHNIC, AG_ACOUSTICANDVOCAL, AG_REGGAE,
     AG_CLASSICAL, AG_INDIEPOP, AG_SPEECH, AG_ELECTROPOPANDDISCO, AG_OTHER);
-  VkAudioGenresStr: array[TAudioGenre] of string = ('', 'Rock', 'Pop',
-    'RapAndHipHop', 'EasyListening', 'HouseAndDance', 'Instrumental', 'Metal',
-    'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson',
-    'Ethnic', 'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech',
-    'ElectropopAndDisco', 'Other');
   VkDialogFlags: array[TDialogFlag] of Integer = (GR_UNANSWERED, GR_IMPORTANT);
-  VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone',
-    'iPad', 'Android', 'Windows Phone', 'Windows', 'Web');
+  //
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video',
     'audio', 'doc', 'link', 'market', 'market_album', 'wall', 'wall_reply',
     'sticker', 'gift', 'call', 'audio_message', 'posted_photo', 'graffiti', 'note',
@@ -908,10 +916,6 @@ var
 
 function VKErrorString(ErrorCode: Integer): string;
 
-function AddParam(var Dest: TParams; Param: TParam): Integer;
-
-function AppendItemsTag(JSON: string): string;
-
 function NormalizePeerId(Value: Integer): Integer;
 
 function PeerIdIsChat(Value: Integer): Boolean;
@@ -947,26 +951,6 @@ begin
   if Value > VK_GROUP_ID_START then
     Exit(-(Value - VK_GROUP_ID_START));
   Result := Value;
-end;
-
-function AppendItemsTag(JSON: string): string;
-begin
-  Result := '{"Items": ' + JSON + '}';
-end;
-
-function AddParam(var Dest: TParams; Param: TParam): Integer;
-var
-  i: Integer;
-begin
-  for i := Low(Dest) to High(Dest) do
-    if Dest[i][0] = Param[0] then
-    begin
-      Dest[i] := Param;
-      Exit(i);
-    end;
-  Result := Length(Dest) + 1;
-  SetLength(Dest, Result);
-  Dest[Result - 1] := Param;
 end;
 
 function VKErrorString(ErrorCode: Integer): string;
@@ -1499,14 +1483,6 @@ begin
       Exit(i);
 end;
 
-function TMessageFlagsHelper.ToString: string;
-var
-  Flag: TMessageFlag;
-begin
-  for Flag in Self do
-    Result := Result + Flag.ToString + ' ';
-end;
-
 { TDialogFlagsHelper }
 
 class function TDialogFlagsHelper.Create(Data: Integer): TDialogFlags;
@@ -1671,6 +1647,21 @@ end;
 
 { TParamsHelper }
 
+function TParamsHelper.AddParam(var Dest: TParams; Param: TParam): Integer;
+var
+  i: Integer;
+begin
+  for i := Low(Dest) to High(Dest) do
+    if Dest[i][0] = Param[0] then
+    begin
+      Dest[i] := Param;
+      Exit(i);
+    end;
+  Result := Length(Dest) + 1;
+  SetLength(Dest, Result);
+  Dest[Result - 1] := Param;
+end;
+
 function TParamsHelper.Add(Param: TParam): Integer;
 begin
   Result := AddParam(Self, Param);
@@ -1742,13 +1733,6 @@ begin
       Delete(Self, i, 1);
       Break;
     end;
-end;
-
-{ TMessageFlagHelper }
-
-function TMessageFlagHelper.ToString: string;
-begin
-  Result := VkMessageFlagTypes[Self];
 end;
 
 { TAudioGenreHelper }
@@ -2001,7 +1985,12 @@ begin
   Result := Response = '1';
 end;
 
-function TResponse.ResponseWithItems: string;
+function TResponse.AppendItemsTag(JSON: string): string;
+begin
+  Result := '{"Items": ' + JSON + '}';
+end;
+
+function TResponse.ResponseAsItems: string;
 begin
   Result := AppendItemsTag(Response);
 end;
@@ -2116,8 +2105,10 @@ begin
     ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile, ufContacts,
     ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation,
     ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests, ufMusic,
-    ufMovies, ufTV, ufBooks, ufGames,
-    ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup];
+    ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio,
+    ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName,
+    ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe,
+    ufCanBeInvitedGroup];
 end;
 
 function TVkProfileFieldsHelper.ToString: string;
@@ -2402,14 +2393,49 @@ begin
   Result := Create('doc', Id, OwnerId, AccessKey);
 end;
 
+class function Attachment.Gift(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('gift', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.Link(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('link', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.Market(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('market', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.MarketAlbum(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('market_album', Id, OwnerId, AccessKey);
+end;
+
 class function Attachment.Photo(Id, OwnerId: Integer; AccessKey: string): string;
 begin
   Result := Create('photo', Id, OwnerId, AccessKey);
 end;
 
+class function Attachment.Sticker(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('sticker', Id, OwnerId, AccessKey);
+end;
+
 class function Attachment.Video(Id, OwnerId: Integer; AccessKey: string): string;
 begin
   Result := Create('video', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.Wall(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('wall', Id, OwnerId, AccessKey);
+end;
+
+class function Attachment.WallReply(Id, OwnerId: Integer; AccessKey: string): string;
+begin
+  Result := Create('wall_reply', Id, OwnerId, AccessKey);
 end;
 
 class function Attachment.Album(Id, OwnerId: Integer; AccessKey: string): string;

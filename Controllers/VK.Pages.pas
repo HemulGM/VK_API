@@ -138,7 +138,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPageVersions.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPageVersions.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -158,7 +158,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPages.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPages.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;

@@ -305,7 +305,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkFriendInfo.FromJsonString(AppendItemsTag(Response));
+        Items := TVkFriendInfo.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -410,7 +410,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkProfiles.FromJsonString(AppendItemsTag(Response));
+        Items := TVkProfiles.FromJsonString(ResponseAsItems);
         Items.Count := Length(Items.Items);
       except
         Result := False;

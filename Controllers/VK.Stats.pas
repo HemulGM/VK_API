@@ -72,7 +72,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkStatItems.FromJsonString(ResponseWithItems);
+        Items := TVkStatItems.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -93,7 +93,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkStatPostReachItems.FromJsonString(ResponseWithItems);
+        Items := TVkStatPostReachItems.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;

@@ -50,7 +50,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkStorageItems.FromJsonString(AppendItemsTag(Response));
+        Items := TVkStorageItems.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -85,7 +85,7 @@ begin
     begin
       try
         Value := '';
-        Items := TVkStorageItems.FromJsonString(AppendItemsTag(Response));
+        Items := TVkStorageItems.FromJsonString(ResponseAsItems);
         if Length(Items.Items) > 0 then
           Value := Items.Items[0].Value;
         Items.Free;
@@ -110,7 +110,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkStorageKeys.FromJsonString(AppendItemsTag(Response));
+        Items := TVkStorageKeys.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;

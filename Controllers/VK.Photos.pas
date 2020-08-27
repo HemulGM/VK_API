@@ -930,7 +930,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPhotoTags.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPhotoTags.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -1140,7 +1140,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPhotos.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPhotos.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -1167,7 +1167,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPhotos.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPhotos.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -1193,7 +1193,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPhotos.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPhotos.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -1213,7 +1213,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkCoverImages.FromJsonString(AppendItemsTag(Response));
+        Items := TVkCoverImages.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -1325,7 +1325,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPhotos.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPhotos.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;

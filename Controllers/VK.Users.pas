@@ -147,7 +147,7 @@ begin
     if Result then
     begin
       try
-        Users := TVkProfiles.FromJsonString(AppendItemsTag(Response));
+        Users := TVkProfiles.FromJsonString(ResponseAsItems);
         if Length(Users.Items) > 0 then
         begin
           Users.SaveObjects := True;
@@ -182,7 +182,7 @@ begin
     Result := Success;
     if Result then
     try
-      Items := TVkProfiles.FromJsonString(AppendItemsTag(Response));
+      Items := TVkProfiles.FromJsonString(ResponseAsItems);
     except
       Result := False;
     end;

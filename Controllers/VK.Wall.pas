@@ -601,7 +601,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPosts.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPosts.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;

@@ -815,7 +815,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkChats.FromJsonString(AppendItemsTag(Response));
+        Items := TVkChats.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -1042,7 +1042,7 @@ begin
     if Result then
     begin
       try
-        Resp := TVkBasicIndexItems.FromJsonString(AppendItemsTag(Response));
+        Resp := TVkBasicIndexItems.FromJsonString(ResponseAsItems);
         try
           Items := Resp.Items;
         finally

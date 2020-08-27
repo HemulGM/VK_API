@@ -187,7 +187,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPollBackgrounds.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPollBackgrounds.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;

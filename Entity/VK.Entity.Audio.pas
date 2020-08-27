@@ -93,8 +93,8 @@ type
     FAds: TVkAudioAds;
     FAlbum: TVkAudioAlbum;
     FArtist: string;
-    FDate: Extended;
-    FDuration: Extended;
+    FDate: Int64;
+    FDuration: Integer;
     FGenre_id: Integer;
     FId: Integer;
     FIs_licensed: Boolean;
@@ -119,12 +119,12 @@ type
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Artist: string read FArtist write FArtist;
     property Title: string read FTitle write FTitle;
-    property Duration: Extended read FDuration write FDuration;
+    property Duration: Integer read FDuration write FDuration;
     property Url: string read FUrl write FUrl;
     property LyricsId: Integer read FLyrics_id write FLyrics_id;
     property AlbumId: Integer read FAlbum_id write FAlbum_id;
     property GenreId: Integer read FGenre_id write FGenre_id;
-    property Date: Extended read FDate write FDate;
+    property Date: Int64 read FDate write FDate;
     property NoSearch: Integer read FNo_search write FNo_search;
     property IsHQ: Integer read FIs_hq write FIs_hq;
     //

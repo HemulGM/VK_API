@@ -47,7 +47,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPodcasts.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPodcasts.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -63,7 +63,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkPodcasts.FromJsonString(AppendItemsTag(Response));
+        Items := TVkPodcasts.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;

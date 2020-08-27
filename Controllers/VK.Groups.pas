@@ -983,7 +983,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkGroups.FromJsonString(AppendItemsTag(Response));
+        Items := TVkGroups.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
@@ -1232,7 +1232,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkGroupTags.FromJsonString(AppendItemsTag(Response));
+        Items := TVkGroupTags.FromJsonString(ResponseAsItems);
         Items.Count := Length(Items.Items);
       except
         Result := False;
@@ -1393,7 +1393,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkGroupMemberStates.FromJsonString(AppendItemsTag(Response));
+        Items := TVkGroupMemberStates.FromJsonString(ResponseAsItems);
       except
         Result := False;
       end;
