@@ -302,7 +302,7 @@ type
 implementation
 
 uses
-  System.DateUtils;
+  System.DateUtils, VK.CommonUtils;
 
 {TVkAttachment}
 
@@ -451,15 +451,9 @@ begin
 end;
 
 destructor TVkPost.Destroy;
-var
-  Lcopy_historyItem: TVkPost;
-  LAttachment: TVkAttachment;
 begin
-
-  for Lcopy_historyItem in FCopy_history do
-    Lcopy_historyItem.Free;
-  for LAttachment in FAttachments do
-    LAttachment.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPost>(FCopy_history);
+  TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
   FGeo.Free;
   FPost_source.Free;
   FComments.Free;
@@ -492,15 +486,10 @@ end;
 { TVkPosts }
 
 destructor TVkPosts.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkPost>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 
@@ -517,15 +506,10 @@ end;
 { TVkAttachmentHistory }
 
 destructor TVkAttachmentHistory.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkAttachmentHistoryItem>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 
@@ -565,15 +549,10 @@ end;
 { TVkComments }
 
 destructor TVkComments.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkComment>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 
@@ -590,11 +569,8 @@ end;
 { TVkAttachments }
 
 destructor TVkAttachments.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkAttachment>(FItems);
   inherited;
 end;
 
@@ -611,11 +587,8 @@ end;
 { TVkCommentThread }
 
 destructor TVkCommentThread.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkComment>(FItems);
   inherited;
 end;
 

@@ -60,6 +60,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkGift}
 
 function TVkGift.ToJsonString: string;
@@ -75,12 +78,8 @@ end;
 { TVkGiftItems }
 
 destructor TVkGiftItems.Destroy;
-var
-  LitemsItem: TVkGiftItem;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkGiftItem>(FItems);
   inherited;
 end;
 

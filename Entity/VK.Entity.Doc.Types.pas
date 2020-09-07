@@ -33,6 +33,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkDocType}
 
 function TVkDocType.ToJsonString: string;
@@ -48,13 +51,8 @@ end;
 {TVkDocTypes}
 
 destructor TVkDocTypes.Destroy;
-var
-  LitemsItem: TVkDocType;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkDocType>(FItems);
   inherited;
 end;
 

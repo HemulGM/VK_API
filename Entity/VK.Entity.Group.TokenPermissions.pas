@@ -31,6 +31,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkTokenPermission}
 
 function TVkTokenPermission.ToJsonString: string;
@@ -46,13 +49,8 @@ end;
 {TVkTokenPermissions}
 
 destructor TVkTokenPermissions.Destroy;
-var
-  LsettingsItem: TVkTokenPermission;
 begin
-
-  for LsettingsItem in FSettings do
-    LsettingsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkTokenPermission>(FSettings);
   inherited;
 end;
 

@@ -58,6 +58,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkGroupBanInfo}
 
 function TVkGroupBanInfo.GetReason: TVkUserBlockReason;
@@ -115,13 +118,8 @@ end;
 {TVkGroupBans}
 
 destructor TVkGroupBans.Destroy;
-var
-  LitemsItem: TVkGroupBan;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkGroupBan>(FItems);
   inherited;
 end;
 

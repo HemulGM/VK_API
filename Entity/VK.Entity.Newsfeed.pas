@@ -224,7 +224,7 @@ type
 implementation
 
 uses
-  System.DateUtils;
+  System.DateUtils, VK.CommonUtils;
 
 { TVkNewsItem }
 
@@ -240,15 +240,9 @@ begin
 end;
 
 destructor TVkNewsItem.Destroy;
-var
-  Lcopy_historyItem: TVkPost;
-  LAttachment: TVkAttachment;
 begin
-
-  for Lcopy_historyItem in FCopy_history do
-    Lcopy_historyItem.Free;
-  for LAttachment in FAttachments do
-    LAttachment.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPost>(FCopy_history);
+  TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
   FGeo.Free;
   FPhotos.Free;
   FPost_source.Free;
@@ -282,15 +276,10 @@ end;
 { TVkNews }
 
 destructor TVkNews.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkNewsItem>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 
@@ -331,13 +320,9 @@ end;
 { TVkNewsfeedBanned }
 
 destructor TVkNewsfeedBanned.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FMembers) to High(FMembers) do
-    FMembers[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FMembers);
   inherited;
 end;
 
@@ -354,11 +339,8 @@ end;
 { TVkNewsfeedLists }
 
 destructor TVkNewsfeedLists.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkNewsfeedList>(FItems);
   inherited;
 end;
 
@@ -387,12 +369,8 @@ end;
 { TVkSuggestedList }
 
 destructor TVkSuggestedList.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
-  inherited;
+  TArrayHelp.FreeArrayOfObject<TVkSuggestedItem>(FItems);
   inherited;
 end;
 

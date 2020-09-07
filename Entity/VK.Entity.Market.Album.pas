@@ -39,6 +39,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkMarketAlbum}
 
 function TVkMarketAlbum.ToJsonString: string;
@@ -54,13 +57,8 @@ end;
 {TVkMarketAlbums}
 
 destructor TVkMarketAlbums.Destroy;
-var
-  LitemsItem: TVkMarketAlbum;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkMarketAlbum>(FItems);
   inherited;
 end;
 

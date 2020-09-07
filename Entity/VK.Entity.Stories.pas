@@ -155,6 +155,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkStoryReplies}
 
 function TVkStoryReplies.ToJsonString: string;
@@ -198,15 +201,9 @@ end;
 {TVkStories}
 
 destructor TVkStories.Destroy;
-var
-  LstoriesItem: TVkStory;
-  LstoriesItems: TVkStories;
 begin
-
-  for LstoriesItem in FStories do
-    LstoriesItem.Free;
-  for LstoriesItems in FGrouped do
-    LstoriesItems.Free;
+  TArrayHelp.FreeArrayOfObject<TVkStory>(FStories);
+  TArrayHelp.FreeArrayOfObject<TVkStories>(FGrouped);
   if Assigned(FApp) then
     FApp.Free;
   inherited;
@@ -240,16 +237,10 @@ end;
 {TVkStoriesItems}
 
 destructor TVkStoriesBlock.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkStories>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 
@@ -266,13 +257,9 @@ end;
 { TVkStoriesBanned }
 
 destructor TVkStoriesBanned.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 
@@ -289,13 +276,9 @@ end;
 { TVkStoryItems }
 
 destructor TVkStoryItems.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 

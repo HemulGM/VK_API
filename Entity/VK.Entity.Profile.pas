@@ -651,25 +651,12 @@ begin
 end;
 
 destructor TVkProfile.Destroy;
-var
-  LcareerItem: TVkCareer;
-  LmilitaryItem: TVkMilitary;
-  LuniversitiesItem: TVkUniversities;
-  LschoolsItem: TVkSchoolInfo;
-  LrelativesItem: TVkRelative;
 begin
-
-  for LcareerItem in FCareer do
-    LcareerItem.Free;
-  for LmilitaryItem in FMilitary do
-    LmilitaryItem.Free;
-  for LuniversitiesItem in FUniversities do
-    LuniversitiesItem.Free;
-  for LschoolsItem in FSchools do
-    LschoolsItem.Free;
-  for LrelativesItem in FRelatives do
-    LrelativesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkCareer>(FCareer);
+  TArrayHelp.FreeArrayOfObject<TVkMilitary>(FMilitary);
+  TArrayHelp.FreeArrayOfObject<TVkUniversities>(FUniversities);
+  TArrayHelp.FreeArrayOfObject<TVkSchoolInfo>(FSchools);
+  TArrayHelp.FreeArrayOfObject<TVkRelative>(FRelatives);
   FOnline_info.Free;
   FCountry.Free;
   FCity.Free;
@@ -720,15 +707,13 @@ begin
 end;
 
 destructor TVkProfiles.Destroy;
-var
-  LItemsItem: TVkProfile;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkProfile>(FItems);
   end;
-
+  {$ENDIF}
   inherited;
 end;
 
@@ -762,11 +747,8 @@ end;
 { TVkFriendInfos }
 
 destructor TVkFriendInfos.Destroy;
-var
-  LItemsItem: TVkFriendInfo;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkFriendInfo>(FItems);
   inherited;
 end;
 
@@ -817,11 +799,8 @@ end;
 { TVkFriendsLists }
 
 destructor TVkFriendsLists.Destroy;
-var
-  Item: TVkFriendsList;
 begin
-  for Item in FItems do
-    Item.Free;
+  TArrayHelp.FreeArrayOfObject<TVkFriendsList>(FItems);
   inherited;
 end;
 
@@ -850,11 +829,8 @@ end;
 { TVkFriendsMutual }
 
 destructor TVkFriendsMutual.Destroy;
-var
-  Item: TVkProfile;
 begin
-  for Item in FUsers do
-    Item.Free;
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FUsers);
   inherited;
 end;
 

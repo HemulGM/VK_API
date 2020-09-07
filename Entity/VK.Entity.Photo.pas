@@ -157,7 +157,7 @@ type
 implementation
 
 uses
-  VK.Types;
+  VK.Types, VK.CommonUtils;
 
 {TVkPhoto}
 
@@ -171,13 +171,8 @@ begin
 end;
 
 destructor TVkPhoto.Destroy;
-var
-  LsizesItem: TVkSize;
 begin
-
-  for LsizesItem in FSizes do
-    LsizesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   FLikes.Free;
   FReposts.Free;
   FComments.Free;
@@ -230,15 +225,13 @@ begin
 end;
 
 destructor TVkPhotos.Destroy;
-var
-  LItemsItem: TVkPhoto;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkPhoto>(FItems);
   end;
-
+  {$ENDIF}
   inherited;
 end;
 
@@ -284,11 +277,8 @@ end;
 { TVkPhotoTags }
 
 destructor TVkPhotoTags.Destroy;
-var
-  LItemsItem: TVkPhotoTag;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPhotoTag>(FItems);
   inherited;
 end;
 

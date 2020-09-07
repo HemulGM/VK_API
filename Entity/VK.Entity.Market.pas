@@ -100,7 +100,6 @@ type
     property ViewsCount: Integer read FViews_count write FViews_count;
     //
     property Quantity: Integer read FQuantity write FQuantity;
-
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -124,6 +123,9 @@ type
   end;
 
 implementation
+
+uses
+  VK.CommonUtils;
 
 {TVkMarketPrice}
 
@@ -183,11 +185,8 @@ begin
 end;
 
 destructor TVkProduct.Destroy;
-var
-  LItemsItem: TVkPhoto;
 begin
-  for LItemsItem in FPhotos do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPhoto>(FPhotos);
   FCategory.Free;
   FPrice.Free;
   if Assigned(FLikes) then
@@ -216,15 +215,13 @@ begin
 end;
 
 destructor TVkProducts.Destroy;
-var
-  LItemsItem: TVkProduct;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkProduct>(FItems);
   end;
-
+  {$ENDIF}
   inherited;
 end;
 
@@ -246,11 +243,8 @@ end;
 { TVkProductCategories }
 
 destructor TVkProductCategories.Destroy;
-var
-  LItemsItem: TVkProductCategory;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkProductCategory>(FItems);
   inherited;
 end;
 

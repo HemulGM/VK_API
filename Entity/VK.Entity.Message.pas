@@ -186,15 +186,9 @@ end;
 {TVkMessage}
 
 destructor TVkMessage.Destroy;
-var
-  Lfwd_messagesItem: TVkMessage;
-  LattachmentsItem: TVkAttachment;
 begin
-
-  for Lfwd_messagesItem in FFwd_messages do
-    Lfwd_messagesItem.Free;
-  for LattachmentsItem in FAttachments do
-    LattachmentsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkMessage>(FFwd_messages);
+  TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
   if Assigned(FReply_message) then
     FReply_message.Free;
   if Assigned(FKeyboard) then
@@ -337,21 +331,15 @@ begin
 end;
 
 destructor TVkMessages.Destroy;
-var
-  LItemsItem: TVkMessage;
-  LGroupItem: TVkGroup;
-  LUserItem: TVkProfile;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
-    for LUserItem in FProfiles do
-      LUserItem.Free;
-    for LGroupItem in FGroups do
-      LGroupItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkMessage>(FItems);
+    TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+    TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   end;
-
+  {$ENDIF}
   inherited;
 end;
 
@@ -385,11 +373,8 @@ begin
 end;
 
 destructor TVkLongPollHistory.Destroy;
-var
-  LUserItem: TVkProfile;
 begin
-  for LUserItem in FProfiles do
-    LUserItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   FMessages.Free;
   inherited;
 end;

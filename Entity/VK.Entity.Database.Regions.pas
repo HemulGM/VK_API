@@ -31,6 +31,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkRegion}
 
 function TVkRegion.ToJsonString: string;
@@ -46,13 +49,8 @@ end;
 {TVkRegions}
 
 destructor TVkRegions.Destroy;
-var
-  LitemsItem: TVkRegion;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkRegion>(FItems);
   inherited;
 end;
 

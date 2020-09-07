@@ -180,7 +180,7 @@ type
 implementation
 
 uses
-  VK.Types;
+  VK.Types, VK.CommonUtils;
 
 {TVkVideoFiles}
 
@@ -217,13 +217,8 @@ begin
 end;
 
 destructor TVkVideo.Destroy;
-var
-  LimageItem: TVkVideoImage;
 begin
-
-  for LimageItem in FImage do
-    LimageItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
   FFiles.Free;
   FLikes.Free;
   FReposts.Free;
@@ -263,15 +258,13 @@ begin
 end;
 
 destructor TVkVideos.Destroy;
-var
-  LItemsItem: TVkVideo;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkVideo>(FItems);
   end;
-
+  {$ENDIF}
   inherited;
 end;
 
@@ -299,13 +292,8 @@ begin
 end;
 
 destructor TVkVideoAlbum.Destroy;
-var
-  LimageItem: TVkVideoImage;
 begin
-
-  for LimageItem in FImage do
-    LimageItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
   FPrivacy.Free;
   inherited;
 end;
@@ -323,13 +311,8 @@ end;
 {TVkVideoAlbums}
 
 destructor TVkVideoAlbums.Destroy;
-var
-  LitemsItem: TVkVideoAlbum;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkVideoAlbum>(FItems);
   inherited;
 end;
 

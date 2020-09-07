@@ -40,6 +40,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkStorageItem}
 
 function TVkStorageItem.ToJsonString: string;
@@ -55,13 +58,8 @@ end;
 {TVkStorageItems}
 
 destructor TVkStorageItems.Destroy;
-var
-  LresponseItem: TVkStorageItem;
 begin
-
-  for LresponseItem in FItems do
-    LresponseItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkStorageItem>(FItems);
   inherited;
 end;
 

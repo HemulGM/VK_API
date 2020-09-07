@@ -116,6 +116,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkApp}
 
 function TVkApp.ToJsonString: string;
@@ -124,12 +127,8 @@ begin
 end;
 
 destructor TVkApp.Destroy;
-var
-  LitemsItem: TVkAppScreenshot;
 begin
-
-  for LitemsItem in FScreenshots do
-    LitemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkAppScreenshot>(FScreenshots);
   inherited;
 end;
 
@@ -141,17 +140,10 @@ end;
 {TVkApps}
 
 destructor TVkApps.Destroy;
-var
-  LitemsItem: TVkApp;
-  i: Integer;
 begin
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkApp>(FItems);
   inherited;
 end;
 
@@ -168,13 +160,8 @@ end;
 { TVkAppScreenshot }
 
 destructor TVkAppScreenshot.Destroy;
-var
-  LsizesItem: TVkSize;
 begin
-
-  for LsizesItem in FSizes do
-    LsizesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   inherited;
 end;
 

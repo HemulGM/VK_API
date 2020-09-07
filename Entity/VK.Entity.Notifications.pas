@@ -167,7 +167,10 @@ type
 
 implementation
 
-{TActionClass_001}
+uses
+  VK.CommonUtils;
+
+{TVkNotificationAction}
 
 function TVkNotificationAction.ToJsonString: string;
 begin
@@ -179,7 +182,7 @@ begin
   result := TJson.JsonToObject<TVkNotificationAction>(AJsonString)
 end;
 
-{TContextClass}
+{TVkNotificationButtonActionContext}
 
 function TVkNotificationButtonActionContext.ToJsonString: string;
 begin
@@ -191,7 +194,7 @@ begin
   result := TJson.JsonToObject<TVkNotificationButtonActionContext>(AJsonString)
 end;
 
-{TActionClass}
+{TVkNotificationButtonAction}
 
 constructor TVkNotificationButtonAction.Create;
 begin
@@ -215,7 +218,7 @@ begin
   result := TJson.JsonToObject<TVkNotificationButtonAction>(AJsonString)
 end;
 
-{THide_buttonsClass}
+{TVkNotificationHideButton}
 
 constructor TVkNotificationHideButton.Create;
 begin
@@ -239,7 +242,7 @@ begin
   result := TJson.JsonToObject<TVkNotificationHideButton>(AJsonString)
 end;
 
-{TMain_itemClass}
+{TVKNotificationMainItem}
 
 function TVKNotificationMainItem.ToJsonString: string;
 begin
@@ -251,7 +254,7 @@ begin
   result := TJson.JsonToObject<TVKNotificationMainItem>(AJsonString)
 end;
 
-{TItemsClass}
+{TVkNotification}
 
 constructor TVkNotification.Create;
 begin
@@ -261,13 +264,8 @@ begin
 end;
 
 destructor TVkNotification.Destroy;
-var
-  Lhide_buttonsItem: TVkNotificationHideButton;
 begin
-
-  for Lhide_buttonsItem in FHide_buttons do
-    Lhide_buttonsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkNotificationHideButton>(FHide_buttons);
   FMain_item.Free;
   FAction.Free;
   inherited;
@@ -283,25 +281,14 @@ begin
   result := TJson.JsonToObject<TVkNotification>(AJsonString)
 end;
 
-{TResponseClass}
+{TVkNotifications}
 
 destructor TVkNotifications.Destroy;
-var
-  LitemsItem: TVkNotification;
-  LprofilesItem: TVkProfile;
-  LgroupsItem: TVkGroup;
-  LphotosItem: TVkPhoto;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-  for LprofilesItem in FProfiles do
-    LprofilesItem.Free;
-  for LgroupsItem in FGroups do
-    LgroupsItem.Free;
-  for LphotosItem in FPhotos do
-    LphotosItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkNotification>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkPhoto>(FPhotos);
   inherited;
 end;
 
@@ -318,12 +305,8 @@ end;
 { TVkNotificationMessageStatuses }
 
 destructor TVkNotificationMessageStatuses.Destroy;
-var
-  LitemsItem: TVkNotificationMessageStatus;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkNotificationMessageStatus>(FItems);
   inherited;
 end;
 

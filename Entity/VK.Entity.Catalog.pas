@@ -3,8 +3,8 @@ unit VK.Entity.Catalog;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Group,
-  VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Profile;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Group, VK.Entity.Audio,
+  VK.Entity.Playlist, VK.Entity.Profile;
 
 type
   TVkCatalogIcon = class
@@ -174,6 +174,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkCatalogButton}
 
 constructor TVkCatalogButton.Create;
@@ -225,16 +228,9 @@ end;
 {TVkCatalogPlaceholder}
 
 destructor TVkCatalogPlaceholder.Destroy;
-var
-  LbuttonsItem: TVkCatalogButton;
-  LiconsItem: TVkCatalogIcon;
 begin
-
-  for LbuttonsItem in FButtons do
-    LbuttonsItem.Free;
-  for LiconsItem in FIcons do
-    LiconsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkCatalogButton>(FButtons);
+  TArrayHelp.FreeArrayOfObject<TVkCatalogIcon>(FIcons);
   inherited;
 end;
 
@@ -269,12 +265,8 @@ begin
 end;
 
 destructor TVkCatalogBlock.Destroy;
-var
-  LbuttonsItem: TVkCatalogButton;
 begin
-
-  for LbuttonsItem in FButtons do
-    LbuttonsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkCatalogButton>(FButtons);
   FLayout.Free;
   inherited;
 end;
@@ -292,13 +284,8 @@ end;
 {TVkCatalogSection}
 
 destructor TVkCatalogSection.Destroy;
-var
-  LblocksItem: TVkCatalogBlock;
 begin
-
-  for LblocksItem in FBlocks do
-    LblocksItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkCatalogBlock>(FBlocks);
   inherited;
 end;
 
@@ -329,13 +316,8 @@ end;
 {TVkCatalogItem}
 
 destructor TVkCatalogItem.Destroy;
-var
-  LsectionsItem: TVkCatalogSection;
 begin
-
-  for LsectionsItem in FSections do
-    LsectionsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkCatalogSection>(FSections);
   inherited;
 end;
 
@@ -358,25 +340,12 @@ begin
 end;
 
 destructor TVkCatalog.Destroy;
-var
-  LprofilesItem: TVkProfile;
-  LgroupsItem: TVkGroup;
-  LaudiosItem: TVkAudio;
-  LplaceholdersItem: TVkCatalogPlaceholder;
-  LplaylistsItem: TVkAudioPlaylist;
 begin
-
-  for LprofilesItem in FProfiles do
-    LprofilesItem.Free;
-  for LgroupsItem in FGroups do
-    LgroupsItem.Free;
-  for LaudiosItem in FAudios do
-    LaudiosItem.Free;
-  for LplaceholdersItem in FPlaceholders do
-    LplaceholdersItem.Free;
-  for LplaylistsItem in FPlaylists do
-    LplaylistsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkAudio>(FAudios);
+  TArrayHelp.FreeArrayOfObject<TVkCatalogPlaceholder>(FPlaceholders);
+  TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FPlaylists);
   FCatalog.Free;
   inherited;
 end;

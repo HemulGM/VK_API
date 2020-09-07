@@ -85,7 +85,7 @@ type
 implementation
 
 uses
-  System.DateUtils;
+  System.DateUtils, VK.CommonUtils;
 
 {TVkNote}
 
@@ -112,13 +112,8 @@ end;
 {TVkNotes}
 
 destructor TVkNotes.Destroy;
-var
-  LitemsItem: TVkNote;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkNote>(FItems);
   inherited;
 end;
 
@@ -147,12 +142,8 @@ end;
 { TVkNoteComments }
 
 destructor TVkNoteComments.Destroy;
-var
-  LitemsItem: TVkNoteComment;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkNoteComment>(FItems);
   inherited;
 end;
 

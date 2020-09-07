@@ -94,7 +94,7 @@ type
 implementation
 
 uses
-  System.DateUtils, VK.Types;
+  System.DateUtils, VK.Types, VK.CommonUtils;
 
 {TVkPhotoAlbum}
 
@@ -107,12 +107,8 @@ begin
 end;
 
 destructor TVkPhotoAlbum.Destroy;
-var
-  LsizesItem: TVkSize;
 begin
-
-  for LsizesItem in FSizes do
-    LsizesItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   FThumb.Free;
   FPrivacy_view.Free;
   FPrivacy_comment.Free;
@@ -169,13 +165,8 @@ end;
 {TVkPhotoAlbums}
 
 destructor TVkPhotoAlbums.Destroy;
-var
-  LitemsItem: TVkPhotoAlbum;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkPhotoAlbum>(FItems);
   inherited;
 end;
 

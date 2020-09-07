@@ -82,7 +82,7 @@ type
 implementation
 
 uses
-  System.DateUtils;
+  System.DateUtils, VK.CommonUtils;
 
 {TTagsClass}
 
@@ -105,13 +105,8 @@ begin
 end;
 
 destructor TVkFave.Destroy;
-var
-  LtagsItem: TVkFaveTag;
 begin
-
-  for LtagsItem in FTags do
-    LtagsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkFaveTag>(FTags);
   if Assigned(FLink) then
     FLink.Free;
   if Assigned(FPost) then
@@ -158,13 +153,8 @@ end;
 {TVkFaves}
 
 destructor TVkFaves.Destroy;
-var
-  LitemsItem: TVkFave;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkFave>(FItems);
   inherited;
 end;
 
@@ -181,13 +171,8 @@ end;
 { TVkFaveTags }
 
 destructor TVkFaveTags.Destroy;
-var
-  LitemsItem: TVkFaveTag;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkFaveTag>(FItems);
   inherited;
 end;
 

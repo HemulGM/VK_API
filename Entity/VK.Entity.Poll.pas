@@ -141,6 +141,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkPollPoints}
 
 function TVkPollPoints.ToJsonString: string;
@@ -156,13 +159,8 @@ end;
 {TVkPollBackground}
 
 destructor TVkPollBackground.Destroy;
-var
-  LpointsItem: TVkPollPoints;
 begin
-
-  for LpointsItem in FPoints do
-    LpointsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkPollPoints>(FPoints);
   inherited;
 end;
 
@@ -197,21 +195,13 @@ begin
 end;
 
 destructor TVkPoll.Destroy;
-var
-  LanswersItem: TVkPollAnswer;
-  LfriendsItem: TVkPollFriends;
 begin
-
-  for LanswersItem in FAnswers do
-    LanswersItem.Free;
-  for LfriendsItem in FFriends do
-    LfriendsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPollAnswer>(FAnswers);
+  TArrayHelp.FreeArrayOfObject<TVkPollFriends>(FFriends);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   if Assigned(FPhoto) then
     FPhoto.Free;
-  for var Group in FGroups do
-    Group.Free;
-  for var User in FProfiles do
-    User.Free;
   FBackground.Free;
   inherited;
 end;
@@ -241,12 +231,8 @@ end;
 { TVkPollBackgrounds }
 
 destructor TVkPollBackgrounds.Destroy;
-var
-  LItem: TVkPollBackground;
 begin
-
-  for LItem in FItems do
-    LItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPollBackground>(FItems);
   inherited;
 end;
 

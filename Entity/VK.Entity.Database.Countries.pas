@@ -46,13 +46,15 @@ end;
 {TVkCountries}
 
 destructor TVkCountries.Destroy;
+{$IFNDEF AUTOREFCOUNT}
 var
   LitemsItem: TVkCountry;
 begin
-
   for LitemsItem in FItems do
     LitemsItem.Free;
-
+{$ELSE}
+begin
+{$ENDIF}
   inherited;
 end;
 

@@ -95,6 +95,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkConversation}
 
 function TVkConversation.ToJsonString: string;
@@ -110,13 +113,8 @@ end;
 {TVkConversations}
 
 destructor TVkConversations.Destroy;
-var
-  LitemsItem: TVkConversation;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkConversation>(FItems);
   inherited;
 end;
 

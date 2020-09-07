@@ -47,7 +47,7 @@ type
 implementation
 
 uses
-  System.Json;
+  System.Json, VK.CommonUtils;
 
 {TVkSchool}
 
@@ -64,13 +64,8 @@ end;
 {TVkSchools}
 
 destructor TVkSchools.Destroy;
-var
-  LitemsItem: TVkSchool;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkSchool>(FItems);
   inherited;
 end;
 

@@ -92,6 +92,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkAudioOriginal}
 
 function TVkAudioOriginal.ToJsonString: string;
@@ -126,16 +129,9 @@ begin
 end;
 
 destructor TVkAudioPlaylist.Destroy;
-var
-  LgenresItem: TVkAudioGenres;
-  Lmain_artistsItem: TVkAudioArtist;
 begin
-
-  for LgenresItem in FGenres do
-    LgenresItem.Free;
-  for Lmain_artistsItem in FMain_artists do
-    Lmain_artistsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkAudioGenres>(FGenres);
+  TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FMain_artists);
   FOriginal.Free;
   FPhoto.Free;
   inherited;
@@ -169,15 +165,11 @@ begin
 end;
 
 destructor TVkPlaylists.Destroy;
-var
-  LItemsItem: TVkAudioPlaylist;
 begin
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FItems);
   end;
-
   inherited;
 end;
 

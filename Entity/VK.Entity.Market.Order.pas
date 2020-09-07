@@ -77,6 +77,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkOrderRecipient}
 
 function TVkOrderRecipient.ToJsonString: string;
@@ -112,13 +115,8 @@ begin
 end;
 
 destructor TVkOrder.Destroy;
-var
-  Lpreview_order_itemsItem: TVkProduct;
 begin
-
-  for Lpreview_order_itemsItem in FPreview_order_items do
-    Lpreview_order_itemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkProduct>(FPreview_order_items);
   FTotal_price.Free;
   FDelivery.Free;
   FRecipient.Free;
@@ -138,13 +136,8 @@ end;
 {TVkOrders}
 
 destructor TVkOrders.Destroy;
-var
-  LitemsItem: TVkOrder;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkOrder>(FItems);
   inherited;
 end;
 

@@ -90,6 +90,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkPage}
 
 function TVkPage.ToJsonString: string;
@@ -117,11 +120,8 @@ end;
 { TVkPageVersions }
 
 destructor TVkPageVersions.Destroy;
-var
-  LItemsItem: TVkPageVersion;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPageVersion>(FItems);
   inherited;
 end;
 
@@ -138,11 +138,8 @@ end;
 { TVkPages }
 
 destructor TVkPages.Destroy;
-var
-  LItemsItem: TVkPage;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPage>(FItems);
   inherited;
 end;
 

@@ -54,6 +54,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkCardImage}
 
 function TVkCardImage.ToJsonString: string;
@@ -75,13 +78,8 @@ begin
 end;
 
 destructor TVkPrettyCard.Destroy;
-var
-  LimagesItem: TVkCardImage;
 begin
-
-  for LimagesItem in FImages do
-    LimagesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkCardImage>(FImages);
   FButton.Free;
   inherited;
 end;
@@ -99,13 +97,8 @@ end;
 {TVkPrettyCards}
 
 destructor TVkPrettyCards.Destroy;
-var
-  LItemsItem: TVkPrettyCard;
 begin
-
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkPrettyCard>(FItems);
   inherited;
 end;
 

@@ -31,6 +31,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkChair}
 
 function TVkChair.ToJsonString: string;
@@ -46,13 +49,8 @@ end;
 {TVkChairs}
 
 destructor TVkChairs.Destroy;
-var
-  LitemsItem: TVkChair;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkChair>(FItems);
   inherited;
 end;
 

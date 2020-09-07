@@ -58,6 +58,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 { TVkSubscription }
 
 function TVkSubscription.ToJsonString: string;
@@ -73,11 +76,8 @@ end;
 { TVkSubscriptions }
 
 destructor TVkSubscriptions.Destroy;
-var
-  LItemsItem: TVkSubscription;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkSubscription>(FItems);
   inherited;
 end;
 

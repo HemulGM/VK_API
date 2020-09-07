@@ -107,6 +107,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkChat}
 
 function TVkChat.ToJsonString: string;
@@ -115,11 +118,8 @@ begin
 end;
 
 destructor TVkChat.Destroy;
-var
-  LItemsItem: TVkProfile;
 begin
-  for LItemsItem in FUsers do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FUsers);
   inherited;
 end;
 
@@ -155,11 +155,8 @@ end;
 { TVkChats }
 
 destructor TVkChats.Destroy;
-var
-  LItemsItem: TVkChat;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkChat>(FItems);
   inherited;
 end;
 
@@ -200,17 +197,10 @@ end;
 { TVkChatPreview }
 
 destructor TVkChatPreview.Destroy;
-var
-  User: TVkProfile;
-  Group: TVkGroup;
-  Email: TVkEmail;
 begin
-  for User in FProfiles do
-    User.Free;
-  for Group in FGroups do
-    Group.Free;
-  for Email in FEmails do
-    Email.Free;
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkEmail>(FEmails);
   inherited;
 end;
 

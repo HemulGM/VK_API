@@ -7,6 +7,12 @@ interface
 uses
   System.Classes, System.Net.HttpClient;
 
+type
+  TArrayHelp = class
+    class procedure FreeArrayOfObject<T: class>(var Target: TArray<T>); overload;
+    class procedure FreeArrayOfArrayOfObject<T: class>(var Target: TArray<TArray<T>>); overload;
+  end;
+
 function DownloadURL(URL: string): TMemoryStream; overload;
 
 function DownloadURL(URL: string; FileName: string): Boolean; overload;
@@ -178,6 +184,35 @@ begin
     Mem.Free;
     HTTP.Free;
   end;
+end;
+
+class procedure TArrayHelp.FreeArrayOfObject<T>(var Target: TArray<T>);
+  {$IFNDEF AUTOREFCOUNT}
+var
+  Item: T;
+  {$ENDIF}
+begin
+  {$IFNDEF AUTOREFCOUNT}
+  //TArrayHelp.FreeArrayOfObject<TVkNote>(FItems);
+  for Item in Target do
+    Item.Free;
+  SetLength(Target, 0);
+  {$ENDIF}
+end;
+
+class procedure TArrayHelp.FreeArrayOfArrayOfObject<T>(var Target: TArray<TArray<T>>);
+  {$IFNDEF AUTOREFCOUNT}
+var
+  Item: T;
+  Items: TArray<T>;
+  {$ENDIF}
+begin
+  {$IFNDEF AUTOREFCOUNT}
+  for Items in Target do
+    for Item in Items do
+      Item.Free;
+  SetLength(Target, 0);
+  {$ENDIF}
 end;
 
 end.

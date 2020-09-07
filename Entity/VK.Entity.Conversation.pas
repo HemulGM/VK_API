@@ -276,6 +276,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkChatAccess}
 
 function TVkChatAccess.ToJsonString: string;
@@ -436,21 +439,10 @@ end;
 { TVkConversationItems }
 
 destructor TVkConversationItems.Destroy;
-var
-  LitemsItem: TVkConversationItem;
-  LgroupItem: TVkGroup;
-  LuserItem: TVkProfile;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
-  for LgroupItem in FGroups do
-    LgroupItem.Free;
-
-  for LuserItem in FProfiles do
-    LuserItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkConversationItem>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 
@@ -473,30 +465,18 @@ begin
 end;
 
 destructor TVkMessageHistory.Destroy;
-var
-  LItemsItem: TVkMessage;
-  LuserItem: TVkProfile;
-  LgroupItem: TVkGroup;
-  LconversationItem: TVkConversation;
 begin
   if not FSaveObjects then
   begin
     if not FSaveMessages then
     begin
-      for LItemsItem in FItems do
-        LItemsItem.Free;
+      TArrayHelp.FreeArrayOfObject<TVkMessage>(FItems);
     end;
 
-    for LuserItem in FProfiles do
-      LuserItem.Free;
-
-    for LgroupItem in FGroups do
-      LgroupItem.Free;
-
-    for LconversationItem in FConversations do
-      LconversationItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+    TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+    TArrayHelp.FreeArrayOfObject<TVkConversation>(FConversations);
   end;
-
   inherited;
 end;
 
@@ -547,19 +527,10 @@ end;
 { TVkConversations }
 
 destructor TVkConversations.Destroy;
-var
-  LItemsItem: TVkConversation;
-  LuserItem: TVkProfile;
-  LgroupItem: TVkGroup;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-
-  for LuserItem in FProfiles do
-    LuserItem.Free;
-
-  for LgroupItem in FGroups do
-    LgroupItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkConversation>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   inherited;
 end;
 
@@ -581,19 +552,10 @@ begin
 end;
 
 destructor TVkImportantMessages.Destroy;
-var
-  LItemsItem: TVkConversation;
-  LuserItem: TVkProfile;
-  LgroupItem: TVkGroup;
 begin
-  for LItemsItem in FConversations do
-    LItemsItem.Free;
-
-  for LuserItem in FProfiles do
-    LuserItem.Free;
-
-  for LgroupItem in FGroups do
-    LgroupItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkConversation>(FConversations);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   FMessages.Free;
   inherited;
 end;

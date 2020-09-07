@@ -1590,11 +1590,15 @@ begin
 end;
 
 destructor TCustomGroupEventControl.Destroy;
+  {$IFNDEF AUTOREFCOUNT}
 var
   i: Integer;
+  {$ENDIF}
 begin
+  {$IFNDEF AUTOREFCOUNT}
   for i := 0 to FItems.Count - 1 do
     FItems[i].Free;
+  {$ENDIF}
   FItems.Free;
   FGroups.Free;
   inherited;

@@ -49,6 +49,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TSubcategoriesClass}
 
 function TVkGroupSubcategory.ToJsonString: string;
@@ -64,17 +67,9 @@ end;
 {TCategoriesClass}
 
 destructor TVkGroupCategory.Destroy;
-var
-  LsubcategoriesItem: TVkGroupSubcategory;
-  Page_previewsItem: TVkGroup;
 begin
-
-  for LsubcategoriesItem in FSubcategories do
-    LsubcategoriesItem.Free;
-
-  for Page_previewsItem in FPage_previews do
-    Page_previewsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkGroupSubcategory>(FSubcategories);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FPage_previews);
   inherited;
 end;
 
@@ -91,13 +86,8 @@ end;
 {TRootClass}
 
 destructor TVkGroupCategories.Destroy;
-var
-  LcategoriesItem: TVkGroupCategory;
 begin
-
-  for LcategoriesItem in FCategories do
-    LcategoriesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkGroupCategory>(FCategories);
   inherited;
 end;
 

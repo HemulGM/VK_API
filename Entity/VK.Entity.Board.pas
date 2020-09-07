@@ -54,7 +54,7 @@ type
 implementation
 
 uses
-  System.DateUtils;
+  System.DateUtils, VK.CommonUtils;
 
 {TVkBoardTopic}
 
@@ -81,17 +81,9 @@ end;
 {TVkBoardTopics}
 
 destructor TVkBoardTopics.Destroy;
-var
-  LitemsItem: TVkBoardTopic;
-  User: TVkProfile;
 begin
-
-  for User in FProfiles do
-    User.Free;
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkBoardTopic>(FItems);
   inherited;
 end;
 

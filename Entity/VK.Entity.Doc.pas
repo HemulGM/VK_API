@@ -93,18 +93,13 @@ type
 implementation
 
 uses
-  VK.Types, System.SysUtils, System.DateUtils;
+  VK.Types, System.SysUtils, System.DateUtils, VK.CommonUtils;
 
 {TVkPreviewPhoto}
 
 destructor TVkPreviewPhoto.Destroy;
-var
-  LsizesItem: TVkSize;
 begin
-
-  for LsizesItem in FSizes do
-    LsizesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   inherited;
 end;
 
@@ -207,15 +202,13 @@ begin
 end;
 
 destructor TVkDocuments.Destroy;
-var
-  LItemsItem: TVkDocument;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkDocument>(FItems);
   end;
-
+  {$ENDIF}
   inherited;
 end;
 

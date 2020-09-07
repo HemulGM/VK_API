@@ -1345,7 +1345,9 @@ begin
         Result := TVkMessageSendResponses.FromJsonString(Response);
     end;
   end;
+  {$IFNDEF AUTOREFCOUNT}
   Free;
+  {$ENDIF}
 end;
 
 procedure TVkMessageNew.SetParams(const Value: TParams);

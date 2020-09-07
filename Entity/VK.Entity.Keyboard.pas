@@ -87,6 +87,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkKeyboardAction}
 
 function TVkKeyboardAction.ToJsonString: string;
@@ -100,15 +103,8 @@ begin
 end;
 
 destructor TVkKeyboard.Destroy;
-var
-  LbuttonsItem: TVkKeyboardButtons;
-  LbuttonItem: TVkKeyboardButton;
 begin
-
-  for LbuttonsItem in FButtons do
-    for LbuttonItem in LbuttonsItem do
-      LbuttonItem.Free;
-
+  TArrayHelp.FreeArrayOfArrayOfObject<TVkKeyboardButton>(FButtons);
   inherited;
 end;
 

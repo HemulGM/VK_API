@@ -76,16 +76,14 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkPodcastCover}
 
 destructor TVkPodcastCover.Destroy;
-var
-  LsizesItem: TVkSize;
 begin
-
-  for LsizesItem in FSizes do
-    LsizesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   inherited;
 end;
 

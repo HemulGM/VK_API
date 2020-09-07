@@ -156,6 +156,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkGroupSettingStr}
 
 function TVkGroupSettingStr.ToJsonString: string;
@@ -267,11 +270,8 @@ begin
 end;
 
 destructor TVkGroupSettings.Destroy;
-var
-  Item: TVkGroupSubject;
 begin
-  for Item in FSubject_list do
-    Item.Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroupSubject>(FSubject_list);
   FPlace.Free;
   FMarket.Free;
   inherited;

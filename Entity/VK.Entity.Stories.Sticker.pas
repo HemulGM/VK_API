@@ -49,6 +49,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkClickableArea}
 
 function TVkClickableArea.ToJsonString: string;
@@ -64,13 +67,8 @@ end;
 {TVkClickableSticker}
 
 destructor TVkClickableSticker.Destroy;
-var
-  Lclickable_areaItem: TVkClickableArea;
 begin
-
-  for Lclickable_areaItem in FClickable_area do
-    Lclickable_areaItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkClickableArea>(FClickable_area);
   inherited;
 end;
 
@@ -87,13 +85,8 @@ end;
 {TVkStoriesStickersInfo}
 
 destructor TVkStoriesStickersInfo.Destroy;
-var
-  Lclickable_stickersItem: TVkClickableSticker;
 begin
-
-  for Lclickable_stickersItem in FClickable_stickers do
-    Lclickable_stickersItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkClickableSticker>(FClickable_stickers);
   inherited;
 end;
 

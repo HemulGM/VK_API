@@ -771,7 +771,7 @@ begin
       401:
         begin
           try
-            Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(AnsiString(Response.DataString)));
+            Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(Response.DataString));
             try
               if not Info.Error.IsEmpty then
               begin
@@ -836,7 +836,7 @@ begin
                   begin
                     EndResponse := HTTP.Get(Url + '&captcha_sid=' + Info.CaptchaSid + '&captcha_key=' + Code, Response);
                     Info.Free;
-                    Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(AnsiString(Response.DataString)));
+                    Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(Response.DataString));
                     Token := Info.AccessToken;
                   end
                   else

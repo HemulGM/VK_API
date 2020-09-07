@@ -514,15 +514,9 @@ begin
 end;
 
 destructor TVkGroup.Destroy;
-var
-  LItemsItem: TVkContact;
-  LLinksItem: TVkGroupLink;
 begin
-  for LItemsItem in FContacts do
-    LItemsItem.Free;
-  for LLinksItem in FLinks do
-    LLinksItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkContact>(FContacts);
+  TArrayHelp.FreeArrayOfObject<TVkGroupLink>(FLinks);
   if Assigned(FCity) then
     FCity.Free;
   if Assigned(FCountry) then
@@ -609,15 +603,13 @@ begin
 end;
 
 destructor TVkGroups.Destroy;
-var
-  LItemsItem: TVkGroup;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkGroup>(FItems);
   end;
-
+  {$ENDIF}
   inherited;
 end;
 
@@ -639,11 +631,8 @@ end;
 { TVkGroupMemberStates }
 
 destructor TVkGroupMemberStates.Destroy;
-var
-  LItemsItem: TVkGroupMemberState;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroupMemberState>(FItems);
   inherited;
 end;
 
@@ -746,11 +735,8 @@ end;
 { TVkGroupAddresses }
 
 destructor TVkGroupAddresses.Destroy;
-var
-  LItemsItem: TVkGroupAddress;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroupAddress>(FItems);
   inherited;
 end;
 
@@ -767,17 +753,10 @@ end;
 { TVkInvitesGroups }
 
 destructor TVkInvitesGroups.Destroy;
-var
-  LItemsItem: TVkGroup;
-  LItemsUser: TVkProfile;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-  for LItemsItem in FGroups do
-    LItemsItem.Free;
-  for LItemsUser in FProfiles do
-    LItemsUser.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 
@@ -806,11 +785,8 @@ end;
 { TVkGroupTags }
 
 destructor TVkGroupTags.Destroy;
-var
-  LItemsItem: TVkGroupTag;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroupTag>(FItems);
   inherited;
 end;
 

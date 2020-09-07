@@ -55,6 +55,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkSearchItem}
 
 constructor TVkSearchItem.Create;
@@ -85,8 +88,7 @@ end;
 
 destructor TVkSearchItems.Destroy;
 begin
-  for var LitemsItem in FItems do
-    LitemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkSearchItem>(FItems);
   inherited;
 end;
 

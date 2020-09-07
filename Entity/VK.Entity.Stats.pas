@@ -159,6 +159,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkStatBasic}
 
 function TVkStatBasic.ToJsonString: string;
@@ -198,25 +201,12 @@ end;
 {TVkStatVisitors}
 
 destructor TVkStatVisitors.Destroy;
-var
-  LageItem: TVkStatBasic;
-  LcitiesItem: TVkStatCities;
-  LcountriesItem: TVkStatCountries;
-  LsexItem: TVkStatBasic;
-  Lsex_ageItem: TVkStatBasic;
 begin
-
-  for LageItem in FAge do
-    LageItem.Free;
-  for LcitiesItem in FCities do
-    LcitiesItem.Free;
-  for LcountriesItem in FCountries do
-    LcountriesItem.Free;
-  for LsexItem in FSex do
-    LsexItem.Free;
-  for Lsex_ageItem in FSex_age do
-    Lsex_ageItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkStatBasic>(FAge);
+  TArrayHelp.FreeArrayOfObject<TVkStatCities>(FCities);
+  TArrayHelp.FreeArrayOfObject<TVkStatCountries>(FCountries);
+  TArrayHelp.FreeArrayOfObject<TVkStatBasic>(FSex);
+  TArrayHelp.FreeArrayOfObject<TVkStatBasic>(FSex_age);
   inherited;
 end;
 
@@ -233,24 +223,12 @@ end;
 {TVkStatReach}
 
 destructor TVkStatReach.Destroy;
-var
-  LageItem: TVkStatBasic;
-  LcitiesItem: TVkStatCities;
-  LcountriesItem: TVkStatCountries;
-  LsexItem: TVkStatBasic;
 begin
-
-  for LageItem in FAge do
-    LageItem.Free;
-  for LcitiesItem in FCities do
-    LcitiesItem.Free;
-  for LcountriesItem in FCountries do
-    LcountriesItem.Free;
-  for LsexItem in FSex do
-    LsexItem.Free;
-  for LsexItem in FSex_age do
-    LsexItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkStatBasic>(FAge);
+  TArrayHelp.FreeArrayOfObject<TVkStatCities>(FCities);
+  TArrayHelp.FreeArrayOfObject<TVkStatCountries>(FCountries);
+  TArrayHelp.FreeArrayOfObject<TVkStatBasic>(FSex);
+  TArrayHelp.FreeArrayOfObject<TVkStatBasic>(FSex_age);
   inherited;
 end;
 
@@ -293,13 +271,8 @@ end;
 {TVkStatItems}
 
 destructor TVkStatItems.Destroy;
-var
-  LresponseItem: TVkStatItem;
 begin
-
-  for LresponseItem in FItems do
-    LresponseItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkStatItem>(FItems);
   inherited;
 end;
 
@@ -328,13 +301,8 @@ end;
 {TVkStatPostReachItems}
 
 destructor TVkStatPostReachItems.Destroy;
-var
-  LresponseItem: TVkStatPostReachItem;
 begin
-
-  for LresponseItem in FItems do
-    LresponseItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkStatPostReachItem>(FItems);
   inherited;
 end;
 

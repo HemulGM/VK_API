@@ -195,6 +195,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkAudioInfo}
 
 function TVkAudioInfo.ToJsonString: string;
@@ -210,13 +213,8 @@ end;
 {TVkAudioInfoItems}
 
 destructor TVkAudioInfoItems.Destroy;
-var
-  LItemsItem: TVkAudioInfo;
 begin
-
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkAudioInfo>(FItems);
   inherited;
 end;
 
@@ -250,11 +248,8 @@ begin
 end;
 
 destructor TVkAudio.Destroy;
-var
-  Artist: TVkAudioArtist;
 begin
-  for Artist in FMain_artists do
-    Artist.Free;
+  TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FMain_artists);
   if Assigned(FAudio_chart_info) then
     FAudio_chart_info.Free;
   if Assigned(FAlbum) then
@@ -360,14 +355,13 @@ begin
 end;
 
 destructor TVkAudios.Destroy;
-var
-  LItemsItem: TVkAudio;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkAudio>(FItems);
   end;
+  {$ENDIF}
 
   inherited;
 end;

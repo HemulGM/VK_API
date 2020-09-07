@@ -53,25 +53,17 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkAudioCatalogItem}
 
 destructor TVkAudioCatalogItem.Destroy;
-var
-  LaudiosItem: TVkAudio;
-  LthumbsItem: TVkAlbumThumb;
-  FPlaylist: TVkAudioPlaylist;
-  FItem: TVkCatalogLink;
 begin
-
-  for LaudiosItem in FAudios do
-    LaudiosItem.Free;
-  for LthumbsItem in FThumbs do
-    LthumbsItem.Free;
-  for FPlaylist in FPlaylists do
-    FPlaylist.Free;
-  for FItem in FItems do
-    FItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkAudio>(FAudios);
+  TArrayHelp.FreeArrayOfObject<TVkAlbumThumb>(FThumbs);
+  TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FPlaylists);
+  TArrayHelp.FreeArrayOfObject<TVkCatalogLink>(FItems);
   inherited;
 end;
 
@@ -88,19 +80,10 @@ end;
 {TVkAudioCatalog}
 
 destructor TVkAudioCatalog.Destroy;
-var
-  LgroupsItem: TVkGroup;
-  LprofilesItem: TVkProfile;
-  LitemsItem: TVkAudioCatalogItem;
 begin
-
-  for LgroupsItem in FGroups do
-    LgroupsItem.Free;
-  for LprofilesItem in FProfiles do
-    LprofilesItem.Free;
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkAudioCatalogItem>(FItems);
   inherited;
 end;
 

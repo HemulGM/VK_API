@@ -3,8 +3,8 @@ unit VK.Entity.Catalog.Section;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Audio, VK.Entity.Album,
-  VK.Entity.Group, VK.Entity.Playlist, VK.Entity.Catalog;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Audio, VK.Entity.Album, VK.Entity.Group,
+  VK.Entity.Playlist, VK.Entity.Catalog;
 
 type
   TVkCatalogThumb = class
@@ -100,6 +100,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkCatalogThumb}
 
 function TVkCatalogThumb.ToJsonString: string;
@@ -145,13 +148,8 @@ begin
 end;
 
 destructor TVkCatalogLink.Destroy;
-var
-  LimageItem: TVkLinkImage;
 begin
-
-  for LimageItem in FImage do
-    LimageItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkLinkImage>(FImage);
   FMeta.Free;
   inherited;
 end;
@@ -175,25 +173,12 @@ begin
 end;
 
 destructor TVkSectionData.Destroy;
-var
-  LgroupsItem: TVkGroup;
-  LlinksItem: TVkCatalogLink;
-  LaudiosItem: TVkAudio;
-  LthumbsItem: TVkCatalogThumb;
-  LplaylistsItem: TVkAudioPlaylist;
 begin
-
-  for LgroupsItem in FGroups do
-    LgroupsItem.Free;
-  for LlinksItem in FLinks do
-    LlinksItem.Free;
-  for LaudiosItem in FAudios do
-    LaudiosItem.Free;
-  for LthumbsItem in FThumbs do
-    LthumbsItem.Free;
-  for LplaylistsItem in FPlaylists do
-    LplaylistsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkCatalogLink>(FLinks);
+  TArrayHelp.FreeArrayOfObject<TVkAudio>(FAudios);
+  TArrayHelp.FreeArrayOfObject<TVkCatalogThumb>(FThumbs);
+  TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FPlaylists);
   FSection.Free;
   inherited;
 end;

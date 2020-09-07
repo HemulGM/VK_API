@@ -35,6 +35,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkStoryView}
 
 constructor TVkStoryView.Create;
@@ -62,13 +65,8 @@ end;
 {TVkStoryViews}
 
 destructor TVkStoryViews.Destroy;
-var
-  LitemsItem: TVkStoryView;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkStoryView>(FItems);
   inherited;
 end;
 

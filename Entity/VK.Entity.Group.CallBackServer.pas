@@ -39,6 +39,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkGroupCallbackServer}
 
 function TVkGroupCallbackServer.ToJsonString: string;
@@ -54,13 +57,8 @@ end;
 {TVkGroupCallbackServers}
 
 destructor TVkGroupCallbackServers.Destroy;
-var
-  LitemsItem: TVkGroupCallbackServer;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkGroupCallbackServer>(FItems);
   inherited;
 end;
 

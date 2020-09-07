@@ -50,6 +50,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkBoardComment}
 
 constructor TVkBoardComment.Create;
@@ -59,12 +62,8 @@ begin
 end;
 
 destructor TVkBoardComment.Destroy;
-var
-  LitemsItem: TVkAttachment;
 begin
-
-  for LitemsItem in FAttachments do
-    LitemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
   FLikes.Free;
   inherited;
 end;
@@ -88,20 +87,10 @@ begin
 end;
 
 destructor TVkBoardComments.Destroy;
-var
-  LitemsItem: TVkBoardComment;
-  User: TVkProfile;
-  Group: TVkGroup;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
-  for User in FProfiles do
-    User.Free;
-
-  for Group in FGroups do
-    Group.Free;
+  TArrayHelp.FreeArrayOfObject<TVkBoardComment>(FItems);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   FPoll.Free;
   inherited;
 end;

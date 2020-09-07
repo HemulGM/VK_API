@@ -31,6 +31,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkFaculty}
 
 function TVkFaculty.ToJsonString: string;
@@ -46,13 +49,8 @@ end;
 {TVkFaculties}
 
 destructor TVkFaculties.Destroy;
-var
-  LitemsItem: TVkFaculty;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkFaculty>(FItems);
   inherited;
 end;
 

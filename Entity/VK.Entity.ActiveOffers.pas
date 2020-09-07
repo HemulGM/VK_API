@@ -45,6 +45,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkActiveOffer}
 
 function TVkActiveOffer.ToJsonString: string;
@@ -60,13 +63,8 @@ end;
 {TVkActiveOffers}
 
 destructor TVkActiveOffers.Destroy;
-var
-  LitemsItem: TVkActiveOffer;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkActiveOffer>(FItems);
   inherited;
 end;
 

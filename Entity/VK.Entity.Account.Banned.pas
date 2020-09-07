@@ -22,6 +22,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkBannedList}
 
 function TVkBannedList.ToJsonString: string;
@@ -30,13 +33,8 @@ begin
 end;
 
 destructor TVkBannedList.Destroy;
-var
-  User: TVkProfile;
 begin
-
-  for User in FProfiles do
-    User.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
 end;
 

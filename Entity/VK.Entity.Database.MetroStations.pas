@@ -33,6 +33,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkMetroStation}
 
 function TVkMetroStation.ToJsonString: string;
@@ -48,13 +51,8 @@ end;
 {TVkMetroStations}
 
 destructor TVkMetroStations.Destroy;
-var
-  LitemsItem: TVkMetroStation;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkMetroStation>(FItems);
   inherited;
 end;
 

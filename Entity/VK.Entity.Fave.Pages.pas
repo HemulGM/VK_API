@@ -41,6 +41,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkFavePage}
 
 constructor TVkFavePage.Create;
@@ -49,12 +52,8 @@ begin
 end;
 
 destructor TVkFavePage.Destroy;
-var
-  LitemsItem: TVkFaveTag;
 begin
-
-  for LitemsItem in FTags do
-    LitemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkFaveTag>(FTags);
   if Assigned(FUser) then
     FUser.Free;
   if Assigned(FGroup) then
@@ -75,13 +74,8 @@ end;
 {TVkFavePages}
 
 destructor TVkFavePages.Destroy;
-var
-  LitemsItem: TVkFavePage;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkFavePage>(FItems);
   inherited;
 end;
 

@@ -37,6 +37,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkStickerImage}
 
 function TVkStickerImage.ToJsonString: string;
@@ -52,15 +55,9 @@ end;
 {TVkSticker}
 
 destructor TVkSticker.Destroy;
-var
-  LimagesItem: TVkStickerImage;
 begin
-
-  for LimagesItem in FImages do
-    LimagesItem.Free;
-  for LimagesItem in FImages_with_background do
-    LimagesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkStickerImage>(FImages);
+  TArrayHelp.FreeArrayOfObject<TVkStickerImage>(FImages_with_background);
   inherited;
 end;
 

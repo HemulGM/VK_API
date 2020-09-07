@@ -47,6 +47,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkPodcast}
 
 function TVkPodcast.ToJsonString: string;
@@ -62,13 +65,8 @@ end;
 {TVkPodcasts}
 
 destructor TVkPodcasts.Destroy;
-var
-  LresponseItem: TVkPodcast;
 begin
-
-  for LresponseItem in FItems do
-    LresponseItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkPodcast>(FItems);
   inherited;
 end;
 
@@ -86,14 +84,10 @@ end;
 
 destructor TVkPodcastSearch.Destroy;
 begin
-  for var Item in FPodcasts do
-    Item.Free;
-  for var Item in FEpisodes do
-    Item.Free;
-  for var Item in FProfiles do
-    Item.Free;
-  for var Item in FGroup do
-    Item.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPodcast>(FPodcasts);
+  TArrayHelp.FreeArrayOfObject<TVkPodcastsEpisode>(FEpisodes);
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroup);
   inherited;
 end;
 

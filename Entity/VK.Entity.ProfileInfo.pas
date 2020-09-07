@@ -43,6 +43,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkProfileInfo}
 
 constructor TVkProfileInfo.Create;
@@ -53,13 +56,8 @@ begin
 end;
 
 destructor TVkProfileInfo.Destroy;
-var
-  Lrelation_requestsItem: TVkRelationRequests;
 begin
-
-  for Lrelation_requestsItem in FRelation_requests do
-    Lrelation_requestsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkRelationRequests>(FRelation_requests);
   FCountry.Free;
   FRelation_partner.Free;
   inherited;
