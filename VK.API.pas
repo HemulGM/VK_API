@@ -771,7 +771,9 @@ begin
       401:
         begin
           try
+            {$WARNINGS OFF}
             Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(Response.DataString));
+            {$WARNINGS ON}
             try
               if not Info.Error.IsEmpty then
               begin
@@ -792,7 +794,7 @@ begin
 
                             HTTP.HandleRedirects := False;
                             EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash, FormData);
-                            //Response.SaveToFile('D:\temp.txt');
+                            Response.SaveToFile('D:\temp.txt');
                             while EndResponse.StatusCode = 200 do
                             begin
                               Response.LoadFromStream(EndResponse.ContentStream);
@@ -836,7 +838,9 @@ begin
                   begin
                     EndResponse := HTTP.Get(Url + '&captcha_sid=' + Info.CaptchaSid + '&captcha_key=' + Code, Response);
                     Info.Free;
+                    {$WARNINGS OFF}
                     Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(Response.DataString));
+                    {$WARNINGS ON}
                     Token := Info.AccessToken;
                   end
                   else
@@ -867,18 +871,15 @@ begin
   Response.Free;
   HTTP.Free;
   Result := not Token.IsEmpty;
-  if Result then
+  if Result and CheckAuth then
   begin
-    if CheckAuth then
-    begin
-      DoLogin;
-      Exit(True);
-    end
-    else
-    begin
-      Result := False;
-      FAuthError('Ошибка авторизации', -1);
-    end;
+    DoLogin;
+    Exit(True);
+  end
+  else
+  begin
+    Result := False;
+    FAuthError('Ошибка авторизации', -1);
   end;
 end;
 

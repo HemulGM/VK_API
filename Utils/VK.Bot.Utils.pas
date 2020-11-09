@@ -119,6 +119,7 @@ begin
     System.Readln(Input);
     OnCommand(Input, Quit);
   until Quit;
+  AddLine('Завершение ...');
 end;
 
 end.
