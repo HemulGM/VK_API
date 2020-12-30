@@ -129,7 +129,6 @@ end;
 
 function GetRandomId: Int64;
 begin
-
   {$IFDEF OLD_VERSION}
   Result := DateTimeToUnix(Now) + 1234567;
   {$ELSE}

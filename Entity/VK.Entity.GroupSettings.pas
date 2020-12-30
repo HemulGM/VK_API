@@ -3,7 +3,8 @@ unit VK.Entity.GroupSettings;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Group, VK.Entity.Market;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Group,
+  VK.Entity.Market;
 
 type
   TVkGroupSettingStr = class

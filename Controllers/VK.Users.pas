@@ -3,8 +3,8 @@ unit VK.Users;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
-  VK.Entity.Subscription;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Profile, VK.Entity.Subscription;
 
 type
   TVkParamsUsersGet = record
@@ -75,13 +75,11 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean;
-      overload;
+    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean;
-      overload;
+    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
@@ -148,14 +146,17 @@ begin
     begin
       try
         Users := TVkProfiles.FromJsonString(ResponseAsItems);
-        if Length(Users.Items) > 0 then
-        begin
-          Users.SaveObjects := True;
-          User := Users.Items[0];
-        end
-        else
-          Result := False;
-        Users.Free;
+        try
+          if Length(Users.Items) > 0 then
+          begin
+            Users.SaveObjects := True;
+            User := Users.Items[0];
+          end
+          else
+            Result := False;
+        finally
+          Users.Free;
+        end;
       except
         Result := False;
       end;
@@ -218,7 +219,7 @@ begin
   if not Comment.IsEmpty then
     Params.Add('comment', Comment);
   with Handler.Execute('users.report', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TUsersController.Search(var Items: TVkProfiles; Params: TVkParamsUsersSearch): Boolean;

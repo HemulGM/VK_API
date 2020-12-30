@@ -3,8 +3,8 @@ unit VK.Entity.Profile;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Database.Cities,
-  VK.Entity.Database.Countries;
+  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common,
+  VK.Entity.Photo, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
 
 type
   TVkProfile = class;
@@ -76,23 +76,20 @@ type
     class function FromJsonString(AJsonString: string): TVkFriendDeleteInfo;
   end;
 
-  TVkRelative = class
+  TVkRelative = class(TVkObject)
   private
-    FId: Integer;
     FType: string;
   public
-    property Id: Integer read FId write FId;
     property TypeRelative: string read FType write FType;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRelative;
   end;
 
-  TVkSchoolInfo = class
+  TVkSchoolInfo = class(TVkObject)
   private
     FCity: Integer;
     FClass: string;
     FCountry: Integer;
-    FId: string;
     FName: string;
     FSpeciality: string;
     FYear_from: Integer;
@@ -102,7 +99,6 @@ type
     property City: Integer read FCity write FCity;
     property ClassNum: string read FClass write FClass;
     property Country: Integer read FCountry write FCountry;
-    property Id: string read FId write FId;
     property Name: string read FName write FName;
     property Speciality: string read FSpeciality write FSpeciality;
     property YearFrom: Integer read FYear_from write FYear_from;
@@ -112,7 +108,7 @@ type
     class function FromJsonString(AJsonString: string): TVkSchoolInfo;
   end;
 
-  TVkUniversities = class
+  TVkUniversities = class(TVkObject)
   private
     FChair: Integer;
     FChair_name: string;
@@ -123,7 +119,6 @@ type
     FFaculty: Integer;
     FFaculty_name: string;
     FGraduation: Integer;
-    FId: Integer;
     FName: string;
   public
     property Chair: Integer read FChair write FChair;
@@ -135,7 +130,6 @@ type
     property Faculty: Integer read FFaculty write FFaculty;
     property FacultyName: string read FFaculty_name write FFaculty_name;
     property Graduation: Integer read FGraduation write FGraduation;
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkUniversities;
@@ -190,25 +184,23 @@ type
     FCountry_id: Integer;
     FFrom: Integer;
     FPosition: string;
-    FUntil: Extended;
+    FUntil: Int64;
   public
     property CityId: Integer read FCity_id write FCity_id;
     property Company: string read FCompany write FCompany;
     property CountryId: Integer read FCountry_id write FCountry_id;
     property From: Integer read FFrom write FFrom;
     property Position: string read FPosition write FPosition;
-    property UntilDate: Extended read FUntil write FUntil;
+    property UntilDate: Int64 read FUntil write FUntil;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCareer;
   end;
 
-  TVkOccupation = class
+  TVkOccupation = class(TVkObject)
   private
-    FId: Integer;
     FName: string;
     FType: string;
   public
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     property TypeOcc: string read FType write FType;
     function ToJsonString: string;
@@ -241,11 +233,11 @@ type
 
   TVkLastSeen = class
   private
-    FPlatform: Extended;
-    FTime: Extended;
+    FPlatform: Integer;
+    FTime: Int64;
   public
-    property platform: Extended read FPlatform write FPlatform;
-    property Time: Extended read FTime write FTime;
+    property&Platform: Integer read FPlatform write FPlatform;
+    property Time: Int64 read FTime write FTime;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkLastSeen;
   end;
@@ -265,7 +257,7 @@ type
     class function FromJsonString(AJsonString: string): TVkUserOnlineInfo;
   end;
 
-  TVkProfile = class
+  TVkProfile = class(TVkObject)
   private
     FAbout: string;
     FActivities: string;
@@ -300,7 +292,6 @@ type
     FHas_photo: Integer;
     FHome_phone: string;
     FHome_town: string;
-    FId: Integer;
     FInstagram: string;
     FInterests: string;
     FIs_closed: Boolean;
@@ -394,7 +385,6 @@ type
     property HasPhoto: Integer read FHas_photo write FHas_photo;
     property HomePhone: string read FHome_phone write FHome_phone;
     property HomeTown: string read FHome_town write FHome_town;
-    property Id: Integer read FId write FId;
     property Instagram: string read FInstagram write FInstagram;
     property Interests: string read FInterests write FInterests;
     property InvitedBy: Integer read FInvited_by write FInvited_by;
@@ -470,12 +460,10 @@ type
     class function FromJsonString(AJsonString: string): TVkProfiles;
   end;
 
-  TVkFriendsList = class
+  TVkFriendsList = class(TVkObject)
   private
-    FId: Integer;
     FName: string;
   public
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkFriendsList;

@@ -3,11 +3,17 @@ unit VK.GroupEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo, VK.Entity.GroupSettings;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  REST.Client, System.JSON, VK.Types, System.Generics.Collections,
+  VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
+  VK.Entity.GroupSettings;
 
 type
+  TLongPollEventProc = procedure(GroupId: Integer; EventObject: TJSONValue; EventId: string) of object;
+
+  TLongPollEvents = TDictionary<string, TLongPollEventProc>;
+
   TVkObjectInfo = record
     Id: Integer;
     OwnerId: Integer;
@@ -68,8 +74,7 @@ type
     GroupId: Integer;
   end;
 
-  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId:
-    string) of object;
+  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId: string) of object;
 
   TOnCommentDelete = procedure(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string) of object;
 
@@ -79,15 +84,13 @@ type
 
   TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; EventId: string) of object;
 
-  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId:
-    string) of object;
+  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId: string) of object;
 
   TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string) of object;
 
   TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; EventId: string) of object;
 
-  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string)
-    of object;
+  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string) of object;
 
   TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction; EventId: string) of object;
 
@@ -103,15 +106,13 @@ type
 
   TOnAudioNew = procedure(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string) of object;
 
-  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo;
-    EventId: string) of object;
+  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string) of object;
 
   TOnGroupMessageAction = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string) of object;
 
   TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string; EventId: string) of object;
 
-  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId:
-    string) of object;
+  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId: string) of object;
 
   TCustomGroupEvents = class(TComponent)
   private
@@ -161,6 +162,7 @@ type
     FOnMessageTypingState: TOnGroupMessageTypingState;
     FVersion: string;
     FLogging: Boolean;
+    FLongPollEvents: TLongPollEvents;
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
@@ -258,6 +260,7 @@ type
     destructor Destroy; override;
     procedure Stop;
     function Start: Boolean;
+    procedure FillEvents;
     property LongPollServer: TVkLongPollServer read FLongPollServer;
     property VK: TCustomVK read FVK write SetVK;
     property GroupID: Integer read FGroupID write SetGroupID;
@@ -482,15 +485,18 @@ begin
         Break;
       end;
   end;
+  FLongPollEvents := TLongPollEvents.Create;
   FVersion := '3';
   FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
   FLongPollServer.Logging := True;
+  FillEvents;
 end;
 
 destructor TCustomGroupEvents.Destroy;
 begin
+  FLongPollEvents.Free;
   FLongPollServer.Free;
   inherited;
 end;
@@ -510,90 +516,9 @@ begin
     raise TVkGroupEventsException.Create('Не был получен объект события');
   if EventType.IsEmpty then
     raise TVkGroupEventsException.Create('Не был получен тип события');
-  //message_typing_state
   try
-    if EventType = 'message_new' then
-      DoMessageNew(GroupId, EventObject, EventId)
-    else if (EventType = 'message_reply') then
-      DoMessageReply(GroupId, EventObject, EventId)
-    else if (EventType = 'message_edit') then
-      DoMessageEdit(GroupId, EventObject, EventId)
-    else if EventType = 'message_allow' then
-      DoMessageAllow(GroupId, EventObject, EventId)
-    else if EventType = 'message_deny' then
-      DoMessageDeny(GroupId, EventObject, EventId)
-    else if EventType = 'message_typing_state' then
-      DoMessageTypingState(GroupId, EventObject, EventId)
-    else if EventType = 'photo_new' then
-      DoPhotoNew(GroupId, EventObject, EventId)
-    else if EventType = 'photo_comment_new' then
-      DoPhotoCommentNew(GroupId, EventObject, EventId)
-    else if EventType = 'photo_comment_edit' then
-      DoPhotoCommentEdit(GroupId, EventObject, EventId)
-    else if EventType = 'photo_comment_restore' then
-      DoPhotoCommentRestore(GroupId, EventObject, EventId)
-    else if EventType = 'photo_comment_delete' then
-      DoPhotoCommentDelete(GroupId, EventObject, EventId)
-    else if EventType = 'audio_new' then
-      DoAudioNew(GroupId, EventObject, EventId)
-    else if EventType = 'video_new' then
-      DoVideoNew(GroupId, EventObject, EventId)
-    else if EventType = 'video_comment_new' then
-      DoVideoCommentNew(GroupId, EventObject, EventId)
-    else if EventType = 'video_comment_edit' then
-      DoVideoCommentEdit(GroupId, EventObject, EventId)
-    else if EventType = 'video_comment_restore' then
-      DoVideoCommentRestore(GroupId, EventObject, EventId)
-    else if EventType = 'video_comment_delete' then
-      DoVideoCommentDelete(GroupId, EventObject, EventId)
-    else if EventType = 'wall_post_new' then
-      DoWallPostNew(GroupId, EventObject, EventId)
-    else if EventType = 'wall_repost' then
-      DoWallRepost(GroupId, EventObject, EventId)
-    else if EventType = 'wall_reply_new' then
-      DoWallReplyNew(GroupId, EventObject, EventId)
-    else if EventType = 'wall_reply_edit' then
-      DoWallReplyEdit(GroupId, EventObject, EventId)
-    else if EventType = 'wall_reply_restore' then
-      DoWallReplyRestore(GroupId, EventObject, EventId)
-    else if EventType = 'wall_reply_delete' then
-      DoWallReplyDelete(GroupId, EventObject, EventId)
-    else if EventType = 'board_post_new' then
-      DoBoardPostNew(GroupId, EventObject, EventId)
-    else if EventType = 'board_post_edit' then
-      DoBoardPostEdit(GroupId, EventObject, EventId)
-    else if EventType = 'board_post_restore' then
-      DoBoardPostRestore(GroupId, EventObject, EventId)
-    else if EventType = 'board_post_delete' then
-      DoBoardPostDelete(GroupId, EventObject, EventId)
-    else if EventType = 'market_comment_new' then
-      DoMarketCommentNew(GroupId, EventObject, EventId)
-    else if EventType = 'market_comment_edit' then
-      DoMarketCommentEdit(GroupId, EventObject, EventId)
-    else if EventType = 'market_comment_restore' then
-      DoMarketCommentRestore(GroupId, EventObject, EventId)
-    else if EventType = 'market_comment_delete' then
-      DoMarketCommentDelete(GroupId, EventObject, EventId)
-    else if EventType = 'group_leave' then
-      DoGroupLeave(GroupId, EventObject, EventId)
-    else if EventType = 'group_join' then
-      DoGroupJoin(GroupId, EventObject, EventId)
-    else if EventType = 'group_officers_edit' then
-      DoGroupOfficersEdit(GroupId, EventObject, EventId)
-    else if EventType = 'user_block' then
-      DoUserBlock(GroupId, EventObject, EventId)
-    else if EventType = 'user_unblock' then
-      DoUserUnblock(GroupId, EventObject, EventId)
-    else if EventType = 'group_change_settings' then
-      DoGroupChangeSettings(GroupId, EventObject, EventId)
-    else if EventType = 'group_change_photo' then
-      DoGroupChangePhoto(GroupId, EventObject, EventId)
-    else if EventType = 'vkpay_transaction' then
-      DoVkPayTransaction(GroupId, EventObject, EventId)
-    else if EventType = 'app_payload' then
-      DoAppPayload(GroupId, EventObject, EventId)
-    else if EventType = 'poll_vote_new' then
-      DoPollVoteNew(GroupId, EventObject, EventId);
+    if FLongPollEvents.ContainsKey(EventType) then
+      FLongPollEvents.Items[EventType](GroupId, EventObject, EventId);
   except
     //
   end;
@@ -1243,6 +1168,51 @@ begin
       Post.Free;
     end;
   end;
+end;
+
+procedure TCustomGroupEvents.FillEvents;
+begin
+  FLongPollEvents.Add('message_new', DoMessageNew);
+  FLongPollEvents.Add('message_reply', DoMessageReply);
+  FLongPollEvents.Add('message_edit', DoMessageEdit);
+  FLongPollEvents.Add('message_allow', DoMessageAllow);
+  FLongPollEvents.Add('message_deny', DoMessageDeny);
+  FLongPollEvents.Add('message_typing_state', DoMessageTypingState);
+  FLongPollEvents.Add('photo_new', DoPhotoNew);
+  FLongPollEvents.Add('photo_comment_new', DoPhotoCommentNew);
+  FLongPollEvents.Add('photo_comment_edit', DoPhotoCommentEdit);
+  FLongPollEvents.Add('photo_comment_restore', DoPhotoCommentRestore);
+  FLongPollEvents.Add('photo_comment_delete', DoPhotoCommentDelete);
+  FLongPollEvents.Add('audio_new', DoAudioNew);
+  FLongPollEvents.Add('video_new', DoVideoNew);
+  FLongPollEvents.Add('video_comment_new', DoVideoCommentNew);
+  FLongPollEvents.Add('video_comment_edit', DoVideoCommentEdit);
+  FLongPollEvents.Add('video_comment_restore', DoVideoCommentRestore);
+  FLongPollEvents.Add('video_comment_delete', DoVideoCommentDelete);
+  FLongPollEvents.Add('wall_post_new', DoWallPostNew);
+  FLongPollEvents.Add('wall_repost', DoWallRepost);
+  FLongPollEvents.Add('wall_reply_new', DoWallReplyNew);
+  FLongPollEvents.Add('wall_reply_edit', DoWallReplyEdit);
+  FLongPollEvents.Add('wall_reply_restore', DoWallReplyRestore);
+  FLongPollEvents.Add('wall_reply_delete', DoWallReplyDelete);
+  FLongPollEvents.Add('board_post_new', DoBoardPostNew);
+  FLongPollEvents.Add('board_post_edit', DoBoardPostEdit);
+  FLongPollEvents.Add('board_post_restore', DoBoardPostRestore);
+  FLongPollEvents.Add('board_post_delete', DoBoardPostDelete);
+  FLongPollEvents.Add('market_comment_new', DoMarketCommentNew);
+  FLongPollEvents.Add('market_comment_edit', DoMarketCommentEdit);
+  FLongPollEvents.Add('market_comment_restore', DoMarketCommentRestore);
+  FLongPollEvents.Add('market_comment_delete', DoMarketCommentDelete);
+  FLongPollEvents.Add('group_leave', DoGroupLeave);
+  FLongPollEvents.Add('group_join', DoGroupJoin);
+  FLongPollEvents.Add('group_officers_edit', DoGroupOfficersEdit);
+  FLongPollEvents.Add('user_block', DoUserBlock);
+  FLongPollEvents.Add('user_unblock', DoUserUnblock);
+  FLongPollEvents.Add('group_change_settings', DoGroupChangeSettings);
+  FLongPollEvents.Add('group_change_photo', DoGroupChangePhoto);
+  FLongPollEvents.Add('vkpay_transaction', DoVkPayTransaction);
+  FLongPollEvents.Add('app_payload', DoAppPayload);
+  FLongPollEvents.Add('poll_vote_new', DoPollVoteNew);
 end;
 
 procedure TCustomGroupEvents.FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);

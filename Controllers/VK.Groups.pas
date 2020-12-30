@@ -3,10 +3,13 @@ unit VK.Groups;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller, VK.Types,
-  VK.Entity.Profile, System.Classes, VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
-  VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer, VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
-  VK.Entity.Group.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings, VK.Entity.Group.TokenPermissions;
+  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json,
+  System.Json, VK.Controller, VK.Types, VK.Entity.Profile, System.Classes,
+  VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
+  VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer,
+  VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
+  VK.Entity.Group.Longpoll, VK.Entity.Group.LongpollSettings,
+  VK.Entity.GroupSettings, VK.Entity.Group.TokenPermissions;
 
 type
   TVkGroupTagAct = (gtaBind, gtaUnbind);
@@ -581,8 +584,7 @@ type
     /// <summary>
     ///  ƒанный метод возвращает список приглашений в сообщества и встречи текущего пользовател€.
     /// </summary>
-    function GetInvites(var Items: TVkInvitesGroups; Extended: Boolean = False; Count: Integer = 20; Offset: Integer = 0):
-      Boolean;
+    function GetInvites(var Items: TVkInvitesGroups; Extended: Boolean = False; Count: Integer = 20; Offset: Integer = 0): Boolean;
     /// <summary>
     ///  ¬озвращает данные дл€ подключени€ к Bots Longpoll API.
     /// </summary>
@@ -594,8 +596,7 @@ type
     /// <summary>
     ///  ¬озвращает список за€вок на вступление в сообщество.
     /// </summary>
-    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [ufDomain]; Count: Integer = 20;
-      Offset: Integer = 0): Boolean; overload;
+    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [ufDomain]; Count: Integer = 20; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     ///  ¬озвращает список за€вок на вступление в сообщество.
     /// </summary>
@@ -699,27 +700,10 @@ begin
 end;
 
 function TGroupsController.AddCallbackServer(var ServerId: Integer; GroupId: integer; Url, Title, SecretKey: string): Boolean;
-var
-  JSONItem: TJSONValue;
 begin
-  with Handler.Execute('groups.addCallbackServer', [['group_id', GroupId.ToString], ['url', Url], ['title', Title], ['secret_key',
-    SecretKey]]) do
+  with Handler.Execute('groups.addCallbackServer', [['group_id', GroupId.ToString], ['url', Url], ['title', Title], ['secret_key', SecretKey]]) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          ServerId := JSONItem.GetValue<Integer>('server_id', -1);
-        finally
-          JSONItem.Free;
-        end;
-        Result := ServerId <> -1;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('server_id', ServerId);
   end;
 end;
 
@@ -742,7 +726,7 @@ end;
 function TGroupsController.ApproveRequest(GroupId, UserId: integer): Boolean;
 begin
   with Handler.Execute('groups.approveRequest', [['group_id', GroupId.ToString], ['user_id', UserId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.Ban(Params: TVkParamsGroupsBan): Boolean;
@@ -774,37 +758,37 @@ end;
 function TGroupsController.Ban(Params: TParams): Boolean;
 begin
   with Handler.Execute('groups.ban', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.DeleteAddress(GroupId, AddressId: integer): Boolean;
 begin
   with Handler.Execute('groups.deleteAddress', [['group_id', GroupId.ToString], ['address_id', AddressId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.DeleteCallbackServer(GroupId, ServerId: integer): Boolean;
 begin
   with Handler.Execute('groups.deleteCallbackServer', [['group_id', GroupId.ToString], ['server_id', ServerId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.DeleteLink(GroupId, LinkId: integer): Boolean;
 begin
   with Handler.Execute('groups.deleteLink', [['group_id', GroupId.ToString], ['link_id', LinkId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.DisableOnline(GroupId: Cardinal): Boolean;
 begin
   with Handler.Execute('groups.disableOnline', ['group_id', GroupId.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.Edit(Params: TParams): Boolean;
 begin
   with Handler.Execute('groups.edit', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.Edit(Params: TVkParamsGroupsEdit): Boolean;
@@ -812,8 +796,7 @@ begin
   Result := Edit(Params.List);
 end;
 
-function TGroupsController.EditAddress(var Item: TVkGroupAddress; AddressId: Integer; Params: TVkParamsGroupsEditAddress):
-  Boolean;
+function TGroupsController.EditAddress(var Item: TVkGroupAddress; AddressId: Integer; Params: TVkParamsGroupsEditAddress): Boolean;
 begin
   Params.List.Add('address_id', AddressId);
   Result := EditAddress(Item, Params.List);
@@ -821,15 +804,14 @@ end;
 
 function TGroupsController.EditCallbackServer(GroupId, ServerId: integer; Url, Title, SecretKey: string): Boolean;
 begin
-  with Handler.Execute('groups.editCallbackServer', [['group_id', GroupId.ToString], ['server_id', ServerId.ToString], ['url',
-    Url], ['title', Title], ['secret_key', SecretKey]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('groups.editCallbackServer', [['group_id', GroupId.ToString], ['server_id', ServerId.ToString], ['url', Url], ['title', Title], ['secret_key', SecretKey]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.EditLink(GroupId: integer; Link, Text: string): Boolean;
 begin
   with Handler.Execute('groups.editLink', [['GroupId', GroupId.ToString], ['link', Link], ['text', Text]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.EditManager(Params: TVkParamsGroupsEditManager): Boolean;
@@ -840,19 +822,19 @@ end;
 function TGroupsController.EditManager(Params: TParams): Boolean;
 begin
   with Handler.Execute('groups.editManager', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.EditAddress(var Item: TVkGroupAddress; Params: TParams): Boolean;
 begin
   with Handler.Execute('groups.editAddress', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.EnableOnline(GroupId: Cardinal): Boolean;
 begin
   with Handler.Execute('groups.enableOnline', ['group_id', GroupId.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.Get(var Items: TVkGroups; Params: TVkParamsGroupsGet): Boolean;
@@ -887,26 +869,10 @@ begin
 end;
 
 function TGroupsController.GetCallbackConfirmationCode(var Code: string; GroupId: Integer): Boolean;
-var
-  JSONItem: TJSONValue;
 begin
   with Handler.Execute('groups.getCallbackConfirmationCode', ['group_id', GroupId.ToString]) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          Code := JSONItem.GetValue<string>('code', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not Code.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('code', Code);
   end;
 end;
 
@@ -960,8 +926,7 @@ end;
 
 function TGroupsController.GetCatalogInfo(var Items: TVkGroupCategories; Subcategories, Extended: Boolean): Boolean;
 begin
-  with Handler.Execute('groups.getCatalogInfo', [['subcategories', BoolToString(Subcategories)], ['extended',
-    BoolToString(Extended)]]) do
+  with Handler.Execute('groups.getCatalogInfo', [['subcategories', BoolToString(Subcategories)], ['extended', BoolToString(Extended)]]) do
   begin
     Result := Success;
     if Result then
@@ -1059,8 +1024,7 @@ end;
 
 function TGroupsController.GetInvites(var Items: TVkInvitesGroups; Extended: Boolean; Count, Offset: Integer): Boolean;
 begin
-  with Handler.Execute('groups.getInvites', [['extended', BoolToString(Extended)], ['count', Count.ToString], ['offset',
-    Offset.ToString]]) do
+  with Handler.Execute('groups.getInvites', [['extended', BoolToString(Extended)], ['count', Count.ToString], ['offset', Offset.ToString]]) do
   begin
     Result := Success;
     if Result then
@@ -1162,8 +1126,7 @@ begin
   end;
 end;
 
-function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields; Count, Offset:
-  Integer): Boolean;
+function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields; Count, Offset: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -1260,7 +1223,7 @@ end;
 function TGroupsController.Invite(GroupId, UserId: integer): Boolean;
 begin
   with Handler.Execute('groups.invite', [['group_id', GroupId.ToString], ['user_id', UserId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.IsMember(var Items: TVkGroupMemberStates; Params: TVkParamsGroupsIsMember): Boolean;
@@ -1276,26 +1239,25 @@ begin
   if NotSure then
     Params.Add('not_sure', NotSure);
   with Handler.Execute('groups.join', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.Leave(GroupId: integer): Boolean;
 begin
   with Handler.Execute('groups.leave', ['group_id', GroupId.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.RemoveUser(GroupId, UserId: integer): Boolean;
 begin
   with Handler.Execute('groups.removeUser', [['group_id', GroupId.ToString], ['user_id', UserId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.ReorderLink(GroupId, LinkId, After: Integer): Boolean;
 begin
-  with Handler.Execute('groups.reorderLink', [['group_id', GroupId.ToString], ['link_id', LinkId.ToString], ['after',
-    After.ToString]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('groups.reorderLink', [['group_id', GroupId.ToString], ['link_id', LinkId.ToString], ['after', After.ToString]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.Search(var Items: TVkGroups; Params: TVkParamsGroupsSearch): Boolean;
@@ -1311,7 +1273,7 @@ end;
 function TGroupsController.SetCallbackSettings(Params: TParams): Boolean;
 begin
   with Handler.Execute('groups.setCallbackSettings', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.SetLongPollSettings(Params: TVkParamsGroupsSetLongpollSettings): Boolean;
@@ -1322,51 +1284,49 @@ end;
 function TGroupsController.SetSettings(Params: TVkParamsGroupsSetSettings): Boolean;
 begin
   with Handler.Execute('groups.setSettings', Params.List) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.SetUserNote(GroupId, UserId: Integer; Note: TVkNoteText): Boolean;
 begin
-  with Handler.Execute('groups.setLongPollSettings', [['group_id', GroupId.ToString], ['user_id', UserId.ToString], ['note',
-    string(Note)]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('groups.setLongPollSettings', [['group_id', GroupId.ToString], ['user_id', UserId.ToString], ['note', string(Note)]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.TagAdd(GroupId: Integer; TagName: string; TagColor: TVkGroupTagColor): Boolean;
 begin
   with Handler.Execute('groups.tagAdd', [['group_id', GroupId.ToString], ['tag_name', TagName], ['tag_color', TagColor]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.TagBind(GroupId, TagId, UserId: Integer; Act: TVkGroupTagAct): Boolean;
 begin
-  with Handler.Execute('groups.tagBind', [['group_id', GroupId.ToString], ['tag_id', TagId.ToString], ['user_id', UserId.ToString],
-    ['act', Act.ToString]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('groups.tagBind', [['group_id', GroupId.ToString], ['tag_id', TagId.ToString], ['user_id', UserId.ToString], ['act', Act.ToString]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.TagDelete(GroupId, TagId: Integer): Boolean;
 begin
   with Handler.Execute('groups.tagDelete', [['group_id', GroupId.ToString], ['tag_id', TagId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.TagUpdate(GroupId, TagId: Integer; TagName: string): Boolean;
 begin
   with Handler.Execute('groups.tagUpdate', [['group_id', GroupId.ToString], ['tag_name', TagName], ['tag_id', TagId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.Unban(GroupId, OwnerId: Integer): Boolean;
 begin
   with Handler.Execute('groups.unban', [['group_id', GroupId.ToString], ['owner_id', OwnerId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.SetLongPollSettings(Params: TParams): Boolean;
 begin
   with Handler.Execute('groups.setLongPollSettings', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TGroupsController.Search(var Items: TVkGroups; Params: TParams): Boolean;

@@ -3,7 +3,8 @@ unit VK.Entity.Fave.Pages;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Fave;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Fave;
 
 type
   TVkFavePage = class

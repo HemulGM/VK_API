@@ -3,9 +3,11 @@ unit VK.Messages;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
-  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.Message.LongPoll;
+  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client,
+  System.Json, VK.Controller, VK.Types, VK.Handler, VK.Entity.Keyboard,
+  VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common,
+  VK.Entity.Message.LongPoll;
 
 type
   TVkMessageActivity = (maTyping, maAudioMessage);
@@ -318,8 +320,7 @@ type
     /// <summary>
     /// Отправить сообщение.
     /// </summary>
-    function SendToPeer(var Item: Integer; PeerId: Integer; Message: string; Attachments: TAttachmentArray = []):
-      Boolean; overload;
+    function SendToPeer(var Item: Integer; PeerId: Integer; Message: string; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Отправить сообщение.
     /// </summary>
@@ -335,13 +336,11 @@ type
     /// <summary>
     /// Отправить сообщение в беседу
     /// </summary>
-    function SendToChat(var Item: Integer; ChatId: Integer; Message: string; Attachments: TAttachmentArray = []):
-      Boolean; overload;
+    function SendToChat(var Item: Integer; ChatId: Integer; Message: string; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Отправить сообщение нескольким пользователям (Доступно только для ключа доступа сообщества)
     /// </summary>
-    function Send(var Items: TVkMessageSendResponses; UserIds: TIds; Message: string; Attachments: TAttachmentArray = []):
-      Boolean; overload;
+    function Send(var Items: TVkMessageSendResponses; UserIds: TIds; Message: string; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Отправить сообщение нескольким пользователям (Доступно только для ключа доступа сообщества)
     /// </summary>
@@ -378,13 +377,11 @@ type
     /// <summary>
     /// Удаляет сообщения
     /// </summary>
-    function Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False;
-      Spam: Boolean = False): Boolean; overload;
+    function Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam: Boolean = False): Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
-    function Delete(const MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam: Boolean = False):
-      Boolean; overload;
+    function Delete(const MessageId: Integer; GroupID: Integer = 0; DeleteForAll: Boolean = False; Spam: Boolean = False): Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
@@ -589,8 +586,7 @@ uses
 
 { TMessagesController }
 
-function TMessagesController.SendToPeer(var Item: Integer; PeerId: Integer; Message: string; Attachments:
-  TAttachmentArray): Boolean;
+function TMessagesController.SendToPeer(var Item: Integer; PeerId: Integer; Message: string; Attachments: TAttachmentArray): Boolean;
 var
   Params: TVkParamsMessageSend;
 begin
@@ -619,8 +615,7 @@ begin
   end;
 end;
 
-function TMessagesController.Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer; DeleteForAll, Spam:
-  Boolean): Boolean;
+function TMessagesController.Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer; DeleteForAll, Spam: Boolean): Boolean;
 var
   Params: TVkParamsMessageDelete;
 begin
@@ -651,8 +646,7 @@ end;
 
 function TMessagesController.CreateChat(var ChatId: Integer; UserIds: TIds; Title: string; GroupId: Integer): Boolean;
 begin
-  with Handler.Execute('messages.createChat', [['user_ids', UserIds.ToString], ['title', Title], ['group_id', GroupId.ToString]])
-    do
+  with Handler.Execute('messages.createChat', [['user_ids', UserIds.ToString], ['title', Title], ['group_id', GroupId.ToString]]) do
   begin
     Result := Success and ResponseAsInt(ChatId);
   end;
@@ -828,8 +822,7 @@ begin
   Result := GetChat(Items, Params.List);
 end;
 
-function TMessagesController.GetChatPreview(var Item: TVkChatPreview; PeerId: Integer; Link: string; Fields:
-  TVkProfileFields): Boolean;
+function TMessagesController.GetChatPreview(var Item: TVkChatPreview; PeerId: Integer; Link: string; Fields: TVkProfileFields): Boolean;
 var
   Params: TParams;
 begin
@@ -909,8 +902,7 @@ begin
   end;
 end;
 
-function TMessagesController.GetHistoryAttachments(var Items: TVkAttachmentHistory; Params:
-  TVkParamsGetHistoryAttachments): Boolean;
+function TMessagesController.GetHistoryAttachments(var Items: TVkAttachmentHistory; Params: TVkParamsGetHistoryAttachments): Boolean;
 begin
   Result := GetHistoryAttachments(Items, Params.List);
 end;
@@ -947,8 +939,7 @@ begin
   end;
 end;
 
-function TMessagesController.GetImportantMessages(var Items: TVkImportantMessages; Params: TVkParamsGetImportantMessages):
-  Boolean;
+function TMessagesController.GetImportantMessages(var Items: TVkImportantMessages; Params: TVkParamsGetImportantMessages): Boolean;
 begin
   Result := GetImportantMessages(Items, Params.List);
 end;
@@ -1035,8 +1026,7 @@ function TMessagesController.MarkAsImportant(var Items: TIds; MessageIds: TIds; 
 var
   Resp: TVkBasicIndexItems;
 begin
-  with Handler.Execute('messages.markAsImportant', [['message_ids', MessageIds.ToString], ['important', BoolToString(Important)]])
-    do
+  with Handler.Execute('messages.markAsImportant', [['message_ids', MessageIds.ToString], ['important', BoolToString(Important)]]) do
   begin
     Result := Success;
     if Result then
@@ -1169,8 +1159,7 @@ begin
   Result := Search(Items, Params.List);
 end;
 
-function TMessagesController.SearchConversations(var Items: TVkConversations; Params:
-  TVkParamsMessageSearchConversations): Boolean;
+function TMessagesController.SearchConversations(var Items: TVkConversations; Params: TVkParamsMessageSearchConversations): Boolean;
 begin
   with Handler.Execute('messages.searchConversations', Params.List) do
   begin
@@ -1221,8 +1210,7 @@ begin
   end;
 end;
 
-function TMessagesController.SendToChat(var Item: Integer; ChatId: Integer; Message: string; Attachments:
-  TAttachmentArray): Boolean;
+function TMessagesController.SendToChat(var Item: Integer; ChatId: Integer; Message: string; Attachments: TAttachmentArray): Boolean;
 var
   Params: TVkParamsMessageSend;
 begin
@@ -1242,8 +1230,7 @@ begin
   Result := SendToPeer(Id, PeerId, Message, Attachments);
 end;
 
-function TMessagesController.SetActivity(const UserId: string; ActivityType: TVkMessageActivity; PeerId, GroupId:
-  Integer): Boolean;
+function TMessagesController.SetActivity(const UserId: string; ActivityType: TVkMessageActivity; PeerId, GroupId: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -1294,8 +1281,7 @@ begin
   Result := Send(Item, Params);
 end;
 
-function TMessagesController.Send(var Items: TVkMessageSendResponses; UserIds: TIds; Message: string; Attachments:
-  TAttachmentArray): Boolean;
+function TMessagesController.Send(var Items: TVkMessageSendResponses; UserIds: TIds; Message: string; Attachments: TAttachmentArray): Boolean;
 var
   Params: TVkParamsMessageSendIds;
 begin

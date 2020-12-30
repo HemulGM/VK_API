@@ -3,15 +3,13 @@ unit VK.Entity.Database.Universities;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkUniversity = class
+  TVkUniversity = class(TVkObject)
   private
-    FId: Integer;
     FTitle: string;
   public
-    property Id: Integer read FId write FId;
     property Title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkUniversity;

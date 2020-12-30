@@ -3,17 +3,16 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment;
+  Generics.Collections, System.SysUtils, Rest.Json, System.Json,
+  VK.Entity.Common, VK.Types, VK.Entity.Attachment;
 
 type
-  TVkAudioArtist = class
+  TVkAudioArtist = class(TVkObject)
   private
     FDomain: string;
-    FId: string;
     FName: string;
   public
     property Domain: string read FDomain write FDomain;
-    property Id: string read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAudioArtist;
@@ -44,17 +43,15 @@ type
     class function FromJsonString(AJsonString: string): TVkAlbumThumb;
   end;
 
-  TVkAudioAlbum = class
+  TVkAudioAlbum = class(TVkObject)
   private
     FAccess_key: string;
-    FId: Extended;
-    FOwner_id: Extended;
+    FOwner_id: Integer;
     FThumb: TVkAlbumThumb;
     FTitle: string;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
-    property Id: Extended read FId write FId;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
     property Thumb: TVkAlbumThumb read FThumb write FThumb;
     property Title: string read FTitle write FTitle;
     constructor Create;
@@ -96,7 +93,6 @@ type
     FDate: Int64;
     FDuration: Integer;
     FGenre_id: Integer;
-    FId: Integer;
     FIs_licensed: Boolean;
     FMain_artists: TArray<TVkAudioArtist>;
     FOwner_id: Integer;
@@ -115,7 +111,6 @@ type
     function GetAudioGenre: TAudioGenre;
     procedure SetAudioGenre(const Value: TAudioGenre);
   public
-    property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Artist: string read FArtist write FArtist;
     property Title: string read FTitle write FTitle;

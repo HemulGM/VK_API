@@ -3,17 +3,15 @@ unit VK.Entity.Graffiti;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkGraffiti = class
+  TVkGraffiti = class(TVkObject)
   private
-    FId: Extended;
     FPhoto_604: string;
     FOwner_id: integer;
     FPhoto_130: string;
   public
-    property Id: Extended read FId write FId;
     property OwnerId: integer read FOwner_id write FOwner_id;
     property Photo130: string read FPhoto_130 write FPhoto_130;
     property Photo604: string read FPhoto_604 write FPhoto_604;

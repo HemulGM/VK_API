@@ -3,8 +3,9 @@ unit VK.Account;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.AccountInfo,
-  VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers,
+  VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
   VK.Entity.AccountInfoRequest, VK.Entity.Account.Banned, VK.CommonUtils;
 
 type
@@ -46,8 +47,7 @@ type
     /// <summary>
     /// Позволяет сменить пароль пользователя после успешного восстановления доступа к аккаунту через СМС, используя метод Auth.Restore.
     /// </summary>
-    function ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string):
-      Boolean;
+    function ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string): Boolean;
     /// <summary>
     /// Возвращает список активных рекламных предложений (офферов), выполнив которые пользователь сможет получить соответствующее количество голосов на свой счёт внутри приложения.
     /// </summary>
@@ -125,13 +125,11 @@ uses
 
 { TAccountController }
 
-function TAccountController.ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash,
-  OldPassword: string): Boolean;
+function TAccountController.ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string): Boolean;
 var
   JsonResp: TJSONValue;
 begin
-  with Handler.Execute('account.changePassword', [['new_password', NewPassword], ['restore_sid', RestoreSid], ['change_password_hash',
-    ChangePasswordHash], ['old_password', OldPassword]]) do
+  with Handler.Execute('account.changePassword', [['new_password', NewPassword], ['restore_sid', RestoreSid], ['change_password_hash', ChangePasswordHash], ['old_password', OldPassword]]) do
   begin
     Result := Success;
     if Result then
@@ -258,7 +256,7 @@ end;
 function TAccountController.RegisterDevice(const Data: TVkParamsRegisterDevice): Boolean;
 begin
   with Handler.Execute('account.registerDevice', Data.List) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.SaveProfileInfo(const Data: TVkParamsProfileInfo; var Request: TVkAccountInfoRequest): Boolean;
@@ -280,25 +278,25 @@ end;
 function TAccountController.SetInfo(const Name, Value: string): Boolean;
 begin
   with Handler.Execute('account.setInfo', [['name', Name], ['value', Value]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.SetNameInMenu(const UserId: Integer; Name: string): Boolean;
 begin
   with Handler.Execute('account.setNameInMenu', [['user_id', UserId.ToString], ['name', Name]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.SetOffline: Boolean;
 begin
   with Handler.Execute('account.setOffline') do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.SetOnline(Voip: Boolean): Boolean;
 begin
   with Handler.Execute('account.setOnline', ['voip', BoolToString(Voip)]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.SetPushSettings(const DeviceId, Settings, Key, Value: string): Boolean;
@@ -314,7 +312,7 @@ begin
     Params.Add(['value', Value]);
   end;
   with Handler.Execute('account.setPushSettings', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
@@ -326,19 +324,19 @@ begin
   Params.Add('peer_id', PeerId);
   Params.Add('sound', Sound);
   with Handler.Execute('account.setSilenceMode', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.Ban(const OwnerID: Integer): Boolean;
 begin
   with Handler.Execute('account.ban', ['owner_id', OwnerID.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.UnBan(const OwnerID: Integer): Boolean;
 begin
   with Handler.Execute('account.unban', ['owner_id', OwnerID.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAccountController.UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
@@ -351,7 +349,7 @@ begin
     Params.Add('token', Token);
   Params.Add('sandbox', Sandbox);
   with Handler.Execute('account.unregisterDevice', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 { TVkRegisterDeviceParams }

@@ -3,7 +3,8 @@ unit VK.Likes;
 interface
 
 uses
-  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.Profile, System.JSON;
+  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.Profile,
+  System.JSON;
 
 type
   TVkLikesParams = record
@@ -56,15 +57,13 @@ uses
 
 function TLikesController.Add(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
 begin
-  with Handler.Execute('likes.add', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
-    ['access_key', AccessKey]]) do
+  with Handler.Execute('likes.add', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString], ['access_key', AccessKey]]) do
     Result := Success and TryStrToInt(Response, Items);
 end;
 
 function TLikesController.Delete(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
 begin
-  with Handler.Execute('likes.delete', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
-    ['access_key', AccessKey]]) do
+  with Handler.Execute('likes.delete', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString], ['access_key', AccessKey]]) do
     Result := Success and TryStrToInt(Response, Items);
 end;
 
@@ -92,8 +91,7 @@ end;
 
 function TLikesController.IsLiked(var Item: TVkLiked; UserId: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer): Boolean;
 begin
-  with Handler.Execute('likes.isLiked', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
-    ['user_id', UserId.ToString]]) do
+  with Handler.Execute('likes.isLiked', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString], ['user_id', UserId.ToString]]) do
   begin
     Result := Success;
     if Result then

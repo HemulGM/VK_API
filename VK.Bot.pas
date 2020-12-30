@@ -3,8 +3,8 @@ unit VK.Bot;
 interface
 
 uses
-  System.SysUtils, VK.API, VK.Components, VK.GroupEvents, VK.Entity.Message, VK.Types, VK.Entity.ClientInfo,
-  System.Classes;
+  System.SysUtils, VK.API, VK.Components, VK.GroupEvents, VK.Entity.Message,
+  VK.Types, VK.Entity.ClientInfo, System.Classes;
 
 type
   TVkBot = class;
@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-  VK.Bot.Utils, System.StrUtils;
+  VK.Bot.Utils, System.Threading, System.StrUtils;
 
 { TVkBot }
 
@@ -197,7 +197,7 @@ begin
     if FSkipOtherBotMessages and (Message.FromId < 0) then
       Exit;
     Message := TVkMessage.FromJsonString(Message.ToJsonString);
-    TThread.CreateAnonymousThread(
+    TTask.Run(
       procedure
       begin
         try
@@ -207,8 +207,9 @@ begin
             Message.Free;
           end;
         except
+          //
         end;
-      end).Start;
+      end);
   end;
 end;
 
@@ -218,19 +219,19 @@ begin
   begin
     if FSkipOtherBotMessages and (UserId < 0) then
       Exit;
-    TThread.CreateAnonymousThread(
+    TTask.Run(
       procedure
       begin
         try
           FOnJoin(Self, GroupId, UserId, JoinType, EventId);
         except
+          //
         end;
-      end).Start;
+      end);
   end;
 end;
 
-procedure TVkBotChat.FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo;
-  EventId: string);
+procedure TVkBotChat.FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
 begin
   if Assigned(FOnMessage) then
   begin
@@ -238,7 +239,7 @@ begin
       Exit;
     Message := TVkMessage.FromJsonString(Message.ToJsonString);
     ClientInfo := TVkClientInfo.FromJsonString(ClientInfo.ToJsonString);
-    TThread.CreateAnonymousThread(
+    TTask.Run(
       procedure
       begin
         try
@@ -249,8 +250,9 @@ begin
             ClientInfo.Free;
           end;
         except
+          //
         end;
-      end).Start;
+      end);
   end;
 end;
 

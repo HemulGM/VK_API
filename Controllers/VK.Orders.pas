@@ -3,7 +3,8 @@ unit VK.Orders;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Market;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Market;
 
 type
   TVkOrderStateAction = (saCancel, saCharge, saRefund);
@@ -29,13 +30,11 @@ uses
 
 function TOrdersController.CancelSubscription(const UserId, SubscriptionId: Integer; PendingCancel: Boolean): Boolean;
 begin
-  with Handler.Execute('orders.cancelSubscription', [['user_id', UserId.ToString], ['subscription_id', SubscriptionId.ToString],
-    ['pending_cancel', BoolToString(PendingCancel)]]) do
+  with Handler.Execute('orders.cancelSubscription', [['user_id', UserId.ToString], ['subscription_id', SubscriptionId.ToString], ['pending_cancel', BoolToString(PendingCancel)]]) do
     Result := Success and ResponseIsTrue;
 end;
 
-function TOrdersController.OhangeState(var OrderState: string; OrderId: Integer; Action: TVkOrderStateAction; AppOrderId:
-  Integer): Boolean;
+function TOrdersController.OhangeState(var OrderState: string; OrderId: Integer; Action: TVkOrderStateAction; AppOrderId: Integer): Boolean;
 var
   Params: TParams;
 begin

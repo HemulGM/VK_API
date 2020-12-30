@@ -3,8 +3,9 @@ unit VK.Video;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Video, System.JSON,
-  VK.Entity.Status, VK.Entity.Media, VK.Entity.Video.Save;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Video, System.JSON, VK.Entity.Status, VK.Entity.Media,
+  VK.Entity.Video.Save;
 
 type
   TVkVideosFilter = (vfMP4, vfYouTube, vfVimeo, vfShort, vfLong);
@@ -255,8 +256,7 @@ type
     /// <summary>
     /// Возвращает список альбомов, в которых находится видеозапись.
     /// </summary>
-    function GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer = 0):
-      Boolean; overload;
+    function GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список комментариев к видеозаписи.
     /// </summary>
@@ -359,8 +359,7 @@ begin
   Result := GetAlbums(Items, Params.List);
 end;
 
-function TVideoController.GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer):
-  Boolean;
+function TVideoController.GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -416,7 +415,7 @@ begin
   Params.Add('comment_id', CommentId);
   Params.Add('reason', Reason.ToConst.ToString);
   with Handler.Execute('video.reportComment', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.Restore(VideoId, OwnerId: Integer): Boolean;
@@ -427,7 +426,7 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   with Handler.Execute('video.restore', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.RestoreComment(CommentId, OwnerId: Integer): Boolean;
@@ -438,7 +437,7 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   with Handler.Execute('video.restoreComment', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.Save(var VideoSaved: TVkVideoSaved; Params: TVkParamsVideoSave): Boolean;
@@ -465,25 +464,25 @@ end;
 function TVideoController.Report(Params: TParams): Boolean;
 begin
   with Handler.Execute('video.report', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.ReorderVideos(Params: TParams): Boolean;
 begin
   with Handler.Execute('video.reorderVideos', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.ReorderAlbums(Params: TParams): Boolean;
 begin
   with Handler.Execute('video.reorderAlbums', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.RemoveFromAlbum(Params: TParams): Boolean;
 begin
   with Handler.Execute('video.removeFromAlbum', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.GetComments(var Items: TVkComments; Params: TParams): Boolean;
@@ -552,7 +551,7 @@ begin
   if TargetId <> 0 then
     Params.Add('target_id', TargetId);
   with Handler.Execute('video.add', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.AddAlbum(var AlbumId: Integer; Title: string; Privacy: TArrayOfString; GroupId: Integer): Boolean;
@@ -587,7 +586,7 @@ begin
   if TargetId <> 0 then
     Params.Add('target_id', TargetId);
   with Handler.Execute('video.delete', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.DeleteAlbum(const AlbumId: Integer; GroupId: Integer): Boolean;
@@ -598,7 +597,7 @@ begin
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
   with Handler.Execute('video.deleteAlbum', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.DeleteComment(const CommentId: Integer; OwnerId: Integer): Boolean;
@@ -609,7 +608,7 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   with Handler.Execute('video.deleteComment', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.Edit(Params: TVkParamsVideoEdit): Boolean;
@@ -630,19 +629,19 @@ end;
 function TVideoController.EditComment(Params: TParams): Boolean;
 begin
   with Handler.Execute('video.editComment', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.EditAlbum(Params: TParams): Boolean;
 begin
   with Handler.Execute('video.editAlbum', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.Edit(Params: TParams): Boolean;
 begin
   with Handler.Execute('video.edit', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.CreateComment(var CommentId: Integer; Params: TParams): Boolean;
@@ -654,7 +653,7 @@ end;
 function TVideoController.AddToAlbum(Params: TParams): Boolean;
 begin
   with Handler.Execute('video.addToAlbum', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TVideoController.Save(var VideoSaved: TVkVideoSaved; Link: string): Boolean;

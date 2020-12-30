@@ -7,7 +7,7 @@ uses
 
 type
   TVkObject = class(TInterfacedObject)
-  private
+  protected
     FId: Integer;
   public
     property Id: Integer read FId write FId;
@@ -33,12 +33,10 @@ type
     class function FromJsonString(AJsonString: string): TVkBasicIndexItems;
   end;
 
-  TVkBasicObject = class
+  TVkBasicObject = class(TVkObject)
   private
-    FId: Integer;
     FName: string;
   public
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkBasicObject;
@@ -113,7 +111,7 @@ type
     FUrl: string;
   public
     property Data: string read FData write FData;
-    property platform: string read FPlatform write FPlatform;
+    property&Platform: string read FPlatform write FPlatform;
     property&Type: string read FType write FType;
     property Url: string read FUrl write FUrl;
     function ToJsonString: string;
@@ -228,57 +226,50 @@ type
     function GetSizeMax(Value: string = 'w'; Circular: Boolean = False): TVkSize;
   end;
 
-  TVkRelationPartner = class
+  TVkRelationPartner = class(TVkObject)
   private
     FCan_access_closed: Boolean;
     FFirst_name: string;
-    FId: Integer;
     FIs_closed: Boolean;
     FLast_name: string;
   public
     property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
     property FirstName: string read FFirst_name write FFirst_name;
-    property Id: Integer read FId write FId;
     property IsClosed: Boolean read FIs_closed write FIs_closed;
     property LastName: string read FLast_name write FLast_name;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRelationPartner;
   end;
 
-  TVkRelationRequests = class
+  TVkRelationRequests = class(TVkObject)
   private
     FCan_access_closed: Boolean;
     FFirst_name: string;
-    FId: Integer;
     FIs_closed: Boolean;
     FLast_name: string;
   public
     property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
     property FirstName: string read FFirst_name write FFirst_name;
-    property Id: Integer read FId write FId;
     property IsClosed: Boolean read FIs_closed write FIs_closed;
     property LastName: string read FLast_name write FLast_name;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRelationRequests;
   end;
 
-  TVkEmail = class
+  TVkEmail = class(TVkObject)
   private
-    FId: Integer;
     FAddress: string;
   public
-    property Id: Integer read FId write FId;
     property Address: string read FAddress write FAddress;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkEmail;
   end;
 
-  TVkPlace = class
+  TVkPlace = class(TVkObject)
   private
     FCity: string; // Ч название города;
     FCountry: string; // Ч название страны;
     FTitle: string; // Ч название места (если назначено);
-    FId: integer; // Ч идентификатор места (если назначено);
     FLatitude: Extended; // Ч географическа€ широта;
     FLongitude: Extended; // Ч географическа€ долгота;
     FCreated: Int64; // Ч дата создани€ (если назначено);
@@ -288,7 +279,6 @@ type
     FCheckins: Integer; // Ч URL изображени€-иконки;
   public
     property Checkins: Integer read FCheckins write FCheckins;
-    property Id: integer read FId write FId;
     property Title: string read FTitle write FTitle;
     property Latitude: Extended read FLatitude write FLatitude;
     property Longitude: Extended read FLongitude write FLongitude;

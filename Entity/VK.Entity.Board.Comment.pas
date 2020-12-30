@@ -3,15 +3,15 @@ unit VK.Entity.Board.Comment;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile,
+  VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
 
 type
-  TVkBoardComment = class
+  TVkBoardComment = class(TVkObject)
   private
     FCan_edit: Integer;
     FDate: Int64;
     FFrom_id: Integer;
-    FId: Integer;
     FLikes: TVkLikesInfo;
     FText: string;
     FAttachments: TArray<TVkAttachment>;
@@ -19,7 +19,6 @@ type
     property CanEdit: Integer read FCan_edit write FCan_edit;
     property Date: Int64 read FDate write FDate;
     property FromId: Integer read FFrom_id write FFrom_id;
-    property Id: Integer read FId write FId;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Text: string read FText write FText;
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;

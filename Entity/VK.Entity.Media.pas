@@ -3,10 +3,12 @@ unit VK.Entity.Media;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
-  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
+  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift,
+  VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll,
+  VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard, VK.Types,
+  VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
   VK.Entity.Market.Album;
 
 type
@@ -136,11 +138,10 @@ type
     class function FromJsonString(AJsonString: string): TVkCommentThread;
   end;
 
-  TVkComment = class
+  TVkComment = class(TVkObject)
   private
     FDate: Int64;
     FFrom_id: Integer;
-    FId: Integer;
     FPost_id: Integer;
     FPost_owner_id: Integer;
     FReply_to_comment: Integer;
@@ -156,7 +157,6 @@ type
   public
     property Date: Int64 read FDate write FDate;
     property FromId: Integer read FFrom_id write FFrom_id;
-    property Id: Integer read FId write FId;
     /// <summary>
     ///  Идентификатор фотографии, к которой был оставлен комментарий
     /// </summary>
@@ -203,9 +203,8 @@ type
     class function FromJsonString(AJsonString: string): TVkComments;
   end;
 
-  TVkPost = class
+  TVkPost = class(TVkObject)
   private
-    FId: Integer;
     FOwner_id: Integer;
     FFrom_id: Integer;
     FCreated_by: Integer;
@@ -246,7 +245,6 @@ type
     property FriendsOnly: Integer read FFriends_only write FFriends_only;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Geo: TVkGeo read FGeo write FGeo;
-    property Id: Integer read FId write FId;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property IsPinned: Integer read FIs_pinned write FIs_pinned;
     property Likes: TVkLikesInfo read FLikes write FLikes;

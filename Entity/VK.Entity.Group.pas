@@ -3,8 +3,9 @@ unit VK.Entity.Group;
 interface
 
 uses
-  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market, VK.Entity.Profile,
-  VK.Entity.Group.Counters, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common,
+  VK.Entity.Photo, VK.Entity.Market, VK.Entity.Profile, VK.Entity.Group.Counters,
+  VK.Entity.Database.Cities, VK.Entity.Database.Countries;
 
 type
   TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
@@ -63,18 +64,16 @@ type
     property Images: TArray<TVkCoverImage> read FImages write FImages;
   end;
 
-  TVkGroupLink = class
+  TVkGroupLink = class(TVkObject)
   private
     FName: string;
     FPhoto_50: string;
-    FId: Integer;
     FUrl: string;
     FDesc: string;
     FPhoto_100: string;
     FEdit_title: Integer;
     FImage_processing: Integer;
   public
-    property Id: Integer read FId write FId;
     property Url: string read FUrl write FUrl;
     property Name: string read FName write FName;
     property Desc: string read FDesc write FDesc;
@@ -143,14 +142,13 @@ type
     class function FromJsonString(AJsonString: string): TVkGroupMemberStates;
   end;
 
-  TVkGroupMarket = class
+  TVkGroupMarket = class(TVkObject)
   private
     FName: string;
     FEnabled: Integer;
     FMain_album_id: Integer;
     FPrice_min: Integer;
     FCurrency_text: string;
-    FId: Integer;
     FPrice_max: Integer;
     FContact_id: Integer;
     FCurrency: TVkProductCurrency;
@@ -161,18 +159,16 @@ type
     property MainAlbumId: Integer read FMain_album_id write FMain_album_id;
     property ContactId: Integer read FContact_id write FContact_id;
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     property Currency_text: string read FCurrency_text write FCurrency_text;
   end;
 
-  TVkGroupAddress = class
+  TVkGroupAddress = class(TVkObject)
   private
     FAdditional_address: string;
     FAddress: string;
     FCity_id: Integer;
     FCountry_id: Integer;
-    FId: Integer;
     FLatitude: Extended;
     FLongitude: Extended;
     FMetro_station_id: Integer;
@@ -184,7 +180,6 @@ type
     property Address: string read FAddress write FAddress;
     property CityId: Integer read FCity_id write FCity_id;
     property CountryId: Integer read FCountry_id write FCountry_id;
-    property Id: Integer read FId write FId;
     property Latitude: Extended read FLatitude write FLatitude;
     property Longitude: Extended read FLongitude write FLongitude;
     property MetroStationId: Integer read FMetro_station_id write FMetro_station_id;
@@ -207,10 +202,9 @@ type
 
   TVkGroupState = (gsOpen = 0, gsClose = 1, gsPrivate = 2);
 
-  TVkGroup = class
+  TVkGroup = class(TVkObject)
   private
     FAdmin_level: Integer;
-    FId: Integer;
     FIs_admin: Boolean;
     FIs_advertiser: Boolean;
     FIs_closed: Integer;
@@ -374,7 +368,7 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    property Id: Integer read FId write FId;
+    property Id;
     /// <summary>
     /// Идентификатор пользователя, который отправил приглашение в сообщество.
     /// Поле возвращается только для метода groups.getInvites.
@@ -459,14 +453,13 @@ type
     class function FromJsonString(AJsonString: string): TVkInvitesGroups;
   end;
 
-  TVkGroupTag = class
+  TVkGroupTag = class(TVkObject)
   private
     FColor: string;
-    FId: Integer;
     FName: string;
   public
     property Color: string read FColor write FColor;
-    property Id: Integer read FId write FId;
+    property Id;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkGroupTag;

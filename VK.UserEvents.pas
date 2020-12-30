@@ -3,8 +3,8 @@ unit VK.UserEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
   TCustomUserEvents = class(TComponent)
@@ -32,8 +32,7 @@ type
     FLogging: Boolean;
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
-    procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer;
-      ExtraFields: TEventExtraFields);
+    procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoUserTyping(const UserId, ChatId: Integer);
     procedure DoUserCall(const UserId, CallId: Integer);
     procedure DoUsersTyping(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
@@ -143,7 +142,7 @@ begin
   try
     EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
   except
-    raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+    //raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
   end;
   case EventType of
     1..4: //Изменение флагов сообщений и новое сообщение
@@ -481,8 +480,7 @@ begin
   FLongPollServer.Stop;
 end;
 
-procedure TCustomUserEvents.DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData:
-  Integer; ExtraFields: TEventExtraFields);
+procedure TCustomUserEvents.DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
 var
   MessageChangeData: TMessageChangeData;
 begin

@@ -3,13 +3,13 @@ unit VK.Entity.Message.Chat;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Common, VK.Types;
 
 type
-  TVkChat = class
+  TVkChat = class(TVkObject)
   private
     FAdmin_id: Integer;
-    FId: Extended;
     FIs_default_photo: Boolean;
     FMembers_count: Extended;
     FPhoto_100: string;
@@ -20,7 +20,6 @@ type
     FUsers: TArray<TVkProfile>;
   public
     property AdminId: Integer read FAdmin_id write FAdmin_id;
-    property Id: Extended read FId write FId;
     property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
     property MembersCount: Extended read FMembers_count write FMembers_count;
     property Photo100: string read FPhoto_100 write FPhoto_100;

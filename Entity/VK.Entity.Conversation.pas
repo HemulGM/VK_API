@@ -3,7 +3,8 @@ unit VK.Entity.Conversation;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common,
+  VK.Entity.Profile, VK.Entity.Group, VK.Types;
 
 type
   TVkChatAccess = class
@@ -113,9 +114,8 @@ type
     class function FromJsonString(AJsonString: string): TVkCanWrite;
   end;
 
-  TVkPeer = class
+  TVkPeer = class(TVkObject)
   private
-    FId: Integer;
     FLocal_id: Integer;
     FType: string;
     function GetType: TVkPeerType;
@@ -124,7 +124,6 @@ type
     function GetIsGroup: Boolean;
     function GetIsUser: Boolean;
   public
-    property Id: Integer read FId write FId;
     property LocalId: Integer read FLocal_id write FLocal_id;
     property&Type: TVkPeerType read GetType write SetType;
     property IsUser: Boolean read GetIsUser;

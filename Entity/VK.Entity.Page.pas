@@ -3,15 +3,14 @@ unit VK.Entity.Page;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkPage = class
+  TVkPage = class(TVkObject)
   private
     FCreated: Int64;
     FEdited: Int64;
     FGroup_id: Integer;
-    FId: Integer;
     FParent2: string;
     FTitle: string;
     FView_url: string;
@@ -26,7 +25,6 @@ type
     FSource: string;
     FHtml: string;
   public
-    property Id: Integer read FId write FId;
     property GroupId: Integer read FGroup_id write FGroup_id;
     property CreatorId: Integer read FCreator_id write FCreator_id;
     property Title: string read FTitle write FTitle;
@@ -59,18 +57,16 @@ type
     class function FromJsonString(AJsonString: string): TVkPages;
   end;
 
-  TVkPageVersion = class
+  TVkPageVersion = class(TVkObject)
   private
     FDate: Int64;
     FEditor_id: Integer;
     FEditor_name: string;
-    FId: Integer;
     FLength: Integer;
   public
     property Date: Int64 read FDate write FDate;
     property EditorId: Integer read FEditor_id write FEditor_id;
     property EditorName: string read FEditor_name write FEditor_name;
-    property Id: Integer read FId write FId;
     property Length: Integer read FLength write FLength;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPageVersion;

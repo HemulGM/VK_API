@@ -3,14 +3,12 @@ unit VK.Entity.Poll;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile,
+  VK.Entity.Group, VK.Entity.Common;
 
 type
-  TVkPollFriends = class
-  private
-    FId: Integer;
+  TVkPollFriends = class(TVkObject)
   public
-    property Id: Integer read FId write FId;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPollFriends;
   end;
@@ -26,18 +24,16 @@ type
     class function FromJsonString(AJsonString: string): TVkPollPoints;
   end;
 
-  TVkPollBackground = class
+  TVkPollBackground = class(TVkObject)
   private
     FAngle: Integer;
     FColor: string;
-    FId: Integer;
     FName: string;
     FPoints: TArray<TVkPollPoints>;
     FType: string;
   public
     property Angle: Integer read FAngle write FAngle;
     property Color: string read FColor write FColor;
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     property Points: TArray<TVkPollPoints> read FPoints write FPoints;
     property&Type: string read FType write FType;
@@ -56,14 +52,12 @@ type
     class function FromJsonString(AJsonString: string): TVkPollBackgrounds;
   end;
 
-  TVkPollAnswer = class
+  TVkPollAnswer = class(TVkObject)
   private
-    FId: Integer;
     FRate: Integer;
     FText: string;
     FVotes: Integer;
   public
-    property Id: Integer read FId write FId;
     property Rate: Integer read FRate write FRate;
     property Text: string read FText write FText;
     property Votes: Integer read FVotes write FVotes;
@@ -71,7 +65,7 @@ type
     class function FromJsonString(AJsonString: string): TVkPollAnswer;
   end;
 
-  TVkPoll = class
+  TVkPoll = class(TVkObject)
   private
     FAnonymous: Boolean;
     FAnswer_ids: TArray<Integer>;
@@ -85,7 +79,6 @@ type
     FClosed: Boolean;
     FCreated: Int64;
     FEnd_date: Int64;
-    FId: Integer;
     FIs_board: Boolean;
     FMultiple: Boolean;
     FOwner_id: Integer;
@@ -97,7 +90,6 @@ type
     FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
   public
-    property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Created: Int64 read FCreated write FCreated;
     property Question: string read FQuestion write FQuestion;

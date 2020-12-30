@@ -3,12 +3,11 @@ unit VK.Entity.Subscription;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkSubscription = class
+  TVkSubscription = class(TVkObject)
   private
-    FId: Integer;
     FIs_admin: Integer;
     FIs_advertiser: Integer;
     FIs_closed: Integer;
@@ -23,8 +22,6 @@ type
     FLast_name: string;
     FCan_access_closed: Boolean;
   public
-    //common
-    property Id: Integer read FId write FId;
     //page
     property IsAdmin: Integer read FIs_admin write FIs_admin;
     property IsAdvertiser: Integer read FIs_advertiser write FIs_advertiser;

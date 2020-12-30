@@ -3,7 +3,8 @@ unit VK.Search;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Search;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Search;
 
 type
   TVkSearchFilter = (sfFriends, sfIdols, sfPublics, sfGroups, sfEvents, sfCorrespondents, sfMutualFriends);

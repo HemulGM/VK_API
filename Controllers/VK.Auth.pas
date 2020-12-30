@@ -3,7 +3,8 @@ unit VK.Auth;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types;
 
 type
   TAuthController = class(TVkController)
@@ -39,7 +40,7 @@ begin
   Params.Add('client_secret', ClientSecret);
   Params.Add('auth_by_phone', Ord(AuthByPhone));
   with Handler.Execute('auth.checkPhone', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TAuthController.CheckPhone(Phone: string; AuthByPhone: Boolean): Boolean;

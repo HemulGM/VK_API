@@ -3,8 +3,8 @@ unit VK.Wall;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
-  VK.Entity.CommentInfo;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.CommentInfo;
 
 type
   TVkParamsWallPost = record
@@ -187,8 +187,7 @@ type
     /// <summary>
     /// Добавляет комментарий к записи на стене.
     /// </summary>
-    function CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer = 0; Attachments:
-      TAttachmentArray = []): Boolean; overload;
+    function CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer = 0; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Удаляет запись со стены.
     /// </summary>
@@ -244,8 +243,7 @@ type
     /// Позволяет получать список репостов заданной записи.
     /// Обратите внимание, получить список репостов можно только для записи, созданной текущим пользователем, или в сообществе, где текущий пользователь является администратором.
     /// </summary>
-    function GetReposts(var Items: TVkPosts; PostId: Integer; Offset: Integer = 0; Count: Integer = 0; OwnerId: Integer
-      = 0): Boolean; overload;
+    function GetReposts(var Items: TVkPosts; PostId: Integer; Offset: Integer = 0; Count: Integer = 0; OwnerId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Включает комментирование записи
     /// Работает только с конкретными записями, комментирование которых было выключено с помощью wall.closeComments
@@ -525,8 +523,7 @@ begin
     Result := Success and ResponseIsTrue;
 end;
 
-function TWallController.CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer; Attachments:
-  TAttachmentArray): Boolean;
+function TWallController.CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
 var
   CommentInfo: TVkCommentInfo;
   Params: TVkCommentCreateParams;

@@ -3,14 +3,13 @@ unit VK.Entity.AudioMessage;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkAudioMessage = class
+  TVkAudioMessage = class(TVkObject)
   private
     FAccess_key: string;
     FDuration: Int64;
-    FId: Integer;
     FLink_mp3: string;
     FLink_ogg: string;
     FOwner_id: Integer;
@@ -18,7 +17,6 @@ type
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     property Duration: Int64 read FDuration write FDuration;
-    property Id: Integer read FId write FId;
     property LinkMp3: string read FLink_mp3 write FLink_mp3;
     property LinkOgg: string read FLink_ogg write FLink_ogg;
     property OwnerId: Integer read FOwner_id write FOwner_id;

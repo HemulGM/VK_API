@@ -3,10 +3,13 @@ unit VK.Entity.Newsfeed;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
-  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call, VK.Entity.Media;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
+  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift,
+  VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll,
+  VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard, VK.Types,
+  VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
+  VK.Entity.Media;
 
 type
   TVkNewsCopyright = class
@@ -22,9 +25,8 @@ type
     class function FromJsonString(AJsonString: string): TVkNewsCopyright;
   end;
 
-  TVkNewsItem = class
+  TVkNewsItem = class(TVkObject)
   private
-    FId: Integer;
     FOwner_id: Integer;
     FFrom_id: Integer;
     FCreated_by: Integer;
@@ -72,7 +74,6 @@ type
     property FriendsOnly: Integer read FFriends_only write FFriends_only;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Geo: TVkGeo read FGeo write FGeo;
-    property Id: Integer read FId write FId;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property IsPinned: Integer read FIs_pinned write FIs_pinned;
     property Likes: TVkLikesInfo read FLikes write FLikes;
@@ -144,14 +145,12 @@ type
     class function FromJsonString(AJsonString: string): TVkNewsfeedBanned;
   end;
 
-  TVkNewsfeedList = class
+  TVkNewsfeedList = class(TVkObject)
   private
-    FId: Integer;
     FNo_reposts: Integer;
     FSource_ids: TArray<Integer>;
     FTitle: string;
   public
-    property Id: Integer read FId write FId;
     property NoReposts: Integer read FNo_reposts write FNo_reposts;
     property SourceIds: TArray<Integer> read FSource_ids write FSource_ids;
     property Title: string read FTitle write FTitle;
@@ -171,11 +170,10 @@ type
     class function FromJsonString(AJsonString: string): TVkNewsfeedLists;
   end;
 
-  TVkSuggestedItem = class
+  TVkSuggestedItem = class(TVkObject)
   private
     FCan_access_closed: Boolean;
     FFirst_name: string;
-    FId: Integer;
     FIs_closed: Boolean;
     FLast_name: string;
     FPhoto_100: string;
@@ -189,7 +187,6 @@ type
     FIs_admin: Integer;
   public
     //common
-    property Id: Integer read FId write FId;
     property&Type: string read FType write FType;
     property Photo50: string read FPhoto_50 write FPhoto_50;
     property IsClosed: Boolean read FIs_closed write FIs_closed;

@@ -3,7 +3,8 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Privacy;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
+  VK.Entity.Attachment, VK.Entity.Privacy;
 
 type
   TVkAlbumThumb = class
@@ -33,7 +34,6 @@ type
   private
     FCreated: Int64;
     FDescription: string;
-    FId: integer;
     FOwner_id: Integer;
     FSize: Integer;
     FThumb: TVkAlbumThumb;
@@ -56,7 +56,6 @@ type
   public
     property Created: TDateTime read GetCreated write SetCreated;
     property Description: string read FDescription write FDescription;
-    property Id: integer read FId write FId;
     property ThumbId: integer read FThumb_id write FThumb_id;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Size: Integer read FSize write FSize;

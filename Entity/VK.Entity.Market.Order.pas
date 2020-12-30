@@ -3,7 +3,8 @@ unit VK.Entity.Market.Order;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Market, VK.Entity.Photo;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Market,
+  VK.Entity.Photo;
 
 type
   TVkOrderRecipient = class
@@ -30,14 +31,13 @@ type
     class function FromJsonString(AJsonString: string): TVkOrderDelivery;
   end;
 
-  TVkOrder = class
+  TVkOrder = class(TVkObject)
   private
     FComment: string;
     FDate: Int64;
     FDelivery: TVkOrderDelivery;
     FDisplay_order_id: string;
     FGroup_id: Integer;
-    FId: Integer;
     FItems_count: Integer;
     FPreview_order_items: TArray<TVkProduct>;
     FRecipient: TVkOrderRecipient;
@@ -50,7 +50,6 @@ type
     property Delivery: TVkOrderDelivery read FDelivery write FDelivery;
     property DisplayOrderId: string read FDisplay_order_id write FDisplay_order_id;
     property GroupId: Integer read FGroup_id write FGroup_id;
-    property Id: Integer read FId write FId;
     property ItemsCount: Integer read FItems_count write FItems_count;
     property PreviewOrderItems: TArray<TVkProduct> read FPreview_order_items write FPreview_order_items;
     property Recipient: TVkOrderRecipient read FRecipient write FRecipient;

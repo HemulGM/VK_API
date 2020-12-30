@@ -3,8 +3,9 @@ unit VK.Docs;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Doc.Save, VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save,
+  VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
 
 type
   TVkDocUploadType = (dutDoc, dutAudioMessage);
@@ -76,8 +77,7 @@ type
     /// <summary>
     /// Сохраняет аудиосообщение
     /// </summary>
-    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0;
-      ReturnTags: Boolean = False): Boolean;
+    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0; ReturnTags: Boolean = False): Boolean;
     /// <summary>
     /// Возвращает расширенную информацию о документах пользователя или сообщества.
     /// </summary>
@@ -130,7 +130,6 @@ uses
 function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: Integer): Boolean;
 var
   Params: TParams;
-  JSONItem: TJSONValue;
 begin
   case&Type of
     dutDoc:
@@ -142,21 +141,7 @@ begin
     Params.Add('peer_id', PeerId);
   with Handler.Execute('docs.getMessagesUploadServer', Params) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('upload_url', UploadUrl);
   end;
 end;
 
@@ -194,7 +179,7 @@ function TDocController.Delete(OwnerId, DocId: Integer): Boolean;
 begin
   with Handler.Execute('docs.delete', [['doc_id', DocId.ToString], ['owner_id', OwnerId.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -208,7 +193,7 @@ begin
   Params.Add('tags', Tags);
   with Handler.Execute('docs.edit', Params) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -236,7 +221,6 @@ end;
 function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType): Boolean;
 var
   Params: TParams;
-  JSONItem: TJSONValue;
 begin
   case&Type of
     dutDoc:
@@ -246,21 +230,7 @@ begin
   end;
   with Handler.Execute('docs.getMessagesUploadServer', Params) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('upload_url', UploadUrl);
   end;
 end;
 
@@ -281,50 +251,18 @@ begin
 end;
 
 function TDocController.GetUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
-var
-  JSONItem: TJSONValue;
 begin
   with Handler.Execute('docs.getUploadServer', ['group_id', GroupId.ToString]) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('upload_url', UploadUrl);
   end;
 end;
 
 function TDocController.GetWallUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
-var
-  JSONItem: TJSONValue;
 begin
   with Handler.Execute('docs.getWallUploadServer', ['group_id', GroupId.ToString]) do
   begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
+    Result := Success and GetValue('upload_url', UploadUrl);
   end;
 end;
 
@@ -351,8 +289,7 @@ begin
   end;
 end;
 
-function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer;
-  ReturnTags: Boolean): Boolean;
+function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
 var
   Url, Response: string;
 begin
@@ -361,9 +298,7 @@ begin
   begin
     try
       if TCustomVK(VK).Uploader.Upload(Url, FileName, Response) then
-      begin
-        Result := Save(Doc, Response, Title, Tags);
-      end
+        Result := Save(Doc, Response, Title, Tags)
       else
         TCustomVK(VK).DoError(Self, TVkException.Create(Response), -1, Response);
     except

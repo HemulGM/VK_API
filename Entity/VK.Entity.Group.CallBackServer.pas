@@ -3,20 +3,18 @@ unit VK.Entity.Group.CallBackServer;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkGroupCallbackServer = class
+  TVkGroupCallbackServer = class(TVkObject)
   private
     FCreator_id: Integer;
-    FId: Integer;
     FSecret_key: string;
     FStatus: string;
     FTitle: string;
     FUrl: string;
   public
     property CreatorId: Integer read FCreator_id write FCreator_id;
-    property Id: Integer read FId write FId;
     property SecretKey: string read FSecret_key write FSecret_key;
     property Status: string read FStatus write FStatus;
     property Title: string read FTitle write FTitle;

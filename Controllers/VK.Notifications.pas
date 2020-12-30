@@ -3,8 +3,8 @@ unit VK.Notifications;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Notifications;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Notifications;
 
 type
   /// <summary>
@@ -83,8 +83,7 @@ type
     /// <summary>
     /// Отправляет уведомление пользователю приложения VK Apps.
     /// </summary>
-    function SendMessage(var Status: TVkNotificationMessageStatuses; Params: TVkParamsNotificationsSendMessage): Boolean;
-      overload;
+    function SendMessage(var Status: TVkNotificationMessageStatuses; Params: TVkParamsNotificationsSendMessage): Boolean; overload;
   end;
 
 implementation
@@ -127,8 +126,7 @@ begin
   end;
 end;
 
-function TNotificationsController.SendMessage(var Status: TVkNotificationMessageStatuses; Params:
-  TVkParamsNotificationsSendMessage): Boolean;
+function TNotificationsController.SendMessage(var Status: TVkNotificationMessageStatuses; Params: TVkParamsNotificationsSendMessage): Boolean;
 begin
   Result := SendMessage(Status, Params.List);
 end;

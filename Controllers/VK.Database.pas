@@ -3,10 +3,11 @@ unit VK.Database;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Database.Chairs,
-  VK.Entity.Database.Cities, VK.Entity.Database.Countries, VK.Entity.Database.Faculties,
-  VK.Entity.Database.MetroStations, VK.Entity.Database.Regions, VK.Entity.Database.Schools,
-  VK.Entity.Database.Universities;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Database.Chairs, VK.Entity.Database.Cities,
+  VK.Entity.Database.Countries, VK.Entity.Database.Faculties,
+  VK.Entity.Database.MetroStations, VK.Entity.Database.Regions,
+  VK.Entity.Database.Schools, VK.Entity.Database.Universities;
 
 type
   TVkParamsGetCities = record
@@ -68,13 +69,11 @@ type
     /// <summary>
     /// Возвращает список факультетов.
     /// </summary>
-    function GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset: Integer = 0; Count: Integer =
-      100): Boolean;
+    function GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает список станций метро.
     /// </summary>
-    function GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean = False; Offset:
-      Integer = 0; Count: Integer = 100): Boolean;
+    function GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean = False; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает информацию об одной или нескольких станциях метро по их идентификаторам.
     /// </summary>
@@ -82,8 +81,7 @@ type
     /// <summary>
     /// Возвращает список регионов.
     /// </summary>
-    function GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string = ''; Offset: Integer = 0; Count:
-      Integer = 100): Boolean;
+    function GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает список классов, характерных для школ определенной страны.
     /// </summary>
@@ -91,8 +89,7 @@ type
     /// <summary>
     /// Возвращает список школ.
     /// </summary>
-    function GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string = ''; Offset: Integer = 0; Count:
-      Integer = 100): Boolean;
+    function GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает список высших учебных заведений.
     /// </summary>
@@ -108,8 +105,7 @@ uses
 
 function TDatabaseController.GetChairs(var Items: TVkChairs; const FacultyId: Integer; Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('database.getChairs', [['faculty_id', FacultyId.ToString], ['offset', Offset.ToString], ['count',
-    Count.ToString]]) do
+  with Handler.Execute('database.getChairs', [['faculty_id', FacultyId.ToString], ['offset', Offset.ToString], ['count', Count.ToString]]) do
   begin
     Result := Success;
     if Result then
@@ -194,8 +190,7 @@ end;
 
 function TDatabaseController.GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('database.getFaculties', [['university_id', UniversityId.ToString], ['offset', Offset.ToString],
-    ['count', Count.ToString]]) do
+  with Handler.Execute('database.getFaculties', [['university_id', UniversityId.ToString], ['offset', Offset.ToString], ['count', Count.ToString]]) do
   begin
     Result := Success;
     if Result then
@@ -209,11 +204,9 @@ begin
   end;
 end;
 
-function TDatabaseController.GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean;
-  Offset, Count: Integer): Boolean;
+function TDatabaseController.GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean; Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('database.getMetroStations', [['city_id', CityId.ToString], ['extended', BoolToString(Extended)],
-    ['offset', Offset.ToString], ['count', Count.ToString]]) do
+  with Handler.Execute('database.getMetroStations', [['city_id', CityId.ToString], ['extended', BoolToString(Extended)], ['offset', Offset.ToString], ['count', Count.ToString]]) do
   begin
     Result := Success;
     if Result then
@@ -243,11 +236,9 @@ begin
   end;
 end;
 
-function TDatabaseController.GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string; Offset, Count:
-  Integer): Boolean;
+function TDatabaseController.GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string; Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('database.getRegions', [['country_id', CountryId.ToString], ['q', Query], ['offset', Offset.ToString],
-    ['count', Count.ToString]]) do
+  with Handler.Execute('database.getRegions', [['country_id', CountryId.ToString], ['q', Query], ['offset', Offset.ToString], ['count', Count.ToString]]) do
   begin
     Result := Success;
     if Result then
@@ -277,11 +268,9 @@ begin
   end;
 end;
 
-function TDatabaseController.GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string; Offset, Count:
-  Integer): Boolean;
+function TDatabaseController.GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string; Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('database.getSchools', [['city_id', CityId.ToString], ['q', Query], ['offset', Offset.ToString],
-    ['count', Count.ToString]]) do
+  with Handler.Execute('database.getSchools', [['city_id', CityId.ToString], ['q', Query], ['offset', Offset.ToString], ['count', Count.ToString]]) do
   begin
     Result := Success;
     if Result then

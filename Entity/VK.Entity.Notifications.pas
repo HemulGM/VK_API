@@ -3,7 +3,8 @@ unit VK.Entity.Notifications;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Photo;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Photo;
 
 type
   TVkNotificationAction = class

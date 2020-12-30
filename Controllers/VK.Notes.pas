@@ -3,8 +3,8 @@ unit VK.Notes;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Note;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Note;
 
 type
   TVkParamsNotesGet = record
@@ -144,7 +144,7 @@ end;
 function TNotesController.Delete(NoteId: Integer): Boolean;
 begin
   with Handler.Execute('notes.delete', ['note_id', NoteId.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNotesController.DeleteComment(CommentId, OwnerId: Integer): Boolean;
@@ -155,14 +155,14 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   with Handler.Execute('notes.deleteComment', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNotesController.Edit(NoteId: Integer; Params: TVkParamsNotesAdd): Boolean;
 begin
   Params.List.Add('note_id', NoteId);
   with Handler.Execute('notes.edit', Params.List) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNotesController.EditComment(CommentId: Integer; Message: string; OwnerId: Integer): Boolean;
@@ -224,7 +224,7 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   with Handler.Execute('notes.restoreComment', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNotesController.GetComments(var Items: TVkNoteComments; Params: TParams): Boolean;

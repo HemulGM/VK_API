@@ -3,15 +3,13 @@ unit VK.Entity.Database.Countries;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkCountry = class
+  TVkCountry = class(TVkObject)
   private
-    FId: Integer;
     FTitle: string;
   public
-    property Id: Integer read FId write FId;
     property Title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkCountry;
@@ -49,11 +47,11 @@ destructor TVkCountries.Destroy;
 {$IFNDEF AUTOREFCOUNT}
 var
   LitemsItem: TVkCountry;
+{$ENDIF}
 begin
+{$IFNDEF AUTOREFCOUNT}
   for LitemsItem in FItems do
     LitemsItem.Free;
-{$ELSE}
-begin
 {$ENDIF}
   inherited;
 end;

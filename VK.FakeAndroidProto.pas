@@ -3,7 +3,8 @@ unit VK.FakeAndroidProto;
 interface
 
 uses
-  SysUtils, Classes, Generics.Collections, pbInput, pbOutput, pbPublic, uAbstractProtoBufClasses;
+  SysUtils, Classes, Generics.Collections, pbInput, pbOutput, pbPublic,
+  uAbstractProtoBufClasses;
 
 type
   TAndroidChekin = class(TAbstractProtoBufClass)
@@ -134,8 +135,7 @@ begin
   inherited;
 end;
 
-function TAndroidCheckinRequest.LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer; WireType: Integer):
-  Boolean;
+function TAndroidCheckinRequest.LoadSingleFieldFromBuf(ProtoBuf: TProtoBufInput; FieldNumber: Integer; WireType: Integer): Boolean;
 begin
   Result := inherited;
 end;

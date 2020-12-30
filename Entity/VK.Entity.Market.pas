@@ -23,13 +23,11 @@ type
     class function FromJsonString(AJsonString: string): TVkProductPrice;
   end;
 
-  TVkProductCategory = class
+  TVkProductCategory = class(TVkObject)
   private
-    FId: Integer;
     FName: string;
     FSection: TVkMarketSection;
   public
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     property Section: TVkMarketSection read FSection write FSection;
     constructor Create;
@@ -50,14 +48,13 @@ type
     class function FromJsonString(AJsonString: string): TVkProductCategories;
   end;
 
-  TVkProduct = class
+  TVkProduct = class(TVkObject)
   private
     FAvailability: Boolean;
     FCategory: TVkProductCategory;
     FDate: Int64;
     FDescription: string;
     FExternal_id: string;
-    FId: Integer;
     FOwner_id: Integer;
     FPrice: TVkProductPrice;
     FThumb_photo: string;
@@ -80,7 +77,6 @@ type
     property Date: Int64 read FDate write FDate;
     property Description: string read FDescription write FDescription;
     property ExternalId: string read FExternal_id write FExternal_id;
-    property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Price: TVkProductPrice read FPrice write FPrice;
     property ThumbPhoto: string read FThumb_photo write FThumb_photo;

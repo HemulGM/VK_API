@@ -3,7 +3,8 @@ unit VK.Polls;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Poll;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Poll;
 
 type
   TVkVoteAnswer = record

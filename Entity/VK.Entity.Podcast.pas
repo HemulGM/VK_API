@@ -3,7 +3,8 @@ unit VK.Entity.Podcast;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Podcast.Episode, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Podcast.Episode, VK.Entity.Profile,
+  VK.Entity.Group;
 
 type
   TVkPodcast = class

@@ -3,18 +3,16 @@ unit VK.Entity.Database.Cities;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkCity = class
+  TVkCity = class(TVkObject)
   private
-    FId: Integer;
     FTitle: string;
     FImportant: Boolean;
     FArea: string;
     FRegion: string;
   public
-    property Id: Integer read FId write FId;
     property Title: string read FTitle write FTitle;
     property Important: Boolean read FImportant write FImportant;
     property Area: string read FArea write FArea;

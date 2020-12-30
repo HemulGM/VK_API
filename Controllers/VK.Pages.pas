@@ -3,7 +3,8 @@ unit VK.Pages;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Page;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Page;
 
 type
   TVkParamsPagesGet = record
@@ -64,8 +65,7 @@ type
     /// <summary>
     /// Возвращает список всех старых версий вики-страницы.
     /// </summary>
-    function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: Integer = 0; UserId: Integer = 0):
-      Boolean; overload;
+    function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: Integer = 0; UserId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список вики-страниц в группе.
     /// </summary>

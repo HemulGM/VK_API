@@ -35,12 +35,11 @@ type
     class function FromJsonString(AJsonString: string): TVkPodcastInfo;
   end;
 
-  TVkPodcastsEpisode = class
+  TVkPodcastsEpisode = class(TVkObject)
   private
     FArtist: string;
     FDate: Int64;
     FDuration: Integer;
-    FId: Integer;
     FIs_explicit: Boolean;
     FIs_focus_track: Boolean;
     FLyrics_id: Integer;
@@ -56,7 +55,6 @@ type
     property Artist: string read FArtist write FArtist;
     property Date: Int64 read FDate write FDate;
     property Duration: Integer read FDuration write FDuration;
-    property Id: Integer read FId write FId;
     property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
     property IsFocusTrack: Boolean read FIs_focus_track write FIs_focus_track;
     property LyricsId: Integer read FLyrics_id write FLyrics_id;

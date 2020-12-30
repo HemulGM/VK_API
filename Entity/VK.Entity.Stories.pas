@@ -18,7 +18,7 @@ type
     class function FromJsonString(AJsonString: string): TVkStoryReplies;
   end;
 
-  TVkStory = class
+  TVkStory = class(TVkObject)
   private
     FAccess_key: string;
     FCan_ask: Boolean;
@@ -31,7 +31,6 @@ type
     FCan_share: Boolean;
     FDate: Int64;
     FExpires_at: Int64;
-    FId: Integer;
     FOwner_id: Integer;
     FPhoto: TVkPhoto;
     FReplies: TVkStoryReplies;
@@ -57,7 +56,6 @@ type
     property CanShare: Boolean read FCan_share write FCan_share;
     property Date: Int64 read FDate write FDate;
     property ExpiresAt: Int64 read FExpires_at write FExpires_at;
-    property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Photo: TVkPhoto read FPhoto write FPhoto;
     property Replies: TVkStoryReplies read FReplies write FReplies;

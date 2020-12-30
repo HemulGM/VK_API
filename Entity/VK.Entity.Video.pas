@@ -3,7 +3,8 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy,
+  VK.Entity.Attachment;
 
 type
   TVkVideoFiles = class
@@ -17,15 +18,15 @@ type
 
   TVkVideoImage = class
   private
-    FHeight: Extended;
+    FHeight: Integer;
     FUrl: string;
-    FWidth: Extended;
-    FWith_padding: Extended;
+    FWidth: Integer;
+    FWith_padding: Integer;
   public
-    property Height: Extended read FHeight write FHeight;
+    property Height: Integer read FHeight write FHeight;
     property Url: string read FUrl write FUrl;
-    property Width: Extended read FWidth write FWidth;
-    property WithPadding: Extended read FWith_padding write FWith_padding;
+    property Width: Integer read FWidth write FWidth;
+    property WithPadding: Integer read FWith_padding write FWith_padding;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkVideoImage;
   end;
@@ -47,7 +48,6 @@ type
     FDescription: string;
     FDuration: Integer;
     FFiles: TVkVideoFiles;
-    FId: Integer;
     FImage: TArray<TVkVideoImage>;
     FIs_favorite: Boolean;
     FLikes: TVkLikesInfo;
@@ -75,7 +75,6 @@ type
     FLive: Integer;
     FUpcoming: Integer;
   public
-    property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Title: string read FTitle write FTitle;
     property Description: string read FDescription write FDescription;
@@ -142,10 +141,9 @@ type
     class function FromJsonString(AJsonString: string): TVkVideos;
   end;
 
-  TVkVideoAlbum = class
+  TVkVideoAlbum = class(TVkObject)
   private
     FCount: Integer;
-    FId: Integer;
     FImage: TArray<TVkVideoImage>;
     FOwner_id: Integer;
     FPrivacy: TVkPrivacy;
@@ -153,7 +151,6 @@ type
     FUpdated_time: Int64;
   public
     property Count: Integer read FCount write FCount;
-    property Id: Integer read FId write FId;
     property Image: TArray<TVkVideoImage> read FImage write FImage;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Privacy: TVkPrivacy read FPrivacy write FPrivacy;

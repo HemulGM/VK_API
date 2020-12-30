@@ -3,7 +3,8 @@ unit VK.Stats;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Stats;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Stats;
 
 type
   TVkStatInterval = (siDay, siWeek, siMonth, siYear, siAll);

@@ -3,8 +3,9 @@ unit VK.Catalog;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Catalog,
+  VK.Entity.Catalog.Section, VK.CommonUtils;
 
 type
   TCatalogController = class(TVkController)

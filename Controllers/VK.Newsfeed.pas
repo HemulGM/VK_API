@@ -3,8 +3,8 @@ unit VK.Newsfeed;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Newsfeed,
-  VK.Entity.Media;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Newsfeed, VK.Entity.Media;
 
 type
   /// <summary>
@@ -187,8 +187,7 @@ type
     /// <summary>
     /// Возвращает сообщества и пользователей, на которые текущему пользователю рекомендуется подписаться.
     /// </summary>
-    function GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean = False; Count: Integer = 20; Offset:
-      Integer = 0): Boolean;
+    function GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean = False; Count: Integer = 20; Offset: Integer = 0): Boolean;
     /// <summary>
     /// Позволяет скрыть объект из ленты новостей.
     /// </summary>
@@ -235,7 +234,7 @@ begin
   if Length(GroupIds) > 0 then
     Params.Add('group_ids', GroupIds);
   with Handler.Execute('newsfeed.addBan', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.DeleteBan(UserIds, GroupIds: TIds): Boolean;
@@ -247,13 +246,13 @@ begin
   if Length(GroupIds) > 0 then
     Params.Add('group_ids', GroupIds);
   with Handler.Execute('newsfeed.deleteBan', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.DeleteList(ListId: Integer): Boolean;
 begin
   with Handler.Execute('newsfeed.deleteList', ['list_id', ListId.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.Get(var Items: TVkNews; Params: TVkParamsNewsfeedGet): Boolean;
@@ -322,8 +321,7 @@ end;
 
 function TNewsfeedController.GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean; Count, Offset: Integer): Boolean;
 begin
-  with Handler.Execute('newsfeed.getSuggestedSources', [['shuffle', BoolToString(Shuffle)], ['count', Count.ToString], ['offset',
-    Offset.ToString]]) do
+  with Handler.Execute('newsfeed.getSuggestedSources', [['shuffle', BoolToString(Shuffle)], ['count', Count.ToString], ['offset', Offset.ToString]]) do
   begin
     Result := Success;
     if Result then
@@ -339,9 +337,8 @@ end;
 
 function TNewsfeedController.IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer): Boolean;
 begin
-  with Handler.Execute('newsfeed.ignoreItem', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id',
-    ItemId.ToString]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('newsfeed.ignoreItem', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.SaveList(const ListId: Integer; SourceIds: TIds; NoReposts: Boolean): Boolean;
@@ -380,14 +377,13 @@ begin
   if not TrackCode.IsEmpty then
     Params.Add('track_code', TrackCode);
   with Handler.Execute('newsfeed.unignoreItem', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId, ItemId: Integer): Boolean;
 begin
-  with Handler.Execute('newsfeed.unsubscribe', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id',
-    ItemId.ToString]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('newsfeed.unsubscribe', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.Search(var Items: TVkNews; Params: TParams): Boolean;

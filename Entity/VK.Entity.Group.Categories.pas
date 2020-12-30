@@ -3,29 +3,25 @@ unit VK.Entity.Group.Categories;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Group, VK.Entity.Common;
 
 type
-  TVkGroupSubcategory = class
+  TVkGroupSubcategory = class(TVkObject)
   private
-    FId: Integer;
     FName: string;
   public
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkGroupSubcategory;
   end;
 
-  TVkGroupCategory = class
+  TVkGroupCategory = class(TVkObject)
   private
-    FId: Integer;
     FName: string;
     FSubcategories: TArray<TVkGroupSubcategory>;
     FPage_count: Integer;
     FPage_previews: TArray<TVkGroup>;
   public
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     property PageCount: Integer read FPage_count write FPage_count;
     property PagePreviews: TArray<TVkGroup> read FPage_previews write FPage_previews;

@@ -3,8 +3,8 @@ unit VK.Entity.Catalog;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Group, VK.Entity.Audio,
-  VK.Entity.Playlist, VK.Entity.Profile;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
+  VK.Entity.Group, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Profile;
 
 type
   TVkCatalogIcon = class

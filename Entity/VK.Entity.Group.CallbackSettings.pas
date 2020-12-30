@@ -68,7 +68,7 @@ type
     property MessageReply: Boolean read FMessage_reply write FMessage_reply;
     property MessageTypingState: Boolean read FMessage_typing_state write FMessage_typing_state;
     property MessagesEdit: Boolean read FMessages_edit write FMessages_edit;
-    property photoCommentDelete: Boolean read FPhoto_comment_delete write FPhoto_comment_delete;
+    property PhotoCommentDelete: Boolean read FPhoto_comment_delete write FPhoto_comment_delete;
     property photoCommentEdit: Boolean read FPhoto_comment_edit write FPhoto_comment_edit;
     property PhotoCommentNew: Boolean read FPhoto_comment_new write FPhoto_comment_new;
     property PhotoCommentRestore: Boolean read FPhoto_comment_restore write FPhoto_comment_restore;

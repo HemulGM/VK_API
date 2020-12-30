@@ -3,18 +3,16 @@ unit VK.Entity.Gift;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkGift = class
+  TVkGift = class(TVkObject)
   private
-    FId: Integer;
     FThumb_256: string;
     FThumb_96: string;
     FThumb_48: string;
     FStickers_product_id: Integer;
   public
-    property Id: Integer read FId write FId;
     property Thumb256: string read FThumb_256 write FThumb_256;
     property Thumb96: string read FThumb_96 write FThumb_96;
     property Thumb48: string read FThumb_48 write FThumb_48;
@@ -23,13 +21,12 @@ type
     class function FromJsonString(AJsonString: string): TVkGift;
   end;
 
-  TVkGiftItem = class
+  TVkGiftItem = class(TVkObject)
   private
     FDate: Int64;
     FFrom_id: Integer;
     FGift: TVkGift;
     FGift_hash: string;
-    FId: Integer;
     FMessage: string;
     FPrivacy: Integer;
   public
@@ -37,7 +34,6 @@ type
     property FromId: Integer read FFrom_id write FFrom_id;
     property Gift: TVkGift read FGift write FGift;
     property GiftHash: string read FGift_hash write FGift_hash;
-    property Id: Integer read FId write FId;
     property Message: string read FMessage write FMessage;
     property Privacy: Integer read FPrivacy write FPrivacy;
     constructor Create;

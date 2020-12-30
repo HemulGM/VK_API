@@ -3,20 +3,15 @@ unit VK.Apps;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.App;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.App;
 
 type
   TVkParamsAppsGet = record
     List: TParams;
     function AppId(Value: Integer): Integer;
     function AppIds(Value: TIds): Integer;
-    /// <summary>
-    /// ios Ч iOS;
-    /// android Ч Android;
-    /// winphone Ч Windows Phone;
-    /// web Ч приложени€ на vk.com.
-    /// </summary>
-    function &Platform(Value: string): Integer;
+    function &Platform(Value: TVkPlatform): Integer;
     function Extended(Value: Boolean): Integer;
     function ReturnFriends(Value: Boolean): Integer;
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
@@ -90,9 +85,9 @@ begin
   Result := List.Add('app_ids', Value);
 end;
 
-function TVkParamsAppsGet.&Platform(Value: string): Integer;
+function TVkParamsAppsGet.&Platform(Value: TVkPlatform): Integer;
 begin
-  Result := List.Add('platform', Value);
+  Result := List.Add('platform', Value.ToString);
 end;
 
 function TVkParamsAppsGet.Extended(Value: Boolean): Integer;

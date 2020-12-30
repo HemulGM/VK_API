@@ -3,7 +3,7 @@ unit VK.Entity.Playlist;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Audio;
+  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Common;
 
 type
   TVkAudioOriginal = class
@@ -19,18 +19,16 @@ type
     class function FromJsonString(AJsonString: string): TVkAudioOriginal;
   end;
 
-  TVkAudioGenres = class
+  TVkAudioGenres = class(TVkObject)
   private
-    FId: Extended;
     FName: string;
   public
-    property Id: Extended read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAudioGenres;
   end;
 
-  TVkAudioPlaylist = class
+  TVkAudioPlaylist = class(TVkObject)
   private
     FAccess_key: string;
     FAlbum_type: string;
@@ -39,7 +37,6 @@ type
     FDescription: string;
     FFollowers: Integer;
     FGenres: TArray<TVkAudioGenres>;
-    FId: Integer;
     FMain_artists: TArray<TVkAudioArtist>;
     FOriginal: TVkAudioOriginal;
     FOwner_id: Integer;
@@ -57,7 +54,6 @@ type
     property Description: string read FDescription write FDescription;
     property Followers: Integer read FFollowers write FFollowers;
     property Genres: TArray<TVkAudioGenres> read FGenres write FGenres;
-    property Id: Integer read FId write FId;
     property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
     property Original: TVkAudioOriginal read FOriginal write FOriginal;
     property OwnerId: Integer read FOwner_id write FOwner_id;

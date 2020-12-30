@@ -3,14 +3,13 @@ unit VK.Entity.Note;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkNote = class
+  TVkNote = class(TVkObject)
   private
     FComments: Integer;
     FDate: Int64;
-    FId: Integer;
     FOwner_id: Integer;
     FRead_comments: Integer;
     FTitle: string;
@@ -22,7 +21,6 @@ type
     function GetDate: TDateTime;
     procedure SetDate(const Value: TDateTime);
   public
-    property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Comments: Integer read FComments write FComments;
     property Date: TDateTime read GetDate write SetDate;
@@ -49,10 +47,9 @@ type
     class function FromJsonString(AJsonString: string): TVkNotes;
   end;
 
-  TVkNoteComment = class
+  TVkNoteComment = class(TVkObject)
   private
     FDate: Int64;
-    FId: Integer;
     FMessage: string;
     FNid: Integer;
     FOid: Integer;
@@ -60,7 +57,6 @@ type
     FUid: Integer;
   public
     property Date: Int64 read FDate write FDate;
-    property Id: Integer read FId write FId;
     property Message: string read FMessage write FMessage;
     property NoteId: Integer read FNid write FNid;
     property OwnerId: Integer read FOid write FOid;

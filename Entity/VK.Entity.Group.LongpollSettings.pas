@@ -88,7 +88,7 @@ type
     property MessagesEdit: Boolean read FMessages_edit write FMessages_edit;
     property PhotoCommentDelete: Boolean read FPhoto_comment_delete write FPhoto_comment_delete;
     property PhotoCommentEdit: Boolean read FPhoto_comment_edit write FPhoto_comment_edit;
-    property PphotoCommentNew: Boolean read FPhoto_comment_new write FPhoto_comment_new;
+    property PhotoCommentNew: Boolean read FPhoto_comment_new write FPhoto_comment_new;
     property PhotoCommentRestore: Boolean read FPhoto_comment_restore write FPhoto_comment_restore;
     property PhotoNew: Boolean read FPhoto_new write FPhoto_new;
     property PollVoteNew: Boolean read FPoll_vote_new write FPoll_vote_new;
@@ -99,7 +99,7 @@ type
     property VideoCommentNew: Boolean read FVideo_comment_new write FVideo_comment_new;
     property VideoCommentRestore: Boolean read FVideo_comment_restore write FVideo_comment_restore;
     property VideoNew: Boolean read FVideo_new write FVideo_new;
-    property VkpayTransaction: Boolean read FVkpay_transaction write FVkpay_transaction;
+    property VkPayTransaction: Boolean read FVkpay_transaction write FVkpay_transaction;
     property WallEditReply: Boolean read FWall_edit_reply write FWall_edit_reply;
     property WallNew: Boolean read FWall_new write FWall_new;
     property WallNewReply: Boolean read FWall_new_reply write FWall_new_reply;

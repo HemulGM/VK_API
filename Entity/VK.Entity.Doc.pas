@@ -32,7 +32,6 @@ type
     FAccess_key: string;
     FDate: Int64;
     FExt: string;
-    FId: Integer;
     FIs_licensed: Boolean;
     FOwner_id: Integer;
     FPreview: TVkPreview;
@@ -57,7 +56,6 @@ type
     property AccessKey: string read FAccess_key write FAccess_key;
     property Date: TDateTime read GetDate write SetDate;
     property Ext: string read FExt write FExt;
-    property Id: Integer read FId write FId;
     property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Preview: TVkPreview read FPreview write FPreview;

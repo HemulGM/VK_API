@@ -3,17 +3,15 @@ unit VK.Entity.Doc.Types;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkDocType = class
+  TVkDocType = class(TVkObject)
   private
     FCount: Integer;
-    FId: Integer;
     FName: string;
   public
     property Count: Integer read FCount write FCount;
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkDocType;

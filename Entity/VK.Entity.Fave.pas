@@ -3,7 +3,8 @@ unit VK.Entity.Fave;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Media, VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo;
+  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Media,
+  VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo, VK.Entity.Common;
 
 type
   TVkFaveType = (ftPost, ftVideo, ftProduct, ftArticle, ftLink);
@@ -13,12 +14,10 @@ type
     class function FromString(Value: string): TVkFaveType; static; inline;
   end;
 
-  TVkFaveTag = class
+  TVkFaveTag = class(TVkObject)
   private
-    FId: Integer;
     FName: string;
   public
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkFaveTag;

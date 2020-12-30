@@ -3,12 +3,14 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
-  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
-  VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
-  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
-  VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
-  VK.Apps, VK.Clients,
+  System.SysUtils, System.Variants, System.Classes, REST.Client,
+  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
+  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
+  VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board,
+  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave,
+  VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications,
+  VK.Orders, Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
+  VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -470,7 +472,8 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
+  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils,
+  VK.Entity.Profile, VK.Entity.Login;
 
 { TCustomVK }
 

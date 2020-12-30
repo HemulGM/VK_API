@@ -3,7 +3,8 @@ unit VK.Secure;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Secure;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Secure;
 
 type
   TAppActivity = (aaNewLevel = 1, aaNewScore = 2);
@@ -34,8 +35,7 @@ uses
 
 function TSecureController.AddAppEvent(const UserId: Integer; ActivityId: TAppActivity; Value: Integer): Boolean;
 begin
-  with Handler.Execute('secure.addAppEvent', [['user_id', UserId.ToString], ['activity_id', Ord(ActivityId).ToString], ['value',
-    Value.ToString]]) do
+  with Handler.Execute('secure.addAppEvent', [['user_id', UserId.ToString], ['activity_id', Ord(ActivityId).ToString], ['value', Value.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -59,7 +59,7 @@ function TSecureController.GetAppBalance(var Value: Integer): Boolean;
 begin
   //Not work
   with Handler.Execute('secure.getAppBalance') do
-    Result := Success;// and ResponseIsTrue;
+    Result := Success; // and ResponseIsTrue;
 end;
 
 end.

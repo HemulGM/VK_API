@@ -3,8 +3,8 @@ unit VK.Entity.Doc.Save;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.AudioMessage, VK.Entity.Doc,
-  VK.Entity.Graffiti;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.AudioMessage,
+  VK.Entity.Doc, VK.Entity.Graffiti;
 
 type
   TVkDocSaved = class

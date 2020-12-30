@@ -3,15 +3,14 @@ unit VK.Entity.Board;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Common;
 
 type
-  TVkBoardTopic = class
+  TVkBoardTopic = class(TVkObject)
   private
     FComments: Integer;
     FCreated: Int64;
     FCreated_by: Integer;
-    FId: Integer;
     FIs_closed: Integer;
     FIs_fixed: Integer;
     FTitle: string;
@@ -23,7 +22,6 @@ type
     property Comments: Integer read FComments write FComments;
     property Created: TDateTime read GetCreated write SetCreated;
     property CreatedBy: Integer read FCreated_by write FCreated_by;
-    property Id: Integer read FId write FId;
     property IsClosed: Integer read FIs_closed write FIs_closed;
     property IsFixed: Integer read FIs_fixed write FIs_fixed;
     property Title: string read FTitle write FTitle;

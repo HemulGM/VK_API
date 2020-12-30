@@ -3,7 +3,8 @@ unit VK.Storage;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Storage;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Storage;
 
 type
   /// <summary>
@@ -86,9 +87,12 @@ begin
       try
         Value := '';
         Items := TVkStorageItems.FromJsonString(ResponseAsItems);
-        if Length(Items.Items) > 0 then
-          Value := Items.Items[0].Value;
-        Items.Free;
+        try
+          if Length(Items.Items) > 0 then
+            Value := Items.Items[0].Value;
+        finally
+          Items.Free;
+        end;
       except
         Result := False;
       end;

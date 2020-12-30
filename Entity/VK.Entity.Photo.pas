@@ -6,10 +6,9 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Attachment;
 
 type
-  TVkPhotoTag = class
+  TVkPhotoTag = class(TVkObject)
   private
     FDate: Int64;
-    FId: Integer;
     FPlacer_id: Integer;
     FTagged_name: string;
     FUser_id: Integer;
@@ -20,7 +19,6 @@ type
     FY2: Integer;
   public
     property Date: Int64 read FDate write FDate;
-    property Id: Integer read FId write FId;
     property PlacerId: Integer read FPlacer_id write FPlacer_id;
     property TaggedName: string read FTagged_name write FTagged_name;
     property UserId: Integer read FUser_id write FUser_id;
@@ -122,14 +120,12 @@ type
     class function FromJsonString(AJsonString: string): TVkCropPhoto;
   end;
 
-  TVkPostedPhoto = class
+  TVkPostedPhoto = class(TVkObject)
   private
-    FId: Integer;
     FOwner_id: Integer;
     FPhoto_130: string;
     FPhoto_604: string;
   public
-    property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Photo130: string read FPhoto_130 write FPhoto_130;
     property Photo604: string read FPhoto_604 write FPhoto_604;
@@ -161,13 +157,13 @@ uses
 
 {TVkPhoto}
 
-constructor TVkPhoto.Create();
+constructor TVkPhoto.Create;
 begin
   inherited;
-  FLikes := TVkLikesInfo.Create();
-  FReposts := TVkRepostsInfo.Create();
-  FComments := TVkCommentsInfo.Create();
-  FTags := TVkTags.Create();
+  FLikes := TVkLikesInfo.Create;
+  FReposts := TVkRepostsInfo.Create;
+  FComments := TVkCommentsInfo.Create;
+  FTags := TVkTags.Create;
 end;
 
 destructor TVkPhoto.Destroy;

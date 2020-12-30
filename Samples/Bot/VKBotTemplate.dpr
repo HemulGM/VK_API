@@ -4,6 +4,7 @@ program VKBotTemplate;
 
 uses
   VK.Bot,
+  VK.Types,
   VK.Bot.Utils,
   VK.Entity.Message,
   VK.Entity.ClientInfo;
@@ -17,7 +18,7 @@ begin
     OnMessage :=
       procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
       begin
-        if Message.Action.&Type = 'chat_invite_user' then
+        if Message.Action.&Type = maChatInviteUser then
           Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome')
         else
           Bot.API.Messages.SendToPeer(Message.PeerId, '=)');

@@ -3,7 +3,8 @@ unit VK.Podcasts;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Podcast;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Podcast;
 
 type
   TPodcastsController = class(TVkController)

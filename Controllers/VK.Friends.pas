@@ -3,7 +3,8 @@ unit VK.Friends;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile, VK.Entity.Common;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Profile, VK.Entity.Common;
 
 type
   /// <summary>
@@ -106,8 +107,7 @@ type
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone):
-      Boolean; overload;
+    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
@@ -298,8 +298,7 @@ end;
 
 function TFriendsController.AreFriends(var Items: TVkFriendInfo; UserIds: TIds; NeedSign, Extended: Boolean): Boolean;
 begin
-  with Handler.Execute('friends.areFriends', [['user_ids', UserIds.ToString], ['need_sign', BoolToString(NeedSign)], ['extended',
-    BoolToString(Extended)]]) do
+  with Handler.Execute('friends.areFriends', [['user_ids', UserIds.ToString], ['need_sign', BoolToString(NeedSign)], ['extended', BoolToString(Extended)]]) do
   begin
     Result := Success;
     if Result then
@@ -337,7 +336,7 @@ function TFriendsController.DeleteAllRequests: Boolean;
 begin
   with Handler.Execute('friends.deleteAllRequests') do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -345,7 +344,7 @@ function TFriendsController.DeleteList(ListId: Integer): Boolean;
 begin
   with Handler.Execute('friends.deleteList', ['list_id', ListId.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -353,7 +352,7 @@ function TFriendsController.Edit(UserId: Integer; ListIds: TIds): Boolean;
 begin
   with Handler.Execute('friends.edit', [['user_id', UserId.ToString], ['list_ids', ListIds.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -366,7 +365,7 @@ function TFriendsController.EditList(Params: TParams): Boolean;
 begin
   with Handler.Execute('friends.editList', Params) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 

@@ -3,8 +3,8 @@ unit VK.Entity.Audio.Catalog;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Group, VK.Entity.Profile,
-  VK.Entity.Catalog.Section;
+  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist,
+  VK.Entity.Group, VK.Entity.Profile, VK.Entity.Catalog.Section;
 
 type
   TVkAudioCatalogItem = class

@@ -3,15 +3,15 @@ unit VK.Entity.App;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile,
+  VK.Entity.Group;
 
 type
-  TVkAppScreenshot = class
+  TVkAppScreenshot = class(TVkObject)
   private
     FAlbum_id: Integer;
     FDate: Int64;
     FHas_tags: Boolean;
-    FId: Integer;
     FOwner_id: Integer;
     FSizes: TArray<TVkSize>;
     FText: string;
@@ -20,7 +20,6 @@ type
     property AlbumId: Integer read FAlbum_id write FAlbum_id;
     property Date: Int64 read FDate write FDate;
     property HasTags: Boolean read FHas_tags write FHas_tags;
-    property Id: Integer read FId write FId;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Sizes: TArray<TVkSize> read FSizes write FSizes;
     property Text: string read FText write FText;
@@ -30,7 +29,7 @@ type
     class function FromJsonString(AJsonString: string): TVkAppScreenshot;
   end;
 
-  TVkApp = class
+  TVkApp = class(TVkObject)
   private
     FAuthor_owner_id: Integer;
     FAuthor_url: string;
@@ -43,7 +42,6 @@ type
     FIcon_150: string;
     FIcon_278: string;
     FIcon_75: string;
-    FId: Integer;
     FInternational: Boolean;
     FIs_in_catalog: Boolean;
     FIs_installed: Boolean;
@@ -75,7 +73,6 @@ type
     property Icon278: string read FIcon_278 write FIcon_278;
     property Icon75: string read FIcon_75 write FIcon_75;
     property Icon16: string read FIcon_16 write FIcon_16;
-    property Id: Integer read FId write FId;
     property International: Boolean read FInternational write FInternational;
     property IsInCatalog: Boolean read FIs_in_catalog write FIs_in_catalog;
     property IsInstalled: Boolean read FIs_installed write FIs_installed;

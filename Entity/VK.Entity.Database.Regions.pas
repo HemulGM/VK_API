@@ -3,15 +3,13 @@ unit VK.Entity.Database.Regions;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkRegion = class
+  TVkRegion = class(TVkObject)
   private
-    FId: Integer;
     FTitle: string;
   public
-    property Id: Integer read FId write FId;
     property Title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkRegion;

@@ -3,27 +3,25 @@ unit VK.Entity.Database.Faculties;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkFaculty = class
+  TVkFaculty = class(TVkObject)
   private
-    FId: Extended;
     FTitle: string;
   public
-    property id: Extended read FId write FId;
-    property title: string read FTitle write FTitle;
+    property Title: string read FTitle write FTitle;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkFaculty;
   end;
 
   TVkFaculties = class
   private
-    FCount: Extended;
+    FCount: Integer;
     FItems: TArray<TVkFaculty>;
   public
-    property count: Extended read FCount write FCount;
-    property items: TArray<TVkFaculty> read FItems write FItems;
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<TVkFaculty> read FItems write FItems;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkFaculties;

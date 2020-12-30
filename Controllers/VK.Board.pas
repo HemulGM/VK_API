@@ -3,8 +3,9 @@ unit VK.Board;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
-  VK.Entity.Board, VK.Entity.Board.Comment;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Board,
+  VK.Entity.Board.Comment;
 
 type
   TVkBoardTopicOrder = (btoDateUpCreate = -2, btoDateUpUpdate = -1, btoDateDownCreate = 2, btoDateDownUpdate = 1);
@@ -315,7 +316,7 @@ end;
 function TBoardController.AddTopic(var Id: Integer; Params: TParams): Boolean;
 begin
   with Handler.Execute('board.addTopic', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.AddTopic(var Id: Integer; Params: TVkParamsBoardAdd): Boolean;
@@ -333,7 +334,7 @@ end;
 function TBoardController.CloseTopic(GroupId, TopicId: Integer): Boolean;
 begin
   with Handler.Execute('board.closeTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.DeleteComment(GroupId, TopicId, CommentId: Integer): Boolean;
@@ -344,13 +345,13 @@ begin
   Params.Add('topic_id', TopicId);
   Params.Add('comment_id', CommentId);
   with Handler.Execute('board.deleteComment', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.DeleteTopic(GroupId, TopicId: Integer): Boolean;
 begin
   with Handler.Execute('board.deleteTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.EditComment(Params: TVkParamsBoardCommentEdit): Boolean;
@@ -361,25 +362,25 @@ end;
 function TBoardController.EditTopic(GroupId, TopicId: Integer; Title: string): Boolean;
 begin
   with Handler.Execute('board.editTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['title', Title]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.FixTopic(GroupId, TopicId: Integer): Boolean;
 begin
   with Handler.Execute('board.fixTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.UnfixTopic(GroupId, TopicId: Integer): Boolean;
 begin
   with Handler.Execute('board.unfixTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.EditComment(Params: TParams): Boolean;
 begin
   with Handler.Execute('board.editComment', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.GetComments(var Items: TVkBoardComments; Params: TParams): Boolean;
@@ -411,14 +412,13 @@ end;
 function TBoardController.OpenTopic(GroupId, TopicId: Integer): Boolean;
 begin
   with Handler.Execute('board.openTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.RestoreComment(GroupId, TopicId, CommentId: Integer): Boolean;
 begin
-  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id',
-    CommentId.ToString]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id', CommentId.ToString]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.GetTopics(var Items: TVkBoardTopics; Params: TParams): Boolean;

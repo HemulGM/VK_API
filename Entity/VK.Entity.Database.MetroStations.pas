@@ -3,17 +3,15 @@ unit VK.Entity.Database.MetroStations;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkMetroStation = class
+  TVkMetroStation = class(TVkObject)
   private
     FColor: string;
-    FId: Integer;
     FName: string;
   public
     property Color: string read FColor write FColor;
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkMetroStation;
