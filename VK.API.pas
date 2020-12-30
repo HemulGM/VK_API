@@ -41,6 +41,8 @@ type
         property UserName: string read GetUserName write SetUserName;
         property Password: string read GetPassword write SetPassword;
       end;
+    const
+      Version = '5.126';
   private
     FAccount: TAccountController;
     FAPIVersion: string;
@@ -544,7 +546,7 @@ begin
   //Defaults
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
-  SetAPIVersion('5.126');
+  SetAPIVersion(Version);
   Permissions := [
     TVkPermission.Groups,
     TVkPermission.Friends,

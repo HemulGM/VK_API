@@ -142,6 +142,7 @@ begin
   try
     EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
   except
+    Exit;
     //raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
   end;
   case EventType of

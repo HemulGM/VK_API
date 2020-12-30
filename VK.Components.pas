@@ -3,12 +3,8 @@ unit VK.Components;
 interface
 
 uses
-  System.SysUtils, System.Classes, VK.GroupEvents,
-  {$IFDEF NEEDFMX}
-  FMX.Types,
-  {$ELSE}
-  System.Types,
-  {$ENDIF}  VK.API, VK.Types, VK.UserEvents;
+  System.SysUtils, System.Classes, VK.API, VK.Types, VK.GroupEvents,
+  VK.UserEvents;
 
 type
   [ComponentPlatformsAttribute(pidAllPlatforms)]
@@ -190,7 +186,7 @@ end;
 constructor TVkGroupEventsController.Create(AOwner: TComponent);
 begin
   inherited;
-  FActualVersion := '1.503';
+  FActualVersion := TVK.Version;
 end;
 
 { TVkGroupEvents }
@@ -198,7 +194,7 @@ end;
 constructor TVkGroupEvents.Create(AOwner: TComponent);
 begin
   inherited;
-  FActualVersion := '1.503';
+  FActualVersion := TVK.Version;
 end;
 
 end.
