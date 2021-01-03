@@ -23,7 +23,7 @@ type
     property TestMode default False;
     property Token;
     property Lang default vlAuto;
-    property UsePseudoAsync default True;
+    property UsePseudoAsync default False;
     property Proxy;
     property OnAuth;
     property OnLogin;
