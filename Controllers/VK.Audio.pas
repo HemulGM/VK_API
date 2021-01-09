@@ -3,9 +3,8 @@ unit VK.Audio;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, REST.Json, VK.CommonUtils,
-  VK.Entity.Playlist, VK.Entity.Audio.Upload, VK.Entity.Audio.Catalog;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload, VK.Entity.Audio.Catalog;
 
 type
   TVkParamsAudioGet = record
@@ -114,7 +113,8 @@ type
     /// <summary>
     /// Returns a list of audio files from the "Popular".
     /// </summary>
-    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TAudioGenre = agNone; Count: Integer = 0; Offset: Integer = 0): Boolean; overload;
+    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TAudioGenre = agNone; Count: Integer =
+      0; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
@@ -154,7 +154,8 @@ type
     /// <summary>
     /// Копирует аудиозапись на страницу пользователя или группы.
     /// </summary>
-    function Add(var Id: Integer; AudioId, OwnerId: Integer; GroupId: Integer = 0; AlbumId: Integer = -1; AccessKey: string = ''): Boolean;
+    function Add(var Id: Integer; AudioId, OwnerId: Integer; GroupId: Integer = 0; AlbumId: Integer = -1; AccessKey:
+      string = ''): Boolean;
     /// <summary>
     /// Удаляет аудиозапись со страницы пользователя или сообщества.
     /// </summary>
@@ -166,7 +167,8 @@ type
     /// <summary>
     /// Создать плейлист
     /// </summary>
-    function CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string; Description: string = ''; AudioIds: TArrayOfString = []): Boolean;
+    function CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string; Description: string
+      = ''; AudioIds: TArrayOfString = []): Boolean;
     /// <summary>
     /// Удалить плейлист
     /// </summary>
@@ -195,12 +197,20 @@ type
     /// Удалить плейлист
     /// </summary>
     function AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId, PlaylistId: Integer; AudioIds: TArrayOfString): Boolean;
+    /// <summary>
+    ///
+    /// </summary>
+    function Upload(const UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean; overload;
+    /// <summary>
+    ///
+    /// </summary>
+    function Upload(var Audio: TVkAudio; const FileName: string): Boolean; overload;
   end;
 
 implementation
 
 uses
-  VK.API;
+  VK.API, System.Classes, System.Net.HttpClient, System.Net.Mime;
 
 {
   var parameters = new VkParameters
@@ -236,6 +246,49 @@ var parameters = new VkParameters
 }
 
 { TAudioController }
+
+function TAudioController.Upload(const UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean;
+var
+  HTTP: THTTPClient;
+  Data: TMultipartFormData;
+  ResStream: TStringStream;
+begin
+  Result := False;
+  Data := TMultipartFormData.Create;
+  HTTP := THTTPClient.Create;
+  ResStream := TStringStream.Create;
+  try
+    Data.AddFile('file', FileName);
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      Response := TVkAudioUploadResponse.FromJsonString(ResStream.DataString);
+      Result := True;
+    end;
+  finally
+    ResStream.Free;
+    Data.Free;
+    HTTP.Free;
+  end;
+end;
+
+function TAudioController.Upload(var Audio: TVkAudio; const FileName: string): Boolean;
+var
+  UploadServer: string;
+  Response: TVkAudioUploadResponse;
+begin
+  Result := False;
+  if GetUploadServer(UploadServer) then
+  begin
+    if Upload(UploadServer, FileName, Response) then
+    begin
+      try
+        Result := Save(Audio, Response);
+      finally
+        Response.Free;
+      end;
+    end;
+  end;
+end;
 
 function TAudioController.Save(var Audio: TVkAudio; AudioSaveData: TVkAudioUploadResponse): Boolean;
 var
@@ -325,9 +378,11 @@ begin
   end;
 end;
 
-function TAudioController.AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId, PlaylistId: Integer; AudioIds: TArrayOfString): Boolean;
+function TAudioController.AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId, PlaylistId: Integer; AudioIds:
+  TArrayOfString): Boolean;
 begin
-  with Handler.Execute('audio.addToPlaylist', [['playlist_id', PlaylistId.ToString], ['owner_id', OwnerId.ToString], ['audio_ids', AudioIds.ToString]]) do
+  with Handler.Execute('audio.addToPlaylist', [['playlist_id', PlaylistId.ToString], ['owner_id', OwnerId.ToString], ['audio_ids',
+    AudioIds.ToString]]) do
   begin
     Result := Success;
     if Result then
@@ -341,7 +396,8 @@ begin
   end;
 end;
 
-function TAudioController.CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string; Description: string; AudioIds: TArrayOfString): Boolean;
+function TAudioController.CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string;
+  Description: string; AudioIds: TArrayOfString): Boolean;
 var
   Params: TParams;
 begin
@@ -466,7 +522,8 @@ begin
   end;
 end;
 
-function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TAudioGenre; Count, Offset: Integer): Boolean;
+function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TAudioGenre; Count, Offset:
+  Integer): Boolean;
 var
   Params: TVkParamsPopAudio;
 begin

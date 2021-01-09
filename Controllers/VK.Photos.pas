@@ -3,9 +3,8 @@ unit VK.Photos;
 interface
 
 uses
-  System.SysUtils, System.Types, System.Generics.Collections, VK.Controller,
-  VK.Types, VK.Entity.Album, System.JSON, REST.Json, VK.Entity.Photo.Upload,
-  VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common;
+  System.SysUtils, System.Types, System.Generics.Collections, System.Classes, VK.Controller, VK.Types, VK.Entity.Album,
+  System.JSON, REST.Json, VK.Entity.Photo.Upload, VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkParamsPhotosGetAll = record
@@ -328,7 +327,8 @@ type
     /// Пример значения photos: 1_129207899_220df2876123d3542f, 6492_135055734_e0a9bcc31144f67fbd
     /// Поле access_key будет возвращено вместе с остальными данными фотографии в методах, которые возвращают фотографии, закрытые приватностью но доступные в данном контексте. Например данное поле имеют фотографии, возвращаемые методом newsfeed.get.
     /// </summary>
-    function GetById(var Items: TVkPhotos; Photos: TArrayOfString; Extended: Boolean = False; PhotoSizes: Boolean = False): Boolean; overload;
+    function GetById(var Items: TVkPhotos; Photos: TArrayOfString; Extended: Boolean = False; PhotoSizes: Boolean =
+      False): Boolean; overload;
     /// <summary>
     /// Позволяет получить адрес для загрузки обложки чата.
     /// </summary>
@@ -369,7 +369,8 @@ type
     /// <summary>
     /// Получает адрес для загрузки обложки сообщества.
     /// </summary>
-    function GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer; CropLeft: TPoint; CropRight: TPoint): Boolean; overload;
+    function GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer; CropLeft: TPoint; CropRight: TPoint):
+      Boolean; overload;
     /// <summary>
     /// Получает адрес для загрузки обложки сообщества.
     /// </summary>
@@ -498,14 +499,80 @@ type
     /// Осуществляет поиск изображений по местоположению или описанию.
     /// </summary>
     function Search(var Items: TVkPhotos; Params: TVkParamsPhotosSearch): Boolean; overload;
+    /// <summary>
+    ///
+    /// </summary>
+    function Upload(const UploadUrl: string; const FileNames: array of string; var Response: TVkPhotoUploadResponse):
+      Boolean; overload;
+    /// <summary>
+    ///
+    /// </summary>
+    function Upload(const UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse):
+      Boolean; overload;
+    /// <summary>
+    ///
+    /// </summary>
+    function UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of string): Boolean;
   end;
 
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils;
+  VK.API, VK.CommonUtils, System.DateUtils, System.Net.HttpClient, System.Net.Mime;
 
 { TPhotosController }
+
+function TPhotosController.Upload(const UploadUrl: string; Stream: TStream; FileName: string; var Response:
+  TVkPhotoUploadResponse): Boolean;
+var
+  HTTP: THTTPClient;
+  Data: TMultipartFormData;
+  ResStream: TStringStream;
+begin
+  Result := False;
+  Data := TMultipartFormData.Create;
+  HTTP := THTTPClient.Create;
+  ResStream := TStringStream.Create;
+  try
+    Data.AddStream('file', Stream, ExtractFileName(FileName));
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      Response := TVkPhotoUploadResponse.FromJsonString(ResStream.DataString);
+      Result := True;
+    end;
+  finally
+    ResStream.Free;
+    Data.Free;
+    HTTP.Free;
+  end;
+end;
+
+function TPhotosController.Upload(const UploadUrl: string; const FileNames: array of string; var Response:
+  TVkPhotoUploadResponse): Boolean;
+var
+  HTTP: THTTPClient;
+  Data: TMultipartFormData;
+  ResStream: TStringStream;
+  FileName: string;
+begin
+  Result := False;
+  Data := TMultipartFormData.Create;
+  HTTP := THTTPClient.Create;
+  ResStream := TStringStream.Create;
+  try
+    for FileName in FileNames do
+      Data.AddFile('file', FileName);
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      Response := TVkPhotoUploadResponse.FromJsonString(ResStream.DataString);
+      Result := True;
+    end;
+  finally
+    ResStream.Free;
+    Data.Free;
+    HTTP.Free;
+  end;
+end;
 
 function TPhotosController.GetMessagesUploadServer(var UploadUrl: string; PeerId: Integer): Boolean;
 var
@@ -589,7 +656,8 @@ end;
 
 function TPhotosController.Copy(var Id: Integer; OwnerId, PhotoId: Integer; AccessKey: string): Boolean;
 begin
-  with Handler.Execute('photos.confirmTag', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString], ['access_key', AccessKey]]) do
+  with Handler.Execute('photos.confirmTag', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString], ['access_key',
+    AccessKey]]) do
     Result := Success and TryStrToInt(Response, Id);
 end;
 
@@ -1049,13 +1117,15 @@ end;
 
 function TPhotosController.Report(OwnerId, PhotoId: Integer; Reason: TVkMediaReportReason): Boolean;
 begin
-  with Handler.Execute('photos.report', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString], ['reason', Reason.ToConst.ToString]]) do
+  with Handler.Execute('photos.report', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString], ['reason',
+    Reason.ToConst.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
 function TPhotosController.ReportComment(OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
 begin
-  with Handler.Execute('photos.reportComment', [['owner_id', OwnerId.ToString], ['comment_id', CommentId.ToString], ['reason', Reason.ToConst.ToString]]) do
+  with Handler.Execute('photos.reportComment', [['owner_id', OwnerId.ToString], ['comment_id', CommentId.ToString], ['reason',
+    Reason.ToConst.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -1097,7 +1167,8 @@ begin
   end;
 end;
 
-function TPhotosController.GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer; CropLeft, CropRight: TPoint): Boolean;
+function TPhotosController.GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer; CropLeft, CropRight:
+  TPoint): Boolean;
 var
   Params: TParams;
   Item: TVkPhotoGetUploadResponse;
@@ -1218,28 +1289,27 @@ end;
 
 function TPhotosController.SaveOwnerPhoto(FileName: string): Boolean;
 var
-  VKAPI: TCustomVK;
-var
   Server: string;
-  Upload: TVkPhotoUploadResponse;
+  Response: TVkPhotoUploadResponse;
   Info: TVkOwnerPhoto;
 begin
   Result := False;
-  VKAPI := TCustomVK(VK);
-  if VKAPI.Photos.GetOwnerPhotoUploadServer(Server) then
+  if GetOwnerPhotoUploadServer(Server) then
   begin
-    if VKAPI.Uploader.UploadPhotos(Server, FileName, Upload) then
+    if Upload(Server, FileName, Response) then
     begin
-      if VKAPI.Photos.SaveOwnerPhoto(Info, Upload) then
-      begin
-        try
-          Result := Info.Saved;
-        except
-          Result := False;
+      try
+        if SaveOwnerPhoto(Info, Response) then
+        begin
+          try
+            Result := Info.Saved;
+          finally
+            Info.Free;
+          end;
         end;
-        Info.Free;
+      finally
+        Response.Free;
       end;
-      Upload.Free;
     end;
   end;
 end;
@@ -1278,6 +1348,26 @@ end;
 function TPhotosController.Search(var Items: TVkPhotos; Params: TVkParamsPhotosSearch): Boolean;
 begin
   Result := Search(Items, Params.List);
+end;
+
+function TPhotosController.UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of
+  string): Boolean;
+var
+  Url: string;
+  Response: TVkPhotoUploadResponse;
+begin
+  Result := False;
+  if GetMessagesUploadServer(Url, PeerId) then
+  begin
+    if Upload(Url, FileNames, Response) then
+    begin
+      try
+        Result := SaveMessagesPhoto(Photos, Response);
+      finally
+        Response.Free;
+      end;
+    end;
+  end;
 end;
 
 function TPhotosController.Search(var Items: TVkPhotos; Params: TParams): Boolean;

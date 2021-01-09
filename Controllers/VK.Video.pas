@@ -678,7 +678,7 @@ begin
   if Result then
   begin
     Result := False;
-    if TCustomVK(VK).Uploader.Upload(VideoSaved.UploadUrl, '', SaveResp) then
+    if TCustomVK(VK).Upload(VideoSaved.UploadUrl, [''], SaveResp) then
     begin
       Result := not SaveResp.IsEmpty;
     end

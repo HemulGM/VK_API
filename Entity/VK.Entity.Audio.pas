@@ -3,8 +3,7 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, Rest.Json, System.Json,
-  VK.Entity.Common, VK.Types, VK.Entity.Attachment;
+  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment;
 
 type
   TVkAudioArtist = class(TVkObject)
@@ -32,12 +31,12 @@ type
   public
     property Height: Integer read FHeight write FHeight;
     property Width: Integer read FWidth write FWidth;
+    property Photo34: string read FPhoto_34 write FPhoto_34;
+    property Photo68: string read FPhoto_68 write FPhoto_68;
     property Photo135: string read FPhoto_135 write FPhoto_135;
     property Photo270: string read FPhoto_270 write FPhoto_270;
     property Photo300: string read FPhoto_300 write FPhoto_300;
-    property Photo34: string read FPhoto_34 write FPhoto_34;
     property Photo600: string read FPhoto_600 write FPhoto_600;
-    property Photo68: string read FPhoto_68 write FPhoto_68;
     property Photo1200: string read FPhoto_1200 write FPhoto_1200;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAlbumThumb;
@@ -141,6 +140,7 @@ type
     destructor Destroy; override;
     function ToJsonString: string;
     function ToAttachment: string;
+    function DurationText(const AFormat: string): string;
     class function FromJsonString(AJsonString: string): TVkAudio;
     class function FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
   end;
@@ -252,6 +252,16 @@ begin
   if Assigned(FAds) then
     FAds.Free;
   inherited;
+end;
+
+function TVkAudio.DurationText(const AFormat: string): string;
+var
+  M, S: Integer;
+begin
+  S := Trunc(Duration);
+  M := S div 60;
+  S := S mod 60;
+  Result := Format(AFormat, [M, S]);
 end;
 
 function TVkAudio.ToAttachment: string;

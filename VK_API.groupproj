@@ -9,6 +9,9 @@
         <Projects Include="VKComponents.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\VKBotTemplate\VKBotApp.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Samples\Bot\VKBotTemplate.dproj">
             <Dependencies/>
         </Projects>
@@ -38,6 +41,15 @@
     <Target Name="VKComponents:Make">
         <MSBuild Projects="VKComponents.dproj" Targets="Make"/>
     </Target>
+    <Target Name="VKBotApp">
+        <MSBuild Projects="..\VKBotTemplate\VKBotApp.dproj"/>
+    </Target>
+    <Target Name="VKBotApp:Clean">
+        <MSBuild Projects="..\VKBotTemplate\VKBotApp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VKBotApp:Make">
+        <MSBuild Projects="..\VKBotTemplate\VKBotApp.dproj" Targets="Make"/>
+    </Target>
     <Target Name="VKBotTemplate">
         <MSBuild Projects="Samples\Bot\VKBotTemplate.dproj"/>
     </Target>
@@ -48,13 +60,13 @@
         <MSBuild Projects="Samples\Bot\VKBotTemplate.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="VKAuth;VKComponents;VKBotTemplate"/>
+        <CallTarget Targets="VKAuth;VKComponents;VKBotApp;VKBotTemplate"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="VKAuth:Clean;VKComponents:Clean;VKBotTemplate:Clean"/>
+        <CallTarget Targets="VKAuth:Clean;VKComponents:Clean;VKBotApp:Clean;VKBotTemplate:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="VKAuth:Make;VKComponents:Make;VKBotTemplate:Make"/>
+        <CallTarget Targets="VKAuth:Make;VKComponents:Make;VKBotApp:Make;VKBotTemplate:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

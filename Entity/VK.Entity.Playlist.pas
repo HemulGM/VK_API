@@ -3,7 +3,8 @@ unit VK.Entity.Playlist;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Common;
+  Generics.Collections, Rest.Json, System.Json.Types, System.JSON.Readers, system.json.serializers, VK.Entity.Audio,
+  VK.Entity.Common;
 
 type
   TVkAudioOriginal = class
@@ -46,10 +47,13 @@ type
     FType: Integer;
     FUpdate_time: Int64;
     FYear: Integer;
+    //[JSONOwnedAttribute(True)]
+    FIs_following: Boolean;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     property AlbumType: string read FAlbum_type write FAlbum_type;
     property Count: Integer read FCount write FCount;
+    property IsFollowing: Boolean read FIs_following write FIs_following;
     property CreateTime: Int64 read FCreate_time write FCreate_time;
     property Description: string read FDescription write FDescription;
     property Followers: Integer read FFollowers write FFollowers;
@@ -120,6 +124,7 @@ end;
 constructor TVkAudioPlaylist.Create;
 begin
   inherited;
+  FIs_following := False;
   FOriginal := TVkAudioOriginal.Create();
   FPhoto := TVkAlbumThumb.Create();
 end;

@@ -3,14 +3,12 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client,
-  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
-  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
-  VK.Status, VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board,
-  REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave,
-  VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications,
-  VK.Orders, Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
-  VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
+  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
+  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
+  VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
+  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
+  VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
+  VK.Apps, VK.Clients,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -80,7 +78,6 @@ type
     FProxy: TVkProxy;
     FServiceKey: string;
     FStatus: TStatusController;
-    FUploader: TUploader;
     FUserId: Integer;
     FUsers: TUsersController;
     FUseServiceKeyOnly: Boolean;
@@ -205,13 +202,10 @@ type
     /// Вспомогательный метод, для выполнения методов с Count и Offset
     /// </summary>
     procedure Walk(Method: TWalkMethod; Count: Integer);
-    ////////////////////////////////////////////////////////////////////////////
-    //Tools
     /// <summary>
-    /// Методы для загрузки файлов на сервера ВК
+    ///
     /// </summary>
-    property Uploader: TUploader read FUploader;
-    ////////////////////////////////////////////////////////////////////////////
+    function Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;
     //Группы методов
     /// <summary>
     /// Методы для работы с аккаунтом.
@@ -474,8 +468,8 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils,
-  VK.Entity.Profile, VK.Entity.Login;
+  System.DateUtils, System.Net.Mime, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile,
+  VK.Entity.Login;
 
 { TCustomVK }
 
@@ -524,6 +518,47 @@ begin
   if Assigned(Callback) then
   begin
     Callback(Response);
+  end;
+end;
+
+function TCustomVK.Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;
+var
+  HTTP: THTTPClient;
+  Data: TMultipartFormData;
+  ResStream: TStringStream;
+  JSON: TJSONValue;
+  FileName: string;
+begin
+  Result := False;
+  Data := TMultipartFormData.Create;
+  HTTP := THTTPClient.Create;
+  ResStream := TStringStream.Create;
+  try
+    for FileName in FileNames do
+    begin
+      if not FileName.IsEmpty then
+        Data.AddFile('file', FileName);
+    end;
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      try
+        JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
+        try
+          Response := JSON.GetValue<string>('file');
+        finally
+          JSON.Free;
+        end;
+      except
+        Response := '';
+      end;
+      Result := not Response.IsEmpty;
+      if not Result then
+        Response := ResStream.DataString;
+    end;
+  finally
+    ResStream.Free;
+    Data.Free;
+    HTTP.Free;
   end;
 end;
 
@@ -591,8 +626,6 @@ begin
   FFave := TFaveController.Create(FHandler);
   FNotes := TNotesController.Create(FHandler);
   FNotifications := TNotificationsController.Create(FHandler);
-  //Tools
-  FUploader := TUploader.Create;
 end;
 
 destructor TCustomVK.Destroy;
@@ -618,7 +651,6 @@ begin
   FAudio.Free;
   FDoc.Free;
   FDownloadedGames.Free;
-  FUploader.Free;
   FWall.Free;
   FStatus.Free;
   FSearch.Free;

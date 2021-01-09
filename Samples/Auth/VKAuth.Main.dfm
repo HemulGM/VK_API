@@ -525,6 +525,7 @@ object FormMain: TFormMain
     EndPoint = 'https://oauth.vk.com/authorize'
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     BaseURL = 'https://api.vk.com/method'
+    UsePseudoAsync = True
     Proxy.Port = 0
     OnAuth = VK1Auth
     OnLogin = VK1Login

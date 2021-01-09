@@ -127,7 +127,6 @@
         <DCCReference Include="VK.Handler.pas"/>
         <DCCReference Include="VK.LongPollServer.pas"/>
         <DCCReference Include="VK.Types.pas"/>
-        <DCCReference Include="VK.Uploader.pas"/>
         <DCCReference Include="VK.UserEvents.pas"/>
         <DCCReference Include="VK.CommonUtils.pas"/>
         <DCCReference Include="Entity\VK.Entity.AccountInfo.pas"/>
@@ -284,7 +283,6 @@
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVK</ResourceId>
         </RcItem>
-        <None Include="include.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -323,6 +321,12 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>VKComponents.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

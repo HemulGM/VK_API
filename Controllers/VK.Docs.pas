@@ -297,7 +297,7 @@ begin
   if GetMessagesUploadServer(Url, dutAudioMessage, PeerId) then
   begin
     try
-      if TCustomVK(VK).Uploader.Upload(Url, FileName, Response) then
+      if TCustomVK(VK).Upload(Url, FileName, Response) then
         Result := Save(Doc, Response, Title, Tags)
       else
         TCustomVK(VK).DoError(Self, TVkException.Create(Response), -1, Response);
