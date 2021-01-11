@@ -182,7 +182,9 @@ contains
   VK.Apps in 'Controllers\VK.Apps.pas',
   VK.Entity.Login in 'Entity\VK.Entity.Login.pas',
   VK.Clients in 'VK.Clients.pas',
-  VK.Entity.Attachment in 'Entity\VK.Entity.Attachment.pas';
+  VK.Entity.Attachment in 'Entity\VK.Entity.Attachment.pas',
+  VK.Donut in 'Controllers\VK.Donut.pas',
+  VK.Entity.Donut in 'Entity\VK.Entity.Donut.pas';
 
 end.
 

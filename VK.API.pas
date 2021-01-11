@@ -8,7 +8,7 @@ uses
   VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
   VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
-  VK.Apps, VK.Clients,
+  VK.Apps, VK.Clients, VK.Donut,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -100,6 +100,7 @@ type
     FStats: TStatsController;
     FStories: TStoriesController;
     FApps: TAppsController;
+    FDonut: TDonutController;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -239,6 +240,10 @@ type
     /// Методы для работы с документами.
     /// </summary>
     property Docs: TDocController read FDoc;
+    /// <summary>
+    /// Методы для работы с донатом.
+    /// </summary>
+    property Donut: TDonutController read FDonut;
     /// <summary>
     /// Список методов секции downloadedGames.
     /// </summary>
@@ -595,6 +600,7 @@ begin
   FAccount := TAccountController.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
   FApps := TAppsController.Create(FHandler);
+  FDonut := TDonutController.Create(FHandler);
   FUsers := TUsersController.Create(FHandler);
   FMessages := TMessagesController.Create(FHandler);
   FNewsfeed := TNewsfeedController.Create(FHandler);
@@ -661,6 +667,7 @@ begin
   FUsers.Free;
   FAccount.Free;
   FApps.Free;
+  FDonut.Free;
   FAuth.Free;
   FMessages.Free;
   FNotifications.Free;
