@@ -13,6 +13,19 @@ type
     property Id: Integer read FId write FId;
   end;
 
+  TVkDimensions = class
+  private
+    FWidth: Integer;
+    FHeight: Integer;
+    FLength: Integer;
+  public
+    property Width: Integer read FWidth write FWidth;
+    property Height: Integer read FHeight write FHeight;
+    property Length: Integer read FLength write FLength;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkDimensions;
+  end;
+
   TVkLastActivity = class
   private
     FOnline: Integer;
@@ -714,6 +727,18 @@ begin
 end;
 
 function TVkOwnerPhoto.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+{ TVkDimensions }
+
+class function TVkDimensions.FromJsonString(AJsonString: string): TVkDimensions;
+begin
+  result := TJson.JsonToObject<TVkDimensions>(AJsonString)
+end;
+
+function TVkDimensions.ToJsonString: string;
 begin
   result := TJson.ObjectToJsonString(self);
 end;

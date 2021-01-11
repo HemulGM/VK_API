@@ -13,10 +13,16 @@ type
     FAmount: string;
     FCurrency: TVkProductCurrency;
     FText: string;
+    FOld_amount: string;
+    FOld_amount_text: string;
+    FDiscount_rate: Integer;
   public
     property Amount: string read FAmount write FAmount;
+    property OldAmount: string read FOld_amount  write FOld_amount;
+    property OldAmountText: string read FOld_amount_text write FOld_amount_text;
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Text: string read FText write FText;
+    property DiscountRate: Integer read FDiscount_rate write FDiscount_rate;
     constructor Create;
     destructor Destroy; override;
     function ToJsonString: string;
@@ -71,6 +77,7 @@ type
     FCart_quantity: Integer;
     FVariants_grouping_id: Integer;
     FQuantity: Integer;
+    FDimensions: TVkDimensions;
   public
     property Availability: Boolean read FAvailability write FAvailability;
     property Category: TVkProductCategory read FCategory write FCategory;
@@ -94,6 +101,8 @@ type
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Photos: TArray<TVkPhoto> read FPhotos write FPhotos;
     property ViewsCount: Integer read FViews_count write FViews_count;
+    //
+    property Dimensions: TVkDimensions read FDimensions write FDimensions;
     //
     property Quantity: Integer read FQuantity write FQuantity;
     constructor Create;
@@ -189,6 +198,8 @@ begin
     FLikes.Free;
   if Assigned(FReposts) then
     FReposts.Free;
+  if Assigned(FDimensions) then
+    FDimensions.Free;
   inherited;
 end;
 
