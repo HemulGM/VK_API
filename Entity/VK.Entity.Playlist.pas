@@ -3,19 +3,18 @@ unit VK.Entity.Playlist;
 interface
 
 uses
-  Generics.Collections, Rest.Json, System.Json.Types, System.JSON.Readers, system.json.serializers, VK.Entity.Audio,
-  VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Common;
 
 type
   TVkAudioOriginal = class
   private
     FAccess_key: string;
-    FOwner_id: Extended;
-    FPlaylist_id: Extended;
+    FOwner_id: Integer;
+    FPlaylist_id: Integer;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
-    property PlaylistId: Extended read FPlaylist_id write FPlaylist_id;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property PlaylistId: Integer read FPlaylist_id write FPlaylist_id;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAudioOriginal;
   end;
@@ -47,13 +46,16 @@ type
     FType: Integer;
     FUpdate_time: Int64;
     FYear: Integer;
-    //[JSONOwnedAttribute(True)]
     FIs_following: Boolean;
+    FIs_explicit: Boolean;
+    function GetUpdateTime: TDateTime;
+    procedure SetUpdateTime(const Value: TDateTime);
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     property AlbumType: string read FAlbum_type write FAlbum_type;
     property Count: Integer read FCount write FCount;
     property IsFollowing: Boolean read FIs_following write FIs_following;
+    property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
     property CreateTime: Int64 read FCreate_time write FCreate_time;
     property Description: string read FDescription write FDescription;
     property Followers: Integer read FFollowers write FFollowers;
@@ -65,7 +67,7 @@ type
     property Plays: Integer read FPlays write FPlays;
     property Title: string read FTitle write FTitle;
     property&Type: Integer read FType write FType;
-    property UpdateTime: Int64 read FUpdate_time write FUpdate_time;
+    property UpdateTime: TDateTime read GetUpdateTime write SetUpdateTime;
     property Year: Integer read FYear write FYear;
     constructor Create;
     destructor Destroy; override;
@@ -93,7 +95,7 @@ type
 implementation
 
 uses
-  VK.CommonUtils;
+  VK.CommonUtils, System.DateUtils;
 
 {TVkAudioOriginal}
 
@@ -124,7 +126,6 @@ end;
 constructor TVkAudioPlaylist.Create;
 begin
   inherited;
-  FIs_following := False;
   FOriginal := TVkAudioOriginal.Create();
   FPhoto := TVkAlbumThumb.Create();
 end;
@@ -146,6 +147,16 @@ end;
 class function TVkAudioPlaylist.FromJsonString(AJsonString: string): TVkAudioPlaylist;
 begin
   result := TJson.JsonToObject<TVkAudioPlaylist>(AJsonString)
+end;
+
+function TVkAudioPlaylist.GetUpdateTime: TDateTime;
+begin
+  Result := UnixToDateTime(FUpdate_time, False);
+end;
+
+procedure TVkAudioPlaylist.SetUpdateTime(const Value: TDateTime);
+begin
+  FUpdate_time := DateTimeToUnix(Value, False);
 end;
 
 { TVkPlaylists }
