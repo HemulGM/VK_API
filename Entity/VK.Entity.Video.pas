@@ -3,20 +3,17 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy,
-  VK.Entity.Attachment;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment;
 
 type
-  TVkVideoFiles = class
+  TVkVideoFiles = class(TVkEntity)
   private
     FExternal: string;
   public
-    property external: string read FExternal write FExternal;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoFiles;
+    property&External: string read FExternal write FExternal;
   end;
 
-  TVkVideoImage = class
+  TVkVideoImage = class(TVkEntity)
   private
     FHeight: Integer;
     FUrl: string;
@@ -27,8 +24,6 @@ type
     property Url: string read FUrl write FUrl;
     property Width: Integer read FWidth write FWidth;
     property WithPadding: Integer read FWith_padding write FWith_padding;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoImage;
   end;
 
   TVkVideo = class(TVkObject, IAttachment)
@@ -120,11 +115,9 @@ type
     function ToAttachment: string;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideo;
   end;
 
-  TVkVideos = class
+  TVkVideos = class(TVkEntity)
   private
     FItems: TArray<TVkVideo>;
     FCount: Integer;
@@ -135,10 +128,8 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkVideos);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideos;
   end;
 
   TVkVideoAlbum = class(TVkObject)
@@ -158,11 +149,9 @@ type
     property UpdatedTime: Int64 read FUpdated_time write FUpdated_time;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoAlbum;
   end;
 
-  TVkVideoAlbums = class
+  TVkVideoAlbums = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkVideoAlbum>;
@@ -170,38 +159,12 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkVideoAlbum> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoAlbums;
   end;
 
 implementation
 
 uses
   VK.Types, VK.CommonUtils;
-
-{TVkVideoFiles}
-
-function TVkVideoFiles.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoFiles.FromJsonString(AJsonString: string): TVkVideoFiles;
-begin
-  result := TJson.JsonToObject<TVkVideoFiles>(AJsonString)
-end;
-
-{TVkVideoImage}
-
-function TVkVideoImage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoImage.FromJsonString(AJsonString: string): TVkVideoImage;
-begin
-  result := TJson.JsonToObject<TVkVideoImage>(AJsonString)
-end;
 
 {TVkVideo}
 
@@ -225,16 +188,6 @@ end;
 function TVkVideo.ToAttachment: string;
 begin
   Result := Attachment.Video(Id, OwnerId, AccessKey);
-end;
-
-function TVkVideo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideo.FromJsonString(AJsonString: string): TVkVideo;
-begin
-  result := TJson.JsonToObject<TVkVideo>(AJsonString)
 end;
 
 {TVkVideos}
@@ -265,16 +218,6 @@ begin
   inherited;
 end;
 
-function TVkVideos.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideos.FromJsonString(AJsonString: string): TVkVideos;
-begin
-  result := TJson.JsonToObject<TVkVideos>(AJsonString);
-end;
-
 procedure TVkVideos.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
@@ -295,32 +238,12 @@ begin
   inherited;
 end;
 
-function TVkVideoAlbum.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoAlbum.FromJsonString(AJsonString: string): TVkVideoAlbum;
-begin
-  result := TJson.JsonToObject<TVkVideoAlbum>(AJsonString)
-end;
-
 {TVkVideoAlbums}
 
 destructor TVkVideoAlbums.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkVideoAlbum>(FItems);
   inherited;
-end;
-
-function TVkVideoAlbums.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoAlbums.FromJsonString(AJsonString: string): TVkVideoAlbums;
-begin
-  result := TJson.JsonToObject<TVkVideoAlbums>(AJsonString)
 end;
 
 end.

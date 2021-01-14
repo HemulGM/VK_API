@@ -3,10 +3,10 @@ unit VK.Entity.Message.LongPoll;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkUserLongpoll = class
+  TVkUserLongpoll = class(TVkEntity)
   private
     FKey: string;
     FServer: string;
@@ -15,23 +15,9 @@ type
     property Key: string read FKey write FKey;
     property Server: string read FServer write FServer;
     property Ts: Int64 read FTs write FTs;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkUserLongpoll;
   end;
 
 implementation
-
-{TVkUserLongpoll}
-
-function TVkUserLongpoll.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkUserLongpoll.FromJsonString(AJsonString: string): TVkUserLongpoll;
-begin
-  result := TJson.JsonToObject<TVkUserLongpoll>(AJsonString)
-end;
 
 end.
 

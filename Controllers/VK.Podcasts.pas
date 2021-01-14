@@ -3,8 +3,7 @@ unit VK.Podcasts;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.Podcast;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Podcast;
 
 type
   TPodcastsController = class(TVkController)
@@ -42,34 +41,12 @@ end;
 
 function TPodcastsController.GetPopular(var Items: TVkPodcasts): Boolean;
 begin
-  with Handler.Execute('podcasts.getPopular') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPodcasts.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('podcasts.getPopular').GetObject<TVkPodcasts>(Items);
 end;
 
 function TPodcastsController.GetRecentSearchRequests(var Items: TVkPodcasts): Boolean;
 begin
-  with Handler.Execute('podcasts.getRecentSearchRequests') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPodcasts.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('podcasts.getRecentSearchRequests').GetObjects<TVkPodcasts>(Items);
 end;
 
 function TPodcastsController.Search(var Items: TVkPodcastSearch; SearchString: string; Offset, Count: Integer): Boolean;
@@ -81,18 +58,7 @@ begin
     Params.Add('offset', Offset);
   if Count <> 0 then
     Params.Add('count', Count);
-  with Handler.Execute('podcasts.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPodcastSearch.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('podcasts.search', Params).GetObject<TVkPodcastSearch>(Items);
 end;
 
 end.

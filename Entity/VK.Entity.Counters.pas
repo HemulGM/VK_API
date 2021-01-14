@@ -3,10 +3,10 @@ unit VK.Entity.Counters;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkCounters = class
+  TVkCounters = class(TVkEntity)
   private
     FApp_requests: Extended;
     FEvents: Extended;
@@ -35,23 +35,9 @@ type
     property Photos: Extended read FPhotos write FPhotos;
     property SDK: Extended read FSdk write FSdk;
     property Videos: Extended read FVideos write FVideos;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCounters;
   end;
 
 implementation
-
-{TVkCounters}
-
-function TVkCounters.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCounters.FromJsonString(AJsonString: string): TVkCounters;
-begin
-  result := TJson.JsonToObject<TVkCounters>(AJsonString)
-end;
 
 end.
 

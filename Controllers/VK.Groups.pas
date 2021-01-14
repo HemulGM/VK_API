@@ -819,18 +819,7 @@ end;
 
 function TGroupsController.GetBanned(var Items: TVkGroupBans; Params: TVkParamsGroupsGetBanned): Boolean;
 begin
-  with Handler.Execute('groups.getBanned', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkGroupBans.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('groups.getBanned', Params.List).GetObject<TVkGroupBans>(Items);
 end;
 
 function TGroupsController.GetById(var Items: TVkGroups; GroupId: Integer; Fields: TVkGroupFields): Boolean;
@@ -848,34 +837,18 @@ end;
 
 function TGroupsController.GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Integer; ServerIds: TIds): Boolean;
 begin
-  with Handler.Execute('groups.getCallbackServers', [['group_id', GroupId.ToString], ['server_ids', ServerIds.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkGroupCallbackServers.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('groups.getCallbackServers', [
+    ['group_id', GroupId.ToString],
+    ['server_ids', ServerIds.ToString]]).
+    GetObject<TVkGroupCallbackServers>(Items);
 end;
 
 function TGroupsController.GetCallbackSettings(var Items: TVkCallbackSettings; GroupId, ServerId: Integer): Boolean;
 begin
-  with Handler.Execute('groups.getCallbackSettings', [['group_id', GroupId.ToString], ['server_id', ServerId.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkCallbackSettings.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('groups.getCallbackSettings', [
+    ['group_id', GroupId.ToString],
+    ['server_id', ServerId.ToString]]).
+    GetObject<TVkCallbackSettings>(Items);
 end;
 
 function TGroupsController.GetCatalog(var Items: TVkGroups; CategoryId, SubcategoryId: Integer): Boolean;
@@ -940,18 +913,7 @@ end;
 
 function TGroupsController.GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Integer): Boolean;
 begin
-  with Handler.Execute('groups.getLongPollSettings', ['group_id', GroupId.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkLongpollSettings.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('groups.getLongPollSettings', ['group_id', GroupId.ToString]).GetObject<TVkLongpollSettings>(Item);
 end;
 
 function TGroupsController.GetMembers(var Items: TVkProfiles; Params: TVkParamsGroupsGetMembers): Boolean;

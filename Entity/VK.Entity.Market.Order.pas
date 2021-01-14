@@ -3,8 +3,7 @@ unit VK.Entity.Market.Order;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Market,
-  VK.Entity.Photo;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Market, VK.Entity.Photo;
 
 type
   TVkOrderRecipient = class
@@ -16,8 +15,6 @@ type
     property DisplayText: string read FDisplay_text write FDisplay_text;
     property Name: string read FName write FName;
     property Phone: string read FPhone write FPhone;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkOrderRecipient;
   end;
 
   TVkOrderDelivery = class
@@ -27,8 +24,6 @@ type
   public
     property Address: string read FAddress write FAddress;
     property&Type: string read FType write FType;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkOrderDelivery;
   end;
 
   TVkOrder = class(TVkObject)
@@ -58,11 +53,9 @@ type
     property UserId: Integer read FUser_id write FUser_id;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkOrder;
   end;
 
-  TVkOrders = class
+  TVkOrders = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkOrder>;
@@ -70,38 +63,12 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkOrder> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkOrders;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkOrderRecipient}
-
-function TVkOrderRecipient.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkOrderRecipient.FromJsonString(AJsonString: string): TVkOrderRecipient;
-begin
-  result := TJson.JsonToObject<TVkOrderRecipient>(AJsonString)
-end;
-
-{TVkOrderDelivery}
-
-function TVkOrderDelivery.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkOrderDelivery.FromJsonString(AJsonString: string): TVkOrderDelivery;
-begin
-  result := TJson.JsonToObject<TVkOrderDelivery>(AJsonString)
-end;
 
 {TVkOrder}
 
@@ -122,32 +89,12 @@ begin
   inherited;
 end;
 
-function TVkOrder.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkOrder.FromJsonString(AJsonString: string): TVkOrder;
-begin
-  result := TJson.JsonToObject<TVkOrder>(AJsonString)
-end;
-
 {TVkOrders}
 
 destructor TVkOrders.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkOrder>(FItems);
   inherited;
-end;
-
-function TVkOrders.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkOrders.FromJsonString(AJsonString: string): TVkOrders;
-begin
-  result := TJson.JsonToObject<TVkOrders>(AJsonString)
 end;
 
 end.

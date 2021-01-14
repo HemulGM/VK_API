@@ -21,9 +21,7 @@ type
     property LinkOgg: string read FLink_ogg write FLink_ogg;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property WaveForm: TArray<Integer> read FWaveform write FWaveform;
-    function ToJsonString: string;
     function ToAttachment: string;
-    class function FromJsonString(AJsonString: string): TVkAudioMessage;
   end;
 
 implementation
@@ -36,16 +34,6 @@ uses
 function TVkAudioMessage.ToAttachment: string;
 begin
   Result := Attachment.Doc(FId, OwnerId, FAccess_key);
-end;
-
-function TVkAudioMessage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioMessage.FromJsonString(AJsonString: string): TVkAudioMessage;
-begin
-  result := TJson.JsonToObject<TVkAudioMessage>(AJsonString)
 end;
 
 end.

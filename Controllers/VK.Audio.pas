@@ -261,7 +261,7 @@ begin
     Data.AddFile('file', FileName);
     if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
     begin
-      Response := TVkAudioUploadResponse.FromJsonString(ResStream.DataString);
+      Response := TVkAudioUploadResponse.FromJsonString<TVkAudioUploadResponse>(ResStream.DataString);
       Result := True;
     end;
   finally
@@ -317,18 +317,7 @@ end;
 
 function TAudioController.Search(var Audios: TVkAudios; Params: TVkParamsAudioSearch): Boolean;
 begin
-  with Handler.Execute('audio.search', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Audios := TVkAudios.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end
-  end;
+  Result := Handler.Execute('audio.search', Params.List).GetObject<TVkAudios>(Audios);
 end;
 
 function TAudioController.Search(var Audios: TVkAudios; Query: string): Boolean;
@@ -381,19 +370,11 @@ end;
 function TAudioController.AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId, PlaylistId: Integer; AudioIds:
   TArrayOfString): Boolean;
 begin
-  with Handler.Execute('audio.addToPlaylist', [['playlist_id', PlaylistId.ToString], ['owner_id', OwnerId.ToString], ['audio_ids',
-    AudioIds.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkAudioInfoItems.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('audio.addToPlaylist', [
+    ['playlist_id', PlaylistId.ToString],
+    ['owner_id', OwnerId.ToString],
+    ['audio_ids', AudioIds.ToString]]).
+    GetObjects<TVkAudioInfoItems>(Items);
 end;
 
 function TAudioController.CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string;
@@ -406,18 +387,7 @@ begin
   Params.Add('owner_id', OwnerId);
   Params.Add('title', Title);
   Params.Add('description', Description);
-  with Handler.Execute('audio.createPlaylist', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkAudioPlaylist.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('audio.createPlaylist', Params).GetObject<TVkAudioPlaylist>(Item);
 end;
 
 function TAudioController.Delete(AudioId, OwnerId: Integer): Boolean;
@@ -472,18 +442,7 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   Params.Add('playlist_id', PlaylistId);
-  with Handler.Execute('audio.getPlaylistById', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkAudioPlaylist.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('audio.getPlaylistById', Params).GetObject<TVkAudioPlaylist>(Item);
 end;
 
 function TAudioController.GetPlaylists(var Items: TVkPlaylists; OwnerID: Integer): Boolean;
@@ -497,18 +456,7 @@ end;
 
 function TAudioController.GetPopular(var Audios: TVkAudios; Params: TVkParamsPopAudio): Boolean;
 begin
-  with Handler.Execute('audio.getPopular', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Audios := TVkAudios.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('audio.getPopular', Params.List).GetObjects<TVkAudios>(Audios);
 end;
 
 function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TAudioGenre; Count, Offset:
@@ -537,34 +485,12 @@ end;
 
 function TAudioController.GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGetRecomendations): Boolean;
 begin
-  with Handler.Execute('audio.getRecommendations', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Audios := TVkAudios.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('audio.getRecommendations', Params.List).GetObject<TVkAudios>(Audios);
 end;
 
 function TAudioController.GetPlaylists(var Items: TVkPlaylists; Params: TVkParamsPlaylist): Boolean;
 begin
-  with Handler.Execute('audio.getPlaylists', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPlaylists.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end
-  end;
+  Result := Handler.Execute('audio.getPlaylists', Params.List).GetObject<TVkPlaylists>(Items);
 end;
 
 function TAudioController.GetById(var Audio: TVkAudio; OwnerId, AudioId: Integer; AccessKey: string): Boolean;
@@ -599,18 +525,6 @@ end;
 function TAudioController.GetCatalog(var Items: TVkAudioCatalog; Params: TParams): Boolean;
 begin
   Result := Handler.Execute('audio.getCatalog', Params).GetObject<TVkAudioCatalog>(Items);
- { with Handler.Execute('audio.getCatalog', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkAudioCatalog.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;   }
 end;
 
 function TAudioController.GetById(var Audios: TVkAudios; List: TVkAudioIndexes): Boolean;
@@ -624,18 +538,7 @@ begin
       ListStr := ListStr + ',';
     ListStr := ListStr + List[i].OwnerId.ToString + '_' + List[i].AudioId.ToString;
   end;
-  with Handler.Execute('audio.getById', ['audios', ListStr]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Audios := TVkAudios.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('audio.getById', ['audios', ListStr]).GetObject<TVkAudios>(Audios);
 end;
 
 function TAudioController.GetUploadServer(var UploadUrl: string): Boolean;

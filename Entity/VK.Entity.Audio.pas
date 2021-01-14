@@ -13,8 +13,6 @@ type
   public
     property Domain: string read FDomain write FDomain;
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioArtist;
   end;
 
   TVkAlbumThumb = class
@@ -38,8 +36,6 @@ type
     property Photo300: string read FPhoto_300 write FPhoto_300;
     property Photo600: string read FPhoto_600 write FPhoto_600;
     property Photo1200: string read FPhoto_1200 write FPhoto_1200;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAlbumThumb;
   end;
 
   TVkAudioAlbum = class(TVkObject)
@@ -55,8 +51,6 @@ type
     property Title: string read FTitle write FTitle;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioAlbum;
   end;
 
   TVkAudioAds = class
@@ -70,8 +64,6 @@ type
     property ContentId: string read FContent_id write FContent_id;
     property Duration: string read FDuration write FDuration;
     property PUID22: string read FPuid22 write FPuid22;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioAds;
   end;
 
   TVkAudioChartInfo = class
@@ -79,8 +71,6 @@ type
     FPosition: Integer;
   public
     property Position: Integer read FPosition write FPosition;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioChartInfo;
   end;
 
   TVkAudio = class(TVkObject, IAttachment)
@@ -138,10 +128,8 @@ type
     property Genre: TAudioGenre read GetAudioGenre write SetAudioGenre;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
     function ToAttachment: string;
     function DurationText(const AFormat: string): string;
-    class function FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
   end;
 
   TVkAudioIndex = record
@@ -164,8 +152,6 @@ type
     procedure Append(Audios: TVkAudios);
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudios;
   end;
 
   TVkAudioInfo = class
@@ -173,18 +159,14 @@ type
     FAudio_id: Integer;
   public
     property AudioId: Integer read FAudio_id write FAudio_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioInfo;
   end;
 
-  TVkAudioInfoItems = class
+  TVkAudioInfoItems = class(TVkEntity)
   private
     FItems: TArray<TVkAudioInfo>;
   public
     property Items: TArray<TVkAudioInfo> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioInfoItems;
   end;
 
 implementation
@@ -192,46 +174,12 @@ implementation
 uses
   VK.CommonUtils;
 
-{TVkAudioInfo}
-
-function TVkAudioInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioInfo.FromJsonString(AJsonString: string): TVkAudioInfo;
-begin
-  result := TJson.JsonToObject<TVkAudioInfo>(AJsonString)
-end;
-
 {TVkAudioInfoItems}
 
 destructor TVkAudioInfoItems.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkAudioInfo>(FItems);
   inherited;
-end;
-
-function TVkAudioInfoItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioInfoItems.FromJsonString(AJsonString: string): TVkAudioInfoItems;
-begin
-  result := TJson.JsonToObject<TVkAudioInfoItems>(AJsonString)
-end;
-
-{TVkAudioAds}
-
-function TVkAudioAds.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioAds.FromJsonString(AJsonString: string): TVkAudioAds;
-begin
-  result := TJson.JsonToObject<TVkAudioAds>(AJsonString)
 end;
 
 {TVkAudio}
@@ -268,16 +216,6 @@ begin
   Result := Attachment.Audio(Id, OwnerId, AccessKey);
 end;
 
-function TVkAudio.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudio.FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
-begin
-  Result := TJson.JsonToObject<TVkAudio>(AJsonObject);
-end;
-
 function TVkAudio.GetAudioGenre: TAudioGenre;
 begin
   Result := TAudioGenre.Create(FGenre_Id);
@@ -286,30 +224,6 @@ end;
 procedure TVkAudio.SetAudioGenre(const Value: TAudioGenre);
 begin
   FGenre_id := VkAudioGenres[Value];
-end;
-
-{TMain_artistsClass}
-
-function TVkAudioArtist.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioArtist.FromJsonString(AJsonString: string): TVkAudioArtist;
-begin
-  result := TJson.JsonToObject<TVkAudioArtist>(AJsonString)
-end;
-
-{TThumbClass}
-
-function TVkAlbumThumb.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAlbumThumb.FromJsonString(AJsonString: string): TVkAlbumThumb;
-begin
-  result := TJson.JsonToObject<TVkAlbumThumb>(AJsonString)
 end;
 
 {TAlbumClass}
@@ -324,16 +238,6 @@ destructor TVkAudioAlbum.Destroy;
 begin
   FThumb.Free;
   inherited;
-end;
-
-function TVkAudioAlbum.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioAlbum.FromJsonString(AJsonString: string): TVkAudioAlbum;
-begin
-  result := TJson.JsonToObject<TVkAudioAlbum>(AJsonString)
 end;
 
 { TVkAudios }
@@ -365,31 +269,9 @@ begin
   inherited;
 end;
 
-class function TVkAudios.FromJsonString(AJsonString: string): TVkAudios;
-begin
-  result := TJson.JsonToObject<TVkAudios>(AJsonString);
-end;
-
 procedure TVkAudios.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
-end;
-
-function TVkAudios.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkAudioChartInfo }
-
-class function TVkAudioChartInfo.FromJsonString(AJsonString: string): TVkAudioChartInfo;
-begin
-  result := TJson.JsonToObject<TVkAudioChartInfo>(AJsonString);
-end;
-
-function TVkAudioChartInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

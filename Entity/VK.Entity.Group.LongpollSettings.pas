@@ -3,7 +3,7 @@ unit VK.Entity.Group.LongpollSettings;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
   TVkLongpollSetting = class
@@ -109,11 +109,9 @@ type
     property WallReplyNew: Boolean read FWall_reply_new write FWall_reply_new;
     property WallReplyRestore: Boolean read FWall_reply_restore write FWall_reply_restore;
     property WallRepost: Boolean read FWall_repost write FWall_repost;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLongpollSetting;
   end;
 
-  TVkLongpollSettings = class
+  TVkLongpollSettings = class(TVkEntity)
   private
     FApi_version: string;
     FEvents: TVkLongpollSetting;
@@ -122,25 +120,11 @@ type
     property ApiVersion: string read FApi_version write FApi_version;
     property Events: TVkLongpollSetting read FEvents write FEvents;
     property IsEnabled: Boolean read FIs_enabled write FIs_enabled;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLongpollSettings;
   end;
 
 implementation
-
-{TVkLongpollSetting}
-
-function TVkLongpollSetting.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLongpollSetting.FromJsonString(AJsonString: string): TVkLongpollSetting;
-begin
-  result := TJson.JsonToObject<TVkLongpollSetting>(AJsonString)
-end;
 
 {TVkLongpollSettings}
 
@@ -154,16 +138,6 @@ destructor TVkLongpollSettings.Destroy;
 begin
   FEvents.Free;
   inherited;
-end;
-
-function TVkLongpollSettings.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLongpollSettings.FromJsonString(AJsonString: string): TVkLongpollSettings;
-begin
-  result := TJson.JsonToObject<TVkLongpollSettings>(AJsonString)
 end;
 
 end.

@@ -17,8 +17,6 @@ type
     property Thumb96: string read FThumb_96 write FThumb_96;
     property Thumb48: string read FThumb_48 write FThumb_48;
     property StickersProductId: Integer read FStickers_product_id write FStickers_product_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGift;
   end;
 
   TVkGiftItem = class(TVkObject)
@@ -38,11 +36,9 @@ type
     property Privacy: Integer read FPrivacy write FPrivacy;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGiftItem;
   end;
 
-  TVkGiftItems = class
+  TVkGiftItems = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkGiftItem>;
@@ -50,8 +46,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkGiftItem> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGiftItems;
   end;
 
 implementation
@@ -59,34 +53,12 @@ implementation
 uses
   VK.CommonUtils;
 
-{TVkGift}
-
-function TVkGift.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGift.FromJsonString(AJsonString: string): TVkGift;
-begin
-  result := TJson.JsonToObject<TVkGift>(AJsonString)
-end;
-
 { TVkGiftItems }
 
 destructor TVkGiftItems.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkGiftItem>(FItems);
   inherited;
-end;
-
-class function TVkGiftItems.FromJsonString(AJsonString: string): TVkGiftItems;
-begin
-  result := TJson.JsonToObject<TVkGiftItems>(AJsonString)
-end;
-
-function TVkGiftItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkGiftItem }
@@ -100,16 +72,6 @@ destructor TVkGiftItem.Destroy;
 begin
   FGift.Free;
   inherited;
-end;
-
-class function TVkGiftItem.FromJsonString(AJsonString: string): TVkGiftItem;
-begin
-  result := TJson.JsonToObject<TVkGiftItem>(AJsonString)
-end;
-
-function TVkGiftItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

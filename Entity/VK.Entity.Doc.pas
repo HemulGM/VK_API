@@ -12,8 +12,6 @@ type
   public
     property Sizes: TVkSizes read FSizes write FSizes;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPreviewPhoto;
   end;
 
   TVkPreview = class
@@ -23,8 +21,6 @@ type
     property Photo: TVkPreviewPhoto read FPhoto write FPhoto;
     constructor Create;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPreview;
   end;
 
   TVkDocument = class(TVkObject, IAttachment)
@@ -66,12 +62,10 @@ type
     property Url: string read FUrl write FUrl;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
     function ToAttachment: string;
-    class function FromJsonString(AJsonString: string): TVkDocument;
   end;
 
-  TVkDocuments = class
+  TVkDocuments = class(TVkEntity)
   private
     FItems: TArray<TVkDocument>;
     FCount: Integer;
@@ -82,10 +76,8 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Audios: TVkDocuments);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkDocuments;
   end;
 
 implementation
@@ -101,16 +93,6 @@ begin
   inherited;
 end;
 
-function TVkPreviewPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPreviewPhoto.FromJsonString(AJsonString: string): TVkPreviewPhoto;
-begin
-  result := TJson.JsonToObject<TVkPreviewPhoto>(AJsonString)
-end;
-
 {TVkPreview}
 
 constructor TVkPreview.Create;
@@ -123,16 +105,6 @@ destructor TVkPreview.Destroy;
 begin
   FPhoto.Free;
   inherited;
-end;
-
-function TVkPreview.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPreview.FromJsonString(AJsonString: string): TVkPreview;
-begin
-  result := TJson.JsonToObject<TVkPreview>(AJsonString)
 end;
 
 {TVkDocument}
@@ -152,16 +124,6 @@ end;
 function TVkDocument.ToAttachment: string;
 begin
   Result := Attachment.Doc(FId, FOwner_id, FAccess_key);
-end;
-
-function TVkDocument.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkDocument.FromJsonString(AJsonString: string): TVkDocument;
-begin
-  result := TJson.JsonToObject<TVkDocument>(AJsonString)
 end;
 
 function TVkDocument.GetDate: TDateTime;
@@ -210,19 +172,9 @@ begin
   inherited;
 end;
 
-class function TVkDocuments.FromJsonString(AJsonString: string): TVkDocuments;
-begin
-  result := TJson.JsonToObject<TVkDocuments>(AJsonString);
-end;
-
 procedure TVkDocuments.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
-end;
-
-function TVkDocuments.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

@@ -3,11 +3,10 @@ unit VK.Database;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.Database.Chairs, VK.Entity.Database.Cities,
-  VK.Entity.Database.Countries, VK.Entity.Database.Faculties,
-  VK.Entity.Database.MetroStations, VK.Entity.Database.Regions,
-  VK.Entity.Database.Schools, VK.Entity.Database.Universities;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Database.Chairs,
+  VK.Entity.Database.Cities, VK.Entity.Database.Countries, VK.Entity.Database.Faculties,
+  VK.Entity.Database.MetroStations, VK.Entity.Database.Regions, VK.Entity.Database.Schools,
+  VK.Entity.Database.Universities;
 
 type
   TVkParamsGetCities = record
@@ -69,11 +68,13 @@ type
     /// <summary>
     /// Возвращает список факультетов.
     /// </summary>
-    function GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset: Integer = 0; Count: Integer = 100): Boolean;
+    function GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset: Integer = 0; Count: Integer =
+      100): Boolean;
     /// <summary>
     /// Возвращает список станций метро.
     /// </summary>
-    function GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean = False; Offset: Integer = 0; Count: Integer = 100): Boolean;
+    function GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean = False; Offset:
+      Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает информацию об одной или нескольких станциях метро по их идентификаторам.
     /// </summary>
@@ -81,7 +82,8 @@ type
     /// <summary>
     /// Возвращает список регионов.
     /// </summary>
-    function GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
+    function GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string = ''; Offset: Integer = 0; Count:
+      Integer = 100): Boolean;
     /// <summary>
     /// Возвращает список классов, характерных для школ определенной страны.
     /// </summary>
@@ -89,7 +91,8 @@ type
     /// <summary>
     /// Возвращает список школ.
     /// </summary>
-    function GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
+    function GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string = ''; Offset: Integer = 0; Count:
+      Integer = 100): Boolean;
     /// <summary>
     /// Возвращает список высших учебных заведений.
     /// </summary>
@@ -105,34 +108,16 @@ uses
 
 function TDatabaseController.GetChairs(var Items: TVkChairs; const FacultyId: Integer; Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('database.getChairs', [['faculty_id', FacultyId.ToString], ['offset', Offset.ToString], ['count', Count.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkChairs.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getChairs', [
+    ['faculty_id', FacultyId.ToString],
+    ['offset', Offset.ToString],
+    ['count', Count.ToString]]).
+    GetObject<TVkChairs>(Items);
 end;
 
 function TDatabaseController.GetCities(var Items: TVkCities; const Params: TParams): Boolean;
 begin
-  with Handler.Execute('database.getCities', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkCities.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getCities', Params).GetObject<TVkCities>(Items);
 end;
 
 function TDatabaseController.GetCities(var Items: TVkCities; const Params: TVkParamsGetCities): Boolean;
@@ -142,162 +127,74 @@ end;
 
 function TDatabaseController.GetCitiesById(var Items: TVkCities; const CityIds: TIds): Boolean;
 begin
-  with Handler.Execute('database.getCitiesById', ['city_ids', CityIds.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkCities.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getCitiesById', ['city_ids', CityIds.ToString]).GetObject<TVkCities>(Items);
 end;
 
 function TDatabaseController.GetCountries(var Items: TVkCountries; const Params: TVkParamsGetCountries): Boolean;
 begin
-  with Handler.Execute('database.getCountries', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkCountries.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getCountries', Params.List).GetObject<TVkCountries>(Items);
 end;
 
 function TDatabaseController.GetCountriesById(var Items: TVkCountries; const CountryIds: TIds): Boolean;
 begin
-  with Handler.Execute('database.getCountriesById', ['country_ids', CountryIds.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkCountries.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getCountriesById', ['country_ids', CountryIds.ToString]).GetObject<TVkCountries>(Items);
 end;
 
 function TDatabaseController.GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('database.getFaculties', [['university_id', UniversityId.ToString], ['offset', Offset.ToString], ['count', Count.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkFaculties.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getFaculties', [
+    ['university_id', UniversityId.ToString],
+    ['offset', Offset.ToString],
+    ['count', Count.ToString]]).
+    GetObject<TVkFaculties>(Items);
 end;
 
-function TDatabaseController.GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean; Offset, Count: Integer): Boolean;
+function TDatabaseController.GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean;
+  Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('database.getMetroStations', [['city_id', CityId.ToString], ['extended', BoolToString(Extended)], ['offset', Offset.ToString], ['count', Count.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkMetroStations.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getMetroStations', [
+    ['city_id', CityId.ToString],
+    ['extended', BoolToString(Extended)],
+    ['offset', Offset.ToString],
+    ['count', Count.ToString]]).
+    GetObject<TVkMetroStations>(Items);
 end;
 
 function TDatabaseController.GetMetroStationsById(var Items: TVkMetroStations; const StationIds: TIds): Boolean;
 begin
-  with Handler.Execute('database.getMetroStationsById', ['station_ids', StationIds.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkMetroStations.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getMetroStationsById', ['station_ids', StationIds.ToString]).
+    GetObject<TVkMetroStations>(Items);
 end;
 
-function TDatabaseController.GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string; Offset, Count: Integer): Boolean;
+function TDatabaseController.GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string; Offset, Count:
+  Integer): Boolean;
 begin
-  with Handler.Execute('database.getRegions', [['country_id', CountryId.ToString], ['q', Query], ['offset', Offset.ToString], ['count', Count.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkRegions.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getRegions', [
+    ['country_id', CountryId.ToString],
+    ['q', Query],
+    ['offset', Offset.ToString],
+    ['count', Count.ToString]]).
+    GetObject<TVkRegions>(Items);
 end;
 
 function TDatabaseController.GetSchoolClasses(var Items: TVkSchoolClasses; const CountryId: Integer): Boolean;
 begin
-  with Handler.Execute('database.getSchoolClasses', ['country_id', CountryId.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkSchoolClasses.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getSchoolClasses', ['country_id', CountryId.ToString]).GetObject<TVkSchoolClasses>(Items);
 end;
 
-function TDatabaseController.GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string; Offset, Count: Integer): Boolean;
+function TDatabaseController.GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string; Offset, Count:
+  Integer): Boolean;
 begin
-  with Handler.Execute('database.getSchools', [['city_id', CityId.ToString], ['q', Query], ['offset', Offset.ToString], ['count', Count.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkSchools.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getSchools', [
+    ['city_id', CityId.ToString],
+    ['q', Query],
+    ['offset', Offset.ToString],
+    ['count', Count.ToString]]).GetObject<TVkSchools>(Items);
 end;
 
 function TDatabaseController.GetUniversities(var Items: TVkUniversities; const Params: TVkParamsGetUniversities): Boolean;
 begin
-  with Handler.Execute('database.getUniversities', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkUniversities.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('database.getUniversities', Params.List).GetObject<TVkUniversities>(Items);
 end;
 
 { TVkParamsGetCities }

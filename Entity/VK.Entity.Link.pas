@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Types;
 
 type
-  TVkLinkStatus = class
+  TVkLinkStatus = class(TVkEntity)
   private
     FLink: string;
     FStatus: string;
@@ -15,8 +15,6 @@ type
   public
     property Link: string read FLink write FLink;
     property Status: TVkLinkStatusType read GetStatus write SetStatus;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkStatus;
   end;
 
   TVkLinkAction = class
@@ -26,24 +24,20 @@ type
   public
     property&Type: string read FType write FType;
     property Url: string read FUrl write FUrl;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkAction;
   end;
 
-  TVkLinkButton = class
+  TVkLinkButton = class(TVkEntity)
   private
     FAction: TVkLinkAction;
     FTitle: string;
   public
     property Action: TVkLinkAction read FAction write FAction;
     property Title: string read FTitle write FTitle;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkButton;
   end;
 
-  TVkLink = class
+  TVkLink = class(TVkEntity)
   private
     FButton: TVkLinkButton;
     FCaption: string;
@@ -60,13 +54,11 @@ type
     property Title: string read FTitle write FTitle;
     property Text: string read FText write FText;
     property Url: string read FUrl write FUrl;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLink;
   end;
 
-  TVkShortLink = class
+  TVkShortLink = class(TVkEntity)
   private
     FKey: string;
     FShort_url: string;
@@ -81,11 +73,9 @@ type
     property Timestamp: Int64 read FTimestamp write FTimestamp;
     property Url: string read FUrl write FUrl;
     property Views: Integer read FViews write FViews;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkShortLink;
   end;
 
-  TVkShortLinks = class
+  TVkShortLinks = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkShortLink>;
@@ -93,8 +83,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkShortLink> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkShortLinks;
   end;
 
   TVkLinkViewsCity = class
@@ -104,8 +92,6 @@ type
   public
     property CityId: Integer read FCity_id write FCity_id;
     property Views: Integer read FViews write FViews;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkViewsCity;
   end;
 
   TVkLinkViewsCountries = class
@@ -115,8 +101,6 @@ type
   public
     property CountryId: Integer read FCountry_id write FCountry_id;
     property Views: Integer read FViews write FViews;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkViewsCountries;
   end;
 
   TVkLinkSexAge = class
@@ -128,11 +112,9 @@ type
     property AgeRange: string read FAge_range write FAge_range;
     property Female: Integer read FFemale write FFemale;
     property Male: Integer read FMale write FMale;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkSexAge;
   end;
 
-  TVkLinkStats = class
+  TVkLinkStats = class(TVkEntity)
   private
     FCities: TArray<TVkLinkViewsCity>;
     FCountries: TArray<TVkLinkViewsCountries>;
@@ -146,8 +128,6 @@ type
     property Timestamp: Int64 read FTimestamp write FTimestamp;
     property Views: Integer read FViews write FViews;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkStats;
   end;
 
   TVkLinkStates = class
@@ -158,26 +138,12 @@ type
     property Key: string read FKey write FKey;
     property Stats: TArray<TVkLinkStats> read FStats write FStats;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkStates;
   end;
 
 implementation
 
 uses
   VK.CommonUtils, System.StrUtils;
-
-{TVkLinkAction}
-
-function TVkLinkAction.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLinkAction.FromJsonString(AJsonString: string): TVkLinkAction;
-begin
-  result := TJson.JsonToObject<TVkLinkAction>(AJsonString)
-end;
 
 {TButtonClass}
 
@@ -191,16 +157,6 @@ destructor TVkLinkButton.Destroy;
 begin
   FAction.Free;
   inherited;
-end;
-
-function TVkLinkButton.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLinkButton.FromJsonString(AJsonString: string): TVkLinkButton;
-begin
-  result := TJson.JsonToObject<TVkLinkButton>(AJsonString)
 end;
 
 {TLinkClass}
@@ -219,22 +175,7 @@ begin
   inherited;
 end;
 
-function TVkLink.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLink.FromJsonString(AJsonString: string): TVkLink;
-begin
-  result := TJson.JsonToObject<TVkLink>(AJsonString)
-end;
-
 { TVkLinkStatus }
-
-class function TVkLinkStatus.FromJsonString(AJsonString: string): TVkLinkStatus;
-begin
-  result := TJson.JsonToObject<TVkLinkStatus>(AJsonString)
-end;
 
 function TVkLinkStatus.GetStatus: TVkLinkStatusType;
 begin
@@ -246,75 +187,12 @@ begin
   FStatus := Value.ToString;
 end;
 
-function TVkLinkStatus.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkShortLink }
-
-class function TVkShortLink.FromJsonString(AJsonString: string): TVkShortLink;
-begin
-  result := TJson.JsonToObject<TVkShortLink>(AJsonString)
-end;
-
-function TVkShortLink.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkShortLinks }
 
 destructor TVkShortLinks.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkShortLink>(FItems);
   inherited;
-end;
-
-class function TVkShortLinks.FromJsonString(AJsonString: string): TVkShortLinks;
-begin
-  result := TJson.JsonToObject<TVkShortLinks>(AJsonString)
-end;
-
-function TVkShortLinks.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkLinkViewsCity }
-
-class function TVkLinkViewsCity.FromJsonString(AJsonString: string): TVkLinkViewsCity;
-begin
-  result := TJson.JsonToObject<TVkLinkViewsCity>(AJsonString)
-end;
-
-function TVkLinkViewsCity.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkLinkViewsCountries }
-
-class function TVkLinkViewsCountries.FromJsonString(AJsonString: string): TVkLinkViewsCountries;
-begin
-  result := TJson.JsonToObject<TVkLinkViewsCountries>(AJsonString)
-end;
-
-function TVkLinkViewsCountries.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkLinkSexAge }
-
-class function TVkLinkSexAge.FromJsonString(AJsonString: string): TVkLinkSexAge;
-begin
-  result := TJson.JsonToObject<TVkLinkSexAge>(AJsonString)
-end;
-
-function TVkLinkSexAge.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkLinkStats }
@@ -327,32 +205,12 @@ begin
   inherited;
 end;
 
-class function TVkLinkStats.FromJsonString(AJsonString: string): TVkLinkStats;
-begin
-  result := TJson.JsonToObject<TVkLinkStats>(AJsonString)
-end;
-
-function TVkLinkStats.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkLinkStates }
 
 destructor TVkLinkStates.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkLinkStats>(FStats);
   inherited;
-end;
-
-class function TVkLinkStates.FromJsonString(AJsonString: string): TVkLinkStates;
-begin
-  result := TJson.JsonToObject<TVkLinkStates>(AJsonString)
-end;
-
-function TVkLinkStates.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

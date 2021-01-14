@@ -578,7 +578,7 @@ var
 begin
   if Assigned(FOnBoardPostEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -596,7 +596,7 @@ var
 begin
   if Assigned(FOnBoardPostNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -614,7 +614,7 @@ var
 begin
   if Assigned(FOnBoardPostRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -718,7 +718,7 @@ var
 begin
   if Assigned(FOnMarketCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -736,7 +736,7 @@ var
 begin
   if Assigned(FOnMarketCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -754,7 +754,7 @@ var
 begin
   if Assigned(FOnMarketCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -795,7 +795,7 @@ var
 begin
   if Assigned(FOnMessageEdit) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.ToString);
     try
       FOnMessageEdit(Self, GroupId, Message, EventId);
     finally
@@ -811,8 +811,8 @@ var
 begin
   if Assigned(FOnMessageNew) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.GetValue<TJSONValue>('message').ToString);
-    ClientInfo := TVkClientInfo.FromJsonString(EventObject.GetValue<TJSONValue>('client_info').ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.GetValue<TJSONValue>('message').ToString);
+    ClientInfo := TVkClientInfo.FromJsonString<TVkClientInfo>(EventObject.GetValue<TJSONValue>('client_info').ToString);
     try
       FOnMessageNew(Self, GroupId, Message, ClientInfo, EventId);
     finally
@@ -828,7 +828,7 @@ var
 begin
   if Assigned(FOnMessageReply) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.ToString);
     try
       FOnMessageReply(Self, GroupId, Message, EventId);
     finally
@@ -872,7 +872,7 @@ var
 begin
   if Assigned(FOnPhotoCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -890,7 +890,7 @@ var
 begin
   if Assigned(FOnPhotoCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -908,7 +908,7 @@ var
 begin
   if Assigned(FOnPhotoCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -998,7 +998,7 @@ var
 begin
   if Assigned(FOnVideoCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1016,7 +1016,7 @@ var
 begin
   if Assigned(FOnVideoCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1034,7 +1034,7 @@ var
 begin
   if Assigned(FOnVideoCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1051,7 +1051,7 @@ var
 begin
   if Assigned(FOnVideoNew) then
   begin
-    Video := TVkVideo.FromJsonString(EventObject.ToString);
+    Video := TVkVideo.FromJsonString<TVkVideo>(EventObject.ToString);
     try
       FOnVideoNew(Self, GroupId, Video, EventId);
     finally
@@ -1080,7 +1080,7 @@ var
 begin
   if Assigned(FOnWallPostNew) then
   begin
-    Post := TVkPost.FromJsonString(EventObject.ToString);
+    Post := TVkPost.FromJsonString<TVkPost>(EventObject.ToString);
     try
       FOnWallPostNew(Self, GroupId, Post, EventId);
     finally
@@ -1111,7 +1111,7 @@ var
 begin
   if Assigned(FOnWallReplyEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1129,7 +1129,7 @@ var
 begin
   if Assigned(FOnWallReplyNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1147,7 +1147,7 @@ var
 begin
   if Assigned(FOnWallReplyRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1164,7 +1164,7 @@ var
 begin
   if Assigned(FOnWallRepost) then
   begin
-    Post := TVkPost.FromJsonString(EventObject.ToString);
+    Post := TVkPost.FromJsonString<TVkPost>(EventObject.ToString);
     try
       FOnWallRepost(Self, GroupId, Post, EventId);
     finally

@@ -23,23 +23,9 @@ type
     property MemberStatus: Integer read FMember_status write FMember_status;
     property Text: string read FText write FText;
     property Time: Int64 read FTime write FTime;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkEvent;
   end;
 
 implementation
-
-{TVkEvent}
-
-function TVkEvent.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkEvent.FromJsonString(AJsonString: string): TVkEvent;
-begin
-  result := TJson.JsonToObject<TVkEvent>(AJsonString)
-end;
 
 end.
 

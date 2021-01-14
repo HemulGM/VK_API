@@ -3,9 +3,8 @@ unit VK.Catalog;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Catalog,
-  VK.Entity.Catalog.Section, VK.CommonUtils;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils;
 
 type
   TCatalogController = class(TVkController)
@@ -31,18 +30,7 @@ begin
   if NeedBlocks then
     Params.Add('need_blocks', True);
   Params.Add('https', True);
-  with Handler.Execute('catalog.getAudio', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Catalog := TVkCatalog.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('catalog.getAudio', Params).GetObject<TVkCatalog>(Catalog);
 end;
 
 function TCatalogController.GetSection(var Section: TVkSectionData; SectionId: string; NeedBlocks: Boolean): Boolean;
@@ -53,18 +41,7 @@ begin
     Params.Add('need_blocks', True);
   Params.Add('https', True);
   Params.Add('section_id', SectionId);
-  with Handler.Execute('catalog.getSection', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Section := TVkSectionData.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('catalog.getSection', Params).GetObject<TVkSectionData>(Section);
 end;
 
 end.

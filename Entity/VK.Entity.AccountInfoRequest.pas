@@ -17,23 +17,9 @@ type
     property FirstName: string read FFirst_name write FFirst_name;
     property Last_name: string read FLast_name write FLast_name;
     property Status: string read FStatus write FStatus;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAccountInfoRequest;
   end;
 
 implementation
-
-{TVkAccountInfoRequest}
-
-function TVkAccountInfoRequest.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAccountInfoRequest.FromJsonString(AJsonString: string): TVkAccountInfoRequest;
-begin
-  result := TJson.JsonToObject<TVkAccountInfoRequest>(AJsonString)
-end;
 
 end.
 

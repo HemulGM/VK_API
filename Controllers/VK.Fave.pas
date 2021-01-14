@@ -3,8 +3,8 @@ unit VK.Fave;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Fave, VK.Entity.Fave.Pages;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Fave, VK.Entity.Fave.Pages;
 
 type
   TVkTagPosition = (tpFront, tpBack);
@@ -192,18 +192,7 @@ uses
 
 function TFaveController.Get(var Faves: TVkFaves; Params: TParams): Boolean;
 begin
-  with Handler.Execute('fave.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Faves := TVkFaves.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('fave.get', Params).GetObject<TVkFaves>(Faves);
 end;
 
 function TFaveController.AddLink(Link: string): Boolean;
@@ -288,34 +277,12 @@ end;
 
 function TFaveController.GetPages(var Items: TVkFavePages; Params: TVkParamsFavePagesGet): Boolean;
 begin
-  with Handler.Execute('fave.getPages', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkFavePages.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('fave.getPages', Params.List).GetObject<TVkFavePages>(Items);
 end;
 
 function TFaveController.GetTags(var Items: TVkFaveTags): Boolean;
 begin
-  with Handler.Execute('fave.getTags') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkFaveTags.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('fave.getTags').GetObject<TVkFaveTags>(Items);
 end;
 
 function TFaveController.MarkSeen: Boolean;
@@ -328,7 +295,8 @@ end;
 
 function TFaveController.RemoveArticle(OwnerId, ArticleId: Integer; Ref: string): Boolean;
 begin
-  with Handler.Execute('fave.removeArticle', [['owner_id', OwnerId.ToString], ['article_id', ArticleId.ToString], ['ref', Ref]]) do
+  with Handler.Execute('fave.removeArticle', [['owner_id', OwnerId.ToString], ['article_id', ArticleId.ToString], ['ref',
+    Ref]]) do
   begin
     Result := Success and ResponseIsTrue;
   end;

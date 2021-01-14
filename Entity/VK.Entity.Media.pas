@@ -3,12 +3,10 @@ unit VK.Entity.Media;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
-  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift,
-  VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll,
-  VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard, VK.Types,
-  VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
+  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
   VK.Entity.Market.Album;
 
 type
@@ -18,7 +16,7 @@ type
 
   TVkPost = class;
 
-  TVkAttachment = class
+  TVkAttachment = class(TVkEntity)
   private
     FType: string;
     FLink: TVkLink;
@@ -70,14 +68,12 @@ type
     //property PhotosList: TVkPhotosList read FPhotosList write FPhotosList; -- я хз че это и где найти структуру)
     property PrettyCards: TVkPrettyCards read FPretty_cards write FPretty_cards;
     property Event: TVkEvent read FEvent write FEvent;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function GetPreviewUrl: string;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAttachment;
   end;
 
-  TVkAttachmentHistoryItem = class
+  TVkAttachmentHistoryItem = class(TVkEntity)
   private
     FAttachment: TVkAttachment;
     FMessage_id: Integer;
@@ -86,13 +82,11 @@ type
     property Attachment: TVkAttachment read FAttachment write FAttachment;
     property MessageId: Integer read FMessage_id write FMessage_id;
     property FromId: Integer read FFrom_id write FFrom_id;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAttachmentHistoryItem;
   end;
 
-  TVkAttachmentHistory = class
+  TVkAttachmentHistory = class(TVkEntity)
   private
     FItems: TArray<TVkAttachmentHistoryItem>;
     FNext_from: string;
@@ -104,11 +98,9 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAttachmentHistory;
   end;
 
-  TVkAttachments = class
+  TVkAttachments = class(TVkEntity)
   private
     FItems: TArray<TVkAttachment>;
     FCount: Integer;
@@ -116,11 +108,9 @@ type
     property Items: TArray<TVkAttachment> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAttachments;
   end;
 
-  TVkCommentThread = class
+  TVkCommentThread = class(TVkEntity)
   private
     FItems: TArray<TVkComment>;
     FCount: Integer;
@@ -134,8 +124,6 @@ type
     property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCommentThread;
   end;
 
   TVkComment = class(TVkObject)
@@ -174,8 +162,6 @@ type
     property Thread: TVkCommentThread read FThread write FThread;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkComment;
   end;
 
   TVkComments = class(TVkEntity)
@@ -199,8 +185,6 @@ type
     property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkComments;
   end;
 
   TVkPost = class(TVkObject)
@@ -262,11 +246,9 @@ type
     property Views: TVkViewsInfo read FViews write FViews;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPost;
   end;
 
-  TVkPosts = class
+  TVkPosts = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkPost>;
@@ -278,11 +260,9 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPosts;
   end;
 
-  TVkRepostInfo = class
+  TVkRepostInfo = class(TVkEntity)
   private
     FLikes_count: Integer;
     FPost_id: Integer;
@@ -293,8 +273,6 @@ type
     property PostId: Integer read FPost_id write FPost_id;
     property RepostsCount: Integer read FReposts_count write FReposts_count;
     property Success: Boolean read FSuccess write FSuccess;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkRepostInfo;
   end;
 
 implementation
@@ -359,16 +337,6 @@ begin
   inherited;
 end;
 
-function TVkAttachment.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAttachment.FromJsonString(AJsonString: string): TVkAttachment;
-begin
-  result := TJson.JsonToObject<TVkAttachment>(AJsonString);
-end;
-
 function TVkAttachment.GetType: TVkAttachmentType;
 begin
   Result := TVkAttachmentType.Create(FType);
@@ -426,16 +394,6 @@ begin
   inherited;
 end;
 
-class function TVkComment.FromJsonString(AJsonString: string): TVkComment;
-begin
-  result := TJson.JsonToObject<TVkComment>(AJsonString);
-end;
-
-function TVkComment.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 {TVkPost}
 
 constructor TVkPost.Create;
@@ -461,16 +419,6 @@ begin
   inherited;
 end;
 
-function TVkPost.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPost.FromJsonString(AJsonString: string): TVkPost;
-begin
-  result := TJson.JsonToObject<TVkPost>(AJsonString);
-end;
-
 function TVkPost.GetDate: TDateTime;
 begin
   Result := UnixToDateTime(FDate, False);
@@ -491,16 +439,6 @@ begin
   inherited;
 end;
 
-class function TVkPosts.FromJsonString(AJsonString: string): TVkPosts;
-begin
-  result := TJson.JsonToObject<TVkPosts>(AJsonString);
-end;
-
-function TVkPosts.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkAttachmentHistory }
 
 destructor TVkAttachmentHistory.Destroy;
@@ -509,16 +447,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
-end;
-
-class function TVkAttachmentHistory.FromJsonString(AJsonString: string): TVkAttachmentHistory;
-begin
-  result := TJson.JsonToObject<TVkAttachmentHistory>(AJsonString);
-end;
-
-function TVkAttachmentHistory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkAttachmentHistoryItem }
@@ -534,16 +462,6 @@ begin
   inherited;
 end;
 
-class function TVkAttachmentHistoryItem.FromJsonString(AJsonString: string): TVkAttachmentHistoryItem;
-begin
-  result := TJson.JsonToObject<TVkAttachmentHistoryItem>(AJsonString);
-end;
-
-function TVkAttachmentHistoryItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkComments }
 
 destructor TVkComments.Destroy;
@@ -554,16 +472,6 @@ begin
   inherited;
 end;
 
-class function TVkComments.FromJsonString(AJsonString: string): TVkComments;
-begin
-  result := TJson.JsonToObject<TVkComments>(AJsonString);
-end;
-
-function TVkComments.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkAttachments }
 
 destructor TVkAttachments.Destroy;
@@ -572,44 +480,12 @@ begin
   inherited;
 end;
 
-class function TVkAttachments.FromJsonString(AJsonString: string): TVkAttachments;
-begin
-  result := TJson.JsonToObject<TVkAttachments>(AJsonString);
-end;
-
-function TVkAttachments.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkCommentThread }
 
 destructor TVkCommentThread.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkComment>(FItems);
   inherited;
-end;
-
-class function TVkCommentThread.FromJsonString(AJsonString: string): TVkCommentThread;
-begin
-  result := TJson.JsonToObject<TVkCommentThread>(AJsonString);
-end;
-
-function TVkCommentThread.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkRepostInfo }
-
-class function TVkRepostInfo.FromJsonString(AJsonString: string): TVkRepostInfo;
-begin
-  result := TJson.JsonToObject<TVkRepostInfo>(AJsonString);
-end;
-
-function TVkRepostInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

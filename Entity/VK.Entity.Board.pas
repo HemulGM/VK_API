@@ -27,11 +27,9 @@ type
     property Title: string read FTitle write FTitle;
     property Updated: Int64 read FUpdated write FUpdated;
     property UpdatedBy: Integer read FUpdated_by write FUpdated_by;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkBoardTopic;
   end;
 
-  TVkBoardTopics = class
+  TVkBoardTopics = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkBoardTopic>;
@@ -45,8 +43,6 @@ type
     property CanAddTopics: Integer read FCan_add_topics write FCan_add_topics;
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkBoardTopics;
   end;
 
 implementation
@@ -66,16 +62,6 @@ begin
   FCreated := DateTimeToUnix(Value, False);
 end;
 
-function TVkBoardTopic.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkBoardTopic.FromJsonString(AJsonString: string): TVkBoardTopic;
-begin
-  result := TJson.JsonToObject<TVkBoardTopic>(AJsonString)
-end;
-
 {TVkBoardTopics}
 
 destructor TVkBoardTopics.Destroy;
@@ -83,16 +69,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   TArrayHelp.FreeArrayOfObject<TVkBoardTopic>(FItems);
   inherited;
-end;
-
-function TVkBoardTopics.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkBoardTopics.FromJsonString(AJsonString: string): TVkBoardTopics;
-begin
-  result := TJson.JsonToObject<TVkBoardTopics>(AJsonString)
 end;
 
 end.

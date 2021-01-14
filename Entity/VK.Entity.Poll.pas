@@ -3,8 +3,7 @@ unit VK.Entity.Poll;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkPollFriends = class(TVkObject)

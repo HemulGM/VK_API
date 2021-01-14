@@ -3,9 +3,8 @@ unit VK.Docs;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save,
-  VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Doc.Save, VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
 
 type
   TVkDocUploadType = (dutDoc, dutAudioMessage);
@@ -77,7 +76,8 @@ type
     /// <summary>
     /// Сохраняет аудиосообщение
     /// </summary>
-    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0; ReturnTags: Boolean = False): Boolean;
+    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0;
+      ReturnTags: Boolean = False): Boolean;
     /// <summary>
     /// Возвращает расширенную информацию о документах пользователя или сообщества.
     /// </summary>
@@ -147,18 +147,7 @@ end;
 
 function TDocController.Get(var Items: TVkDocuments; Params: TParams): Boolean;
 begin
-  with Handler.Execute('docs.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDocuments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.get', Params).GetObject<TVkDocuments>(Items);
 end;
 
 function TDocController.Add(var Id: Integer; OwnerId, DocId: Integer; AccessKey: string): Boolean;
@@ -204,18 +193,10 @@ end;
 
 function TDocController.GetById(var Items: TVkDocuments; Docs: TArrayOfString; ReturnTags: Boolean): Boolean;
 begin
-  with Handler.Execute('docs.getById', [['docs', Docs.ToString], ['return_tags', BoolToString(ReturnTags)]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDocuments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.getById', [
+    ['docs', Docs.ToString],
+    ['return_tags', BoolToString(ReturnTags)]]).
+    GetObject<TVkDocuments>(Items);
 end;
 
 function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType): Boolean;
@@ -236,18 +217,7 @@ end;
 
 function TDocController.GetTypes(var Items: TVkDocTypes; OwnerId: Integer): Boolean;
 begin
-  with Handler.Execute('docs.getTypes', ['owner_id', OwnerId.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDocTypes.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.getTypes', ['owner_id', OwnerId.ToString]).GetObject<TVkDocTypes>(Items);
 end;
 
 function TDocController.GetUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
@@ -275,21 +245,11 @@ begin
   Params.Add('tags', Tags);
   if ReturnTags then
     Params.Add('return_tags', BoolToString(ReturnTags));
-  with Handler.Execute('docs.save', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Doc := TVkDocSaved.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.save', Params).GetObject<TVkDocSaved>(Doc);
 end;
 
-function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
+function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer;
+  ReturnTags: Boolean): Boolean;
 var
   Url, Response: string;
 begin
@@ -309,18 +269,7 @@ end;
 
 function TDocController.Search(var Items: TVkDocuments; Params: TVkParamsDocsSearch): Boolean;
 begin
-  with Handler.Execute('docs.search', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDocuments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.search', Params.List).GetObject<TVkDocuments>(Items);
 end;
 
 { TVkParamsDocsGet }

@@ -19,11 +19,9 @@ type
     property Status: string read FStatus write FStatus;
     property Title: string read FTitle write FTitle;
     property Url: string read FUrl write FUrl;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupCallbackServer;
   end;
 
-  TVkGroupCallbackServers = class
+  TVkGroupCallbackServers = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkGroupCallbackServer>;
@@ -31,8 +29,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkGroupCallbackServer> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupCallbackServers;
   end;
 
 implementation
@@ -40,34 +36,12 @@ implementation
 uses
   VK.CommonUtils;
 
-{TVkGroupCallbackServer}
-
-function TVkGroupCallbackServer.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupCallbackServer.FromJsonString(AJsonString: string): TVkGroupCallbackServer;
-begin
-  result := TJson.JsonToObject<TVkGroupCallbackServer>(AJsonString)
-end;
-
 {TVkGroupCallbackServers}
 
 destructor TVkGroupCallbackServers.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkGroupCallbackServer>(FItems);
   inherited;
-end;
-
-function TVkGroupCallbackServers.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupCallbackServers.FromJsonString(AJsonString: string): TVkGroupCallbackServers;
-begin
-  result := TJson.JsonToObject<TVkGroupCallbackServers>(AJsonString)
 end;
 
 end.

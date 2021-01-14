@@ -3,8 +3,8 @@ unit VK.Entity.Catalog;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Group, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Profile;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Group, VK.Entity.Audio,
+  VK.Entity.Playlist, VK.Entity.Profile;
 
 type
   TVkCatalogIcon = class
@@ -16,8 +16,6 @@ type
     property Height: Integer read FHeight write FHeight;
     property Url: string read FUrl write FUrl;
     property Width: Integer read FWidth write FWidth;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogIcon;
   end;
 
   TVkCatalogAction = class
@@ -31,11 +29,9 @@ type
     property Target: string read FTarget write FTarget;
     property&Type: string read FType write FType;
     property Url: string read FUrl write FUrl;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogAction;
   end;
 
-  TVkCatalogButton = class
+  TVkCatalogButton = class(TVkEntity)
   private
     FAction: TVkCatalogAction;
     FOwner_id: Integer;
@@ -52,10 +48,8 @@ type
     property ref_data_type: string read FRef_data_type write FRef_data_type;
     property ref_items_count: Extended read FRef_items_count write FRef_items_count;
     property ref_layout_name: string read FRef_layout_name write FRef_layout_name;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogButton;
   end;
 
   TVkCatalogPlaceholder = class
@@ -74,8 +68,6 @@ type
     property Text: string read FText write FText;
     property Title: string read FTitle write FTitle;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogPlaceholder;
   end;
 
   TVkCatalogLayout = class
@@ -89,11 +81,9 @@ type
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property SubTitle: string read FSubtitle write FSubtitle;
     property Title: string read FTitle write FTitle;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogLayout;
   end;
 
-  TVkCatalogBlock = class
+  TVkCatalogBlock = class(TVkEntity)
   private
     FData_type: string;
     FId: string;
@@ -112,10 +102,8 @@ type
     property NextFrom: string read FNext_from write FNext_from;
     property ThumbsIds: TArray<string> read FThumbs_ids write FThumbs_ids;
     property AudiosIds: TArray<string> read FAudios_ids write FAudios_ids;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogBlock;
   end;
 
   TVkCatalogSection = class
@@ -135,8 +123,6 @@ type
     property Url: string read FUrl write FUrl;
     function FindBlock(DataType, LayoutName: string): Integer;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogSection;
   end;
 
   TVkCatalogItem = class
@@ -147,11 +133,9 @@ type
     property DefaultSection: string read FDefault_section write FDefault_section;
     property Sections: TArray<TVkCatalogSection> read FSections write FSections;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogItem;
   end;
 
-  TVkCatalog = class
+  TVkCatalog = class(TVkEntity)
   private
     FAudios: TArray<TVkAudio>;
     FCatalog: TVkCatalogItem;
@@ -166,10 +150,8 @@ type
     property Placeholders: TArray<TVkCatalogPlaceholder> read FPlaceholders write FPlaceholders;
     property Playlists: TArray<TVkAudioPlaylist> read FPlaylists write FPlaylists;
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalog;
   end;
 
 implementation
@@ -191,40 +173,6 @@ begin
   inherited;
 end;
 
-function TVkCatalogButton.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogButton.FromJsonString(AJsonString: string): TVkCatalogButton;
-begin
-  result := TJson.JsonToObject<TVkCatalogButton>(AJsonString)
-end;
-
-{TVkCatalogIcon}
-
-function TVkCatalogIcon.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogIcon.FromJsonString(AJsonString: string): TVkCatalogIcon;
-begin
-  result := TJson.JsonToObject<TVkCatalogIcon>(AJsonString)
-end;
-
-{TVkCatalogAction}
-
-function TVkCatalogAction.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogAction.FromJsonString(AJsonString: string): TVkCatalogAction;
-begin
-  result := TJson.JsonToObject<TVkCatalogAction>(AJsonString)
-end;
-
 {TVkCatalogPlaceholder}
 
 destructor TVkCatalogPlaceholder.Destroy;
@@ -232,28 +180,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkCatalogButton>(FButtons);
   TArrayHelp.FreeArrayOfObject<TVkCatalogIcon>(FIcons);
   inherited;
-end;
-
-function TVkCatalogPlaceholder.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogPlaceholder.FromJsonString(AJsonString: string): TVkCatalogPlaceholder;
-begin
-  result := TJson.JsonToObject<TVkCatalogPlaceholder>(AJsonString)
-end;
-
-{TVkCatalogLayout}
-
-function TVkCatalogLayout.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogLayout.FromJsonString(AJsonString: string): TVkCatalogLayout;
-begin
-  result := TJson.JsonToObject<TVkCatalogLayout>(AJsonString)
 end;
 
 {TVkCatalogBlock}
@@ -271,27 +197,12 @@ begin
   inherited;
 end;
 
-function TVkCatalogBlock.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogBlock.FromJsonString(AJsonString: string): TVkCatalogBlock;
-begin
-  result := TJson.JsonToObject<TVkCatalogBlock>(AJsonString)
-end;
-
 {TVkCatalogSection}
 
 destructor TVkCatalogSection.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCatalogBlock>(FBlocks);
   inherited;
-end;
-
-function TVkCatalogSection.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 function TVkCatalogSection.FindBlock(DataType, LayoutName: string): Integer;
@@ -308,27 +219,12 @@ begin
     end;
 end;
 
-class function TVkCatalogSection.FromJsonString(AJsonString: string): TVkCatalogSection;
-begin
-  result := TJson.JsonToObject<TVkCatalogSection>(AJsonString)
-end;
-
 {TVkCatalogItem}
 
 destructor TVkCatalogItem.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCatalogSection>(FSections);
   inherited;
-end;
-
-function TVkCatalogItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogItem.FromJsonString(AJsonString: string): TVkCatalogItem;
-begin
-  result := TJson.JsonToObject<TVkCatalogItem>(AJsonString)
 end;
 
 {TVkCatalog}
@@ -348,16 +244,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FPlaylists);
   FCatalog.Free;
   inherited;
-end;
-
-function TVkCatalog.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalog.FromJsonString(AJsonString: string): TVkCatalog;
-begin
-  result := TJson.JsonToObject<TVkCatalog>(AJsonString)
 end;
 
 end.

@@ -708,18 +708,7 @@ end;
 
 function TPhotosController.CreateAlbum(var Item: TVkPhotoAlbum; Params: TParams): Boolean;
 begin
-  with Handler.Execute('photos.createAlbum', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkPhotoAlbum.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('photos.createAlbum', Params).GetObject<TVkPhotoAlbum>(Item);
 end;
 
 function TPhotosController.Get(var Items: TVkPhotos; Params: TVkParamsPhotosGet): Boolean;
@@ -734,18 +723,7 @@ end;
 
 function TPhotosController.GetAllComments(var Items: TVkComments; Params: TVkParamsPhotosGetAllComments): Boolean;
 begin
-  with Handler.Execute('photos.getAllComments', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkComments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('photos.getAllComments', Params.List).GetObject<TVkComments>(Items);
 end;
 
 function TPhotosController.GetById(var Items: TVkPhotos; Photos: TArrayOfString; Extended, PhotoSizes: Boolean): Boolean;

@@ -696,18 +696,7 @@ begin
   Params.Add('chat_id', ChatId);
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
-  with Handler.Execute('messages.deleteChatPhoto', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkChatInfoMessage.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.deleteChatPhoto', Params).GetObject<TVkChatInfoMessage>(Item);
 end;
 
 function TMessagesController.DeleteConversation(var LastDeletedId: Integer; Params: TVkParamsMessageDeleteConversation): Boolean;
@@ -748,18 +737,7 @@ end;
 
 function TMessagesController.GetByConversationMessageId(var Items: TVkMessages; Params: TParams): Boolean;
 begin
-  with Handler.Execute('messages.getByConversationMessageId', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkMessages.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getByConversationMessageId', Params).GetObject<TVkMessages>(Items);
 end;
 
 function TMessagesController.GetByConversationMessageId(var Items: TVkMessages; Params: TVkParamsMessageGetByConvMesId): Boolean;
@@ -769,18 +747,7 @@ end;
 
 function TMessagesController.GetById(var Items: TVkMessages; Params: TParams): Boolean;
 begin
-  with Handler.Execute('messages.getById', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkMessages.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getById', Params).GetObject<TVkMessages>(Items);
 end;
 
 function TMessagesController.GetById(var Items: TVkMessages; Ids: TIds; PreviewLength, GroupId: Integer): Boolean;
@@ -809,18 +776,7 @@ function TMessagesController.GetChat(var Items: TVkChats; Params: TParams): Bool
 begin
   if not Params.KeyExists('fields') then
     Params.Add('fields', TVkProfileField.ufDomain.ToString);
-  with Handler.Execute('messages.getChat', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkChats.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getChat', Params).GetObjects<TVkChats>(Items);
 end;
 
 function TMessagesController.GetChat(var Items: TVkChats; Params: TVkParamsMessageGetChat): Boolean;
@@ -842,34 +798,12 @@ end;
 
 function TMessagesController.GetChatPreview(var Item: TVkChatPreview; Params: TParams): Boolean;
 begin
-  with Handler.Execute('messages.getChatPreview', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkChatPreview.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getChatPreview', Params).GetObject<TVkChatPreview>(Item);
 end;
 
 function TMessagesController.GetConversations(var Items: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean;
 begin
-  with Handler.Execute('messages.getConversations', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkConversationItems.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getConversations', Params.List).GetObject<TVkConversationItems>(Items);
 end;
 
 function TMessagesController.GetConversationsById(var Items: TVkConversations; Params: TVkParamsConversationsGetById): Boolean;
@@ -879,34 +813,12 @@ end;
 
 function TMessagesController.GetConversationsById(var Items: TVkConversations; Params: TParams): Boolean;
 begin
-  with Handler.Execute('messages.getConversationsById', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkConversations.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getConversationsById', Params).GetObject<TVkConversations>(Items);
 end;
 
 function TMessagesController.GetHistory(var Items: TVkMessageHistory; Params: TVkParamsMessageHistory): Boolean;
 begin
-  with Handler.Execute('messages.getHistory', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkMessageHistory.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getHistory', Params.List).GetObject<TVkMessageHistory>(Items);
 end;
 
 function TMessagesController.GetHistoryAttachments(var Items: TVkAttachmentHistory; Params:
@@ -917,34 +829,12 @@ end;
 
 function TMessagesController.GetHistoryAttachments(var Items: TVkAttachmentHistory; Params: TParams): Boolean;
 begin
-  with Handler.Execute('messages.getHistoryAttachments', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkAttachmentHistory.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getHistoryAttachments', Params).GetObject<TVkAttachmentHistory>(Items);
 end;
 
 function TMessagesController.GetImportantMessages(var Items: TVkImportantMessages; Params: TParams): Boolean;
 begin
-  with Handler.Execute('messages.getImportantMessages', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkImportantMessages.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getImportantMessages', Params).GetObject<TVkImportantMessages>(Items);
 end;
 
 function TMessagesController.GetImportantMessages(var Items: TVkImportantMessages; Params: TVkParamsGetImportantMessages):
@@ -980,18 +870,7 @@ end;
 
 function TMessagesController.GetLongPollServer(var Item: TVkUserLongpoll; Params: TVkParamsGetLongPollServer): Boolean;
 begin
-  with Handler.Execute('messages.getLongPollServer', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkUserLongpoll.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getLongPollServer', Params.List).GetObject<TVkUserLongpoll>(Item);
 end;
 
 function TMessagesController.IsMessagesFromGroupAllowed(var IsAllowed: Boolean; GroupId, UserId: Integer): Boolean;
@@ -1080,18 +959,7 @@ end;
 
 function TMessagesController.GetLongPollHistory(var Item: TVkLongPollHistory; Params: TParams): Boolean;
 begin
-  with Handler.Execute('messages.getLongPollHistory', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkLongPollHistory.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getLongPollHistory', Params).GetObject<TVkLongPollHistory>(Item);
 end;
 
 function TMessagesController.New: TVkMessageNew;
@@ -1123,34 +991,15 @@ end;
 
 function TMessagesController.Pin(var Message: TVkMessage; PeerId, MessageId: Integer): Boolean;
 begin
-  with Handler.Execute('messages.pin', [['peer_id', PeerId.ToString], ['message_id', MessageId.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Message := TVkMessage.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.pin', [
+    ['peer_id', PeerId.ToString],
+    ['message_id', MessageId.ToString]]).
+    GetObject<TVkMessage>(Message);
 end;
 
 function TMessagesController.Search(var Items: TVkMessageHistory; Params: TParams): Boolean;
 begin
-  with Handler.Execute('messages.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkMessageHistory.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.search', Params).GetObject<TVkMessageHistory>(Items);
 end;
 
 function TMessagesController.Search(var Items: TVkMessageHistory; Params: TVkParamsMessageSearch): Boolean;
@@ -1161,18 +1010,7 @@ end;
 function TMessagesController.SearchConversations(var Items: TVkConversations; Params:
   TVkParamsMessageSearchConversations): Boolean;
 begin
-  with Handler.Execute('messages.searchConversations', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkConversations.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.searchConversations', Params.List).GetObject<TVkConversations>(Items);
 end;
 
 function TMessagesController.Send(var Item: Integer; Params: TVkParamsMessageSend): Boolean;
@@ -1196,18 +1034,7 @@ end;
 
 function TMessagesController.Send(var Items: TVkMessageSendResponses; Params: TVkParamsMessageSendIds): Boolean;
 begin
-  with Handler.Execute('messages.send', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkMessageSendResponses.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.send', Params.List).GetObject<TVkMessageSendResponses>(Items);
 end;
 
 function TMessagesController.SendToChat(var Item: Integer; ChatId: Integer; Message: string; Attachments:
@@ -1246,18 +1073,7 @@ end;
 
 function TMessagesController.SetChatPhoto(var Info: TVkChatInfoMessage; UploadFile: string): Boolean;
 begin
-  with Handler.Execute('messages.setChatPhoto', ['file', UploadFile]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Info := TVkChatInfoMessage.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.setChatPhoto', ['file', UploadFile]).GetObject<TVkChatInfoMessage>(Info);
 end;
 
 function TMessagesController.Unpin(const PeerId: Integer; GroupId: Integer): Boolean;

@@ -15,23 +15,9 @@ type
     property OwnerId: integer read FOwner_id write FOwner_id;
     property Photo130: string read FPhoto_130 write FPhoto_130;
     property Photo604: string read FPhoto_604 write FPhoto_604;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGraffiti;
   end;
 
 implementation
-
-{TVkGraffiti}
-
-function TVkGraffiti.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGraffiti.FromJsonString(AJsonString: string): TVkGraffiti;
-begin
-  result := TJson.JsonToObject<TVkGraffiti>(AJsonString)
-end;
 
 end.
 

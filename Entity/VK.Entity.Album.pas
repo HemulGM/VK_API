@@ -3,8 +3,7 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Attachment, VK.Entity.Privacy;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Privacy;
 
 type
   TVkAlbumThumb = class
@@ -26,8 +25,6 @@ type
     property Photo34: string read FPhoto_34 write FPhoto_34;
     property Photo600: string read FPhoto_600 write FPhoto_600;
     property Photo68: string read FPhoto_68 write FPhoto_68;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAlbumThumb;
   end;
 
   TVkPhotoAlbum = class(TVkObject, IAttachment)
@@ -73,9 +70,7 @@ type
     property AccessKey: string read FAccess_key write FAccess_key;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
     function ToAttachment: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoAlbum;
   end;
 
   TVkPhotoAlbums = class(TVkEntity)
@@ -86,8 +81,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkPhotoAlbum> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoAlbums;
   end;
 
 implementation
@@ -119,16 +112,6 @@ begin
   Result := Attachment.Album(Id, OwnerId, AccessKey);
 end;
 
-function TVkPhotoAlbum.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhotoAlbum.FromJsonString(AJsonString: string): TVkPhotoAlbum;
-begin
-  result := TJson.JsonToObject<TVkPhotoAlbum>(AJsonString)
-end;
-
 function TVkPhotoAlbum.GetCreated: TDateTime;
 begin
   Result := UnixToDateTime(FCreated, False);
@@ -149,34 +132,12 @@ begin
   FUpdated := DateTimeToUnix(Value, False);
 end;
 
-{TVkAlbumThumb}
-
-function TVkAlbumThumb.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAlbumThumb.FromJsonString(AJsonString: string): TVkAlbumThumb;
-begin
-  result := TJson.JsonToObject<TVkAlbumThumb>(AJsonString)
-end;
-
 {TVkPhotoAlbums}
 
 destructor TVkPhotoAlbums.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPhotoAlbum>(FItems);
   inherited;
-end;
-
-function TVkPhotoAlbums.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhotoAlbums.FromJsonString(AJsonString: string): TVkPhotoAlbums;
-begin
-  result := TJson.JsonToObject<TVkPhotoAlbums>(AJsonString)
 end;
 
 end.

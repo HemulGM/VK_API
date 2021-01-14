@@ -3,8 +3,8 @@ unit VK.Wall;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.CommentInfo;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
+  VK.Entity.CommentInfo;
 
 type
   TVkParamsWallPost = record
@@ -187,7 +187,8 @@ type
     /// <summary>
     /// Добавляет комментарий к записи на стене.
     /// </summary>
-    function CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer = 0; Attachments: TAttachmentArray = []): Boolean; overload;
+    function CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer = 0; Attachments:
+      TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Удаляет запись со стены.
     /// </summary>
@@ -243,7 +244,8 @@ type
     /// Позволяет получать список репостов заданной записи.
     /// Обратите внимание, получить список репостов можно только для записи, созданной текущим пользователем, или в сообществе, где текущий пользователь является администратором.
     /// </summary>
-    function GetReposts(var Items: TVkPosts; PostId: Integer; Offset: Integer = 0; Count: Integer = 0; OwnerId: Integer = 0): Boolean; overload;
+    function GetReposts(var Items: TVkPosts; PostId: Integer; Offset: Integer = 0; Count: Integer = 0; OwnerId: Integer
+      = 0): Boolean; overload;
     /// <summary>
     /// Включает комментирование записи
     /// Работает только с конкретными записями, комментирование которых было выключено с помощью wall.closeComments
@@ -444,34 +446,12 @@ end;
 
 function TWallController.Search(var Items: TVkPosts; Params: TParams): Boolean;
 begin
-  with Handler.Execute('wall.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPosts.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('wall.search', Params).GetObject<TVkPosts>(Items);
 end;
 
 function TWallController.Repost(var Info: TVkRepostInfo; Params: TParams): Boolean;
 begin
-  with Handler.Execute('wall.repost', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Info := TVkRepostInfo.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('wall.repost', Params).GetObject<TVkRepostInfo>(Info);
 end;
 
 function TWallController.Post(var PostId: Integer; Params: TVkParamsWallPost): Boolean;
@@ -494,18 +474,7 @@ end;
 
 function TWallController.CreateComment(var CommentInfo: TVkCommentInfo; Params: TVkCommentCreateParams): Boolean;
 begin
-  with Handler.Execute('wall.createComment', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        CommentInfo := TVkCommentInfo.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('wall.createComment', Params.List).GetObject<TVkCommentInfo>(CommentInfo);
 end;
 
 function TWallController.CreateComment(Params: TVkCommentCreateParams): Boolean;
@@ -523,7 +492,8 @@ begin
     Result := Success and ResponseIsTrue;
 end;
 
-function TWallController.CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
+function TWallController.CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer; Attachments:
+  TAttachmentArray): Boolean;
 var
   CommentInfo: TVkCommentInfo;
   Params: TVkCommentCreateParams;
@@ -592,18 +562,7 @@ end;
 
 function TWallController.GetById(var Items: TVkPosts; Params: TVkParamsWallGetById): Boolean;
 begin
-  with Handler.Execute('wall.getById', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPosts.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('wall.getById', Params.List).GetObjects<TVkPosts>(Items);
 end;
 
 function TWallController.GetComment(var Items: TVkComments; Params: TVkParamsWallGetComment): Boolean;
@@ -627,18 +586,7 @@ begin
     Params.Add('count', Count);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  with Handler.Execute('wall.getReposts', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPosts.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('wall.getReposts', Params).GetObject<TVkPosts>(Items);
 end;
 
 function TWallController.OpenComments(const OwnerId, PostId: Integer): Boolean;
@@ -649,50 +597,17 @@ end;
 
 function TWallController.GetComments(var Items: TVkComments; Params: TParams): Boolean;
 begin
-  with Handler.Execute('wall.getComments', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkComments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('wall.getComments', Params).GetObject<TVkComments>(Items);
 end;
 
 function TWallController.GetComment(var Items: TVkComments; Params: TParams): Boolean;
 begin
-  with Handler.Execute('wall.getComment', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkComments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('wall.getComment', Params).GetObject<TVkComments>(Items);
 end;
 
 function TWallController.Get(var Items: TVkPosts; Params: TVkParamsWallGet): Boolean;
 begin
-  with Handler.Execute('wall.get', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPosts.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('wall.get', Params.List).GetObject<TVkPosts>(Items);
 end;
 
 function TWallController.Pin(const PostId, OwnerId: Integer): Boolean;

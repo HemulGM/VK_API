@@ -7,15 +7,13 @@ uses
   VK.Entity.App;
 
 type
-  TVkStoryReplies = class
+  TVkStoryReplies = class(TVkEntity)
   private
     FCount: Integer;
     FNew: Integer;
   public
     property Count: Integer read FCount write FCount;
     property New: Integer read FNew write FNew;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoryReplies;
   end;
 
   TVkStory = class(TVkObject)
@@ -72,11 +70,9 @@ type
     property Seen: Integer read FSeen write FSeen;
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStory;
   end;
 
-  TVkStoryItems = class
+  TVkStoryItems = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkStory>;
@@ -88,11 +84,9 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoryItems;
   end;
 
-  TVkStories = class
+  TVkStories = class(TVkEntity)
   private
     FStories: TArray<TVkStory>;
     FGrouped: TArray<TVkStories>;
@@ -113,11 +107,9 @@ type
     property IsAppGroupedStories: Boolean read GetIsAppGroupedStories;
     property App: TVkApp read FApp write FApp;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStories;
   end;
 
-  TVkStoriesBlock = class
+  TVkStoriesBlock = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkStories>;
@@ -131,11 +123,9 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoriesBlock;
   end;
 
-  TVkStoriesBanned = class
+  TVkStoriesBanned = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<Integer>;
@@ -147,26 +137,12 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoriesBanned;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkStoryReplies}
-
-function TVkStoryReplies.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStoryReplies.FromJsonString(AJsonString: string): TVkStoryReplies;
-begin
-  result := TJson.JsonToObject<TVkStoryReplies>(AJsonString)
-end;
 
 {TVkStory}
 
@@ -186,16 +162,6 @@ begin
   inherited;
 end;
 
-function TVkStory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStory.FromJsonString(AJsonString: string): TVkStory;
-begin
-  result := TJson.JsonToObject<TVkStory>(AJsonString)
-end;
-
 {TVkStories}
 
 destructor TVkStories.Destroy;
@@ -205,16 +171,6 @@ begin
   if Assigned(FApp) then
     FApp.Free;
   inherited;
-end;
-
-function TVkStories.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStories.FromJsonString(AJsonString: string): TVkStories;
-begin
-  result := TJson.JsonToObject<TVkStories>(AJsonString)
 end;
 
 function TVkStories.GetIsAppGroupedStories: Boolean;
@@ -242,16 +198,6 @@ begin
   inherited;
 end;
 
-function TVkStoriesBlock.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStoriesBlock.FromJsonString(AJsonString: string): TVkStoriesBlock;
-begin
-  result := TJson.JsonToObject<TVkStoriesBlock>(AJsonString)
-end;
-
 { TVkStoriesBanned }
 
 destructor TVkStoriesBanned.Destroy;
@@ -261,16 +207,6 @@ begin
   inherited;
 end;
 
-class function TVkStoriesBanned.FromJsonString(AJsonString: string): TVkStoriesBanned;
-begin
-  result := TJson.JsonToObject<TVkStoriesBanned>(AJsonString)
-end;
-
-function TVkStoriesBanned.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkStoryItems }
 
 destructor TVkStoryItems.Destroy;
@@ -278,16 +214,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
-end;
-
-class function TVkStoryItems.FromJsonString(AJsonString: string): TVkStoryItems;
-begin
-  result := TJson.JsonToObject<TVkStoryItems>(AJsonString)
-end;
-
-function TVkStoryItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

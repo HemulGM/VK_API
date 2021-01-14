@@ -3,8 +3,8 @@ unit VK.Utils;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Link, VK.Entity.ScreenName;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Link,
+  VK.Entity.ScreenName;
 
 type
   TVkParamsUtilsGetLinkStats = record
@@ -75,15 +75,7 @@ end;
 
 function TUtilsController.CheckLink(var Info: TVkLinkStatus; Url: string): Boolean;
 begin
-  with Handler.Execute('utils.checkLink', ['url', Url]) do
-  begin
-    Result := Success;
-    try
-      Info := TVkLinkStatus.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('utils.checkLink', ['url', Url]).GetObject<TVkLinkStatus>(Info);
 end;
 
 function TUtilsController.DeleteFromLastShortened(Key: string): Boolean;
@@ -96,15 +88,10 @@ end;
 
 function TUtilsController.GetLastShortenedLinks(var Items: TVkShortLinks; Offset, Count: Integer): Boolean;
 begin
-  with Handler.Execute('utils.getLastShortenedLinks', [['offset', Offset.ToString], ['count', Count.ToString]]) do
-  begin
-    Result := Success;
-    try
-      Items := TVkShortLinks.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('utils.getLastShortenedLinks', [
+    ['offset', Offset.ToString],
+    ['count', Count.ToString]]).
+    GetObject<TVkShortLinks>(Items);
 end;
 
 function TUtilsController.GetLinkStats(var Item: TVkLinkStats; Params: TVkParamsUtilsGetLinkStats): Boolean;
@@ -114,15 +101,7 @@ end;
 
 function TUtilsController.GetLinkStats(var Item: TVkLinkStats; Params: TParams): Boolean;
 begin
-  with Handler.Execute('utils.getLinkStats', Params) do
-  begin
-    Result := Success;
-    try
-      Item := TVkLinkStats.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('utils.getLinkStats', Params).GetObject<TVkLinkStats>(Item);
 end;
 
 function TUtilsController.GetServerTime(var ServerTime: Int64): Boolean;
@@ -135,28 +114,15 @@ end;
 
 function TUtilsController.GetShortLink(var Item: TVkShortLink; const Url: string; &Private: Boolean): Boolean;
 begin
-  with Handler.Execute('utils.getShortLink', [['url', Url], ['private', BoolToString(&Private)]]) do
-  begin
-    Result := Success;
-    try
-      Item := TVkShortLink.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('utils.getShortLink', [
+    ['url', Url],
+    ['private', BoolToString(&Private)]]).
+    GetObject<TVkShortLink>(Item);
 end;
 
 function TUtilsController.ResolveScreenName(var Item: TVkScreenNameType; const ScreenName: string): Boolean;
 begin
-  with Handler.Execute('utils.resolveScreenName', ['screen_name', ScreenName]) do
-  begin
-    Result := Success;
-    try
-      Item := TVkScreenNameType.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('utils.resolveScreenName', ['screen_name', ScreenName]).GetObject<TVkScreenNameType>(Item);
 end;
 
 { TVkParamsUtilsGetLinkStats }

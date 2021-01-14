@@ -3,8 +3,7 @@ unit VK.Apps;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.App;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.App;
 
 type
   TVkParamsAppsGet = record
@@ -54,18 +53,7 @@ end;
 
 function TAppsController.Get(var Items: TVkApps; Params: TParams): Boolean;
 begin
-  with Handler.Execute('apps.get') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkApps.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('apps.get').GetObject<TVkApps>(Items);
 end;
 
 function TAppsController.Get(var Items: TVkApps; Params: TVkParamsAppsGet): Boolean;

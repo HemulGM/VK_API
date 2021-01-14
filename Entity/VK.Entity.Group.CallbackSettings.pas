@@ -3,7 +3,7 @@ unit VK.Entity.Group.CallbackSettings;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
   TVkCallbackSetting = class
@@ -87,36 +87,20 @@ type
     property WallReplyNew: Boolean read FWall_reply_new write FWall_reply_new;
     property WallReplyRestore: Boolean read FWall_reply_restore write FWall_reply_restore;
     property WallRepost: Boolean read FWall_repost write FWall_repost;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCallbackSetting;
   end;
 
-  TVkCallbackSettings = class
+  TVkCallbackSettings = class(TVkEntity)
   private
     FApi_version: string;
     FEvents: TVkCallbackSetting;
   public
     property ApiVersion: string read FApi_version write FApi_version;
     property Events: TVkCallbackSetting read FEvents write FEvents;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCallbackSettings;
   end;
 
 implementation
-
-{TVkCallbackSetting}
-
-function TVkCallbackSetting.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCallbackSetting.FromJsonString(AJsonString: string): TVkCallbackSetting;
-begin
-  result := TJson.JsonToObject<TVkCallbackSetting>(AJsonString)
-end;
 
 {TVkCallbackSettings}
 
@@ -130,16 +114,6 @@ destructor TVkCallbackSettings.Destroy;
 begin
   FEvents.Free;
   inherited;
-end;
-
-function TVkCallbackSettings.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCallbackSettings.FromJsonString(AJsonString: string): TVkCallbackSettings;
-begin
-  result := TJson.JsonToObject<TVkCallbackSettings>(AJsonString)
 end;
 
 end.
