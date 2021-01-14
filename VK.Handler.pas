@@ -336,6 +336,7 @@ var
   CaptchaImg: string;
   CaptchaAns: string;
 begin
+  Result.Error.Code := -1;
   if TestCaptcha or Request.Response.JSONValue.TryGetValue<TJSONValue>('error', JS) then
   begin
     Result.Success := False;

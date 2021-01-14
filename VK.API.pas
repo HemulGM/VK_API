@@ -3,12 +3,15 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
-  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
-  VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
-  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
-  VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
-  VK.Apps, VK.Clients, VK.Donut,
+  System.SysUtils, System.Variants, System.Classes, REST.Client,
+  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
+  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
+  VK.Status, VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types,
+  VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave, VK.Notes,
+  VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders,
+  Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
+  VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
+  VK.Donut,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -46,25 +49,33 @@ type
     FAPIVersion: string;
     FAppID: string;
     FAppKey: string;
+    FApps: TAppsController;
     FAudio: TAudioController;
     FAuth: TAuthController;
     FBaseURL: string;
     FBoard: TBoardController;
     FCatalog: TCatalogController;
     FChangePasswordHash: string;
+    FDatabase: TDatabaseController;
     FDoc: TDocController;
+    FDonut: TDonutController;
+    FDownloadedGames: TDownloadedGamesController;
     FEndPoint: string;
     FFave: TFaveController;
     FFriends: TFriendsController;
+    FGifts: TGiftsController;
     FGroups: TGroupsController;
     FHandler: TVkHandler;
     FIsLogin: Boolean;
     FLang: TVkLang;
     FLikes: TLikesController;
     FLogging: Boolean;
+    FLogResponse: Boolean;
     FMarket: TMarketController;
     FMessages: TMessagesController;
+    FNewsfeed: TNewsfeedController;
     FNotes: TNotesController;
+    FNotifications: TNotificationsController;
     FOAuth2Authenticator: TOAuth2Authenticator;
     FOnAuth: TOnAuth;
     FOnCaptcha: TOnCaptcha;
@@ -73,34 +84,26 @@ type
     FOnErrorLogin: TOnVKError;
     FOnLog: TOnLog;
     FOnLogin: TOnLogin;
+    FOrders: TOrdersController;
+    FPages: TPagesController;
     FPermissions: TVkPermissions;
     FPhotos: TPhotosController;
+    FPodcasts: TPodcastsController;
+    FPolls: TPollsController;
     FProxy: TVkProxy;
+    FSearch: TSearchController;
+    FSecure: TSecureController;
     FServiceKey: string;
+    FStats: TStatsController;
     FStatus: TStatusController;
+    FStorage: TStorageController;
+    FStories: TStoriesController;
     FUserId: Integer;
     FUsers: TUsersController;
     FUseServiceKeyOnly: Boolean;
     FUtils: TUtilsController;
     FVideo: TVideoController;
     FWall: TWallController;
-    FGifts: TGiftsController;
-    FNewsfeed: TNewsfeedController;
-    FLogResponse: Boolean;
-    FNotifications: TNotificationsController;
-    FOrders: TOrdersController;
-    FPages: TPagesController;
-    FPolls: TPollsController;
-    FPodcasts: TPodcastsController;
-    FSearch: TSearchController;
-    FDatabase: TDatabaseController;
-    FStorage: TStorageController;
-    FDownloadedGames: TDownloadedGamesController;
-    FSecure: TSecureController;
-    FStats: TStatsController;
-    FStories: TStoriesController;
-    FApps: TAppsController;
-    FDonut: TDonutController;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -173,19 +176,15 @@ type
     /// <summary>
     /// Выполнить метод
     /// </summary>
-    procedure CallMethod(MethodName: string; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Param: TParam = []; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Выполнить метод
     /// </summary>
-    procedure CallMethod(MethodName: string; Param: TParam; Callback: TCallMethodCallback = nil); overload;
-    /// <summary>
-    /// Выполнить метод
-    /// </summary>
-    procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Params: TParams = []; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Выполнить метод асинхронно
     /// </summary>
-    procedure CallMethodAsync(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethodAsync(MethodName: string; Params: TParams = []; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
     /// https://vk.com/dev/execute
@@ -204,7 +203,8 @@ type
     /// </summary>
     procedure Walk(Method: TWalkMethod; Count: Integer);
     /// <summary>
-    ///
+    /// Метод для загрузки файлов на сервер. UploadUrl должен быть получен соответствющим типу файла образом.
+    /// Например, для Фото в альбом - Photos.GetUploadServer.
     /// </summary>
     function Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;
     //Группы методов
@@ -473,8 +473,8 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.Mime, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile,
-  VK.Entity.Login;
+  System.DateUtils, System.Net.Mime, System.Net.HttpClient,
+  VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
 
 { TCustomVK }
 
@@ -498,9 +498,7 @@ begin
     begin
       Response := Handler.Execute(MethodName, Params);
       if Assigned(Callback) then
-      begin
         Callback(Response);
-      end;
     end).Start;
 end;
 
@@ -508,22 +506,9 @@ procedure TCustomVK.CallMethod(MethodName: string; Param: TParam; Callback: TCal
 var
   Response: TResponse;
 begin
-  Response := Handler.Execute(MethodName, [Param]);
+  Response := Handler.Execute(MethodName, Param);
   if Assigned(Callback) then
-  begin
     Callback(Response);
-  end;
-end;
-
-procedure TCustomVK.CallMethod(MethodName: string; Callback: TCallMethodCallback);
-var
-  Response: TResponse;
-begin
-  Response := Handler.Execute(MethodName);
-  if Assigned(Callback) then
-  begin
-    Callback(Response);
-  end;
 end;
 
 function TCustomVK.Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;

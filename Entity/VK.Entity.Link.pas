@@ -164,6 +164,9 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils, System.StrUtils;
+
 {TVkLinkAction}
 
 function TVkLinkAction.ToJsonString: string;
@@ -263,11 +266,8 @@ end;
 { TVkShortLinks }
 
 destructor TVkShortLinks.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkShortLink>(FItems);
   inherited;
 end;
 
@@ -320,15 +320,10 @@ end;
 { TVkLinkStats }
 
 destructor TVkLinkStats.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FCities) to High(FCities) do
-    FCities[i].Free;
-  for i := Low(FCountries) to High(FCountries) do
-    FCountries[i].Free;
-  for i := Low(FSex_age) to High(FSex_age) do
-    FSex_age[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkLinkViewsCity>(FCities);
+  TArrayHelp.FreeArrayOfObject<TVkLinkViewsCountries>(FCountries);
+  TArrayHelp.FreeArrayOfObject<TVkLinkSexAge>(FSex_age);
   inherited;
 end;
 
@@ -345,11 +340,8 @@ end;
 { TVkLinkStates }
 
 destructor TVkLinkStates.Destroy;
-var
-  i: Integer;
 begin
-  for i := Low(FStats) to High(FStats) do
-    FStats[i].Free;
+  TArrayHelp.FreeArrayOfObject<TVkLinkStats>(FStats);
   inherited;
 end;
 

@@ -192,7 +192,6 @@ var
   {$ENDIF}
 begin
   {$IFNDEF AUTOREFCOUNT}
-  //TArrayHelp.FreeArrayOfObject<TVkNote>(FItems);
   for Item in Target do
     Item.Free;
   SetLength(Target, 0);
