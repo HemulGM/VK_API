@@ -172,13 +172,13 @@ type
     property Deleted: Boolean read FDeleted write FDeleted;
     property Attachments: TVkAttachments read FAttachments write FAttachments;
     property Thread: TVkCommentThread read FThread write FThread;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkComment;
   end;
 
-  TVkComments = class
+  TVkComments = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkComment>;
@@ -260,7 +260,7 @@ type
     property Text: string read FText write FText;
     property ToId: Integer read FTo_id write FTo_id;
     property Views: TVkViewsInfo read FViews write FViews;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPost;

@@ -64,7 +64,7 @@ type
     property Title: string read FTitle write FTitle;
     property&Type: Integer read FType write FType;
     property Url: string read FUrl write FUrl;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     function ToAttachment: string;

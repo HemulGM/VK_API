@@ -66,7 +66,7 @@ type
     property Title: string read FTitle write FTitle;
     property TrackCode: string read FTrack_code write FTrack_code;
     property Url: string read FUrl write FUrl;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPodcastsEpisode;

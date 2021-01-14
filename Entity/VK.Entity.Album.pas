@@ -71,14 +71,14 @@ type
     property CommentsDisabled: Boolean read FComments_disabled write FComments_disabled;
     property CanUpload: Boolean read FCan_upload write FCan_upload;
     property AccessKey: string read FAccess_key write FAccess_key;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     function ToAttachment: string;
     class function FromJsonString(AJsonString: string): TVkPhotoAlbum;
   end;
 
-  TVkPhotoAlbums = class
+  TVkPhotoAlbums = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkPhotoAlbum>;

@@ -6,14 +6,20 @@ uses
   Generics.Collections, Rest.Json;
 
 type
-  TVkObject = class(TInterfacedObject)
+  TVkEntity = class(TInterfacedObject)
+    function ToJsonString: string;
+    class function FromJsonString<T: class, constructor>(AJsonString: string): T;
+    constructor Create; virtual;
+  end;
+
+  TVkObject = class(TVkEntity)
   protected
     FId: Integer;
   public
     property Id: Integer read FId write FId;
   end;
 
-  TVkDimensions = class
+  TVkDimensions = class(TVkEntity)
   private
     FWidth: Integer;
     FHeight: Integer;
@@ -22,28 +28,22 @@ type
     property Width: Integer read FWidth write FWidth;
     property Height: Integer read FHeight write FHeight;
     property Length: Integer read FLength write FLength;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkDimensions;
   end;
 
-  TVkLastActivity = class
+  TVkLastActivity = class(TVkEntity)
   private
     FOnline: Integer;
     FTime: Int64;
   public
     property Online: Integer read FOnline write FOnline;
     property Time: Int64 read FTime write FTime;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLastActivity;
   end;
 
-  TVkBasicIndexItems = class
+  TVkBasicIndexItems = class(TVkEntity)
   private
     FItems: TArray<Integer>;
   public
     property Items: TArray<Integer> read FItems write FItems;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkBasicIndexItems;
   end;
 
   TVkBasicObject = class(TVkObject)
@@ -51,13 +51,11 @@ type
     FName: string;
   public
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkBasicObject;
   end;
 
   TVkProductCurrency = TVkBasicObject;
 
-  TVkRect = class
+  TVkRect = class(TVkEntity)
   private
     FX: Integer;
     FX2: Integer;
@@ -68,8 +66,6 @@ type
     property X2: Integer read FX2 write FX2;
     property Y: Integer read FY write FY;
     property Y2: Integer read FY2 write FY2;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkRect;
   end;
 
   TVkAddresses = class
@@ -107,16 +103,14 @@ type
 
   TVkCrop = TVkRect;
 
-  TVkTags = class
+  TVkTags = class(TVkEntity)
   private
     FCount: Integer;
   public
     property Count: Integer read FCount write FCount;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkTags;
   end;
 
-  TVkPostSource = class
+  TVkPostSource = class(TVkEntity)
   private
     FData: string;
     FPlatform: string;
@@ -127,11 +121,9 @@ type
     property&Platform: string read FPlatform write FPlatform;
     property&Type: string read FType write FType;
     property Url: string read FUrl write FUrl;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPostSource;
   end;
 
-  TVkCommentsInfo = class
+  TVkCommentsInfo = class(TVkEntity)
   private
     FCan_post: Integer;
     FCount: Integer;
@@ -140,42 +132,34 @@ type
     property CanPost: Integer read FCan_post write FCan_post;
     property Count: Integer read FCount write FCount;
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCommentsInfo;
   end;
 
-  TVkRepostsInfo = class
+  TVkRepostsInfo = class(TVkEntity)
   private
     FCount: Integer;
     FUser_reposted: Integer;
   public
     property Count: Integer read FCount write FCount;
     property UserReposted: Integer read FUser_reposted write FUser_reposted;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkRepostsInfo;
   end;
 
-  TVkViewsInfo = class
+  TVkViewsInfo = class(TVkEntity)
   private
     FCount: Integer;
   public
     property Count: Integer read FCount write FCount;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkViewsInfo;
   end;
 
-  TVkLiked = class
+  TVkLiked = class(TVkEntity)
   private
     FCopied: Integer;
     FLiked: Integer;
   public
     property Copied: Integer read FCopied write FCopied;
     property Liked: Integer read FLiked write FLiked;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLiked;
   end;
 
-  TVkLikesInfo = class
+  TVkLikesInfo = class(TVkEntity)
   private
     FCan_like: Integer;
     FCan_publish: Integer;
@@ -186,8 +170,6 @@ type
     property CanPublish: Integer read FCan_publish write FCan_publish;
     property Count: Integer read FCount write FCount;
     property UserLikes: Integer read FUser_likes write FUser_likes;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLikesInfo;
   end;
 
   {$REGION 'Fields Desc'}
@@ -209,7 +191,7 @@ type
   /// ‘ормат описани€ размеров фотографии
   /// https://vk.com/dev/photo_sizes
   /// </summary>
-  TVkSize = class
+  TVkSize = class(TVkEntity)
   private
     FHeight: Integer;
     FType: string;
@@ -222,8 +204,6 @@ type
     property Url: string read FUrl write FUrl;
     property Src: string read FSrc write FSrc;
     property Width: Integer read FWidth write FWidth;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSize;
   end;
 
   TVkSizes = TArray<TVkSize>;
@@ -250,8 +230,6 @@ type
     property FirstName: string read FFirst_name write FFirst_name;
     property IsClosed: Boolean read FIs_closed write FIs_closed;
     property LastName: string read FLast_name write FLast_name;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkRelationPartner;
   end;
 
   TVkRelationRequests = class(TVkObject)
@@ -265,8 +243,6 @@ type
     property FirstName: string read FFirst_name write FFirst_name;
     property IsClosed: Boolean read FIs_closed write FIs_closed;
     property LastName: string read FLast_name write FLast_name;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkRelationRequests;
   end;
 
   TVkEmail = class(TVkObject)
@@ -274,8 +250,6 @@ type
     FAddress: string;
   public
     property Address: string read FAddress write FAddress;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkEmail;
   end;
 
   TVkPlace = class(TVkObject)
@@ -301,22 +275,18 @@ type
     property Created: Int64 read FCreated write FCreated;
     property Icon: string read FIcon write FIcon;
     property Address: string read FAddress write FAddress;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPlace;
   end;
 
-  TVkCoordinates = class
+  TVkCoordinates = class(TVkEntity)
   private
     FLatitude: Extended;
     FLongitude: Extended;
   public
     property Latitude: Extended read FLatitude write FLatitude;
     property Longitude: Extended read FLongitude write FLongitude;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCoordinates;
   end;
 
-  TVkGeo = class
+  TVkGeo = class(TVkEntity)
   private
     FCoordinates: string;
     FPlace: TVkPlace;
@@ -325,13 +295,11 @@ type
     property Coordinates: string read FCoordinates write FCoordinates;
     property Place: TVkPlace read FPlace write FPlace;
     property&Type: string read FType write FType;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGeo;
   end;
 
-  TVkChatPhoto = class
+  TVkChatPhoto = class(TVkEntity)
   private
     FPhoto_50: string;
     FPhoto_200: string;
@@ -340,22 +308,18 @@ type
     property Photo50: string read FPhoto_50 write FPhoto_50; // Ч URL изображени€ 50x50px;
     property Photo100: string read FPhoto_100 write FPhoto_100; // Ч URL изображени€ 100x100px;
     property Photo200: string read FPhoto_200 write FPhoto_200; // Ч URL изображени€ 200x200px;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChatPhoto;
   end;
 
-  TVkIdList = class
+  TVkIdList = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<Integer>;
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<Integer> read FItems write FItems;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkIdList;
   end;
 
-  TVkOwnerPhoto = class
+  TVkOwnerPhoto = class(TVkEntity)
   private
     Fphoto_src: string;
     Fphoto_src_small: string;
@@ -370,8 +334,6 @@ type
     property PhotoSrcSmall: string read Fphoto_src_small write Fphoto_src_small;
     property Saved: Boolean read Fsaved write Fsaved;
     property PostId: Integer read Fpost_id write Fpost_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkOwnerPhoto;
   end;
 
 var
@@ -381,162 +343,6 @@ implementation
 
 uses
   System.SysUtils, VK.CommonUtils;
-
-{TVkRelationRequests}
-
-function TVkRelationRequests.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkRelationRequests.FromJsonString(AJsonString: string): TVkRelationRequests;
-begin
-  result := TJson.JsonToObject<TVkRelationRequests>(AJsonString)
-end;
-
-{TVkRelationPartner}
-
-function TVkRelationPartner.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkRelationPartner.FromJsonString(AJsonString: string): TVkRelationPartner;
-begin
-  result := TJson.JsonToObject<TVkRelationPartner>(AJsonString)
-end;
-
-{TVkRect}
-
-function TVkRect.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkRect.FromJsonString(AJsonString: string): TVkRect;
-begin
-  result := TJson.JsonToObject<TVkRect>(AJsonString)
-end;
-
-{TVkTags}
-
-function TVkTags.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkTags.FromJsonString(AJsonString: string): TVkTags;
-begin
-  result := TJson.JsonToObject<TVkTags>(AJsonString)
-end;
-
-{TVkCommentsInfo}
-
-function TVkCommentsInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCommentsInfo.FromJsonString(AJsonString: string): TVkCommentsInfo;
-begin
-  result := TJson.JsonToObject<TVkCommentsInfo>(AJsonString)
-end;
-
-{TVkPostSource}
-
-function TVkPostSource.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPostSource.FromJsonString(AJsonString: string): TVkPostSource;
-begin
-  result := TJson.JsonToObject<TVkPostSource>(AJsonString)
-end;
-
-{TVkRepostsInfo}
-
-function TVkRepostsInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkRepostsInfo.FromJsonString(AJsonString: string): TVkRepostsInfo;
-begin
-  result := TJson.JsonToObject<TVkRepostsInfo>(AJsonString)
-end;
-
-{TVkLikesInfo}
-
-function TVkLikesInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLikesInfo.FromJsonString(AJsonString: string): TVkLikesInfo;
-begin
-  result := TJson.JsonToObject<TVkLikesInfo>(AJsonString)
-end;
-
-{TVkSizes}
-
-function TVkSize.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSize.FromJsonString(AJsonString: string): TVkSize;
-begin
-  result := TJson.JsonToObject<TVkSize>(AJsonString);
-end;
-
-{TVkViewsInfo}
-
-class function TVkViewsInfo.FromJsonString(AJsonString: string): TVkViewsInfo;
-begin
-  result := TJson.JsonToObject<TVkViewsInfo>(AJsonString);
-end;
-
-function TVkViewsInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkChatPhoto }
-
-class function TVkChatPhoto.FromJsonString(AJsonString: string): TVkChatPhoto;
-begin
-  result := TJson.JsonToObject<TVkChatPhoto>(AJsonString)
-end;
-
-function TVkChatPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{TVkPlace}
-
-function TVkPlace.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPlace.FromJsonString(AJsonString: string): TVkPlace;
-begin
-  result := TJson.JsonToObject<TVkPlace>(AJsonString)
-end;
-
-{TVkCoordinates}
-
-function TVkCoordinates.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCoordinates.FromJsonString(AJsonString: string): TVkCoordinates;
-begin
-  result := TJson.JsonToObject<TVkCoordinates>(AJsonString)
-end;
 
 {TVkGeo}
 
@@ -550,16 +356,6 @@ destructor TVkGeo.Destroy;
 begin
   FPlace.Free;
   inherited;
-end;
-
-function TVkGeo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGeo.FromJsonString(AJsonString: string): TVkGeo;
-begin
-  result := TJson.JsonToObject<TVkGeo>(AJsonString)
 end;
 
 { TVkSizesHelper }
@@ -647,100 +443,22 @@ begin
   FIs_enabled := BoolToInt(Value);
 end;
 
-{ TVkIdList }
+{ TVkEntity }
 
-class function TVkIdList.FromJsonString(AJsonString: string): TVkIdList;
+constructor TVkEntity.Create;
 begin
-  result := TJson.JsonToObject<TVkIdList>(AJsonString)
+  //
 end;
 
-function TVkIdList.ToJsonString: string;
+class function TVkEntity.FromJsonString<T>(AJsonString: string): T;
 begin
-  result := TJson.ObjectToJsonString(self);
+
+  Result := TJson.JsonToObject<T>(AJsonString);
 end;
 
-{ TVkBasicObject }
-
-class function TVkBasicObject.FromJsonString(AJsonString: string): TVkBasicObject;
+function TVkEntity.ToJsonString: string;
 begin
-  result := TJson.JsonToObject<TVkBasicObject>(AJsonString)
-end;
-
-function TVkBasicObject.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkLiked }
-
-class function TVkLiked.FromJsonString(AJsonString: string): TVkLiked;
-begin
-  result := TJson.JsonToObject<TVkLiked>(AJsonString)
-end;
-
-function TVkLiked.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkEmail }
-
-class function TVkEmail.FromJsonString(AJsonString: string): TVkEmail;
-begin
-  result := TJson.JsonToObject<TVkEmail>(AJsonString)
-end;
-
-function TVkEmail.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkLastActivity }
-
-class function TVkLastActivity.FromJsonString(AJsonString: string): TVkLastActivity;
-begin
-  result := TJson.JsonToObject<TVkLastActivity>(AJsonString)
-end;
-
-function TVkLastActivity.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkBasicIndexItems }
-
-class function TVkBasicIndexItems.FromJsonString(AJsonString: string): TVkBasicIndexItems;
-begin
-  result := TJson.JsonToObject<TVkBasicIndexItems>(AJsonString)
-end;
-
-function TVkBasicIndexItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkOwnerPhoto }
-
-class function TVkOwnerPhoto.FromJsonString(AJsonString: string): TVkOwnerPhoto;
-begin
-  result := TJson.JsonToObject<TVkOwnerPhoto>(AJsonString)
-end;
-
-function TVkOwnerPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkDimensions }
-
-class function TVkDimensions.FromJsonString(AJsonString: string): TVkDimensions;
-begin
-  result := TJson.JsonToObject<TVkDimensions>(AJsonString)
-end;
-
-function TVkDimensions.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
+  Result := TJson.ObjectToJsonString(Self);
 end;
 
 end.

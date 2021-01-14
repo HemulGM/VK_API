@@ -9,7 +9,7 @@ uses
 type
   TVkProfile = class;
 
-  TVkFriendsMutual = class
+  TVkFriendsMutual = class(TVkEntity)
   private
     FCount: Integer;
     FUsers: TArray<TVkProfile>;
@@ -17,22 +17,18 @@ type
     property Count: Integer read FCount write FCount;
     property Users: TArray<TVkProfile> read FUsers write FUsers;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFriendsMutual;
   end;
 
-  TVkFriendsOnline = class
+  TVkFriendsOnline = class(TVkEntity)
   private
     FOnline: TArray<Integer>;
     FOnline_mobile: TArray<Integer>;
   public
     property Online: TArray<Integer> read FOnline write FOnline;
     property OnlineMobile: TArray<Integer> read FOnline_mobile write FOnline_mobile;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFriendsOnline;
   end;
 
-  TVkFriendInfo = class
+  TVkFriendInfo = class(TVkEntity)
   private
     FFriend_status: Integer;
     FSign: string;
@@ -43,21 +39,17 @@ type
     property IsRequestUnread: Boolean read FIs_request_unread write FIs_request_unread;
     property Sign: string read FSign write FSign;
     property UserId: Integer read FUser_id write FUser_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFriendInfo;
   end;
 
-  TVkFriendInfos = class
+  TVkFriendInfos = class(TVkEntity)
   private
     FItems: TArray<TVkFriendInfo>;
   public
     property Items: TArray<TVkFriendInfo> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFriendInfos;
   end;
 
-  TVkFriendDeleteInfo = class
+  TVkFriendDeleteInfo = class(TVkEntity)
   private
     FSuccess: Integer;
     Fout_request_deleted: Integer;
@@ -72,8 +64,6 @@ type
     property OutRequestDeleted: Integer read Fout_request_deleted write Fout_request_deleted;
     property InRequestDeleted: Integer read Fin_request_deleted write Fin_request_deleted;
     property SuggestionDeleted: Integer read Fsuggestion_deleted write Fsuggestion_deleted;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFriendDeleteInfo;
   end;
 
   TVkRelative = class(TVkObject)
@@ -81,8 +71,6 @@ type
     FType: string;
   public
     property TypeRelative: string read FType write FType;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkRelative;
   end;
 
   TVkSchoolInfo = class(TVkObject)
@@ -104,8 +92,6 @@ type
     property YearFrom: Integer read FYear_from write FYear_from;
     property YearGraduated: Integer read FYear_graduated write FYear_graduated;
     property YearTo: Integer read FYear_to write FYear_to;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSchoolInfo;
   end;
 
   TVkUniversities = class(TVkObject)
@@ -131,11 +117,9 @@ type
     property FacultyName: string read FFaculty_name write FFaculty_name;
     property Graduation: Integer read FGraduation write FGraduation;
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkUniversities;
   end;
 
-  TVkPersonal = class
+  TVkPersonal = class(TVkEntity)
   private
     FAlcohol: Integer;
     FInspired_by: string;
@@ -156,11 +140,9 @@ type
     property Religion: string read FReligion write FReligion;
     property ReligionId: Integer read FReligion_id write FReligion_id;
     property Smoking: Integer read FSmoking write FSmoking;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPersonal;
   end;
 
-  TVkMilitary = class
+  TVkMilitary = class(TVkEntity)
   private
     FCountry_id: Integer;
     FFrom: Integer;
@@ -173,11 +155,9 @@ type
     property&Unit: string read FUnit write FUnit;
     property UnitId: Integer read FUnit_id write FUnit_id;
     property UntilDate: Int64 read FUntil write FUntil;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMilitary;
   end;
 
-  TVkCareer = class
+  TVkCareer = class(TVkEntity)
   private
     FCity_id: Integer;
     FCompany: string;
@@ -192,8 +172,6 @@ type
     property From: Integer read FFrom write FFrom;
     property Position: string read FPosition write FPosition;
     property UntilDate: Int64 read FUntil write FUntil;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCareer;
   end;
 
   TVkOccupation = class(TVkObject)
@@ -203,11 +181,9 @@ type
   public
     property Name: string read FName write FName;
     property TypeOcc: string read FType write FType;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkOccupation;
   end;
 
-  TVkCropPhoto = class
+  TVkCropPhoto = class(TVkEntity)
   private
     FCrop: TVkCrop;
     FPhoto: TVkPhoto;
@@ -225,24 +201,20 @@ type
     /// Миниатюрная квадратная фотография, вырезанная из фотографии crop. Содержит набор полей, аналогичный объекту crop.
     /// </summary>
     property Rect: TVkRect read FRect write FRect;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCropPhoto;
   end;
 
-  TVkLastSeen = class
+  TVkLastSeen = class(TVkEntity)
   private
     FPlatform: Integer;
     FTime: Int64;
   public
     property&Platform: Integer read FPlatform write FPlatform;
     property Time: Int64 read FTime write FTime;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLastSeen;
   end;
 
-  TVkUserOnlineInfo = class
+  TVkUserOnlineInfo = class(TVkEntity)
   private
     FIs_mobile: Boolean;
     FIs_online: Boolean;
@@ -253,8 +225,6 @@ type
     property IsOnline: Boolean read FIs_online write FIs_online;
     property LastSeen: Int64 read FLast_seen write FLast_seen;
     property Visible: Boolean read FVisible write FVisible;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkUserOnlineInfo;
   end;
 
   TVkProfile = class(TVkObject)
@@ -437,13 +407,11 @@ type
     //
     property Refer: string read GetRefer;
     property GetFullName: string read FGetFullName;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProfile;
   end;
 
-  TVkProfiles = class
+  TVkProfiles = class(TVkEntity)
   private
     FItems: TArray<TVkProfile>;
     FCount: Integer;
@@ -454,10 +422,8 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkProfiles);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProfiles;
   end;
 
   TVkFriendsList = class(TVkObject)
@@ -465,11 +431,9 @@ type
     FName: string;
   public
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFriendsList;
   end;
 
-  TVkFriendsLists = class
+  TVkFriendsLists = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkFriendsList>;
@@ -477,8 +441,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkFriendsList> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFriendsLists;
   end;
 
 function FindUser(Id: Integer; List: TArray<TVkProfile>): Integer;
@@ -498,90 +460,6 @@ begin
       Exit(i);
 end;
 
-{TVkRelative}
-
-function TVkRelative.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkRelative.FromJsonString(AJsonString: string): TVkRelative;
-begin
-  result := TJson.JsonToObject<TVkRelative>(AJsonString)
-end;
-
-{TVkSchoolInfo}
-
-function TVkSchoolInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSchoolInfo.FromJsonString(AJsonString: string): TVkSchoolInfo;
-begin
-  result := TJson.JsonToObject<TVkSchoolInfo>(AJsonString)
-end;
-
-{TVkUniversities}
-
-function TVkUniversities.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkUniversities.FromJsonString(AJsonString: string): TVkUniversities;
-begin
-  result := TJson.JsonToObject<TVkUniversities>(AJsonString)
-end;
-
-{TVkPersonal}
-
-function TVkPersonal.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPersonal.FromJsonString(AJsonString: string): TVkPersonal;
-begin
-  result := TJson.JsonToObject<TVkPersonal>(AJsonString)
-end;
-
-{TVkMilitary}
-
-function TVkMilitary.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkMilitary.FromJsonString(AJsonString: string): TVkMilitary;
-begin
-  result := TJson.JsonToObject<TVkMilitary>(AJsonString)
-end;
-
-{TVkCareer}
-
-function TVkCareer.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCareer.FromJsonString(AJsonString: string): TVkCareer;
-begin
-  result := TJson.JsonToObject<TVkCareer>(AJsonString)
-end;
-
-{TVkOccupation}
-
-function TVkOccupation.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkOccupation.FromJsonString(AJsonString: string): TVkOccupation;
-begin
-  result := TJson.JsonToObject<TVkOccupation>(AJsonString)
-end;
-
 {TVkCropPhoto}
 
 constructor TVkCropPhoto.Create;
@@ -598,28 +476,6 @@ begin
   FCrop.Free;
   FRect.Free;
   inherited;
-end;
-
-function TVkCropPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCropPhoto.FromJsonString(AJsonString: string): TVkCropPhoto;
-begin
-  result := TJson.JsonToObject<TVkCropPhoto>(AJsonString)
-end;
-
-{TVkLastSeen}
-
-function TVkLastSeen.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLastSeen.FromJsonString(AJsonString: string): TVkLastSeen;
-begin
-  result := TJson.JsonToObject<TVkLastSeen>(AJsonString)
 end;
 
 {TVkUser}
@@ -655,16 +511,6 @@ begin
   FPersonal.Free;
   FMutual.Free;
   inherited;
-end;
-
-function TVkProfile.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProfile.FromJsonString(AJsonString: string): TVkProfile;
-begin
-  result := TJson.JsonToObject<TVkProfile>(AJsonString)
 end;
 
 function TVkProfile.FGetFullName: string;
@@ -705,31 +551,9 @@ begin
   inherited;
 end;
 
-function TVkProfiles.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProfiles.FromJsonString(AJsonString: string): TVkProfiles;
-begin
-  result := TJson.JsonToObject<TVkProfiles>(AJsonString);
-end;
-
 procedure TVkProfiles.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
-end;
-
-{ TVkFriendInfo }
-
-class function TVkFriendInfo.FromJsonString(AJsonString: string): TVkFriendInfo;
-begin
-  result := TJson.JsonToObject<TVkFriendInfo>(AJsonString);
-end;
-
-function TVkFriendInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkFriendInfos }
@@ -740,22 +564,7 @@ begin
   inherited;
 end;
 
-class function TVkFriendInfos.FromJsonString(AJsonString: string): TVkFriendInfos;
-begin
-  result := TJson.JsonToObject<TVkFriendInfos>(AJsonString);
-end;
-
-function TVkFriendInfos.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkFriendDeleteInfo }
-
-class function TVkFriendDeleteInfo.FromJsonString(AJsonString: string): TVkFriendDeleteInfo;
-begin
-  result := TJson.JsonToObject<TVkFriendDeleteInfo>(AJsonString);
-end;
 
 function TVkFriendDeleteInfo.GetSuccess: Boolean;
 begin
@@ -767,23 +576,6 @@ begin
   FSuccess := BoolToInt(Value);
 end;
 
-function TVkFriendDeleteInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkFriendsList }
-
-class function TVkFriendsList.FromJsonString(AJsonString: string): TVkFriendsList;
-begin
-  result := TJson.JsonToObject<TVkFriendsList>(AJsonString);
-end;
-
-function TVkFriendsList.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkFriendsLists }
 
 destructor TVkFriendsLists.Destroy;
@@ -792,56 +584,12 @@ begin
   inherited;
 end;
 
-class function TVkFriendsLists.FromJsonString(AJsonString: string): TVkFriendsLists;
-begin
-  result := TJson.JsonToObject<TVkFriendsLists>(AJsonString);
-end;
-
-function TVkFriendsLists.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkFriendsOnline }
-
-class function TVkFriendsOnline.FromJsonString(AJsonString: string): TVkFriendsOnline;
-begin
-  result := TJson.JsonToObject<TVkFriendsOnline>(AJsonString);
-end;
-
-function TVkFriendsOnline.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkFriendsMutual }
 
 destructor TVkFriendsMutual.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FUsers);
   inherited;
-end;
-
-class function TVkFriendsMutual.FromJsonString(AJsonString: string): TVkFriendsMutual;
-begin
-  result := TJson.JsonToObject<TVkFriendsMutual>(AJsonString);
-end;
-
-function TVkFriendsMutual.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkUserOnlineInfo }
-
-class function TVkUserOnlineInfo.FromJsonString(AJsonString: string): TVkUserOnlineInfo;
-begin
-  result := TJson.JsonToObject<TVkUserOnlineInfo>(AJsonString);
-end;
-
-function TVkUserOnlineInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

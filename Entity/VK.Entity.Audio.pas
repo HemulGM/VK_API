@@ -53,7 +53,7 @@ type
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Thumb: TVkAlbumThumb read FThumb write FThumb;
     property Title: string read FTitle write FTitle;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAudioAlbum;
@@ -136,12 +136,11 @@ type
     property StoriesAllowed: Boolean read FStories_allowed write FStories_allowed;
     //
     property Genre: TAudioGenre read GetAudioGenre write SetAudioGenre;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     function ToAttachment: string;
     function DurationText(const AFormat: string): string;
-    class function FromJsonString(AJsonString: string): TVkAudio;
     class function FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
   end;
 
@@ -152,7 +151,7 @@ type
 
   TVkAudioIndexes = TArray<TVkAudioIndex>;
 
-  TVkAudios = class
+  TVkAudios = class(TVkEntity)
   private
     FItems: TArray<TVkAudio>;
     FCount: Integer;
@@ -163,7 +162,7 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Audios: TVkAudios);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAudios;
@@ -277,11 +276,6 @@ end;
 class function TVkAudio.FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
 begin
   Result := TJson.JsonToObject<TVkAudio>(AJsonObject);
-end;
-
-class function TVkAudio.FromJsonString(AJsonString: string): TVkAudio;
-begin
-  result := TJson.JsonToObject<TVkAudio>(AJsonString)
 end;
 
 function TVkAudio.GetAudioGenre: TAudioGenre;

@@ -27,11 +27,9 @@ type
     property X2: Integer read FX2 write FX2;
     property Y: Integer read FY write FY;
     property Y2: Integer read FY2 write FY2;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoTag;
   end;
 
-  TVkPhotoTags = class
+  TVkPhotoTags = class(TVkEntity)
   private
     FItems: TArray<TVkPhotoTag>;
     FCount: Integer;
@@ -39,8 +37,6 @@ type
     property Items: TArray<TVkPhotoTag> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoTags;
   end;
 
   TVkPhoto = class(TVkObject, IAttachment)
@@ -100,14 +96,12 @@ type
     property TagCreated: Int64 read FTag_created write FTag_created;
     property TagId: Integer read FTag_id write FTag_id;
     //
-    constructor Create();
+    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: string;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhoto;
   end;
 
-  TVkCropPhoto = class
+  TVkCropPhoto = class(TVkEntity)
   private
     FCrop: TVkCrop;
     FPhoto: TVkPhoto;
@@ -116,8 +110,6 @@ type
     property Photo: TVkPhoto read FPhoto write FPhoto;
     property Crop: TVkCrop read FCrop write FCrop;
     property Rect: TVkRect read FRect write FRect;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCropPhoto;
   end;
 
   TVkPostedPhoto = class(TVkObject)
@@ -129,11 +121,9 @@ type
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Photo130: string read FPhoto_130 write FPhoto_130;
     property Photo604: string read FPhoto_604 write FPhoto_604;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPostedPhoto;
   end;
 
-  TVkPhotos = class
+  TVkPhotos = class(TVkEntity)
   private
     FItems: TArray<TVkPhoto>;
     FCount: Integer;
@@ -144,10 +134,8 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkPhotos);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotos;
   end;
 
 implementation
@@ -181,28 +169,6 @@ begin
   Attachment.Photo(Id, OwnerId, AccessKey);
 end;
 
-function TVkPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhoto.FromJsonString(AJsonString: string): TVkPhoto;
-begin
-  result := TJson.JsonToObject<TVkPhoto>(AJsonString)
-end;
-
-{ TVkPostedPhoto }
-
-class function TVkPostedPhoto.FromJsonString(AJsonString: string): TVkPostedPhoto;
-begin
-  result := TJson.JsonToObject<TVkPostedPhoto>(AJsonString)
-end;
-
-function TVkPostedPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 {TVkPhotos}
 
 procedure TVkPhotos.Append(Users: TVkPhotos);
@@ -231,43 +197,9 @@ begin
   inherited;
 end;
 
-function TVkPhotos.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhotos.FromJsonString(AJsonString: string): TVkPhotos;
-begin
-  result := TJson.JsonToObject<TVkPhotos>(AJsonString);
-end;
-
 procedure TVkPhotos.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
-end;
-
-{ TVkCropPhoto }
-
-class function TVkCropPhoto.FromJsonString(AJsonString: string): TVkCropPhoto;
-begin
-  result := TJson.JsonToObject<TVkCropPhoto>(AJsonString);
-end;
-
-function TVkCropPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkPhotoTag }
-
-class function TVkPhotoTag.FromJsonString(AJsonString: string): TVkPhotoTag;
-begin
-  result := TJson.JsonToObject<TVkPhotoTag>(AJsonString);
-end;
-
-function TVkPhotoTag.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkPhotoTags }
@@ -276,16 +208,6 @@ destructor TVkPhotoTags.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPhotoTag>(FItems);
   inherited;
-end;
-
-class function TVkPhotoTags.FromJsonString(AJsonString: string): TVkPhotoTags;
-begin
-  result := TJson.JsonToObject<TVkPhotoTags>(AJsonString);
-end;
-
-function TVkPhotoTags.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

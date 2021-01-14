@@ -11,8 +11,6 @@ type
     FName: string;
   public
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupSubcategory;
   end;
 
   TVkGroupCategory = class(TVkObject)
@@ -27,11 +25,9 @@ type
     property PagePreviews: TArray<TVkGroup> read FPage_previews write FPage_previews;
     property Subcategories: TArray<TVkGroupSubcategory> read FSubcategories write FSubcategories;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupCategory;
   end;
 
-  TVkGroupCategories = class
+  TVkGroupCategories = class(TVkEntity)
   private
     FCategories: TArray<TVkGroupCategory>;
     FEnabled: Integer;
@@ -39,26 +35,12 @@ type
     property Categories: TArray<TVkGroupCategory> read FCategories write FCategories;
     property Enabled: Integer read FEnabled write FEnabled;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupCategories;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TSubcategoriesClass}
-
-function TVkGroupSubcategory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupSubcategory.FromJsonString(AJsonString: string): TVkGroupSubcategory;
-begin
-  result := TJson.JsonToObject<TVkGroupSubcategory>(AJsonString)
-end;
 
 {TCategoriesClass}
 
@@ -69,32 +51,12 @@ begin
   inherited;
 end;
 
-function TVkGroupCategory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupCategory.FromJsonString(AJsonString: string): TVkGroupCategory;
-begin
-  result := TJson.JsonToObject<TVkGroupCategory>(AJsonString)
-end;
-
 {TRootClass}
 
 destructor TVkGroupCategories.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkGroupCategory>(FCategories);
   inherited;
-end;
-
-function TVkGroupCategories.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupCategories.FromJsonString(AJsonString: string): TVkGroupCategories;
-begin
-  result := TJson.JsonToObject<TVkGroupCategories>(AJsonString)
 end;
 
 end.

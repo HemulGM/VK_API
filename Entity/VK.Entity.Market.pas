@@ -36,7 +36,7 @@ type
   public
     property Name: string read FName write FName;
     property Section: TVkMarketSection read FSection write FSection;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkProductCategory;
@@ -105,7 +105,7 @@ type
     property Dimensions: TVkDimensions read FDimensions write FDimensions;
     //
     property Quantity: Integer read FQuantity write FQuantity;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkProduct;

@@ -3,8 +3,8 @@ unit VK.Friends;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Profile, VK.Entity.Common;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
+  VK.Entity.Common;
 
 type
   /// <summary>
@@ -107,7 +107,8 @@ type
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
+    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone):
+      Boolean; overload;
     /// <summary>
     /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
     /// </summary>
@@ -236,7 +237,8 @@ begin
   Result := Get(Items, Params);
 end;
 
-function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields; Order: TVkFriendsSort):
+  Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
@@ -258,18 +260,7 @@ begin
   if not Params.KeyExists('fields') then
     Params.Add('fields', 'domian');
 
-  with Handler.Execute('friends.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkProfiles.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.get', Params).GetObject<TVkProfiles>(Items);
 end;
 
 function TFriendsController.Add(var Info: TVkFriendAddInfo; UserId: Integer; Text: string; Follow: Boolean): Boolean;
@@ -298,18 +289,11 @@ end;
 
 function TFriendsController.AreFriends(var Items: TVkFriendInfo; UserIds: TIds; NeedSign, Extended: Boolean): Boolean;
 begin
-  with Handler.Execute('friends.areFriends', [['user_ids', UserIds.ToString], ['need_sign', BoolToString(NeedSign)], ['extended', BoolToString(Extended)]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkFriendInfo.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.areFriends', [
+    ['user_ids', UserIds.ToString],
+    ['need_sign', BoolToString(NeedSign)],
+    ['extended', BoolToString(Extended)]]).
+    GetObjects<TVkFriendInfo>(Items);
 end;
 
 function TFriendsController.Delete(UserId: Integer): Boolean;
@@ -322,7 +306,7 @@ begin
     if Result then
     begin
       try
-        Info := TVkFriendDeleteInfo.FromJsonString(Response);
+        Info := TVkFriendDeleteInfo.FromJsonString<TVkFriendDeleteInfo>(Response);
         Result := Info.Success;
         Info.Free;
       except
@@ -371,34 +355,12 @@ end;
 
 function TFriendsController.Delete(var Info: TVkFriendDeleteInfo; UserId: Integer): Boolean;
 begin
-  with Handler.Execute('friends.delete', ['user_id', UserId.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Info := TVkFriendDeleteInfo.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.delete', ['user_id', UserId.ToString]).GetObject<TVkFriendDeleteInfo>(Info);
 end;
 
 function TFriendsController.GetAppUsers(var Items: TVkIdList): Boolean;
 begin
-  with Handler.Execute('friends.getAppUsers') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkIdList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.getAppUsers').GetObject<TVkIdList>(Items);
 end;
 
 function TFriendsController.GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkProfileFields): Boolean;
@@ -409,7 +371,7 @@ begin
     if Result then
     begin
       try
-        Items := TVkProfiles.FromJsonString(ResponseAsItems);
+        Items := TVkProfiles.FromJsonString<TVkProfiles>(ResponseAsItems);
         Items.Count := Length(Items.Items);
       except
         Result := False;
@@ -420,82 +382,30 @@ end;
 
 function TFriendsController.GetIds(var Items: TVkIdList; Params: TVkParamsFriendsGet): Boolean;
 begin
-  with Handler.Execute('friends.get', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkIdList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.get', Params.List).GetObject<TVkIdList>(Items);
 end;
 
 function TFriendsController.GetLists(var Items: TVkFriendsList; UserId: Integer; ReturnSystem: Boolean): Boolean;
 begin
-  with Handler.Execute('friends.getLists', [['user_id', UserId.ToString], ['return_system', BoolToString(ReturnSystem)]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkFriendsList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.getLists', [
+    ['user_id', UserId.ToString],
+    ['return_system', BoolToString(ReturnSystem)]]).
+    GetObject<TVkFriendsList>(Items);
 end;
 
 function TFriendsController.GetMutual(var Items: TVkIdList; Params: TVkParamsFriendsGetMutual): Boolean;
 begin
-  with Handler.Execute('friends.getMutual') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkIdList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.getMutual').GetObject<TVkIdList>(Items);
 end;
 
 function TFriendsController.GetOnline(var Items: TVkFriendsOnline; Params: TVkParamsFriendsGetOnline): Boolean;
 begin
-  with Handler.Execute('friends.getOnline', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkFriendsOnline.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.getOnline', Params.List).GetObject<TVkFriendsOnline>(Items);
 end;
 
 function TFriendsController.GetRecent(var Items: TVkIdList; Count: Integer): Boolean;
 begin
-  with Handler.Execute('friends.getRecent', ['count', Count.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkIdList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.getRecent', ['count', Count.ToString]).GetObject<TVkIdList>(Items);
 end;
 
 function TFriendsController.GetRequests(var Items: TVkProfiles; Params: TVkParamsFriendsGetRequests): Boolean;
@@ -505,18 +415,7 @@ end;
 
 function TFriendsController.GetRequestsIds(var Items: TVkIdList; Params: TVkParamsFriendsGetRequests): Boolean;
 begin
-  with Handler.Execute('friends.getRequests', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkIdList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.getRequests', Params.List).GetObject<TVkIdList>(Items);
 end;
 
 function TFriendsController.GetSuggestions(var Items: TVkProfiles; Params: TVkParamsFriendsGetSuggestions): Boolean;
@@ -531,51 +430,18 @@ end;
 
 function TFriendsController.Search(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('friends.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkProfiles.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.search', Params).GetObject<TVkProfiles>(Items);
 end;
 
 function TFriendsController.GetSuggestions(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('friends.getSuggestions', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkProfiles.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.getSuggestions', Params).GetObject<TVkProfiles>(Items);
 end;
 
 function TFriendsController.GetRequests(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   Params.Add('extended', True);
-  with Handler.Execute('friends.getRequests', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkProfiles.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('friends.getRequests', Params).GetObject<TVkProfiles>(Items);
 end;
 
 { TVkFriendsGetParams }

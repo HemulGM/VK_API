@@ -69,7 +69,7 @@ type
     property&Type: Integer read FType write FType;
     property UpdateTime: TDateTime read GetUpdateTime write SetUpdateTime;
     property Year: Integer read FYear write FYear;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkAudioPlaylist;

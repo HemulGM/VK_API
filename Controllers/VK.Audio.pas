@@ -307,7 +307,7 @@ begin
     if Result then
     begin
       try
-        Audio := TVkAudio.FromJsonString(Response);
+        Audio := TVkAudio.FromJsonString<TVkAudio>(Response);
       except
         Result := False;
       end;
@@ -457,18 +457,7 @@ end;
 
 function TAudioController.Get(var Audios: TVkAudios; Params: TParams): Boolean;
 begin
-  with Handler.Execute('audio.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Audios := TVkAudios.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('audio.get', Params).GetObject<TVkAudios>(Audios);
 end;
 
 function TAudioController.Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean;
@@ -596,7 +585,7 @@ begin
         JArray := TJSONArray(TJSONObject.ParseJSONValue(Response));
         try
           if JArray.Count > 0 then
-            Audio := TVkAudio.FromJsonString(JArray.Items[0].ToString);
+            Audio := TVkAudio.FromJsonString<TVkAudio>(JArray.Items[0].ToString);
         finally
           JArray.Free;
         end;
@@ -609,7 +598,8 @@ end;
 
 function TAudioController.GetCatalog(var Items: TVkAudioCatalog; Params: TParams): Boolean;
 begin
-  with Handler.Execute('audio.getCatalog', Params) do
+  Result := Handler.Execute('audio.getCatalog', Params).GetObject<TVkAudioCatalog>(Items);
+ { with Handler.Execute('audio.getCatalog', Params) do
   begin
     Result := Success;
     if Result then
@@ -620,7 +610,7 @@ begin
         Result := False;
       end;
     end;
-  end;
+  end;   }
 end;
 
 function TAudioController.GetById(var Audios: TVkAudios; List: TVkAudioIndexes): Boolean;

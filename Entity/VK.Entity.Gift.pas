@@ -36,7 +36,7 @@ type
     property GiftHash: string read FGift_hash write FGift_hash;
     property Message: string read FMessage write FMessage;
     property Privacy: Integer read FPrivacy write FPrivacy;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkGiftItem;

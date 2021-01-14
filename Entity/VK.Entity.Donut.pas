@@ -3,10 +3,10 @@ unit VK.Entity.Donut;
 interface
 
 uses
-  REST.Json, VK.Entity.Profile, VK.Entity.Group;
+  REST.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common;
 
 type
-  TVkDonutSubscription = class
+  TVkDonutSubscription = class(TVkEntity)
   private
     FAmount: Integer;
     FNext_Payment_Date: Int64;
@@ -29,11 +29,9 @@ type
     /// Статус подписки
     /// </summary>
     property Status: string read FStatus write FStatus;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkDonutSubscription;
   end;
 
-  TVkDonutSubscriptions = class
+  TVkDonutSubscriptions = class(TVkEntity)
   private
     FCount: Integer;
     FGroups: TArray<TVkGroup>;
@@ -45,26 +43,12 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Subscriptions: TArray<TVkDonutSubscription> read FSubscriptions write FSubscriptions;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkDonutSubscriptions;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{ TVkDonutSubscription }
-
-class function TVkDonutSubscription.FromJsonString(AJsonString: string): TVkDonutSubscription;
-begin
-  result := TJson.JsonToObject<TVkDonutSubscription>(AJsonString);
-end;
-
-function TVkDonutSubscription.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(Self);
-end;
 
 { TVkDonutSubscriptions }
 
@@ -74,16 +58,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   TArrayHelp.FreeArrayOfObject<TVkDonutSubscription>(FSubscriptions);
   inherited;
-end;
-
-class function TVkDonutSubscriptions.FromJsonString(AJsonString: string): TVkDonutSubscriptions;
-begin
-  result := TJson.JsonToObject<TVkDonutSubscriptions>(AJsonString);
-end;
-
-function TVkDonutSubscriptions.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(Self);
 end;
 
 end.

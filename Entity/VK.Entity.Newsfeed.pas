@@ -96,7 +96,7 @@ type
     property&Type: string read FType write FType;
     property Photos: TVkPhotos read FPhotos write FPhotos;
     property Copyright: TVkNewsCopyright read FCopyright write FCopyright;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkNewsItem;

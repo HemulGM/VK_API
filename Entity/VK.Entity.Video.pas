@@ -118,7 +118,7 @@ type
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     property&Type: string read FType write FType;
     function ToAttachment: string;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkVideo;
@@ -156,7 +156,7 @@ type
     property Privacy: TVkPrivacy read FPrivacy write FPrivacy;
     property Title: string read FTitle write FTitle;
     property UpdatedTime: Int64 read FUpdated_time write FUpdated_time;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkVideoAlbum;

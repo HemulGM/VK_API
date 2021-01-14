@@ -114,7 +114,7 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     //
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPoll;

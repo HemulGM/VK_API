@@ -70,7 +70,7 @@ type
     property NeedMute: Boolean read FNeed_mute write FNeed_mute;
     property NoSound: Boolean read FNo_sound write FNo_sound;
     property Seen: Integer read FSeen write FSeen;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkStory;

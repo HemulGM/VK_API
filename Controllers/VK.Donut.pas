@@ -3,8 +3,7 @@ unit VK.Donut;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.Profile, VK.Entity.Donut;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Profile, VK.Entity.Donut;
 
 type
   TVkParamsDonutGetFriends = record
@@ -62,18 +61,7 @@ uses
 
 function TDonutController.GetFriends(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('donut.getFriends') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkProfiles.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('donut.getFriends').GetObject<TVkProfiles>(Items);
 end;
 
 function TDonutController.GetFriends(var Items: TVkProfiles; Params: TVkParamsDonutGetFriends): Boolean;
@@ -83,18 +71,7 @@ end;
 
 function TDonutController.GetSubscription(var Item: TVkDonutSubscription; OwnerId: Integer): Boolean;
 begin
-  with Handler.Execute('donut.getSubscription') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkDonutSubscription.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('donut.getSubscription').GetObject<TVkDonutSubscription>(Item);
 end;
 
 function TDonutController.GetSubscriptions(var Items: TVkDonutSubscriptions; Params: TVkParamsDonutGetSubscriptions): Boolean;
@@ -114,18 +91,7 @@ end;
 
 function TDonutController.GetSubscriptions(var Items: TVkDonutSubscriptions; Params: TParams): Boolean;
 begin
-  with Handler.Execute('donut.getSubscriptions') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDonutSubscriptions.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('donut.getSubscriptions').GetObject<TVkDonutSubscriptions>(Items);
 end;
 
 { TVkParamsDonutGetFriends }

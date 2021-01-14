@@ -56,7 +56,7 @@ type
     property Status: Integer read FStatus write FStatus;
     property TotalPrice: TVkProductPrice read FTotal_price write FTotal_price;
     property UserId: Integer read FUser_id write FUser_id;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkOrder;

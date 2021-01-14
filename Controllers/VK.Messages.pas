@@ -970,18 +970,7 @@ end;
 
 function TMessagesController.GetLastActivity(var Item: TVkLastActivity; UserId: Integer): Boolean;
 begin
-  with Handler.Execute('messages.getLastActivity', ['user_id', UserId.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkLastActivity.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('messages.getLastActivity', ['user_id', UserId.ToString]).GetObject<TVkLastActivity>(Item);
 end;
 
 function TMessagesController.GetLongPollHistory(var Item: TVkLongPollHistory; Params: TVkParamsLongPollHistory): Boolean;
@@ -1042,7 +1031,7 @@ begin
     if Result then
     begin
       try
-        Resp := TVkBasicIndexItems.FromJsonString(ResponseAsItems);
+        Resp := TVkBasicIndexItems.FromJsonString<TVkBasicIndexItems>(ResponseAsItems);
         try
           Items := Resp.Items;
         finally

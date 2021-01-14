@@ -3,8 +3,7 @@ unit VK.Entity.Board.Comment;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
 
 type
   TVkBoardComment = class(TVkObject)
@@ -22,7 +21,7 @@ type
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Text: string read FText write FText;
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkBoardComment;
