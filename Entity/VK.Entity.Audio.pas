@@ -3,7 +3,8 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment;
+  Generics.Collections, System.SysUtils, Rest.Json, System.Json,
+  VK.Entity.Common, VK.Types, VK.Entity.Attachment;
 
 type
   TVkAudioArtist = class(TVkObject)
@@ -90,9 +91,9 @@ type
     FUrl: string;
     FLyrics_id: Integer;
     FAlbum_id: Integer;
-    FNo_search: Integer;
-    FIs_hq: Integer;
-    FContent_restricted: Integer;
+    FNo_search: Boolean;
+    FIs_hq: Boolean;
+    FContent_restricted: Boolean;
     FAudio_chart_info: TVkAudioChartInfo;
     FIs_explicit: Boolean;
     FStories_allowed: Boolean;
@@ -109,8 +110,8 @@ type
     property AlbumId: Integer read FAlbum_id write FAlbum_id;
     property GenreId: Integer read FGenre_id write FGenre_id;
     property Date: Int64 read FDate write FDate;
-    property NoSearch: Integer read FNo_search write FNo_search;
-    property IsHQ: Integer read FIs_hq write FIs_hq;
+    property NoSearch: Boolean read FNo_search write FNo_search;
+    property IsHQ: Boolean read FIs_hq write FIs_hq;
     //
     property AccessKey: string read FAccess_key write FAccess_key;
     property Ads: TVkAudioAds read FAds write FAds;
@@ -118,7 +119,7 @@ type
     property TrackCode: string read FTrack_code write FTrack_code;
     property Album: TVkAudioAlbum read FAlbum write FAlbum;
     property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
-    property ContentRestricted: Integer read FContent_restricted write FContent_restricted;
+    property ContentRestricted: Boolean read FContent_restricted write FContent_restricted;
     property AudioChartInfo: TVkAudioChartInfo read FAudio_chart_info write FAudio_chart_info;
     property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
     //
@@ -139,20 +140,7 @@ type
 
   TVkAudioIndexes = TArray<TVkAudioIndex>;
 
-  TVkAudios = class(TVkEntity)
-  private
-    FItems: TArray<TVkAudio>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkAudio> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Audios: TVkAudios);
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
+  TVkAudios = TVkEntityList<TVkAudio>;
 
   TVkAudioInfo = class
   private
@@ -238,40 +226,6 @@ destructor TVkAudioAlbum.Destroy;
 begin
   FThumb.Free;
   inherited;
-end;
-
-{ TVkAudios }
-
-procedure TVkAudios.Append(Audios: TVkAudios);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Audios.Items));
-  Move(Audios.Items[0], FItems[OldLen], Length(Audios.Items) * SizeOf(TVkAudio));
-end;
-
-constructor TVkAudios.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkAudios.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkAudio>(FItems);
-  end;
-  {$ENDIF}
-
-  inherited;
-end;
-
-procedure TVkAudios.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
 end;
 
 end.

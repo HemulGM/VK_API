@@ -179,7 +179,7 @@ end;
 
 function TDatabaseController.GetSchoolClasses(var Items: TVkSchoolClasses; const CountryId: Integer): Boolean;
 begin
-  Result := Handler.Execute('database.getSchoolClasses', ['country_id', CountryId.ToString]).GetObject<TVkSchoolClasses>(Items);
+  Result := Handler.Execute('database.getSchoolClasses', ['country_id', CountryId.ToString]).GetObjects<TVkSchoolClasses>(Items);
 end;
 
 function TDatabaseController.GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string; Offset, Count:

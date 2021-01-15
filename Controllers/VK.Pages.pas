@@ -3,7 +3,8 @@ unit VK.Pages;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Page;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Page;
 
 type
   TVkParamsPagesGet = record
@@ -52,7 +53,7 @@ type
     /// Позволяет очистить кеш отдельных внешних страниц, которые могут быть прикреплены к записям ВКонтакте. После очистки кеша при последующем прикреплении ссылки к записи, данные о странице будут обновлены.
     /// Внешние страницы – страницы которые прикрепляются к записям вместе с ссылкой и доступные по кнопке "Предпросмотр".
     /// </summary>
-    function ClearCache(const Url: string): Boolean;
+    function ClearCache(var Status: Boolean; const Url: string): Boolean;
     /// <summary>
     /// Возвращает информацию о вики-странице.
     /// </summary>
@@ -64,8 +65,7 @@ type
     /// <summary>
     /// Возвращает список всех старых версий вики-страницы.
     /// </summary>
-    function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: Integer = 0; UserId: Integer = 0):
-      Boolean; overload;
+    function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: Integer = 0; UserId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список вики-страниц в группе.
     /// </summary>
@@ -96,10 +96,9 @@ uses
 
 { TPagesController }
 
-function TPagesController.ClearCache(const Url: string): Boolean;
+function TPagesController.ClearCache(var Status: Boolean; const Url: string): Boolean;
 begin
-  with Handler.Execute('pages.clearCache', ['url', Url]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('pages.clearCache', ['url', Url]).ResponseAsBool(Status);
 end;
 
 function TPagesController.Get(var Item: TVkPage; Params: TParams): Boolean;
@@ -145,20 +144,17 @@ begin
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
   Params.Add('text', Text);
-  with Handler.Execute('pages.parseWiki', Params) do
-    Result := Success and ResponseAsStr(Html);
+  Result := Handler.Execute('pages.parseWiki', Params).ResponseAsStr(Html);
 end;
 
 function TPagesController.Save(var Id: Integer; Params: TVkParamsPagesSave): Boolean;
 begin
-  with Handler.Execute('pages.save', Params.List) do
-    Result := Success and ResponseAsInt(Id);
+  Result := Handler.Execute('pages.save', Params.List).ResponseAsInt(Id);
 end;
 
 function TPagesController.SaveAccess(var Id: Integer; Params: TVkParamsPagesSaveAccess): Boolean;
 begin
-  with Handler.Execute('pages.saveAccess', Params.List) do
-    Result := Success and ResponseAsInt(Id);
+  Result := Handler.Execute('pages.saveAccess', Params.List).ResponseAsInt(Id);
 end;
 
 { TVkParamsPagesGet }

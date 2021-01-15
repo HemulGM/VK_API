@@ -12,11 +12,41 @@ type
     constructor Create; virtual;
   end;
 
+  TVkEntityList<T: TVkEntity> = class(TVkEntity)
+  private
+    FCount: Integer;
+    FItems: TArray<T>;
+    FSaveObjects: Boolean;
+    procedure SetSaveObjects(const Value: Boolean);
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<T> read FItems write FItems;
+    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
+    procedure Append(Items: TVkEntityList<T>);
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
+
   TVkObject = class(TVkEntity)
   protected
     FId: Integer;
   public
     property Id: Integer read FId write FId;
+  end;
+
+  TVkObjectList<T: TVkObject> = class(TVkObject)
+  private
+    FCount: Integer;
+    FItems: TArray<T>;
+    FSaveObjects: Boolean;
+    procedure SetSaveObjects(const Value: Boolean);
+  public
+    property Count: Integer read FCount write FCount;
+    property Items: TArray<T> read FItems write FItems;
+    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
+    procedure Append(Items: TVkObjectList<T>);
+    constructor Create; override;
+    destructor Destroy; override;
   end;
 
   TVkDimensions = class(TVkEntity)
@@ -459,6 +489,72 @@ end;
 function TVkEntity.ToJsonString: string;
 begin
   Result := TJson.ObjectToJsonString(Self);
+end;
+
+{ TVkEntityList<T> }
+
+procedure TVkEntityList<T>.Append(Items: TVkEntityList<T>);
+var
+  OldLen: Integer;
+begin
+  OldLen := Length(Items.Items);
+  SetLength(FItems, OldLen + Length(Items.Items));
+  Move(Items.Items[0], FItems[OldLen], Length(Items.Items) * SizeOf(T));
+end;
+
+constructor TVkEntityList<T>.Create;
+begin
+  inherited;
+  FSaveObjects := False;
+end;
+
+destructor TVkEntityList<T>.Destroy;
+begin
+  {$IFNDEF AUTOREFCOUNT}
+  if not FSaveObjects then
+  begin
+    TArrayHelp.FreeArrayOfObject<T>(FItems);
+  end;
+  {$ENDIF}
+  inherited;
+end;
+
+procedure TVkEntityList<T>.SetSaveObjects(const Value: Boolean);
+begin
+  FSaveObjects := Value;
+end;
+
+{ TVkObjectList<T> }
+
+procedure TVkObjectList<T>.Append(Items: TVkObjectList<T>);
+var
+  OldLen: Integer;
+begin
+  OldLen := Length(Items.Items);
+  SetLength(FItems, OldLen + Length(Items.Items));
+  Move(Items.Items[0], FItems[OldLen], Length(Items.Items) * SizeOf(T));
+end;
+
+constructor TVkObjectList<T>.Create;
+begin
+  inherited;
+  FSaveObjects := False;
+end;
+
+destructor TVkObjectList<T>.Destroy;
+begin
+  {$IFNDEF AUTOREFCOUNT}
+  if not FSaveObjects then
+  begin
+    TArrayHelp.FreeArrayOfObject<T>(FItems);
+  end;
+  {$ENDIF}
+  inherited;
+end;
+
+procedure TVkObjectList<T>.SetSaveObjects(const Value: Boolean);
+begin
+  FSaveObjects := Value;
 end;
 
 end.

@@ -3,7 +3,8 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Privacy;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
+  VK.Entity.Attachment, VK.Entity.Privacy;
 
 type
   TVkAlbumThumb = class
@@ -73,15 +74,7 @@ type
     function ToAttachment: string;
   end;
 
-  TVkPhotoAlbums = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkPhotoAlbum>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkPhotoAlbum> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkPhotoAlbums = TVkEntityList<TVkPhotoAlbum>;
 
 implementation
 
@@ -130,14 +123,6 @@ end;
 procedure TVkPhotoAlbum.SetUpdated(const Value: TDateTime);
 begin
   FUpdated := DateTimeToUnix(Value, False);
-end;
-
-{TVkPhotoAlbums}
-
-destructor TVkPhotoAlbums.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkPhotoAlbum>(FItems);
-  inherited;
 end;
 
 end.

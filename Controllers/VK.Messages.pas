@@ -634,6 +634,8 @@ var
   Items: TVkMessageDelete;
 begin
   Result := Delete(Items, [MessageId], GroupID, DeleteForAll, Spam) and Items.Items[MessageId.ToString];
+  if Result then
+    Items.Free;
 end;
 
 function TMessagesController.AllowMessagesFromGroup(const GroupId: Integer; Key: string): Boolean;
@@ -646,10 +648,11 @@ end;
 
 function TMessagesController.CreateChat(var ChatId: Integer; UserIds: TIds; Title: string; GroupId: Integer): Boolean;
 begin
-  with Handler.Execute('messages.createChat', [['user_ids', UserIds.ToString], ['title', Title], ['group_id', GroupId.ToString]]) do
-  begin
-    Result := Success and ResponseAsInt(ChatId);
-  end;
+  Result := Handler.Execute('messages.createChat', [
+    ['user_ids', UserIds.ToString],
+    ['title', Title],
+    ['group_id', GroupId.ToString]]).
+    ResponseAsInt(ChatId);
 end;
 
 function TMessagesController.Delete(var Items: TVkMessageDelete; Params: TParams): Boolean;
@@ -695,10 +698,7 @@ end;
 
 function TMessagesController.DeleteConversation(var LastDeletedId: Integer; Params: TVkParamsMessageDeleteConversation): Boolean;
 begin
-  with Handler.Execute('messages.deleteConversation', Params.List) do
-  begin
-    Result := Success and GetValue('last_deleted_id', LastDeletedId);
-  end;
+  Result := Handler.Execute('messages.deleteConversation', Params.List).GetValue('last_deleted_id', LastDeletedId);
 end;
 
 function TMessagesController.DenyMessagesFromGroup(const GroupId: Integer): Boolean;
