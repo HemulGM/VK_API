@@ -3,9 +3,8 @@ unit VK.Board;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Board,
-  VK.Entity.Board.Comment;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
+  VK.Entity.Board, VK.Entity.Board.Comment;
 
 type
   TVkBoardTopicOrder = (btoDateUpCreate = -2, btoDateUpUpdate = -1, btoDateDownCreate = 2, btoDateDownUpdate = 1);
@@ -385,18 +384,7 @@ end;
 
 function TBoardController.GetComments(var Items: TVkBoardComments; Params: TParams): Boolean;
 begin
-  with Handler.Execute('board.getComments', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkBoardComments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('board.getComments', Params).GetObject<TVkBoardComments>(Items);
 end;
 
 function TBoardController.GetComments(var Items: TVkBoardComments; Params: TVkParamsBoardCommentsGet): Boolean;
@@ -417,24 +405,14 @@ end;
 
 function TBoardController.RestoreComment(GroupId, TopicId, CommentId: Integer): Boolean;
 begin
-  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id', CommentId.ToString]]) do
+  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id',
+    CommentId.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
 function TBoardController.GetTopics(var Items: TVkBoardTopics; Params: TParams): Boolean;
 begin
-  with Handler.Execute('board.getTopics', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkBoardTopics.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('board.getTopics', Params).GetObject<TVkBoardTopics>(Items);
 end;
 
 { TVkParamsBoardCommentEdit }

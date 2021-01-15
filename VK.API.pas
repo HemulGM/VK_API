@@ -801,7 +801,7 @@ begin
         begin
           try
             {$WARNINGS OFF}
-            Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(Response.DataString));
+            Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
             {$WARNINGS ON}
             try
               if not Info.Error.IsEmpty then
@@ -868,7 +868,7 @@ begin
                     EndResponse := HTTP.Get(Url + '&captcha_sid=' + Info.CaptchaSid + '&captcha_key=' + Code, Response);
                     Info.Free;
                     {$WARNINGS OFF}
-                    Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(Response.DataString));
+                    Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
                     {$WARNINGS ON}
                     Token := Info.AccessToken;
                   end
@@ -889,7 +889,7 @@ begin
         end;
       200:
         begin
-          Info := TVkLoginInfo.FromJsonString(Response.DataString);
+          Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(Response.DataString);
           Token := Info.AccessToken;
           Info.Free;
         end;

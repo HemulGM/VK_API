@@ -3,8 +3,8 @@ unit VK.Notes;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Note;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Note;
 
 type
   TVkParamsNotesGet = record
@@ -111,18 +111,7 @@ uses
 
 function TNotesController.Get(var Items: TVkNotes; Params: TParams): Boolean;
 begin
-  with Handler.Execute('notes.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNotes.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('notes.get', Params).GetObject<TVkNotes>(Items);
 end;
 
 function TNotesController.Add(var NoteId: Integer; Params: TParams): Boolean;
@@ -197,18 +186,7 @@ begin
     Params.Add('owner_id', OwnerId);
   if NeedWiki then
     Params.Add('need_wiki', NeedWiki);
-  with Handler.Execute('notes.getById', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkNote.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('notes.getById', Params).GetObject<TVkNote>(Item);
 end;
 
 function TNotesController.GetComments(var Items: TVkNoteComments; Params: TVkParamsNotesGetComments): Boolean;
@@ -229,18 +207,7 @@ end;
 
 function TNotesController.GetComments(var Items: TVkNoteComments; Params: TParams): Boolean;
 begin
-  with Handler.Execute('notes.getComments', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNoteComments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('notes.getComments', Params).GetObject<TVkNoteComments>(Items);
 end;
 
 { TVkParamsNotesGet }

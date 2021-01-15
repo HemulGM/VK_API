@@ -3,7 +3,7 @@ unit VK.Entity.Group.Ban;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Types, VK.Entity.Common;
 
 type
   TVkGroupBanInfo = class
@@ -23,8 +23,6 @@ type
     property Date: Int64 read FDate write FDate;
     property EndDate: Int64 read FEnd_date write FEnd_date;
     property Reason: TVkUserBlockReason read GetReason write SetReason;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupBanInfo;
   end;
 
   TVkGroupBan = class
@@ -40,11 +38,9 @@ type
     property&Type: string read FType write FType;
     constructor Create;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupBan;
   end;
 
-  TVkGroupBans = class
+  TVkGroupBans = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkGroupBan>;
@@ -52,8 +48,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkGroupBan> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupBans;
   end;
 
 implementation
@@ -77,16 +71,6 @@ begin
   FReason := Ord(Value);
 end;
 
-function TVkGroupBanInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupBanInfo.FromJsonString(AJsonString: string): TVkGroupBanInfo;
-begin
-  result := TJson.JsonToObject<TVkGroupBanInfo>(AJsonString)
-end;
-
 {TVkGroupBan}
 
 constructor TVkGroupBan.Create;
@@ -105,32 +89,12 @@ begin
   inherited;
 end;
 
-function TVkGroupBan.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupBan.FromJsonString(AJsonString: string): TVkGroupBan;
-begin
-  result := TJson.JsonToObject<TVkGroupBan>(AJsonString)
-end;
-
 {TVkGroupBans}
 
 destructor TVkGroupBans.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkGroupBan>(FItems);
   inherited;
-end;
-
-function TVkGroupBans.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupBans.FromJsonString(AJsonString: string): TVkGroupBans;
-begin
-  result := TJson.JsonToObject<TVkGroupBans>(AJsonString)
 end;
 
 end.

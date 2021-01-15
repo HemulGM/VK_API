@@ -3,8 +3,8 @@ unit VK.Users;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Profile, VK.Entity.Subscription;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
+  VK.Entity.Subscription;
 
 type
   TVkParamsUsersGet = record
@@ -75,11 +75,13 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
+    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom):
+      Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
+    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom):
+      Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
@@ -145,7 +147,7 @@ begin
     if Result then
     begin
       try
-        Users := TVkProfiles.FromJsonString(ResponseAsItems);
+        Users := TVkProfiles.FromJsonString<TVkProfiles>(ResponseAsItems);
         try
           if Length(Users.Items) > 0 then
           begin
@@ -178,16 +180,7 @@ end;
 
 function TUsersController.Get(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('users.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkProfiles.FromJsonString(ResponseAsItems);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('users.get', Params).GetObjects<TVkProfiles>(Items);
 end;
 
 function TUsersController.Get(var Items: TVkProfiles; Params: TVkParamsUsersGet): Boolean;
@@ -229,44 +222,17 @@ end;
 
 function TUsersController.Search(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('users.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkProfiles.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('users.search', Params).GetObject<TVkProfiles>(Items);
 end;
 
 function TUsersController.GetSubscriptions(var Items: TVkSubscriptions; Params: TParams): Boolean;
 begin
-  with Handler.Execute('users.getSubscriptions', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkSubscriptions.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('users.getSubscriptions', Params).GetObject<TVkSubscriptions>(Items);
 end;
 
 function TUsersController.GetFollowers(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('users.getFollowers', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkProfiles.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('users.getFollowers', Params).GetObject<TVkProfiles>(Items);
 end;
 
 { TVkParamsUsersGet }

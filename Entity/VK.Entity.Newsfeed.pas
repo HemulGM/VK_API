@@ -3,16 +3,13 @@ unit VK.Entity.Newsfeed;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
-  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift,
-  VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll,
-  VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard, VK.Types,
-  VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
-  VK.Entity.Media;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
+  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call, VK.Entity.Media;
 
 type
-  TVkNewsCopyright = class
+  TVkNewsCopyright = class(TVkEntity)
   private
     FLink: string;
     FName: string;
@@ -21,8 +18,6 @@ type
     property Link: string read FLink write FLink;
     property Name: string read FName write FName;
     property&Type: string read FType write FType;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNewsCopyright;
   end;
 
   TVkNewsItem = class(TVkObject)
@@ -96,13 +91,11 @@ type
     property&Type: string read FType write FType;
     property Photos: TVkPhotos read FPhotos write FPhotos;
     property Copyright: TVkNewsCopyright read FCopyright write FCopyright;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNewsItem;
   end;
 
-  TVkNews = class
+  TVkNews = class(TVkEntity)
   private
     FItems: TArray<TVkNewsItem>;
     FProfiles: TArray<TVkProfile>;
@@ -118,22 +111,18 @@ type
     property Count: Integer read FCount write FCount;
     property TotalCount: Integer read FTotal_count write FTotal_count;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNews;
   end;
 
-  TVkNewsfeedBannedIds = class
+  TVkNewsfeedBannedIds = class(TVkEntity)
   private
     FGroups: TArray<Integer>;
     FMembers: TArray<Integer>;
   public
     property Groups: TArray<Integer> read FGroups write FGroups;
     property Members: TArray<Integer> read FMembers write FMembers;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNewsfeedBannedIds;
   end;
 
-  TVkNewsfeedBanned = class
+  TVkNewsfeedBanned = class(TVkEntity)
   private
     FGroups: TArray<TVkGroup>;
     FMembers: TArray<TVkProfile>;
@@ -141,8 +130,6 @@ type
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Members: TArray<TVkProfile> read FMembers write FMembers;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNewsfeedBanned;
   end;
 
   TVkNewsfeedList = class(TVkObject)
@@ -154,11 +141,9 @@ type
     property NoReposts: Integer read FNo_reposts write FNo_reposts;
     property SourceIds: TArray<Integer> read FSource_ids write FSource_ids;
     property Title: string read FTitle write FTitle;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNewsfeedList;
   end;
 
-  TVkNewsfeedLists = class
+  TVkNewsfeedLists = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkNewsfeedList>;
@@ -166,8 +151,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkNewsfeedList> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNewsfeedLists;
   end;
 
   TVkSuggestedItem = class(TVkObject)
@@ -202,11 +185,9 @@ type
     property IsAdvertiser: Integer read FIs_advertiser write FIs_advertiser;
     property IsMember: Integer read FIs_member write FIs_member;
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSuggestedItem;
   end;
 
-  TVkSuggestedList = class
+  TVkSuggestedList = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkSuggestedItem>;
@@ -214,8 +195,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkSuggestedItem> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSuggestedList;
   end;
 
 implementation
@@ -250,16 +229,6 @@ begin
   inherited;
 end;
 
-function TVkNewsItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNewsItem.FromJsonString(AJsonString: string): TVkNewsItem;
-begin
-  result := TJson.JsonToObject<TVkNewsItem>(AJsonString);
-end;
-
 function TVkNewsItem.GetDate: TDateTime;
 begin
   Result := UnixToDateTime(FDate, False);
@@ -280,40 +249,6 @@ begin
   inherited;
 end;
 
-class function TVkNews.FromJsonString(AJsonString: string): TVkNews;
-begin
-  result := TJson.JsonToObject<TVkNews>(AJsonString);
-end;
-
-function TVkNews.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkNewsCopyright }
-
-class function TVkNewsCopyright.FromJsonString(AJsonString: string): TVkNewsCopyright;
-begin
-  result := TJson.JsonToObject<TVkNewsCopyright>(AJsonString);
-end;
-
-function TVkNewsCopyright.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkNewsfeedBannedIds }
-
-class function TVkNewsfeedBannedIds.FromJsonString(AJsonString: string): TVkNewsfeedBannedIds;
-begin
-  result := TJson.JsonToObject<TVkNewsfeedBannedIds>(AJsonString);
-end;
-
-function TVkNewsfeedBannedIds.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkNewsfeedBanned }
 
 destructor TVkNewsfeedBanned.Destroy;
@@ -321,16 +256,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FMembers);
   inherited;
-end;
-
-class function TVkNewsfeedBanned.FromJsonString(AJsonString: string): TVkNewsfeedBanned;
-begin
-  result := TJson.JsonToObject<TVkNewsfeedBanned>(AJsonString);
-end;
-
-function TVkNewsfeedBanned.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkNewsfeedLists }
@@ -341,56 +266,12 @@ begin
   inherited;
 end;
 
-class function TVkNewsfeedLists.FromJsonString(AJsonString: string): TVkNewsfeedLists;
-begin
-  result := TJson.JsonToObject<TVkNewsfeedLists>(AJsonString);
-end;
-
-function TVkNewsfeedLists.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkNewsfeedList }
-
-class function TVkNewsfeedList.FromJsonString(AJsonString: string): TVkNewsfeedList;
-begin
-  result := TJson.JsonToObject<TVkNewsfeedList>(AJsonString);
-end;
-
-function TVkNewsfeedList.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkSuggestedList }
 
 destructor TVkSuggestedList.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSuggestedItem>(FItems);
   inherited;
-end;
-
-class function TVkSuggestedList.FromJsonString(AJsonString: string): TVkSuggestedList;
-begin
-  result := TJson.JsonToObject<TVkSuggestedList>(AJsonString);
-end;
-
-function TVkSuggestedList.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkSuggestedItem }
-
-class function TVkSuggestedItem.FromJsonString(AJsonString: string): TVkSuggestedItem;
-begin
-  result := TJson.JsonToObject<TVkSuggestedItem>(AJsonString);
-end;
-
-function TVkSuggestedItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

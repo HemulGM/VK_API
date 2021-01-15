@@ -192,18 +192,7 @@ begin
   Params.Add('extended', Extended);
   if (ProfileFields <> []) or (GroupFields <> []) then
     Params.Add('fields', [ProfileFields.ToString, GroupFields.ToString]);
-  with Handler.Execute('stories.getBanned', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoriesBanned.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getBanned', Params).GetObject<TVkStoriesBanned>(Items);
 end;
 
 function TStoriesController.GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean;
@@ -215,18 +204,7 @@ begin
   Params.Add('extended', Extended);
   if (ProfileFields <> []) or (GroupFields <> []) then
     Params.Add('fields', [ProfileFields.ToString, GroupFields.ToString]);
-  with Handler.Execute('stories.getById', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoryItems.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getById', Params).GetObject<TVkStoryItems>(Items);
 end;
 
 function TStoriesController.GetPhotoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer):
@@ -238,34 +216,13 @@ end;
 
 function TStoriesController.GetReplies(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesGetReplies): Boolean;
 begin
-  with Handler.Execute('stories.getReplies', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoriesBlock.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getReplies', Params.List).GetObject<TVkStoriesBlock>(Items);
 end;
 
 function TStoriesController.GetStats(var Items: TVkStoryStat; const OwnerId, StoryId: Integer): Boolean;
 begin
-  with Handler.Execute('stories.getStats', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoryStat.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getStats', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).GetObject
+    <TVkStoryStat>(Items);
 end;
 
 function TStoriesController.GetVideoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer):
@@ -277,18 +234,7 @@ end;
 
 function TStoriesController.GetViewers(var Items: TVkStoryViews; const Params: TVkParamsStoriesGetViewers): Boolean;
 begin
-  with Handler.Execute('stories.getViewers', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoryViews.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getViewers', Params.List).GetObject<TVkStoryViews>(Items);
 end;
 
 function TStoriesController.HideAllReplies(const OwnerId, GroupId: Integer): Boolean;
@@ -309,18 +255,7 @@ end;
 
 function TStoriesController.Save(var Items: TVkStoryItems; const UploadResults: TArrayOfString): Boolean;
 begin
-  with Handler.Execute('stories.save', ['upload_results', UploadResults.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoryItems.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.save', ['upload_results', UploadResults.ToString]).GetObject<TVkStoryItems>(Items);
 end;
 
 function TStoriesController.Search(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesSearch): Boolean;
@@ -346,18 +281,7 @@ end;
 
 function TStoriesController.Search(var Items: TVkStoriesBlock; const Params: TParams): Boolean;
 begin
-  with Handler.Execute('stories.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoriesBlock.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.search', Params).GetObject<TVkStoriesBlock>(Items);
 end;
 
 function TStoriesController.Get(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesGet): Boolean;
@@ -367,18 +291,7 @@ end;
 
 function TStoriesController.Get(var Items: TVkStoriesBlock; const Params: TParams): Boolean;
 begin
-  with Handler.Execute('stories.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoriesBlock.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.get', Params).GetObject<TVkStoriesBlock>(Items);
 end;
 
 { TVkParamsStoriesGet }

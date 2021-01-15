@@ -3,11 +3,11 @@ unit VK.Entity.Message;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Types,
-  VK.Entity.Keyboard, VK.Entity.ClientInfo, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Types, VK.Entity.Keyboard, VK.Entity.ClientInfo,
+  VK.Entity.Profile, VK.Entity.Group;
 
 type
-  TVkMessageSendResponse = class
+  TVkMessageSendResponse = class(TVkEntity)
   private
     FMessage_id: Integer;
     FPeer_id: Integer;
@@ -25,11 +25,9 @@ type
     /// Сообщение об ошибке, если сообщение не было доставлено получателю
     /// </summary>
     property Error: string read FError write FError;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessageSendResponse;
   end;
 
-  TVkMessageSendResponses = class
+  TVkMessageSendResponses = class(TVkEntity)
   private
     FItems: TArray<TVkMessageSendResponse>;
     FSuccess: Boolean;
@@ -42,11 +40,10 @@ type
     property Response: Integer read Fresponse write SetResponse;
     constructor CreateFalse;
     constructor CreateTrue(ARespone: Integer);
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessageSendResponses;
+    class function FromJsonString(AJsonString: string): TVkMessageSendResponses; static;
   end;
 
-  TVkMessageAction = class
+  TVkMessageAction = class(TVkEntity)
   private
     FText: string;
     FType: string;
@@ -82,8 +79,6 @@ type
     /// Изображение-обложка чата
     /// </summary>
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessageAction;
   end;
 
   TVkMessageDelete = class
@@ -145,11 +140,9 @@ type
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
     property&Out: Boolean read GetOut write SetOut;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessage;
   end;
 
-  TVkMessages = class
+  TVkMessages = class(TVkEntity)
   private
     FItems: TArray<TVkMessage>;
     FCount: Integer;
@@ -164,13 +157,11 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkMessages);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessages;
   end;
 
-  TVkLongPollHistory = class
+  TVkLongPollHistory = class(TVkEntity)
   private
     FHistory: TArray<TArray<Integer>>;
     FMessages: TVkMessages;
@@ -183,10 +174,8 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property NewPts: Integer read FNew_pts write FNew_pts;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLongPollHistory;
   end;
 
 implementation
@@ -204,16 +193,6 @@ end;
 procedure TVkMessageAction.SetType(const Value: TVkMessageActionType);
 begin
   FType := Value.ToString;
-end;
-
-function TVkMessageAction.ToJsonString: string;
-begin
-  Result := TJson.ObjectToJsonString(Self);
-end;
-
-class function TVkMessageAction.FromJsonString(AJsonString: string): TVkMessageAction;
-begin
-  Result := TJson.JsonToObject<TVkMessageAction>(AJsonString)
 end;
 
 {TVkMessage}
@@ -258,16 +237,6 @@ begin
   end;
 end;
 
-function TVkMessage.ToJsonString: string;
-begin
-  Result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkMessage.FromJsonString(AJsonString: string): TVkMessage;
-begin
-  Result := TJson.JsonToObject<TVkMessage>(AJsonString)
-end;
-
 function TVkMessage.GetDate: TDateTime;
 begin
   Result := UnixToDateTime(FDate, False);
@@ -285,7 +254,7 @@ begin
   if Assigned(FPayloadButton) then
     Exit(FPayloadButton);
   try
-    FPayloadButton := TVkPayloadButton.FromJsonString(Payload);
+    FPayloadButton := TVkPayloadButton.FromJsonString<TVkPayloadButton>(Payload);
     Result := FPayloadButton;
   except
     Exit(nil);
@@ -300,18 +269,6 @@ end;
 procedure TVkMessage.SetOut(const Value: Boolean);
 begin
   FOut := BoolToInt(Value);
-end;
-
-{ TVkMessageSendResponse }
-
-class function TVkMessageSendResponse.FromJsonString(AJsonString: string): TVkMessageSendResponse;
-begin
-  Result := TJson.JsonToObject<TVkMessageSendResponse>(AJsonString);
-end;
-
-function TVkMessageSendResponse.ToJsonString: string;
-begin
-  Result := TJson.ObjectToJsonString(Self);
 end;
 
 { TVkMessageSendResponses }
@@ -346,11 +303,6 @@ begin
   FSuccess := Value;
 end;
 
-function TVkMessageSendResponses.ToJsonString: string;
-begin
-  Result := TJson.ObjectToJsonString(Self);
-end;
-
 {TVkMessages}
 
 procedure TVkMessages.Append(Users: TVkMessages);
@@ -381,16 +333,6 @@ begin
   inherited;
 end;
 
-function TVkMessages.ToJsonString: string;
-begin
-  Result := TJson.ObjectToJsonString(Self);
-end;
-
-class function TVkMessages.FromJsonString(AJsonString: string): TVkMessages;
-begin
-  Result := TJson.JsonToObject<TVkMessages>(AJsonString);
-end;
-
 procedure TVkMessages.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
@@ -418,16 +360,6 @@ begin
   FMessages.Free;
   {$ENDIF}
   inherited;
-end;
-
-class function TVkLongPollHistory.FromJsonString(AJsonString: string): TVkLongPollHistory;
-begin
-  Result := TJson.JsonToObject<TVkLongPollHistory>(AJsonString);
-end;
-
-function TVkLongPollHistory.ToJsonString: string;
-begin
-  Result := TJson.ObjectToJsonString(Self);
 end;
 
 end.

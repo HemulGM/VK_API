@@ -3,11 +3,11 @@ unit VK.Entity.Audio.Catalog;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist,
-  VK.Entity.Group, VK.Entity.Profile, VK.Entity.Catalog.Section;
+  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Common, VK.Entity.Group,
+  VK.Entity.Profile, VK.Entity.Catalog.Section;
 
 type
-  TVkAudioCatalogItem = class
+  TVkAudioCatalogItem = class(TVkEntity)
   private
     FAudios: TArray<TVkAudio>;
     FCount: Integer;
@@ -33,11 +33,9 @@ type
     property Title: string read FTitle write FTitle;
     property&Type: string read FType write FType;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioCatalogItem;
   end;
 
-  TVkAudioCatalog = class
+  TVkAudioCatalog = class(TVkEntity)
   private
     FGroups: TArray<TVkGroup>;
     FItems: TArray<TVkAudioCatalogItem>;
@@ -47,8 +45,6 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Items: TArray<TVkAudioCatalogItem> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioCatalog;
   end;
 
 implementation
@@ -67,16 +63,6 @@ begin
   inherited;
 end;
 
-function TVkAudioCatalogItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioCatalogItem.FromJsonString(AJsonString: string): TVkAudioCatalogItem;
-begin
-  result := TJson.JsonToObject<TVkAudioCatalogItem>(AJsonString)
-end;
-
 {TVkAudioCatalog}
 
 destructor TVkAudioCatalog.Destroy;
@@ -85,16 +71,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   TArrayHelp.FreeArrayOfObject<TVkAudioCatalogItem>(FItems);
   inherited;
-end;
-
-function TVkAudioCatalog.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioCatalog.FromJsonString(AJsonString: string): TVkAudioCatalog;
-begin
-  result := TJson.JsonToObject<TVkAudioCatalog>(AJsonString)
 end;
 
 end.

@@ -3,8 +3,7 @@ unit VK.Entity.Poll;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkPollFriends = class(TVkObject)
@@ -114,7 +113,7 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     //
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function ToJsonString: string;
     class function FromJsonString(AJsonString: string): TVkPoll;

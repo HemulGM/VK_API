@@ -11,11 +11,9 @@ type
     FTitle: string;
   public
     property Title: string read FTitle write FTitle;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCountry;
   end;
 
-  TVkCountries = class
+  TVkCountries = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkCountry>;
@@ -23,23 +21,9 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkCountry> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCountries;
   end;
 
 implementation
-
-{TVkCountry}
-
-function TVkCountry.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCountry.FromJsonString(AJsonString: string): TVkCountry;
-begin
-  result := TJson.JsonToObject<TVkCountry>(AJsonString)
-end;
 
 {TVkCountries}
 
@@ -54,16 +38,6 @@ begin
     LitemsItem.Free;
 {$ENDIF}
   inherited;
-end;
-
-function TVkCountries.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCountries.FromJsonString(AJsonString: string): TVkCountries;
-begin
-  result := TJson.JsonToObject<TVkCountries>(AJsonString)
 end;
 
 end.

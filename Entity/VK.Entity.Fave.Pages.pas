@@ -3,11 +3,10 @@ unit VK.Entity.Fave.Pages;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Fave;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Fave, VK.Entity.Common;
 
 type
-  TVkFavePage = class
+  TVkFavePage = class(TVkEntity)
   private
     FDescription: string;
     FType: string;
@@ -22,13 +21,11 @@ type
     property User: TVkProfile read FUser write FUser;
     property Tags: TArray<TVkFaveTag> read FTags write FTags;
     property Group: TVkGroup read FGroup write FGroup;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFavePage;
   end;
 
-  TVkFavePages = class
+  TVkFavePages = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkFavePage>;
@@ -36,8 +33,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkFavePage> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFavePages;
   end;
 
 implementation
@@ -62,32 +57,12 @@ begin
   inherited;
 end;
 
-function TVkFavePage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkFavePage.FromJsonString(AJsonString: string): TVkFavePage;
-begin
-  result := TJson.JsonToObject<TVkFavePage>(AJsonString)
-end;
-
 {TVkFavePages}
 
 destructor TVkFavePages.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkFavePage>(FItems);
   inherited;
-end;
-
-function TVkFavePages.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkFavePages.FromJsonString(AJsonString: string): TVkFavePages;
-begin
-  result := TJson.JsonToObject<TVkFavePages>(AJsonString)
 end;
 
 end.

@@ -5,8 +5,7 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections,
-  System.JSON;
+  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections, System.JSON, VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -685,6 +684,8 @@ type
     function GetJSONValue: TJSONValue;
     function GetJSONResponse: TJSONValue;
     function GetValue<T>(const Field: string; var Value: T): Boolean;
+    function GetObject<T: TVkEntity, constructor>(var Value: T): Boolean;
+    function GetObjects<T: TVkEntity, constructor>(var Value: T): Boolean;
     function IsError: Boolean;
   end;
 
@@ -1971,6 +1972,32 @@ begin
     Result := TJSONObject.ParseJSONValue(UTF8ToString(JSON))
   else
     Result := nil;
+end;
+
+function TResponse.GetObject<T>(var Value: T): Boolean;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      Value := T.FromJsonString<T>(Response);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TResponse.GetObjects<T>(var Value: T): Boolean;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      Value := T.FromJsonString<T>(ResponseAsItems);
+    except
+      Result := False;
+    end;
+  end;
 end;
 
 function TResponse.GetValue<T>(const Field: string; var Value: T): Boolean;

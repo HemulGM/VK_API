@@ -3,10 +3,10 @@ unit VK.Entity.Call;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkCall = class
+  TVkCall = class(TVkEntity)
   private
     FDuration: Integer;
     FInitiator_id: Integer;
@@ -21,23 +21,9 @@ type
     property State: string read FState write FState;
     property Time: Int64 read FTime write FTime;
     property Video: Boolean read FVideo write FVideo;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCall;
   end;
 
 implementation
-
-{TVkCall}
-
-function TVkCall.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCall.FromJsonString(AJsonString: string): TVkCall;
-begin
-  result := TJson.JsonToObject<TVkCall>(AJsonString)
-end;
 
 end.
 

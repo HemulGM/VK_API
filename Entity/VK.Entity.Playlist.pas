@@ -15,8 +15,6 @@ type
     property AccessKey: string read FAccess_key write FAccess_key;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property PlaylistId: Integer read FPlaylist_id write FPlaylist_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioOriginal;
   end;
 
   TVkAudioGenres = class(TVkObject)
@@ -24,8 +22,6 @@ type
     FName: string;
   public
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioGenres;
   end;
 
   TVkAudioPlaylist = class(TVkObject)
@@ -69,13 +65,11 @@ type
     property&Type: Integer read FType write FType;
     property UpdateTime: TDateTime read GetUpdateTime write SetUpdateTime;
     property Year: Integer read FYear write FYear;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioPlaylist;
   end;
 
-  TVkPlaylists = class
+  TVkPlaylists = class(TVkEntity)
   private
     FItems: TArray<TVkAudioPlaylist>;
     FCount: Integer;
@@ -86,40 +80,14 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(AItems: TVkPlaylists);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPlaylists;
   end;
 
 implementation
 
 uses
   VK.CommonUtils, System.DateUtils;
-
-{TVkAudioOriginal}
-
-function TVkAudioOriginal.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioOriginal.FromJsonString(AJsonString: string): TVkAudioOriginal;
-begin
-  result := TJson.JsonToObject<TVkAudioOriginal>(AJsonString)
-end;
-
-{TVkAudioGenres}
-
-function TVkAudioGenres.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioGenres.FromJsonString(AJsonString: string): TVkAudioGenres;
-begin
-  result := TJson.JsonToObject<TVkAudioGenres>(AJsonString)
-end;
 
 {TVkAudioPlaylist}
 
@@ -137,16 +105,6 @@ begin
   FOriginal.Free;
   FPhoto.Free;
   inherited;
-end;
-
-function TVkAudioPlaylist.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioPlaylist.FromJsonString(AJsonString: string): TVkAudioPlaylist;
-begin
-  result := TJson.JsonToObject<TVkAudioPlaylist>(AJsonString)
 end;
 
 function TVkAudioPlaylist.GetUpdateTime: TDateTime;
@@ -185,19 +143,9 @@ begin
   inherited;
 end;
 
-class function TVkPlaylists.FromJsonString(AJsonString: string): TVkPlaylists;
-begin
-  result := TJson.JsonToObject<TVkPlaylists>(AJsonString);
-end;
-
 procedure TVkPlaylists.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
-end;
-
-function TVkPlaylists.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

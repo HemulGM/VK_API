@@ -8,7 +8,7 @@ uses
 type
   TVkMarketSection = TVkBasicObject;
 
-  TVkProductPrice = class
+  TVkProductPrice = class(TVkEntity)
   private
     FAmount: string;
     FCurrency: TVkProductCurrency;
@@ -23,10 +23,8 @@ type
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Text: string read FText write FText;
     property DiscountRate: Integer read FDiscount_rate write FDiscount_rate;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProductPrice;
   end;
 
   TVkProductCategory = class(TVkObject)
@@ -36,13 +34,11 @@ type
   public
     property Name: string read FName write FName;
     property Section: TVkMarketSection read FSection write FSection;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProductCategory;
   end;
 
-  TVkProductCategories = class
+  TVkProductCategories = class(TVkEntity)
   private
     FItems: TArray<TVkProductCategory>;
     FCount: Integer;
@@ -50,8 +46,6 @@ type
     property Items: TArray<TVkProductCategory> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProductCategories;
   end;
 
   TVkProduct = class(TVkObject)
@@ -105,13 +99,11 @@ type
     property Dimensions: TVkDimensions read FDimensions write FDimensions;
     //
     property Quantity: Integer read FQuantity write FQuantity;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProduct;
   end;
 
-  TVkProducts = class
+  TVkProducts = class(TVkEntity)
   private
     FItems: TArray<TVkProduct>;
     FCount: Integer;
@@ -121,10 +113,8 @@ type
     property Items: TArray<TVkProduct> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProducts;
   end;
 
 implementation
@@ -146,16 +136,6 @@ begin
   inherited;
 end;
 
-function TVkProductPrice.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProductPrice.FromJsonString(AJsonString: string): TVkProductPrice;
-begin
-  result := TJson.JsonToObject<TVkProductPrice>(AJsonString)
-end;
-
 {TVkMarketCategory}
 
 constructor TVkProductCategory.Create;
@@ -168,16 +148,6 @@ destructor TVkProductCategory.Destroy;
 begin
   FSection.Free;
   inherited;
-end;
-
-function TVkProductCategory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProductCategory.FromJsonString(AJsonString: string): TVkProductCategory;
-begin
-  result := TJson.JsonToObject<TVkProductCategory>(AJsonString)
 end;
 
 {TVkMarket}
@@ -203,16 +173,6 @@ begin
   inherited;
 end;
 
-function TVkProduct.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProduct.FromJsonString(AJsonString: string): TVkProduct;
-begin
-  result := TJson.JsonToObject<TVkProduct>(AJsonString)
-end;
-
 { TVkMarkets }
 
 constructor TVkProducts.Create;
@@ -232,19 +192,9 @@ begin
   inherited;
 end;
 
-class function TVkProducts.FromJsonString(AJsonString: string): TVkProducts;
-begin
-  result := TJson.JsonToObject<TVkProducts>(AJsonString);
-end;
-
 procedure TVkProducts.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
-end;
-
-function TVkProducts.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkProductCategories }
@@ -253,16 +203,6 @@ destructor TVkProductCategories.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkProductCategory>(FItems);
   inherited;
-end;
-
-class function TVkProductCategories.FromJsonString(AJsonString: string): TVkProductCategories;
-begin
-  result := TJson.JsonToObject<TVkProductCategories>(AJsonString);
-end;
-
-function TVkProductCategories.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

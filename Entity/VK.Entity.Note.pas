@@ -31,11 +31,9 @@ type
     property Privacy: Integer read FPrivacy write FPrivacy;
     property CommentPrivacy: Integer read FComment_privacy write FComment_privacy;
     property CanComment: Integer read FCan_comment write FCan_comment;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNote;
   end;
 
-  TVkNotes = class
+  TVkNotes = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkNote>;
@@ -43,8 +41,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkNote> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotes;
   end;
 
   TVkNoteComment = class(TVkObject)
@@ -62,11 +58,9 @@ type
     property OwnerId: Integer read FOid write FOid;
     property ReplyTo: Integer read FReply_to write FReply_to;
     property UserId: Integer read FUid write FUid;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNoteComment;
   end;
 
-  TVkNoteComments = class
+  TVkNoteComments = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkNoteComment>;
@@ -74,8 +68,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkNoteComment> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNoteComments;
   end;
 
 implementation
@@ -95,16 +87,6 @@ begin
   FDate := DateTimeToUnix(Value, False);
 end;
 
-function TVkNote.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNote.FromJsonString(AJsonString: string): TVkNote;
-begin
-  result := TJson.JsonToObject<TVkNote>(AJsonString)
-end;
-
 {TVkNotes}
 
 destructor TVkNotes.Destroy;
@@ -113,44 +95,12 @@ begin
   inherited;
 end;
 
-function TVkNotes.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNotes.FromJsonString(AJsonString: string): TVkNotes;
-begin
-  result := TJson.JsonToObject<TVkNotes>(AJsonString)
-end;
-
-{ TVkNoteComment }
-
-class function TVkNoteComment.FromJsonString(AJsonString: string): TVkNoteComment;
-begin
-  result := TJson.JsonToObject<TVkNoteComment>(AJsonString)
-end;
-
-function TVkNoteComment.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkNoteComments }
 
 destructor TVkNoteComments.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkNoteComment>(FItems);
   inherited;
-end;
-
-class function TVkNoteComments.FromJsonString(AJsonString: string): TVkNoteComments;
-begin
-  result := TJson.JsonToObject<TVkNoteComments>(AJsonString)
-end;
-
-function TVkNoteComments.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

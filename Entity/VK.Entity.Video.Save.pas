@@ -3,10 +3,10 @@ unit VK.Entity.Video.Save;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkVideoSaved = class
+  TVkVideoSaved = class(TVkEntity)
   private
     FAccess_key: string;
     FDescription: string;
@@ -21,23 +21,9 @@ type
     property Title: string read FTitle write FTitle;
     property UploadUrl: string read FUpload_url write FUpload_url;
     property VideoId: Integer read FVideo_id write FVideo_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoSaved;
   end;
 
 implementation
-
-{TVkVideoSaved}
-
-function TVkVideoSaved.ToJsonString: string;
-begin
-  Result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoSaved.FromJsonString(AJsonString: string): TVkVideoSaved;
-begin
-  Result := TJson.JsonToObject<TVkVideoSaved>(AJsonString)
-end;
 
 end.
 

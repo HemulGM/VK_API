@@ -19,11 +19,9 @@ type
     FName: string;
   public
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFaveTag;
   end;
 
-  TVkFaveTags = class
+  TVkFaveTags = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkFaveTag>;
@@ -31,11 +29,9 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkFaveTag> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFaveTags;
   end;
 
-  TVkFave = class
+  TVkFave = class(TVkEntity)
   private
     FAdded_date: Int64;
     FSeen: Boolean;
@@ -60,13 +56,11 @@ type
     property Seen: Boolean read FSeen write FSeen;
     property Tags: TArray<TVkFaveTag> read FTags write FTags;
     property&Type: TVkFaveType read GetType write SetType;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFave;
   end;
 
-  TVkFaves = class
+  TVkFaves = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkFave>;
@@ -74,26 +68,12 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkFave> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFaves;
   end;
 
 implementation
 
 uses
   System.DateUtils, VK.CommonUtils;
-
-{TTagsClass}
-
-function TVkFaveTag.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkFaveTag.FromJsonString(AJsonString: string): TVkFaveTag;
-begin
-  result := TJson.JsonToObject<TVkFaveTag>(AJsonString)
-end;
 
 {TItemsClass}
 
@@ -117,16 +97,6 @@ begin
   if Assigned(FPhoto) then
     FPhoto.Free;
   inherited;
-end;
-
-function TVkFave.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkFave.FromJsonString(AJsonString: string): TVkFave;
-begin
-  result := TJson.JsonToObject<TVkFave>(AJsonString)
 end;
 
 function TVkFave.GetAdded_date: TDateTime;
@@ -157,32 +127,12 @@ begin
   inherited;
 end;
 
-function TVkFaves.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkFaves.FromJsonString(AJsonString: string): TVkFaves;
-begin
-  result := TJson.JsonToObject<TVkFaves>(AJsonString)
-end;
-
 { TVkFaveTags }
 
 destructor TVkFaveTags.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkFaveTag>(FItems);
   inherited;
-end;
-
-class function TVkFaveTags.FromJsonString(AJsonString: string): TVkFaveTags;
-begin
-  result := TJson.JsonToObject<TVkFaveTags>(AJsonString)
-end;
-
-function TVkFaveTags.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkFaveTypeHelper }

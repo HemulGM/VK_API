@@ -3,10 +3,10 @@ unit VK.Entity.Login;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkLoginInfo = class
+  TVkLoginInfo = class(TVkEntity)
   private
     FError: string;
     FError_description: string;
@@ -31,23 +31,9 @@ type
     property UserId: Integer read FUser_id write FUser_id;
     property CaptchaImg: string read FCaptcha_img write FCaptcha_img;
     property CaptchaSid: string read FCaptcha_sid write FCaptcha_sid;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLoginInfo;
   end;
 
 implementation
-
-{TVkLoginInfo}
-
-function TVkLoginInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLoginInfo.FromJsonString(AJsonString: string): TVkLoginInfo;
-begin
-  result := TJson.JsonToObject<TVkLoginInfo>(AJsonString)
-end;
 
 end.
 

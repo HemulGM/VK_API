@@ -3,8 +3,8 @@ unit VK.Entity.Catalog.Section;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Audio,
-  VK.Entity.Album, VK.Entity.Group, VK.Entity.Playlist, VK.Entity.Catalog;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Audio, VK.Entity.Album, VK.Entity.Group,
+  VK.Entity.Playlist, VK.Entity.Catalog;
 
 type
   TVkCatalogThumb = class
@@ -28,8 +28,6 @@ type
     property Photo34: string read FPhoto_34 write FPhoto_34;
     property Photo600: string read FPhoto_600 write FPhoto_600;
     property Photo68: string read FPhoto_68 write FPhoto_68;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogThumb;
   end;
 
   TVkLinkMeta = class
@@ -39,8 +37,6 @@ type
   public
     property ContentType: string read FContent_type write FContent_type;
     property Icon: string read FIcon write FIcon;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkMeta;
   end;
 
   TVkLinkImage = class
@@ -52,11 +48,9 @@ type
     property Height: Integer read FHeight write FHeight;
     property Width: Integer read FWidth write FWidth;
     property Url: string read FUrl write FUrl;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLinkImage;
   end;
 
-  TVkCatalogLink = class
+  TVkCatalogLink = class(TVkEntity)
   private
     FId: string;
     FImage: TArray<TVkLinkImage>;
@@ -71,13 +65,11 @@ type
     property Subtitle: string read FSubtitle write FSubtitle;
     property Title: string read FTitle write FTitle;
     property Url: string read FUrl write FUrl;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCatalogLink;
   end;
 
-  TVkSectionData = class
+  TVkSectionData = class(TVkEntity)
   private
     FAudios: TArray<TVkAudio>;
     FGroups: TArray<TVkGroup>;
@@ -92,52 +84,14 @@ type
     property Playlists: TArray<TVkAudioPlaylist> read FPlaylists write FPlaylists;
     property Section: TVkCatalogSection read FSection write FSection;
     property Thumbs: TArray<TVkCatalogThumb> read FThumbs write FThumbs;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSectionData;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkCatalogThumb}
-
-function TVkCatalogThumb.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogThumb.FromJsonString(AJsonString: string): TVkCatalogThumb;
-begin
-  result := TJson.JsonToObject<TVkCatalogThumb>(AJsonString)
-end;
-
-{TVkLinkMeta}
-
-function TVkLinkMeta.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLinkMeta.FromJsonString(AJsonString: string): TVkLinkMeta;
-begin
-  result := TJson.JsonToObject<TVkLinkMeta>(AJsonString)
-end;
-
-{TVkLinkImage}
-
-function TVkLinkImage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLinkImage.FromJsonString(AJsonString: string): TVkLinkImage;
-begin
-  result := TJson.JsonToObject<TVkLinkImage>(AJsonString)
-end;
 
 {TVkCatalogLink}
 
@@ -152,16 +106,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkLinkImage>(FImage);
   FMeta.Free;
   inherited;
-end;
-
-function TVkCatalogLink.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCatalogLink.FromJsonString(AJsonString: string): TVkCatalogLink;
-begin
-  result := TJson.JsonToObject<TVkCatalogLink>(AJsonString)
 end;
 
 {TVkSectionAudio}
@@ -181,16 +125,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FPlaylists);
   FSection.Free;
   inherited;
-end;
-
-function TVkSectionData.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSectionData.FromJsonString(AJsonString: string): TVkSectionData;
-begin
-  result := TJson.JsonToObject<TVkSectionData>(AJsonString)
 end;
 
 end.

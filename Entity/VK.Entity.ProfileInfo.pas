@@ -3,11 +3,10 @@ unit VK.Entity.ProfileInfo;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common,
-  VK.Entity.Database.Countries;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Database.Countries;
 
 type
-  TVkProfileInfo = class
+  TVkProfileInfo = class(TVkEntity)
   private
     FBdate: string;
     FBdate_visibility: Extended;
@@ -36,10 +35,8 @@ type
     property ScreenName: string read FScreen_name write FScreen_name;
     property Sex: Extended read FSex write FSex;
     property Status: string read FStatus write FStatus;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProfileInfo;
   end;
 
 implementation
@@ -62,16 +59,6 @@ begin
   FCountry.Free;
   FRelation_partner.Free;
   inherited;
-end;
-
-function TVkProfileInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProfileInfo.FromJsonString(AJsonString: string): TVkProfileInfo;
-begin
-  result := TJson.JsonToObject<TVkProfileInfo>(AJsonString)
 end;
 
 end.

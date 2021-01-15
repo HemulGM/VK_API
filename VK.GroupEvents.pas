@@ -3,11 +3,9 @@ unit VK.GroupEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  REST.Client, System.JSON, VK.Types, System.Generics.Collections,
-  VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
-  VK.Entity.GroupSettings;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON, VK.Types,
+  System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo, VK.Entity.GroupSettings;
 
 type
   TLongPollEventProc = procedure(GroupId: Integer; EventObject: TJSONValue; EventId: string) of object;
@@ -74,7 +72,8 @@ type
     GroupId: Integer;
   end;
 
-  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId: string) of object;
+  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId:
+    string) of object;
 
   TOnCommentDelete = procedure(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string) of object;
 
@@ -84,13 +83,15 @@ type
 
   TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; EventId: string) of object;
 
-  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId: string) of object;
+  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId:
+    string) of object;
 
   TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string) of object;
 
   TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; EventId: string) of object;
 
-  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string) of object;
+  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string)
+    of object;
 
   TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction; EventId: string) of object;
 
@@ -106,13 +107,15 @@ type
 
   TOnAudioNew = procedure(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string) of object;
 
-  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string) of object;
+  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo;
+    EventId: string) of object;
 
   TOnGroupMessageAction = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string) of object;
 
   TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string; EventId: string) of object;
 
-  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId: string) of object;
+  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId:
+    string) of object;
 
   TCustomGroupEvents = class(TComponent)
   private
@@ -530,7 +533,7 @@ var
 begin
   if Assigned(FOnAudioNew) then
   begin
-    Audio := TVkAudio.FromJsonString(EventObject.ToString);
+    Audio := TVkAudio.FromJsonString<TVkAudio>(EventObject.ToString);
     try
       FOnAudioNew(Self, GroupId, Audio, EventId);
     finally
@@ -575,7 +578,7 @@ var
 begin
   if Assigned(FOnBoardPostEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -593,7 +596,7 @@ var
 begin
   if Assigned(FOnBoardPostNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -611,7 +614,7 @@ var
 begin
   if Assigned(FOnBoardPostRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -629,7 +632,7 @@ begin
   if Assigned(FOnGroupChangePhoto) then
   begin
     Changes.UserId := EventObject.GetValue<Integer>('user_id', -1);
-    Changes.Photo := TVkPhoto.FromJsonString(EventObject.GetValue<TJSONValue>('photo', nil).ToString);
+    Changes.Photo := TVkPhoto.FromJsonString<TVkPhoto>(EventObject.GetValue<TJSONValue>('photo', nil).ToString);
     try
       FOnGroupChangePhoto(Self, GroupId, Changes, EventId);
     finally
@@ -644,7 +647,7 @@ var
 begin
   if Assigned(FOnGroupChangeSettings) then
   begin
-    Changes := TVkGroupSettingsChange.FromJsonString(EventObject.ToString);
+    Changes := TVkGroupSettingsChange.FromJsonString<TVkGroupSettingsChange>(EventObject.ToString);
     try
       FOnGroupChangeSettings(Self, GroupId, Changes, EventId);
     finally
@@ -715,7 +718,7 @@ var
 begin
   if Assigned(FOnMarketCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -733,7 +736,7 @@ var
 begin
   if Assigned(FOnMarketCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -751,7 +754,7 @@ var
 begin
   if Assigned(FOnMarketCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -792,7 +795,7 @@ var
 begin
   if Assigned(FOnMessageEdit) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.ToString);
     try
       FOnMessageEdit(Self, GroupId, Message, EventId);
     finally
@@ -808,8 +811,8 @@ var
 begin
   if Assigned(FOnMessageNew) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.GetValue<TJSONValue>('message').ToString);
-    ClientInfo := TVkClientInfo.FromJsonString(EventObject.GetValue<TJSONValue>('client_info').ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.GetValue<TJSONValue>('message').ToString);
+    ClientInfo := TVkClientInfo.FromJsonString<TVkClientInfo>(EventObject.GetValue<TJSONValue>('client_info').ToString);
     try
       FOnMessageNew(Self, GroupId, Message, ClientInfo, EventId);
     finally
@@ -825,7 +828,7 @@ var
 begin
   if Assigned(FOnMessageReply) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.ToString);
     try
       FOnMessageReply(Self, GroupId, Message, EventId);
     finally
@@ -869,7 +872,7 @@ var
 begin
   if Assigned(FOnPhotoCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -887,7 +890,7 @@ var
 begin
   if Assigned(FOnPhotoCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -905,7 +908,7 @@ var
 begin
   if Assigned(FOnPhotoCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -922,7 +925,7 @@ var
 begin
   if Assigned(FOnPhotoNew) then
   begin
-    Photo := TVkPhoto.FromJsonString(EventObject.ToString);
+    Photo := TVkPhoto.FromJsonString<TVkPhoto>(EventObject.ToString);
     try
       FOnPhotoNew(Self, GroupId, Photo, EventId);
     finally
@@ -995,7 +998,7 @@ var
 begin
   if Assigned(FOnVideoCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1013,7 +1016,7 @@ var
 begin
   if Assigned(FOnVideoCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1031,7 +1034,7 @@ var
 begin
   if Assigned(FOnVideoCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1048,7 +1051,7 @@ var
 begin
   if Assigned(FOnVideoNew) then
   begin
-    Video := TVkVideo.FromJsonString(EventObject.ToString);
+    Video := TVkVideo.FromJsonString<TVkVideo>(EventObject.ToString);
     try
       FOnVideoNew(Self, GroupId, Video, EventId);
     finally
@@ -1077,7 +1080,7 @@ var
 begin
   if Assigned(FOnWallPostNew) then
   begin
-    Post := TVkPost.FromJsonString(EventObject.ToString);
+    Post := TVkPost.FromJsonString<TVkPost>(EventObject.ToString);
     try
       FOnWallPostNew(Self, GroupId, Post, EventId);
     finally
@@ -1108,7 +1111,7 @@ var
 begin
   if Assigned(FOnWallReplyEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1126,7 +1129,7 @@ var
 begin
   if Assigned(FOnWallReplyNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1144,7 +1147,7 @@ var
 begin
   if Assigned(FOnWallReplyRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1161,7 +1164,7 @@ var
 begin
   if Assigned(FOnWallRepost) then
   begin
-    Post := TVkPost.FromJsonString(EventObject.ToString);
+    Post := TVkPost.FromJsonString<TVkPost>(EventObject.ToString);
     try
       FOnWallRepost(Self, GroupId, Post, EventId);
     finally

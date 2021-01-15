@@ -3,8 +3,7 @@ unit VK.Pages;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Page;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Page;
 
 type
   TVkParamsPagesGet = record
@@ -65,7 +64,8 @@ type
     /// <summary>
     /// Возвращает список всех старых версий вики-страницы.
     /// </summary>
-    function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: Integer = 0; UserId: Integer = 0): Boolean; overload;
+    function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: Integer = 0; UserId: Integer = 0):
+      Boolean; overload;
     /// <summary>
     /// Возвращает список вики-страниц в группе.
     /// </summary>
@@ -104,18 +104,7 @@ end;
 
 function TPagesController.Get(var Item: TVkPage; Params: TParams): Boolean;
 begin
-  with Handler.Execute('pages.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkPage.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('pages.get', Params).GetObject<TVkPage>(Item);
 end;
 
 function TPagesController.Get(var Item: TVkPage; Params: TVkParamsPagesGet): Boolean;
@@ -132,18 +121,7 @@ begin
     Params.Add('group_id', GroupId);
   if UserId <> 0 then
     Params.Add('user_id', UserId);
-  with Handler.Execute('pages.getHistory', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPageVersions.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('pages.getHistory', Params).GetObject<TVkPageVersions>(Items);
 end;
 
 function TPagesController.GetTitles(var Items: TVkPages; const GroupId: Integer): Boolean;
@@ -152,34 +130,12 @@ var
 begin
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
-  with Handler.Execute('pages.getHistory', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPages.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('pages.getHistory', Params).GetObjects<TVkPages>(Items);
 end;
 
 function TPagesController.GetVersion(var Item: TVkPage; Params: TVkParamsPagesGetVersion): Boolean;
 begin
-  with Handler.Execute('pages.getVersion', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkPage.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('pages.getVersion', Params.List).GetObject<TVkPage>(Item);
 end;
 
 function TPagesController.ParseWiki(var Html: string; const Text: string; const GroupId: Integer): Boolean;

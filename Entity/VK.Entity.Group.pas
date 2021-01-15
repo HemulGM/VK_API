@@ -12,7 +12,7 @@ type
 
   TVkGroupSubject = TVkBasicObject;
 
-  TVkGroupStatus = class
+  TVkGroupStatus = class(TVkEntity)
   private
     FMinutes: Integer;
     FStatus: string;
@@ -31,8 +31,6 @@ type
     /// Cтатус сообщества
     /// </summary>
     property Status: TVkGroupStatusType read GetStatus;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupStatus;
   end;
 
   TVkCoverImage = record
@@ -46,13 +44,11 @@ type
     property Height: Integer read FHeight write FHeight;
   end;
 
-  TVkCoverImages = class
+  TVkCoverImages = class(TVkEntity)
   private
     FItems: TArray<TVkCoverImage>;
   public
     property Items: TArray<TVkCoverImage> read FItems write FItems;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCoverImages;
   end;
 
   TVkCover = class
@@ -81,11 +77,9 @@ type
     property Photo_100: string read FPhoto_100 write FPhoto_100;
     property EditTitle: Integer read FEdit_title write FEdit_title;
     property ImageProcessing: Integer read FImage_processing write FImage_processing;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupLink;
   end;
 
-  TVkGroupMemberState = class
+  TVkGroupMemberState = class(TVkEntity)
   private
     FMember: Integer;
     FUser_id: Integer;
@@ -128,18 +122,14 @@ type
     /// Идентификатор пользователя.
     /// </summary>
     property UserId: Integer read FUser_id write FUser_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupMemberState;
   end;
 
-  TVkGroupMemberStates = class
+  TVkGroupMemberStates = class(TVkEntity)
   private
     FItems: TArray<TVkGroupMemberState>;
   public
     property Items: TArray<TVkGroupMemberState> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupMemberStates;
   end;
 
   TVkGroupMarket = class(TVkObject)
@@ -186,18 +176,14 @@ type
     property TimeOffset: Integer read FTime_offset write FTime_offset;
     property Title: string read FTitle write FTitle;
     property WorkInfoStatus: string read FWork_info_status write FWork_info_status;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupAddress;
   end;
 
-  TVkGroupAddresses = class
+  TVkGroupAddresses = class(TVkEntity)
   private
     FItems: TArray<TVkGroupAddress>;
   public
     property Items: TArray<TVkGroupAddress> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupAddresses;
   end;
 
   TVkGroupState = (gsOpen = 0, gsClose = 1, gsPrivate = 2);
@@ -414,13 +400,11 @@ type
     property Verified: Boolean read FVerified write FVerified;
     property Wall: Integer read FWall write FWall;
     property WikiPage: string read FWiki_page write FWiki_page;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroup;
   end;
 
-  TVkGroups = class
+  TVkGroups = class(TVkEntity)
   private
     FItems: TArray<TVkGroup>;
     FCount: Integer;
@@ -431,13 +415,11 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkGroups);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroups;
   end;
 
-  TVkInvitesGroups = class
+  TVkInvitesGroups = class(TVkEntity)
   private
     FItems: TArray<TVkGroup>;
     FCount: Integer;
@@ -449,8 +431,6 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkInvitesGroups;
   end;
 
   TVkGroupTag = class(TVkObject)
@@ -461,11 +441,9 @@ type
     property Color: string read FColor write FColor;
     property Id;
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupTag;
   end;
 
-  TVkGroupTags = class
+  TVkGroupTags = class(TVkEntity)
   private
     FItems: TArray<TVkGroupTag>;
     FCount: Integer;
@@ -473,8 +451,6 @@ type
     property Items: TArray<TVkGroupTag> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupTags;
   end;
 
 function FindGroup(Id: Integer; List: TArray<TVkGroup>): Integer;
@@ -495,11 +471,6 @@ begin
 end;
 
 {TVkGroup}
-
-function TVkGroup.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
 
 constructor TVkGroup.Create;
 begin
@@ -527,11 +498,6 @@ begin
   if Assigned(FMarket) then
     FMarket.Free;
   inherited;
-end;
-
-class function TVkGroup.FromJsonString(AJsonString: string): TVkGroup;
-begin
-  result := TJson.JsonToObject<TVkGroup>(AJsonString)
 end;
 
 function TVkGroup.GetFixedPostId: string;
@@ -568,16 +534,6 @@ begin
   Result := gsNone;
 end;
 
-function TVkGroupStatus.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupStatus.FromJsonString(AJsonString: string): TVkGroupStatus;
-begin
-  result := TJson.JsonToObject<TVkGroupStatus>(AJsonString)
-end;
-
 { TVkGroups }
 
 procedure TVkGroups.Append(Users: TVkGroups);
@@ -606,19 +562,9 @@ begin
   inherited;
 end;
 
-class function TVkGroups.FromJsonString(AJsonString: string): TVkGroups;
-begin
-  result := TJson.JsonToObject<TVkGroups>(AJsonString);
-end;
-
 procedure TVkGroups.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
-end;
-
-function TVkGroups.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkGroupMemberStates }
@@ -629,22 +575,7 @@ begin
   inherited;
 end;
 
-class function TVkGroupMemberStates.FromJsonString(AJsonString: string): TVkGroupMemberStates;
-begin
-  result := TJson.JsonToObject<TVkGroupMemberStates>(AJsonString);
-end;
-
-function TVkGroupMemberStates.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkGroupMemberState }
-
-class function TVkGroupMemberState.FromJsonString(AJsonString: string): TVkGroupMemberState;
-begin
-  result := TJson.JsonToObject<TVkGroupMemberState>(AJsonString);
-end;
 
 function TVkGroupMemberState.GetCan_invite: Boolean;
 begin
@@ -696,51 +627,12 @@ begin
   FRequest := BoolToInt(Value);
 end;
 
-function TVkGroupMemberState.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkGroupAddress }
-
-class function TVkGroupAddress.FromJsonString(AJsonString: string): TVkGroupAddress;
-begin
-  result := TJson.JsonToObject<TVkGroupAddress>(AJsonString);
-end;
-
-function TVkGroupAddress.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkGroupLink }
-
-class function TVkGroupLink.FromJsonString(AJsonString: string): TVkGroupLink;
-begin
-  result := TJson.JsonToObject<TVkGroupLink>(AJsonString);
-end;
-
-function TVkGroupLink.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkGroupAddresses }
 
 destructor TVkGroupAddresses.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkGroupAddress>(FItems);
   inherited;
-end;
-
-class function TVkGroupAddresses.FromJsonString(AJsonString: string): TVkGroupAddresses;
-begin
-  result := TJson.JsonToObject<TVkGroupAddresses>(AJsonString);
-end;
-
-function TVkGroupAddresses.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkInvitesGroups }
@@ -753,56 +645,12 @@ begin
   inherited;
 end;
 
-class function TVkInvitesGroups.FromJsonString(AJsonString: string): TVkInvitesGroups;
-begin
-  result := TJson.JsonToObject<TVkInvitesGroups>(AJsonString);
-end;
-
-function TVkInvitesGroups.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkGroupTag }
-
-class function TVkGroupTag.FromJsonString(AJsonString: string): TVkGroupTag;
-begin
-  result := TJson.JsonToObject<TVkGroupTag>(AJsonString);
-end;
-
-function TVkGroupTag.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkGroupTags }
 
 destructor TVkGroupTags.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkGroupTag>(FItems);
   inherited;
-end;
-
-class function TVkGroupTags.FromJsonString(AJsonString: string): TVkGroupTags;
-begin
-  result := TJson.JsonToObject<TVkGroupTags>(AJsonString);
-end;
-
-function TVkGroupTags.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkCoverImages }
-
-class function TVkCoverImages.FromJsonString(AJsonString: string): TVkCoverImages;
-begin
-  result := TJson.JsonToObject<TVkCoverImages>(AJsonString);
-end;
-
-function TVkCoverImages.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

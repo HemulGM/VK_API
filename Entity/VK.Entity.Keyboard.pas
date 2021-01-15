@@ -3,7 +3,7 @@ unit VK.Entity.Keyboard;
 interface
 
 uses
-  Generics.Collections, Rest.Json, System.Json;
+  Generics.Collections, Rest.Json, System.Json, VK.Entity.Common;
 
 type
   TVkKeyboardButtonColor = (bcPositive, bcNegative, bcPrimary, bcSecondary);
@@ -24,13 +24,11 @@ type
     function ToJsonString: string;
   end;
 
-  TVkPayloadButton = class
+  TVkPayloadButton = class(TVkEntity)
   private
     FButton: string;
   public
     property Button: string read FButton write FButton;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPayloadButton;
   end;
 
   TVkKeyboardAction = class
@@ -50,21 +48,17 @@ type
     property&Label: string read FLabel write FLabel;
     property OwnerId: Extended read FOwner_id write FOwner_id;
     property&Type: string read FType write FType;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkKeyboardAction;
   end;
 
-  TVkKeyboardButton = class
+  TVkKeyboardButton = class(TVkEntity)
   private
     FAction: TVkKeyboardAction;
     FColor: string;
   public
     property Action: TVkKeyboardAction read FAction write FAction;
     property Color: string read FColor write FColor;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkKeyboardButton;
   end;
 
   TVkKeyboardButtons = TArray<TVkKeyboardButton>;
@@ -81,8 +75,6 @@ type
     property&Inline: Boolean read FInline write FInline;
     property AuthorId: Integer read FAuthor_id write FAuthor_id;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkKeyboard;
   end;
 
 implementation
@@ -92,30 +84,10 @@ uses
 
 {TVkKeyboardAction}
 
-function TVkKeyboardAction.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkKeyboardAction.FromJsonString(AJsonString: string): TVkKeyboardAction;
-begin
-  result := TJson.JsonToObject<TVkKeyboardAction>(AJsonString)
-end;
-
 destructor TVkKeyboard.Destroy;
 begin
   TArrayHelp.FreeArrayOfArrayOfObject<TVkKeyboardButton>(FButtons);
   inherited;
-end;
-
-function TVkKeyboard.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkKeyboard.FromJsonString(AJsonString: string): TVkKeyboard;
-begin
-  result := TJson.JsonToObject<TVkKeyboard>(AJsonString);
 end;
 
 { TVkKeyboardButton }
@@ -130,16 +102,6 @@ destructor TVkKeyboardButton.Destroy;
 begin
   FAction.Free;
   inherited;
-end;
-
-class function TVkKeyboardButton.FromJsonString(AJsonString: string): TVkKeyboardButton;
-begin
-  result := TJson.JsonToObject<TVkKeyboardButton>(AJsonString);
-end;
-
-function TVkKeyboardButton.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkKeyboardConstructor }
@@ -213,18 +175,6 @@ begin
   else
     Result := Result + ',"inline": false';
   Result := Result + '}'
-end;
-
-{ TVkPayloadButton }
-
-class function TVkPayloadButton.FromJsonString(AJsonString: string): TVkPayloadButton;
-begin
-  result := TJson.JsonToObject<TVkPayloadButton>(AJsonString);
-end;
-
-function TVkPayloadButton.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkKeyboardButtonColorHelper }

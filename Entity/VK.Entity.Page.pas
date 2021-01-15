@@ -41,11 +41,9 @@ type
     property Source: string read FSource write FSource;
     property Html: string read FHtml write FHtml;
     property ViewUrl: string read FView_url write FView_url;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPage;
   end;
 
-  TVkPages = class
+  TVkPages = class(TVkEntity)
   private
     FItems: TArray<TVkPage>;
     FCount: Integer;
@@ -53,8 +51,6 @@ type
     property Items: TArray<TVkPage> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPages;
   end;
 
   TVkPageVersion = class(TVkObject)
@@ -68,11 +64,9 @@ type
     property EditorId: Integer read FEditor_id write FEditor_id;
     property EditorName: string read FEditor_name write FEditor_name;
     property Length: Integer read FLength write FLength;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPageVersion;
   end;
 
-  TVkPageVersions = class
+  TVkPageVersions = class(TVkEntity)
   private
     FItems: TArray<TVkPageVersion>;
     FCount: Integer;
@@ -80,38 +74,12 @@ type
     property Items: TArray<TVkPageVersion> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPageVersions;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkPage}
-
-function TVkPage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPage.FromJsonString(AJsonString: string): TVkPage;
-begin
-  result := TJson.JsonToObject<TVkPage>(AJsonString)
-end;
-
-{ TVkPageVersion }
-
-class function TVkPageVersion.FromJsonString(AJsonString: string): TVkPageVersion;
-begin
-  result := TJson.JsonToObject<TVkPageVersion>(AJsonString)
-end;
-
-function TVkPageVersion.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
 
 { TVkPageVersions }
 
@@ -121,32 +89,12 @@ begin
   inherited;
 end;
 
-class function TVkPageVersions.FromJsonString(AJsonString: string): TVkPageVersions;
-begin
-  result := TJson.JsonToObject<TVkPageVersions>(AJsonString)
-end;
-
-function TVkPageVersions.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkPages }
 
 destructor TVkPages.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPage>(FItems);
   inherited;
-end;
-
-class function TVkPages.FromJsonString(AJsonString: string): TVkPages;
-begin
-  result := TJson.JsonToObject<TVkPages>(AJsonString)
-end;
-
-function TVkPages.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

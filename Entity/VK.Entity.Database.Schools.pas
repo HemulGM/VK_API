@@ -12,7 +12,7 @@ type
     class function Create(Id: Integer; Text: string): TVkSchoolClass; static;
   end;
 
-  TVkSchoolClasses = class
+  TVkSchoolClasses = class(TVkEntity)
   private
     FItems: TArray<TVkSchoolClass>;
   public
@@ -26,11 +26,9 @@ type
     FTitle: string;
   public
     property Title: string read FTitle write FTitle;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSchool;
   end;
 
-  TVkSchools = class
+  TVkSchools = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkSchool>;
@@ -38,8 +36,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkSchool> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSchools;
   end;
 
 implementation
@@ -47,34 +43,12 @@ implementation
 uses
   System.Json, VK.CommonUtils;
 
-{TVkSchool}
-
-function TVkSchool.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSchool.FromJsonString(AJsonString: string): TVkSchool;
-begin
-  result := TJson.JsonToObject<TVkSchool>(AJsonString)
-end;
-
 {TVkSchools}
 
 destructor TVkSchools.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSchool>(FItems);
   inherited;
-end;
-
-function TVkSchools.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSchools.FromJsonString(AJsonString: string): TVkSchools;
-begin
-  result := TJson.JsonToObject<TVkSchools>(AJsonString)
 end;
 
 { TVkSchoolClasses }

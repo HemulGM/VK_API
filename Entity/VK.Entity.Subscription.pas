@@ -37,11 +37,9 @@ type
     property FirstName: string read FFirst_name write FFirst_name;
     property LastName: string read FLast_name write FLast_name;
     property&Type: string read FType write FType;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSubscription;
   end;
 
-  TVkSubscriptions = class
+  TVkSubscriptions = class(TVkEntity)
   private
     FItems: TArray<TVkSubscription>;
     FCount: Integer;
@@ -49,8 +47,6 @@ type
     property Items: TArray<TVkSubscription> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSubscriptions;
   end;
 
 implementation
@@ -58,34 +54,12 @@ implementation
 uses
   VK.CommonUtils;
 
-{ TVkSubscription }
-
-function TVkSubscription.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSubscription.FromJsonString(AJsonString: string): TVkSubscription;
-begin
-  result := TJson.JsonToObject<TVkSubscription>(AJsonString)
-end;
-
 { TVkSubscriptions }
 
 destructor TVkSubscriptions.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSubscription>(FItems);
   inherited;
-end;
-
-class function TVkSubscriptions.FromJsonString(AJsonString: string): TVkSubscriptions;
-begin
-  result := TJson.JsonToObject<TVkSubscriptions>(AJsonString)
-end;
-
-function TVkSubscriptions.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

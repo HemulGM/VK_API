@@ -3,9 +3,8 @@ unit VK.Account;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers,
-  VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.AccountInfo,
+  VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
   VK.Entity.AccountInfoRequest, VK.Entity.Account.Banned, VK.CommonUtils;
 
 type
@@ -47,7 +46,8 @@ type
     /// <summary>
     /// Позволяет сменить пароль пользователя после успешного восстановления доступа к аккаунту через СМС, используя метод Auth.Restore.
     /// </summary>
-    function ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string): Boolean;
+    function ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string):
+      Boolean;
     /// <summary>
     /// Возвращает список активных рекламных предложений (офферов), выполнив которые пользователь сможет получить соответствующее количество голосов на свой счёт внутри приложения.
     /// </summary>
@@ -125,11 +125,13 @@ uses
 
 { TAccountController }
 
-function TAccountController.ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string): Boolean;
+function TAccountController.ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash,
+  OldPassword: string): Boolean;
 var
   JsonResp: TJSONValue;
 begin
-  with Handler.Execute('account.changePassword', [['new_password', NewPassword], ['restore_sid', RestoreSid], ['change_password_hash', ChangePasswordHash], ['old_password', OldPassword]]) do
+  with Handler.Execute('account.changePassword', [['new_password', NewPassword], ['restore_sid', RestoreSid], ['change_password_hash',
+    ChangePasswordHash], ['old_password', OldPassword]]) do
   begin
     Result := Success;
     if Result then
@@ -151,18 +153,10 @@ end;
 
 function TAccountController.GetActiveOffers(var Items: TVkActiveOffers; Count: Integer; Offset: Integer): Boolean;
 begin
-  with Handler.Execute('account.getActiveOffers', [['offset', Offset.ToString], ['count', Count.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkActiveOffers.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('account.getActiveOffers', [
+    ['offset', Offset.ToString],
+    ['count', Count.ToString]]).
+    GetObject<TVkActiveOffers>(Items);
 end;
 
 function TAccountController.GetAppPermissions(var Mask: Integer; UserId: Integer): Boolean;
@@ -175,82 +169,30 @@ end;
 
 function TAccountController.GetBanned(var Items: TVkBannedList; Count, Offset: Integer): Boolean;
 begin
-  with Handler.Execute('account.getBanned', [['count', Count.ToString], ['offset', Offset.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkBannedList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('account.getBanned', [
+    ['count', Count.ToString],
+    ['offset', Offset.ToString]]).
+    GetObject<TVkBannedList>(Items);
 end;
 
 function TAccountController.GetCounters(var Counters: TVkCounters; Filter: TVkCounterFilters): Boolean;
 begin
-  with Handler.Execute('account.getCounters', ['filter', Filter.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Counters := TVkCounters.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('account.getCounters', ['filter', Filter.ToString]).GetObject<TVkCounters>(Counters);
 end;
 
 function TAccountController.GetInfo(var Info: TVkAccountInfo; Fields: TVkInfoFilters = []): Boolean;
 begin
-  with Handler.Execute('account.getInfo', ['fields', Fields.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Info := TVkAccountInfo.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('account.getInfo', ['fields', Fields.ToString]).GetObject<TVkAccountInfo>(Info);
 end;
 
 function TAccountController.GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
 begin
-  with Handler.Execute('account.getProfileInfo') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        ProfileInfo := TVkProfileInfo.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('account.getProfileInfo').GetObject<TVkProfileInfo>(ProfileInfo);
 end;
 
 function TAccountController.GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
 begin
-  with Handler.Execute('account.getPushSettings', ['device_id', DeviceId]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        PushSettings := TVkPushSettings.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('account.getPushSettings', ['device_id', DeviceId]).GetObject<TVkPushSettings>(PushSettings);
 end;
 
 function TAccountController.RegisterDevice(const Data: TVkParamsRegisterDevice): Boolean;
@@ -261,18 +203,7 @@ end;
 
 function TAccountController.SaveProfileInfo(const Data: TVkParamsProfileInfo; var Request: TVkAccountInfoRequest): Boolean;
 begin
-  with Handler.Execute('account.saveProfileInfo', Data.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Request := TVkAccountInfoRequest.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('account.saveProfileInfo', Data.List).GetObject<TVkAccountInfoRequest>(Request);
 end;
 
 function TAccountController.SetInfo(const Name, Value: string): Boolean;

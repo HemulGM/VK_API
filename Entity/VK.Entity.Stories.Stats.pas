@@ -3,10 +3,10 @@ unit VK.Entity.Stories.Stats;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkStoryStatCounter = class
+  TVkStoryStatCounter = class(TVkEntity)
   private
     FCount: Integer;
     FState: string;
@@ -16,11 +16,9 @@ type
     /// on Ч доступно, off Ч недоступно, hidden Ч недоступно
     /// </summary>
     property State: string read FState write FState;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoryStatCounter;
   end;
 
-  TVkStoryStat = class
+  TVkStoryStat = class(TVkEntity)
   private
     FAnswer: TVkStoryStatCounter;
     FBans: TVkStoryStatCounter;
@@ -39,25 +37,11 @@ type
     property Shares: TVkStoryStatCounter read FShares write FShares;
     property Subscribers: TVkStoryStatCounter read FSubscribers write FSubscribers;
     property Views: TVkStoryStatCounter read FViews write FViews;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoryStat;
   end;
 
 implementation
-
-{TVkStoryStatCounter}
-
-function TVkStoryStatCounter.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStoryStatCounter.FromJsonString(AJsonString: string): TVkStoryStatCounter;
-begin
-  result := TJson.JsonToObject<TVkStoryStatCounter>(AJsonString)
-end;
 
 {TRootClass}
 
@@ -85,16 +69,6 @@ begin
   FViews.Free;
   FLikes.Free;
   inherited;
-end;
-
-function TVkStoryStat.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStoryStat.FromJsonString(AJsonString: string): TVkStoryStat;
-begin
-  result := TJson.JsonToObject<TVkStoryStat>(AJsonString)
 end;
 
 end.

@@ -3,8 +3,7 @@ unit VK.Entity.App;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile,
-  VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group;
 
 type
   TVkAppScreenshot = class(TVkObject)
@@ -25,8 +24,6 @@ type
     property Text: string read FText write FText;
     property UserId: Integer read FUser_id write FUser_id;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAppScreenshot;
   end;
 
   TVkApp = class(TVkObject)
@@ -91,11 +88,9 @@ type
     property ScreenName: string read FScreen_name write FScreen_name;
     property Screenshots: TArray<TVkAppScreenshot> read FScreenshots write FScreenshots;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkApp;
   end;
 
-  TVkApps = class
+  TVkApps = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkApp>;
@@ -107,8 +102,6 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkApps;
   end;
 
 implementation
@@ -118,20 +111,10 @@ uses
 
 {TVkApp}
 
-function TVkApp.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 destructor TVkApp.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkAppScreenshot>(FScreenshots);
   inherited;
-end;
-
-class function TVkApp.FromJsonString(AJsonString: string): TVkApp;
-begin
-  result := TJson.JsonToObject<TVkApp>(AJsonString)
 end;
 
 {TVkApps}
@@ -144,32 +127,12 @@ begin
   inherited;
 end;
 
-function TVkApps.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkApps.FromJsonString(AJsonString: string): TVkApps;
-begin
-  result := TJson.JsonToObject<TVkApps>(AJsonString)
-end;
-
 { TVkAppScreenshot }
 
 destructor TVkAppScreenshot.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   inherited;
-end;
-
-function TVkAppScreenshot.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAppScreenshot.FromJsonString(AJsonString: string): TVkAppScreenshot;
-begin
-  result := TJson.JsonToObject<TVkAppScreenshot>(AJsonString)
 end;
 
 end.

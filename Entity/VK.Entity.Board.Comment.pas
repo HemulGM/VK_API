@@ -3,8 +3,7 @@ unit VK.Entity.Board.Comment;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
 
 type
   TVkBoardComment = class(TVkObject)
@@ -22,13 +21,11 @@ type
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Text: string read FText write FText;
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkBoardComment;
   end;
 
-  TVkBoardComments = class
+  TVkBoardComments = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkBoardComment>;
@@ -41,10 +38,8 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Poll: TVkPoll read FPoll write FPoll;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkBoardComments;
   end;
 
 implementation
@@ -67,16 +62,6 @@ begin
   inherited;
 end;
 
-function TVkBoardComment.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkBoardComment.FromJsonString(AJsonString: string): TVkBoardComment;
-begin
-  result := TJson.JsonToObject<TVkBoardComment>(AJsonString)
-end;
-
 {TVkBoardComments}
 
 constructor TVkBoardComments.Create;
@@ -92,16 +77,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   FPoll.Free;
   inherited;
-end;
-
-function TVkBoardComments.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkBoardComments.FromJsonString(AJsonString: string): TVkBoardComments;
-begin
-  result := TJson.JsonToObject<TVkBoardComments>(AJsonString)
 end;
 
 end.

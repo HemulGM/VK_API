@@ -3,11 +3,10 @@ unit VK.Entity.Conversation;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common,
-  VK.Entity.Profile, VK.Entity.Group, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group, VK.Types;
 
 type
-  TVkChatAccess = class
+  TVkChatAccess = class(TVkEntity)
   private
     FCan_change_info: Boolean;
     FCan_change_invite_link: Boolean;
@@ -32,11 +31,9 @@ type
     property CanPromoteUsers: Boolean read FCan_promote_users write FCan_promote_users;
     property CanSeeInviteLink: Boolean read FCan_see_invite_link write FCan_see_invite_link;
     property CanUseMassMentions: Boolean read FCan_use_mass_mentions write FCan_use_mass_mentions;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChatAccess;
   end;
 
-  TVkChatPermissions = class
+  TVkChatPermissions = class(TVkEntity)
   private
     FCall: string;
     FChange_admins: string;
@@ -53,11 +50,9 @@ type
     property Invite: string read FInvite write FInvite;
     property SeeInviteLink: string read FSee_invite_link write FSee_invite_link;
     property UseMassMentions: string read FUse_mass_mentions write FUse_mass_mentions;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChatPermissions;
   end;
 
-  TVkChatSettings = class
+  TVkChatSettings = class(TVkEntity)
   private
     FAcl: TVkChatAccess;
     FActive_ids: TArray<Integer>;
@@ -86,13 +81,11 @@ type
     property Permissions: TVkChatPermissions read FPermissions write FPermissions;
     property IsDisappearing: Boolean read FIs_disappearing write FIs_disappearing;
     property IsService: Boolean read FIs_service write FIs_service;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChatSettings;
   end;
 
-  TVkCanWrite = class
+  TVkCanWrite = class(TVkEntity)
   private
     FAllowed: Boolean;
     FReason: Integer;
@@ -110,8 +103,6 @@ type
     918 Ч нет доступа к e-mail;
     203 Ч нет доступа к сообществу.
     }
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCanWrite;
   end;
 
   TVkPeer = class(TVkObject)
@@ -129,22 +120,18 @@ type
     property IsUser: Boolean read GetIsUser;
     property IsGroup: Boolean read GetIsGroup;
     property IsChat: Boolean read GetIsChat;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPeer;
   end;
 
-  TVkConversationSort = class
+  TVkConversationSort = class(TVkEntity)
   private
     FMinor_id: Integer;
     FMajor_id: Integer;
   public
     property MajorId: Integer read FMajor_id write FMajor_id;
     property MinorId: Integer read FMinor_id write FMinor_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkConversationSort;
   end;
 
-  TVkConversation = class
+  TVkConversation = class(TVkEntity)
   private
     FCan_write: TVkCanWrite;
     FChat_settings: TVkChatSettings;
@@ -177,13 +164,11 @@ type
     property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
     property IsChat: Boolean read GetIsChat;
     property IsUser: Boolean read GetIsUser;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkConversation;
   end;
 
-  TVkConversations = class
+  TVkConversations = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkConversation>;
@@ -195,24 +180,20 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkConversations;
   end;
 
-  TVkConversationItem = class
+  TVkConversationItem = class(TVkEntity)
   private
     FConversation: TVkConversation;
     FLast_message: TVkMessage;
   public
     property Conversation: TVkConversation read FConversation write FConversation;
     property LastMessage: TVkMessage read FLast_message write FLast_message;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkConversationItem;
   end;
 
-  TVkConversationItems = class
+  TVkConversationItems = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkConversationItem>;
@@ -226,11 +207,9 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkConversationItems;
   end;
 
-  TVkMessageHistory = class
+  TVkMessageHistory = class(TVkEntity)
   private
     FItems: TArray<TVkMessage>;
     FCount: Integer;
@@ -250,13 +229,11 @@ type
     //
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     property SaveMessages: Boolean read FSaveMessages write SetSaveMessages;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessageHistory;
   end;
 
-  TVkImportantMessages = class
+  TVkImportantMessages = class(TVkEntity)
   private
     FMessages: TVkMessages;
     FProfiles: TArray<TVkProfile>;
@@ -267,28 +244,14 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Conversations: TArray<TVkConversation> read FConversations write FConversations;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkImportantMessages;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkChatAccess}
-
-function TVkChatAccess.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkChatAccess.FromJsonString(AJsonString: string): TVkChatAccess;
-begin
-  result := TJson.JsonToObject<TVkChatAccess>(AJsonString)
-end;
 
 {TVkChatSettings}
 
@@ -308,28 +271,6 @@ begin
   FPhoto.Free;
   FPermissions.Free;
   inherited;
-end;
-
-function TVkChatSettings.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkChatSettings.FromJsonString(AJsonString: string): TVkChatSettings;
-begin
-  result := TJson.JsonToObject<TVkChatSettings>(AJsonString)
-end;
-
-{TVkCanWrite}
-
-function TVkCanWrite.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCanWrite.FromJsonString(AJsonString: string): TVkCanWrite;
-begin
-  result := TJson.JsonToObject<TVkCanWrite>(AJsonString)
 end;
 
 {TVkPeer}
@@ -359,16 +300,6 @@ begin
   FType := Value.ToString;
 end;
 
-function TVkPeer.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPeer.FromJsonString(AJsonString: string): TVkPeer;
-begin
-  result := TJson.JsonToObject<TVkPeer>(AJsonString)
-end;
-
 {TVkConversation}
 
 constructor TVkConversation.Create;
@@ -387,16 +318,6 @@ begin
   if Assigned(FChat_settings) then
     FChat_settings.Free;
   inherited;
-end;
-
-function TVkConversation.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkConversation.FromJsonString(AJsonString: string): TVkConversation;
-begin
-  result := TJson.JsonToObject<TVkConversation>(AJsonString)
 end;
 
 function TVkConversation.GetIsChat: Boolean;
@@ -425,16 +346,6 @@ begin
   inherited;
 end;
 
-class function TVkConversationItem.FromJsonString(AJsonString: string): TVkConversationItem;
-begin
-  result := TJson.JsonToObject<TVkConversationItem>(AJsonString)
-end;
-
-function TVkConversationItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkConversationItems }
 
 destructor TVkConversationItems.Destroy;
@@ -443,16 +354,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   inherited;
-end;
-
-class function TVkConversationItems.FromJsonString(AJsonString: string): TVkConversationItems;
-begin
-  result := TJson.JsonToObject<TVkConversationItems>(AJsonString)
-end;
-
-function TVkConversationItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkMessageHistory }
@@ -479,11 +380,6 @@ begin
   inherited;
 end;
 
-class function TVkMessageHistory.FromJsonString(AJsonString: string): TVkMessageHistory;
-begin
-  result := TJson.JsonToObject<TVkMessageHistory>(AJsonString);
-end;
-
 procedure TVkMessageHistory.SetSaveMessages(const Value: Boolean);
 begin
   FSaveMessages := Value;
@@ -494,35 +390,6 @@ begin
   FSaveObjects := Value;
 end;
 
-function TVkMessageHistory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkConversationSort }
-
-class function TVkConversationSort.FromJsonString(AJsonString: string): TVkConversationSort;
-begin
-  result := TJson.JsonToObject<TVkConversationSort>(AJsonString);
-end;
-
-function TVkConversationSort.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkChatPermissions }
-
-class function TVkChatPermissions.FromJsonString(AJsonString: string): TVkChatPermissions;
-begin
-  result := TJson.JsonToObject<TVkChatPermissions>(AJsonString);
-end;
-
-function TVkChatPermissions.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkConversations }
 
 destructor TVkConversations.Destroy;
@@ -531,16 +398,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   inherited;
-end;
-
-class function TVkConversations.FromJsonString(AJsonString: string): TVkConversations;
-begin
-  result := TJson.JsonToObject<TVkConversations>(AJsonString);
-end;
-
-function TVkConversations.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkImportantMessages }
@@ -557,16 +414,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   FMessages.Free;
   inherited;
-end;
-
-class function TVkImportantMessages.FromJsonString(AJsonString: string): TVkImportantMessages;
-begin
-  result := TJson.JsonToObject<TVkImportantMessages>(AJsonString);
-end;
-
-function TVkImportantMessages.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

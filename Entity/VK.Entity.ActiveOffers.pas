@@ -25,11 +25,9 @@ type
     property ShortDescription: string read FShort_description write FShort_description;
     property Tag: string read FTag write FTag;
     property Title: string read FTitle write FTitle;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkActiveOffer;
   end;
 
-  TVkActiveOffers = class
+  TVkActiveOffers = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkActiveOffer>;
@@ -37,8 +35,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkActiveOffer> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkActiveOffers;
   end;
 
 implementation
@@ -46,34 +42,12 @@ implementation
 uses
   VK.CommonUtils;
 
-{TVkActiveOffer}
-
-function TVkActiveOffer.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkActiveOffer.FromJsonString(AJsonString: string): TVkActiveOffer;
-begin
-  result := TJson.JsonToObject<TVkActiveOffer>(AJsonString)
-end;
-
 {TVkActiveOffers}
 
 destructor TVkActiveOffers.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkActiveOffer>(FItems);
   inherited;
-end;
-
-function TVkActiveOffers.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkActiveOffers.FromJsonString(AJsonString: string): TVkActiveOffers;
-begin
-  result := TJson.JsonToObject<TVkActiveOffers>(AJsonString)
 end;
 
 end.

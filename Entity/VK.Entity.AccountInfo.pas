@@ -3,10 +3,10 @@ unit VK.Entity.AccountInfo;
 interface
 
 uses
-  Generics.Collections, REST.Json.Types, REST.Json, VK.Types;
+  Generics.Collections, REST.Json.Types, REST.Json, VK.Types, VK.Entity.Common;
 
 type
-  TVkAccountInfo = class
+  TVkAccountInfo = class(TVkEntity)
   private
     F2fa_required: Integer;
     FCountry: string;
@@ -23,23 +23,9 @@ type
     property Lang: Integer read FLang write FLang;
     property NoWallReplies: Integer read FNo_wall_replies write FNo_wall_replies;
     property OwnPostsDefault: Integer read FOwn_posts_default write FOwn_posts_default;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAccountInfo;
   end;
 
 implementation
-
-{TVkAccountInfo}
-
-function TVkAccountInfo.ToJsonString: string;
-begin
-  Result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAccountInfo.FromJsonString(AJsonString: string): TVkAccountInfo;
-begin
-  Result := TJson.JsonToObject<TVkAccountInfo>(AJsonString)
-end;
 
 end.
 

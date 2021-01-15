@@ -12,11 +12,9 @@ type
   public
     property Sizes: TVkSizes read FSizes write FSizes;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPodcastCover;
   end;
 
-  TVkPodcastInfo = class
+  TVkPodcastInfo = class(TVkEntity)
   private
     FCover: TVkPodcastCover;
     FDescription: string;
@@ -29,10 +27,8 @@ type
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property Plays: Integer read FPlays write FPlays;
     property Position: Integer read FPosition write FPosition;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPodcastInfo;
   end;
 
   TVkPodcastsEpisode = class(TVkObject)
@@ -66,10 +62,8 @@ type
     property Title: string read FTitle write FTitle;
     property TrackCode: string read FTrack_code write FTrack_code;
     property Url: string read FUrl write FUrl;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPodcastsEpisode;
   end;
 
 implementation
@@ -83,16 +77,6 @@ destructor TVkPodcastCover.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   inherited;
-end;
-
-function TVkPodcastCover.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPodcastCover.FromJsonString(AJsonString: string): TVkPodcastCover;
-begin
-  result := TJson.JsonToObject<TVkPodcastCover>(AJsonString)
 end;
 
 {TVkPodcastInfo}
@@ -109,16 +93,6 @@ begin
   inherited;
 end;
 
-function TVkPodcastInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPodcastInfo.FromJsonString(AJsonString: string): TVkPodcastInfo;
-begin
-  result := TJson.JsonToObject<TVkPodcastInfo>(AJsonString)
-end;
-
 {TVkPodcastsEpisode}
 
 constructor TVkPodcastsEpisode.Create;
@@ -131,16 +105,6 @@ destructor TVkPodcastsEpisode.Destroy;
 begin
   FPodcast_info.Free;
   inherited;
-end;
-
-function TVkPodcastsEpisode.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPodcastsEpisode.FromJsonString(AJsonString: string): TVkPodcastsEpisode;
-begin
-  result := TJson.JsonToObject<TVkPodcastsEpisode>(AJsonString)
 end;
 
 end.

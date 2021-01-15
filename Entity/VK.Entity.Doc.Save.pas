@@ -3,11 +3,10 @@ unit VK.Entity.Doc.Save;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.AudioMessage,
-  VK.Entity.Doc, VK.Entity.Graffiti;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.AudioMessage, VK.Entity.Doc, VK.Entity.Graffiti;
 
 type
-  TVkDocSaved = class
+  TVkDocSaved = class(TVkEntity)
   private
     FType: string;
     FAudio_message: TVkAudioMessage;
@@ -18,10 +17,8 @@ type
     property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
     property Doc: TVkDocument read FDoc write FDoc;
     property Graffiti: TVkGraffiti read FGraffiti write FGraffiti;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkDocSaved;
   end;
 
 implementation
@@ -46,16 +43,6 @@ begin
     FGraffiti.Free;
 
   inherited;
-end;
-
-function TVkDocSaved.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkDocSaved.FromJsonString(AJsonString: string): TVkDocSaved;
-begin
-  result := TJson.JsonToObject<TVkDocSaved>(AJsonString);
 end;
 
 end.

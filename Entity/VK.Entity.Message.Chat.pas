@@ -3,8 +3,7 @@ unit VK.Entity.Message.Chat;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Common, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Types;
 
 type
   TVkChat = class(TVkObject)
@@ -29,11 +28,9 @@ type
     property&Type: string read FType write FType;
     property Users: TArray<TVkProfile> read FUsers write FUsers;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChat;
   end;
 
-  TVkChats = class
+  TVkChats = class(TVkEntity)
   private
     FItems: TArray<TVkChat>;
     FCount: Integer;
@@ -41,8 +38,6 @@ type
     property Items: TArray<TVkChat> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChats;
   end;
 
   TVkChatPhoto = class
@@ -54,21 +49,17 @@ type
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property Photo50: string read FPhoto_50 write FPhoto_50;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChatPhoto;
   end;
 
-  TVkChatInfoMessage = class
+  TVkChatInfoMessage = class(TVkEntity)
   private
     FChat: TVkChat;
     FMessage_id: Extended;
   public
     property Chat: TVkChat read FChat write FChat;
     property MessageId: Extended read FMessage_id write FMessage_id;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChatInfoMessage;
   end;
 
   TVkChatPreviewInfo = class
@@ -84,11 +75,9 @@ type
     property Members: TArrayOfInteger read FMembers write FMembers;
     property Title: string read FTitle write FTitle;
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChatPreviewInfo;
   end;
 
-  TVkChatPreview = class
+  TVkChatPreview = class(TVkEntity)
   private
     FChat: TVkChatPreviewInfo;
     FProfiles: TArray<TVkProfile>;
@@ -100,8 +89,6 @@ type
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Emails: TArray<TVkEmail> read FEmails write FEmails;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkChatPreview;
   end;
 
 implementation
@@ -111,20 +98,10 @@ uses
 
 {TVkChat}
 
-function TVkChat.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 destructor TVkChat.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FUsers);
   inherited;
-end;
-
-class function TVkChat.FromJsonString(AJsonString: string): TVkChat;
-begin
-  result := TJson.JsonToObject<TVkChat>(AJsonString)
 end;
 
 {TVkChatInfoMessage}
@@ -141,56 +118,12 @@ begin
   inherited;
 end;
 
-function TVkChatInfoMessage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkChatInfoMessage.FromJsonString(AJsonString: string): TVkChatInfoMessage;
-begin
-  result := TJson.JsonToObject<TVkChatInfoMessage>(AJsonString)
-end;
-
 { TVkChats }
 
 destructor TVkChats.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkChat>(FItems);
   inherited;
-end;
-
-class function TVkChats.FromJsonString(AJsonString: string): TVkChats;
-begin
-  result := TJson.JsonToObject<TVkChats>(AJsonString)
-end;
-
-function TVkChats.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkChatPreviewInfo }
-
-class function TVkChatPreviewInfo.FromJsonString(AJsonString: string): TVkChatPreviewInfo;
-begin
-  result := TJson.JsonToObject<TVkChatPreviewInfo>(AJsonString)
-end;
-
-function TVkChatPreviewInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkChatPhoto }
-
-class function TVkChatPhoto.FromJsonString(AJsonString: string): TVkChatPhoto;
-begin
-  result := TJson.JsonToObject<TVkChatPhoto>(AJsonString)
-end;
-
-function TVkChatPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkChatPreview }
@@ -201,16 +134,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   TArrayHelp.FreeArrayOfObject<TVkEmail>(FEmails);
   inherited;
-end;
-
-class function TVkChatPreview.FromJsonString(AJsonString: string): TVkChatPreview;
-begin
-  result := TJson.JsonToObject<TVkChatPreview>(AJsonString)
-end;
-
-function TVkChatPreview.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

@@ -3,8 +3,7 @@ unit VK.Entity.Notifications;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Photo;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Photo, VK.Entity.Common;
 
 type
   TVkNotificationAction = class
@@ -14,8 +13,6 @@ type
   public
     property&Type: string read FType write FType;
     property Url: string read FUrl write FUrl;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotificationAction;
   end;
 
   TVkNotificationButtonActionContext = class
@@ -25,24 +22,20 @@ type
   public
     property Query: string read FQuery write FQuery;
     property SnackbarText: string read FSnackbar_text write FSnackbar_text;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotificationButtonActionContext;
   end;
 
-  TVkNotificationButtonAction = class
+  TVkNotificationButtonAction = class(TVkEntity)
   private
     FContext: TVkNotificationButtonActionContext;
     FType: string;
   public
     property Context: TVkNotificationButtonActionContext read FContext write FContext;
     property&Type: string read FType write FType;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotificationButtonAction;
   end;
 
-  TVkNotificationHideButton = class
+  TVkNotificationHideButton = class(TVkEntity)
   private
     FAction: TVkNotificationButtonAction;
     FLabel: string;
@@ -53,10 +46,8 @@ type
     property&Label: string read FLabel write FLabel;
     property ShortLabel: string read FShort_label write FShort_label;
     property Style: string read FStyle write FStyle;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotificationHideButton;
   end;
 
   TVKNotificationMainItem = class
@@ -66,11 +57,9 @@ type
   public
     property ObjectId: string read FObject_id write FObject_id;
     property&Type: string read FType write FType;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVKNotificationMainItem;
   end;
 
-  TVkNotification = class
+  TVkNotification = class(TVkEntity)
   private
     FAction: TVkNotificationAction;
     FButton_hide: Boolean;
@@ -93,13 +82,11 @@ type
     property IconUrl: string read FIcon_url write FIcon_url;
     property Id: string read FId write FId;
     property MainItem: TVKNotificationMainItem read FMain_item write FMain_item;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotification;
   end;
 
-  TVkNotifications = class
+  TVkNotifications = class(TVkEntity)
   private
     FCount: Integer;
     FGroups: TArray<TVkGroup>;
@@ -119,8 +106,6 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Ttl: Integer read FTtl write FTtl;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotifications;
   end;
 
   TVkNotificationMessageError = class
@@ -136,8 +121,6 @@ type
     /// </summary>
     property Code: Integer read FCode write FCode;
     property Description: string read FDescription write FDescription;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotificationMessageError;
   end;
 
   TVkNotificationMessageStatus = class
@@ -150,11 +133,9 @@ type
     property Status: Boolean read FStatus write FStatus;
     property Error: TVkNotificationMessageError read FError write FError;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotificationMessageStatus;
   end;
 
-  TVkNotificationMessageStatuses = class
+  TVkNotificationMessageStatuses = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkNotificationMessageStatus>;
@@ -162,38 +143,12 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkNotificationMessageStatus> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotificationMessageStatuses;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkNotificationAction}
-
-function TVkNotificationAction.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNotificationAction.FromJsonString(AJsonString: string): TVkNotificationAction;
-begin
-  result := TJson.JsonToObject<TVkNotificationAction>(AJsonString)
-end;
-
-{TVkNotificationButtonActionContext}
-
-function TVkNotificationButtonActionContext.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNotificationButtonActionContext.FromJsonString(AJsonString: string): TVkNotificationButtonActionContext;
-begin
-  result := TJson.JsonToObject<TVkNotificationButtonActionContext>(AJsonString)
-end;
 
 {TVkNotificationButtonAction}
 
@@ -209,16 +164,6 @@ begin
   inherited;
 end;
 
-function TVkNotificationButtonAction.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNotificationButtonAction.FromJsonString(AJsonString: string): TVkNotificationButtonAction;
-begin
-  result := TJson.JsonToObject<TVkNotificationButtonAction>(AJsonString)
-end;
-
 {TVkNotificationHideButton}
 
 constructor TVkNotificationHideButton.Create;
@@ -232,29 +177,6 @@ begin
   FAction.Free;
   inherited;
 end;
-
-function TVkNotificationHideButton.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNotificationHideButton.FromJsonString(AJsonString: string): TVkNotificationHideButton;
-begin
-  result := TJson.JsonToObject<TVkNotificationHideButton>(AJsonString)
-end;
-
-{TVKNotificationMainItem}
-
-function TVKNotificationMainItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVKNotificationMainItem.FromJsonString(AJsonString: string): TVKNotificationMainItem;
-begin
-  result := TJson.JsonToObject<TVKNotificationMainItem>(AJsonString)
-end;
-
 {TVkNotification}
 
 constructor TVkNotification.Create;
@@ -272,16 +194,6 @@ begin
   inherited;
 end;
 
-function TVkNotification.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNotification.FromJsonString(AJsonString: string): TVkNotification;
-begin
-  result := TJson.JsonToObject<TVkNotification>(AJsonString)
-end;
-
 {TVkNotifications}
 
 destructor TVkNotifications.Destroy;
@@ -293,44 +205,12 @@ begin
   inherited;
 end;
 
-function TVkNotifications.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNotifications.FromJsonString(AJsonString: string): TVkNotifications;
-begin
-  result := TJson.JsonToObject<TVkNotifications>(AJsonString)
-end;
-
 { TVkNotificationMessageStatuses }
 
 destructor TVkNotificationMessageStatuses.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkNotificationMessageStatus>(FItems);
   inherited;
-end;
-
-class function TVkNotificationMessageStatuses.FromJsonString(AJsonString: string): TVkNotificationMessageStatuses;
-begin
-  result := TJson.JsonToObject<TVkNotificationMessageStatuses>(AJsonString)
-end;
-
-function TVkNotificationMessageStatuses.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkNotificationMessageError }
-
-class function TVkNotificationMessageError.FromJsonString(AJsonString: string): TVkNotificationMessageError;
-begin
-  result := TJson.JsonToObject<TVkNotificationMessageError>(AJsonString)
-end;
-
-function TVkNotificationMessageError.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkNotificationMessageStatus }
@@ -340,16 +220,6 @@ begin
   if Assigned(FError) then
     FError.Free;
   inherited;
-end;
-
-class function TVkNotificationMessageStatus.FromJsonString(AJsonString: string): TVkNotificationMessageStatus;
-begin
-  result := TJson.JsonToObject<TVkNotificationMessageStatus>(AJsonString)
-end;
-
-function TVkNotificationMessageStatus.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.
