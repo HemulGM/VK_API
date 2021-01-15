@@ -67,18 +67,7 @@ uses
 
 function TStatsController.Get(var Items: TVkStatItems; const Params: TParams): Boolean;
 begin
-  with Handler.Execute('stats.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStatItems.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stats.get', Params).GetObjects<TVkStatItems>(Items);
 end;
 
 function TStatsController.Get(var Items: TVkStatItems; const Params: TVkParamsStatsGet): Boolean;
@@ -88,18 +77,10 @@ end;
 
 function TStatsController.GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIds): Boolean;
 begin
-  with Handler.Execute('stats.getPostReach', [['owner_id', OwnerId.ToString], ['post_ids', PostIds.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStatPostReachItems.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stats.getPostReach', [
+    ['owner_id', OwnerId.ToString],
+    ['post_ids', PostIds.ToString]]).
+    GetObjects<TVkStatPostReachItems>(Items);
 end;
 
 function TStatsController.TrackVisitor: Boolean;

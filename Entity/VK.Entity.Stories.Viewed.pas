@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Common;
 
 type
-  TVkStoryView = class(TVkEntity)
+  TVkStoryView = class
   private
     FIs_liked: Boolean;
     FUser: TVkProfile;
@@ -15,7 +15,6 @@ type
     property IsLiked: Boolean read FIs_liked write FIs_liked;
     property User: TVkProfile read FUser write FUser;
     property UserId: Integer read FUser_id write FUser_id;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -35,11 +34,6 @@ uses
   VK.CommonUtils;
 
 {TVkStoryView}
-
-constructor TVkStoryView.Create;
-begin
-  inherited;
-end;
 
 destructor TVkStoryView.Destroy;
 begin

@@ -3,8 +3,9 @@ unit VK.Market;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Media, VK.Entity.Market,
-  VK.Entity.Market.Album, VK.Entity.Market.Order;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Media, VK.Entity.Market, VK.Entity.Market.Album,
+  VK.Entity.Market.Order;
 
 type
   TVkParamsMarketAdd = record
@@ -156,8 +157,7 @@ type
     /// <summary>
     /// Добавляет новую подборку с товарами.
     /// </summary>
-    function AddAlbum(var Id: Integer; OwnerId: Integer; Title: string; PhotoId: Integer = -1; MainAlbum: Boolean =
-      False): Boolean;
+    function AddAlbum(var Id: Integer; OwnerId: Integer; Title: string; PhotoId: Integer = -1; MainAlbum: Boolean = False): Boolean;
     /// <summary>
     /// Добавляет товар в одну или несколько выбранных подборок.
     /// </summary>
@@ -229,8 +229,7 @@ type
     /// <summary>
     /// Возвращает список подборок с товарами.
     /// </summary>
-    function GetAlbums(var Items: TVkMarketAlbums; const OwnerId: Integer; Offset: Integer = 0; Count: Integer = 50):
-      Boolean; overload;
+    function GetAlbums(var Items: TVkMarketAlbums; const OwnerId: Integer; Offset: Integer = 0; Count: Integer = 50): Boolean; overload;
     /// <summary>
     /// Возвращает информацию о товарах по идентификаторам.
     /// </summary>
@@ -254,18 +253,15 @@ type
     /// <summary>
     /// Возвращает заказ по идентификатору.
     /// </summary>
-    function GetOrderById(var Item: TVkOrder; const OrderId: Integer; UserId: Integer = 0; Extended: Boolean = False):
-      Boolean; overload;
+    function GetOrderById(var Item: TVkOrder; const OrderId: Integer; UserId: Integer = 0; Extended: Boolean = False): Boolean; overload;
     /// <summary>
     /// Возвращает товары в заказе.
     /// </summary>
-    function GetOrderItems(var Items: TVkProducts; const OrderId: Integer; UserId: Integer = 0; Offset: Integer = 0;
-      Count: Integer = 50): Boolean; overload;
+    function GetOrderItems(var Items: TVkProducts; const OrderId: Integer; UserId: Integer = 0; Offset: Integer = 0; Count: Integer = 50): Boolean; overload;
     /// <summary>
     /// Возвращает заказы.
     /// </summary>
-    function GetOrders(var Items: TVkOrders; const Offset: Integer = 0; Count: Integer = 10; Extended: Boolean = False):
-      Boolean; overload;
+    function GetOrders(var Items: TVkOrders; const Offset: Integer = 0; Count: Integer = 10; Extended: Boolean = False): Boolean; overload;
     /// <summary>
     /// Удаляет товар из одной или нескольких выбранных подборок.
     /// </summary>
@@ -341,8 +337,7 @@ begin
   Result := EditOrder(Params.List);
 end;
 
-function TMarketController.AddAlbum(var Id: Integer; OwnerId: Integer; Title: string; PhotoId: Integer; MainAlbum:
-  Boolean): Boolean;
+function TMarketController.AddAlbum(var Id: Integer; OwnerId: Integer; Title: string; PhotoId: Integer; MainAlbum: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -351,8 +346,7 @@ begin
   if PhotoId <> -1 then
     Params.Add('photo_id', PhotoId);
   Params.Add('main_album', MainAlbum);
-  with Handler.Execute('market.addAlbum', Params) do
-    Result := Success and ResponseAsInt(Id);
+  Result := Handler.Execute('market.addAlbum', Params).ResponseAsInt(Id);
 end;
 
 function TMarketController.AddToAlbum(const OwnerId, ItemId: Integer; AlbumIds: TIds): Boolean;
@@ -362,8 +356,7 @@ begin
   Params.Add('owner_id', OwnerId);
   Params.Add('item_id', ItemId);
   Params.Add('album_ids', AlbumIds);
-  with Handler.Execute('market.addToAlbum', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('market.addToAlbum', Params).ResponseIsTrue;
 end;
 
 function TMarketController.Add(var Id: Integer; Params: TParams): Boolean;

@@ -3,8 +3,9 @@ unit VK.Stories;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Stories, VK.Entity.Stories.Sticker,
-  VK.Entity.Stories.Stats, VK.Entity.Stories.Viewed;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Stories, VK.Entity.Stories.Sticker, VK.Entity.Stories.Stats,
+  VK.Entity.Stories.Viewed;
 
 type
   TVkParamsStoriesGet = record
@@ -94,13 +95,11 @@ type
     /// <summary>
     /// ¬озвращает список источников историй, скрытых из ленты текущего пользовател€.
     /// </summary>
-    function GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean = False; ProfileFields: TVkProfileFields = [];
-      GroupFields: TVkGroupFields = []): Boolean; overload;
+    function GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean = False; ProfileFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
     /// ¬озвращает истории, доступные дл€ текущего пользовател€.
     /// </summary>
-    function GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean = False; ProfileFields:
-      TVkProfileFields = []; GroupFields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean = False; ProfileFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
     /// ѕозвол€ет получить адрес дл€ загрузки истории с фотографией.
     /// </summary>
@@ -162,17 +161,13 @@ uses
 function TStoriesController.BanOwner(const OwnersIds: TIds): Boolean;
 begin
   with Handler.Execute('stories.banOwner', ['owners_ids', OwnersIds.ToString]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.Delete(const OwnerId, StoryId: Integer): Boolean;
 begin
   with Handler.Execute('stories.delete', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.Get(var Items: TVkStoriesBlock; const OwnerId: Integer): Boolean;
@@ -184,8 +179,7 @@ begin
   Result := Get(Items, Params.List);
 end;
 
-function TStoriesController.GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean; ProfileFields:
-  TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
+function TStoriesController.GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean; ProfileFields: TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
 var
   Params: TParams;
 begin
@@ -195,8 +189,7 @@ begin
   Result := Handler.Execute('stories.getBanned', Params).GetObject<TVkStoriesBanned>(Items);
 end;
 
-function TStoriesController.GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean;
-  ProfileFields: TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
+function TStoriesController.GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean; ProfileFields: TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
 var
   Params: TParams;
 begin
@@ -207,8 +200,7 @@ begin
   Result := Handler.Execute('stories.getById', Params).GetObject<TVkStoryItems>(Items);
 end;
 
-function TStoriesController.GetPhotoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer):
-  Boolean;
+function TStoriesController.GetPhotoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer): Boolean;
 begin
   with Handler.Execute('stories.getPhotoUploadServer', Params.List) do
     Result := Success and GetValue('upload_result', UploadResult);
@@ -225,8 +217,7 @@ begin
     <TVkStoryStat>(Items);
 end;
 
-function TStoriesController.GetVideoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer):
-  Boolean;
+function TStoriesController.GetVideoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer): Boolean;
 begin
   with Handler.Execute('stories.getVideoUploadServer', Params.List) do
     Result := Success and GetValue('upload_result', UploadResult);
@@ -240,17 +231,13 @@ end;
 function TStoriesController.HideAllReplies(const OwnerId, GroupId: Integer): Boolean;
 begin
   with Handler.Execute('stories.hideAllReplies', [['owner_id', OwnerId.ToString], ['group_id', GroupId.ToString]]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.HideReply(const OwnerId, StoryId: Integer): Boolean;
 begin
   with Handler.Execute('stories.hideReply', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.Save(var Items: TVkStoryItems; const UploadResults: TArrayOfString): Boolean;
@@ -274,9 +261,7 @@ end;
 function TStoriesController.UnbanOwner(const OwnersIds: TIds): Boolean;
 begin
   with Handler.Execute('stories.unbanOwner', ['owners_ids', OwnersIds.ToString]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.Search(var Items: TVkStoriesBlock; const Params: TParams): Boolean;

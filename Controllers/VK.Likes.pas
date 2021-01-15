@@ -3,7 +3,8 @@ unit VK.Likes;
 interface
 
 uses
-  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.Profile, System.JSON;
+  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.Profile,
+  System.JSON;
 
 type
   TVkLikesParams = record
@@ -56,16 +57,22 @@ uses
 
 function TLikesController.Add(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
 begin
-  with Handler.Execute('likes.add', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
-    ['access_key', AccessKey]]) do
-    Result := Success and TryStrToInt(Response, Items);
+  Result := Handler.Execute('likes.add', [
+    ['type', &Type.ToString],
+    ['owner_id', OwnerId.ToString],
+    ['item_id', ItemId.ToString],
+    ['access_key', AccessKey]]).
+    ResponseAsInt(Items);
 end;
 
 function TLikesController.Delete(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
 begin
-  with Handler.Execute('likes.delete', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
-    ['access_key', AccessKey]]) do
-    Result := Success and TryStrToInt(Response, Items);
+  Result := Handler.Execute('likes.delete', [
+    ['type', &Type.ToString],
+    ['owner_id', OwnerId.ToString],
+    ['item_id', ItemId.ToString],
+    ['access_key', AccessKey]]).
+    ResponseAsInt(Items);
 end;
 
 function TLikesController.GetList(var Items: TVkProfiles; Params: TVkLikesParams): Boolean;

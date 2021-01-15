@@ -3,8 +3,9 @@ unit VK.Board;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
-  VK.Entity.Board, VK.Entity.Board.Comment;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Board,
+  VK.Entity.Board.Comment;
 
 type
   TVkBoardTopicOrder = (btoDateUpCreate = -2, btoDateUpUpdate = -1, btoDateDownCreate = 2, btoDateDownUpdate = 1);
@@ -299,10 +300,7 @@ end;
 function TBoardController.CreateComment(var Id: Integer; Params: TParams): Boolean;
 begin
   Id := -1;
-  with Handler.Execute('board.createComment', Params) do
-  begin
-    Result := Success and TryStrToInt(Response, Id);
-  end;
+  Result := Handler.Execute('board.createComment', Params).ResponseAsInt(Id);
 end;
 
 function TBoardController.CreateComment(Params: TVkParamsBoardCommentCreate): Boolean;
@@ -405,8 +403,7 @@ end;
 
 function TBoardController.RestoreComment(GroupId, TopicId, CommentId: Integer): Boolean;
 begin
-  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id',
-    CommentId.ToString]]) do
+  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id', CommentId.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 

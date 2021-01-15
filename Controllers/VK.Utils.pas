@@ -3,8 +3,8 @@ unit VK.Utils;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Link,
-  VK.Entity.ScreenName;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Link, VK.Entity.ScreenName;
 
 type
   TVkParamsUtilsGetLinkStats = record
@@ -107,9 +107,7 @@ end;
 function TUtilsController.GetServerTime(var ServerTime: Int64): Boolean;
 begin
   with Handler.Execute('utils.getServerTime') do
-  begin
     Result := Success and TryStrToInt64(Response, ServerTime);
-  end;
 end;
 
 function TUtilsController.GetShortLink(var Item: TVkShortLink; const Url: string; &Private: Boolean): Boolean;

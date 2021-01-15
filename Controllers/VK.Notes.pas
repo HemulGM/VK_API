@@ -3,8 +3,8 @@ unit VK.Notes;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Note;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Note;
 
 type
   TVkParamsNotesGet = record
@@ -63,15 +63,15 @@ type
     /// <summary>
     /// Удаляет заметку текущего пользователя.
     /// </summary>
-    function Delete(NoteId: Integer): Boolean;
+    function Delete(var Status: Boolean; NoteId: Integer): Boolean;
     /// <summary>
     /// Удаляет комментарий к заметке.
     /// </summary>
-    function DeleteComment(CommentId: Integer; OwnerId: Integer = 0): Boolean;
+    function DeleteComment(var Status: Boolean; CommentId: Integer; OwnerId: Integer = 0): Boolean;
     /// <summary>
     /// Редактирует заметку текущего пользователя.
     /// </summary>
-    function Edit(NoteId: Integer; Params: TVkParamsNotesAdd): Boolean;
+    function Edit(var Status: Boolean; NoteId: Integer; Params: TVkParamsNotesAdd): Boolean;
     /// <summary>
     /// Редактирует заметку текущего пользователя.
     /// </summary>
@@ -99,7 +99,7 @@ type
     /// <summary>
     /// Восстанавливает удалённый комментарий.
     /// </summary>
-    function RestoreComment(CommentId: Integer; OwnerId: Integer = 0): Boolean;
+    function RestoreComment(var Status: Boolean; CommentId: Integer; OwnerId: Integer = 0): Boolean;
   end;
 
 implementation
@@ -116,8 +116,7 @@ end;
 
 function TNotesController.Add(var NoteId: Integer; Params: TParams): Boolean;
 begin
-  with Handler.Execute('notes.add', Params) do
-    Result := Success and TryStrToInt(Response, NoteId);
+  Result := Handler.Execute('notes.add', Params).ResponseAsInt(NoteId);
 end;
 
 function TNotesController.Add(var NoteId: Integer; Params: TVkParamsNotesAdd): Boolean;
@@ -130,28 +129,25 @@ begin
   Result := CreateComment(CommentId, Params.List);
 end;
 
-function TNotesController.Delete(NoteId: Integer): Boolean;
+function TNotesController.Delete(var Status: Boolean; NoteId: Integer): Boolean;
 begin
-  with Handler.Execute('notes.delete', ['note_id', NoteId.ToString]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('notes.delete', ['note_id', NoteId.ToString]).ResponseAsBool(Status);
 end;
 
-function TNotesController.DeleteComment(CommentId, OwnerId: Integer): Boolean;
+function TNotesController.DeleteComment(var Status: Boolean; CommentId, OwnerId: Integer): Boolean;
 var
   Params: TParams;
 begin
   Params.Add('comment_id', CommentId);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  with Handler.Execute('notes.deleteComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('notes.deleteComment', Params).ResponseAsBool(Status);
 end;
 
-function TNotesController.Edit(NoteId: Integer; Params: TVkParamsNotesAdd): Boolean;
+function TNotesController.Edit(var Status: Boolean; NoteId: Integer; Params: TVkParamsNotesAdd): Boolean;
 begin
   Params.List.Add('note_id', NoteId);
-  with Handler.Execute('notes.edit', Params.List) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('notes.edit', Params.List).ResponseAsBool(Status);
 end;
 
 function TNotesController.EditComment(CommentId: Integer; Message: string; OwnerId: Integer): Boolean;
@@ -162,14 +158,12 @@ begin
   Params.Add('message', Message);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  with Handler.Execute('notes.editComment', Params) do
-    Result := Success and TryStrToInt(Response, CommentId);
+  Result := Handler.Execute('notes.editComment', Params).ResponseAsInt(CommentId);
 end;
 
 function TNotesController.CreateComment(var CommentId: Integer; Params: TParams): Boolean;
 begin
-  with Handler.Execute('notes.createComment', Params) do
-    Result := Success and TryStrToInt(Response, CommentId);
+  Result := Handler.Execute('notes.createComment', Params).ResponseAsInt(CommentId);
 end;
 
 function TNotesController.Get(var Items: TVkNotes; Params: TVkParamsNotesGet): Boolean;
@@ -194,15 +188,14 @@ begin
   Result := GetComments(Items, Params.List);
 end;
 
-function TNotesController.RestoreComment(CommentId, OwnerId: Integer): Boolean;
+function TNotesController.RestoreComment(var Status: Boolean; CommentId, OwnerId: Integer): Boolean;
 var
   Params: TParams;
 begin
   Params.Add('comment_id', CommentId);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  with Handler.Execute('notes.restoreComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('notes.restoreComment', Params).ResponseAsBool(Status);
 end;
 
 function TNotesController.GetComments(var Items: TVkNoteComments; Params: TParams): Boolean;

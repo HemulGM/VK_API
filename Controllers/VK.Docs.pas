@@ -3,8 +3,9 @@ unit VK.Docs;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Doc.Save, VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save,
+  VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
 
 type
   TVkDocUploadType = (dutDoc, dutAudioMessage);
@@ -76,8 +77,7 @@ type
     /// <summary>
     /// Сохраняет аудиосообщение
     /// </summary>
-    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0;
-      ReturnTags: Boolean = False): Boolean;
+    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0; ReturnTags: Boolean = False): Boolean;
     /// <summary>
     /// Возвращает расширенную информацию о документах пользователя или сообщества.
     /// </summary>
@@ -139,10 +139,7 @@ begin
   end;
   if PeerId <> 0 then
     Params.Add('peer_id', PeerId);
-  with Handler.Execute('docs.getMessagesUploadServer', Params) do
-  begin
-    Result := Success and GetValue('upload_url', UploadUrl);
-  end;
+  Result := Handler.Execute('docs.getMessagesUploadServer', Params).GetValue('upload_url', UploadUrl)
 end;
 
 function TDocController.Get(var Items: TVkDocuments; Params: TParams): Boolean;
@@ -158,10 +155,7 @@ begin
   Params.Add('doc_id', DocId);
   if not AccessKey.IsEmpty then
     Params.Add('access_key', AccessKey);
-  with Handler.Execute('docs.Add', Params) do
-  begin
-    Result := Success and TryStrToInt(Response, Id);
-  end;
+  Result := Handler.Execute('docs.Add', Params).ResponseAsInt(Id);
 end;
 
 function TDocController.Delete(OwnerId, DocId: Integer): Boolean;
@@ -209,10 +203,7 @@ begin
     dutAudioMessage:
       Params.Add('type', 'audio_message');
   end;
-  with Handler.Execute('docs.getMessagesUploadServer', Params) do
-  begin
-    Result := Success and GetValue('upload_url', UploadUrl);
-  end;
+  Result := Handler.Execute('docs.getMessagesUploadServer', Params).GetValue('upload_url', UploadUrl);
 end;
 
 function TDocController.GetTypes(var Items: TVkDocTypes; OwnerId: Integer): Boolean;
@@ -222,18 +213,12 @@ end;
 
 function TDocController.GetUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
 begin
-  with Handler.Execute('docs.getUploadServer', ['group_id', GroupId.ToString]) do
-  begin
-    Result := Success and GetValue('upload_url', UploadUrl);
-  end;
+  Result := Handler.Execute('docs.getUploadServer', ['group_id', GroupId.ToString]).GetValue('upload_url', UploadUrl);
 end;
 
 function TDocController.GetWallUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
 begin
-  with Handler.Execute('docs.getWallUploadServer', ['group_id', GroupId.ToString]) do
-  begin
-    Result := Success and GetValue('upload_url', UploadUrl);
-  end;
+  Result := Handler.Execute('docs.getWallUploadServer', ['group_id', GroupId.ToString]).GetValue('upload_url', UploadUrl);
 end;
 
 function TDocController.Save(var Doc: TVkDocSaved; FileData: string; Title, Tags: string; ReturnTags: Boolean): Boolean;
@@ -248,8 +233,7 @@ begin
   Result := Handler.Execute('docs.save', Params).GetObject<TVkDocSaved>(Doc);
 end;
 
-function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer;
-  ReturnTags: Boolean): Boolean;
+function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
 var
   Url, Response: string;
 begin

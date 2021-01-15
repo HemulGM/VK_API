@@ -3,13 +3,11 @@ unit VK.Entity.Poll;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile,
+  VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkPollFriends = class(TVkObject)
-  public
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPollFriends;
   end;
 
   TVkPollPoints = class
@@ -19,8 +17,6 @@ type
   public
     property Color: string read FColor write FColor;
     property Position: Integer read FPosition write FPosition;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPollPoints;
   end;
 
   TVkPollBackground = class(TVkObject)
@@ -37,18 +33,14 @@ type
     property Points: TArray<TVkPollPoints> read FPoints write FPoints;
     property&Type: string read FType write FType;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPollBackground;
   end;
 
-  TVkPollBackgrounds = class
+  TVkPollBackgrounds = class(TVkEntity)
   private
     FItems: TArray<TVkPollBackground>;
   public
     property Items: TArray<TVkPollBackground> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPollBackgrounds;
   end;
 
   TVkPollAnswer = class(TVkObject)
@@ -60,8 +52,6 @@ type
     property Rate: Integer read FRate write FRate;
     property Text: string read FText write FText;
     property Votes: Integer read FVotes write FVotes;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPollAnswer;
   end;
 
   TVkPoll = class(TVkObject)
@@ -115,19 +105,15 @@ type
     //
     constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPoll;
   end;
 
-  TVkPollVoters = class
+  TVkPollVoters = class(TVkEntity)
   private
     FAnswer_id: Integer;
     FUsers: TVkProfiles;
   public
     property AnswerId: Integer read FAnswer_id write FAnswer_id;
     property Users: TVkProfiles read FUsers write FUsers;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPollVoters;
   end;
 
 implementation
@@ -135,46 +121,12 @@ implementation
 uses
   VK.CommonUtils;
 
-{TVkPollPoints}
-
-function TVkPollPoints.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPollPoints.FromJsonString(AJsonString: string): TVkPollPoints;
-begin
-  result := TJson.JsonToObject<TVkPollPoints>(AJsonString)
-end;
-
 {TVkPollBackground}
 
 destructor TVkPollBackground.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPollPoints>(FPoints);
   inherited;
-end;
-
-function TVkPollBackground.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPollBackground.FromJsonString(AJsonString: string): TVkPollBackground;
-begin
-  result := TJson.JsonToObject<TVkPollBackground>(AJsonString)
-end;
-
-{TVkPollAnswer}
-
-function TVkPollAnswer.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPollAnswer.FromJsonString(AJsonString: string): TVkPollAnswer;
-begin
-  result := TJson.JsonToObject<TVkPollAnswer>(AJsonString)
 end;
 
 {TVkPoll}
@@ -197,56 +149,12 @@ begin
   inherited;
 end;
 
-function TVkPoll.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPoll.FromJsonString(AJsonString: string): TVkPoll;
-begin
-  result := TJson.JsonToObject<TVkPoll>(AJsonString)
-end;
-
-{ TVkPollFriends }
-
-function TVkPollFriends.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPollFriends.FromJsonString(AJsonString: string): TVkPollFriends;
-begin
-  result := TJson.JsonToObject<TVkPollFriends>(AJsonString)
-end;
-
 { TVkPollBackgrounds }
 
 destructor TVkPollBackgrounds.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPollBackground>(FItems);
   inherited;
-end;
-
-class function TVkPollBackgrounds.FromJsonString(AJsonString: string): TVkPollBackgrounds;
-begin
-  result := TJson.JsonToObject<TVkPollBackgrounds>(AJsonString)
-end;
-
-function TVkPollBackgrounds.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkPollVoters }
-
-class function TVkPollVoters.FromJsonString(AJsonString: string): TVkPollVoters;
-begin
-  result := TJson.JsonToObject<TVkPollVoters>(AJsonString)
-end;
-
-function TVkPollVoters.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

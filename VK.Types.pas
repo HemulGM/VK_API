@@ -5,7 +5,8 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections, System.JSON, VK.Entity.Common;
+  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections,
+  System.JSON, VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -679,6 +680,7 @@ type
     function ResponseAsItems: string;
     function ResponseIsTrue: Boolean;
     function ResponseIsFalse: Boolean;
+    function ResponseAsBool(var Value: Boolean): Boolean;
     function ResponseAsInt(var Value: Integer): Boolean;
     function ResponseAsStr(var Value: string): Boolean;
     function GetJSONValue: TJSONValue;
@@ -2004,15 +2006,19 @@ function TResponse.GetValue<T>(const Field: string; var Value: T): Boolean;
 var
   JSONItem: TJSONValue;
 begin
-  try
-    JSONItem := TJSONObject.ParseJSONValue(Response);
+  Result := Success;
+  if Result then
+  begin
     try
-      Result := JSONItem.TryGetValue<T>(Field, Value);
-    finally
-      JSONItem.Free;
+      JSONItem := TJSONObject.ParseJSONValue(Response);
+      try
+        Result := JSONItem.TryGetValue<T>(Field, Value);
+      finally
+        JSONItem.Free;
+      end;
+    except
+      Result := False;
     end;
-  except
-    Result := False;
   end;
 end;
 
@@ -2023,23 +2029,31 @@ end;
 
 function TResponse.ResponseIsFalse: Boolean;
 begin
-  Result := Response = '0';
+  Result := Success and (Response = '0');
 end;
 
 function TResponse.ResponseAsInt(var Value: Integer): Boolean;
 begin
-  Result := TryStrToInt(Response, Value);
+  Result := Success and TryStrToInt(Response, Value);
 end;
 
 function TResponse.ResponseAsStr(var Value: string): Boolean;
 begin
-  Result := True;
-  Value := Response;
+  Result := Success;
+  if Result then
+    Value := Response;
+end;
+
+function TResponse.ResponseAsBool(var Value: Boolean): Boolean;
+begin
+  Result := Success;
+  if Result then
+    Value := ResponseIsTrue;
 end;
 
 function TResponse.ResponseIsTrue: Boolean;
 begin
-  Result := Response = '1';
+  Result := Success and (Response = '1');
 end;
 
 function TResponse.AppendItemsTag(JSON: string): string;

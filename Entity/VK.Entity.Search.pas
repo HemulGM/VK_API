@@ -3,7 +3,8 @@ unit VK.Entity.Search;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Common;
 
 type
   TVkSearchItem = class
@@ -35,13 +36,10 @@ type
     /// </summary>
     property Global: Boolean read FGlobal write FGlobal;
     property&Type: string read FType write FType;
-    constructor Create;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSearchItem;
   end;
 
-  TVkSearchItems = class
+  TVkSearchItems = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkSearchItem>;
@@ -49,8 +47,6 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkSearchItem> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSearchItems;
   end;
 
 implementation
@@ -59,11 +55,6 @@ uses
   VK.CommonUtils;
 
 {TVkSearchItem}
-
-constructor TVkSearchItem.Create;
-begin
-  inherited;
-end;
 
 destructor TVkSearchItem.Destroy;
 begin
@@ -74,32 +65,12 @@ begin
   inherited;
 end;
 
-function TVkSearchItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSearchItem.FromJsonString(AJsonString: string): TVkSearchItem;
-begin
-  result := TJson.JsonToObject<TVkSearchItem>(AJsonString)
-end;
-
 {TVkSearchItems}
 
 destructor TVkSearchItems.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSearchItem>(FItems);
   inherited;
-end;
-
-function TVkSearchItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSearchItems.FromJsonString(AJsonString: string): TVkSearchItems;
-begin
-  result := TJson.JsonToObject<TVkSearchItems>(AJsonString)
 end;
 
 end.

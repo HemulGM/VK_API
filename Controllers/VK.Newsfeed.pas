@@ -3,8 +3,8 @@ unit VK.Newsfeed;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Newsfeed,
-  VK.Entity.Media;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Newsfeed, VK.Entity.Media;
 
 type
   /// <summary>
@@ -187,8 +187,7 @@ type
     /// <summary>
     /// Возвращает сообщества и пользователей, на которые текущему пользователю рекомендуется подписаться.
     /// </summary>
-    function GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean = False; Count: Integer = 20; Offset:
-      Integer = 0): Boolean;
+    function GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean = False; Count: Integer = 20; Offset: Integer = 0): Boolean;
     /// <summary>
     /// Позволяет скрыть объект из ленты новостей.
     /// </summary>
@@ -300,8 +299,7 @@ end;
 
 function TNewsfeedController.IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer): Boolean;
 begin
-  with Handler.Execute('newsfeed.ignoreItem', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id',
-    ItemId.ToString]]) do
+  with Handler.Execute('newsfeed.ignoreItem', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -346,8 +344,7 @@ end;
 
 function TNewsfeedController.Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId, ItemId: Integer): Boolean;
 begin
-  with Handler.Execute('newsfeed.unsubscribe', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id',
-    ItemId.ToString]]) do
+  with Handler.Execute('newsfeed.unsubscribe', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -366,8 +363,7 @@ begin
   if Length(SourceIds) > 0 then
     Params.Add('source_ids', SourceIds);
   Params.Add('no_reposts', NoReposts);
-  with Handler.Execute('newsfeed.saveList', Params) do
-    Result := Success and (TryStrToInt(Response, ListId));
+  Result := Handler.Execute('newsfeed.saveList', Params).ResponseAsInt(ListId);
 end;
 
 function TNewsfeedController.GetMentions(var Items: TVkPosts; Params: TParams): Boolean;

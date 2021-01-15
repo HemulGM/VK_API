@@ -45,18 +45,7 @@ begin
   Params.Add('keys', Keys);
   if UserId <> 0 then
     Params.Add('user_id', UserId);
-  with Handler.Execute('storage.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStorageItems.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('storage.get', Params).GetObjects<TVkStorageItems>(Items);
 end;
 
 function TStorageController.&Set(const Key, Value: string; UserId: Integer): Boolean;
@@ -86,7 +75,7 @@ begin
     begin
       try
         Value := '';
-        Items := TVkStorageItems.FromJsonString(ResponseAsItems);
+        Items := TVkStorageItems.FromJsonString<TVkStorageItems>(ResponseAsItems);
         try
           if Length(Items.Items) > 0 then
             Value := Items.Items[0].Value;
@@ -108,18 +97,7 @@ begin
   Params.Add('count', Count);
   if UserId <> 0 then
     Params.Add('user_id', UserId);
-  with Handler.Execute('storage.getKeys', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStorageKeys.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('storage.getKeys', Params).GetObjects<TVkStorageKeys>(Items);
 end;
 
 end.

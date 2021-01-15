@@ -3,7 +3,7 @@ unit VK.Entity.Stories.Sticker;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
   TVkClickableArea = class
@@ -13,8 +13,6 @@ type
   public
     property X: Integer read FX write FX;
     property Y: Integer read FY write FY;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkClickableArea;
   end;
 
   TVkClickableSticker = class
@@ -29,11 +27,9 @@ type
     property Style: string read FStyle write FStyle;
     property&Type: string read FType write FType;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkClickableSticker;
   end;
 
-  TVkStoriesStickersInfo = class
+  TVkStoriesStickersInfo = class(TVkEntity)
   private
     FClickable_stickers: TArray<TVkClickableSticker>;
     FOriginal_height: Integer;
@@ -43,26 +39,12 @@ type
     property OriginalHeight: Integer read FOriginal_height write FOriginal_height;
     property OriginalWidth: Integer read FOriginal_width write FOriginal_width;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoriesStickersInfo;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkClickableArea}
-
-function TVkClickableArea.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkClickableArea.FromJsonString(AJsonString: string): TVkClickableArea;
-begin
-  result := TJson.JsonToObject<TVkClickableArea>(AJsonString)
-end;
 
 {TVkClickableSticker}
 
@@ -72,32 +54,12 @@ begin
   inherited;
 end;
 
-function TVkClickableSticker.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkClickableSticker.FromJsonString(AJsonString: string): TVkClickableSticker;
-begin
-  result := TJson.JsonToObject<TVkClickableSticker>(AJsonString)
-end;
-
 {TVkStoriesStickersInfo}
 
 destructor TVkStoriesStickersInfo.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkClickableSticker>(FClickable_stickers);
   inherited;
-end;
-
-function TVkStoriesStickersInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStoriesStickersInfo.FromJsonString(AJsonString: string): TVkStoriesStickersInfo;
-begin
-  result := TJson.JsonToObject<TVkStoriesStickersInfo>(AJsonString)
 end;
 
 end.

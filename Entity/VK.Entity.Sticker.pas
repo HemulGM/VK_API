@@ -3,54 +3,38 @@ unit VK.Entity.Sticker;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Photo;
 
 type
   TVkStickerImage = class
   private
-    FHeight: Extended;
+    FHeight: Integer;
     FUrl: string;
-    FWidth: Extended;
+    FWidth: Integer;
   public
-    property Height: Extended read FHeight write FHeight;
+    property Height: Integer read FHeight write FHeight;
     property Url: string read FUrl write FUrl;
-    property Width: Extended read FWidth write FWidth;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStickerImage;
+    property Width: Integer read FWidth write FWidth;
   end;
 
   TVkSticker = class
   private
     FImages: TArray<TVkStickerImage>;
     FImages_with_background: TArray<TVkStickerImage>;
-    FProduct_id: Extended;
-    FSticker_id: Extended;
+    FProduct_id: Integer;
+    FSticker_id: Integer;
   public
     property Images: TArray<TVkStickerImage> read FImages write FImages;
     property ImagesWithBackground: TArray<TVkStickerImage> read FImages_with_background write FImages_with_background;
-    property ProductId: Extended read FProduct_id write FProduct_id;
-    property StickerId: Extended read FSticker_id write FSticker_id;
+    property ProductId: Integer read FProduct_id write FProduct_id;
+    property StickerId: Integer read FSticker_id write FSticker_id;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSticker;
   end;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkStickerImage}
-
-function TVkStickerImage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStickerImage.FromJsonString(AJsonString: string): TVkStickerImage;
-begin
-  result := TJson.JsonToObject<TVkStickerImage>(AJsonString)
-end;
 
 {TVkSticker}
 
@@ -59,16 +43,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkStickerImage>(FImages);
   TArrayHelp.FreeArrayOfObject<TVkStickerImage>(FImages_with_background);
   inherited;
-end;
-
-function TVkSticker.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSticker.FromJsonString(AJsonString: string): TVkSticker;
-begin
-  result := TJson.JsonToObject<TVkSticker>(AJsonString)
 end;
 
 end.

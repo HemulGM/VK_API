@@ -41,23 +41,12 @@ end;
 
 function TSecureController.CheckToken(var Value: TVkSecureCheckToken; const Token, IP: string): Boolean;
 begin
-  with Handler.Execute('secure.checkToken', [['token', Token], ['ip', IP]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Value := TVkSecureCheckToken.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('secure.checkToken', [['token', Token], ['ip', IP]]).GetObject<TVkSecureCheckToken>(Value);
 end;
 
 function TSecureController.GetAppBalance(var Value: Integer): Boolean;
 begin
-  //Not work
+  { TODO -oМалинин Геннадий -c : Not owrk 15.01.2021 11:12:57 }
   with Handler.Execute('secure.getAppBalance') do
     Result := Success; // and ResponseIsTrue;
 end;

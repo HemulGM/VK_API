@@ -57,18 +57,7 @@ uses
 
 function TSearchController.GetHints(var Items: TVkSearchItems; Params: TParams): Boolean;
 begin
-  with Handler.Execute('search.getHints', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkSearchItems.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('search.getHints', Params).GetObject<TVkSearchItems>(Items);
 end;
 
 function TSearchController.GetHints(var Items: TVkSearchItems; Params: TVkParamsSearch): Boolean;

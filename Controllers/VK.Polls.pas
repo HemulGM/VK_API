@@ -154,18 +154,7 @@ end;
 
 function TPollsController.&Create(var Item: TVkPoll; const Params: TVkParamsPollsCreate): Boolean;
 begin
-  with Handler.Execute('polls.create', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkPoll.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('polls.create', Params.List).GetObject<TVkPoll>(Item);
 end;
 
 function TPollsController.DeleteVote(const Params: TVkParamsPollsDeleteVote): Boolean;
@@ -182,18 +171,7 @@ end;
 
 function TPollsController.GetBackgrounds(var Items: TVkPollBackgrounds): Boolean;
 begin
-  with Handler.Execute('polls.getBackgrounds') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPollBackgrounds.FromJsonString(ResponseAsItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('polls.getBackgrounds').GetObjects<TVkPollBackgrounds>(Items);
 end;
 
 function TPollsController.GetById(var Item: TVkPoll; PollId: Integer): Boolean;
@@ -233,34 +211,12 @@ function TPollsController.GetVoters(var Items: TVkPollVoters; Params: TParams): 
 begin
   if not Params.KeyExists('fields') then
     Params.Add('fields', 'domain');
-  with Handler.Execute('polls.getVoters', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPollVoters.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('polls.getVoters', Params).GetObject<TVkPollVoters>(Items);
 end;
 
 function TPollsController.GetById(var Item: TVkPoll; Params: TVkParamsPollsGetById): Boolean;
 begin
-  with Handler.Execute('polls.getById', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkPoll.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('polls.getById', Params.List).GetObject<TVkPoll>(Item);
 end;
 
 { TVkParamsPollsAddVote }

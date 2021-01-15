@@ -3,7 +3,8 @@ unit VK.Apps;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.App;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.App;
 
 type
   TVkParamsAppsGet = record
@@ -25,7 +26,7 @@ type
     /// <summary>
     /// ”дал€ет все уведомлени€ о запросах, отправленных из текущего приложени€.
     /// </summary>
-    function DeleteAppRequests: Boolean;
+    function DeleteAppRequests(var Status: Boolean): Boolean;
     /// <summary>
     /// ¬озвращает данные о запрошенном приложении.
     /// </summary>
@@ -43,12 +44,9 @@ uses
 
 { TAppsController }
 
-function TAppsController.DeleteAppRequests: Boolean;
+function TAppsController.DeleteAppRequests(var Status: Boolean): Boolean;
 begin
-  with Handler.Execute('apps.deleteAppRequests') do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('apps.deleteAppRequests').ResponseAsBool(Status);
 end;
 
 function TAppsController.Get(var Items: TVkApps; Params: TParams): Boolean;
