@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, FireDAC.Comp.Client, FireDAC.Stan.Param, REST.Json,
-  VK.Entity.Common, VK.Entity.Group, VK.Entity.Profile;
+  VK.Entity.Common, VK.Entity.Group, VK.Entity.Profile, VK.Entity.Audio;
 
 type
   TVkCacheDB = class;
@@ -26,6 +26,7 @@ type
   private
     FProfiles: TVkCacheTable<TVkProfile>;
     FGroups: TVkCacheTable<TVkGroup>;
+    FAudios: TVkCacheTable<TVkAudio>;
   private
     FConnection: TFDConnection;
     procedure SetConnection(const Value: TFDConnection);
@@ -35,6 +36,7 @@ type
     destructor Destroy; override;
     property Profiles: TVkCacheTable<TVkProfile> read FProfiles;
     property Groups: TVkCacheTable<TVkGroup> read FGroups;
+    property Audios: TVkCacheTable<TVkAudio> read FAudios;
   published
     property Connection: TFDConnection read FConnection write SetConnection;
   end;
@@ -120,6 +122,7 @@ begin
   inherited;
   FProfiles := TVkCacheTable<TVkProfile>.Create(Self, 'vk_profiles');
   FGroups := TVkCacheTable<TVkGroup>.Create(Self, 'vk_groups');
+  FAudios := TVkCacheTable<TVkAudio>.Create(Self, 'vk_audios');
 end;
 
 function TVkCacheDB.CreateQuery(const SQL: string): TFDQuery;
@@ -133,6 +136,7 @@ destructor TVkCacheDB.Destroy;
 begin
   FProfiles.Free;
   FGroups.Free;
+  FAudios.Free;
   inherited;
 end;
 
