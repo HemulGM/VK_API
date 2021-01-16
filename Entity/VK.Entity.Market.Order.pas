@@ -3,7 +3,8 @@ unit VK.Entity.Market.Order;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Market, VK.Entity.Photo;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
+  VK.Entity.Market, VK.Entity.Photo;
 
 type
   TVkOrderRecipient = class
@@ -29,7 +30,8 @@ type
   TVkOrder = class(TVkObject)
   private
     FComment: string;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FDelivery: TVkOrderDelivery;
     FDisplay_order_id: string;
     FGroup_id: Integer;
@@ -41,7 +43,7 @@ type
     FUser_id: Integer;
   public
     property Comment: string read FComment write FComment;
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read FDate write FDate;
     property Delivery: TVkOrderDelivery read FDelivery write FDelivery;
     property DisplayOrderId: string read FDisplay_order_id write FDisplay_order_id;
     property GroupId: Integer read FGroup_id write FGroup_id;

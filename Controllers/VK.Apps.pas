@@ -3,19 +3,18 @@ unit VK.Apps;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.App;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.App;
 
 type
   TVkParamsAppsGet = record
     List: TParams;
-    function AppId(Value: Integer): Integer;
-    function AppIds(Value: TIds): Integer;
-    function &Platform(Value: TVkPlatform): Integer;
-    function Extended(Value: Boolean): Integer;
-    function ReturnFriends(Value: Boolean): Integer;
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
-    function NameCase(Value: TVkNameCase): Integer;
+    function AppId(Value: Integer): TVkParamsAppsGet;
+    function AppIds(Value: TIds): TVkParamsAppsGet;
+    function &Platform(Value: TVkPlatform): TVkParamsAppsGet;
+    function Extended(Value: Boolean): TVkParamsAppsGet;
+    function ReturnFriends(Value: Boolean): TVkParamsAppsGet;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsAppsGet;
+    function NameCase(Value: TVkNameCase): TVkParamsAppsGet;
   end;
 
   /// <summary>
@@ -61,39 +60,46 @@ end;
 
 { TVkParamsAppsGet }
 
-function TVkParamsAppsGet.AppId(Value: Integer): Integer;
+function TVkParamsAppsGet.AppId(Value: Integer): TVkParamsAppsGet;
 begin
-  Result := List.Add('app_ids', Value);
+  Result := Self;
+  List.Add('app_ids', Value);
 end;
 
-function TVkParamsAppsGet.AppIds(Value: TIds): Integer;
+function TVkParamsAppsGet.AppIds(Value: TIds): TVkParamsAppsGet;
 begin
-  Result := List.Add('app_ids', Value);
+  Result := Self;
+  List.Add('app_ids', Value);
 end;
 
-function TVkParamsAppsGet.&Platform(Value: TVkPlatform): Integer;
+function TVkParamsAppsGet.&Platform(Value: TVkPlatform): TVkParamsAppsGet;
 begin
-  Result := List.Add('platform', Value.ToString);
+  Result := Self;
+  List.Add('platform', Value.ToString);
 end;
 
-function TVkParamsAppsGet.Extended(Value: Boolean): Integer;
+function TVkParamsAppsGet.Extended(Value: Boolean): TVkParamsAppsGet;
 begin
-  Result := List.Add('extended', Value);
+  Result := Self;
+  List.Add('extended', Value);
 end;
 
-function TVkParamsAppsGet.ReturnFriends(Value: Boolean): Integer;
+function TVkParamsAppsGet.ReturnFriends(Value: Boolean): TVkParamsAppsGet;
 begin
-  Result := List.Add('return_friends', Value);
+  Result := Self;
+  List.Add('return_friends', Value);
 end;
 
-function TVkParamsAppsGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsAppsGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsAppsGet;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
 
-function TVkParamsAppsGet.NameCase(Value: TVkNameCase): Integer;
+function TVkParamsAppsGet.NameCase(Value: TVkNameCase): TVkParamsAppsGet;
 begin
-  Result := List.Add('name_case', Value.ToString);
+  Result := Self;
+  List.Add('name_case', Value.ToString);
 end;
 
 end.

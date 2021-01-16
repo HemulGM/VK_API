@@ -358,7 +358,7 @@ begin
   begin
     for i := Low(List.Items) to High(List.Items) do
     begin
-      Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title + ' ' + BoolToString(List.Items[i].ContentRestricted,
+      Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title + ' ' + BoolToString(List.Items[i].ContentRestricted > 0,
         ' - аудиозапись не доступна', ''));
     end;
     List.Free;
@@ -404,7 +404,7 @@ begin
     for i := Low(List.Items) to High(List.Items) do
     begin
       Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title + ' ' + BoolToString(List.Items
-        [i].ContentRestricted, ' - аудиозапись не доступна', ''));
+        [i].ContentRestricted > 0, ' - аудиозапись не доступна', ''));
     end;
     List.Free;
   end

@@ -3,8 +3,8 @@ unit VK.Entity.Profile;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Database.Cities,
-  VK.Entity.Database.Countries;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, REST.Json.Types, VK.Entity.Common,
+  VK.Entity.Photo, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
 
 type
   TVkProfile = class;
@@ -146,13 +146,14 @@ type
     FFrom: Integer;
     FUnit: string;
     FUnit_id: Integer;
-    FUntil: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUntil: TDateTime;
   public
     property CountryId: Integer read FCountry_id write FCountry_id;
     property From: Integer read FFrom write FFrom;
     property&Unit: string read FUnit write FUnit;
     property UnitId: Integer read FUnit_id write FUnit_id;
-    property UntilDate: Int64 read FUntil write FUntil;
+    property UntilDate: TDateTime read FUntil write FUntil;
   end;
 
   TVkCareer = class(TVkEntity)
@@ -162,14 +163,15 @@ type
     FCountry_id: Integer;
     FFrom: Integer;
     FPosition: string;
-    FUntil: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUntil: TDateTime;
   public
     property CityId: Integer read FCity_id write FCity_id;
     property Company: string read FCompany write FCompany;
     property CountryId: Integer read FCountry_id write FCountry_id;
     property From: Integer read FFrom write FFrom;
     property Position: string read FPosition write FPosition;
-    property UntilDate: Int64 read FUntil write FUntil;
+    property UntilDate: TDateTime read FUntil write FUntil;
   end;
 
   TVkOccupation = class(TVkObject)
@@ -206,22 +208,24 @@ type
   TVkLastSeen = class(TVkEntity)
   private
     FPlatform: Integer;
-    FTime: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTime: TDateTime;
   public
     property&Platform: Integer read FPlatform write FPlatform;
-    property Time: Int64 read FTime write FTime;
+    property Time: TDateTime read FTime write FTime;
   end;
 
   TVkUserOnlineInfo = class(TVkEntity)
   private
     FIs_mobile: Boolean;
     FIs_online: Boolean;
-    FLast_seen: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FLast_seen: TDateTime;
     FVisible: Boolean;
   public
     property IsMobile: Boolean read FIs_mobile write FIs_mobile;
     property IsOnline: Boolean read FIs_online write FIs_online;
-    property LastSeen: Int64 read FLast_seen write FLast_seen;
+    property LastSeen: TDateTime read FLast_seen write FLast_seen;
     property Visible: Boolean read FVisible write FVisible;
   end;
 
@@ -313,10 +317,12 @@ type
     FPhoto: string;
     FPhoto_big: string;
     FPhoto_medium: string;
+    FCan_invite_to_chats: Boolean;
+    FTrack_code: string;
+    FLists: TArray<Integer>;
     function GetRefer: string;
     function FGetFullName: string;
   public
-    property&Type: string read FType write FType;
     property About: string read FAbout write FAbout;
     property Activities: string read FActivities write FActivities;
     property Activity: string read FActivity write FActivity;
@@ -326,6 +332,7 @@ type
     property Books: string read FBooks write FBooks;
     property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
     property CanBeInvitedGroup: Boolean read FCan_be_invited_group write FCan_be_invited_group;
+    property CanInviteToChats: Boolean read FCan_invite_to_chats write FCan_invite_to_chats;
     property CanPost: Boolean read FCan_post write FCan_post;
     property CanSeeAllPosts: Boolean read FCan_see_all_posts write FCan_see_all_posts;
     property CanSeeAudio: Boolean read FCan_see_audio write FCan_see_audio;
@@ -362,6 +369,7 @@ type
     property IsHiddenFromFeed: Boolean read FIs_hidden_from_feed write FIs_hidden_from_feed;
     property LastName: string read FLast_name write FLast_name;
     property LastSeen: TVkLastSeen read FLast_seen write FLast_seen;
+    property Lists: TArray<Integer> read FLists write FLists;
     property Military: TArray<TVkMilitary> read FMilitary write FMilitary;
     property MobilePhone: string read FMobile_phone write FMobile_phone;
     property Movies: string read FMovies write FMovies;
@@ -372,17 +380,17 @@ type
     property Online: Boolean read FOnline write FOnline;
     property OnlineInfo: TVkUserOnlineInfo read FOnline_info write FOnline_info;
     property Personal: TVkPersonal read FPersonal write FPersonal;
-    property Photo: string read FPhoto write FPhoto;
-    property PhotoBig: string read FPhoto_big write FPhoto_big;
-    property PhotoMedium: string read FPhoto_medium write FPhoto_medium;
-    property Photo50: string read FPhoto_50 write FPhoto_50;
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property Photo200_Orig: string read FPhoto_200_orig write FPhoto_200_orig;
     property Photo400_Orig: string read FPhoto_400_orig write FPhoto_400_orig;
+    property Photo50: string read FPhoto_50 write FPhoto_50;
+    property Photo: string read FPhoto write FPhoto;
+    property PhotoBig: string read FPhoto_big write FPhoto_big;
     property PhotoId: string read FPhoto_id write FPhoto_id;
     property PhotoMax: string read FPhoto_max write FPhoto_max;
     property PhotoMax_Orig: string read FPhoto_max_orig write FPhoto_max_orig;
+    property PhotoMedium: string read FPhoto_medium write FPhoto_medium;
     property PhotoMediumRec: string read FPhoto_medium_rec write FPhoto_medium_rec;
     property Quotes: string read FQuotes write FQuotes;
     property Relation: Integer read FRelation write FRelation;
@@ -395,6 +403,7 @@ type
     property Skype: string read FSkype write FSkype;
     property Status: string read FStatus write FStatus;
     property TimeZone: Integer read FTimezone write FTimezone;
+    property TrackCode: string read FTrack_code write FTrack_code;
     property Trending: Integer read FTrending write FTrending;
     property TV: string read FTv write FTv;
     property Twitter: string read FTwitter write FTwitter;
@@ -402,6 +411,7 @@ type
     property University: Integer read FUniversity write FUniversity;
     property UniversityName: string read FUniversity_name write FUniversity_name;
     property Verified: Boolean read FVerified write FVerified;
+    property&Type: string read FType write FType;
     //
     property Refer: string read GetRefer;
     property GetFullName: string read FGetFullName;

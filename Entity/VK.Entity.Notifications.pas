@@ -3,8 +3,8 @@ unit VK.Entity.Notifications;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkNotificationAction = class
@@ -64,7 +64,8 @@ type
   private
     FAction: TVkNotificationAction;
     FButton_hide: Boolean;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FFooter: string;
     FHeader: string;
     FHide_buttons: TArray<TVkNotificationHideButton>;
@@ -75,7 +76,7 @@ type
   public
     property Action: TVkNotificationAction read FAction write FAction;
     property ButtonHide: Boolean read FButton_hide write FButton_hide;
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read FDate write FDate;
     property Footer: string read FFooter write FFooter;
     property Header: string read FHeader write FHeader;
     property HideButtons: TArray<TVkNotificationHideButton> read FHide_buttons write FHide_buttons;

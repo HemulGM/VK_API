@@ -3,7 +3,8 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment, VK.Entity.Common.List;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Privacy,
+  VK.Entity.Attachment, VK.Entity.Common.List;
 
 type
   TVkVideoFiles = class(TVkEntity)
@@ -29,7 +30,8 @@ type
   TVkVideo = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
-    FAdded: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FAdded: TDateTime;
     FCan_add: Boolean;
     FCan_add_to_faves: Boolean;
     FCan_attach_link: Boolean;
@@ -39,7 +41,8 @@ type
     FCan_repost: Boolean;
     FCan_subscribe: Boolean;
     FComments: Integer;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FDescription: string;
     FDuration: Integer;
     FFiles: TVkVideoFiles;
@@ -64,11 +67,12 @@ type
     Fphoto_320: string;
     Ffirst_frame_1280: string;
     Fphoto_130: string;
-    FAdding_date: Int64;
-    FIs_private: Integer;
-    FProcessing: Integer;
-    FLive: Integer;
-    FUpcoming: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FAdding_date: TDateTime;
+    FIs_private: Boolean;
+    FProcessing: Boolean;
+    FLive: Boolean;
+    FUpcoming: Boolean;
   public
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Title: string read FTitle write FTitle;
@@ -84,22 +88,22 @@ type
     property FirstFrame640: string read Ffirst_frame_640 write Ffirst_frame_640;
     property FirstFrame800: string read Ffirst_frame_800 write Ffirst_frame_800;
     property FirstFrame1280: string read Ffirst_frame_1280 write Ffirst_frame_1280;
-    property Date: Int64 read FDate write FDate;
-    property AddingDate: Int64 read FAdding_date write FAdding_date;
+    property Date: TDateTime read FDate write FDate;
+    property AddingDate: TDateTime read FAdding_date write FAdding_date;
     property Views: Integer read FViews write FViews;
     property Comments: Integer read FComments write FComments;
     property Player: string read FPlayer write FPlayer;
     property&Platform: string read FPlatform write FPlatform;
     property CanEdit: Boolean read FCan_edit write FCan_edit;
     property CanAdd: Boolean read FCan_add write FCan_add;
-    property IsPrivate: Integer read FIs_private write FIs_private;
+    property IsPrivate: Boolean read FIs_private write FIs_private;
     property AccessKey: string read FAccess_key write FAccess_key;
-    property Processing: Integer read FProcessing write FProcessing;
-    property Live: Integer read FLive write FLive;
-    property UpComing: Integer read FUpcoming write FUpcoming;
+    property Processing: Boolean read FProcessing write FProcessing;
+    property Live: Boolean read FLive write FLive;
+    property UpComing: Boolean read FUpcoming write FUpcoming;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     //
-    property Added: Int64 read FAdded write FAdded;
+    property Added: TDateTime read FAdded write FAdded;
     property CanAddToFaves: Boolean read FCan_add_to_faves write FCan_add_to_faves;
     property CanAttachLink: Boolean read FCan_attach_link write FCan_attach_link;
     property CanComment: Boolean read FCan_comment write FCan_comment;
@@ -126,14 +130,15 @@ type
     FOwner_id: Integer;
     FPrivacy: TVkPrivacy;
     FTitle: string;
-    FUpdated_time: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUpdated_time: TDateTime;
   public
     property Count: Integer read FCount write FCount;
     property Image: TArray<TVkVideoImage> read FImage write FImage;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Privacy: TVkPrivacy read FPrivacy write FPrivacy;
     property Title: string read FTitle write FTitle;
-    property UpdatedTime: Int64 read FUpdated_time write FUpdated_time;
+    property UpdatedTime: TDateTime read FUpdated_time write FUpdated_time;
     constructor Create; override;
     destructor Destroy; override;
   end;

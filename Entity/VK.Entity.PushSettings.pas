@@ -3,16 +3,17 @@ unit VK.Entity.PushSettings;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common;
 
 type
   TVkConversation = class(TVkEntity)
   private
-    FDisabled_until: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDisabled_until: TDateTime;
     FPeer_id: Integer;
     FSound: Boolean;
   public
-    property DisabledUntil: Int64 read FDisabled_until write FDisabled_until;
+    property DisabledUntil: TDateTime read FDisabled_until write FDisabled_until;
     property PeerId: Integer read FPeer_id write FPeer_id;
     property Sound: Boolean read FSound write FSound;
   end;
@@ -75,11 +76,11 @@ type
   TVkPushSettings = class(TVkEntity)
   private
     FConversations: TVkConversations;
-    FDisabled: Extended;
+    FDisabled: Boolean;
     Fsettings: TVkPushSettingsItem;
   public
     property Conversations: TVkConversations read FConversations write FConversations;
-    property Disabled: Extended read FDisabled write FDisabled;
+    property Disabled: Boolean read FDisabled write FDisabled;
     property Settings: TVkPushSettingsItem read Fsettings write Fsettings;
     constructor Create; override;
     destructor Destroy; override;

@@ -3,7 +3,7 @@ unit VK.Entity.Event;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
 
 type
   TVkEvent = class(TVkObject)
@@ -14,7 +14,8 @@ type
     FIs_favorite: Boolean;
     FMember_status: Integer;
     FText: string;
-    FTime: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTime: TDateTime;
   public
     property Address: string read FAddress write FAddress;
     property ButtonText: string read FButton_text write FButton_text;
@@ -22,7 +23,7 @@ type
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property MemberStatus: Integer read FMember_status write FMember_status;
     property Text: string read FText write FText;
-    property Time: Int64 read FTime write FTime;
+    property Time: TDateTime read FTime write FTime;
   end;
 
 implementation

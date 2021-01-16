@@ -3,8 +3,8 @@ unit VK.Entity.Message;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Types, VK.Entity.Keyboard, VK.Entity.ClientInfo,
-  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common.List;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Types,
+  VK.Entity.Keyboard, VK.Entity.ClientInfo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common.List;
 
 type
   TVkMessageSendResponse = class(TVkEntity)
@@ -91,7 +91,8 @@ type
   private
     FAttachments: TArray<TVkAttachment>;
     FConversation_message_id: Integer;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FFrom_id: Integer;
     FFwd_messages: TArray<TVkMessage>;
     FImportant: Boolean;
@@ -112,10 +113,8 @@ type
     function GetPayloadButton: TVkPayloadButton;
     function GetOut: Boolean;
     procedure SetOut(const Value: Boolean);
-    function GetDate: TDateTime;
-    procedure SetDate(const Value: TDateTime);
   public
-    property Date: TDateTime read GetDate write SetDate;
+    property Date: TDateTime read FDate write FDate;
     property PeerId: Integer read FPeer_id write FPeer_id;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Text: string read FText write FText;
@@ -218,11 +217,6 @@ begin
   end;
 end;
 
-function TVkMessage.GetDate: TDateTime;
-begin
-  Result := UnixToDateTime(FDate, False);
-end;
-
 function TVkMessage.GetOut: Boolean;
 begin
   Result := FOut = 1;
@@ -240,11 +234,6 @@ begin
   except
     Exit(nil);
   end;
-end;
-
-procedure TVkMessage.SetDate(const Value: TDateTime);
-begin
-  FDate := DateTimeToUnix(Value, False);
 end;
 
 procedure TVkMessage.SetOut(const Value: Boolean);

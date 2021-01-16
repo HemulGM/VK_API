@@ -3,7 +3,7 @@ unit VK.Entity.Market;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Common;
 
 type
   TVkMarketSection = TVkBasicObject;
@@ -52,7 +52,8 @@ type
   private
     FAvailability: Boolean;
     FCategory: TVkProductCategory;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FDescription: string;
     FExternal_id: string;
     FOwner_id: Integer;
@@ -75,7 +76,7 @@ type
   public
     property Availability: Boolean read FAvailability write FAvailability;
     property Category: TVkProductCategory read FCategory write FCategory;
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read FDate write FDate;
     property Description: string read FDescription write FDescription;
     property ExternalId: string read FExternal_id write FExternal_id;
     property OwnerId: Integer read FOwner_id write FOwner_id;

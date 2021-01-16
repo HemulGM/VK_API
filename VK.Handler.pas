@@ -154,7 +154,7 @@ begin
   FExecuting := 0;
   FStartRequest := 0;
   FRequests := 0;
-  FUsePseudoAsync := True;
+  FUsePseudoAsync := False;
   FRESTClient := TRESTClient.Create(nil);
   FRESTClient.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
   FRESTClient.AcceptCharset := 'UTF-8, *;q=0.8';

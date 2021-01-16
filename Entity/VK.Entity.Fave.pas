@@ -3,8 +3,8 @@ unit VK.Entity.Fave;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Media, VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo,
-  VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Link, VK.Entity.Media,
+  VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkFaveType = (ftPost, ftVideo, ftProduct, ftArticle, ftLink);
@@ -25,7 +25,8 @@ type
 
   TVkFave = class(TVkEntity)
   private
-    FAdded_date: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FAdded_date: TDateTime;
     FSeen: Boolean;
     FTags: TArray<TVkFaveTag>;
     FType: string;
@@ -34,12 +35,10 @@ type
     FVideo: TVkVideo;
     FProduct: TVkProduct;
     FPhoto: TVkPhoto;
-    function GetAdded_date: TDateTime;
-    procedure SetAdded_date(const Value: TDateTime);
     function GetType: TVkFaveType;
     procedure SetType(const Value: TVkFaveType);
   public
-    property AddedDate: TDateTime read GetAdded_date write SetAdded_date;
+    property AddedDate: TDateTime read FAdded_date write FAdded_date;
     property Link: TVkLink read FLink write FLink;
     property Post: TVkPost read FPost write FPost;
     property Video: TVkVideo read FVideo write FVideo;
@@ -74,19 +73,9 @@ begin
   inherited;
 end;
 
-function TVkFave.GetAdded_date: TDateTime;
-begin
-  Result := UnixToDateTime(FAdded_date, False);
-end;
-
 function TVkFave.GetType: TVkFaveType;
 begin
   Result := TVkFaveType.FromString(FType);
-end;
-
-procedure TVkFave.SetAdded_date(const Value: TDateTime);
-begin
-  FAdded_date := DateTimeToUnix(Value, False);
 end;
 
 procedure TVkFave.SetType(const Value: TVkFaveType);

@@ -3,7 +3,7 @@ unit VK.Entity.Gift;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkGift = class(TVkObject)
@@ -21,14 +21,15 @@ type
 
   TVkGiftItem = class(TVkObject)
   private
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FFrom_id: Integer;
     FGift: TVkGift;
     FGift_hash: string;
     FMessage: string;
     FPrivacy: Integer;
   public
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read FDate write FDate;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Gift: TVkGift read FGift write FGift;
     property GiftHash: string read FGift_hash write FGift_hash;

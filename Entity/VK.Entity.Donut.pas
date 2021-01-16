@@ -3,13 +3,14 @@ unit VK.Entity.Donut;
 interface
 
 uses
-  REST.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common;
+  REST.Json, REST.JsonReflect, REST.Json.Interceptors, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkDonutSubscription = class(TVkEntity)
   private
     FAmount: Integer;
-    FNext_Payment_Date: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FNext_Payment_Date: TDateTime;
     FOwner_Id: Integer;
     FStatus: string;
   public
@@ -18,9 +19,9 @@ type
     /// </summary>
     property Amount: Integer read FAmount write FAmount;
     /// <summary>
-    /// Дата следующего платежа в формате 'unixtime'
+    /// Дата следующего платежа
     /// </summary>
-    property NextPaymentDate: Int64 read FNext_Payment_Date write FNext_Payment_Date;
+    property NextPaymentDate: TDateTime read FNext_Payment_Date write FNext_Payment_Date;
     /// <summary>
     /// Идентификатор сообщества, доном которого является пользователь
     /// </summary>

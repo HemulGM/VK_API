@@ -3,7 +3,8 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Attachment,
+  VK.Entity.Common.List;
 
 type
   TVkPreviewPhoto = class
@@ -26,7 +27,8 @@ type
   TVkDocument = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FExt: string;
     FIs_licensed: Boolean;
     FOwner_id: Integer;
@@ -45,12 +47,10 @@ type
     }
     FType: Integer;
     FUrl: string;
-    function GetDate: TDateTime;
-    procedure SetDate(const Value: TDateTime);
     function GetSizeStr: string;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
-    property Date: TDateTime read GetDate write SetDate;
+    property Date: TDateTime read FDate write FDate;
     property Ext: string read FExt write FExt;
     property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
     property OwnerId: Integer read FOwner_id write FOwner_id;
@@ -119,22 +119,12 @@ begin
   Result := Attachment.Doc(FId, FOwner_id, FAccess_key);
 end;
 
-function TVkDocument.GetDate: TDateTime;
-begin
-  Result := UnixToDateTime(FDate, False);
-end;
-
 function TVkDocument.GetSizeStr: string;
 begin
   if FSize / (1024 * 1024) > 1 then
     Result := FormatFloat('0.00 μα', FSize / 1024 / 1024)
   else
     Result := FormatFloat('0.00 κα', FSize / 1024);
-end;
-
-procedure TVkDocument.SetDate(const Value: TDateTime);
-begin
-  FDate := DateTimeToUnix(Value, False);
 end;
 
 end.

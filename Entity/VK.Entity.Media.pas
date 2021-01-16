@@ -3,10 +3,10 @@ unit VK.Entity.Media;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
-  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
+  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
+  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page,
+  VK.Entity.Album, VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
   VK.Entity.Market.Album;
 
 type
@@ -128,7 +128,8 @@ type
 
   TVkComment = class(TVkObject)
   private
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FFrom_id: Integer;
     FPost_id: Integer;
     FPost_owner_id: Integer;
@@ -143,7 +144,7 @@ type
     FThread: TVkCommentThread;
     FPid: Integer;
   public
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read FDate write FDate;
     property FromId: Integer read FFrom_id write FFrom_id;
     /// <summary>
     ///  Идентификатор фотографии, к которой был оставлен комментарий
@@ -192,7 +193,8 @@ type
     FOwner_id: Integer;
     FFrom_id: Integer;
     FCreated_by: Integer;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FText: string;
     FReply_owner_id: Integer;
     FReply_post_id: Integer;
@@ -215,8 +217,6 @@ type
     FIs_favorite: Boolean;
     FPostponed_id: Integer;
     FTo_id: Integer;
-    function GetDate: TDateTime;
-    procedure SetDate(const Value: TDateTime);
   public
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
     property CanDelete: Integer read FCan_delete write FCan_delete;
@@ -225,7 +225,7 @@ type
     property Comments: TVkCommentsInfo read FComments write FComments;
     property CopyHistory: TArray<TVkPost> read FCopy_history write FCopy_history;
     property CreatedBy: Integer read FCreated_by write FCreated_by;
-    property Date: TDateTime read GetDate write SetDate;
+    property Date: TDateTime read FDate write FDate;
     property FriendsOnly: Integer read FFriends_only write FFriends_only;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Geo: TVkGeo read FGeo write FGeo;
@@ -417,16 +417,6 @@ begin
   FReposts.Free;
   FViews.Free;
   inherited;
-end;
-
-function TVkPost.GetDate: TDateTime;
-begin
-  Result := UnixToDateTime(FDate, False);
-end;
-
-procedure TVkPost.SetDate(const Value: TDateTime);
-begin
-  FDate := DateTimeToUnix(Value, False);
 end;
 
 { TVkPosts }

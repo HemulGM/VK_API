@@ -3,13 +3,15 @@ unit VK.Entity.Page;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkPage = class(TVkObject)
   private
-    FCreated: Int64;
-    FEdited: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FCreated: TDateTime;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FEdited: TDateTime;
     FGroup_id: Integer;
     FParent2: string;
     FTitle: string;
@@ -32,8 +34,8 @@ type
     property CurrentUserCanEditAccess: Integer read FCurrent_user_can_edit_access write FCurrent_user_can_edit_access;
     property WhoCanView: Integer read FWho_can_view write FWho_can_view;
     property WhoCanEdit: Integer read FWho_can_edit write FWho_can_edit;
-    property Edited: Int64 read FEdited write FEdited;
-    property Created: Int64 read FCreated write FCreated;
+    property Edited: TDateTime read FEdited write FEdited;
+    property Created: TDateTime read FCreated write FCreated;
     property EditorId: Integer read FEditor_id write FEditor_id;
     property Views: Integer read FViews write FViews;
     property Parent: string read FParent write FParent;
@@ -47,12 +49,13 @@ type
 
   TVkPageVersion = class(TVkObject)
   private
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FEditor_id: Integer;
     FEditor_name: string;
     FLength: Integer;
   public
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read FDate write FDate;
     property EditorId: Integer read FEditor_id write FEditor_id;
     property EditorName: string read FEditor_name write FEditor_name;
     property Length: Integer read FLength write FLength;

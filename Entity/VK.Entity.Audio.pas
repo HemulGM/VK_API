@@ -3,7 +3,7 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment,
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment,
   VK.Entity.Common.List;
 
 type
@@ -80,7 +80,8 @@ type
     FAds: TVkAudioAds;
     FAlbum: TVkAudioAlbum;
     FArtist: string;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FDuration: Integer;
     FGenre_id: Integer;
     FIs_licensed: Boolean;
@@ -93,40 +94,45 @@ type
     FAlbum_id: Integer;
     FNo_search: Boolean;
     FIs_hq: Boolean;
-    FContent_restricted: Boolean;
+    FContent_restricted: Integer;
     FAudio_chart_info: TVkAudioChartInfo;
     FIs_explicit: Boolean;
     FStories_allowed: Boolean;
     FShort_videos_allowed: Boolean;
+    FIs_focus_track: Boolean;
+    FStories_cover_allowed: Boolean;
+    FFeatured_artists: TArray<TVkAudioArtist>;
+    FSubtitle: string;
     function GetAudioGenre: TAudioGenre;
     procedure SetAudioGenre(const Value: TAudioGenre);
   public
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Artist: string read FArtist write FArtist;
-    property Title: string read FTitle write FTitle;
-    property Duration: Integer read FDuration write FDuration;
-    property Url: string read FUrl write FUrl;
-    property LyricsId: Integer read FLyrics_id write FLyrics_id;
-    property AlbumId: Integer read FAlbum_id write FAlbum_id;
-    property GenreId: Integer read FGenre_id write FGenre_id;
-    property Date: Int64 read FDate write FDate;
-    property NoSearch: Boolean read FNo_search write FNo_search;
-    property IsHQ: Boolean read FIs_hq write FIs_hq;
-    //
     property AccessKey: string read FAccess_key write FAccess_key;
     property Ads: TVkAudioAds read FAds write FAds;
-    property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
-    property TrackCode: string read FTrack_code write FTrack_code;
     property Album: TVkAudioAlbum read FAlbum write FAlbum;
-    property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
-    property ContentRestricted: Boolean read FContent_restricted write FContent_restricted;
+    property AlbumId: Integer read FAlbum_id write FAlbum_id;
+    property Artist: string read FArtist write FArtist;
     property AudioChartInfo: TVkAudioChartInfo read FAudio_chart_info write FAudio_chart_info;
+    property ContentRestricted: Integer read FContent_restricted write FContent_restricted;
+    property Date: TDateTime read FDate write FDate;
+    property Duration: Integer read FDuration write FDuration;
+    property FeaturedArtists: TArray<TVkAudioArtist> read FFeatured_artists write FFeatured_artists;
+    property Genre: TAudioGenre read GetAudioGenre write SetAudioGenre;
+    property GenreId: Integer read FGenre_id write FGenre_id;
     property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
-    //
+    property IsFocusTrack: Boolean read FIs_focus_track write FIs_focus_track;
+    property IsHQ: Boolean read FIs_hq write FIs_hq;
+    property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
+    property LyricsId: Integer read FLyrics_id write FLyrics_id;
+    property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
+    property NoSearch: Boolean read FNo_search write FNo_search;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
     property ShortVideosAllowed: Boolean read FShort_videos_allowed write FShort_videos_allowed;
     property StoriesAllowed: Boolean read FStories_allowed write FStories_allowed;
-    //
-    property Genre: TAudioGenre read GetAudioGenre write SetAudioGenre;
+    property StoriesCoverAllowed: Boolean read FStories_cover_allowed write FStories_cover_allowed;
+    property Subtitle: string read FSubtitle write FSubtitle;
+    property Title: string read FTitle write FTitle;
+    property TrackCode: string read FTrack_code write FTrack_code;
+    property Url: string read FUrl write FUrl;
     constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: string;
@@ -166,6 +172,7 @@ end;
 destructor TVkAudio.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FMain_artists);
+  TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FFeatured_artists);
   if Assigned(FAudio_chart_info) then
     FAudio_chart_info.Free;
   if Assigned(FAlbum) then

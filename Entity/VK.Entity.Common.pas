@@ -3,7 +3,7 @@ unit VK.Entity.Common;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Types;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, REST.Json.Types;
 
 type
   TVkEntity = class(TInterfacedObject)
@@ -32,11 +32,12 @@ type
 
   TVkLastActivity = class(TVkEntity)
   private
-    FOnline: Integer;
-    FTime: Int64;
+    FOnline: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTime: TDateTime;
   public
-    property Online: Integer read FOnline write FOnline;
-    property Time: Int64 read FTime write FTime;
+    property Online: Boolean read FOnline write FOnline;
+    property Time: TDateTime read FTime write FTime;
   end;
 
   TVkBasicObject = class(TVkObject)
@@ -85,10 +86,11 @@ type
 
   TVkBanInfo = class
   private
-    FEnd_date: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FEnd_date: TDateTime;
     FComment: string;
   public
-    property EndDate: Integer read FEnd_date write FEnd_date;
+    property EndDate: TDateTime read FEnd_date write FEnd_date;
     property Comment: string read FComment write FComment;
   end;
 
@@ -225,6 +227,15 @@ type
     property Address: string read FAddress write FAddress;
   end;
 
+  TVkCoordinates = class(TVkEntity)
+  private
+    FLatitude: Extended;
+    FLongitude: Extended;
+  public
+    property Latitude: Extended read FLatitude write FLatitude;
+    property Longitude: Extended read FLongitude write FLongitude;
+  end;
+
   TVkPlace = class(TVkObject)
   private
     FCity: string; // Ч название города;
@@ -232,7 +243,8 @@ type
     FTitle: string; // Ч название места (если назначено);
     FLatitude: Extended; // Ч географическа€ широта;
     FLongitude: Extended; // Ч географическа€ долгота;
-    FCreated: Int64; // Ч дата создани€ (если назначено);
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FCreated: TDateTime; // Ч дата создани€ (если назначено);
     FIcon: string;
     FType: string;
     FAddress: string;
@@ -245,18 +257,9 @@ type
     property&Type: string read FType write FType;
     property Country: string read FCountry write FCountry;
     property City: string read FCity write FCity;
-    property Created: Int64 read FCreated write FCreated;
+    property Created: TDateTime read FCreated write FCreated;
     property Icon: string read FIcon write FIcon;
     property Address: string read FAddress write FAddress;
-  end;
-
-  TVkCoordinates = class(TVkEntity)
-  private
-    FLatitude: Extended;
-    FLongitude: Extended;
-  public
-    property Latitude: Extended read FLatitude write FLatitude;
-    property Longitude: Extended read FLongitude write FLongitude;
   end;
 
   TVkGeo = class(TVkEntity)

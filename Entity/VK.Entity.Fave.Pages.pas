@@ -3,22 +3,23 @@ unit VK.Entity.Fave.Pages;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Fave, VK.Entity.Common,
-  VK.Entity.Common.List;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Fave, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkFavePage = class(TVkEntity)
   private
     FDescription: string;
     FType: string;
-    FUpdated_date: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUpdated_date: TDateTime;
     FUser: TVkProfile;
     FGroup: TVkGroup;
     FTags: TArray<TVkFaveTag>;
   public
     property Description: string read FDescription write FDescription;
     property&Type: string read FType write FType;
-    property UpdatedDate: Int64 read FUpdated_date write FUpdated_date;
+    property UpdatedDate: TDateTime read FUpdated_date write FUpdated_date;
     property User: TVkProfile read FUser write FUser;
     property Tags: TArray<TVkFaveTag> read FTags write FTags;
     property Group: TVkGroup read FGroup write FGroup;

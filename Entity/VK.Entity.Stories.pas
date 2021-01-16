@@ -3,8 +3,8 @@ unit VK.Entity.Stories;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Link,
-  VK.Entity.App, VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
+  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Link, VK.Entity.App, VK.Entity.Common.List;
 
 type
   TVkStoryReplies = class(TVkCounterEntity)
@@ -25,8 +25,10 @@ type
     FCan_reply: Boolean;
     FCan_see: Boolean;
     FCan_share: Boolean;
-    FDate: Int64;
-    FExpires_at: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FExpires_at: TDateTime;
     FOwner_id: Integer;
     FPhoto: TVkPhoto;
     FReplies: TVkStoryReplies;
@@ -50,14 +52,8 @@ type
     property CanReply: Boolean read FCan_reply write FCan_reply;
     property CanSee: Boolean read FCan_see write FCan_see;
     property CanShare: Boolean read FCan_share write FCan_share;
-    property Date: Int64 read FDate write FDate;
-    property ExpiresAt: Int64 read FExpires_at write FExpires_at;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Photo: TVkPhoto read FPhoto write FPhoto;
-    property Replies: TVkStoryReplies read FReplies write FReplies;
-    property TrackCode: string read FTrack_code write FTrack_code;
-    property&Type: string read FType write FType;
-    //
+    property Date: TDateTime read FDate write FDate;
+    property ExpiresAt: TDateTime read FExpires_at write FExpires_at;
     property IsOneTime: Boolean read FIs_one_time write FIs_one_time;
     property IsOwnerPinned: Boolean read FIs_owner_pinned write FIs_owner_pinned;
     property IsRestricted: Boolean read FIs_restricted write FIs_restricted;
@@ -65,7 +61,12 @@ type
     property MuteReply: Boolean read FMute_reply write FMute_reply;
     property NeedMute: Boolean read FNeed_mute write FNeed_mute;
     property NoSound: Boolean read FNo_sound write FNo_sound;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property Replies: TVkStoryReplies read FReplies write FReplies;
     property Seen: Integer read FSeen write FSeen;
+    property TrackCode: string read FTrack_code write FTrack_code;
+    property&Type: string read FType write FType;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -154,5 +155,4 @@ begin
 end;
 
 end.
-
 

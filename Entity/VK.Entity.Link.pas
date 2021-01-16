@@ -3,7 +3,8 @@ unit VK.Entity.Link;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo, VK.Types;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
+  VK.Entity.Photo, VK.Types;
 
 type
   TVkLinkStatus = class(TVkEntity)
@@ -62,7 +63,8 @@ type
   private
     FKey: string;
     FShort_url: string;
-    FTimestamp: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTimestamp: TDateTime;
     FUrl: string;
     FViews: Integer;
     FAccess_key: string;
@@ -70,7 +72,7 @@ type
     property Key: string read FKey write FKey;
     property AccessKey: string read FAccess_key write FAccess_key;
     property ShortUrl: string read FShort_url write FShort_url;
-    property Timestamp: Int64 read FTimestamp write FTimestamp;
+    property Timestamp: TDateTime read FTimestamp write FTimestamp;
     property Url: string read FUrl write FUrl;
     property Views: Integer read FViews write FViews;
   end;
@@ -111,13 +113,14 @@ type
     FCities: TArray<TVkLinkViewsCity>;
     FCountries: TArray<TVkLinkViewsCountries>;
     FSex_age: TArray<TVkLinkSexAge>;
-    FTimestamp: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTimestamp: TDateTime;
     FViews: Integer;
   public
     property Cities: TArray<TVkLinkViewsCity> read FCities write FCities;
     property Countries: TArray<TVkLinkViewsCountries> read FCountries write FCountries;
     property SexAge: TArray<TVkLinkSexAge> read FSex_age write FSex_age;
-    property Timestamp: Int64 read FTimestamp write FTimestamp;
+    property Timestamp: TDateTime read FTimestamp write FTimestamp;
     property Views: Integer read FViews write FViews;
     destructor Destroy; override;
   end;

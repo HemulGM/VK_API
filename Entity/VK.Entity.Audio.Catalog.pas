@@ -21,9 +21,9 @@ type
     FPlaylists: TArray<TVkAudioPlaylist>;
   public
     property Audios: TArray<TVkAudio> read FAudios write FAudios;
-    property Playlists: TArray<TVkAudioPlaylist> read FPlaylists write FPlaylists;
     property Id: string read FId write FId;
     property NextFrom: string read FNext_from write FNext_from;
+    property Playlists: TArray<TVkAudioPlaylist> read FPlaylists write FPlaylists;
     property Source: string read FSource write FSource;
     property Subtitle: string read FSubtitle write FSubtitle;
     property Thumbs: TArray<TVkAlbumThumb> read FThumbs write FThumbs;

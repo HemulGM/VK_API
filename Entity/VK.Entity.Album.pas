@@ -3,7 +3,7 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
   VK.Entity.Attachment, VK.Entity.Privacy, VK.Entity.Common.List;
 
 type
@@ -30,13 +30,15 @@ type
 
   TVkPhotoAlbum = class(TVkObject, IAttachment)
   private
-    FCreated: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FCreated: TDateTime;
     FDescription: string;
     FOwner_id: Integer;
     FSize: Integer;
     FThumb: TVkAlbumThumb;
     FTitle: string;
-    FUpdated: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUpdated: TDateTime;
     FThumb_id: integer;
     FThumb_is_last: Integer;
     FPrivacy_view: TVkPrivacy;
@@ -47,12 +49,8 @@ type
     FComments_disabled: Boolean;
     FCan_upload: Boolean;
     FAccess_key: string;
-    function GetCreated: TDateTime;
-    function GetUpdated: TDateTime;
-    procedure SetCreated(const Value: TDateTime);
-    procedure SetUpdated(const Value: TDateTime);
   public
-    property Created: TDateTime read GetCreated write SetCreated;
+    property Created: TDateTime read FCreated write FCreated;
     property Description: string read FDescription write FDescription;
     property ThumbId: integer read FThumb_id write FThumb_id;
     property OwnerId: Integer read FOwner_id write FOwner_id;
@@ -61,7 +59,7 @@ type
     property Sizes: TVkSizes read FSizes write FSizes;
     property Title: string read FTitle write FTitle;
     property ThumbSrc: string read FThumb_src write FThumb_src;
-    property Updated: TDateTime read GetUpdated write SetUpdated;
+    property Updated: TDateTime read FUpdated write FUpdated;
     property ThumbIsLast: Integer read FThumb_is_last write FThumb_is_last;
     property PrivacyView: TVkPrivacy read FPrivacy_view write FPrivacy_view;
     property PrivacyComment: TVkPrivacy read FPrivacy_comment write FPrivacy_comment;
@@ -103,26 +101,6 @@ end;
 function TVkPhotoAlbum.ToAttachment: string;
 begin
   Result := Attachment.Album(Id, OwnerId, AccessKey);
-end;
-
-function TVkPhotoAlbum.GetCreated: TDateTime;
-begin
-  Result := UnixToDateTime(FCreated, False);
-end;
-
-function TVkPhotoAlbum.GetUpdated: TDateTime;
-begin
-  Result := UnixToDateTime(FUpdated, False);
-end;
-
-procedure TVkPhotoAlbum.SetCreated(const Value: TDateTime);
-begin
-  FCreated := DateTimeToUnix(Value, False);
-end;
-
-procedure TVkPhotoAlbum.SetUpdated(const Value: TDateTime);
-begin
-  FUpdated := DateTimeToUnix(Value, False);
 end;
 
 end.

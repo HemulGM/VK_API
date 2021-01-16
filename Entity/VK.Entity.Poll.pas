@@ -3,8 +3,8 @@ unit VK.Entity.Poll;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common,
-  VK.Entity.Common.List;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Photo, VK.Entity.Profile,
+  VK.Entity.Group, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkPollFriends = class(TVkObject)
@@ -60,8 +60,10 @@ type
     FCan_share: Boolean;
     FCan_vote: Boolean;
     FClosed: Boolean;
-    FCreated: Int64;
-    FEnd_date: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FCreated: TDateTime;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FEnd_date: TDateTime;
     FIs_board: Boolean;
     FMultiple: Boolean;
     FOwner_id: Integer;
@@ -74,14 +76,14 @@ type
     FGroups: TArray<TVkGroup>;
   public
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Created: Int64 read FCreated write FCreated;
+    property Created: TDateTime read FCreated write FCreated;
     property Question: string read FQuestion write FQuestion;
     property Votes: Integer read FVotes write FVotes;
     property Answers: TArray<TVkPollAnswer> read FAnswers write FAnswers;
     property Anonymous: Boolean read FAnonymous write FAnonymous;
     property Multiple: Boolean read FMultiple write FMultiple;
     property AnswerIds: TArray<Integer> read FAnswer_ids write FAnswer_ids;
-    property EndDate: Int64 read FEnd_date write FEnd_date;
+    property EndDate: TDateTime read FEnd_date write FEnd_date;
     property Closed: Boolean read FClosed write FClosed;
     property IsBoard: Boolean read FIs_board write FIs_board;
     property CanEdit: Boolean read FCan_edit write FCan_edit;

@@ -3,7 +3,7 @@ unit VK.Entity.Podcast.Episode;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
 
 type
   TVkPodcastCover = class
@@ -34,7 +34,8 @@ type
   TVkPodcastsEpisode = class(TVkObject)
   private
     FArtist: string;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FDuration: Integer;
     FIs_explicit: Boolean;
     FIs_focus_track: Boolean;
@@ -49,7 +50,7 @@ type
     FUrl: string;
   public
     property Artist: string read FArtist write FArtist;
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read FDate write FDate;
     property Duration: Integer read FDuration write FDuration;
     property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
     property IsFocusTrack: Boolean read FIs_focus_track write FIs_focus_track;

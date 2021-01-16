@@ -3,9 +3,8 @@ unit VK.Board;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Board,
-  VK.Entity.Board.Comment;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
+  VK.Entity.Board, VK.Entity.Board.Comment;
 
 type
   TVkBoardTopicOrder = (btoDateUpCreate = -2, btoDateUpUpdate = -1, btoDateDownCreate = 2, btoDateDownUpdate = 1);
@@ -25,31 +24,31 @@ type
     /// <summary>
     /// True Ч тема будет создана от имени группы, False Ч тема будет создана от имени пользовател€ (по умолчанию).
     /// </summary>
-    function FromGroup(Value: Boolean): Integer;
+    function FromGroup(Value: Boolean): TVkParamsBoardCommentCreate;
     /// <summary>
     /// »дентификатор стикера.
     /// </summary>
-    function StickerId(Value: Integer): Integer;
+    function StickerId(Value: Integer): TVkParamsBoardCommentCreate;
     /// <summary>
     /// »дентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
+    function GroupId(Value: Integer): TVkParamsBoardCommentCreate;
     /// <summary>
     /// »дентификатор обсуждени€.
     /// </summary>
-    function TopicId(Value: Integer): Integer;
+    function TopicId(Value: Integer): TVkParamsBoardCommentCreate;
     /// <summary>
     /// ”никальный идентификатор, предназначенный дл€ предотвращени€ повторной отправки одинакового комментари€.
     /// </summary>
-    function Guid(Value: string): Integer;
+    function Guid(Value: string): TVkParamsBoardCommentCreate;
     /// <summary>
     /// “екст комментари€. ќб€зательный параметр, если не передано значение
     /// </summary>
-    function Message(Value: string): Integer;
+    function Message(Value: string): TVkParamsBoardCommentCreate;
     /// <summary>
     /// Cписок объектов, приложенных к записи
     /// </summary>
-    function Attachments(Value: TAttachmentArray): Integer;
+    function Attachments(Value: TAttachmentArray): TVkParamsBoardCommentCreate;
   end;
 
   TVkParamsBoardCommentEdit = record
@@ -57,27 +56,27 @@ type
     /// <summary>
     /// True Ч тема будет создана от имени группы, False Ч тема будет создана от имени пользовател€ (по умолчанию).
     /// </summary>
-    function FromGroup(Value: Boolean): Integer;
+    function FromGroup(Value: Boolean): TVkParamsBoardCommentEdit;
     /// <summary>
     /// »дентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
+    function GroupId(Value: Integer): TVkParamsBoardCommentEdit;
     /// <summary>
     /// »дентификатор комментари€ в обсуждении.
     /// </summary>
-    function CommentId(Value: Integer): Integer;
+    function CommentId(Value: Integer): TVkParamsBoardCommentEdit;
     /// <summary>
     /// »дентификатор обсуждени€.
     /// </summary>
-    function TopicId(Value: Integer): Integer;
+    function TopicId(Value: Integer): TVkParamsBoardCommentEdit;
     /// <summary>
     /// Ќовый текст комментари€ (€вл€етс€ об€зательным, если не задан параметр attachments).
     /// </summary>
-    function Message(Value: string): Integer;
+    function Message(Value: string): TVkParamsBoardCommentEdit;
     /// <summary>
     /// Cписок объектов, приложенных к записи
     /// </summary>
-    function Attachments(Value: TAttachmentArray): Integer;
+    function Attachments(Value: TAttachmentArray): TVkParamsBoardCommentEdit;
   end;
 
   TVkParamsBoardGet = record
@@ -403,7 +402,8 @@ end;
 
 function TBoardController.RestoreComment(GroupId, TopicId, CommentId: Integer): Boolean;
 begin
-  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id', CommentId.ToString]]) do
+  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id',
+    CommentId.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -414,71 +414,84 @@ end;
 
 { TVkParamsBoardCommentEdit }
 
-function TVkParamsBoardCommentEdit.Attachments(Value: TAttachmentArray): Integer;
+function TVkParamsBoardCommentEdit.Attachments(Value: TAttachmentArray): TVkParamsBoardCommentEdit;
 begin
-  Result := List.Add('attachments', Value.ToString)
+  Result := Self;
+  List.Add('attachments', Value.ToString)
 end;
 
-function TVkParamsBoardCommentEdit.FromGroup(Value: Boolean): Integer;
+function TVkParamsBoardCommentEdit.FromGroup(Value: Boolean): TVkParamsBoardCommentEdit;
 begin
-  Result := List.Add('from_group', Value);
+  Result := Self;
+  List.Add('from_group', Value);
 end;
 
-function TVkParamsBoardCommentEdit.GroupId(Value: Integer): Integer;
+function TVkParamsBoardCommentEdit.GroupId(Value: Integer): TVkParamsBoardCommentEdit;
 begin
-  Result := List.Add('group_id', Value);
+  Result := Self;
+  List.Add('group_id', Value);
 end;
 
-function TVkParamsBoardCommentEdit.Message(Value: string): Integer;
+function TVkParamsBoardCommentEdit.Message(Value: string): TVkParamsBoardCommentEdit;
 begin
-  Result := List.Add('message', Value);
+  Result := Self;
+  List.Add('message', Value);
 end;
 
-function TVkParamsBoardCommentEdit.TopicId(Value: Integer): Integer;
+function TVkParamsBoardCommentEdit.TopicId(Value: Integer): TVkParamsBoardCommentEdit;
 begin
-  Result := List.Add('topic_id', Value);
+  Result := Self;
+  List.Add('topic_id', Value);
 end;
 
-function TVkParamsBoardCommentEdit.CommentId(Value: Integer): Integer;
+function TVkParamsBoardCommentEdit.CommentId(Value: Integer): TVkParamsBoardCommentEdit;
 begin
-  Result := List.Add('comment_id', Value);
+  Result := Self;
+  List.Add('comment_id', Value);
 end;
 
 { TVkParamsBoardCommentCreate }
 
-function TVkParamsBoardCommentCreate.Attachments(Value: TAttachmentArray): Integer;
+function TVkParamsBoardCommentCreate.Attachments(Value: TAttachmentArray): TVkParamsBoardCommentCreate;
 begin
-  Result := List.Add('attachments', Value.ToString)
+  Result := Self;
+  List.Add('attachments', Value.ToString)
 end;
 
-function TVkParamsBoardCommentCreate.FromGroup(Value: Boolean): Integer;
+function TVkParamsBoardCommentCreate.FromGroup(Value: Boolean): TVkParamsBoardCommentCreate;
 begin
-  Result := List.Add('from_group', Value);
+  Result := Self;
+  List.Add('from_group', Value);
 end;
 
-function TVkParamsBoardCommentCreate.GroupId(Value: Integer): Integer;
+function TVkParamsBoardCommentCreate.GroupId(Value: Integer): TVkParamsBoardCommentCreate;
 begin
-  Result := List.Add('group_id', Value);
+  Result := Self;
+  List.Add('group_id', Value);
 end;
 
-function TVkParamsBoardCommentCreate.Guid(Value: string): Integer;
+function TVkParamsBoardCommentCreate.Guid(Value: string): TVkParamsBoardCommentCreate;
 begin
-  Result := List.Add('guid', Value);
+  Result := Self;
+  List.Add('guid', Value);
 end;
 
-function TVkParamsBoardCommentCreate.Message(Value: string): Integer;
+function TVkParamsBoardCommentCreate.Message(Value: string): TVkParamsBoardCommentCreate;
 begin
-  Result := List.Add('message', Value);
+  Result := Self;
+  List.Add('message', Value);
 end;
 
-function TVkParamsBoardCommentCreate.StickerId(Value: Integer): Integer;
+function TVkParamsBoardCommentCreate.StickerId(Value: Integer): TVkParamsBoardCommentCreate;
 begin
-  Result := List.Add('sticker_id', Value);
+  Result := Self;
+  List.Add('sticker_id', Value);
 end;
 
-function TVkParamsBoardCommentCreate.TopicId(Value: Integer): Integer;
+function TVkParamsBoardCommentCreate.TopicId(Value: Integer): TVkParamsBoardCommentCreate;
 begin
-  Result := List.Add('topic_id', Value);
+  Result := Self;
+  List.Add('topic_id', Value);
 end;
 
 { TVkBoardTopicOrderHelper }
