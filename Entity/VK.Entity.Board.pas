@@ -3,7 +3,7 @@ unit VK.Entity.Board;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkBoardTopic = class(TVkObject)
@@ -29,16 +29,12 @@ type
     property UpdatedBy: Integer read FUpdated_by write FUpdated_by;
   end;
 
-  TVkBoardTopics = class(TVkEntity)
+  TVkBoardTopics = class(TVkEntityList<TVkBoardTopic>)
   private
-    FCount: Integer;
-    FItems: TArray<TVkBoardTopic>;
     FDefault_order: Integer;
     FCan_add_topics: Integer;
     FProfiles: TArray<TVkProfile>;
   public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkBoardTopic> read FItems write FItems;
     property DefaultOrder: Integer read FDefault_order write FDefault_order;
     property CanAddTopics: Integer read FCan_add_topics write FCan_add_topics;
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
@@ -67,7 +63,6 @@ end;
 destructor TVkBoardTopics.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  TArrayHelp.FreeArrayOfObject<TVkBoardTopic>(FItems);
   inherited;
 end;
 

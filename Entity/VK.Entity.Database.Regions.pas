@@ -32,7 +32,9 @@ uses
 
 destructor TVkRegions.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   TArrayHelp.FreeArrayOfObject<TVkRegion>(FItems);
+  {$ENDIF}
   inherited;
 end;
 

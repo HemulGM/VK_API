@@ -3,7 +3,7 @@ unit VK.Entity.App;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group;
 
 type
   TVkAppScreenshot = class(TVkObject)
@@ -90,19 +90,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkApps = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkApp>;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkApp> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
-  end;
+  TVkApps = TVkEntityExtendedList<TVkApp>;
 
 implementation
 
@@ -114,16 +102,6 @@ uses
 destructor TVkApp.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkAppScreenshot>(FScreenshots);
-  inherited;
-end;
-
-{TVkApps}
-
-destructor TVkApps.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  TArrayHelp.FreeArrayOfObject<TVkApp>(FItems);
   inherited;
 end;
 

@@ -3,7 +3,7 @@ unit VK.Entity.Link;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo, VK.Types;
 
 type
   TVkLinkStatus = class(TVkEntity)
@@ -75,15 +75,7 @@ type
     property Views: Integer read FViews write FViews;
   end;
 
-  TVkShortLinks = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkShortLink>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkShortLink> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkShortLinks = TVkEntityList<TVkShortLink>;
 
   TVkLinkViewsCity = class
   private
@@ -185,14 +177,6 @@ end;
 procedure TVkLinkStatus.SetStatus(const Value: TVkLinkStatusType);
 begin
   FStatus := Value.ToString;
-end;
-
-{ TVkShortLinks }
-
-destructor TVkShortLinks.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkShortLink>(FItems);
-  inherited;
 end;
 
 { TVkLinkStats }

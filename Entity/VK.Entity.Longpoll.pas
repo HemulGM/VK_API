@@ -1,4 +1,4 @@
-unit VK.Entity.Group.Longpoll;
+unit VK.Entity.Longpoll;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkGroupLongpoll = class(TVkEntity)
+  TVkLongpollData = class(TVkEntity)
   private
     FKey: string;
     FServer: string;

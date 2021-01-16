@@ -3,10 +3,10 @@ unit VK.Entity.Storage;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkStorageItem = class
+  TVkStorageItem = class(TVkEntity)
   private
     FKey: string;
     FValue: string;
@@ -15,35 +15,13 @@ type
     property Value: string read FValue write FValue;
   end;
 
-  TVkStorageItems = class(TVkEntity)
-  private
-    FItems: TArray<TVkStorageItem>;
-  public
-    property Items: TArray<TVkStorageItem> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkStorageItems = TVkEntityList<TVkStorageItem>;
 
   TVkStorageKey = string;
 
-  TVkStorageKeys = class(TVkEntity)
-  private
-    FItems: TArray<TVkStorageKey>;
-  public
-    property Items: TArray<TVkStorageKey> read FItems write FItems;
-  end;
+  TVkStorageKeys = TVkEntityListSimple<TVkStorageKey>;
 
 implementation
-
-uses
-  VK.CommonUtils;
-
-{TVkStorageItems}
-
-destructor TVkStorageItems.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkStorageItem>(FItems);
-  inherited;
-end;
 
 end.
 

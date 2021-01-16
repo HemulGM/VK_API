@@ -47,7 +47,9 @@ uses
 
 destructor TVkSchools.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   TArrayHelp.FreeArrayOfObject<TVkSchool>(FItems);
+  {$ENDIF}
   inherited;
 end;
 
@@ -58,15 +60,18 @@ var
   JArray, JAItem: TJSONArray;
   i: Integer;
 begin
-  Result := TVkSchoolClasses.Create;
   JArray := TJSONArray(TJSONObject.ParseJSONValue(AJsonString));
-  SetLength(Result.FItems, JArray.Count);
-  for i := 0 to JArray.Count - 1 do
-  begin
-    JAItem := TJSONArray(JArray.Items[i]);
-    Result.Items[i] := TVkSchoolClass.Create(JAItem.Items[0].AsType<Integer>, JAItem.Items[1].AsType<string>);
+  try
+    Result := TVkSchoolClasses.Create;
+    SetLength(Result.FItems, JArray.Count);
+    for i := 0 to JArray.Count - 1 do
+    begin
+      JAItem := TJSONArray(JArray.Items[i]);
+      Result.Items[i] := TVkSchoolClass.Create(JAItem.Items[0].AsType<Integer>, JAItem.Items[1].AsType<string>);
+    end;
+  finally
+    JArray.Free;
   end;
-  JArray.Free;
 end;
 
 function TVkSchoolClasses.ToJsonString: string;
@@ -75,15 +80,18 @@ var
   i: Integer;
 begin
   JArray := TJSONArray.Create;
-  for i := Low(Items) to High(Items) do
-  begin
-    JAItem := TJSONArray.Create;
-    JAItem.AddElement(TJSONNumber.Create(Items[i].Id));
-    JAItem.AddElement(TJSONString.Create(Items[i].Text));
-    JArray.AddElement(JAItem);
+  try
+    for i := Low(Items) to High(Items) do
+    begin
+      JAItem := TJSONArray.Create;
+      JAItem.AddElement(TJSONNumber.Create(Items[i].Id));
+      JAItem.AddElement(TJSONString.Create(Items[i].Text));
+      JArray.AddElement(JAItem);
+    end;
+    Result := JArray.ToJSON;
+  finally
+    JArray.Free;
   end;
-  Result := JArray.ToJSON;
-  JArray.Free;
 end;
 
 { TVkSchoolClass }

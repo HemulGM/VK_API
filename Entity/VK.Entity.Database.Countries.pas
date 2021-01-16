@@ -25,18 +25,16 @@ type
 
 implementation
 
+uses
+  VK.CommonUtils;
+
 {TVkCountries}
 
 destructor TVkCountries.Destroy;
-{$IFNDEF AUTOREFCOUNT}
-var
-  LitemsItem: TVkCountry;
-{$ENDIF}
 begin
-{$IFNDEF AUTOREFCOUNT}
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-{$ENDIF}
+  {$IFNDEF AUTOREFCOUNT}
+  TArrayHelp.FreeArrayOfObject<TVkCountry>(FItems);
+  {$ENDIF}
   inherited;
 end;
 

@@ -3,8 +3,8 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, Rest.Json, System.Json,
-  VK.Entity.Common, VK.Types, VK.Entity.Attachment;
+  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment,
+  VK.Entity.Common.List;
 
 type
   TVkAudioArtist = class(TVkObject)
@@ -142,33 +142,19 @@ type
 
   TVkAudios = TVkEntityList<TVkAudio>;
 
-  TVkAudioInfo = class
+  TVkAudioInfo = class(TVkEntity)
   private
     FAudio_id: Integer;
   public
     property AudioId: Integer read FAudio_id write FAudio_id;
   end;
 
-  TVkAudioInfoItems = class(TVkEntity)
-  private
-    FItems: TArray<TVkAudioInfo>;
-  public
-    property Items: TArray<TVkAudioInfo> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkAudioInfoItems = TVkEntityList<TVkAudioInfo>;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkAudioInfoItems}
-
-destructor TVkAudioInfoItems.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkAudioInfo>(FItems);
-  inherited;
-end;
 
 {TVkAudio}
 

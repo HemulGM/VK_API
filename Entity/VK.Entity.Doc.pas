@@ -3,7 +3,7 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Attachment;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Common.List;
 
 type
   TVkPreviewPhoto = class
@@ -65,20 +65,7 @@ type
     function ToAttachment: string;
   end;
 
-  TVkDocuments = class(TVkEntity)
-  private
-    FItems: TArray<TVkDocument>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkDocument> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Audios: TVkDocuments);
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
+  TVkDocuments = TVkEntityList<TVkDocument>;
 
 implementation
 
@@ -89,7 +76,9 @@ uses
 
 destructor TVkPreviewPhoto.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
+  {$ENDIF}
   inherited;
 end;
 
@@ -103,7 +92,9 @@ end;
 
 destructor TVkPreview.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   FPhoto.Free;
+  {$ENDIF}
   inherited;
 end;
 
@@ -117,7 +108,9 @@ end;
 
 destructor TVkDocument.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   FPreview.Free;
+  {$ENDIF}
   inherited;
 end;
 
@@ -142,39 +135,6 @@ end;
 procedure TVkDocument.SetDate(const Value: TDateTime);
 begin
   FDate := DateTimeToUnix(Value, False);
-end;
-
-{ TVkDocuments }
-
-procedure TVkDocuments.Append(Audios: TVkDocuments);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Audios.Items));
-  Move(Audios.Items[0], FItems[OldLen], Length(Audios.Items) * SizeOf(TVkDocument));
-end;
-
-constructor TVkDocuments.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkDocuments.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkDocument>(FItems);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkDocuments.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
 end;
 
 end.

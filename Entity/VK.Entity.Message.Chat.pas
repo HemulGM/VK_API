@@ -3,7 +3,7 @@ unit VK.Entity.Message.Chat;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Types;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Types, VK.Entity.Common.List;
 
 type
   TVkChat = class(TVkObject)
@@ -30,15 +30,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkChats = class(TVkEntity)
-  private
-    FItems: TArray<TVkChat>;
-    FCount: Integer;
-  public
-    property Items: TArray<TVkChat> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-  end;
+  TVkChats = TVkEntityList<TVkChat>;
 
   TVkChatPhoto = class
   private
@@ -115,14 +107,6 @@ end;
 destructor TVkChatInfoMessage.Destroy;
 begin
   FChat.Free;
-  inherited;
-end;
-
-{ TVkChats }
-
-destructor TVkChats.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkChat>(FItems);
   inherited;
 end;
 

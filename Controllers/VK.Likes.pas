@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.Profile,
-  System.JSON;
+  System.JSON, VK.Entity.Common.List;
 
 type
   TVkLikesParams = record

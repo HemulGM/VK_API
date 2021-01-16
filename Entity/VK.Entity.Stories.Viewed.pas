@@ -3,10 +3,10 @@ unit VK.Entity.Stories.Viewed;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkStoryView = class
+  TVkStoryView = class(TVkEntity)
   private
     FIs_liked: Boolean;
     FUser: TVkProfile;
@@ -18,15 +18,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkStoryViews = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkStoryView>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkStoryView> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkStoryViews = TVkEntityList<TVkStoryView>;
 
 implementation
 
@@ -39,14 +31,6 @@ destructor TVkStoryView.Destroy;
 begin
   if Assigned(FUser) then
     FUser.Free;
-  inherited;
-end;
-
-{TVkStoryViews}
-
-destructor TVkStoryViews.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkStoryView>(FItems);
   inherited;
 end;
 

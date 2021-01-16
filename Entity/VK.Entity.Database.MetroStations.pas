@@ -34,7 +34,9 @@ uses
 
 destructor TVkMetroStations.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   TArrayHelp.FreeArrayOfObject<TVkMetroStation>(FItems);
+  {$ENDIF}
   inherited;
 end;
 

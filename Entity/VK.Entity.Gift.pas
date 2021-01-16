@@ -3,7 +3,7 @@ unit VK.Entity.Gift;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkGift = class(TVkObject)
@@ -38,28 +38,12 @@ type
     destructor Destroy; override;
   end;
 
-  TVkGiftItems = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkGiftItem>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkGiftItem> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkGiftItems = TVkEntityList<TVkGiftItem>;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{ TVkGiftItems }
-
-destructor TVkGiftItems.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGiftItem>(FItems);
-  inherited;
-end;
 
 { TVkGiftItem }
 

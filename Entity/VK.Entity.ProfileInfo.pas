@@ -16,8 +16,8 @@ type
     FLast_name: string;
     FPhone: string;
     FRelation: Extended;
-    FRelation_partner: TVkRelationPartner;
-    FRelation_requests: TArray<TVkRelationRequests>;
+    FRelation_partner: TVkRelationData;
+    FRelation_requests: TArray<TVkRelationData>;
     FScreen_name: string;
     FSex: Extended;
     FStatus: string;
@@ -30,8 +30,8 @@ type
     property LastName: string read FLast_name write FLast_name;
     property Phone: string read FPhone write FPhone;
     property Relation: Extended read FRelation write FRelation;
-    property RelationPartner: TVkRelationPartner read FRelation_partner write FRelation_partner;
-    property RelationRequests: TArray<TVkRelationRequests> read FRelation_requests write FRelation_requests;
+    property RelationPartner: TVkRelationData read FRelation_partner write FRelation_partner;
+    property RelationRequests: TArray<TVkRelationData> read FRelation_requests write FRelation_requests;
     property ScreenName: string read FScreen_name write FScreen_name;
     property Sex: Extended read FSex write FSex;
     property Status: string read FStatus write FStatus;
@@ -50,12 +50,12 @@ constructor TVkProfileInfo.Create;
 begin
   inherited;
   FCountry := TVkCountry.Create();
-  FRelation_partner := TVkRelationPartner.Create();
+  FRelation_partner := TVkRelationData.Create();
 end;
 
 destructor TVkProfileInfo.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkRelationRequests>(FRelation_requests);
+  TArrayHelp.FreeArrayOfObject<TVkRelationData>(FRelation_requests);
   FCountry.Free;
   FRelation_partner.Free;
   inherited;

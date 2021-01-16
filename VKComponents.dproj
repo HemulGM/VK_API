@@ -216,12 +216,11 @@
         <DCCReference Include="Entity\VK.Entity.Group.CallBackServer.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.CallbackSettings.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.Categories.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Group.Longpoll.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Longpoll.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.LongpollSettings.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.TokenPermissions.pas"/>
         <DCCReference Include="Entity\VK.Entity.Message.Chat.pas"/>
         <DCCReference Include="Entity\VK.Entity.Call.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Message.LongPoll.pas"/>
         <DCCReference Include="Controllers\VK.Newsfeed.pas"/>
         <DCCReference Include="Entity\VK.Entity.Newsfeed.pas"/>
         <DCCReference Include="Controllers\VK.Notifications.pas"/>

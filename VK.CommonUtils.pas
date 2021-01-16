@@ -73,7 +73,7 @@ begin
   i := Pos(Pattern, Html);
   if i > 0 then
   begin
-    Hash := Copy(Html, i + Pattern.Length, 50);
+    Hash := Copy(Html, i + Pattern.Length, 150);
     i := Pos('"', Hash);
     if i > 0 then
     begin
@@ -93,7 +93,7 @@ begin
   i := Pos(Pattern, Html);
   if i > 0 then
   begin
-    CaptchaUrl := Copy(Html, i + Pattern.Length, 50);
+    CaptchaUrl := Copy(Html, i + Pattern.Length, 150);
     i := Pos('"', CaptchaUrl);
     if i > 0 then
     begin
@@ -214,4 +214,5 @@ begin
 end;
 
 end.
+
 

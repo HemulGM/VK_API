@@ -6,12 +6,10 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkStoryStatCounter = class(TVkEntity)
+  TVkStoryStatCounter = class(TVkCounterEntity)
   private
-    FCount: Integer;
     FState: string;
   public
-    property Count: Integer read FCount write FCount;
     /// <summary>
     /// on Ч доступно, off Ч недоступно, hidden Ч недоступно
     /// </summary>

@@ -38,7 +38,9 @@ uses
 
 destructor TVkCities.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   TArrayHelp.FreeArrayOfObject<TVkCity>(FItems);
+  {$ENDIF}
   inherited;
 end;
 

@@ -4,15 +4,13 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Link,
-  VK.Entity.App;
+  VK.Entity.App, VK.Entity.Common.List;
 
 type
-  TVkStoryReplies = class(TVkEntity)
+  TVkStoryReplies = class(TVkCounterEntity)
   private
-    FCount: Integer;
     FNew: Integer;
   public
-    property Count: Integer read FCount write FCount;
     property New: Integer read FNew write FNew;
   end;
 
@@ -72,19 +70,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkStoryItems = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkStory>;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkStory> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
-  end;
+  TVkStoryItems = TVkEntityExtendedList<TVkStory>;
 
   TVkStories = class(TVkEntity)
   private
@@ -109,35 +95,14 @@ type
     destructor Destroy; override;
   end;
 
-  TVkStoriesBlock = class(TVkEntity)
+  TVkStoriesBlock = class(TVkEntityExtendedList<TVkStories>)
   private
-    FCount: Integer;
-    FItems: TArray<TVkStories>;
     FNeed_upload_screen: Boolean;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
   public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkStories> read FItems write FItems;
     property NeedUploadScreen: Boolean read FNeed_upload_screen write FNeed_upload_screen;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
   end;
 
-  TVkStoriesBanned = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<Integer>;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<Integer> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
-  end;
+  TVkStoriesBanned = TVkEntityExtendedSimpleList<Integer>;
 
 implementation
 
@@ -188,33 +153,6 @@ begin
   Result := &Type = 'stories';
 end;
 
-{TVkStoriesItems}
-
-destructor TVkStoriesBlock.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkStories>(FItems);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  inherited;
-end;
-
-{ TVkStoriesBanned }
-
-destructor TVkStoriesBanned.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  inherited;
-end;
-
-{ TVkStoryItems }
-
-destructor TVkStoryItems.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  inherited;
-end;
-
 end.
+
 

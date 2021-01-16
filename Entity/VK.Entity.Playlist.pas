@@ -3,7 +3,7 @@ unit VK.Entity.Playlist;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Common;
+  Generics.Collections, VK.Entity.Audio, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkAudioOriginal = class
@@ -69,20 +69,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkPlaylists = class(TVkEntity)
-  private
-    FItems: TArray<TVkAudioPlaylist>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkAudioPlaylist> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(AItems: TVkPlaylists);
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
+  TVkPlaylists = TVkEntityList<TVkAudioPlaylist>;
 
 implementation
 
@@ -100,10 +87,12 @@ end;
 
 destructor TVkAudioPlaylist.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   TArrayHelp.FreeArrayOfObject<TVkAudioGenres>(FGenres);
   TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FMain_artists);
   FOriginal.Free;
   FPhoto.Free;
+  {$ENDIF}
   inherited;
 end;
 
@@ -115,37 +104,6 @@ end;
 procedure TVkAudioPlaylist.SetUpdateTime(const Value: TDateTime);
 begin
   FUpdate_time := DateTimeToUnix(Value, False);
-end;
-
-{ TVkPlaylists }
-
-procedure TVkPlaylists.Append(AItems: TVkPlaylists);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(AItems.Items));
-  Move(AItems.Items[0], FItems[OldLen], Length(AItems.Items) * SizeOf(TVkAudio));
-end;
-
-constructor TVkPlaylists.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkPlaylists.Destroy;
-begin
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FItems);
-  end;
-  inherited;
-end;
-
-procedure TVkPlaylists.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
 end;
 
 end.

@@ -3,7 +3,7 @@ unit VK.Entity.ActiveOffers;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkActiveOffer = class(TVkObject)
@@ -27,28 +27,12 @@ type
     property Title: string read FTitle write FTitle;
   end;
 
-  TVkActiveOffers = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkActiveOffer>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkActiveOffer> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkActiveOffers = TVkEntityList<TVkActiveOffer>;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkActiveOffers}
-
-destructor TVkActiveOffers.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkActiveOffer>(FItems);
-  inherited;
-end;
 
 end.
 

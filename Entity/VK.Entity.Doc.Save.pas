@@ -27,21 +27,19 @@ implementation
 
 constructor TVkDocSaved.Create;
 begin
-  //Не создаем объекты вложений, их создаст JSON парсер
-  //Создан будет только один объект
   inherited;
 end;
 
 destructor TVkDocSaved.Destroy;
 begin
-  //Ну а тут, уничтожим, то что было создано
+  {$IFNDEF AUTOREFCOUNT}
   if Assigned(FAudio_message) then
     FAudio_message.Free;
   if Assigned(FDoc) then
     FDoc.Free;
   if Assigned(FGraffiti) then
     FGraffiti.Free;
-
+  {$ENDIF}
   inherited;
 end;
 

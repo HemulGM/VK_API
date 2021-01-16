@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
-  VK.Entity.Common;
+  VK.Entity.Common, VK.Entity.Common.List;
 
 type
   /// <summary>

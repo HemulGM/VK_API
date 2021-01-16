@@ -3,11 +3,10 @@ unit VK.Entity.Search;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkSearchItem = class
+  TVkSearchItem = class(TVkEntity)
   private
     FDescription: string;
     FProfile: TVkProfile;
@@ -39,15 +38,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkSearchItems = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkSearchItem>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkSearchItem> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkSearchItems = TVkEntityList<TVkSearchItem>;
 
 implementation
 
@@ -62,14 +53,6 @@ begin
     FProfile.Free;
   if Assigned(FGroup) then
     FGroup.Free;
-  inherited;
-end;
-
-{TVkSearchItems}
-
-destructor TVkSearchItems.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkSearchItem>(FItems);
   inherited;
 end;
 

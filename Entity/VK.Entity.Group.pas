@@ -3,9 +3,8 @@ unit VK.Entity.Group;
 interface
 
 uses
-  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common,
-  VK.Entity.Photo, VK.Entity.Market, VK.Entity.Profile, VK.Entity.Group.Counters,
-  VK.Entity.Database.Cities, VK.Entity.Database.Countries;
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market,
+  VK.Entity.Profile, VK.Entity.Group.Counters, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
 
 type
   TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);

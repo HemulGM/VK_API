@@ -3,7 +3,7 @@ unit VK.Entity.Page;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkPage = class(TVkObject)
@@ -43,15 +43,7 @@ type
     property ViewUrl: string read FView_url write FView_url;
   end;
 
-  TVkPages = class(TVkEntity)
-  private
-    FItems: TArray<TVkPage>;
-    FCount: Integer;
-  public
-    property Items: TArray<TVkPage> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-  end;
+  TVkPages = TVkEntityList<TVkPage>;
 
   TVkPageVersion = class(TVkObject)
   private
@@ -66,36 +58,9 @@ type
     property Length: Integer read FLength write FLength;
   end;
 
-  TVkPageVersions = class(TVkEntity)
-  private
-    FItems: TArray<TVkPageVersion>;
-    FCount: Integer;
-  public
-    property Items: TArray<TVkPageVersion> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-  end;
+  TVkPageVersions = TVkEntityList<TVkPageVersion>;
 
 implementation
-
-uses
-  VK.CommonUtils;
-
-{ TVkPageVersions }
-
-destructor TVkPageVersions.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkPageVersion>(FItems);
-  inherited;
-end;
-
-{ TVkPages }
-
-destructor TVkPages.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkPage>(FItems);
-  inherited;
-end;
 
 end.
 

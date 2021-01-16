@@ -3,8 +3,8 @@ unit VK.Entity.Poll;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common,
+  VK.Entity.Common.List;
 
 type
   TVkPollFriends = class(TVkObject)
@@ -35,13 +35,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkPollBackgrounds = class(TVkEntity)
-  private
-    FItems: TArray<TVkPollBackground>;
-  public
-    property Items: TArray<TVkPollBackground> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkPollBackgrounds = TVkEntityList<TVkPollBackground>;
 
   TVkPollAnswer = class(TVkObject)
   private
@@ -146,14 +140,6 @@ begin
   if Assigned(FPhoto) then
     FPhoto.Free;
   FBackground.Free;
-  inherited;
-end;
-
-{ TVkPollBackgrounds }
-
-destructor TVkPollBackgrounds.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkPollBackground>(FItems);
   inherited;
 end;
 

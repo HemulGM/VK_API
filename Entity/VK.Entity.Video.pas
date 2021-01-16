@@ -3,7 +3,7 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment, VK.Entity.Common.List;
 
 type
   TVkVideoFiles = class(TVkEntity)
@@ -117,20 +117,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkVideos = class(TVkEntity)
-  private
-    FItems: TArray<TVkVideo>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkVideo> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Users: TVkVideos);
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
+  TVkVideos = TVkEntityList<TVkVideo>;
 
   TVkVideoAlbum = class(TVkObject)
   private
@@ -151,15 +138,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkVideoAlbums = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkVideoAlbum>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkVideoAlbum> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkVideoAlbums = TVkEntityList<TVkVideoAlbum>;
 
 implementation
 
@@ -190,39 +169,6 @@ begin
   Result := Attachment.Video(Id, OwnerId, AccessKey);
 end;
 
-{TVkVideos}
-
-procedure TVkVideos.Append(Users: TVkVideos);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Users.Items));
-  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkVideo));
-end;
-
-constructor TVkVideos.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkVideos.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkVideo>(FItems);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkVideos.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
 {TVkVideoAlbum}
 
 constructor TVkVideoAlbum.Create;
@@ -235,14 +181,6 @@ destructor TVkVideoAlbum.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
   FPrivacy.Free;
-  inherited;
-end;
-
-{TVkVideoAlbums}
-
-destructor TVkVideoAlbums.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkVideoAlbum>(FItems);
   inherited;
 end;
 

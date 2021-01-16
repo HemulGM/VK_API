@@ -3,7 +3,7 @@ unit VK.Entity.Group.Ban;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Types, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Types, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkGroupBanInfo = class
@@ -25,7 +25,7 @@ type
     property Reason: TVkUserBlockReason read GetReason write SetReason;
   end;
 
-  TVkGroupBan = class
+  TVkGroupBan = class(TVkEntity)
   private
     FBan_info: TVkGroupBanInfo;
     FGroup: TVkGroup;
@@ -36,19 +36,11 @@ type
     property Group: TVkGroup read FGroup write FGroup;
     property Profile: TVkProfile read FProfile write FProfile;
     property&Type: string read FType write FType;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
   end;
 
-  TVkGroupBans = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkGroupBan>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkGroupBan> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkGroupBans = TVkEntityList<TVkGroupBan>;
 
 implementation
 
@@ -86,14 +78,6 @@ begin
   FProfile.Free;
   FGroup.Free;
   FBan_info.Free;
-  inherited;
-end;
-
-{TVkGroupBans}
-
-destructor TVkGroupBans.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroupBan>(FItems);
   inherited;
 end;
 

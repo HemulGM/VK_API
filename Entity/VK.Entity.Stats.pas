@@ -3,38 +3,32 @@ unit VK.Entity.Stats;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkStatBasic = class
+  TVkStatBasic = class(TVkCounterEntity)
   private
-    FCount: Integer;
     FValue: string;
   public
-    property Count: Integer read FCount write FCount;
     property Value: string read FValue write FValue;
   end;
 
-  TVkStatCountries = class
+  TVkStatCountries = class(TVkCounterEntity)
   private
     FCode: string;
-    FCount: Integer;
     FName: string;
     FValue: Integer;
   public
     property Code: string read FCode write FCode;
-    property Count: Integer read FCount write FCount;
     property Name: string read FName write FName;
     property Value: Integer read FValue write FValue;
   end;
 
-  TVkStatCities = class
+  TVkStatCities = class(TVkCounterEntity)
   private
-    FCount: Integer;
     FName: string;
     FValue: Integer;
   public
-    property Count: Integer read FCount write FCount;
     property Name: string read FName write FName;
     property Value: Integer read FValue write FValue;
   end;
@@ -98,15 +92,9 @@ type
     destructor Destroy; override;
   end;
 
-  TVkStatItems = class(TVkEntity)
-  private
-    FItems: TArray<TVkStatItem>;
-  public
-    property Items: TArray<TVkStatItem> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkStatItems = TVkEntityList<TVkStatItem>;
 
-  TVkStatPostReachItem = class
+  TVkStatPostReachItem = class(TVkEntity)
   private
     FHide: Integer;
     FJoin_group: Integer;
@@ -131,13 +119,7 @@ type
     property Unsubscribe: Integer read FUnsubscribe write FUnsubscribe;
   end;
 
-  TVkStatPostReachItems = class(TVkEntity)
-  private
-    FItems: TArray<TVkStatPostReachItem>;
-  public
-    property Items: TArray<TVkStatPostReachItem> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkStatPostReachItems = TVkEntityList<TVkStatPostReachItem>;
 
 implementation
 
@@ -181,22 +163,6 @@ destructor TVkStatItem.Destroy;
 begin
   FReach.Free;
   FVisitors.Free;
-  inherited;
-end;
-
-{TVkStatItems}
-
-destructor TVkStatItems.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkStatItem>(FItems);
-  inherited;
-end;
-
-{TVkStatPostReachItems}
-
-destructor TVkStatPostReachItems.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkStatPostReachItem>(FItems);
   inherited;
 end;
 

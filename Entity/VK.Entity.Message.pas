@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Types, VK.Entity.Keyboard, VK.Entity.ClientInfo,
-  VK.Entity.Profile, VK.Entity.Group;
+  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common.List;
 
 type
   TVkMessageSendResponse = class(TVkEntity)
@@ -27,15 +27,13 @@ type
     property Error: string read FError write FError;
   end;
 
-  TVkMessageSendResponses = class(TVkEntity)
+  TVkMessageSendResponses = class(TVkEntityList<TVkMessageSendResponse>)
   private
-    FItems: TArray<TVkMessageSendResponse>;
     FSuccess: Boolean;
-    Fresponse: Integer;
+    FResponse: Integer;
     procedure SetSuccess(const Value: Boolean);
     procedure SetResponse(const Value: Integer);
   public
-    property Items: TArray<TVkMessageSendResponse> read FItems write FItems;
     property Success: Boolean read FSuccess write SetSuccess;
     property Response: Integer read Fresponse write SetResponse;
     constructor CreateFalse;
@@ -142,24 +140,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkMessages = class(TVkEntity)
-  private
-    FItems: TArray<TVkMessage>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkMessage> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Users: TVkMessages);
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
+  TVkMessages = TVkEntityExtendedList<TVkMessage>;
 
   TVkLongPollHistory = class(TVkEntity)
   private
@@ -301,41 +282,6 @@ end;
 procedure TVkMessageSendResponses.SetSuccess(const Value: Boolean);
 begin
   FSuccess := Value;
-end;
-
-{TVkMessages}
-
-procedure TVkMessages.Append(Users: TVkMessages);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Users.Items));
-  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkMessage));
-end;
-
-constructor TVkMessages.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkMessages.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkMessage>(FItems);
-    TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-    TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkMessages.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
 end;
 
 { TVkMessageDelete }

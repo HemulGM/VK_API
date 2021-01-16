@@ -3,7 +3,7 @@ unit VK.Entity.Database.Chairs;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkChair = class(TVkObject)
@@ -13,28 +13,9 @@ type
     property Title: string read FTitle write FTitle;
   end;
 
-  TVkChairs = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkChair>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkChair> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkChairs = TVkEntityList<TVkChair>;
 
 implementation
-
-uses
-  VK.CommonUtils;
-
-{TVkChairs}
-
-destructor TVkChairs.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkChair>(FItems);
-  inherited;
-end;
 
 end.
 

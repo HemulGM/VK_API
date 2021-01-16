@@ -3,7 +3,7 @@ unit VK.Entity.Note;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkNote = class(TVkObject)
@@ -17,7 +17,7 @@ type
     FText: string;
     FPrivacy: Integer;
     FComment_privacy: Integer;
-    FCan_comment: Integer;
+    FCan_comment: Boolean;
     function GetDate: TDateTime;
     procedure SetDate(const Value: TDateTime);
   public
@@ -30,18 +30,10 @@ type
     property ViewUrl: string read FView_url write FView_url;
     property Privacy: Integer read FPrivacy write FPrivacy;
     property CommentPrivacy: Integer read FComment_privacy write FComment_privacy;
-    property CanComment: Integer read FCan_comment write FCan_comment;
+    property CanComment: Boolean read FCan_comment write FCan_comment;
   end;
 
-  TVkNotes = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkNote>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkNote> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkNotes = TVkEntityList<TVkNote>;
 
   TVkNoteComment = class(TVkObject)
   private
@@ -60,15 +52,7 @@ type
     property UserId: Integer read FUid write FUid;
   end;
 
-  TVkNoteComments = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkNoteComment>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkNoteComment> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkNoteComments = TVkEntityList<TVkNoteComment>;
 
 implementation
 
@@ -85,22 +69,6 @@ end;
 procedure TVkNote.SetDate(const Value: TDateTime);
 begin
   FDate := DateTimeToUnix(Value, False);
-end;
-
-{TVkNotes}
-
-destructor TVkNotes.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkNote>(FItems);
-  inherited;
-end;
-
-{ TVkNoteComments }
-
-destructor TVkNoteComments.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkNoteComment>(FItems);
-  inherited;
 end;
 
 end.

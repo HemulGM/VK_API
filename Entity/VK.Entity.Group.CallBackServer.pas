@@ -3,7 +3,7 @@ unit VK.Entity.Group.CallBackServer;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkGroupCallbackServer = class(TVkObject)
@@ -21,28 +21,9 @@ type
     property Url: string read FUrl write FUrl;
   end;
 
-  TVkGroupCallbackServers = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkGroupCallbackServer>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkGroupCallbackServer> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkGroupCallbackServers = TVkEntityList<TVkGroupCallbackServer>;
 
 implementation
-
-uses
-  VK.CommonUtils;
-
-{TVkGroupCallbackServers}
-
-destructor TVkGroupCallbackServers.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroupCallbackServer>(FItems);
-  inherited;
-end;
 
 end.
 

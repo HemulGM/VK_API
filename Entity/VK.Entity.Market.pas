@@ -18,7 +18,7 @@ type
     FDiscount_rate: Integer;
   public
     property Amount: string read FAmount write FAmount;
-    property OldAmount: string read FOld_amount  write FOld_amount;
+    property OldAmount: string read FOld_amount write FOld_amount;
     property OldAmountText: string read FOld_amount_text write FOld_amount_text;
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Text: string read FText write FText;

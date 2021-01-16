@@ -3,7 +3,7 @@ unit VK.Entity.Market.Album;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkMarketAlbum = class(TVkObject)
@@ -21,28 +21,9 @@ type
     property UpdatedTime: int64 read FUpdated_time write FUpdated_time;
   end;
 
-  TVkMarketAlbums = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkMarketAlbum>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkMarketAlbum> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkMarketAlbums = TVkEntityList<TVkMarketAlbum>;
 
 implementation
-
-uses
-  VK.CommonUtils;
-
-{TVkMarketAlbums}
-
-destructor TVkMarketAlbums.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkMarketAlbum>(FItems);
-  inherited;
-end;
 
 end.
 

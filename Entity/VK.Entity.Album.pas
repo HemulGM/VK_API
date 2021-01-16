@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Attachment, VK.Entity.Privacy;
+  VK.Entity.Attachment, VK.Entity.Privacy, VK.Entity.Common.List;
 
 type
   TVkAlbumThumb = class

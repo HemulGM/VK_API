@@ -3,10 +3,11 @@ unit VK.Entity.Podcast;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Podcast.Episode, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Podcast.Episode, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common,
+  VK.Entity.Common.List;
 
 type
-  TVkPodcast = class
+  TVkPodcast = class(TVkEntity)
   private
     FOwner_id: Integer;
     FOwner_title: string;
@@ -17,13 +18,7 @@ type
     property Url: string read FUrl write FUrl;
   end;
 
-  TVkPodcasts = class(TVkEntity)
-  private
-    FItems: TArray<TVkPodcast>;
-  public
-    property Items: TArray<TVkPodcast> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkPodcasts = TVkEntityList<TVkPodcast>;
 
   TVkPodcastSearch = class(TVkEntity)
   private
@@ -43,14 +38,6 @@ implementation
 
 uses
   VK.CommonUtils;
-
-{TVkPodcasts}
-
-destructor TVkPodcasts.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkPodcast>(FItems);
-  inherited;
-end;
 
 { TVkPodcastSearch }
 

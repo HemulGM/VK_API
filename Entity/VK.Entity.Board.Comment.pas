@@ -3,7 +3,8 @@ unit VK.Entity.Board.Comment;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Media, VK.Entity.Poll;
 
 type
   TVkBoardComment = class(TVkObject)
@@ -25,18 +26,10 @@ type
     destructor Destroy; override;
   end;
 
-  TVkBoardComments = class(TVkEntity)
+  TVkBoardComments = class(TVkEntityExtendedList<TVkBoardComment>)
   private
-    FCount: Integer;
-    FItems: TArray<TVkBoardComment>;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
     FPoll: TVkPoll;
   public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkBoardComment> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Poll: TVkPoll read FPoll write FPoll;
     constructor Create; override;
     destructor Destroy; override;
@@ -72,9 +65,6 @@ end;
 
 destructor TVkBoardComments.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkBoardComment>(FItems);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   FPoll.Free;
   inherited;
 end;

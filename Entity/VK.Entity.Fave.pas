@@ -3,8 +3,8 @@ unit VK.Entity.Fave;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Media,
-  VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Media, VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo,
+  VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkFaveType = (ftPost, ftVideo, ftProduct, ftArticle, ftLink);
@@ -21,15 +21,7 @@ type
     property Name: string read FName write FName;
   end;
 
-  TVkFaveTags = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkFaveTag>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkFaveTag> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkFaveTags = TVkEntityList<TVkFaveTag>;
 
   TVkFave = class(TVkEntity)
   private
@@ -56,32 +48,15 @@ type
     property Seen: Boolean read FSeen write FSeen;
     property Tags: TArray<TVkFaveTag> read FTags write FTags;
     property&Type: TVkFaveType read GetType write SetType;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
-  TVkFaves = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkFave>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkFave> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkFaves = TVkEntityList<TVkFave>;
 
 implementation
 
 uses
   System.DateUtils, VK.CommonUtils;
-
-{TItemsClass}
-
-constructor TVkFave.Create;
-begin
-  inherited;
-  //FLink := TLinkClass.Create();
-end;
 
 destructor TVkFave.Destroy;
 begin
@@ -117,22 +92,6 @@ end;
 procedure TVkFave.SetType(const Value: TVkFaveType);
 begin
   FType := Value.ToString;
-end;
-
-{TVkFaves}
-
-destructor TVkFaves.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkFave>(FItems);
-  inherited;
-end;
-
-{ TVkFaveTags }
-
-destructor TVkFaveTags.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkFaveTag>(FItems);
-  inherited;
 end;
 
 { TVkFaveTypeHelper }

@@ -3,7 +3,7 @@ unit VK.Entity.PrettyCard;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkCardImage = class
@@ -38,13 +38,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkPrettyCards = class
-  private
-    FItems: TArray<TVkPrettyCard>;
-  public
-    property Items: TArray<TVkPrettyCard> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkPrettyCards = TVkEntityList<TVkPrettyCard>;
 
 implementation
 
@@ -63,14 +57,6 @@ destructor TVkPrettyCard.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCardImage>(FImages);
   FButton.Free;
-  inherited;
-end;
-
-{TVkPrettyCards}
-
-destructor TVkPrettyCards.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkPrettyCard>(FItems);
   inherited;
 end;
 

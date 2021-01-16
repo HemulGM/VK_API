@@ -3,7 +3,7 @@ unit VK.Entity.Database.Universities;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkUniversity = class(TVkObject)
@@ -13,28 +13,12 @@ type
     property Title: string read FTitle write FTitle;
   end;
 
-  TVkUniversities = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkUniversity>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkUniversity> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkUniversities = TVkEntityList<TVkUniversity>;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-{TVkUniversities}
-
-destructor TVkUniversities.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkUniversity>(FItems);
-  inherited;
-end;
 
 end.
 

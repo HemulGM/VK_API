@@ -3,7 +3,8 @@ unit VK.Entity.Notifications;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Photo, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Photo, VK.Entity.Common,
+  VK.Entity.Common.List;
 
 type
   TVkNotificationAction = class
@@ -86,26 +87,17 @@ type
     destructor Destroy; override;
   end;
 
-  TVkNotifications = class(TVkEntity)
+  TVkNotifications = class(TVkEntityExtendedList<TVkNotification>)
   private
-    FCount: Integer;
-    FGroups: TArray<TVkGroup>;
-    FItems: TArray<TVkNotification>;
     FLast_viewed: Integer;
     FNext_from: string;
     FPhotos: TArray<TVkPhoto>;
-    FProfiles: TArray<TVkProfile>;
     FTtl: Integer;
   public
-    property Count: Integer read FCount write FCount;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    property Items: TArray<TVkNotification> read FItems write FItems;
     property LastViewed: Integer read FLast_viewed write FLast_viewed;
     property NextFrom: string read FNext_from write FNext_from;
     property Photos: TArray<TVkPhoto> read FPhotos write FPhotos;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Ttl: Integer read FTtl write FTtl;
-    destructor Destroy; override;
   end;
 
   TVkNotificationMessageError = class
@@ -123,7 +115,7 @@ type
     property Description: string read FDescription write FDescription;
   end;
 
-  TVkNotificationMessageStatus = class
+  TVkNotificationMessageStatus = class(TVkEntity)
   private
     FUser_id: Integer;
     FStatus: Boolean;
@@ -135,15 +127,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkNotificationMessageStatuses = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkNotificationMessageStatus>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkNotificationMessageStatus> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkNotificationMessageStatuses = TVkEntityList<TVkNotificationMessageStatus>;
 
 implementation
 
@@ -191,25 +175,6 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkNotificationHideButton>(FHide_buttons);
   FMain_item.Free;
   FAction.Free;
-  inherited;
-end;
-
-{TVkNotifications}
-
-destructor TVkNotifications.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkNotification>(FItems);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkPhoto>(FPhotos);
-  inherited;
-end;
-
-{ TVkNotificationMessageStatuses }
-
-destructor TVkNotificationMessageStatuses.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkNotificationMessageStatus>(FItems);
   inherited;
 end;
 

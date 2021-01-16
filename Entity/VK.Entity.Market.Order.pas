@@ -3,7 +3,7 @@ unit VK.Entity.Market.Order;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Market, VK.Entity.Photo;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Market, VK.Entity.Photo;
 
 type
   TVkOrderRecipient = class
@@ -55,15 +55,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkOrders = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkOrder>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkOrder> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkOrders = TVkEntityList<TVkOrder>;
 
 implementation
 
@@ -86,14 +78,6 @@ begin
   FTotal_price.Free;
   FDelivery.Free;
   FRecipient.Free;
-  inherited;
-end;
-
-{TVkOrders}
-
-destructor TVkOrders.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkOrder>(FItems);
   inherited;
 end;
 

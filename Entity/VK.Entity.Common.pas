@@ -3,7 +3,7 @@ unit VK.Entity.Common;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, REST.Json.Types;
 
 type
   TVkEntity = class(TInterfacedObject)
@@ -12,41 +12,11 @@ type
     constructor Create; virtual;
   end;
 
-  TVkEntityList<T: TVkEntity> = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<T>;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<T> read FItems write FItems;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Items: TVkEntityList<T>);
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
-
   TVkObject = class(TVkEntity)
   protected
     FId: Integer;
   public
     property Id: Integer read FId write FId;
-  end;
-
-  TVkObjectList<T: TVkObject> = class(TVkObject)
-  private
-    FCount: Integer;
-    FItems: TArray<T>;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<T> read FItems write FItems;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Items: TVkObjectList<T>);
-    constructor Create; override;
-    destructor Destroy; override;
   end;
 
   TVkDimensions = class(TVkEntity)
@@ -67,13 +37,6 @@ type
   public
     property Online: Integer read FOnline write FOnline;
     property Time: Int64 read FTime write FTime;
-  end;
-
-  TVkBasicIndexItems = class(TVkEntity)
-  private
-    FItems: TArray<Integer>;
-  public
-    property Items: TArray<Integer> read FItems write FItems;
   end;
 
   TVkBasicObject = class(TVkObject)
@@ -100,12 +63,10 @@ type
 
   TVkAddresses = class
   private
-    FIs_enabled: Integer;
+    FIs_enabled: Boolean;
     FMain_address_id: Integer;
-    function GetIs_enabled: Boolean;
-    procedure SetIs_enabled(const Value: Boolean);
   public
-    property IsEnabled: Boolean read GetIs_enabled write SetIs_enabled;
+    property IsEnabled: Boolean read FIs_enabled write FIs_enabled;
     property MainAddressId: Integer read FMain_address_id write FMain_address_id;
   end;
 
@@ -133,12 +94,14 @@ type
 
   TVkCrop = TVkRect;
 
-  TVkTags = class(TVkEntity)
+  TVkCounterEntity = class(TVkEntity)
   private
     FCount: Integer;
   public
     property Count: Integer read FCount write FCount;
   end;
+
+  TVkTags = TVkCounterEntity;
 
   TVkPostSource = class(TVkEntity)
   private
@@ -164,21 +127,14 @@ type
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
   end;
 
-  TVkRepostsInfo = class(TVkEntity)
+  TVkRepostsInfo = class(TVkCounterEntity)
   private
-    FCount: Integer;
     FUser_reposted: Integer;
   public
-    property Count: Integer read FCount write FCount;
     property UserReposted: Integer read FUser_reposted write FUser_reposted;
   end;
 
-  TVkViewsInfo = class(TVkEntity)
-  private
-    FCount: Integer;
-  public
-    property Count: Integer read FCount write FCount;
-  end;
+  TVkViewsInfo = TVkCounterEntity;
 
   TVkLiked = class(TVkEntity)
   private
@@ -249,20 +205,7 @@ type
     function GetSizeMax(Value: string = 'w'; Circular: Boolean = False): TVkSize;
   end;
 
-  TVkRelationPartner = class(TVkObject)
-  private
-    FCan_access_closed: Boolean;
-    FFirst_name: string;
-    FIs_closed: Boolean;
-    FLast_name: string;
-  public
-    property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
-    property FirstName: string read FFirst_name write FFirst_name;
-    property IsClosed: Boolean read FIs_closed write FIs_closed;
-    property LastName: string read FLast_name write FLast_name;
-  end;
-
-  TVkRelationRequests = class(TVkObject)
+  TVkRelationData = class(TVkObject)
   private
     FCan_access_closed: Boolean;
     FFirst_name: string;
@@ -335,35 +278,35 @@ type
     FPhoto_200: string;
     FPhoto_100: string;
   public
-    property Photo50: string read FPhoto_50 write FPhoto_50; // Ч URL изображени€ 50x50px;
-    property Photo100: string read FPhoto_100 write FPhoto_100; // Ч URL изображени€ 100x100px;
-    property Photo200: string read FPhoto_200 write FPhoto_200; // Ч URL изображени€ 200x200px;
-  end;
-
-  TVkIdList = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<Integer>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<Integer> read FItems write FItems;
+    /// <summary>
+    /// URL изображени€ 50x50px;
+    /// </summary>
+    property Photo50: string read FPhoto_50 write FPhoto_50;
+    /// <summary>
+    /// URL изображени€ 100x100px;
+    /// </summary>
+    property Photo100: string read FPhoto_100 write FPhoto_100;
+    /// <summary>
+    /// URL изображени€ 200x200px;
+    /// </summary>
+    property Photo200: string read FPhoto_200 write FPhoto_200;
   end;
 
   TVkOwnerPhoto = class(TVkEntity)
   private
-    Fphoto_src: string;
-    Fphoto_src_small: string;
-    Fphoto_src_big: string;
-    Fpost_id: Integer;
-    Fphoto_hash: string;
-    Fsaved: Boolean;
+    FPhoto_src: string;
+    FPhoto_src_small: string;
+    FPhoto_src_big: string;
+    FPost_id: Integer;
+    FPhoto_hash: string;
+    FSaved: Boolean;
   public
-    property PhotoHash: string read Fphoto_hash write Fphoto_hash;
-    property PhotoSrc: string read Fphoto_src write Fphoto_src;
+    property PhotoHash: string read FPhoto_hash write FPhoto_hash;
+    property PhotoSrc: string read FPhoto_src write FPhoto_src;
     property PhotoSrcBig: string read Fphoto_src_big write Fphoto_src_big;
-    property PhotoSrcSmall: string read Fphoto_src_small write Fphoto_src_small;
-    property Saved: Boolean read Fsaved write Fsaved;
-    property PostId: Integer read Fpost_id write Fpost_id;
+    property PhotoSrcSmall: string read FPhoto_src_small write FPhoto_src_small;
+    property Saved: Boolean read FSaved write FSaved;
+    property PostId: Integer read FPost_id write FPost_id;
   end;
 
 var
@@ -372,7 +315,7 @@ var
 implementation
 
 uses
-  System.SysUtils, VK.CommonUtils;
+  System.SysUtils, System.Json, VK.CommonUtils;
 
 {TVkGeo}
 
@@ -452,25 +395,11 @@ begin
   Result := Get(Value);
   if Assigned(Result) then
     Exit;
-
   repeat
     Value := GetPrevSize(Value, Circular);
     if not Value.IsEmpty then
       Result := Get(Value);
   until Assigned(Result);
-end;
-
-
-{ TVkAddresses }
-
-function TVkAddresses.GetIs_enabled: Boolean;
-begin
-  Result := FIs_enabled = 1;
-end;
-
-procedure TVkAddresses.SetIs_enabled(const Value: Boolean);
-begin
-  FIs_enabled := BoolToInt(Value);
 end;
 
 { TVkEntity }
@@ -482,79 +411,12 @@ end;
 
 class function TVkEntity.FromJsonString<T>(AJsonString: string): T;
 begin
-
   Result := TJson.JsonToObject<T>(AJsonString);
 end;
 
 function TVkEntity.ToJsonString: string;
 begin
   Result := TJson.ObjectToJsonString(Self);
-end;
-
-{ TVkEntityList<T> }
-
-procedure TVkEntityList<T>.Append(Items: TVkEntityList<T>);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items.Items);
-  SetLength(FItems, OldLen + Length(Items.Items));
-  Move(Items.Items[0], FItems[OldLen], Length(Items.Items) * SizeOf(T));
-end;
-
-constructor TVkEntityList<T>.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkEntityList<T>.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<T>(FItems);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkEntityList<T>.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
-{ TVkObjectList<T> }
-
-procedure TVkObjectList<T>.Append(Items: TVkObjectList<T>);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items.Items);
-  SetLength(FItems, OldLen + Length(Items.Items));
-  Move(Items.Items[0], FItems[OldLen], Length(Items.Items) * SizeOf(T));
-end;
-
-constructor TVkObjectList<T>.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkObjectList<T>.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<T>(FItems);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkObjectList<T>.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
 end;
 
 end.

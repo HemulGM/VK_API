@@ -3,18 +3,16 @@ unit VK.Entity.Profile;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common,
-  VK.Entity.Photo, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
+  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Database.Cities,
+  VK.Entity.Database.Countries;
 
 type
   TVkProfile = class;
 
-  TVkFriendsMutual = class(TVkEntity)
+  TVkFriendsMutual = class(TVkCounterEntity)
   private
-    FCount: Integer;
     FUsers: TArray<TVkProfile>;
   public
-    property Count: Integer read FCount write FCount;
     property Users: TArray<TVkProfile> read FUsers write FUsers;
     destructor Destroy; override;
   end;
@@ -288,7 +286,7 @@ type
     FPhoto_max_orig: string;
     FQuotes: string;
     FRelation: Integer;
-    FRelation_partner: TVkRelationPartner;
+    FRelation_partner: TVkRelationData;
     FRelatives: TArray<TVkRelative>;
     FSchools: TArray<TVkSchoolInfo>;
     FScreen_name: string;
@@ -388,7 +386,7 @@ type
     property PhotoMediumRec: string read FPhoto_medium_rec write FPhoto_medium_rec;
     property Quotes: string read FQuotes write FQuotes;
     property Relation: Integer read FRelation write FRelation;
-    property RelationPartner: TVkRelationPartner read FRelation_partner write FRelation_partner;
+    property RelationPartner: TVkRelationData read FRelation_partner write FRelation_partner;
     property Relatives: TArray<TVkRelative> read FRelatives write FRelatives;
     property Schools: TArray<TVkSchoolInfo> read FSchools write FSchools;
     property ScreenName: string read FScreen_name write FScreen_name;
@@ -488,7 +486,7 @@ begin
   FLast_seen := TVkLastSeen.Create();
   FCrop_photo := TVkCropPhoto.Create();
   FOccupation := TVkOccupation.Create();
-  FRelation_partner := TVkRelationPartner.Create();
+  FRelation_partner := TVkRelationData.Create();
   FPersonal := TVkPersonal.Create();
   FMutual := TVkFriendsMutual.Create();
   FOnline_info := TVkUserOnlineInfo.Create;

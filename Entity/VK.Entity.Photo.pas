@@ -12,7 +12,7 @@ type
     FPlacer_id: Integer;
     FTagged_name: string;
     FUser_id: Integer;
-    FViewed: Integer;
+    FViewed: Boolean;
     FX: Integer;
     FX2: Integer;
     FY: Integer;
@@ -22,7 +22,7 @@ type
     property PlacerId: Integer read FPlacer_id write FPlacer_id;
     property TaggedName: string read FTagged_name write FTagged_name;
     property UserId: Integer read FUser_id write FUser_id;
-    property Viewed: Integer read FViewed write FViewed;
+    property Viewed: Boolean read FViewed write FViewed;
     property X: Integer read FX write FX;
     property X2: Integer read FX2 write FX2;
     property Y: Integer read FY write FY;

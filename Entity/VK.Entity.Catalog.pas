@@ -44,10 +44,10 @@ type
     property Action: TVkCatalogAction read FAction write FAction;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Title: string read FTitle write FTitle;
-    property block_id: string read FBlock_id write FBlock_id;
-    property ref_data_type: string read FRef_data_type write FRef_data_type;
-    property ref_items_count: Extended read FRef_items_count write FRef_items_count;
-    property ref_layout_name: string read FRef_layout_name write FRef_layout_name;
+    property BlockId: string read FBlock_id write FBlock_id;
+    property RefDataType: string read FRef_data_type write FRef_data_type;
+    property RefItemsCount: Extended read FRef_items_count write FRef_items_count;
+    property RefLayout_name: string read FRef_layout_name write FRef_layout_name;
     constructor Create; override;
     destructor Destroy; override;
   end;
