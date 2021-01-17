@@ -270,6 +270,7 @@
         <DCCReference Include="Entity\VK.Entity.Donut.pas"/>
         <DCCReference Include="Entity\VK.Entity.Auth.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.List.pas"/>
+        <DCCReference Include="Utils\VK.Wrap.Interceptors.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

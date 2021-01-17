@@ -32,36 +32,24 @@ type
     property Status: TVkGroupStatusType read GetStatus;
   end;
 
-  TVkCoverImage = record
-  private
-    FWidth: Integer;
-    FUrl: string;
-    FHeight: Integer;
-  public
-    property Url: string read FUrl write FUrl;
-    property Width: Integer read FWidth write FWidth;
-    property Height: Integer read FHeight write FHeight;
-  end;
-
   TVkCoverImages = class(TVkEntity)
   private
-    FItems: TArray<TVkCoverImage>;
+    FItems: TArray<TVkImage>;
   public
-    property Items: TArray<TVkCoverImage> read FItems write FItems;
+    property Items: TArray<TVkImage> read FItems write FItems;
   end;
 
   TVkCover = class
   private
     FEnabled: Boolean;
-    FImages: TArray<TVkCoverImage>;
+    FImages: TArray<TVkImage>;
   public
     property Enabled: Boolean read FEnabled write FEnabled;
-    property Images: TArray<TVkCoverImage> read FImages write FImages;
+    property Images: TArray<TVkImage> read FImages write FImages;
   end;
 
-  TVkGroupLink = class(TVkObject)
+  TVkGroupLink = class(TVkBasicObject)
   private
-    FName: string;
     FPhoto_50: string;
     FUrl: string;
     FDesc: string;
@@ -70,7 +58,6 @@ type
     FImage_processing: Integer;
   public
     property Url: string read FUrl write FUrl;
-    property Name: string read FName write FName;
     property Desc: string read FDesc write FDesc;
     property Photo_50: string read FPhoto_50 write FPhoto_50;
     property Photo_100: string read FPhoto_100 write FPhoto_100;

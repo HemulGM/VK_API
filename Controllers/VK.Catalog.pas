@@ -14,6 +14,7 @@ type
     /// </summary>
     function GetAudio(var Catalog: TVkCatalog; NeedBlocks: Boolean = False): Boolean;
     function GetSection(var Section: TVkSectionData; SectionId: string; NeedBlocks: Boolean = False): Boolean;
+    //function GetAudioSearch(): Boolean;
   end;
 
 implementation

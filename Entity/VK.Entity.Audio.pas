@@ -3,52 +3,52 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment,
-  VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, System.SysUtils, Rest.Json, System.Json,
+  VK.Entity.Common, VK.Types, VK.Entity.Attachment, VK.Entity.Common.List, VK.Entity.Group;
 
 type
-  TVkAudioArtist = class(TVkObject)
+  TVkAudioArtistPhoto = class(TVkEntity)
+  private
+    FType: string;
+    FPhoto: TArray<TVkImage>;
+  public
+    property&Type: string read FType write FType;
+    property Photo: TArray<TVkImage> read FPhoto write FPhoto;
+    destructor Destroy; override;
+  end;
+
+  TVkAudioArtist = class(TVkEntity)
   private
     FDomain: string;
     FName: string;
+    FPhoto: TArray<TVkImage>;
+    FId: string;
+    FPages: TArray<Integer>;
+    FGroups: TArray<TVkGroup>;
+    FPhotos: TArray<TVkAudioArtistPhoto>;
   public
+    property Id: string read FId write FId;
     property Domain: string read FDomain write FDomain;
     property Name: string read FName write FName;
+    property Photo: TArray<TVkImage> read FPhoto write FPhoto;
+    property Photos: TArray<TVkAudioArtistPhoto> read FPhotos write FPhotos;
+    property Pages: TArray<Integer> read FPages write FPages;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    destructor Destroy; override;
   end;
 
-  TVkAlbumThumb = class
-  private
-    FHeight: Integer;
-    FPhoto_135: string;
-    FPhoto_270: string;
-    FPhoto_300: string;
-    FPhoto_34: string;
-    FPhoto_600: string;
-    FPhoto_68: string;
-    FWidth: Integer;
-    FPhoto_1200: string;
-  public
-    property Height: Integer read FHeight write FHeight;
-    property Width: Integer read FWidth write FWidth;
-    property Photo34: string read FPhoto_34 write FPhoto_34;
-    property Photo68: string read FPhoto_68 write FPhoto_68;
-    property Photo135: string read FPhoto_135 write FPhoto_135;
-    property Photo270: string read FPhoto_270 write FPhoto_270;
-    property Photo300: string read FPhoto_300 write FPhoto_300;
-    property Photo600: string read FPhoto_600 write FPhoto_600;
-    property Photo1200: string read FPhoto_1200 write FPhoto_1200;
-  end;
+  TVkAudioArtists = TVkEntityList<TVkAudioArtist>;
 
   TVkAudioAlbum = class(TVkObject)
   private
     FAccess_key: string;
     FOwner_id: Integer;
-    FThumb: TVkAlbumThumb;
+    FThumb: TVkThumb;
     FTitle: string;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Thumb: TVkAlbumThumb read FThumb write FThumb;
+    property Thumb: TVkThumb read FThumb write FThumb;
     property Title: string read FTitle write FTitle;
     constructor Create; override;
     destructor Destroy; override;
@@ -212,12 +212,30 @@ end;
 constructor TVkAudioAlbum.Create;
 begin
   inherited;
-  FThumb := TVkAlbumThumb.Create();
+  FThumb := TVkThumb.Create();
 end;
 
 destructor TVkAudioAlbum.Destroy;
 begin
   FThumb.Free;
+  inherited;
+end;
+
+{ TVkAudioArtist }
+
+destructor TVkAudioArtist.Destroy;
+begin
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FPhoto);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkAudioArtistPhoto>(FPhotos);
+  inherited;
+end;
+
+{ TVkAudioArtistPhoto }
+
+destructor TVkAudioArtistPhoto.Destroy;
+begin
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FPhoto);
   inherited;
 end;
 

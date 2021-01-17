@@ -6,21 +6,14 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Group, VK.Entity.Common;
 
 type
-  TVkGroupSubcategory = class(TVkObject)
-  private
-    FName: string;
-  public
-    property Name: string read FName write FName;
-  end;
+  TVkGroupSubcategory = TVkBasicObject;
 
-  TVkGroupCategory = class(TVkObject)
+  TVkGroupCategory = class(TVkBasicObject)
   private
-    FName: string;
     FSubcategories: TArray<TVkGroupSubcategory>;
     FPage_count: Integer;
     FPage_previews: TArray<TVkGroup>;
   public
-    property Name: string read FName write FName;
     property PageCount: Integer read FPage_count write FPage_count;
     property PagePreviews: TArray<TVkGroup> read FPage_previews write FPage_previews;
     property Subcategories: TArray<TVkGroupSubcategory> read FSubcategories write FSubcategories;

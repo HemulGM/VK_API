@@ -6,22 +6,11 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkCardImage = class
-  private
-    FHeight: Extended;
-    FUrl: string;
-    FWidth: Extended;
-  public
-    property Height: Extended read FHeight write FHeight;
-    property Url: string read FUrl write FUrl;
-    property Width: Extended read FWidth write FWidth;
-  end;
-
   TVkPrettyCard = class(TVkEntity)
   private
     FButton: TVkLinkButton;
     FCard_id: string;
-    FImages: TArray<TVkCardImage>;
+    FImages: TArray<TVkImage>;
     FLink_url: string;
     FPrice: string;
     FPrice_old: string;
@@ -29,7 +18,7 @@ type
   public
     property Button: TVkLinkButton read FButton write FButton;
     property CardId: string read FCard_id write FCard_id;
-    property Images: TArray<TVkCardImage> read FImages write FImages;
+    property Images: TArray<TVkImage> read FImages write FImages;
     property LinkUrl: string read FLink_url write FLink_url;
     property Price: string read FPrice write FPrice;
     property PriceOld: string read FPrice_old write FPrice_old;
@@ -55,7 +44,7 @@ end;
 
 destructor TVkPrettyCard.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkCardImage>(FImages);
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
   FButton.Free;
   inherited;
 end;

@@ -33,20 +33,20 @@ type
 
   TVkKeyboardAction = class
   private
-    FApp_id: Extended;
+    FApp_id: Integer;
     FHash: string;
     FLabel: string;
     FPayload: string;
-    FOwner_id: Extended;
+    FOwner_id: Integer;
     FType: string;  //text, open_link, location, vkpay, open_app
     FLink: string;
   public
-    property AppId: Extended read FApp_id write FApp_id;
+    property AppId: Integer read FApp_id write FApp_id;
     property Hash: string read FHash write FHash;
     property Link: string read FLink write FLink;
     property Payload: string read FPayload write FPayload;
     property&Label: string read FLabel write FLabel;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
     property&Type: string read FType write FType;
   end;
 

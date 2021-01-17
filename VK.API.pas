@@ -173,10 +173,6 @@ type
     /// <summary>
     /// Выполнить метод
     /// </summary>
-    procedure CallMethod(MethodName: string; Param: TParam = []; Callback: TCallMethodCallback = nil); overload;
-    /// <summary>
-    /// Выполнить метод
-    /// </summary>
     procedure CallMethod(MethodName: string; Params: TParams = []; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Выполнить метод асинхронно
@@ -481,9 +477,7 @@ var
 begin
   Response := Handler.Execute(MethodName, Params);
   if Assigned(Callback) then
-  begin
     Callback(Response);
-  end;
 end;
 
 procedure TCustomVK.CallMethodAsync(MethodName: string; Params: TParams; Callback: TCallMethodCallback);
@@ -497,15 +491,6 @@ begin
       if Assigned(Callback) then
         Callback(Response);
     end).Start;
-end;
-
-procedure TCustomVK.CallMethod(MethodName: string; Param: TParam; Callback: TCallMethodCallback);
-var
-  Response: TResponse;
-begin
-  Response := Handler.Execute(MethodName, Param);
-  if Assigned(Callback) then
-    Callback(Response);
 end;
 
 function TCustomVK.Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;

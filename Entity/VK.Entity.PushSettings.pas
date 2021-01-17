@@ -3,7 +3,7 @@ unit VK.Entity.PushSettings;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkConversation = class(TVkEntity)
@@ -18,15 +18,7 @@ type
     property Sound: Boolean read FSound write FSound;
   end;
 
-  TVkConversations = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkConversation>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkConversation> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkConversations = TVkEntityList<TVkConversation>;
 
   TVkPushSettingsItem = class(TVkEntity)
   private
@@ -90,14 +82,6 @@ implementation
 
 uses
   VK.CommonUtils;
-
-{TVkConversations}
-
-destructor TVkConversations.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkConversation>(FItems);
-  inherited;
-end;
 
 {TVkPushSettings}
 

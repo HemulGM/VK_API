@@ -7,60 +7,35 @@ uses
   VK.Entity.Playlist, VK.Entity.Catalog;
 
 type
-  TVkCatalogThumb = class
+  TVkCatalogThumb = class(TVkThumb)
   private
-    FHeight: Integer;
-    FWidth: Integer;
     FId: string;
-    FPhoto_135: string;
-    FPhoto_270: string;
-    FPhoto_300: string;
-    FPhoto_34: string;
-    FPhoto_600: string;
-    FPhoto_68: string;
   public
-    property Height: Integer read FHeight write FHeight;
-    property Width: Integer read FWidth write FWidth;
     property Id: string read FId write FId;
-    property Photo135: string read FPhoto_135 write FPhoto_135;
-    property Photo270: string read FPhoto_270 write FPhoto_270;
-    property Photo300: string read FPhoto_300 write FPhoto_300;
-    property Photo34: string read FPhoto_34 write FPhoto_34;
-    property Photo600: string read FPhoto_600 write FPhoto_600;
-    property Photo68: string read FPhoto_68 write FPhoto_68;
   end;
 
   TVkLinkMeta = class
   private
     FContent_type: string;
     FIcon: string;
+    FTrack_code: string;
   public
     property ContentType: string read FContent_type write FContent_type;
     property Icon: string read FIcon write FIcon;
-  end;
-
-  TVkLinkImage = class
-  private
-    FHeight: Integer;
-    FUrl: string;
-    FWidth: Integer;
-  public
-    property Height: Integer read FHeight write FHeight;
-    property Width: Integer read FWidth write FWidth;
-    property Url: string read FUrl write FUrl;
+    property TrackCode: string read FTrack_code write FTrack_code;
   end;
 
   TVkCatalogLink = class(TVkEntity)
   private
     FId: string;
-    FImage: TArray<TVkLinkImage>;
+    FImage: TArray<TVkImage>;
     FMeta: TVkLinkMeta;
     FSubtitle: string;
     FTitle: string;
     FUrl: string;
   public
     property Id: string read FId write FId;
-    property Image: TArray<TVkLinkImage> read FImage write FImage;
+    property Image: TArray<TVkImage> read FImage write FImage;
     property Meta: TVkLinkMeta read FMeta write FMeta;
     property Subtitle: string read FSubtitle write FSubtitle;
     property Title: string read FTitle write FTitle;
@@ -103,7 +78,7 @@ end;
 
 destructor TVkCatalogLink.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkLinkImage>(FImage);
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FImage);
   FMeta.Free;
   inherited;
 end;

@@ -7,17 +7,6 @@ uses
   VK.Entity.Playlist, VK.Entity.Profile;
 
 type
-  TVkCatalogIcon = class
-  private
-    FHeight: Integer;
-    FUrl: string;
-    FWidth: Integer;
-  public
-    property Height: Integer read FHeight write FHeight;
-    property Url: string read FUrl write FUrl;
-    property Width: Integer read FWidth write FWidth;
-  end;
-
   TVkCatalogAction = class
   private
     FConsume_reason: string;
@@ -38,16 +27,18 @@ type
     FTitle: string;
     FBlock_id: string;
     FRef_data_type: string;
-    FRef_items_count: Extended;
+    FRef_items_count: Integer;
     FRef_layout_name: string;
+    FSection_id: string;
   public
     property Action: TVkCatalogAction read FAction write FAction;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Title: string read FTitle write FTitle;
     property BlockId: string read FBlock_id write FBlock_id;
+    property SectionId: string read FSection_id write FSection_id;
     property RefDataType: string read FRef_data_type write FRef_data_type;
-    property RefItemsCount: Extended read FRef_items_count write FRef_items_count;
-    property RefLayout_name: string read FRef_layout_name write FRef_layout_name;
+    property RefItemsCount: Integer read FRef_items_count write FRef_items_count;
+    property RefLayoutName: string read FRef_layout_name write FRef_layout_name;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -55,14 +46,14 @@ type
   TVkCatalogPlaceholder = class
   private
     FButtons: TArray<TVkCatalogButton>;
-    FIcons: TArray<TVkCatalogIcon>;
+    FIcons: TArray<TVkImage>;
     FId: string;
     FImage_mode: string;
     FText: string;
     FTitle: string;
   public
     property Buttons: TArray<TVkCatalogButton> read FButtons write FButtons;
-    property Icons: TArray<TVkCatalogIcon> read FIcons write FIcons;
+    property Icons: TArray<TVkImage> read FIcons write FIcons;
     property Id: string read FId write FId;
     property ImageMode: string read FImage_mode write FImage_mode;
     property Text: string read FText write FText;
@@ -76,11 +67,13 @@ type
     FOwner_id: Integer;
     FSubtitle: string;
     FTitle: string;
+    FIs_editable: Integer;
   public
     property Name: string read FName write FName;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property SubTitle: string read FSubtitle write FSubtitle;
     property Title: string read FTitle write FTitle;
+    property IsEditable: Integer read FIs_editable write FIs_editable;
   end;
 
   TVkCatalogBlock = class(TVkEntity)
@@ -93,15 +86,19 @@ type
     FNext_from: string;
     FThumbs_ids: TArray<string>;
     FAudios_ids: TArray<string>;
+    FLinks_ids: TArray<string>;
+    FPlaylists_ids: TArray<string>;
   public
     property DataType: string read FData_type write FData_type;
     property Id: string read FId write FId;
     property Layout: TVkCatalogLayout read FLayout write FLayout;
-    property PlaceholderIds: TArray<string> read FPlaceholder_ids write FPlaceholder_ids;
     property Buttons: TArray<TVkCatalogButton> read FButtons write FButtons;
     property NextFrom: string read FNext_from write FNext_from;
+    property PlaceholderIds: TArray<string> read FPlaceholder_ids write FPlaceholder_ids;
     property ThumbsIds: TArray<string> read FThumbs_ids write FThumbs_ids;
     property AudiosIds: TArray<string> read FAudios_ids write FAudios_ids;
+    property LinksIds: TArray<string> read FLinks_ids write FLinks_ids;
+    property PlaylistsIds: TArray<string> read FPlaylists_ids write FPlaylists_ids;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -114,7 +111,9 @@ type
     FNext_from: string;
     FTitle: string;
     FUrl: string;
+    FButtons: TArray<TVkCatalogButton>;
   public
+    property Buttons: TArray<TVkCatalogButton> read FButtons write FButtons;
     property Blocks: TArray<TVkCatalogBlock> read FBlocks write FBlocks;
     property Id: string read FId write FId;
     property ListenEvents: TArray<string> read FListen_events write FListen_events;
@@ -178,7 +177,7 @@ end;
 destructor TVkCatalogPlaceholder.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCatalogButton>(FButtons);
-  TArrayHelp.FreeArrayOfObject<TVkCatalogIcon>(FIcons);
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FIcons);
   inherited;
 end;
 
@@ -202,6 +201,7 @@ end;
 destructor TVkCatalogSection.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCatalogBlock>(FBlocks);
+  TArrayHelp.FreeArrayOfObject<TVkCatalogButton>(FButtons);
   inherited;
 end;
 

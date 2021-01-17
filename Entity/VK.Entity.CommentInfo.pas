@@ -8,11 +8,11 @@ uses
 type
   TVkCommentInfo = class(TVkEntity)
   private
-    FComment_id: Extended;
-    FParents_stack: TArray<Extended>;
+    FComment_id: Integer;
+    FParents_stack: TArray<Integer>;
   public
-    property CommentId: Extended read FComment_id write FComment_id;
-    property ParentsStack: TArray<Extended> read FParents_stack write FParents_stack;
+    property CommentId: Integer read FComment_id write FComment_id;
+    property ParentsStack: TArray<Integer> read FParents_stack write FParents_stack;
   end;
 
 implementation

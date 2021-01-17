@@ -18,12 +18,7 @@ type
     property PlaylistId: Integer read FPlaylist_id write FPlaylist_id;
   end;
 
-  TVkAudioGenres = class(TVkObject)
-  private
-    FName: string;
-  public
-    property Name: string read FName write FName;
-  end;
+  TVkAudioGenres = TVkBasicObject;
 
   TVkAudioPlaylist = class(TVkObject)
   private
@@ -38,7 +33,7 @@ type
     FMain_artists: TArray<TVkAudioArtist>;
     FOriginal: TVkAudioOriginal;
     FOwner_id: Integer;
-    FPhoto: TVkAlbumThumb;
+    FPhoto: TVkThumb;
     FPlays: Integer;
     FTitle: string;
     FType: Integer;
@@ -60,7 +55,7 @@ type
     property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
     property Original: TVkAudioOriginal read FOriginal write FOriginal;
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Photo: TVkAlbumThumb read FPhoto write FPhoto;
+    property Photo: TVkThumb read FPhoto write FPhoto;
     property Plays: Integer read FPlays write FPlays;
     property Title: string read FTitle write FTitle;
     property UpdateTime: TDateTime read FUpdate_time write FUpdate_time;
@@ -83,7 +78,7 @@ constructor TVkAudioPlaylist.Create;
 begin
   inherited;
   FOriginal := TVkAudioOriginal.Create();
-  FPhoto := TVkAlbumThumb.Create();
+  FPhoto := TVkThumb.Create();
 end;
 
 destructor TVkAudioPlaylist.Destroy;

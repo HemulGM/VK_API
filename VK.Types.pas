@@ -611,7 +611,7 @@ type
   /// <summary>
   ///  Пол
   /// </summary>
-  TVkSex = (sxMale, sxFemale);
+  TVkSex = (sxNone, sxFemale, sxMale);
 
   /// <summary>
   ///  Пол - поиск
@@ -621,7 +621,7 @@ type
   /// <summary>
   ///  Видимость даты рождения
   /// </summary>
-  TVkBirthDateVisibility = (dvVisible, dvDayMonOnly, dvHidden);
+  TVkBirthDateVisibility = (dvHidden, dvDayMonOnly, dvVisible);
 
   /// <summary>
   /// Отношения.

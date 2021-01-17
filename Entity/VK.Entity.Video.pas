@@ -14,16 +14,10 @@ type
     property&External: string read FExternal write FExternal;
   end;
 
-  TVkVideoImage = class(TVkEntity)
+  TVkVideoImage = class(TVkImage)
   private
-    FHeight: Integer;
-    FUrl: string;
-    FWidth: Integer;
     FWith_padding: Integer;
   public
-    property Height: Integer read FHeight write FHeight;
-    property Url: string read FUrl write FUrl;
-    property Width: Integer read FWidth write FWidth;
     property WithPadding: Integer read FWith_padding write FWith_padding;
   end;
 

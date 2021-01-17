@@ -149,7 +149,7 @@ type
     /// <summary>
     ///  Идентификатор фотографии, к которой был оставлен комментарий
     /// </summary>
-    property Pid: Integer read FPid write FPid;
+    property PhotoId: Integer read FPid write FPid;
     property PostId: Integer read FPost_id write FPost_id;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property PostOwnerId: Integer read FPost_owner_id write FPost_owner_id;

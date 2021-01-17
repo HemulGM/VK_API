@@ -10,7 +10,7 @@ type
   private
     FAdmin_id: Integer;
     FIs_default_photo: Boolean;
-    FMembers_count: Extended;
+    FMembers_count: Integer;
     FPhoto_100: string;
     FPhoto_200: string;
     FPhoto_50: string;
@@ -20,7 +20,7 @@ type
   public
     property AdminId: Integer read FAdmin_id write FAdmin_id;
     property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
-    property MembersCount: Extended read FMembers_count write FMembers_count;
+    property MembersCount: Integer read FMembers_count write FMembers_count;
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property Photo50: string read FPhoto_50 write FPhoto_50;
@@ -46,10 +46,10 @@ type
   TVkChatInfoMessage = class(TVkEntity)
   private
     FChat: TVkChat;
-    FMessage_id: Extended;
+    FMessage_id: Integer;
   public
     property Chat: TVkChat read FChat write FChat;
-    property MessageId: Extended read FMessage_id write FMessage_id;
+    property MessageId: Integer read FMessage_id write FMessage_id;
     constructor Create; override;
     destructor Destroy; override;
   end;

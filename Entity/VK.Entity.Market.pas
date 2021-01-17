@@ -27,12 +27,10 @@ type
     destructor Destroy; override;
   end;
 
-  TVkProductCategory = class(TVkObject)
+  TVkProductCategory = class(TVkBasicObject)
   private
-    FName: string;
     FSection: TVkMarketSection;
   public
-    property Name: string read FName write FName;
     property Section: TVkMarketSection read FSection write FSection;
     constructor Create; override;
     destructor Destroy; override;
@@ -74,32 +72,28 @@ type
     FQuantity: Integer;
     FDimensions: TVkDimensions;
   public
+    property AlbumsIds: TArray<Integer> read FAlbums_ids write FAlbums_ids;
     property Availability: Boolean read FAvailability write FAvailability;
+    property CanComment: Boolean read FCan_comment write FCan_comment;
+    property CanRepost: Boolean read FCan_repost write FCan_repost;
+    property CartQuantity: Integer read FCart_quantity write FCart_quantity;
     property Category: TVkProductCategory read FCategory write FCategory;
     property Date: TDateTime read FDate write FDate;
     property Description: string read FDescription write FDescription;
+    property Dimensions: TVkDimensions read FDimensions write FDimensions;
     property ExternalId: string read FExternal_id write FExternal_id;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Price: TVkProductPrice read FPrice write FPrice;
-    property ThumbPhoto: string read FThumb_photo write FThumb_photo;
-    property Title: string read FTitle write FTitle;
-    property AlbumsIds: TArray<Integer> read FAlbums_ids write FAlbums_ids;
-    property Reposts: TVkRepostsInfo read FReposts write FReposts;
-    //
-    property CartQuantity: Integer read FCart_quantity write FCart_quantity;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property IsMainVariant: Boolean read FIs_main_variant write FIs_main_variant;
-    property VariantsGroupingId: Integer read FVariants_grouping_id write FVariants_grouping_id;
-    //Extended
-    property CanComment: Boolean read FCan_comment write FCan_comment;
-    property CanRepost: Boolean read FCan_repost write FCan_repost;
     property Likes: TVkLikesInfo read FLikes write FLikes;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
     property Photos: TArray<TVkPhoto> read FPhotos write FPhotos;
-    property ViewsCount: Integer read FViews_count write FViews_count;
-    //
-    property Dimensions: TVkDimensions read FDimensions write FDimensions;
-    //
+    property Price: TVkProductPrice read FPrice write FPrice;
     property Quantity: Integer read FQuantity write FQuantity;
+    property Reposts: TVkRepostsInfo read FReposts write FReposts;
+    property ThumbPhoto: string read FThumb_photo write FThumb_photo;
+    property Title: string read FTitle write FTitle;
+    property VariantsGroupingId: Integer read FVariants_grouping_id write FVariants_grouping_id;
+    property ViewsCount: Integer read FViews_count write FViews_count;
     constructor Create; override;
     destructor Destroy; override;
   end;

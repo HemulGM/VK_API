@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, REST.Json.Types, VK.Entity.Common,
-  VK.Entity.Photo, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
+  VK.Entity.Photo, VK.Entity.Database.Cities, VK.Entity.Database.Countries, VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkProfile = class;
@@ -71,12 +71,11 @@ type
     property TypeRelative: string read FType write FType;
   end;
 
-  TVkSchoolInfo = class(TVkObject)
+  TVkSchoolInfo = class(TVkBasicObject)
   private
     FCity: Integer;
     FClass: string;
     FCountry: Integer;
-    FName: string;
     FSpeciality: string;
     FYear_from: Integer;
     FYear_graduated: Integer;
@@ -85,14 +84,13 @@ type
     property City: Integer read FCity write FCity;
     property ClassNum: string read FClass write FClass;
     property Country: Integer read FCountry write FCountry;
-    property Name: string read FName write FName;
     property Speciality: string read FSpeciality write FSpeciality;
     property YearFrom: Integer read FYear_from write FYear_from;
     property YearGraduated: Integer read FYear_graduated write FYear_graduated;
     property YearTo: Integer read FYear_to write FYear_to;
   end;
 
-  TVkUniversities = class(TVkObject)
+  TVkUniversities = class(TVkBasicObject)
   private
     FChair: Integer;
     FChair_name: string;
@@ -103,7 +101,6 @@ type
     FFaculty: Integer;
     FFaculty_name: string;
     FGraduation: Integer;
-    FName: string;
   public
     property Chair: Integer read FChair write FChair;
     property ChairName: string read FChair_name write FChair_name;
@@ -114,7 +111,6 @@ type
     property Faculty: Integer read FFaculty write FFaculty;
     property FacultyName: string read FFaculty_name write FFaculty_name;
     property Graduation: Integer read FGraduation write FGraduation;
-    property Name: string read FName write FName;
   end;
 
   TVkPersonal = class(TVkEntity)
@@ -174,12 +170,10 @@ type
     property UntilDate: TDateTime read FUntil write FUntil;
   end;
 
-  TVkOccupation = class(TVkObject)
+  TVkOccupation = class(TVkBasicObject)
   private
-    FName: string;
     FType: string;
   public
-    property Name: string read FName write FName;
     property TypeOcc: string read FType write FType;
   end;
 
@@ -233,7 +227,8 @@ type
   private
     FAbout: string;
     FActivities: string;
-    FBdate: string;
+    [JsonReflectAttribute(ctString, rtString, TStringDateTimeInterceptor)]
+    FBdate: TDate;
     FBlacklisted: Boolean;
     FBlacklisted_by_me: Boolean;
     FBooks: string;
@@ -289,12 +284,14 @@ type
     FPhoto_max: string;
     FPhoto_max_orig: string;
     FQuotes: string;
-    FRelation: Integer;
-    FRelation_partner: TVkRelationData;
+    [JsonReflectAttribute(ctString, rtString, TRelationInterceptor)]
+    FRelation: TVkRelation;
+    FRelation_partner: TVkProfile;
     FRelatives: TArray<TVkRelative>;
     FSchools: TArray<TVkSchoolInfo>;
     FScreen_name: string;
-    FSex: Integer;
+    [JsonReflectAttribute(ctString, rtString, TSexInterceptor)]
+    FSex: TVkSex;
     FSite: string;
     FSkype: string;
     FStatus: string;
@@ -326,7 +323,7 @@ type
     property About: string read FAbout write FAbout;
     property Activities: string read FActivities write FActivities;
     property Activity: string read FActivity write FActivity;
-    property BirthDate: string read FBdate write FBdate;
+    property BirthDate: TDate read FBdate write FBdate;
     property Blacklisted: Boolean read FBlacklisted write FBlacklisted;
     property BlacklistedByMe: Boolean read FBlacklisted_by_me write FBlacklisted_by_me;
     property Books: string read FBooks write FBooks;
@@ -393,12 +390,12 @@ type
     property PhotoMedium: string read FPhoto_medium write FPhoto_medium;
     property PhotoMediumRec: string read FPhoto_medium_rec write FPhoto_medium_rec;
     property Quotes: string read FQuotes write FQuotes;
-    property Relation: Integer read FRelation write FRelation;
-    property RelationPartner: TVkRelationData read FRelation_partner write FRelation_partner;
+    property Relation: TVkRelation read FRelation write FRelation;
+    property RelationPartner: TVkProfile read FRelation_partner write FRelation_partner;
     property Relatives: TArray<TVkRelative> read FRelatives write FRelatives;
     property Schools: TArray<TVkSchoolInfo> read FSchools write FSchools;
     property ScreenName: string read FScreen_name write FScreen_name;
-    property Sex: Integer read FSex write FSex;
+    property Sex: TVkSex read FSex write FSex;
     property Site: string read FSite write FSite;
     property Skype: string read FSkype write FSkype;
     property Status: string read FStatus write FStatus;
@@ -496,7 +493,7 @@ begin
   FLast_seen := TVkLastSeen.Create();
   FCrop_photo := TVkCropPhoto.Create();
   FOccupation := TVkOccupation.Create();
-  FRelation_partner := TVkRelationData.Create();
+  FRelation_partner := TVkProfile.Create();
   FPersonal := TVkPersonal.Create();
   FMutual := TVkFriendsMutual.Create();
   FOnline_info := TVkUserOnlineInfo.Create;

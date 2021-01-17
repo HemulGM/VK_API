@@ -160,6 +160,17 @@ type
     property UserLikes: Integer read FUser_likes write FUser_likes;
   end;
 
+  TVkImage = class(TVkEntity)
+  private
+    FHeight: Integer;
+    FUrl: string;
+    FWidth: Integer;
+  public
+    property Height: Integer read FHeight write FHeight;
+    property Url: string read FUrl write FUrl;
+    property Width: Integer read FWidth write FWidth;
+  end;
+
   {$REGION 'Fields Desc'}
   {
     Возможные значения поля type
@@ -205,19 +216,6 @@ type
     function GetSize(Value: string; Circular: Boolean = True): TVkSize;
     function GetSizeMin(Value: string = 's'; Circular: Boolean = False): TVkSize;
     function GetSizeMax(Value: string = 'w'; Circular: Boolean = False): TVkSize;
-  end;
-
-  TVkRelationData = class(TVkObject)
-  private
-    FCan_access_closed: Boolean;
-    FFirst_name: string;
-    FIs_closed: Boolean;
-    FLast_name: string;
-  public
-    property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
-    property FirstName: string read FFirst_name write FFirst_name;
-    property IsClosed: Boolean read FIs_closed write FIs_closed;
-    property LastName: string read FLast_name write FLast_name;
   end;
 
   TVkEmail = class(TVkObject)
@@ -310,6 +308,31 @@ type
     property PhotoSrcSmall: string read FPhoto_src_small write FPhoto_src_small;
     property Saved: Boolean read FSaved write FSaved;
     property PostId: Integer read FPost_id write FPost_id;
+  end;
+
+  TVkThumb = class
+  private
+    FHeight: Integer;
+    FPhoto_135: string;
+    FPhoto_270: string;
+    FPhoto_300: string;
+    FPhoto_34: string;
+    FPhoto_600: string;
+    FPhoto_68: string;
+    FWidth: Integer;
+    FPhoto_1200: string;
+    FId: string;
+  public
+    property Height: Integer read FHeight write FHeight;
+    property Id: string read FId write FId;
+    property Photo1200: string read FPhoto_1200 write FPhoto_1200;
+    property Photo135: string read FPhoto_135 write FPhoto_135;
+    property Photo270: string read FPhoto_270 write FPhoto_270;
+    property Photo300: string read FPhoto_300 write FPhoto_300;
+    property Photo34: string read FPhoto_34 write FPhoto_34;
+    property Photo600: string read FPhoto_600 write FPhoto_600;
+    property Photo68: string read FPhoto_68 write FPhoto_68;
+    property Width: Integer read FWidth write FWidth;
   end;
 
 var

@@ -14,12 +14,7 @@ type
     class function FromString(Value: string): TVkFaveType; static; inline;
   end;
 
-  TVkFaveTag = class(TVkObject)
-  private
-    FName: string;
-  public
-    property Name: string read FName write FName;
-  end;
+  TVkFaveTag = TVkBasicObject;
 
   TVkFaveTags = TVkEntityList<TVkFaveTag>;
 

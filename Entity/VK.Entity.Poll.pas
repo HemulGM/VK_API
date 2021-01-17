@@ -19,17 +19,15 @@ type
     property Position: Integer read FPosition write FPosition;
   end;
 
-  TVkPollBackground = class(TVkObject)
+  TVkPollBackground = class(TVkBasicObject)
   private
     FAngle: Integer;
     FColor: string;
-    FName: string;
     FPoints: TArray<TVkPollPoints>;
     FType: string;
   public
     property Angle: Integer read FAngle write FAngle;
     property Color: string read FColor write FColor;
-    property Name: string read FName write FName;
     property Points: TArray<TVkPollPoints> read FPoints write FPoints;
     property&Type: string read FType write FType;
     destructor Destroy; override;
