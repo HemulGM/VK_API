@@ -3,7 +3,7 @@ unit VK.Entity.Common.List;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common;
 
 type
   TVkEntityListSimple<T> = class(TVkEntity)
@@ -32,6 +32,7 @@ type
   private
     FCount: Integer;
     FItems: TArray<T>;
+    [JSONMarshalledAttribute(False)]
     FSaveObjects: Boolean;
     procedure SetSaveObjects(const Value: Boolean);
   public
@@ -40,26 +41,6 @@ type
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Items: TVkObjectList<T>);
     constructor Create; override;
-    destructor Destroy; override;
-  end;
-
-  TVkEntityExtendedList<T: TVkEntity> = class(TVkEntityList<T>)
-  protected
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-  public
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
-  end;
-
-  TVkEntityExtendedSimpleList<T> = class(TVkEntityListSimple<T>)
-  protected
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-  public
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
   end;
 
@@ -147,24 +128,6 @@ begin
   OldLen := Length(Items.Items);
   SetLength(FItems, OldLen + Length(Items.Items));
   Move(Items.Items[0], FItems[OldLen], Length(Items.Items) * SizeOf(T));
-end;
-
-{ TVkEntityExtendedList<T> }
-
-destructor TVkEntityExtendedList<T>.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  inherited;
-end;
-
-{ TVkEntityExtendedSimpleList<T> }
-
-destructor TVkEntityExtendedSimpleList<T>.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  inherited;
 end;
 
 end.

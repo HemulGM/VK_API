@@ -3,8 +3,9 @@ unit VK.Audio;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload, VK.Entity.Audio.Catalog;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, REST.Json, VK.CommonUtils,
+  VK.Entity.Playlist, VK.Entity.Audio.Upload, VK.Entity.Audio.Catalog;
 
 type
   TVkParamsAudioGet = record
@@ -16,6 +17,7 @@ type
     function Offset(Value: Integer): TVkParamsAudioGet;
     function Count(Value: Integer): TVkParamsAudioGet;
     function AccessKey(Value: string): TVkParamsAudioGet;
+    class function Create: TVkParamsAudioGet; static;
   end;
 
   TVkParamsAudioGetRecomendations = record
@@ -32,7 +34,7 @@ type
     function Offset(Value: Integer): TVkParamsPopAudio;
     function Count(Value: Integer): TVkParamsPopAudio;
     function OnlyEng(Value: Boolean): TVkParamsPopAudio;
-    function GenreId(Value: TAudioGenre): TVkParamsPopAudio;
+    function GenreId(Value: TVkAudioGenre): TVkParamsPopAudio;
   end;
 
   TVkParamsPlaylist = record
@@ -87,7 +89,7 @@ type
     function Artist(Value: string): TVkParamsAudioEdit;
     function Title(Value: string): TVkParamsAudioEdit;
     function Text(Value: string): TVkParamsAudioEdit;
-    function GenreId(Value: TAudioGenre): TVkParamsAudioEdit;
+    function GenreId(Value: TVkAudioGenre): TVkParamsAudioEdit;
     function NoSearch(Value: Boolean): TVkParamsAudioEdit;
   end;
 
@@ -149,8 +151,7 @@ type
     /// <summary>
     /// Returns a list of audio files from the "Popular".
     /// </summary>
-    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TAudioGenre = agNone; Count: Integer =
-      0; Offset: Integer = 0): Boolean; overload;
+    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TVkAudioGenre = agNone; Count: Integer = 0; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
@@ -214,8 +215,7 @@ type
     /// <summary>
     /// Копирует аудиозапись на страницу пользователя или группы.
     /// </summary>
-    function Add(var Id: Integer; AudioId, OwnerId: Integer; GroupId: Integer = 0; AlbumId: Integer = -1; AccessKey:
-      string = ''): Boolean;
+    function Add(var Id: Integer; AudioId, OwnerId: Integer; GroupId: Integer = 0; AlbumId: Integer = -1; AccessKey: string = ''): Boolean;
     /// <summary>
     /// Удаляет аудиозапись со страницы пользователя или сообщества.
     /// </summary>
@@ -227,8 +227,7 @@ type
     /// <summary>
     /// Создать плейлист
     /// </summary>
-    function CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string; Description: string
-      = ''; AudioIds: TArrayOfString = []): Boolean;
+    function CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string; Description: string = ''; AudioIds: TArrayOfString = []): Boolean;
     /// <summary>
     /// Удалить плейлист
     /// </summary>
@@ -451,8 +450,7 @@ begin
   Result := Handler.Execute('audio.add', Params).ResponseAsInt(Id);
 end;
 
-function TAudioController.AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId, PlaylistId: Integer; AudioIds:
-  TArrayOfString): Boolean;
+function TAudioController.AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId, PlaylistId: Integer; AudioIds: TArrayOfString): Boolean;
 begin
   Result := Handler.Execute('audio.addToPlaylist', [
     ['playlist_id', PlaylistId.ToString],
@@ -461,8 +459,7 @@ begin
     GetObjects<TVkAudioInfoItems>(Items);
 end;
 
-function TAudioController.CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string;
-  Description: string; AudioIds: TArrayOfString): Boolean;
+function TAudioController.CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: Integer; const Title: string; Description: string; AudioIds: TArrayOfString): Boolean;
 var
   Params: TParams;
 begin
@@ -572,8 +569,7 @@ begin
   Result := Handler.Execute('audio.getPopular', Params.List).GetObjects<TVkAudios>(Audios);
 end;
 
-function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TAudioGenre; Count, Offset:
-  Integer): Boolean;
+function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TVkAudioGenre; Count, Offset: Integer): Boolean;
 var
   Params: TVkParamsPopAudio;
 begin
@@ -709,6 +705,11 @@ begin
   List.Add('count', Value);
 end;
 
+class function TVkParamsAudioGet.Create: TVkParamsAudioGet;
+begin
+  //
+end;
+
 function TVkParamsAudioGet.Offset(Value: Integer): TVkParamsAudioGet;
 begin
   Result := Self;
@@ -755,7 +756,7 @@ begin
   List.Add('count', Value);
 end;
 
-function TVkParamsPopAudio.GenreId(Value: TAudioGenre): TVkParamsPopAudio;
+function TVkParamsPopAudio.GenreId(Value: TVkAudioGenre): TVkParamsPopAudio;
 begin
   Result := Self;
   List.Add('genre_id', Value.ToConst);
@@ -787,7 +788,7 @@ begin
   List.Add('audio_id', Value);
 end;
 
-function TVkParamsAudioEdit.GenreId(Value: TAudioGenre): TVkParamsAudioEdit;
+function TVkParamsAudioEdit.GenreId(Value: TVkAudioGenre): TVkParamsAudioEdit;
 begin
   Result := Self;
   List.Add('genre_id', Value.ToConst);

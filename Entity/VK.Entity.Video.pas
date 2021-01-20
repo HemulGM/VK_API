@@ -10,8 +10,12 @@ type
   TVkVideoFiles = class(TVkEntity)
   private
     FExternal: string;
+    FMp4_720: string;
+    FMp4_360: string;
   public
     property&External: string read FExternal write FExternal;
+    property Mp4720: string read FMp4_720 write FMp4_720;
+    property Mp4360: string read FMp4_360 write FMp4_360;
   end;
 
   TVkVideoImage = class(TVkImage)
@@ -67,48 +71,54 @@ type
     FProcessing: Boolean;
     FLive: Boolean;
     FUpcoming: Boolean;
+    FFirstFrame: TArray<TVkImage>;
+    FWidth: Integer;
+    FHeight: Integer;
   public
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Title: string read FTitle write FTitle;
+    property AccessKey: string read FAccess_key write FAccess_key;
+    property Added: TDateTime read FAdded write FAdded;
+    property AddingDate: TDateTime read FAdding_date write FAdding_date;
+    property CanAdd: Boolean read FCan_add write FCan_add;
+    property CanAddToFaves: Boolean read FCan_add_to_faves write FCan_add_to_faves;
+    property CanAttachLink: Boolean read FCan_attach_link write FCan_attach_link;
+    property CanComment: Boolean read FCan_comment write FCan_comment;
+    property CanEdit: Boolean read FCan_edit write FCan_edit;
+    property CanLike: Boolean read FCan_like write FCan_like;
+    property CanRepost: Boolean read FCan_repost write FCan_repost;
+    property CanSubscribe: Boolean read FCan_subscribe write FCan_subscribe;
+    property Comments: Integer read FComments write FComments;
+    property Date: TDateTime read FDate write FDate;
     property Description: string read FDescription write FDescription;
     property Duration: Integer read FDuration write FDuration;
-    property Photo130: string read Fphoto_130 write Fphoto_130;
-    property Photo320: string read Fphoto_320 write Fphoto_320;
-    property Photo640: string read Fphoto_640 write Fphoto_640;
-    property Photo800: string read Fphoto_800 write Fphoto_800;
-    property Photo1280: string read Fphoto_1280 write Fphoto_1280;
+    property Files: TVkVideoFiles read FFiles write FFiles;
+    property FirstFrame1280: string read Ffirst_frame_1280 write Ffirst_frame_1280;
     property FirstFrame130: string read Ffirst_frame_130 write Ffirst_frame_130;
     property FirstFrame320: string read Ffirst_frame_320 write Ffirst_frame_320;
     property FirstFrame640: string read Ffirst_frame_640 write Ffirst_frame_640;
     property FirstFrame800: string read Ffirst_frame_800 write Ffirst_frame_800;
-    property FirstFrame1280: string read Ffirst_frame_1280 write Ffirst_frame_1280;
-    property Date: TDateTime read FDate write FDate;
-    property AddingDate: TDateTime read FAdding_date write FAdding_date;
-    property Views: Integer read FViews write FViews;
-    property Comments: Integer read FComments write FComments;
-    property Player: string read FPlayer write FPlayer;
-    property&Platform: string read FPlatform write FPlatform;
-    property CanEdit: Boolean read FCan_edit write FCan_edit;
-    property CanAdd: Boolean read FCan_add write FCan_add;
-    property IsPrivate: Boolean read FIs_private write FIs_private;
-    property AccessKey: string read FAccess_key write FAccess_key;
-    property Processing: Boolean read FProcessing write FProcessing;
-    property Live: Boolean read FLive write FLive;
-    property UpComing: Boolean read FUpcoming write FUpcoming;
-    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
-    //
-    property Added: TDateTime read FAdded write FAdded;
-    property CanAddToFaves: Boolean read FCan_add_to_faves write FCan_add_to_faves;
-    property CanAttachLink: Boolean read FCan_attach_link write FCan_attach_link;
-    property CanComment: Boolean read FCan_comment write FCan_comment;
-    property CanLike: Boolean read FCan_like write FCan_like;
-    property CanRepost: Boolean read FCan_repost write FCan_repost;
-    property CanSubscribe: Boolean read FCan_subscribe write FCan_subscribe;
-    property Files: TVkVideoFiles read FFiles write FFiles;
+    property FirstFrame: TArray<TVkImage> read FFirstFrame write FFirstFrame;
+    property Height: Integer read FHeight write FHeight;
+    property Id;
     property Image: TArray<TVkVideoImage> read FImage write FImage;
+    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
+    property IsPrivate: Boolean read FIs_private write FIs_private;
     property Likes: TVkLikesInfo read FLikes write FLikes;
+    property Live: Boolean read FLive write FLive;
     property LocalViews: Integer read FLocal_views write FLocal_views;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property Photo1280: string read Fphoto_1280 write Fphoto_1280;
+    property Photo130: string read Fphoto_130 write Fphoto_130;
+    property Photo320: string read Fphoto_320 write Fphoto_320;
+    property Photo640: string read Fphoto_640 write Fphoto_640;
+    property Photo800: string read Fphoto_800 write Fphoto_800;
+    property Player: string read FPlayer write FPlayer;
+    property Processing: Boolean read FProcessing write FProcessing;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
+    property Title: string read FTitle write FTitle;
+    property UpComing: Boolean read FUpcoming write FUpcoming;
+    property Views: Integer read FViews write FViews;
+    property Width: Integer read FWidth write FWidth;
+    property&Platform: string read FPlatform write FPlatform;
     property&Type: string read FType write FType;
     function ToAttachment: string;
     constructor Create; override;
@@ -157,6 +167,7 @@ end;
 destructor TVkVideo.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FFirstFrame);
   FFiles.Free;
   FLikes.Free;
   FReposts.Free;

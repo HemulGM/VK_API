@@ -3,11 +3,21 @@ unit VK.Entity.Profile;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, REST.Json.Types, VK.Entity.Common,
-  VK.Entity.Photo, VK.Entity.Database.Cities, VK.Entity.Database.Countries, VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  REST.Json.Types, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Database.Cities,
+  VK.Entity.Database.Countries, VK.Types, VK.Entity.Counters,
+  VK.Wrap.Interceptors, VK.Entity.Audio, VK.Entity.Common.List;
 
 type
   TVkProfile = class;
+
+  TVkExport = class
+  public
+   { property Twitter: Boolean;
+    property Facebook: Boolean;
+    property Livejournal: Boolean;
+    property Instagram : Boolean; }
+  end;
 
   TVkFriendsMutual = class(TVkCounterEntity)
   private
@@ -39,35 +49,44 @@ type
     property UserId: Integer read FUser_id write FUser_id;
   end;
 
-  TVkFriendInfos = class(TVkEntity)
-  private
-    FItems: TArray<TVkFriendInfo>;
-  public
-    property Items: TArray<TVkFriendInfo> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkFriendInfos = TVkEntityList<TVkFriendInfo>;
 
   TVkFriendDeleteInfo = class(TVkEntity)
   private
-    FSuccess: Integer;
-    Fout_request_deleted: Integer;
-    Fin_request_deleted: Integer;
-    Fsuggestion_deleted: Integer;
-    Ffriend_deleted: Integer;
-    function GetSuccess: Boolean;
-    procedure SetSuccess(const Value: Boolean);
+    FSuccess: Boolean;
+    FOut_request_deleted: Boolean;
+    FIn_request_deleted: Boolean;
+    FSuggestion_deleted: Boolean;
+    FFriend_deleted: Boolean;
   public
-    property Success: Boolean read GetSuccess write SetSuccess;
-    property FriendDeleted: Integer read Ffriend_deleted write Ffriend_deleted;
-    property OutRequestDeleted: Integer read Fout_request_deleted write Fout_request_deleted;
-    property InRequestDeleted: Integer read Fin_request_deleted write Fin_request_deleted;
-    property SuggestionDeleted: Integer read Fsuggestion_deleted write Fsuggestion_deleted;
+    property Success: Boolean read FSuccess write FSuccess;
+    property FriendDeleted: Boolean read FFriend_deleted write FFriend_deleted;
+    property OutRequestDeleted: Boolean read FOut_request_deleted write FOut_request_deleted;
+    property InRequestDeleted: Boolean read FIn_request_deleted write FIn_request_deleted;
+    property SuggestionDeleted: Boolean read FSuggestion_deleted write FSuggestion_deleted;
   end;
 
-  TVkRelative = class(TVkObject)
+  TVkRelative = class(TVkBasicObject)
   private
     FType: string;
   public
+    /// <summary>
+    /// Идентификатор пользователя
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Имя родственника (если родственник не является пользователем ВКонтакте, то предыдущее значение id возвращено не будет)
+    /// </summary>
+    property Name;
+    /// <summary>
+    /// Тип родственной связи.
+    ///  Возможные значения:
+    ///  child — сын/дочь;
+    ///  sibling — брат/сестра;
+    ///  parent — отец/мать;
+    ///  grandparent — дедушка/бабушка;
+    ///  grandchild — внук/внучка
+    /// </summary>
     property TypeRelative: string read FType write FType;
   end;
 
@@ -80,14 +99,67 @@ type
     FYear_from: Integer;
     FYear_graduated: Integer;
     FYear_to: Integer;
+    FType: Integer;
+    FType_str: string;
   public
+    /// <summary>
+    /// Идентификатор школы
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Наименование школы
+    /// </summary>
+    property Name;
+    /// <summary>
+    /// Идентификатор города, в котором расположена школа
+    /// </summary>
     property City: Integer read FCity write FCity;
-    property ClassNum: string read FClass write FClass;
+    /// <summary>
+    /// Буква класса
+    /// </summary>
+    property&Class: string read FClass write FClass;
+    /// <summary>
+    /// Идентификатор страны, в которой расположена школа
+    /// </summary>
     property Country: Integer read FCountry write FCountry;
+    /// <summary>
+    /// Специализация
+    /// </summary>
     property Speciality: string read FSpeciality write FSpeciality;
+    /// <summary>
+    /// Идентификатор типа
+    /// </summary>
+    property&Type: Integer read FType write FType;
+    /// <summary>
+    /// Название типа. Возможные значения для пар type-typeStr
+    ///  0 — "школа";
+    ///  1 — "гимназия";
+    ///  2 —"лицей";
+    ///  3 — "школа-интернат";
+    ///  4 — "школа вечерняя";
+    ///  5 — "школа музыкальная";
+    ///  6 — "школа спортивная";
+    ///  7 — "школа художественная";
+    ///  8 — "колледж";
+    ///  9 — "профессиональный лицей";
+    ///  10 — "техникум";
+    ///  11 — "ПТУ";
+    ///  12 — "училище";
+    ///  13 — "школа искусств".
+    /// </summary>
+    property TypeStr: string read FType_str write FType_str;
+    /// <summary>
+    /// Год начала обучения
+    /// </summary>
     property YearFrom: Integer read FYear_from write FYear_from;
-    property YearGraduated: Integer read FYear_graduated write FYear_graduated;
+    /// <summary>
+    /// Год окончания обучения
+    /// </summary>
     property YearTo: Integer read FYear_to write FYear_to;
+    /// <summary>
+    /// Год выпуска
+    /// </summary>
+    property YearGraduated: Integer read FYear_graduated write FYear_graduated;
   end;
 
   TVkUniversities = class(TVkBasicObject)
@@ -102,15 +174,50 @@ type
     FFaculty_name: string;
     FGraduation: Integer;
   public
-    property Chair: Integer read FChair write FChair;
-    property ChairName: string read FChair_name write FChair_name;
-    property City: Integer read FCity write FCity;
+    /// <summary>
+    /// Идентификатор университета
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Идентификатор страны, в которой расположен университет
+    /// </summary>
     property Country: Integer read FCountry write FCountry;
-    property EducationForm: string read FEducation_form write FEducation_form;
-    property EducationStatus: string read FEducation_status write FEducation_status;
+    /// <summary>
+    /// Идентификатор города, в котором расположен университет
+    /// </summary>
+    property City: Integer read FCity write FCity;
+    /// <summary>
+    /// Наименование университета
+    /// </summary>
+    property Name;
+    /// <summary>
+    /// Идентификатор факультета
+    /// </summary>
     property Faculty: Integer read FFaculty write FFaculty;
+    /// <summary>
+    /// Наименование факультета
+    /// </summary>
     property FacultyName: string read FFaculty_name write FFaculty_name;
+    /// <summary>
+    /// Идентификатор кафедры
+    /// </summary>
+    property Chair: Integer read FChair write FChair;
+    /// <summary>
+    /// Наименование кафедры
+    /// </summary>
+    property ChairName: string read FChair_name write FChair_name;
+    /// <summary>
+    /// Год окончания обучения
+    /// </summary>
     property Graduation: Integer read FGraduation write FGraduation;
+    /// <summary>
+    /// Форма обучения
+    /// </summary>
+    property EducationForm: string read FEducation_form write FEducation_form;
+    /// <summary>
+    /// Статус (например, «Выпускник (специалист)»)
+    /// </summary>
+    property EducationStatus: string read FEducation_status write FEducation_status;
   end;
 
   TVkPersonal = class(TVkEntity)
@@ -120,19 +227,75 @@ type
     FLangs: TArray<string>;
     FLife_main: Integer;
     FPeople_main: Integer;
-    FPolitical: Integer;
+    [JsonReflectAttribute(ctString, rtString, TPoliticalInterceptor)]
+    FPolitical: TVkPolitical;
     FReligion: string;
     FReligion_id: Integer;
     FSmoking: Integer;
   public
+    /// <summary>
+    /// Отношение к алкоголю
+    ///  Возможные значения:
+    ///  1 — резко негативное;
+    ///  2 — негативное;
+    ///  3 — компромиссное;
+    ///  4 — нейтральное;
+    ///  5 — положительное
+    /// </summary>
     property Alcohol: Integer read FAlcohol write FAlcohol;
+    /// <summary>
+    /// Источники вдохновения
+    /// </summary>
     property InspiredBy: string read FInspired_by write FInspired_by;
+    /// <summary>
+    /// Языки
+    /// </summary>
     property Langs: TArray<string> read FLangs write FLangs;
+    /// <summary>
+    /// Главное в жизни
+    ///  Возможные значения:
+    ///  1 — семья и дети;
+    ///  2 — карьера и деньги;
+    ///  3 — развлечения и отдых;
+    ///  4 — наука и исследования;
+    ///  5 — совершенствование мира;
+    ///  6 — саморазвитие;
+    ///  7 — красота и искусство;
+    ///  8 — слава и влияние;
+    /// </summary>
     property LifeMain: Integer read FLife_main write FLife_main;
+    /// <summary>
+    /// Главное в людях
+    ///  Возможные значения:
+    ///  1 — ум и креативность;
+    ///  2 — доброта и честность;
+    ///  3 — красота и здоровье;
+    ///  4 — власть и богатство;
+    ///  5 — смелость и упорство;
+    ///  6 — юмор и жизнелюбие.
+    /// </summary>
     property PeopleMain: Integer read FPeople_main write FPeople_main;
-    property Political: Integer read FPolitical write FPolitical;
+    /// <summary>
+    /// Политические предпочтения
+    /// </summary>
+    property Political: TVkPolitical read FPolitical write FPolitical;
+    /// <summary>
+    /// Мировоззрение
+    /// </summary>
     property Religion: string read FReligion write FReligion;
+    /// <summary>
+    /// Мировоззрение
+    /// </summary>
     property ReligionId: Integer read FReligion_id write FReligion_id;
+    /// <summary>
+    /// Отношение к курению
+    ///  Возможные значения:
+    ///  1 — резко негативное;
+    ///  2 — негативное;
+    ///  3 — компромиссное;
+    ///  4 — нейтральное;
+    ///  5 — положительное.
+    /// </summary>
     property Smoking: Integer read FSmoking write FSmoking;
   end;
 
@@ -149,7 +312,7 @@ type
     property From: Integer read FFrom write FFrom;
     property&Unit: string read FUnit write FUnit;
     property UnitId: Integer read FUnit_id write FUnit_id;
-    property UntilDate: TDateTime read FUntil write FUntil;
+    property&Until: TDateTime read FUntil write FUntil;
   end;
 
   TVkCareer = class(TVkEntity)
@@ -161,20 +324,35 @@ type
     FPosition: string;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FUntil: TDateTime;
+    FGroup_id: Integer;
+    FCity_name: string;
   public
     property CityId: Integer read FCity_id write FCity_id;
+    property GroupId: Integer read FGroup_id write FGroup_id;
     property Company: string read FCompany write FCompany;
+    property CityName: string read FCity_name write FCity_name;
     property CountryId: Integer read FCountry_id write FCountry_id;
     property From: Integer read FFrom write FFrom;
     property Position: string read FPosition write FPosition;
-    property UntilDate: TDateTime read FUntil write FUntil;
+    property&Until: TDateTime read FUntil write FUntil;
   end;
 
   TVkOccupation = class(TVkBasicObject)
   private
     FType: string;
   public
-    property TypeOcc: string read FType write FType;
+    /// <summary>
+    /// Тип
+    /// </summary>
+    property&Type: string read FType write FType;
+    /// <summary>
+    /// Идентификатор школы, вуза, сообщества компании (в которой пользователь работает);
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Название школы, вуза или места работы
+    /// </summary>
+    property Name;
   end;
 
   TVkCropPhoto = class(TVkEntity)
@@ -201,11 +379,12 @@ type
 
   TVkLastSeen = class(TVkEntity)
   private
-    FPlatform: Integer;
+    [JsonReflectAttribute(ctString, rtString, TPlatformInterceptor)]
+    FPlatform: TVkPlatform;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FTime: TDateTime;
   public
-    property&Platform: Integer read FPlatform write FPlatform;
+    property&Platform: TVkPlatform read FPlatform write FPlatform;
     property Time: TDateTime read FTime write FTime;
   end;
 
@@ -227,8 +406,7 @@ type
   private
     FAbout: string;
     FActivities: string;
-    [JsonReflectAttribute(ctString, rtString, TStringDateTimeInterceptor)]
-    FBdate: TDate;
+    FBdate: string;
     FBlacklisted: Boolean;
     FBlacklisted_by_me: Boolean;
     FBooks: string;
@@ -302,7 +480,7 @@ type
     FUniversity: Integer;
     FUniversity_name: string;
     FVerified: Boolean;
-    FTrending: Integer;
+    FTrending: Boolean;
     FActivity: string;
     FCity: TVkCity;
     FMutual: TVkFriendsMutual;
@@ -317,119 +495,477 @@ type
     FCan_invite_to_chats: Boolean;
     FTrack_code: string;
     FLists: TArray<Integer>;
+    [JsonReflectAttribute(ctString, rtString, TDeactivatedInterceptor)]
+    FDeactivated: TVkDeactivated;
+    FLivejournal: string;
+    FCounters: TVkCounters;
+    FExports: TArray<TVkExport>;
+    FFirst_name_nom: string;
+    FFirst_name_dat: string;
+    FFirst_name_abl: string;
+    FFirst_name_acc: string;
+    FFirst_name_ins: string;
+    FFirst_name_gen: string;
+    FLast_name_nom: string;
+    FLast_name_dat: string;
+    FLast_name_abl: string;
+    FLast_name_acc: string;
+    FLast_name_ins: string;
+    FLast_name_gen: string;
+    FMaiden_name: string;
+    FStatus_audio: TVkAudio;
+    FWall_default: string;
     function GetRefer: string;
     function FGetFullName: string;
   public
+    /// <summary>
+    /// Идентификатор пользователя
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Содержимое поля «О себе» из профиля.
+    /// </summary>
     property About: string read FAbout write FAbout;
+    /// <summary>
+    /// Содержимое поля «Деятельность» из профиля.
+    /// </summary>
     property Activities: string read FActivities write FActivities;
+    /// <summary>
+    ///
+    /// </summary>
     property Activity: string read FActivity write FActivity;
-    property BirthDate: TDate read FBdate write FBdate;
+    /// <summary>
+    /// Дата рождения. Возвращается в формате D.M.YYYY или D.M (если год рождения скрыт). Если дата рождения скрыта целиком, поле отсутствует в ответе.
+    /// </summary>
+    property BirthDate: string read FBdate write FBdate;
+    /// <summary>
+    /// Информация о том, находится ли текущий пользователь в черном списке
+    /// </summary>
     property Blacklisted: Boolean read FBlacklisted write FBlacklisted;
+    /// <summary>
+    /// Информация о том, находится ли пользователь в черном списке у текущего пользователя
+    /// </summary>
     property BlacklistedByMe: Boolean read FBlacklisted_by_me write FBlacklisted_by_me;
+    /// <summary>
+    /// Содержимое поля «Любимые книги» из профиля пользователя.
+    /// </summary>
     property Books: string read FBooks write FBooks;
+    /// <summary>
+    /// Может ли текущий пользователь видеть профиль при is_closed = 1 (например, он есть в друзьях).
+    /// </summary>
     property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
+    /// <summary>
+    /// Может ли текущий пользователь пригласить в группу
+    /// </summary>
     property CanBeInvitedGroup: Boolean read FCan_be_invited_group write FCan_be_invited_group;
+    /// <summary>
+    /// Может ли текущий пользователь пригласить в чат
+    /// </summary>
     property CanInviteToChats: Boolean read FCan_invite_to_chats write FCan_invite_to_chats;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь оставлять записи на стене
+    /// </summary>
     property CanPost: Boolean read FCan_post write FCan_post;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь видеть чужие записи на стене
+    /// </summary>
     property CanSeeAllPosts: Boolean read FCan_see_all_posts write FCan_see_all_posts;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь видеть аудиозаписи
+    /// </summary>
     property CanSeeAudio: Boolean read FCan_see_audio write FCan_see_audio;
+    /// <summary>
+    /// Информация о том, будет ли отправлено уведомление пользователю о заявке в друзья от текущего пользователя
+    /// </summary>
     property CanSendFriendRequest: Boolean read FCan_send_friend_request write FCan_send_friend_request;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь отправить личное сообщение
+    /// </summary>
     property CanWritePrivateMessage: Boolean read FCan_write_private_message write FCan_write_private_message;
+    /// <summary>
+    /// Информация о карьере пользователя
+    /// </summary>
     property Career: TArray<TVkCareer> read FCareer write FCareer;
+    /// <summary>
+    /// Информация о городе, указанном на странице пользователя в разделе «Контакты»
+    /// </summary>
     property City: TVkCity read FCity write FCity;
+    /// <summary>
+    /// Количество общих друзей с текущим пользователем
+    /// </summary>
     property CommonCount: Integer read FCommon_count write FCommon_count;
+    /// <summary>
+    /// Информация о стране, указанной на странице пользователя в разделе «Контакты»
+    /// </summary>
     property Country: TVkCountry read FCountry write FCountry;
+    /// <summary>
+    /// Количество различных объектов у пользователя. Поле возвращается только в методе users.get при запросе информации об одном пользователе, с передачей пользовательского access_token
+    /// </summary>
+    property Counters: TVkCounters read FCounters write FCounters;
+    /// <summary>
+    /// Возвращает данные о точках, по которым вырезаны профильная и миниатюрная фотографии пользователя, при наличии
+    /// </summary>
     property CropPhoto: TVkCropPhoto read FCrop_photo write FCrop_photo;
+    /// <summary>
+    /// Поле возвращается, если страница пользователя удалена или заблокирована, содержит значение deleted или banned. В этом случае опциональные поля не возвращаются.
+    /// </summary>
+    property Deactivated: TVkDeactivated read FDeactivated write FDeactivated;
+    /// <summary>
+    /// Короткий адрес страницы. Возвращается строка, содержащая короткий адрес страницы (например, andrew). Если он не назначен, возвращается "id"+user_id, например, id35828305
+    /// </summary>
     property Domain: string read FDomain write FDomain;
+    /// <summary>
+    ///
+    /// </summary>
     property EducationForm: string read FEducation_form write FEducation_form;
+    /// <summary>
+    ///
+    /// </summary>
     property EducationStatus: string read FEducation_status write FEducation_status;
+    /// <summary>
+    /// Внешние сервисы, в которые настроен экспорт из ВК (twitter, facebook, livejournal, instagram)
+    /// </summary>
+    property&Exports: TArray<TVkExport> read FExports write FExports;
+    /// <summary>
+    /// Facebook
+    /// </summary>
     property Facebook: string read FFacebook write FFacebook;
+    /// <summary>
+    /// Имя на Facebook
+    /// </summary>
     property FacebookName: string read FFacebook_name write FFacebook_name;
+    /// <summary>
+    /// Идентификатор факультета
+    /// </summary>
     property Faculty: Integer read FFaculty write FFaculty;
+    /// <summary>
+    /// Название факультета
+    /// </summary>
     property FacultyName: string read FFaculty_name write FFaculty_name;
+    /// <summary>
+    /// Имя
+    /// </summary>
     property FirstName: string read FFirst_name write FFirst_name;
+    /// <summary>
+    /// Имя (именительный)
+    /// </summary>
+    property FirstName_Nom: string read FFirst_name_nom write FFirst_name_nom;
+    /// <summary>
+    /// Имя (родительный)
+    /// </summary>
+    property FirstName_Gen: string read FFirst_name_gen write FFirst_name_gen;
+    /// <summary>
+    /// Имя (дательный)
+    /// </summary>
+    property FirstName_Dat: string read FFirst_name_dat write FFirst_name_dat;
+    /// <summary>
+    /// Имя (винительный)
+    /// </summary>
+    property FirstName_Acc: string read FFirst_name_acc write FFirst_name_acc;
+    /// <summary>
+    /// Имя (творительный)
+    /// </summary>
+    property FirstName_Ins: string read FFirst_name_ins write FFirst_name_ins;
+    /// <summary>
+    /// Имя (предложный)
+    /// </summary>
+    property FirstName_Abl: string read FFirst_name_abl write FFirst_name_abl;
+    /// <summary>
+    /// Количество подписчиков пользователя
+    /// </summary>
     property FollowersCount: Integer read FFollowers_count write FFollowers_count;
+    /// <summary>
+    ///
+    /// </summary>
     property FoundWith: string read FFound_with write FFound_with;
+    /// <summary>
+    /// Статус дружбы с пользователем
+    /// </summary>
     property FriendStatus: Integer read FFriend_status write FFriend_status;
+    /// <summary>
+    /// Содержимое поля «Любимые игры» из профиля
+    /// </summary>
     property Games: string read FGames write FGames;
+    /// <summary>
+    /// Год окончания
+    /// </summary>
     property Graduation: Integer read FGraduation write FGraduation;
+    /// <summary>
+    /// Информация о том, известен ли номер мобильного телефона пользователя
+    /// </summary>
     property HasMobile: Boolean read FHas_mobile write FHas_mobile;
+    /// <summary>
+    /// True, если пользователь установил фотографию для профиля
+    /// </summary>
     property HasPhoto: Boolean read FHas_photo write FHas_photo;
+    /// <summary>
+    /// Дополнительный номер телефона пользователя
+    /// </summary>
     property HomePhone: string read FHome_phone write FHome_phone;
+    /// <summary>
+    /// Название родного города
+    /// </summary>
     property HomeTown: string read FHome_town write FHome_town;
+    /// <summary>
+    /// Instagram
+    /// </summary>
     property Instagram: string read FInstagram write FInstagram;
+    /// <summary>
+    /// Содержимое поля «Интересы» из профиля
+    /// </summary>
     property Interests: string read FInterests write FInterests;
+    /// <summary>
+    /// Был приглашен
+    /// </summary>
     property InvitedBy: Boolean read FInvited_by write FInvited_by;
+    /// <summary>
+    /// Скрыт ли профиль пользователя настройками приватности.
+    /// </summary>
     property IsClosed: Boolean read FIs_closed write FIs_closed;
+    /// <summary>
+    /// Информация о том, есть ли пользователь в закладках у текущего пользователя
+    /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
+    /// <summary>
+    /// Информация о том, является ли пользователь другом текущего пользователя
+    /// </summary>
     property IsFriend: Boolean read FIs_friend write FIs_friend;
+    /// <summary>
+    /// Информация о том, скрыт ли пользователь из ленты новостей текущего пользователя
+    /// </summary>
     property IsHiddenFromFeed: Boolean read FIs_hidden_from_feed write FIs_hidden_from_feed;
+    /// <summary>
+    /// Фамилия
+    /// </summary>
     property LastName: string read FLast_name write FLast_name;
+    /// <summary>
+    /// Фамилия (именительный)
+    /// </summary>
+    property LastName_Nom: string read FLast_name_nom write FLast_name_nom;
+    /// <summary>
+    /// Фамилия (родительный)
+    /// </summary>
+    property LastName_Gen: string read FLast_name_gen write FLast_name_gen;
+    /// <summary>
+    /// Фамилия (дательный)
+    /// </summary>
+    property LastName_Dat: string read FLast_name_dat write FLast_name_dat;
+    /// <summary>
+    /// Фамилия (винительный)
+    /// </summary>
+    property LastName_Acc: string read FLast_name_acc write FLast_name_acc;
+    /// <summary>
+    /// Фамилия (творительный)
+    /// </summary>
+    property LastName_Ins: string read FLast_name_ins write FLast_name_ins;
+    /// <summary>
+    /// Фамилия (предложный)
+    /// </summary>
+    property LastName_Abl: string read FLast_name_abl write FLast_name_abl;
+    /// <summary>
+    /// Время последнего посещения
+    /// </summary>
     property LastSeen: TVkLastSeen read FLast_seen write FLast_seen;
+    /// <summary>
+    /// Разделенные запятой идентификаторы списков друзей, в которых состоит пользователь
+    /// </summary>
     property Lists: TArray<Integer> read FLists write FLists;
+    /// <summary>
+    /// LiveJournal
+    /// </summary>
+    property LiveJournal: string read FLivejournal write FLivejournal;
+    /// <summary>
+    /// Девичья фамилия
+    /// </summary>
+    property MaidenName: string read FMaiden_name write FMaiden_name;
+    /// <summary>
+    /// Информация о военной службе пользователя
+    /// </summary>
     property Military: TArray<TVkMilitary> read FMilitary write FMilitary;
+    /// <summary>
+    /// Номер мобильного телефона пользователя (только для Standalone-приложений)
+    /// </summary>
     property MobilePhone: string read FMobile_phone write FMobile_phone;
+    /// <summary>
+    /// Содержимое поля «Любимые фильмы» из профиля пользователя
+    /// </summary>
     property Movies: string read FMovies write FMovies;
+    /// <summary>
+    /// Содержимое поля «Любимая музыка» из профиля пользователя
+    /// </summary>
     property Music: string read FMusic write FMusic;
+    /// <summary>
+    /// Общее
+    /// </summary>
     property Mutual: TVkFriendsMutual read FMutual write FMutual;
+    /// <summary>
+    /// Никнейм (отчество) пользователя
+    /// </summary>
     property NickName: string read FNickname write FNickname;
+    /// <summary>
+    /// Информация о текущем роде занятия пользователя
+    /// </summary>
     property Occupation: TVkOccupation read FOccupation write FOccupation;
+    /// <summary>
+    /// Информация о том, находится ли пользователь сейчас на сайте. Если пользователь использует мобильное приложение либо мобильную версию, возвращается дополнительное поле online_mobile, содержащее 1. При этом, если используется именно приложение, дополнительно возвращается поле online_app, содержащее его идентификатор
+    /// </summary>
     property Online: Boolean read FOnline write FOnline;
+    /// <summary>
+    /// Информация о статусе онлайн
+    /// </summary>
     property OnlineInfo: TVkUserOnlineInfo read FOnline_info write FOnline_info;
+    /// <summary>
+    /// Информация о полях из раздела «Жизненная позиция»
+    /// </summary>
     property Personal: TVkPersonal read FPersonal write FPersonal;
-    property Photo100: string read FPhoto_100 write FPhoto_100;
-    property Photo200: string read FPhoto_200 write FPhoto_200;
-    property Photo200_Orig: string read FPhoto_200_orig write FPhoto_200_orig;
-    property Photo400_Orig: string read FPhoto_400_orig write FPhoto_400_orig;
+    /// <summary>
+    /// Фото 50
+    /// </summary>
     property Photo50: string read FPhoto_50 write FPhoto_50;
+    /// <summary>
+    /// Фото 100
+    /// </summary>
+    property Photo100: string read FPhoto_100 write FPhoto_100;
+    /// <summary>
+    /// Фото 200
+    /// </summary>
+    property Photo200: string read FPhoto_200 write FPhoto_200;
+    /// <summary>
+    /// Фото 200 Orig
+    /// </summary>
+    property Photo200_Orig: string read FPhoto_200_orig write FPhoto_200_orig;
+    /// <summary>
+    /// Фото 400 Orig
+    /// </summary>
+    property Photo400_Orig: string read FPhoto_400_orig write FPhoto_400_orig;
+    /// <summary>
+    /// Фото
+    /// </summary>
     property Photo: string read FPhoto write FPhoto;
+    /// <summary>
+    /// Фото Big
+    /// </summary>
     property PhotoBig: string read FPhoto_big write FPhoto_big;
+    /// <summary>
+    /// 415730216_457299006
+    /// </summary>
     property PhotoId: string read FPhoto_id write FPhoto_id;
+    /// <summary>
+    /// Фото Max
+    /// </summary>
     property PhotoMax: string read FPhoto_max write FPhoto_max;
+    /// <summary>
+    /// Фото Max Orig
+    /// </summary>
     property PhotoMax_Orig: string read FPhoto_max_orig write FPhoto_max_orig;
+    /// <summary>
+    /// Фото Medium
+    /// </summary>
     property PhotoMedium: string read FPhoto_medium write FPhoto_medium;
+    /// <summary>
+    /// Фото Medium Rec
+    /// </summary>
     property PhotoMediumRec: string read FPhoto_medium_rec write FPhoto_medium_rec;
+    /// <summary>
+    /// Любимые цитаты
+    /// </summary>
     property Quotes: string read FQuotes write FQuotes;
+    /// <summary>
+    /// Семейное положение
+    /// </summary>
     property Relation: TVkRelation read FRelation write FRelation;
+    /// <summary>
+    /// Информация о партнёре
+    /// </summary>
     property RelationPartner: TVkProfile read FRelation_partner write FRelation_partner;
+    /// <summary>
+    /// Список родственников
+    /// </summary>
     property Relatives: TArray<TVkRelative> read FRelatives write FRelatives;
+    /// <summary>
+    /// Список школ, в которых учился пользователь
+    /// </summary>
     property Schools: TArray<TVkSchoolInfo> read FSchools write FSchools;
+    /// <summary>
+    /// Короткое имя страницы
+    /// </summary>
     property ScreenName: string read FScreen_name write FScreen_name;
+    /// <summary>
+    /// Пол
+    /// </summary>
     property Sex: TVkSex read FSex write FSex;
+    /// <summary>
+    /// Адрес сайта, указанный в профиле
+    /// </summary>
     property Site: string read FSite write FSite;
+    /// <summary>
+    /// Skype
+    /// </summary>
     property Skype: string read FSkype write FSkype;
+    /// <summary>
+    /// Статус пользователя. Возвращается строка, содержащая текст статуса, расположенного в профиле под именем. Если включена опция «Транслировать в статус играющую музыку», возвращается дополнительное поле status_audio, содержащее информацию о композиции
+    /// </summary>
     property Status: string read FStatus write FStatus;
+    /// <summary>
+    /// Аудиозапись в статусе
+    /// </summary>
+    property StatusAudio: TVkAudio read FStatus_audio write FStatus_audio;
+    /// <summary>
+    /// Временная зона. Только при запросе информации о текущем пользователе
+    /// </summary>
     property TimeZone: Integer read FTimezone write FTimezone;
+    /// <summary>
+    /// TrackCode
+    /// </summary>
     property TrackCode: string read FTrack_code write FTrack_code;
-    property Trending: Integer read FTrending write FTrending;
+    /// <summary>
+    /// Информация о том, есть ли на странице пользователя «огонёк»
+    /// </summary>
+    property Trending: Boolean read FTrending write FTrending;
+    /// <summary>
+    /// Любимые телешоу
+    /// </summary>
     property TV: string read FTv write FTv;
+    /// <summary>
+    /// Twitter
+    /// </summary>
     property Twitter: string read FTwitter write FTwitter;
+    /// <summary>
+    /// Список вузов, в которых учился пользователь
+    /// </summary>
     property Universities: TArray<TVkUniversities> read FUniversities write FUniversities;
+    /// <summary>
+    /// Идентификатор университета
+    /// </summary>
     property University: Integer read FUniversity write FUniversity;
+    /// <summary>
+    /// Название университета
+    /// </summary>
     property UniversityName: string read FUniversity_name write FUniversity_name;
+    /// <summary>
+    /// Возвращается True, если страница пользователя верифицирована, False — если нет
+    /// </summary>
     property Verified: Boolean read FVerified write FVerified;
+    /// <summary>
+    /// Type
+    /// </summary>
     property&Type: string read FType write FType;
-    //
+    /// <summary>
+    /// Режим стены по умолчанию. Возможные значения: owner, all.
+    /// </summary>
+    property WallDefault: string read FWall_default write FWall_default;
+    /// <summary>
+    /// [Domain|FirstName]
+    /// </summary>
     property Refer: string read GetRefer;
-    property GetFullName: string read FGetFullName;
-    constructor Create; override;
+    /// <summary>
+    /// FirstName LastName
+    /// </summary>
+    property FullName: string read FGetFullName;
     destructor Destroy; override;
   end;
 
-  TVkProfiles = class(TVkEntity)
-  private
-    FItems: TArray<TVkProfile>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkProfile> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Users: TVkProfiles);
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
+  TVkProfiles = TVkEntityList<TVkProfile>;
 
   TVkFriendsList = class(TVkObject)
   private
@@ -438,15 +974,7 @@ type
     property Name: string read FName write FName;
   end;
 
-  TVkFriendsLists = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkFriendsList>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkFriendsList> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkFriendsLists = TVkEntityList<TVkFriendsList>;
 
 function FindUser(Id: Integer; List: TArray<TVkProfile>): Integer;
 
@@ -485,36 +1013,36 @@ end;
 
 {TVkUser}
 
-constructor TVkProfile.Create;
-begin
-  inherited;
-  FCountry := TVkCountry.Create();
-  FCity := TVkCity.Create();
-  FLast_seen := TVkLastSeen.Create();
-  FCrop_photo := TVkCropPhoto.Create();
-  FOccupation := TVkOccupation.Create();
-  FRelation_partner := TVkProfile.Create();
-  FPersonal := TVkPersonal.Create();
-  FMutual := TVkFriendsMutual.Create();
-  FOnline_info := TVkUserOnlineInfo.Create;
-end;
-
 destructor TVkProfile.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCareer>(FCareer);
   TArrayHelp.FreeArrayOfObject<TVkMilitary>(FMilitary);
+  TArrayHelp.FreeArrayOfObject<TVkExport>(FExports);
   TArrayHelp.FreeArrayOfObject<TVkUniversities>(FUniversities);
   TArrayHelp.FreeArrayOfObject<TVkSchoolInfo>(FSchools);
   TArrayHelp.FreeArrayOfObject<TVkRelative>(FRelatives);
-  FOnline_info.Free;
-  FCountry.Free;
-  FCity.Free;
-  FLast_seen.Free;
-  FCrop_photo.Free;
-  FOccupation.Free;
-  FRelation_partner.Free;
-  FPersonal.Free;
-  FMutual.Free;
+  if Assigned(FOnline_info) then
+    FOnline_info.Free;
+  if Assigned(FCountry) then
+    FCountry.Free;
+  if Assigned(FCity) then
+    FCity.Free;
+  if Assigned(FLast_seen) then
+    FLast_seen.Free;
+  if Assigned(FCrop_photo) then
+    FCrop_photo.Free;
+  if Assigned(FOccupation) then
+    FOccupation.Free;
+  if Assigned(FRelation_partner) then
+    FRelation_partner.Free;
+  if Assigned(FPersonal) then
+    FPersonal.Free;
+  if Assigned(FMutual) then
+    FMutual.Free;
+  if Assigned(FCounters) then
+    FCounters.Free;
+  if Assigned(FStatus_audio) then
+    FStatus_audio.Free;
   inherited;
 end;
 
@@ -526,67 +1054,6 @@ end;
 function TVkProfile.GetRefer: string;
 begin
   Result := '[' + Domain + '|' + FirstName + ']';
-end;
-
-{TVkProfiles}
-
-procedure TVkProfiles.Append(Users: TVkProfiles);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Users.Items));
-  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkProfile));
-end;
-
-constructor TVkProfiles.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkProfiles.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkProfile>(FItems);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkProfiles.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
-{ TVkFriendInfos }
-
-destructor TVkFriendInfos.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkFriendInfo>(FItems);
-  inherited;
-end;
-
-{ TVkFriendDeleteInfo }
-
-function TVkFriendDeleteInfo.GetSuccess: Boolean;
-begin
-  Result := FSuccess = 1;
-end;
-
-procedure TVkFriendDeleteInfo.SetSuccess(const Value: Boolean);
-begin
-  FSuccess := BoolToInt(Value);
-end;
-
-{ TVkFriendsLists }
-
-destructor TVkFriendsLists.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkFriendsList>(FItems);
-  inherited;
 end;
 
 { TVkFriendsMutual }

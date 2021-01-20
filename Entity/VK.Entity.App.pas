@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Entity.Profile, VK.Entity.Group;
+  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common.ExtendedList;
 
 type
   TVkAppScreenshot = class(TVkObject)

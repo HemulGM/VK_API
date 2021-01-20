@@ -186,7 +186,9 @@ contains
   VK.Entity.Donut in 'Entity\VK.Entity.Donut.pas',
   VK.Entity.Auth in 'Entity\VK.Entity.Auth.pas',
   VK.Entity.Common.List in 'Entity\VK.Entity.Common.List.pas',
-  VK.Wrap.Interceptors in 'Utils\VK.Wrap.Interceptors.pas';
+  VK.Wrap.Interceptors in 'Utils\VK.Wrap.Interceptors.pas',
+  VK.Entity.Common.ExtendedList in 'Entity\VK.Entity.Common.ExtendedList.pas',
+  VK.Entity.Group.Invites in 'Entity\VK.Entity.Group.Invites.pas';
 
 end.
 

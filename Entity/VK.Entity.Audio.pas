@@ -3,8 +3,10 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, System.SysUtils, Rest.Json, System.Json,
-  VK.Entity.Common, VK.Types, VK.Entity.Attachment, VK.Entity.Common.List, VK.Entity.Group;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors,
+  System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types,
+  VK.Entity.Attachment, VK.Entity.Common.List, VK.Wrap.Interceptors,
+  VK.Entity.Group;
 
 type
   TVkAudioArtistPhoto = class(TVkEntity)
@@ -27,8 +29,17 @@ type
     FGroups: TArray<TVkGroup>;
     FPhotos: TArray<TVkAudioArtistPhoto>;
   public
+    /// <summary>
+    /// Идентификатор артиста/группы
+    /// </summary>
     property Id: string read FId write FId;
+    /// <summary>
+    /// Домен-ссылка на аккаунт
+    /// </summary>
     property Domain: string read FDomain write FDomain;
+    /// <summary>
+    /// Имя артиста/название группы
+    /// </summary>
     property Name: string read FName write FName;
     property Photo: TArray<TVkImage> read FPhoto write FPhoto;
     property Photos: TArray<TVkAudioArtistPhoto> read FPhotos write FPhotos;
@@ -83,7 +94,8 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDuration: Integer;
-    FGenre_id: Integer;
+    [JsonReflectAttribute(ctString, rtString, TAudioGenreInterceptor)]
+    FGenre_id: TVkAudioGenre;
     FIs_licensed: Boolean;
     FMain_artists: TArray<TVkAudioArtist>;
     FOwner_id: Integer;
@@ -103,35 +115,120 @@ type
     FStories_cover_allowed: Boolean;
     FFeatured_artists: TArray<TVkAudioArtist>;
     FSubtitle: string;
-    function GetAudioGenre: TAudioGenre;
-    procedure SetAudioGenre(const Value: TAudioGenre);
+    [JsonReflectAttribute(ctString, rtString, TAudioGenreInterceptor)]
+    FTrack_genre_id: TVkAudioGenre;
   public
+    /// <summary>
+    /// Идентификатор аудиозаписи
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Информация о рекламе
+    /// </summary>
     property Ads: TVkAudioAds read FAds write FAds;
+    /// <summary>
+    /// Альбом аудиозаписи
+    /// </summary>
     property Album: TVkAudioAlbum read FAlbum write FAlbum;
+    /// <summary>
+    /// Идентификатор альбома, в котором находится аудиозапись (если присвоен)
+    /// </summary>
     property AlbumId: Integer read FAlbum_id write FAlbum_id;
+    /// <summary>
+    /// Исполнитель
+    /// </summary>
     property Artist: string read FArtist write FArtist;
+    /// <summary>
+    /// Информация о позиции в Чарте
+    /// </summary>
     property AudioChartInfo: TVkAudioChartInfo read FAudio_chart_info write FAudio_chart_info;
+    /// <summary>
+    /// Доступна ли аудиозапись
+    /// </summary>
     property ContentRestricted: Integer read FContent_restricted write FContent_restricted;
+    /// <summary>
+    /// Дата добавления
+    /// </summary>
     property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Длительность аудиозаписи в секундах
+    /// </summary>
     property Duration: Integer read FDuration write FDuration;
+    /// <summary>
+    /// Список второстепенных исполнителей
+    /// </summary>
     property FeaturedArtists: TArray<TVkAudioArtist> read FFeatured_artists write FFeatured_artists;
-    property Genre: TAudioGenre read GetAudioGenre write SetAudioGenre;
-    property GenreId: Integer read FGenre_id write FGenre_id;
+    /// <summary>
+    /// Идентификатор жанра из списка аудио жанров
+    /// </summary>
+    property Genre: TVkAudioGenre read FGenre_id write FGenre_id;
+    /// <summary>
+    /// Идентификатор жанра из списка аудио жанров
+    /// </summary>
+    property TrackGenreId: TVkAudioGenre read FTrack_genre_id write FTrack_genre_id;
+    /// <summary>
+    /// Содержит ли трек ненормативную лексику
+    /// </summary>
     property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
+    /// <summary>
+    /// [Не документирован]
+    /// </summary>
     property IsFocusTrack: Boolean read FIs_focus_track write FIs_focus_track;
+    /// <summary>
+    /// True, если аудио в высоком качестве
+    /// </summary>
     property IsHQ: Boolean read FIs_hq write FIs_hq;
+    /// <summary>
+    /// True, если аудиозапись лицензируется
+    /// </summary>
     property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
+    /// <summary>
+    /// Идентификатор текста аудиозаписи (если доступно)
+    /// </summary>
     property LyricsId: Integer read FLyrics_id write FLyrics_id;
+    /// <summary>
+    /// Список главных исполнителей
+    /// </summary>
     property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
+    /// <summary>
+    /// True, если включена опция «Не выводить при поиске». Если опция отключена, поле не возвращается
+    /// </summary>
     property NoSearch: Boolean read FNo_search write FNo_search;
+    /// <summary>
+    /// Идентификатор владельца аудиозаписи
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Возможно ли использование этого трека в "Клипах"
+    /// </summary>
     property ShortVideosAllowed: Boolean read FShort_videos_allowed write FShort_videos_allowed;
+    /// <summary>
+    /// Возможно ли использование этого трека в "Историях"
+    /// </summary>
     property StoriesAllowed: Boolean read FStories_allowed write FStories_allowed;
+    /// <summary>
+    /// Возможно ли использование обложки этого трека в "Историях"
+    /// </summary>
     property StoriesCoverAllowed: Boolean read FStories_cover_allowed write FStories_cover_allowed;
+    /// <summary>
+    /// Подзаголовок композиции
+    /// </summary>
     property Subtitle: string read FSubtitle write FSubtitle;
+    /// <summary>
+    /// Название композиции
+    /// </summary>
     property Title: string read FTitle write FTitle;
+    /// <summary>
+    /// [Не документирован]
+    /// </summary>
     property TrackCode: string read FTrack_code write FTrack_code;
+    /// <summary>
+    /// Ссылка на аудиозапись (привязана к ip-адресу клиентского приложения)
+    /// </summary>
     property Url: string read FUrl write FUrl;
     constructor Create; override;
     destructor Destroy; override;
@@ -195,16 +292,6 @@ end;
 function TVkAudio.ToAttachment: string;
 begin
   Result := Attachment.Audio(Id, OwnerId, AccessKey);
-end;
-
-function TVkAudio.GetAudioGenre: TAudioGenre;
-begin
-  Result := TAudioGenre.Create(FGenre_Id);
-end;
-
-procedure TVkAudio.SetAudioGenre(const Value: TAudioGenre);
-begin
-  FGenre_id := VkAudioGenres[Value];
 end;
 
 {TAlbumClass}

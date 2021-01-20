@@ -3,11 +3,14 @@ unit VK.Groups;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller, VK.Types,
-  VK.Entity.Profile, System.Classes, VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
-  VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer, VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
-  VK.Entity.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings, VK.Entity.Group.TokenPermissions,
-  VK.Entity.Common.List;
+  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json,
+  System.Json, VK.Controller, VK.Types, VK.Entity.Profile, System.Classes,
+  VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
+  VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer,
+  VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
+  VK.Entity.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings,
+  VK.Entity.Group.TokenPermissions, VK.Entity.Common.List,
+  VK.Entity.Group.Invites;
 
 type
   TVkGroupTagAct = (gtaBind, gtaUnbind);
@@ -582,8 +585,7 @@ type
     /// <summary>
     ///  ƒанный метод возвращает список приглашений в сообщества и встречи текущего пользовател€.
     /// </summary>
-    function GetInvites(var Items: TVkInvitesGroups; Extended: Boolean = False; Count: Integer = 20; Offset: Integer = 0):
-      Boolean;
+    function GetInvites(var Items: TVkInvitesGroups; Extended: Boolean = False; Count: Integer = 20; Offset: Integer = 0): Boolean;
     /// <summary>
     ///  ¬озвращает данные дл€ подключени€ к Bots Longpoll API.
     /// </summary>
@@ -595,8 +597,7 @@ type
     /// <summary>
     ///  ¬озвращает список за€вок на вступление в сообщество.
     /// </summary>
-    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [ufDomain]; Count: Integer
-      = 20; Offset: Integer = 0): Boolean; overload;
+    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [ufDomain]; Count: Integer = 20; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     ///  ¬озвращает список за€вок на вступление в сообщество.
     /// </summary>
@@ -769,8 +770,7 @@ begin
   Result := Edit(Params.List);
 end;
 
-function TGroupsController.EditAddress(var Item: TVkGroupAddress; AddressId: Integer; Params: TVkParamsGroupsEditAddress):
-  Boolean;
+function TGroupsController.EditAddress(var Item: TVkGroupAddress; AddressId: Integer; Params: TVkParamsGroupsEditAddress): Boolean;
 begin
   Params.List.Add('address_id', AddressId);
   Result := EditAddress(Item, Params.List);
@@ -778,8 +778,7 @@ end;
 
 function TGroupsController.EditCallbackServer(GroupId, ServerId: integer; Url, Title, SecretKey: string): Boolean;
 begin
-  with Handler.Execute('groups.editCallbackServer', [['group_id', GroupId.ToString], ['server_id', ServerId.ToString], ['url',
-    Url], ['title', Title], ['secret_key', SecretKey]]) do
+  with Handler.Execute('groups.editCallbackServer', [['group_id', GroupId.ToString], ['server_id', ServerId.ToString], ['url', Url], ['title', Title], ['secret_key', SecretKey]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -941,8 +940,7 @@ begin
   Result := Handler.Execute('groups.getOnlineStatus', ['group_id', GroupId.ToString]).GetObject<TVkGroupStatus>(Value);
 end;
 
-function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields; Count, Offset:
-  Integer): Boolean;
+function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields; Count, Offset: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -1028,8 +1026,7 @@ end;
 
 function TGroupsController.ReorderLink(GroupId, LinkId, After: Integer): Boolean;
 begin
-  with Handler.Execute('groups.reorderLink', [['group_id', GroupId.ToString], ['link_id', LinkId.ToString], ['after',
-    After.ToString]]) do
+  with Handler.Execute('groups.reorderLink', [['group_id', GroupId.ToString], ['link_id', LinkId.ToString], ['after', After.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -1062,8 +1059,7 @@ end;
 
 function TGroupsController.SetUserNote(GroupId, UserId: Integer; Note: TVkNoteText): Boolean;
 begin
-  with Handler.Execute('groups.setLongPollSettings', [['group_id', GroupId.ToString], ['user_id', UserId.ToString], ['note',
-    string(Note)]]) do
+  with Handler.Execute('groups.setLongPollSettings', [['group_id', GroupId.ToString], ['user_id', UserId.ToString], ['note', string(Note)]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -1075,8 +1071,7 @@ end;
 
 function TGroupsController.TagBind(GroupId, TagId, UserId: Integer; Act: TVkGroupTagAct): Boolean;
 begin
-  with Handler.Execute('groups.tagBind', [['group_id', GroupId.ToString], ['tag_id', TagId.ToString], ['user_id', UserId.ToString],
-    ['act', Act.ToString]]) do
+  with Handler.Execute('groups.tagBind', [['group_id', GroupId.ToString], ['tag_id', TagId.ToString], ['user_id', UserId.ToString], ['act', Act.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 

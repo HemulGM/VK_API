@@ -305,10 +305,10 @@ type
     agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
     agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 
-  TAudioGenreHelper = record helper for TAudioGenre
+  TVkAudioGenreHelper = record helper for TVkAudioGenre
     function ToConst: Integer;
     function ToString: string; inline;
-    class function Create(Value: Integer): TAudioGenre; static;
+    class function Create(Value: Integer): TVkAudioGenre; static;
   end;
 
   TVkSort = (stAsc, stDesc);
@@ -434,6 +434,13 @@ type
   /// “ут список цветов -> VkGroupTagColors
   /// </summary>
   TVkGroupTagColor = string;
+
+  TVkDeactivated = (pdNone, pdDeleted, pdBanned);
+
+  TVkDeactivatedHelper = record helper for TVkDeactivated
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkDeactivated; static;
+  end;
 
   TVkAgeLimits = (alNone = 1, al16Plus = 2, al18Plus = 3);
 
@@ -632,6 +639,8 @@ type
   TVkPostTypeHelper = record helper for TVkPostType
     function ToString: string; inline;
   end;
+
+  TVkPolitical = (plNone, plCommunist, plSocialist, plModerate, plLiberal, plConservative, plMonarchical, plUltraConservative, plIndifferent, plLibertarian);
 
   /// <summary>
   /// именительный Ц nom, родительный Ц gen, дательный Ц dat, винительный Ц acc, творительный Ц ins, предложный Ц abl
@@ -875,6 +884,8 @@ type
 
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
 
+  TOnUnhandledEvents = procedure(Sender: TObject; const JSON: TJSONValue) of object;
+
 var
   VkUserActive: array[Boolean] of string = ('Ѕездействие', 'ѕокинул сайт');
   VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone',
@@ -890,7 +901,7 @@ var
     'Unknown_5', 'Unknown_4', 'UnreadMultichat', 'Unknown_3', 'Unknown_2',
     'Unknown_1', 'Media', 'Fixed', 'Deleted', 'Spam', 'Friends', 'Chat',
     'Important', 'Replied', 'Outbox', 'Unread');
-  VkAudioGenresStr: array[TAudioGenre] of string = ('', 'Rock', 'Pop',
+  VkAudioGenresStr: array[TVkAudioGenre] of string = ('', 'Rock', 'Pop',
     'RapAndHipHop', 'EasyListening', 'HouseAndDance', 'Instrumental', 'Metal',
     'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson',
     'Ethnic', 'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech',
@@ -902,7 +913,7 @@ var
     MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2,
     MF_UNKNOWN_1, MF_MEDIA, MF_FIXED, MF_DEL≈T≈D, MF_SPAM, MF_FRIENDS, MF_CHAT,
     MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
-  VkAudioGenres: array[TAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP,
+  VkAudioGenres: array[TVkAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP,
     AG_RAPANDHIPHOP, AG_EASYLISTENING, AG_HOUSEANDDANCE, AG_INSTRUMENTAL,
     AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS,
     AG_TRANCE, AG_CHANSON, AG_ETHNIC, AG_ACOUSTICANDVOCAL, AG_REGGAE,
@@ -1803,11 +1814,11 @@ begin
     end;
 end;
 
-{ TAudioGenreHelper }
+{ TVkAudioGenreHelper }
 
-class function TAudioGenreHelper.Create(Value: Integer): TAudioGenre;
+class function TVkAudioGenreHelper.Create(Value: Integer): TVkAudioGenre;
 var
-  i: TAudioGenre;
+  i: TVkAudioGenre;
 begin
   Result := agOther;
   for i := Low(VkAudioGenres) to High(VkAudioGenres) do
@@ -1815,12 +1826,12 @@ begin
       Exit(i);
 end;
 
-function TAudioGenreHelper.ToConst: Integer;
+function TVkAudioGenreHelper.ToConst: Integer;
 begin
   Result := VkAudioGenres[Self];
 end;
 
-function TAudioGenreHelper.ToString: string;
+function TVkAudioGenreHelper.ToString: string;
 begin
   Result := VkAudioGenresStr[Self];
 end;
@@ -2658,6 +2669,32 @@ begin
       Exit('response_with_link');
   else
     Result := '';
+  end;
+end;    
+
+{ TVkDeactivatedHelper }
+
+class function TVkDeactivatedHelper.Create(const Value: string): TVkDeactivated;
+begin
+  case IndexStr(Value, ['deleted', 'banned']) of
+    0:
+      Exit(TVkDeactivated.pdDeleted);
+    1:
+      Exit(TVkDeactivated.pdBanned);
+  else
+    Exit(TVkDeactivated.pdNone);
+  end;
+end;
+
+function TVkDeactivatedHelper.ToString: string;
+begin
+  case Self of
+    pdDeleted:
+      Exit('deleted');
+    pdBanned:
+      Exit('banned');
+  else
+    Exit('');
   end;
 end;
 
