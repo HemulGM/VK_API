@@ -300,12 +300,16 @@ type
   /// <summary>
   ///  Æàíðû ìóçûêè
   /// </summary>
-  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
+  TVkAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening,      //
+    agHouseAndDance, agInstrumental, agMetal, agAlternative, agDubstep,         //
+    agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic,               //
+    agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech,            //
+    agElectropopAndDisco, agOther);
 
-  TAudioGenreHelper = record helper for TAudioGenre
+  TVkAudioGenreHelper = record helper for TVkAudioGenre
     function ToConst: Integer;
     function ToString: string; inline;
-    class function Create(Value: Integer): TAudioGenre; static;
+    class function Create(Value: Integer): TVkAudioGenre; static;
   end;
 
   TVkSort = (stAsc, stDesc);
@@ -873,7 +877,7 @@ var
     'Unknown_5', 'Unknown_4', 'UnreadMultichat', 'Unknown_3', 'Unknown_2',
     'Unknown_1', 'Media', 'Fixed', 'Deleted', 'Spam', 'Friends', 'Chat',
     'Important', 'Replied', 'Outbox', 'Unread');
-  VkAudioGenresStr: array[TAudioGenre] of string = ('', 'Rock', 'Pop',
+  VkAudioGenresStr: array[TVkAudioGenre] of string = ('', 'Rock', 'Pop',
     'RapAndHipHop', 'EasyListening', 'HouseAndDance', 'Instrumental', 'Metal',
     'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson',
     'Ethnic', 'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech',
@@ -885,7 +889,7 @@ var
     MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2,
     MF_UNKNOWN_1, MF_MEDIA, MF_FIXED, MF_DELÅTÅD, MF_SPAM, MF_FRIENDS, MF_CHAT,
     MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
-  VkAudioGenres: array[TAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP,
+  VkAudioGenres: array[TVkAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP,
     AG_RAPANDHIPHOP, AG_EASYLISTENING, AG_HOUSEANDDANCE, AG_INSTRUMENTAL,
     AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS,
     AG_TRANCE, AG_CHANSON, AG_ETHNIC, AG_ACOUSTICANDVOCAL, AG_REGGAE,
@@ -1785,11 +1789,11 @@ begin
     end;
 end;
 
-{ TAudioGenreHelper }
+{ TVkAudioGenreHelper }
 
-class function TAudioGenreHelper.Create(Value: Integer): TAudioGenre;
+class function TVkAudioGenreHelper.Create(Value: Integer): TVkAudioGenre;
 var
-  i: TAudioGenre;
+  i: TVkAudioGenre;
 begin
   Result := agOther;
   for i := Low(VkAudioGenres) to High(VkAudioGenres) do
@@ -1797,12 +1801,12 @@ begin
       Exit(i);
 end;
 
-function TAudioGenreHelper.ToConst: Integer;
+function TVkAudioGenreHelper.ToConst: Integer;
 begin
   Result := VkAudioGenres[Self];
 end;
 
-function TAudioGenreHelper.ToString: string;
+function TVkAudioGenreHelper.ToString: string;
 begin
   Result := VkAudioGenresStr[Self];
 end;

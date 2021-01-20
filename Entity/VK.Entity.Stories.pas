@@ -3,8 +3,10 @@ unit VK.Entity.Stories;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
-  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Link, VK.Entity.App, VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Video,
+  VK.Entity.Group, VK.Entity.Link, VK.Entity.App, VK.Entity.Common.List,
+  VK.Entity.Common.ExtendedList;
 
 type
   TVkStoryReplies = class(TVkCounterEntity)
@@ -42,7 +44,11 @@ type
     FNeed_mute: Boolean;
     FSeen: Integer;
     FMute_reply: Boolean;
+    FIs_ads: Boolean;
+    FPreloading_enabled: Boolean;
+    FVideo: TVkVideo;
   public
+    property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
     property CanAsk: Boolean read FCan_ask write FCan_ask;
     property CanAskAnonymous: Boolean read FCan_ask_anonymous write FCan_ask_anonymous;
@@ -54,6 +60,7 @@ type
     property CanShare: Boolean read FCan_share write FCan_share;
     property Date: TDateTime read FDate write FDate;
     property ExpiresAt: TDateTime read FExpires_at write FExpires_at;
+    property IsAds: Boolean read FIs_ads write FIs_ads;
     property IsOneTime: Boolean read FIs_one_time write FIs_one_time;
     property IsOwnerPinned: Boolean read FIs_owner_pinned write FIs_owner_pinned;
     property IsRestricted: Boolean read FIs_restricted write FIs_restricted;
@@ -62,11 +69,13 @@ type
     property NeedMute: Boolean read FNeed_mute write FNeed_mute;
     property NoSound: Boolean read FNo_sound write FNo_sound;
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property PreloadingEnabled: Boolean read FPreloading_enabled write FPreloading_enabled;
     property Replies: TVkStoryReplies read FReplies write FReplies;
     property Seen: Integer read FSeen write FSeen;
     property TrackCode: string read FTrack_code write FTrack_code;
     property&Type: string read FType write FType;
+    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property Video: TVkVideo read FVideo write FVideo;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -125,6 +134,8 @@ begin
   FPhoto.Free;
   FLink.Free;
   FReplies.Free;
+  if Assigned(FVideo) then
+    FVideo.Free;
   inherited;
 end;
 

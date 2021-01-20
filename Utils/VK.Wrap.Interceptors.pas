@@ -79,6 +79,13 @@ type
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
+  TAudioGenreInterceptor = class(TJSONInterceptor)
+  public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
 implementation
 
 uses
@@ -374,6 +381,34 @@ var
   v: TValue;
 begin
   value := TVkPolitical(StrToIntDef(Arg, 0));
+  v := v.From(value);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+end;
+
+{ TAudioGenreInterceptor }
+
+constructor TAudioGenreInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TAudioGenreInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: TVkAudioGenre;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAudioGenre>;
+  result := value.ToString;
+end;
+
+procedure TAudioGenreInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: TVkAudioGenre;
+  v: TValue;
+begin
+  value := TVkAudioGenre.Create(StrToIntDef(Arg, 0));
   v := v.From(value);
   ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
 end;

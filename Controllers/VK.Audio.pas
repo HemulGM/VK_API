@@ -34,7 +34,7 @@ type
     function Offset(Value: Integer): TVkParamsPopAudio;
     function Count(Value: Integer): TVkParamsPopAudio;
     function OnlyEng(Value: Boolean): TVkParamsPopAudio;
-    function GenreId(Value: TAudioGenre): TVkParamsPopAudio;
+    function GenreId(Value: TVkAudioGenre): TVkParamsPopAudio;
   end;
 
   TVkParamsPlaylist = record
@@ -89,7 +89,7 @@ type
     function Artist(Value: string): TVkParamsAudioEdit;
     function Title(Value: string): TVkParamsAudioEdit;
     function Text(Value: string): TVkParamsAudioEdit;
-    function GenreId(Value: TAudioGenre): TVkParamsAudioEdit;
+    function GenreId(Value: TVkAudioGenre): TVkParamsAudioEdit;
     function NoSearch(Value: Boolean): TVkParamsAudioEdit;
   end;
 
@@ -151,7 +151,7 @@ type
     /// <summary>
     /// Returns a list of audio files from the "Popular".
     /// </summary>
-    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TAudioGenre = agNone; Count: Integer = 0; Offset: Integer = 0): Boolean; overload;
+    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TVkAudioGenre = agNone; Count: Integer = 0; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
@@ -569,7 +569,7 @@ begin
   Result := Handler.Execute('audio.getPopular', Params.List).GetObjects<TVkAudios>(Audios);
 end;
 
-function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TAudioGenre; Count, Offset: Integer): Boolean;
+function TAudioController.GetPopular(var Audios: TVkAudios; OnlyEng: Boolean; GenreId: TVkAudioGenre; Count, Offset: Integer): Boolean;
 var
   Params: TVkParamsPopAudio;
 begin
@@ -756,7 +756,7 @@ begin
   List.Add('count', Value);
 end;
 
-function TVkParamsPopAudio.GenreId(Value: TAudioGenre): TVkParamsPopAudio;
+function TVkParamsPopAudio.GenreId(Value: TVkAudioGenre): TVkParamsPopAudio;
 begin
   Result := Self;
   List.Add('genre_id', Value.ToConst);
@@ -788,7 +788,7 @@ begin
   List.Add('audio_id', Value);
 end;
 
-function TVkParamsAudioEdit.GenreId(Value: TAudioGenre): TVkParamsAudioEdit;
+function TVkParamsAudioEdit.GenreId(Value: TVkAudioGenre): TVkParamsAudioEdit;
 begin
   Result := Self;
   List.Add('genre_id', Value.ToConst);
