@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile,
-  VK.Entity.Group, VK.Types;
+  VK.Entity.Group, VK.Types, VK.Entity.Common.ExtendedList;
 
 type
   TVkChatAccess = class(TVkEntity)

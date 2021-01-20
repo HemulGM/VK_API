@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Common, VK.Entity.Group,
-  VK.Entity.Profile, VK.Entity.Catalog.Section, VK.Entity.Common.List;
+  VK.Entity.Profile, VK.Entity.Catalog.Section, VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
 
 type
   TVkAudioCatalogItem = class(TVkEntityList<TVkCatalogLink>)

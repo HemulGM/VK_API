@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
-  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Link, VK.Entity.App, VK.Entity.Common.List;
+  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Link, VK.Entity.App, VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
 
 type
   TVkStoryReplies = class(TVkCounterEntity)

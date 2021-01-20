@@ -3,7 +3,8 @@ unit VK.Entity.Market;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkMarketSection = TVkBasicObject;
@@ -36,15 +37,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkProductCategories = class(TVkEntity)
-  private
-    FItems: TArray<TVkProductCategory>;
-    FCount: Integer;
-  public
-    property Items: TArray<TVkProductCategory> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-  end;
+  TVkProductCategories = TVkEntityList<TVkProductCategory>;
 
   TVkProduct = class(TVkObject)
   private
@@ -98,19 +91,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkProducts = class(TVkEntity)
-  private
-    FItems: TArray<TVkProduct>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkProduct> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
+  TVkProducts = TVkEntityList<TVkProduct>;
 
 implementation
 
@@ -165,38 +146,6 @@ begin
     FReposts.Free;
   if Assigned(FDimensions) then
     FDimensions.Free;
-  inherited;
-end;
-
-{ TVkMarkets }
-
-constructor TVkProducts.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkProducts.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkProduct>(FItems);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkProducts.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
-{ TVkProductCategories }
-
-destructor TVkProductCategories.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkProductCategory>(FItems);
   inherited;
 end;
 

@@ -3,8 +3,8 @@ unit VK.Wrap.Interceptors;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, TypInfo, System.Types, System.RTTI, Rest.Json, REST.JsonReflect,
-  REST.Json.Interceptors, VK.Types;
+  Generics.Collections, System.SysUtils, TypInfo, System.Types, System.RTTI,
+  Rest.Json, REST.JsonReflect, REST.Json.Interceptors, VK.Types;
 
 type
   TEnumHelp<TEnum> = record
@@ -37,6 +37,20 @@ type
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
+  TPoliticalInterceptor = class(TJSONInterceptor)
+  public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TPlatformInterceptor = class(TJSONInterceptor)
+  public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
   TBirthDateVisibilityInterceptor = class(TJSONInterceptor)
   public
     constructor Create; reintroduce;
@@ -52,6 +66,13 @@ type
   end;
 
   TNameRequestStatusInterceptor = class(TJSONInterceptor)
+  public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TDeactivatedInterceptor = class(TJSONInterceptor)
   public
     constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
@@ -99,11 +120,11 @@ begin
   typeData := GetTypeData(typeInf);
   case Sizeof(TEnum) of
     1:
-      pByte(@Value)^ := Result;
+      Result := pByte(@Value)^;
     2:
-      pWord(@Value)^ := Result;
+      Result := pWord(@Value)^;
     4:
-      pCardinal(@Value)^ := Result;
+      Result := pCardinal(@Value)^;
   end;
 end;
 
@@ -269,6 +290,90 @@ var
   v: TValue;
 begin
   value := TVkNameRequestStatus.Create(Arg);
+  v := v.From(value);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+end;
+
+{ TDeactivatedInterceptor }
+
+constructor TDeactivatedInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TDeactivatedInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: TVkDeactivated;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkDeactivated>;
+  result := value.ToString;
+end;
+
+procedure TDeactivatedInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: TVkDeactivated;
+  v: TValue;
+begin
+  value := TVkDeactivated.Create(Arg);
+  v := v.From(value);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+end;
+
+{ TPlatformInterceptor }
+
+constructor TPlatformInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TPlatformInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: TVkPlatform;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkPlatform>;
+  result := Ord(value).ToString;
+end;
+
+procedure TPlatformInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: TVkPlatform;
+  v: TValue;
+begin
+  value := TVkPlatform(StrToIntDef(Arg, 0));
+  v := v.From(value);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+end;
+
+{ TPoliticalInterceptor }
+
+constructor TPoliticalInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TPoliticalInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: TVkPolitical;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkPolitical>;
+  result := Ord(value).ToString;
+end;
+
+procedure TPoliticalInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: TVkPolitical;
+  v: TValue;
+begin
+  value := TVkPolitical(StrToIntDef(Arg, 0));
   v := v.From(value);
   ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
 end;

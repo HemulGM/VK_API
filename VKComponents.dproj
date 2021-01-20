@@ -271,6 +271,8 @@
         <DCCReference Include="Entity\VK.Entity.Auth.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.List.pas"/>
         <DCCReference Include="Utils\VK.Wrap.Interceptors.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Common.ExtendedList.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Invites.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
@@ -328,7 +330,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\..\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKComponents.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

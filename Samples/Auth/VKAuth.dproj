@@ -102,6 +102,8 @@
             <Form>FormMain</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Entity\VK.Entity.Common.ExtendedList.pas"/>
+        <DCCReference Include="..\..\Entity\VK.Entity.Group.Invites.pas"/>
         <None Include="app_cred.inc"/>
         <None Include="delphi_live.inc"/>
         <None Include="vk_admin.inc"/>

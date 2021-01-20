@@ -3,8 +3,9 @@ unit VK.Entity.Group;
 interface
 
 uses
-  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market,
-  VK.Entity.Profile, VK.Entity.Group.Counters, VK.Entity.Database.Cities, VK.Entity.Database.Countries;
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common,
+  VK.Entity.Photo, VK.Entity.Market, VK.Entity.Group.Counters,
+  VK.Entity.Database.Cities, VK.Entity.Database.Countries, VK.Entity.Common.List;
 
 type
   TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
@@ -32,12 +33,7 @@ type
     property Status: TVkGroupStatusType read GetStatus;
   end;
 
-  TVkCoverImages = class(TVkEntity)
-  private
-    FItems: TArray<TVkImage>;
-  public
-    property Items: TArray<TVkImage> read FItems write FItems;
-  end;
+  TVkCoverImages = TVkEntityList<TVkImage>;
 
   TVkCover = class
   private
@@ -67,56 +63,40 @@ type
 
   TVkGroupMemberState = class(TVkEntity)
   private
-    FMember: Integer;
+    FMember: Boolean;
     FUser_id: Integer;
-    FCan_invite: Integer;
-    FRequest: Integer;
-    FInvitation: Integer;
-    FCan_recall: Integer;
-    function GetCan_invite: Boolean;
-    function GetCan_recall: Boolean;
-    function GetInvitation: Boolean;
-    function GetMember: Boolean;
-    function GetRequest: Boolean;
-    procedure SetCan_invite(const Value: Boolean);
-    procedure SetCan_recall(const Value: Boolean);
-    procedure SetInvitation(const Value: Boolean);
-    procedure SetMember(const Value: Boolean);
-    procedure SetRequest(const Value: Boolean);
+    FCan_invite: Boolean;
+    FRequest: Boolean;
+    FInvitation: Boolean;
+    FCan_recall: Boolean;
   public
     /// <summary>
     /// Является ли пользователь участником сообщества
     /// </summary>
-    property Member: Boolean read GetMember write SetMember;
+    property Member: Boolean read FMember write FMember;
     /// <summary>
     /// Есть ли непринятая заявка от пользователя на вступление в группу (такую заявку можно отозвать методом Groups.Leave)
     /// </summary>
-    property Request: Boolean read GetRequest write SetRequest;
+    property Request: Boolean read FRequest write FRequest;
     /// <summary>
     /// Приглашён ли пользователь в группу или встречу
     /// </summary>
-    property Invitation: Boolean read GetInvitation write SetInvitation;
+    property Invitation: Boolean read FInvitation write FInvitation;
     /// <summary>
     /// Может ли автор запроса приглашать пользователя в группу
     /// </summary>
-    property CanInvite: Boolean read GetCan_invite write SetCan_invite;
+    property CanInvite: Boolean read FCan_invite write FCan_invite;
     /// <summary>
     /// Может ли автор отменить приглашение. Появляется, если Invitation: True
     /// </summary>
-    property CanRecall: Boolean read GetCan_recall write SetCan_recall;
+    property CanRecall: Boolean read FCan_recall write FCan_recall;
     /// <summary>
     /// Идентификатор пользователя.
     /// </summary>
     property UserId: Integer read FUser_id write FUser_id;
   end;
 
-  TVkGroupMemberStates = class(TVkEntity)
-  private
-    FItems: TArray<TVkGroupMemberState>;
-  public
-    property Items: TArray<TVkGroupMemberState> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkGroupMemberStates = TVkEntityList<TVkGroupMemberState>;
 
   TVkGroupMarket = class(TVkObject)
   private
@@ -164,13 +144,7 @@ type
     property WorkInfoStatus: string read FWork_info_status write FWork_info_status;
   end;
 
-  TVkGroupAddresses = class(TVkEntity)
-  private
-    FItems: TArray<TVkGroupAddress>;
-  public
-    property Items: TArray<TVkGroupAddress> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkGroupAddresses = TVkEntityList<TVkGroupAddress>;
 
   TVkGroupState = (gsOpen = 0, gsClose = 1, gsPrivate = 2);
 
@@ -390,34 +364,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkGroups = class(TVkEntity)
-  private
-    FItems: TArray<TVkGroup>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkGroup> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Users: TVkGroups);
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
-
-  TVkInvitesGroups = class(TVkEntity)
-  private
-    FItems: TArray<TVkGroup>;
-    FCount: Integer;
-    FGroups: TArray<TVkGroup>;
-    FProfiles: TArray<TVkProfile>;
-  public
-    property Items: TArray<TVkGroup> read FItems write FItems;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-  end;
+  TVkGroups = TVkEntityList<TVkGroup>;
 
   TVkGroupTag = class(TVkObject)
   private
@@ -429,15 +376,7 @@ type
     property Name: string read FName write FName;
   end;
 
-  TVkGroupTags = class(TVkEntity)
-  private
-    FItems: TArray<TVkGroupTag>;
-    FCount: Integer;
-  public
-    property Items: TArray<TVkGroupTag> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-  end;
+  TVkGroupTags = TVkEntityList<TVkGroupTag>;
 
 function FindGroup(Id: Integer; List: TArray<TVkGroup>): Integer;
 
@@ -518,125 +457,6 @@ begin
   if FStatus = 'answer_mark' then
     Exit(gsAnswermark);
   Result := gsNone;
-end;
-
-{ TVkGroups }
-
-procedure TVkGroups.Append(Users: TVkGroups);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Users.Items));
-  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkGroup));
-end;
-
-constructor TVkGroups.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkGroups.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkGroup>(FItems);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkGroups.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
-{ TVkGroupMemberStates }
-
-destructor TVkGroupMemberStates.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroupMemberState>(FItems);
-  inherited;
-end;
-
-{ TVkGroupMemberState }
-
-function TVkGroupMemberState.GetCan_invite: Boolean;
-begin
-  Result := FCan_invite = 1;
-end;
-
-function TVkGroupMemberState.GetCan_recall: Boolean;
-begin
-  Result := FCan_recall = 1;
-end;
-
-function TVkGroupMemberState.GetInvitation: Boolean;
-begin
-  Result := FInvitation = 1;
-end;
-
-function TVkGroupMemberState.GetMember: Boolean;
-begin
-  Result := FMember = 1;
-end;
-
-function TVkGroupMemberState.GetRequest: Boolean;
-begin
-  Result := FRequest = 1;
-end;
-
-procedure TVkGroupMemberState.SetCan_invite(const Value: Boolean);
-begin
-  FCan_invite := BoolToInt(Value);
-end;
-
-procedure TVkGroupMemberState.SetCan_recall(const Value: Boolean);
-begin
-  FCan_recall := BoolToInt(Value);
-end;
-
-procedure TVkGroupMemberState.SetInvitation(const Value: Boolean);
-begin
-  FInvitation := BoolToInt(Value);
-end;
-
-procedure TVkGroupMemberState.SetMember(const Value: Boolean);
-begin
-  FMember := BoolToInt(Value);
-end;
-
-procedure TVkGroupMemberState.SetRequest(const Value: Boolean);
-begin
-  FRequest := BoolToInt(Value);
-end;
-
-{ TVkGroupAddresses }
-
-destructor TVkGroupAddresses.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroupAddress>(FItems);
-  inherited;
-end;
-
-{ TVkInvitesGroups }
-
-destructor TVkInvitesGroups.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FItems);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  inherited;
-end;
-
-{ TVkGroupTags }
-
-destructor TVkGroupTags.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkGroupTag>(FItems);
-  inherited;
 end;
 
 end.

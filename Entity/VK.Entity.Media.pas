@@ -3,11 +3,14 @@ unit VK.Entity.Media;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
-  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page,
-  VK.Entity.Album, VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
-  VK.Entity.Market.Album;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
+  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
+  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note,
+  VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
+  VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Common.List,
+  VK.Entity.Common.ExtendedList;
 
 type
   TVkAttachment = class;
@@ -15,6 +18,8 @@ type
   TVkComment = class;
 
   TVkPost = class;
+
+  TVkCommentThread = class;
 
   TVkAttachment = class(TVkEntity)
   private
@@ -86,45 +91,14 @@ type
     destructor Destroy; override;
   end;
 
-  TVkAttachmentHistory = class(TVkEntity)
+  TVkAttachmentHistory = class(TVkEntityExtendedList<TVkAttachmentHistoryItem>)
   private
-    FItems: TArray<TVkAttachmentHistoryItem>;
     FNext_from: string;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
   public
-    property Items: TArray<TVkAttachmentHistoryItem> read FItems write FItems;
     property NextFrom: string read FNext_from write FNext_from;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
   end;
 
-  TVkAttachments = class(TVkEntity)
-  private
-    FItems: TArray<TVkAttachment>;
-    FCount: Integer;
-  public
-    property Items: TArray<TVkAttachment> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-  end;
-
-  TVkCommentThread = class(TVkEntity)
-  private
-    FItems: TArray<TVkComment>;
-    FCount: Integer;
-    FCan_post: Boolean;
-    FShow_reply_button: Boolean;
-    FGroups_can_post: Boolean;
-  public
-    property Items: TArray<TVkComment> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property CanPost: Boolean read FCan_post write FCan_post;
-    property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
-    property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
-    destructor Destroy; override;
-  end;
+  TVkAttachments = TVkEntityList<TVkAttachment>;
 
   TVkComment = class(TVkObject)
   private
@@ -165,27 +139,30 @@ type
     destructor Destroy; override;
   end;
 
-  TVkComments = class(TVkEntity)
+  TVkCommentThread = class(TVkEntityList<TVkComment>)
   private
-    FCount: Integer;
-    FItems: TArray<TVkComment>;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
+    FCan_post: Boolean;
+    FShow_reply_button: Boolean;
+    FGroups_can_post: Boolean;
+  public
+    property Items;
+    property Count;
+    property CanPost: Boolean read FCan_post write FCan_post;
+    property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
+    property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
+  end;
+
+  TVkComments = class(TVkEntityExtendedList<TVkComment>)
+  private
     FCurrent_level_count: Integer;
     FCan_post: Boolean;
     FShow_reply_button: Boolean;
     FGroups_can_post: Boolean;
   public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkComment> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    //
     property CurrentLevelCount: Integer read FCurrent_level_count write FCurrent_level_count;
     property CanPost: Boolean read FCan_post write FCan_post;
     property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
-    destructor Destroy; override;
   end;
 
   TVkPost = class(TVkObject)
@@ -248,19 +225,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkPosts = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkPost>;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkPost> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
-  end;
+  TVkPosts = TVkEntityExtendedList<TVkPost>;
 
   TVkRepostInfo = class(TVkEntity)
   private
@@ -419,26 +384,6 @@ begin
   inherited;
 end;
 
-{ TVkPosts }
-
-destructor TVkPosts.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkPost>(FItems);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  inherited;
-end;
-
-{ TVkAttachmentHistory }
-
-destructor TVkAttachmentHistory.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkAttachmentHistoryItem>(FItems);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  inherited;
-end;
-
 { TVkAttachmentHistoryItem }
 
 constructor TVkAttachmentHistoryItem.Create;
@@ -449,32 +394,6 @@ end;
 destructor TVkAttachmentHistoryItem.Destroy;
 begin
   FAttachment.Free;
-  inherited;
-end;
-
-{ TVkComments }
-
-destructor TVkComments.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkComment>(FItems);
-  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
-  inherited;
-end;
-
-{ TVkAttachments }
-
-destructor TVkAttachments.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkAttachment>(FItems);
-  inherited;
-end;
-
-{ TVkCommentThread }
-
-destructor TVkCommentThread.Destroy;
-begin
-  TArrayHelp.FreeArrayOfObject<TVkComment>(FItems);
   inherited;
 end;
 

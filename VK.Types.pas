@@ -346,8 +346,18 @@ type
     function ToString: string; inline;
   end;
 
-  TVkProfileField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufPhotoBig, ufPhotoMedium, ufOnline, ufLists, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufWallComments, ufActivities,
-    ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
+  TVkProfileField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, //
+    ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200,     //
+    ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufPhotoBig, ufPhotoMedium,         //
+    ufOnline, ufLists, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation,     //
+    ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount,             //
+    ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal,  //
+    ufConnections, ufExports, ufWallComments, ufActivities, ufInterests, ufMusic,  //
+    ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost,                //
+    ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage,                     //
+    ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone,          //
+    ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, //
+    ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
 
   TVkProfileFieldHelper = record helper for TVkProfileField
     function ToString: string; inline;
@@ -417,6 +427,13 @@ type
   /// “ут список цветов -> VkGroupTagColors
   /// </summary>
   TVkGroupTagColor = string;
+
+  TVkDeactivated = (pdNone, pdDeleted, pdBanned);
+
+  TVkDeactivatedHelper = record helper for TVkDeactivated
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkDeactivated; static;
+  end;
 
   TVkAgeLimits = (alNone = 1, al16Plus = 2, al18Plus = 3);
 
@@ -598,6 +615,8 @@ type
   TVkPostTypeHelper = record helper for TVkPostType
     function ToString: string; inline;
   end;
+
+  TVkPolitical = (plNone, plCommunist, plSocialist, plModerate, plLiberal, plConservative, plMonarchical, plUltraConservative, plIndifferent, plLibertarian);
 
   /// <summary>
   /// именительный Ц nom, родительный Ц gen, дательный Ц dat, винительный Ц acc, творительный Ц ins, предложный Ц abl
@@ -836,6 +855,8 @@ type
   TOnUsersTyping = procedure(Sender: TObject; Data: TChatTypingData) of object;
 
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
+
+  TOnUnhandledEvents = procedure(Sender: TObject; const JSON: TJSONValue) of object;
 
 var
   VkUserActive: array[Boolean] of string = ('Ѕездействие', 'ѕокинул сайт');
@@ -2586,6 +2607,32 @@ end;
 function TVkPlatformHelper.ToString: string;
 begin
   Result := VkPlatformsType[Self];
+end;
+
+{ TVkDeactivatedHelper }
+
+class function TVkDeactivatedHelper.Create(const Value: string): TVkDeactivated;
+begin
+  case IndexStr(Value, ['deleted', 'banned']) of
+    0:
+      Exit(TVkDeactivated.pdDeleted);
+    1:
+      Exit(TVkDeactivated.pdBanned);
+  else
+    Exit(TVkDeactivated.pdNone);
+  end;
+end;
+
+function TVkDeactivatedHelper.ToString: string;
+begin
+  case Self of
+    pdDeleted:
+      Exit('deleted');
+    pdBanned:
+      Exit('banned');
+  else
+    Exit('');
+  end;
 end;
 
 end.
