@@ -46,16 +46,16 @@ type
     List: TParams;
     function Name(Value: string): Integer;
     function ListId(Value: Integer): Integer;
-    function UserIds(Value: TIds): Integer;
-    function AddUserIds(Value: TIds): Integer;
-    function DeleteUserIds(Value: TIds): Integer;
+    function UserIds(Value: TIdList): Integer;
+    function AddUserIds(Value: TIdList): Integer;
+    function DeleteUserIds(Value: TIdList): Integer;
   end;
 
   TVkParamsFriendsGetMutual = record
     List: TParams;
     function SourceUid(Value: Integer): Integer;
     function TargetUid(Value: Integer): Integer;
-    function TargetUids(Value: TIds): Integer;
+    function TargetUids(Value: TIdList): Integer;
     function OrderRandom(Value: Boolean): Integer;
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
@@ -132,11 +132,11 @@ type
     /// <summary>
     /// —оздает новый список друзей у текущего пользовател€.
     /// </summary>
-    function AddList(var ListId: Integer; Name: string; UserIds: TIds): Boolean;
+    function AddList(var ListId: Integer; Name: string; UserIds: TIdList): Boolean;
     /// <summary>
     /// ¬озвращает информацию о том, добавлен ли текущий пользователь в друзь€ у указанных пользователей.
     /// </summary>
-    function AreFriends(var Items: TVkFriendInfo; UserIds: TIds; NeedSign: Boolean; Extended: Boolean): Boolean;
+    function AreFriends(var Items: TVkFriendInfo; UserIds: TIdList; NeedSign: Boolean; Extended: Boolean): Boolean;
     /// <summary>
     /// ”дал€ет пользовател€ из списка друзей или отклон€ет за€вку в друзь€.
     /// </summary>
@@ -156,7 +156,7 @@ type
     /// <summary>
     /// –едактирует списки друзей дл€ выбранного друга.
     /// </summary>
-    function Edit(UserId: Integer; ListIds: TIds): Boolean;
+    function Edit(UserId: Integer; ListIds: TIdList): Boolean;
     /// <summary>
     /// –едактирует списки друзей дл€ выбранного друга.
     /// </summary>
@@ -279,7 +279,7 @@ begin
   end;
 end;
 
-function TFriendsController.AddList(var ListId: Integer; Name: string; UserIds: TIds): Boolean;
+function TFriendsController.AddList(var ListId: Integer; Name: string; UserIds: TIdList): Boolean;
 begin
   with Handler.Execute('friends.add', [['name', Name], ['user_ids', UserIds.ToString]]) do
   begin
@@ -287,7 +287,7 @@ begin
   end;
 end;
 
-function TFriendsController.AreFriends(var Items: TVkFriendInfo; UserIds: TIds; NeedSign, Extended: Boolean): Boolean;
+function TFriendsController.AreFriends(var Items: TVkFriendInfo; UserIds: TIdList; NeedSign, Extended: Boolean): Boolean;
 begin
   Result := Handler.Execute('friends.areFriends', [
     ['user_ids', UserIds.ToString],
@@ -332,7 +332,7 @@ begin
   end;
 end;
 
-function TFriendsController.Edit(UserId: Integer; ListIds: TIds): Boolean;
+function TFriendsController.Edit(UserId: Integer; ListIds: TIdList): Boolean;
 begin
   with Handler.Execute('friends.edit', [['user_id', UserId.ToString], ['list_ids', ListIds.ToString]]) do
   begin
@@ -506,12 +506,12 @@ end;
 
 { TVkParamsFriendsListEdit }
 
-function TVkParamsFriendsListEdit.AddUserIds(Value: TIds): Integer;
+function TVkParamsFriendsListEdit.AddUserIds(Value: TIdList): Integer;
 begin
   Result := List.Add('add_user_ids', Value);
 end;
 
-function TVkParamsFriendsListEdit.DeleteUserIds(Value: TIds): Integer;
+function TVkParamsFriendsListEdit.DeleteUserIds(Value: TIdList): Integer;
 begin
   Result := List.Add('delete_user_ids', Value);
 end;
@@ -526,7 +526,7 @@ begin
   Result := List.Add('name', Value);
 end;
 
-function TVkParamsFriendsListEdit.UserIds(Value: TIds): Integer;
+function TVkParamsFriendsListEdit.UserIds(Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
@@ -561,7 +561,7 @@ begin
   Result := List.Add('target_uids', Value);
 end;
 
-function TVkParamsFriendsGetMutual.TargetUids(Value: TIds): Integer;
+function TVkParamsFriendsGetMutual.TargetUids(Value: TIdList): Integer;
 begin
   Result := List.Add('target_uids', Value);
 end;

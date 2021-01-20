@@ -226,7 +226,7 @@ type
     /// <summary>
     /// Подтверждает отметки.
     /// </summary>
-    function ConfirmTags(Tags: TIds): Boolean;
+    function ConfirmTags(Tags: TIdList): Boolean;
     /// <summary>
     /// Позволяет скопировать фотографию в альбом "Сохраненные фотографии"
     /// </summary>
@@ -612,7 +612,7 @@ begin
     Result := Success and TryStrToInt(Response, Count);
 end;
 
-function TPhotosController.ConfirmTags(Tags: TIds): Boolean;
+function TPhotosController.ConfirmTags(Tags: TIdList): Boolean;
 begin
   with Handler.Execute('photos.confirmTag', ['tags', Tags.ToString]) do
     Result := Success and ResponseIsTrue;

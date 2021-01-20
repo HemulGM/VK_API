@@ -56,7 +56,7 @@ type
     /// <summary>
     /// Возвращает информацию о городах и регионах по их идентификаторам.
     /// </summary>
-    function GetCitiesById(var Items: TVkCities; const CityIds: TIds): Boolean;
+    function GetCitiesById(var Items: TVkCities; const CityIds: TIdList): Boolean;
     /// <summary>
     /// Возвращает список стран.
     /// </summary>
@@ -64,7 +64,7 @@ type
     /// <summary>
     /// Возвращает информацию о странах по их идентификаторам.
     /// </summary>
-    function GetCountriesById(var Items: TVkCountries; const CountryIds: TIds): Boolean;
+    function GetCountriesById(var Items: TVkCountries; const CountryIds: TIdList): Boolean;
     /// <summary>
     /// Возвращает список факультетов.
     /// </summary>
@@ -78,7 +78,7 @@ type
     /// <summary>
     /// Возвращает информацию об одной или нескольких станциях метро по их идентификаторам.
     /// </summary>
-    function GetMetroStationsById(var Items: TVkMetroStations; const StationIds: TIds): Boolean;
+    function GetMetroStationsById(var Items: TVkMetroStations; const StationIds: TIdList): Boolean;
     /// <summary>
     /// Возвращает список регионов.
     /// </summary>
@@ -125,7 +125,7 @@ begin
   Result := GetCities(Items, Params.List);
 end;
 
-function TDatabaseController.GetCitiesById(var Items: TVkCities; const CityIds: TIds): Boolean;
+function TDatabaseController.GetCitiesById(var Items: TVkCities; const CityIds: TIdList): Boolean;
 begin
   Result := Handler.Execute('database.getCitiesById', ['city_ids', CityIds.ToString]).GetObject<TVkCities>(Items);
 end;
@@ -135,7 +135,7 @@ begin
   Result := Handler.Execute('database.getCountries', Params.List).GetObject<TVkCountries>(Items);
 end;
 
-function TDatabaseController.GetCountriesById(var Items: TVkCountries; const CountryIds: TIds): Boolean;
+function TDatabaseController.GetCountriesById(var Items: TVkCountries; const CountryIds: TIdList): Boolean;
 begin
   Result := Handler.Execute('database.getCountriesById', ['country_ids', CountryIds.ToString]).GetObject<TVkCountries>(Items);
 end;
@@ -160,7 +160,7 @@ begin
     GetObject<TVkMetroStations>(Items);
 end;
 
-function TDatabaseController.GetMetroStationsById(var Items: TVkMetroStations; const StationIds: TIds): Boolean;
+function TDatabaseController.GetMetroStationsById(var Items: TVkMetroStations; const StationIds: TIdList): Boolean;
 begin
   Result := Handler.Execute('database.getMetroStationsById', ['station_ids', StationIds.ToString]).
     GetObject<TVkMetroStations>(Items);

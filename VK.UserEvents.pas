@@ -35,8 +35,8 @@ type
     procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoUserTyping(const UserId, ChatId: Integer);
     procedure DoUserCall(const UserId, CallId: Integer);
-    procedure DoUsersTyping(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
-    procedure DoUsersRecording(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
+    procedure DoUsersTyping(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
+    procedure DoUsersRecording(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
     procedure DoChangeDialogFlags(const PeerId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer);
     procedure DoNewMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoUserStateChange(IsOnline: Boolean; UserId, Extra, TimeStamp: Integer);
@@ -136,7 +136,7 @@ var
   EventType, A1, A2, A3: Integer;
   i: Integer;
   ExtraFields: TEventExtraFields;
-  UserIds: TIds;
+  UserIds: TIdList;
   Arr: TJSONArray;
 begin
   try
@@ -598,7 +598,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoUsersRecording(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
+procedure TCustomUserEvents.DoUsersRecording(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
 var
   Data: TChatRecordingData;
 begin
@@ -640,7 +640,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoUsersTyping(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
+procedure TCustomUserEvents.DoUsersTyping(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
 var
   Data: TChatTypingData;
 begin

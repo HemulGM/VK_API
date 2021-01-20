@@ -84,7 +84,7 @@ type
     /// <summary>
     /// Идентификаторы пользователей, не более 500.
     /// </summary>
-    function UserIds(Value: TIds): Integer;
+    function UserIds(Value: TIdList): Integer;
   end;
 
   TVkParamsGroupsAddAddress = record
@@ -215,8 +215,8 @@ type
     function AgeLimits(Value: TVkAgeLimits): Integer;
     function Market(Value: Boolean): Integer;
     function MarketComments(Value: Boolean): Integer;
-    function MarketCountry(Value: TIds): Integer;
-    function MarketCity(Value: TIds): Integer;
+    function MarketCountry(Value: TIdList): Integer;
+    function MarketCity(Value: TIdList): Integer;
     function MarketCurrency(Value: TVkCurrency): Integer;
     function MarketContact(Value: Integer): Integer;
     function MarketWiki(Value: Integer): Integer;
@@ -243,7 +243,7 @@ type
   TVkParamsGroupsGetAddresses = record
     List: TParams;
     function GroupId(Value: Integer): Integer;
-    function AddressIds(Value: TIds): Integer; overload;
+    function AddressIds(Value: TIdList): Integer; overload;
     function AddressIds(Value: Integer): Integer; overload;
     function Latitude(Value: Extended): Integer;
     function Longitude(Value: Extended): Integer;
@@ -550,7 +550,7 @@ type
     /// <summary>
     ///  Возвращает информацию о заданном сообществе или о нескольких сообществах.
     /// </summary>
-    function GetById(var Items: TVkGroups; GroupIds: TIds; Fields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Items: TVkGroups; GroupIds: TIdList; Fields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
     ///  Возвращает информацию о заданном сообществе или о нескольких сообществах.
     /// </summary>
@@ -562,7 +562,7 @@ type
     /// <summary>
     ///  Получает информацию о серверах для Callback API в сообществе.
     /// </summary>
-    function GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Integer; ServerIds: TIds = []): Boolean;
+    function GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Integer; ServerIds: TIdList = []): Boolean;
     /// <summary>
     ///  Позволяет получить настройки уведомлений Callback API для сообщества.
     /// </summary>
@@ -837,7 +837,7 @@ begin
   Result := Handler.Execute('groups.getCallbackConfirmationCode', ['group_id', GroupId.ToString]).GetValue('code', Code);
 end;
 
-function TGroupsController.GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Integer; ServerIds: TIds): Boolean;
+function TGroupsController.GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Integer; ServerIds: TIdList): Boolean;
 begin
   Result := Handler.Execute('groups.getCallbackServers', [
     ['group_id', GroupId.ToString],
@@ -869,7 +869,7 @@ begin
     GetObject<TVkGroupCategories>(Items);
 end;
 
-function TGroupsController.GetById(var Items: TVkGroups; GroupIds: TIds; Fields: TVkGroupFields): Boolean;
+function TGroupsController.GetById(var Items: TVkGroups; GroupIds: TIdList; Fields: TVkGroupFields): Boolean;
 begin
   Result := Handler.Execute('groups.getById', [
     ['group_ids', GroupIds.ToString],
@@ -1200,7 +1200,7 @@ begin
   Result := List.Add('user_ids', Value);
 end;
 
-function TVkParamsGroupsIsMember.UserIds(Value: TIds): Integer;
+function TVkParamsGroupsIsMember.UserIds(Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
@@ -1450,7 +1450,7 @@ begin
   Result := List.Add('market', Value);
 end;
 
-function TVkParamsGroupsEdit.MarketCity(Value: TIds): Integer;
+function TVkParamsGroupsEdit.MarketCity(Value: TIdList): Integer;
 begin
   Result := List.Add('market_city', Value);
 end;
@@ -1465,7 +1465,7 @@ begin
   Result := List.Add('market_contact', Value);
 end;
 
-function TVkParamsGroupsEdit.MarketCountry(Value: TIds): Integer;
+function TVkParamsGroupsEdit.MarketCountry(Value: TIdList): Integer;
 begin
   Result := List.Add('market_country', Value);
 end;
@@ -1619,7 +1619,7 @@ end;
 
 { TVkParamsGroupsGetAddresses }
 
-function TVkParamsGroupsGetAddresses.AddressIds(Value: TIds): Integer;
+function TVkParamsGroupsGetAddresses.AddressIds(Value: TIdList): Integer;
 begin
   Result := List.Add('address_ids', Value);
 end;

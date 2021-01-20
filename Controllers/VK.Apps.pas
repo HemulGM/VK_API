@@ -9,7 +9,7 @@ type
   TVkParamsAppsGet = record
     List: TParams;
     function AppId(Value: Integer): TVkParamsAppsGet;
-    function AppIds(Value: TIds): TVkParamsAppsGet;
+    function AppIds(Value: TIdList): TVkParamsAppsGet;
     function &Platform(Value: TVkPlatform): TVkParamsAppsGet;
     function Extended(Value: Boolean): TVkParamsAppsGet;
     function ReturnFriends(Value: Boolean): TVkParamsAppsGet;
@@ -66,7 +66,7 @@ begin
   List.Add('app_ids', Value);
 end;
 
-function TVkParamsAppsGet.AppIds(Value: TIds): TVkParamsAppsGet;
+function TVkParamsAppsGet.AppIds(Value: TIdList): TVkParamsAppsGet;
 begin
   Result := Self;
   List.Add('app_ids', Value);

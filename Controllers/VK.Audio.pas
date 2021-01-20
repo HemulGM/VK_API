@@ -12,7 +12,7 @@ type
     function OwnerId(Value: Integer): TVkParamsAudioGet;
     function AlbumId(Value: Integer): TVkParamsAudioGet;
     function PlaylistId(Value: Integer): TVkParamsAudioGet;
-    function AudioIds(Value: TIds): TVkParamsAudioGet;
+    function AudioIds(Value: TIdList): TVkParamsAudioGet;
     function Offset(Value: Integer): TVkParamsAudioGet;
     function Count(Value: Integer): TVkParamsAudioGet;
     function AccessKey(Value: string): TVkParamsAudioGet;
@@ -697,7 +697,7 @@ begin
   List.Add('album_id', Value);
 end;
 
-function TVkParamsAudioGet.AudioIds(Value: TIds): TVkParamsAudioGet;
+function TVkParamsAudioGet.AudioIds(Value: TIdList): TVkParamsAudioGet;
 begin
   Result := Self;
   List.Add('audio_ids', Value);

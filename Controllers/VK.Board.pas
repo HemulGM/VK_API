@@ -88,7 +88,7 @@ type
     /// <summary>
     /// —писок идентификаторов тем, которые необходимо получить (не более 100). ѕо умолчанию возвращаютс€ все темы. ≈сли указан данный параметр, игнорируютс€ параметры order, offset и count (возвращаютс€ все запрошенные темы в указанном пор€дке).
     /// </summary>
-    function TopicIds(Value: TIds): Integer;
+    function TopicIds(Value: TIdList): Integer;
     /// <summary>
     /// ѕор€док, в котором необходимо вернуть список тем.
     /// </summary>
@@ -545,7 +545,7 @@ begin
   Result := List.Add('preview_length', Value);
 end;
 
-function TVkParamsBoardGet.TopicIds(Value: TIds): Integer;
+function TVkParamsBoardGet.TopicIds(Value: TIdList): Integer;
 begin
   Result := List.Add('topic_ids', Value);
 end;

@@ -49,7 +49,7 @@ type
     /// Статистика записей в настоящий момент доступна только для сообществ с количеством участников от 5000 и выше, а также официальных сообществ.
     /// Пользователь, от имени которого вызывается метод, должен быть редактором или администратором сообщества, в котором размещена запись.
     /// </summary>
-    function GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIds): Boolean; overload;
+    function GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIdList): Boolean; overload;
     /// <summary>
     /// Добавляет данные о текущем сеансе в статистику посещаемости приложения.
     /// После первого вызова данного метода в разделе «Статистика» настроек Вашего приложения станет доступна вкладка «Посещаемость». В ней будет отображена информация о числе запусков и уникальных посетителей Вашего приложения.
@@ -75,7 +75,7 @@ begin
   Result := Get(Items, Params.List);
 end;
 
-function TStatsController.GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIds): Boolean;
+function TStatsController.GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIdList): Boolean;
 begin
   Result := Handler.Execute('stats.getPostReach', [
     ['owner_id', OwnerId.ToString],

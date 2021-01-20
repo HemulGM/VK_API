@@ -5,8 +5,7 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections,
-  System.JSON, VK.Entity.Common;
+  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections, System.JSON, VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -166,7 +165,6 @@ type
 
   {$IFDEF OLD_VERSION}
   TArrayOfInteger = array of Integer;
-
   {$ELSE}
 
   TArrayOfInteger = TArray<Integer>;
@@ -186,7 +184,7 @@ type
 
   TParamInt = TArrayOfInteger;
 
-  TIds = TArrayOfInteger;
+  TIdList = TArrayOfInteger;
 
   {$IFDEF OLD_VERSION}
   TParams = array of TParam;
@@ -265,7 +263,9 @@ type
   /// <summary>
   ///  ‘лаги сообщений
   /// </summary>
-  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden, mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted, mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
+  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden,
+    mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted,
+    mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
 
   TMessageFlagHelper = record helper for TMessageFlag
     function ToString: string; inline;
@@ -290,7 +290,8 @@ type
   chat_unpin_message Ч откреплено сообщение;
   chat_invite_user_by_link Ч пользователь присоединилс€ к беседе по ссылке.
  }
-  TVkMessageActionType = (maUnknown, maChatPhotoUpdate, maChatPhotoRemove, maChatCreate, maChatTitleUpdate, maChatInviteUser, maChatKickUser, maChatPinMessage, maChatUnpinMessage, maChatInviteUserByLink);
+  TVkMessageActionType = (maUnknown, maChatPhotoUpdate, maChatPhotoRemove, maChatCreate, maChatTitleUpdate,
+    maChatInviteUser, maChatKickUser, maChatPinMessage, maChatUnpinMessage, maChatInviteUserByLink);
 
   TVkMessageActionTypeHelper = record helper for TVkMessageActionType
     function ToString: string; inline;
@@ -300,7 +301,9 @@ type
   /// <summary>
   ///  ∆анры музыки
   /// </summary>
-  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
+  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
+    agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
+    agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 
   TAudioGenreHelper = record helper for TAudioGenre
     function ToConst: Integer;
@@ -340,14 +343,22 @@ type
   /// »грать, ѕодать за€вку, ѕолучить предложение, Ќаписать, ќткликнутьс€
   /// ѕодробное описание тут https://vk.com/dev/wall.postAdsStealth
   /// </summary>
-  TVkPostLinkButton = (lbAuto, lbAppJoin, lbAppGameJoin, lbOpenUrl, lbOpen, lbMore, lbCall, lbBook, lbEnroll, lbRegister, lbBuy, lbBuyTicket, lbOrder, lbCreate, lbInstall, lbContact, lbFill, lbJoinPublic, lbJoinEvent, lbJoin, lbIM, lbIM2, lbBegin, lbGet, lbWatch, lbDownload, lbParticipate, lbPlay, lbApply, lbGetAnOffer, lbToWrite, lbReply);
+  TVkPostLinkButton = (lbAuto, lbAppJoin, lbAppGameJoin, lbOpenUrl, lbOpen, lbMore, lbCall, lbBook, lbEnroll, lbRegister,
+    lbBuy, lbBuyTicket, lbOrder, lbCreate, lbInstall, lbContact, lbFill, lbJoinPublic, lbJoinEvent, lbJoin, lbIM, lbIM2,
+    lbBegin, lbGet, lbWatch, lbDownload, lbParticipate, lbPlay, lbApply, lbGetAnOffer, lbToWrite, lbReply);
 
   TVkPostLinkButtonHelper = record helper for TVkPostLinkButton
     function ToString: string; inline;
   end;
 
-  TVkProfileField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufPhotoBig, ufPhotoMedium, ufOnline, ufLists, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufWallComments, ufActivities,
-    ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
+  TVkProfileField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
+    ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufPhotoBig, ufPhotoMedium,
+    ufOnline, ufLists, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus,
+    usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal,
+    ufConnections, ufExports, ufWallComments, ufActivities, ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames,
+    ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest,
+    ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus,
+    ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
 
   TVkProfileFieldHelper = record helper for TVkProfileField
     function ToString: string; inline;
@@ -361,7 +372,10 @@ type
     class function All: TVkProfileFields; static; inline;
   end;
 
-  TVkGroupMemberField = (mfSex, mfBdate, mfCity, mfCountry, mfPhoto50, mfPhoto100, mfPhoto200orig, mfPhoto200, mfPhoto400orig, mfPhotoMax, mfPhotoMaxOrig, mfOnline, mfOnlineMobile, mfLists, mfDomain, mfHasMobile, mfContacts, mfConnections, mfSite, mfEducation, mfUniversities, mfSchools, mfCanPost, mfCanSeeAllPosts, mfCanSeeAudio, mfCanWritePrivateMessage, mfStatus, mfLastSeen, mfCommonCount, mfRelation, mfRelatives);
+  TVkGroupMemberField = (mfSex, mfBdate, mfCity, mfCountry, mfPhoto50, mfPhoto100, mfPhoto200orig, mfPhoto200,
+    mfPhoto400orig, mfPhotoMax, mfPhotoMaxOrig, mfOnline, mfOnlineMobile, mfLists, mfDomain, mfHasMobile, mfContacts,
+    mfConnections, mfSite, mfEducation, mfUniversities, mfSchools, mfCanPost, mfCanSeeAllPosts, mfCanSeeAudio,
+    mfCanWritePrivateMessage, mfStatus, mfLastSeen, mfCommonCount, mfRelation, mfRelatives);
 
   TVkGroupMemberFieldHelper = record helper for TVkGroupMemberField
     function ToString: string; inline;
@@ -375,7 +389,9 @@ type
     class function All: TVkGroupMemberFields; static; inline;
   end;
 
-  TVkGroupField = (gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate, gfFinishDate, gfCanPost, gfCanSeeAllPosts, gfActivity, gfStatus, gfContacts, gfLinks, gfFixedPost, gfVerified, gfSite, gfCanCreateTopic, gfPhoto50);
+  TVkGroupField = (gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate,
+    gfFinishDate, gfCanPost, gfCanSeeAllPosts, gfActivity, gfStatus, gfContacts, gfLinks, gfFixedPost, gfVerified,
+    gfSite, gfCanCreateTopic, gfPhoto50);
 
   TVkGroupFieldHelper = record helper for TVkGroupField
     function ToString: string; inline;
@@ -388,7 +404,8 @@ type
     class function All: TVkGroupFields; static; inline;
   end;
 
-  TVkGroupAddressField = (gafTitle, gafAddress, gafAdditionalAddress, gafCountryId, gafCityId, gafMetroStationId, gafLatitude, gafLongitude, gafWorkInfoStatus, gafTimeOffset);
+  TVkGroupAddressField = (gafTitle, gafAddress, gafAdditionalAddress, gafCountryId, gafCityId, gafMetroStationId,
+    gafLatitude, gafLongitude, gafWorkInfoStatus, gafTimeOffset);
 
   TVkGroupAddressFieldHelper = record helper for TVkGroupAddressField
     function ToString: string; inline;
@@ -559,6 +576,20 @@ type
   end;
 
   /// <summary>
+  /// Cтатус за€вки
+  /// rsProcessing Ц за€вка рассматриваетс€;
+  /// rsDeclined Ц за€вка отклонена;
+  /// rsResponse Ц общий ответ по статусу обработки за€вки;
+  /// rsResponseWithLink Ц общий ответ по статусу обработки за€вки, содержащий ссылку в поле link;
+  /// </summary>
+  TVkNameRequestStatus = (rsProcessing, rsDeclined, rsResponse, rsResponseWithLink);
+
+  TVkNameRequestStatusHelper = record helper for TVkNameRequestStatus
+    class function Create(const Value: string): TVkNameRequestStatus; static;
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
   ///  “ип смены флагов
   /// </summary>
   TFlagsChangeType = (fcFlagsReplace, fcFlagsSet, fcFlagsReset);
@@ -570,7 +601,8 @@ type
   /// <summary>
   ///  “ипы объектов
   /// </summary>
-  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment, itTopicComment, itMarketComment, itSitepage, itStory);
+  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment,
+    itTopicComment, itMarketComment, itSitepage, itStory);
 
   TVkItemTypeHelper = record helper for TVkItemType
     function ToString: string; inline;
@@ -579,7 +611,9 @@ type
   /// <summary>
   ///  “ипы вложений
   /// </summary>
-  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWallReply, atSticker, atGift, atCall, atAudioMessage, atPostedPhoto, atGraffiti, atNote, atApp, atPoll, atPage, atAlbum, atPhotosList, atPrettyCards, atEvent);
+  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWallReply,
+    atSticker, atGift, atCall, atAudioMessage, atPostedPhoto, atGraffiti, atNote, atApp, atPoll, atPage, atAlbum,
+    atPhotosList, atPrettyCards, atEvent);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToString: string; inline;
@@ -621,7 +655,7 @@ type
   /// <summary>
   ///  ¬идимость даты рождени€
   /// </summary>
-  TVkBirthDateVisibility = (dvHidden, dvDayMonOnly, dvVisible);
+  TVkBirthDateVisibility = (dvHidden, dvVisible, dvDayMonOnly);
 
   /// <summary>
   /// ќтношени€.
@@ -635,7 +669,8 @@ type
   ///  rnInLove Ч влюблЄн/влюблена;
   ///  rnCivilMarriage Ч в гражданском браке;
   /// </summary>
-  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove, rnCivilMarriage);
+  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove,
+    rnCivilMarriage);
 
   /// <summary>
   /// —труктура событи€ вход€щего сообщени€
@@ -701,13 +736,13 @@ type
   end;
 
   TChatTypingData = record
-    UserIds: TIds;
+    UserIds: TIdList;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
 
   TChatRecordingData = record
-    UserIds: TIds;
+    UserIds: TIdList;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
@@ -752,7 +787,8 @@ type
     function ToString: string; overload; inline;
   end;
 
-  TVkCounterFilter = (cfFriends, cfMessages, cfPhotos, cfVideos, cfNotes, cfGifts, cfEvents, cfGroups, cfNotifications, cfSdk, cfAppRequests, cfFriendsRecommendations);
+  TVkCounterFilter = (cfFriends, cfMessages, cfPhotos, cfVideos, cfNotes, cfGifts, cfEvents, cfGroups, cfNotifications,
+    cfSdk, cfAppRequests, cfFriendsRecommendations);
 
   TVkCounterFilterHelper = record helper for TVkCounterFilter
     function ToString: string; overload; inline;
@@ -776,7 +812,8 @@ type
     function ToString: string; overload; inline;
   end;
 
-  TVkPermission = (Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage);
+  TVkPermission = (Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline,
+    Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage);
 
   TVkPermissionHelper = record helper for TVkPermission
     function ToString: string; overload; inline;
@@ -791,7 +828,8 @@ type
 
   TOnLogin = procedure(Sender: TObject) of object;
 
-  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string) of object;
+  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash:
+    string) of object;
 
   TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
 
@@ -921,7 +959,8 @@ var
   VkCurrencyId: array[TVkCurrency] of Integer = (643, 980, 398, 978, 840);
   VkGroupAddressField: array[TVkGroupAddressField] of string = ('title', 'address', 'additional_address', 'country_id',
     'city_id', 'metro_station_id', 'latitude', 'longitude', 'work_info_status', 'time_offset');
-  VkGroupTagColors: array of string = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a', '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
+  VkGroupTagColors: array of string = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a',
+    '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
   VkMessageActionType: array[TVkMessageActionType] of string = (
     '',
     'chat_photo_update',
@@ -2586,6 +2625,40 @@ end;
 function TVkPlatformHelper.ToString: string;
 begin
   Result := VkPlatformsType[Self];
+end;
+
+{ TVkNameRequestStatusHelper }
+
+class function TVkNameRequestStatusHelper.Create(const Value: string): TVkNameRequestStatus;
+begin
+  case IndexStr(Value, ['processing', 'declined', 'response', 'response_with_link']) of
+    0:
+      Exit(rsProcessing);
+    1:
+      Exit(rsDeclined);
+    2:
+      Exit(rsResponse);
+    3:
+      Exit(rsResponseWithLink);
+  else
+    Result := rsProcessing;
+  end;
+end;
+
+function TVkNameRequestStatusHelper.ToString: string;
+begin
+  case Self of
+    rsProcessing:
+      Exit('processing');
+    rsDeclined:
+      Exit('declined');
+    rsResponse:
+      Exit('response');
+    rsResponseWithLink:
+      Exit('response_with_link');
+  else
+    Result := '';
+  end;
 end;
 
 end.

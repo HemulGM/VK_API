@@ -26,7 +26,7 @@ type
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function PollId(Value: Integer): Integer;
-    function AnswerIds(Value: TIds): Integer;
+    function AnswerIds(Value: TIdList): Integer;
     function IsBoard(Value: Boolean): Integer;
   end;
 
@@ -58,7 +58,7 @@ type
     function Question(Value: string): Integer;
     function AddAnswers(Value: TArrayOfString): Integer;
     function EditAnswers(Value: TVkVoteAnswers): Integer;
-    function DeleteAnswers(Value: TIds): Integer;
+    function DeleteAnswers(Value: TIdList): Integer;
     function EndDate(Value: TDateTime): Integer;
     function PhotoId(Value: Integer): Integer;
     function BackgroundId(Value: Integer): Integer;
@@ -79,7 +79,7 @@ type
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function PollId(Value: Integer): Integer;
-    function AnswerIds(Value: TIds): Integer;
+    function AnswerIds(Value: TIdList): Integer;
     function IsBoard(Value: Boolean): Integer;
     function FriendsOnly(Value: Boolean): Integer;
     function Offset(Value: Integer): Integer;
@@ -231,7 +231,7 @@ begin
   Result := List.Add('poll_id', Value);
 end;
 
-function TVkParamsPollsAddVote.AnswerIds(Value: TIds): Integer;
+function TVkParamsPollsAddVote.AnswerIds(Value: TIdList): Integer;
 begin
   Result := List.Add('answer_ids', Value);
 end;
@@ -337,7 +337,7 @@ begin
   Result := List.Add('edit_answers', Value.ToJson);
 end;
 
-function TVkParamsPollsEdit.DeleteAnswers(Value: TIds): Integer;
+function TVkParamsPollsEdit.DeleteAnswers(Value: TIdList): Integer;
 begin
   Result := List.Add('delete_answers', Value.ToJson);
 end;
@@ -447,7 +447,7 @@ begin
   Result := List.Add('poll_id', Value);
 end;
 
-function TVkParamsPollsGetVoters.AnswerIds(Value: TIds): Integer;
+function TVkParamsPollsGetVoters.AnswerIds(Value: TIdList): Integer;
 begin
   Result := List.Add('answer_ids', Value);
 end;

@@ -55,7 +55,7 @@ type
     function PeerId(const Value: Integer): TVkMessageNew;
     function UserId(const Value: Integer): TVkMessageNew;
     function ChatId(const Value: Integer): TVkMessageNew;
-    function UserIds(const Value: TIds): TVkMessageNew;
+    function UserIds(const Value: TIdList): TVkMessageNew;
     function UserDomian(const Value: string): TVkMessageNew;
     function Message(const Value: string): TVkMessageNew;
     function Payload(const Value: string): TVkMessageNew;
@@ -70,7 +70,7 @@ type
     function SubscribeId(const Value: Integer): TVkMessageNew;
     function GroupId(const Value: Integer): TVkMessageNew;
     function ReplyTo(const Value: Integer): TVkMessageNew;
-    function ForwardMessages(const Value: TIds): TVkMessageNew;
+    function ForwardMessages(const Value: TIdList): TVkMessageNew;
     function Attachment(const Value: TAttachmentArray): TVkMessageNew; overload;
     function Attachment(const Value: TAttachment): TVkMessageNew; overload;
     function Send: TVkMessageSendResponses;
@@ -94,7 +94,7 @@ type
   TVkParamsMessageDelete = record
     List: TParams;
     function GroupId(const Value: Integer): Integer;
-    function MessageIds(const Value: TIds): Integer; overload;
+    function MessageIds(const Value: TIdList): Integer; overload;
     function MessageId(const Value: Integer): Integer; overload;
     function Spam(const Value: Boolean): Integer;
     function DeleteForAll(const Value: Boolean): Integer;
@@ -102,7 +102,7 @@ type
 
   TVkParamsMessageGet = record
     List: TParams;
-    function MessageIds(const Value: TIds): Integer; overload;
+    function MessageIds(const Value: TIdList): Integer; overload;
     function MessageId(const Value: Integer): Integer; overload;
     function PreviewLength(const Value: Integer): Integer;
     function Extended(const Value: Boolean): Integer;
@@ -136,7 +136,7 @@ type
     function Attachment(const Value: TAttachmentArray): Integer; overload;
     function Attachment(const Value: string): Integer; overload;
     function ReplyTo(const Value: Integer): Integer;
-    function ForwardMessages(const Value: TIds): Integer;
+    function ForwardMessages(const Value: TIdList): Integer;
     function StickerId(const Value: Integer): Integer;
     function GroupId(const Value: Integer): Integer;
     function Keyboard(const Value: TVkKeyboardConstructor): Integer;
@@ -150,7 +150,7 @@ type
   TVkParamsMessageSendIds = record
     List: TParams;
     function Domain(const Value: string): Integer;
-    function UserIds(const Value: TIds): Integer;
+    function UserIds(const Value: TIdList): Integer;
     function RandomId(const Value: Integer): Integer;
     function Message(const Value: string): Integer;
     function Lat(const Value: Extended): Integer;
@@ -158,7 +158,7 @@ type
     function Attachment(const Value: TAttachmentArray): Integer; overload;
     function Attachment(const Value: string): Integer; overload;
     function ReplyTo(const Value: Integer): Integer;
-    function ForwardMessages(const Value: TIds): Integer;
+    function ForwardMessages(const Value: TIdList): Integer;
     function StickerId(const Value: Integer): Integer;
     function GroupId(const Value: Integer): Integer;
     function Keyboard(const Value: TVkKeyboardConstructor): Integer;
@@ -198,7 +198,7 @@ type
   TVkParamsMessageGetByConvMesId = record
     List: TParams;
     function PeerId(const Value: Integer): Integer;
-    function ConversationMessageIds(const Value: TIds): Integer; overload;
+    function ConversationMessageIds(const Value: TIdList): Integer; overload;
     function ConversationMessageIds(const Value: Integer): Integer; overload;
     function Extended(const Value: Boolean): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
@@ -208,14 +208,14 @@ type
   TVkParamsMessageGetChat = record
     List: TParams;
     function ChatId(const Value: Integer): Integer;
-    function ChatIds(const Value: TIds): Integer;
+    function ChatIds(const Value: TIdList): Integer;
     function Fields(const Value: TVkProfileFields = []): Integer;
     function NameCase(const Value: TVkNameCase): Integer;
   end;
 
   TVkParamsConversationsGetById = record
     List: TParams;
-    function PeerIds(const Value: TIds): Integer;
+    function PeerIds(const Value: TIdList): Integer;
     function Extended(const Value: Boolean): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function GroupId(const Value: Integer): Integer;
@@ -270,7 +270,7 @@ type
 
   TVkParamsMessageMark = record
     List: TParams;
-    function MessageIds(const Value: TIds): Integer;
+    function MessageIds(const Value: TIdList): Integer;
     function PeerId(const Value: Integer): Integer;
     function GroupId(const Value: Integer): Integer;
     function StartMessageId(const Value: Integer): Integer;
@@ -340,7 +340,7 @@ type
     /// <summary>
     /// Отправить сообщение нескольким пользователям (Доступно только для ключа доступа сообщества)
     /// </summary>
-    function Send(var Items: TVkMessageSendResponses; UserIds: TIds; Message: string; Attachments: TAttachmentArray = []):
+    function Send(var Items: TVkMessageSendResponses; UserIds: TIdList; Message: string; Attachments: TAttachmentArray = []):
       Boolean; overload;
     /// <summary>
     /// Отправить сообщение нескольким пользователям (Доступно только для ключа доступа сообщества)
@@ -366,7 +366,7 @@ type
     /// <summary>
     /// Возвращает сообщения по их идентификаторам.
     /// </summary>
-    function GetById(var Items: TVkMessages; Ids: TIds; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
+    function GetById(var Items: TVkMessages; Ids: TIdList; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает сообщения по их идентификаторам.
     /// </summary>
@@ -378,7 +378,7 @@ type
     /// <summary>
     /// Удаляет сообщения
     /// </summary>
-    function Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer = 0; DeleteForAll: Boolean = False;
+    function Delete(var Items: TVkMessageDelete; MessageIds: TIdList; GroupID: Integer = 0; DeleteForAll: Boolean = False;
       Spam: Boolean = False): Boolean; overload;
     /// <summary>
     /// Удаляет сообщение
@@ -413,7 +413,7 @@ type
     /// <summary>
     /// Создаёт беседу с несколькими участниками.
     /// </summary>
-    function CreateChat(var ChatId: Integer; UserIds: TIds; Title: string; GroupId: Integer = 0): Boolean;
+    function CreateChat(var ChatId: Integer; UserIds: TIdList; Title: string; GroupId: Integer = 0): Boolean;
     /// <summary>
     /// Позволяет удалить фотографию мультидиалога.
     /// </summary>
@@ -517,7 +517,7 @@ type
     /// <summary>
     /// Помечает сообщения как важные либо снимает отметку.
     /// </summary>
-    function MarkAsImportant(var Items: TIds; MessageIds: TIds; Important: Boolean): Boolean;
+    function MarkAsImportant(var Items: TIdList; MessageIds: TIdList; Important: Boolean): Boolean;
     /// <summary>
     /// Помечает беседу как важную либо снимает отметку.
     /// </summary>
@@ -533,7 +533,7 @@ type
     /// <summary>
     /// Помечает сообщения как непрочитанные.
     /// </summary>
-    function MarkAsUnreadConversation(const PeerId: Integer; MessageIds: TIds = []): Boolean;
+    function MarkAsUnreadConversation(const PeerId: Integer; MessageIds: TIdList = []): Boolean;
     /// <summary>
     /// Закрепляет сообщение.
     /// </summary>
@@ -619,7 +619,7 @@ begin
   end;
 end;
 
-function TMessagesController.Delete(var Items: TVkMessageDelete; MessageIds: TIds; GroupID: Integer; DeleteForAll, Spam:
+function TMessagesController.Delete(var Items: TVkMessageDelete; MessageIds: TIdList; GroupID: Integer; DeleteForAll, Spam:
   Boolean): Boolean;
 var
   Params: TVkParamsMessageDelete;
@@ -651,7 +651,7 @@ begin
   end;
 end;
 
-function TMessagesController.CreateChat(var ChatId: Integer; UserIds: TIds; Title: string; GroupId: Integer): Boolean;
+function TMessagesController.CreateChat(var ChatId: Integer; UserIds: TIdList; Title: string; GroupId: Integer): Boolean;
 begin
   Result := Handler.Execute('messages.createChat', [
     ['user_ids', UserIds.ToString],
@@ -749,7 +749,7 @@ begin
   Result := Handler.Execute('messages.getById', Params).GetObject<TVkMessages>(Items);
 end;
 
-function TMessagesController.GetById(var Items: TVkMessages; Ids: TIds; PreviewLength, GroupId: Integer): Boolean;
+function TMessagesController.GetById(var Items: TVkMessages; Ids: TIdList; PreviewLength, GroupId: Integer): Boolean;
 var
   Params: TVkParamsMessageGet;
 begin
@@ -894,7 +894,7 @@ begin
     Result := Success and ResponseIsTrue;
 end;
 
-function TMessagesController.MarkAsImportant(var Items: TIds; MessageIds: TIds; Important: Boolean): Boolean;
+function TMessagesController.MarkAsImportant(var Items: TIdList; MessageIds: TIdList; Important: Boolean): Boolean;
 var
   Resp: TVkBasicIndexItems;
 begin
@@ -935,7 +935,7 @@ begin
   Result := MarkAsRead(Params.List);
 end;
 
-function TMessagesController.MarkAsUnreadConversation(const PeerId: Integer; MessageIds: TIds): Boolean;
+function TMessagesController.MarkAsUnreadConversation(const PeerId: Integer; MessageIds: TIdList): Boolean;
 var
   Params: TParams;
 begin
@@ -1094,7 +1094,7 @@ begin
   Result := Send(Item, Params);
 end;
 
-function TMessagesController.Send(var Items: TVkMessageSendResponses; UserIds: TIds; Message: string; Attachments:
+function TMessagesController.Send(var Items: TVkMessageSendResponses; UserIds: TIdList; Message: string; Attachments:
   TAttachmentArray): Boolean;
 var
   Params: TVkParamsMessageSendIds;
@@ -1179,7 +1179,7 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.ForwardMessages(const Value: TIds): TVkMessageNew;
+function TVkMessageNew.ForwardMessages(const Value: TIdList): TVkMessageNew;
 begin
   Params.Add('forward_messages', Value);
   Result := Self;
@@ -1257,7 +1257,7 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.UserIds(const Value: TIds): TVkMessageNew;
+function TVkMessageNew.UserIds(const Value: TIdList): TVkMessageNew;
 begin
   Params.Add('user_ids', Value);
   Result := Self;
@@ -1374,7 +1374,7 @@ begin
   Result := List.Add('message_ids', Value);
 end;
 
-function TVkParamsMessageGet.MessageIds(const Value: TIds): Integer;
+function TVkParamsMessageGet.MessageIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('message_ids', Value);
 end;
@@ -1401,7 +1401,7 @@ begin
   Result := List.Add('message_ids', Value);
 end;
 
-function TVkParamsMessageDelete.MessageIds(const Value: TIds): Integer;
+function TVkParamsMessageDelete.MessageIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('message_ids', Value);
 end;
@@ -1459,7 +1459,7 @@ begin
   Result := List.Add('dont_parse_links', Value);
 end;
 
-function TVkParamsMessageSend.ForwardMessages(const Value: TIds): Integer;
+function TVkParamsMessageSend.ForwardMessages(const Value: TIdList): Integer;
 begin
   Result := List.Add('forward_messages', Value);
 end;
@@ -1556,7 +1556,7 @@ begin
   Result := List.Add('dont_parse_links', Value);
 end;
 
-function TVkParamsMessageSendIds.ForwardMessages(const Value: TIds): Integer;
+function TVkParamsMessageSendIds.ForwardMessages(const Value: TIdList): Integer;
 begin
   Result := List.Add('forward_messages', Value);
 end;
@@ -1616,7 +1616,7 @@ begin
   Result := List.Add('subscribe_id', Value);
 end;
 
-function TVkParamsMessageSendIds.UserIds(const Value: TIds): Integer;
+function TVkParamsMessageSendIds.UserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
@@ -1718,7 +1718,7 @@ end;
 
 { TVkParamsMessageGetByConvMesId }
 
-function TVkParamsMessageGetByConvMesId.ConversationMessageIds(const Value: TIds): Integer;
+function TVkParamsMessageGetByConvMesId.ConversationMessageIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('conversation_message_ids', Value);
 end;
@@ -1755,7 +1755,7 @@ begin
   Result := List.Add('chat_ids', Value);
 end;
 
-function TVkParamsMessageGetChat.ChatIds(const Value: TIds): Integer;
+function TVkParamsMessageGetChat.ChatIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('chat_ids', Value);
 end;
@@ -1787,7 +1787,7 @@ begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsConversationsGetById.PeerIds(const Value: TIds): Integer;
+function TVkParamsConversationsGetById.PeerIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('peer_ids', Value);
 end;
@@ -1993,7 +1993,7 @@ begin
   Result := List.Add('mark_conversation_as_read', Value);
 end;
 
-function TVkParamsMessageMark.MessageIds(const Value: TIds): Integer;
+function TVkParamsMessageMark.MessageIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('message_ids', Value);
 end;

@@ -42,7 +42,7 @@ type
     /// <summary>
     /// Список идентификаторов пользователей, которым нужно отправить уведомление (максимум 100 идентификаторов).
     /// </summary>
-    function UserIds(Value: TIds): Integer;
+    function UserIds(Value: TIdList): Integer;
     /// <summary>
     /// Текст уведомления. Максимальная длина 254
     /// </summary>
@@ -206,7 +206,7 @@ begin
   Result := List.Add('random_id', Value);
 end;
 
-function TVkParamsNotificationsSendMessage.UserIds(Value: TIds): Integer;
+function TVkParamsNotificationsSendMessage.UserIds(Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;

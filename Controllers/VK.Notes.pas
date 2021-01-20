@@ -9,7 +9,7 @@ uses
 type
   TVkParamsNotesGet = record
     List: TParams;
-    function NoteIds(Value: TIds): Integer;
+    function NoteIds(Value: TIdList): Integer;
     function UserId(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
     function Count(Value: Integer = 20): Integer;
@@ -210,7 +210,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsNotesGet.NoteIds(Value: TIds): Integer;
+function TVkParamsNotesGet.NoteIds(Value: TIdList): Integer;
 begin
   Result := List.Add('notes_ids', Value.ToString);
 end;

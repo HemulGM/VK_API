@@ -79,7 +79,7 @@ type
     function StartTime(Value: TDateTime): Integer;
     function EndTime(Value: TDateTime): Integer;
     function MaxPhotos(Value: Integer): Integer;
-    function SourceIds(Value: TIds): Integer;
+    function SourceIds(Value: TIdList): Integer;
     function StartFrom(Value: string): Integer;
     function Count(Value: Integer): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
@@ -135,11 +135,11 @@ type
     /// <summary>
     /// Запрещает показывать новости от заданных пользователей и групп в ленте новостей текущего пользователя.
     /// </summary>
-    function AddBan(UserIds: TIds = []; GroupIds: TIds = []): Boolean;
+    function AddBan(UserIds: TIdList = []; GroupIds: TIdList = []): Boolean;
     /// <summary>
     /// Разрешает показывать новости от заданных пользователей и групп в ленте новостей текущего пользователя.
     /// </summary>
-    function DeleteBan(UserIds: TIds = []; GroupIds: TIds = []): Boolean;
+    function DeleteBan(UserIds: TIdList = []; GroupIds: TIdList = []): Boolean;
     /// <summary>
     /// Метод позволяет удалить пользовательский список новостей.
     /// </summary>
@@ -171,7 +171,7 @@ type
     /// <summary>
     /// Возвращает пользовательские списки новостей.
     /// </summary>
-    function GetLists(var Items: TVkNewsfeedLists; ListIds: TIds; Extended: Boolean = False): Boolean; overload;
+    function GetLists(var Items: TVkNewsfeedLists; ListIds: TIdList; Extended: Boolean = False): Boolean; overload;
     /// <summary>
     /// Возвращает список записей пользователей на своих стенах, в которых упоминается указанный пользователь.
     /// </summary>
@@ -195,11 +195,11 @@ type
     /// <summary>
     /// Метод позволяет создавать или редактировать пользовательские списки для просмотра новостей.
     /// </summary>
-    function SaveList(var ListId: Integer; Title: string; SourceIds: TIds; NoReposts: Boolean = False): Boolean; overload;
+    function SaveList(var ListId: Integer; Title: string; SourceIds: TIdList; NoReposts: Boolean = False): Boolean; overload;
     /// <summary>
     /// Метод позволяет создавать или редактировать пользовательские списки для просмотра новостей.
     /// </summary>
-    function SaveList(const ListId: Integer; SourceIds: TIds; NoReposts: Boolean = False): Boolean; overload;
+    function SaveList(const ListId: Integer; SourceIds: TIdList; NoReposts: Boolean = False): Boolean; overload;
     /// <summary>
     /// Возвращает результаты поиска по статусам. Новости возвращаются в порядке от более новых к более старым.
     /// </summary>
@@ -225,7 +225,7 @@ uses
 
 { TNewsfeedController }
 
-function TNewsfeedController.AddBan(UserIds, GroupIds: TIds): Boolean;
+function TNewsfeedController.AddBan(UserIds, GroupIds: TIdList): Boolean;
 var
   Params: TParams;
 begin
@@ -237,7 +237,7 @@ begin
     Result := Success and ResponseIsTrue;
 end;
 
-function TNewsfeedController.DeleteBan(UserIds, GroupIds: TIds): Boolean;
+function TNewsfeedController.DeleteBan(UserIds, GroupIds: TIdList): Boolean;
 var
   Params: TParams;
 begin
@@ -271,7 +271,7 @@ begin
   Result := GetComments(Items, Params.List);
 end;
 
-function TNewsfeedController.GetLists(var Items: TVkNewsfeedLists; ListIds: TIds; Extended: Boolean): Boolean;
+function TNewsfeedController.GetLists(var Items: TVkNewsfeedLists; ListIds: TIdList; Extended: Boolean): Boolean;
 begin
   Result := Handler.Execute('newsfeed.getLists', [
     ['list_ids', ListIds.ToString],
@@ -303,7 +303,7 @@ begin
     Result := Success and ResponseIsTrue;
 end;
 
-function TNewsfeedController.SaveList(const ListId: Integer; SourceIds: TIds; NoReposts: Boolean): Boolean;
+function TNewsfeedController.SaveList(const ListId: Integer; SourceIds: TIdList; NoReposts: Boolean): Boolean;
 var
   Items: TVkNewsfeedLists;
   Id: Integer;
@@ -353,7 +353,7 @@ begin
   Result := Handler.Execute('newsfeed.search', Params).GetObject<TVkNews>(Items);
 end;
 
-function TNewsfeedController.SaveList(var ListId: Integer; Title: string; SourceIds: TIds; NoReposts: Boolean): Boolean;
+function TNewsfeedController.SaveList(var ListId: Integer; Title: string; SourceIds: TIdList; NoReposts: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -463,7 +463,7 @@ begin
   Result := List.Add('section', Value);
 end;
 
-function TVkParamsNewsfeedGet.SourceIds(Value: TIds): Integer;
+function TVkParamsNewsfeedGet.SourceIds(Value: TIdList): Integer;
 begin
   Result := List.Add('source_ids', Value);
 end;

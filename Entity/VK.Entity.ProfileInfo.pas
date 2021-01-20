@@ -7,19 +7,6 @@ uses
   VK.Entity.Database.Countries, VK.Entity.Database.Cities, VK.Types, VK.Entity.Profile;
 
 type
-  /// <summary>
-  /// rsProcessing – заявка рассматривается;
-  /// rsDeclined – заявка отклонена;
-  /// rsResponse – общий ответ по статусу обработки заявки;
-  /// rsResponseWithLink – общий ответ по статусу обработки заявки, содержащий ссылку в поле link;
-  /// </summary>
-  TVkNameRequestStatus = (rsProcessing, rsDeclined, rsResponse, rsResponseWithLink);
-
-  TVkNameRequestStatusHelper = record helper for TVkNameRequestStatus
-    class function Create(const Value: string): TVkNameRequestStatus; static;
-    function ToString: string; inline;
-  end;
-
   TVkNameRequest = class(TVkObject)
   private
     FLast_name: string;
@@ -27,7 +14,7 @@ type
     FStatus: TVkNameRequestStatus;
   public
     /// <summary>
-    /// статус заявки. Возможные значения:
+    /// Cтатус заявки
     /// </summary>
     [JsonReflectAttribute(ctString, rtString, TNameRequestStatusInterceptor)]
     property Status: TVkNameRequestStatus read FStatus write FStatus;
@@ -110,40 +97,6 @@ begin
   if Assigned(FName_request) then
     FName_request.Free;
   inherited;
-end;
-
-{ TVkNameRequestStatusHelper }
-
-class function TVkNameRequestStatusHelper.Create(const Value: string): TVkNameRequestStatus;
-begin
-  case IndexStr(Value, ['processing', 'declined', 'response', 'response_with_link']) of
-    0:
-      Exit(rsProcessing);
-    1:
-      Exit(rsDeclined);
-    2:
-      Exit(rsResponse);
-    3:
-      Exit(rsResponseWithLink);
-  else
-    Result := rsProcessing;
-  end;
-end;
-
-function TVkNameRequestStatusHelper.ToString: string;
-begin
-  case Self of
-    rsProcessing:
-      Exit('processing');
-    rsDeclined:
-      Exit('declined');
-    rsResponse:
-      Exit('response');
-    rsResponseWithLink:
-      Exit('response_with_link');
-  else
-    Result := '';
-  end;
 end;
 
 end.

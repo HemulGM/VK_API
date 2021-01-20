@@ -9,7 +9,7 @@ uses
 type
   TVkParamsUsersGet = record
     List: TParams;
-    function UserIds(Value: TIds): Integer;
+    function UserIds(Value: TIdList): Integer;
     function Fields(Value: string): Integer; overload;
     function Fields(Value: TVkProfileFields): Integer; overload;
     function NameCase(Value: TVkNameCase): Integer; overload;
@@ -60,7 +60,7 @@ type
     function HasPhoto(Value: Boolean): Integer;
     function SchoolCountry(Value: Integer): Integer;
     function SchoolCity(Value: Integer): Integer;
-    function SchoolClass(Value: TIds): Integer;
+    function SchoolClass(Value: TIdList): Integer;
     function School(Value: Integer): Integer;
     function SchoolYear(Value: Integer): Integer;
     function Religion(Value: string): Integer;
@@ -75,7 +75,7 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
+    function Get(var Items: TVkProfiles; UserIds: TIdList; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
@@ -164,7 +164,7 @@ begin
   end;
 end;
 
-function TUsersController.Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var Items: TVkProfiles; UserIds: TIdList; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
 var
   Params: TParams;
 begin
@@ -250,7 +250,7 @@ begin
   Result := List.Add('name_case', Value.ToString);
 end;
 
-function TVkParamsUsersGet.UserIds(Value: TIds): Integer;
+function TVkParamsUsersGet.UserIds(Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
@@ -436,7 +436,7 @@ begin
   Result := List.Add('school_city', Value);
 end;
 
-function TVkParamsUsersSearch.SchoolClass(Value: TIds): Integer;
+function TVkParamsUsersSearch.SchoolClass(Value: TIdList): Integer;
 begin
   Result := List.Add('school_class', Value);
 end;

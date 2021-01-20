@@ -18,7 +18,7 @@ type
   TVkParamsStoriesGetUploadServer = record
     List: TParams;
     function AddToNews(const Value: Boolean): Integer;
-    function UserIds(const Value: TIds): Integer;
+    function UserIds(const Value: TIdList): Integer;
     function ReplyToStory(const Value: string): Integer;
     function LinkText(const Value: string): Integer;
     function LinkUrl(const Value: string): Integer;
@@ -75,7 +75,7 @@ type
     /// <summary>
     /// Позволяет скрыть из ленты новостей истории от выбранных источников.
     /// </summary>
-    function BanOwner(const OwnersIds: TIds): Boolean;
+    function BanOwner(const OwnersIds: TIdList): Boolean;
     /// <summary>
     /// Удаляет историю.
     /// </summary>
@@ -148,7 +148,7 @@ type
     /// <summary>
     /// Позволяет вернуть пользователя или сообщество в список отображаемых историй в ленте.
     /// </summary>
-    function UnbanOwner(const OwnersIds: TIds): Boolean;
+    function UnbanOwner(const OwnersIds: TIdList): Boolean;
   end;
 
 implementation
@@ -158,7 +158,7 @@ uses
 
 { TStoriesController }
 
-function TStoriesController.BanOwner(const OwnersIds: TIds): Boolean;
+function TStoriesController.BanOwner(const OwnersIds: TIdList): Boolean;
 begin
   with Handler.Execute('stories.banOwner', ['owners_ids', OwnersIds.ToString]) do
     Result := Success and ResponseIsTrue;
@@ -258,7 +258,7 @@ begin
   end;
 end;
 
-function TStoriesController.UnbanOwner(const OwnersIds: TIds): Boolean;
+function TStoriesController.UnbanOwner(const OwnersIds: TIdList): Boolean;
 begin
   with Handler.Execute('stories.unbanOwner', ['owners_ids', OwnersIds.ToString]) do
     Result := Success and ResponseIsTrue;
@@ -303,7 +303,7 @@ begin
   Result := List.Add('add_to_news', Value);
 end;
 
-function TVkParamsStoriesGetUploadServer.UserIds(const Value: TIds): Integer;
+function TVkParamsStoriesGetUploadServer.UserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;

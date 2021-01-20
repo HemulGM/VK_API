@@ -44,7 +44,7 @@ type
     function OwnerId(Value: Integer): Integer;
     function TargetId(Value: Integer): Integer;
     function AlbumId(Value: Integer): Integer;
-    function AlbumIds(Value: TIds): Integer;
+    function AlbumIds(Value: TIdList): Integer;
     function VideoId(Value: Integer): Integer;
   end;
 
@@ -85,7 +85,7 @@ type
     function OwnerId(Value: Integer): Integer;
     function CommentId(Value: Integer): Integer;
     function Message(Value: string): Integer;
-    function Attachments(Value: TIds): Integer;
+    function Attachments(Value: TIdList): Integer;
   end;
 
   TVkParamsVideoGetComments = record
@@ -105,7 +105,7 @@ type
     List: TParams;
     function TargetId(Value: Integer): Integer;
     function AlbumId(Value: Integer): Integer;
-    function AlbumIds(Value: TIds): Integer;
+    function AlbumIds(Value: TIdList): Integer;
     function OwnerId(Value: Integer): Integer;
     function VideoId(Value: Integer): Integer;
   end;
@@ -686,7 +686,7 @@ begin
   Result := List.Add('album_id', Value);
 end;
 
-function TVkParamsVideoAddToAlbum.AlbumIds(Value: TIds): Integer;
+function TVkParamsVideoAddToAlbum.AlbumIds(Value: TIdList): Integer;
 begin
   Result := List.Add('album_ids', Value);
 end;
@@ -829,7 +829,7 @@ begin
   Result := List.Add('message', Value);
 end;
 
-function TVkParamsVideoEditComment.Attachments(Value: TIds): Integer;
+function TVkParamsVideoEditComment.Attachments(Value: TIdList): Integer;
 begin
   Result := List.Add('attachments', Value);
 end;
@@ -893,7 +893,7 @@ begin
   Result := List.Add('album_id', Value);
 end;
 
-function TVkParamsVideoRemoveFromAlbum.AlbumIds(Value: TIds): Integer;
+function TVkParamsVideoRemoveFromAlbum.AlbumIds(Value: TIdList): Integer;
 begin
   Result := List.Add('album_ids', Value);
 end;
