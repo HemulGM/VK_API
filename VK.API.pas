@@ -715,7 +715,7 @@ end;
 
 procedure TCustomVK.FAuthError(const AText: string; AStatusCode: Integer);
 var
-  E: Exception;
+  E: TVkException;
 begin
   E := TVkException.Create('Токен не был получен');
   if Assigned(FOnErrorLogin) then
@@ -725,20 +725,12 @@ begin
       E.Free;
   end
   else
-  begin
-    DoLog(Self, E.Message);
-    E.Free;
-  end;
+    raise E;
 end;
 
 procedure TCustomVK.FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
-  if DoOnError(Self, E, Code, Text) then
-  begin
-    if Assigned(E) then
-      E.Free;
-  end
-  else
+  if not DoOnError(Self, E, Code, Text) then
     raise E;
 end;
 

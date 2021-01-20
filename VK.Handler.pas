@@ -41,9 +41,6 @@ type
     FWaitCount: Integer;
     function DoConfirm(Answer: string): Boolean;
     function DoProcError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
-    procedure ProcError(Code: Integer; Text: string = ''); overload;
-    procedure ProcError(E: Exception); overload;
-    procedure ProcError(Msg: string); overload;
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure SetOnError(const Value: TOnVKError);
     procedure FLog(const Value: string);
@@ -325,7 +322,7 @@ begin
     end;
   except
     on E: Exception do
-      ProcError(E);
+      DoProcError(Self, E, ERROR_VK_UNKNOWN, E.Message);
   end;
 end;
 
@@ -371,7 +368,8 @@ begin
           begin
             FCancelAll := True;
             FCaptchaWait := False;
-            ProcError(Result.Error.Code, Result.Error.Text);
+            raise TVkCaptchaException.Create(Result.Error.Text);
+             ProcError(Result.Error.Code, );
           end;
         end;
       VK_ERROR_CONFIRM: //Подтверждение для ВК
@@ -414,7 +412,7 @@ begin
       end;
     end
     else
-      ProcError(TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString));
+       raise TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString);
   end;
 end;
 
@@ -483,27 +481,6 @@ end;
 procedure TVkHandler.SetOnConfirm(const Value: TOnConfirm);
 begin
   FOnConfirm := Value;
-end;
-
-procedure TVkHandler.ProcError(Msg: string);
-begin
-  DoProcError(Self, TVkHandlerException.Create(Msg), ERROR_VK_UNKNOWN, Msg);
-end;
-
-procedure TVkHandler.ProcError(Code: Integer; Text: string);
-begin
-  if Text.IsEmpty then
-    Text := VKErrorString(Code);
-  DoProcError(Self, TVkHandlerException.Create(Text), Code, Text);
-end;
-
-procedure TVkHandler.ProcError(E: Exception);
-begin
-  try
-    DoProcError(Self, TVkHandlerException.Create(E.Message), ERROR_VK_UNKNOWN, E.Message);
-  finally
-    E.Free;
-  end;
 end;
 
 end.

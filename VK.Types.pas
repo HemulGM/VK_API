@@ -12,6 +12,8 @@ type
 
   TVkAuthException = TVkException;
 
+  TVkCaptchaException = TVkException;
+
   TVkParserException = TVkException;
 
   TVkHandlerException = TVkException;
@@ -301,7 +303,7 @@ type
   /// <summary>
   ///  Жанры музыки
   /// </summary>
-  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
+  TVkAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
     agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
     agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 

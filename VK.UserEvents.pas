@@ -46,9 +46,9 @@ type
     procedure DoRecoverMessages(const PeerId, LocalId: Integer);
     procedure DoUnhandledEvents(const JSON: TJSONValue);
     procedure DoUserCall(const UserId, CallId: Integer);
-    procedure DoUsersRecording(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
+    procedure DoUsersRecording(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
     procedure DoUserStateChange(IsOnline: Boolean; UserId, Extra, TimeStamp: Integer);
-    procedure DoUsersTyping(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
+    procedure DoUsersTyping(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
     procedure DoUserTyping(const UserId, ChatId: Integer);
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
