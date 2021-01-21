@@ -60,31 +60,31 @@ type
     /// <summary>
     /// Количество фотоальбомов;
     /// </summary>
-    property albums: integer read FAlbums write FAlbums;
+    property Albums: integer read FAlbums write FAlbums;
     /// <summary>
     /// Количество аудиозаписей;
     /// </summary>
-    property audios: integer read FAudios write FAudios;
+    property Audios: integer read FAudios write FAudios;
     /// <summary>
     /// Количество друзей онлайн;
     /// </summary>
-    property online_friends: integer read FOnline_friends write FOnline_friends;
+    property OnlineFriends: integer read FOnline_friends write FOnline_friends;
     /// <summary>
     /// Количество общих друзей;
     /// </summary>
-    property mutual_friends: integer read FMutual_friends write FMutual_friends;
+    property MutualFriends: integer read FMutual_friends write FMutual_friends;
     /// <summary>
     /// Количество видеозаписей с пользователем;
     /// </summary>
-    property user_videos: integer read FUser_videos write FUser_videos;
+    property UserVideos: integer read FUser_videos write FUser_videos;
     /// <summary>
     /// Количество подписчиков;
     /// </summary>
-    property followers: integer read FFollowers write FFollowers;
+    property Followers: integer read FFollowers write FFollowers;
     /// <summary>
     /// Количество объектов в блоке «Интересные страницы».
     /// </summary>
-    property pages: integer read FPages write FPages;
+    property Pages: integer read FPages write FPages;
   end;
 
 implementation

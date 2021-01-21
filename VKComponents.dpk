@@ -63,7 +63,7 @@ contains
   VK.Entity.Catalog in 'Entity\VK.Entity.Catalog.pas',
   VK.Entity.Catalog.Section in 'Entity\VK.Entity.Catalog.Section.pas',
   VK.Entity.ClientInfo in 'Entity\VK.Entity.ClientInfo.pas',
-  VK.Entity.CommentInfo in 'Entity\VK.Entity.CommentInfo.pas',
+  VK.Entity.Info in 'Entity\VK.Entity.Info.pas',
   VK.Entity.Common in 'Entity\VK.Entity.Common.pas',
   VK.Entity.Conversation in 'Entity\VK.Entity.Conversation.pas',
   VK.Entity.Counters in 'Entity\VK.Entity.Counters.pas',

@@ -139,7 +139,7 @@
         <DCCReference Include="Entity\VK.Entity.Catalog.pas"/>
         <DCCReference Include="Entity\VK.Entity.Catalog.Section.pas"/>
         <DCCReference Include="Entity\VK.Entity.ClientInfo.pas"/>
-        <DCCReference Include="Entity\VK.Entity.CommentInfo.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Info.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.pas"/>
         <DCCReference Include="Entity\VK.Entity.Conversation.pas"/>
         <DCCReference Include="Entity\VK.Entity.Counters.pas"/>
@@ -327,12 +327,6 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\..\..\..\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>VKComponents.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

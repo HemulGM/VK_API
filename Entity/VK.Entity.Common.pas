@@ -3,7 +3,8 @@ unit VK.Entity.Common;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, REST.Json.Types;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  REST.Json.Types;
 
 type
   TVkEntity = class(TInterfacedObject)
@@ -118,26 +119,6 @@ type
     property Url: string read FUrl write FUrl;
   end;
 
-  TVkCommentsInfo = class(TVkEntity)
-  private
-    FCan_post: Integer;
-    FCount: Integer;
-    FGroups_can_post: Boolean;
-  public
-    property CanPost: Integer read FCan_post write FCan_post;
-    property Count: Integer read FCount write FCount;
-    property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
-  end;
-
-  TVkRepostsInfo = class(TVkCounterEntity)
-  private
-    FUser_reposted: Integer;
-  public
-    property UserReposted: Integer read FUser_reposted write FUser_reposted;
-  end;
-
-  TVkViewsInfo = TVkCounterEntity;
-
   TVkLiked = class(TVkEntity)
   private
     FCopied: Integer;
@@ -145,19 +126,6 @@ type
   public
     property Copied: Integer read FCopied write FCopied;
     property Liked: Integer read FLiked write FLiked;
-  end;
-
-  TVkLikesInfo = class(TVkEntity)
-  private
-    FCan_like: Integer;
-    FCan_publish: Integer;
-    FCount: Integer;
-    FUser_likes: Integer;
-  public
-    property CanLike: Integer read FCan_like write FCan_like;
-    property CanPublish: Integer read FCan_publish write FCan_publish;
-    property Count: Integer read FCount write FCount;
-    property UserLikes: Integer read FUser_likes write FUser_likes;
   end;
 
   TVkImage = class(TVkEntity)
@@ -278,6 +246,7 @@ type
     FPhoto_50: string;
     FPhoto_200: string;
     FPhoto_100: string;
+    FIs_default_photo: Boolean;
   public
     /// <summary>
     /// URL изображения 50x50px;
@@ -291,6 +260,7 @@ type
     /// URL изображения 200x200px;
     /// </summary>
     property Photo200: string read FPhoto_200 write FPhoto_200;
+    property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
   end;
 
   TVkOwnerPhoto = class(TVkEntity)

@@ -3,8 +3,10 @@ unit VK.Entity.Board.Comment;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll, VK.Entity.Common.ExtendedList;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Info,
+  VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll,
+  VK.Entity.Common.ExtendedList;
 
 type
   TVkBoardComment = class(TVkObject)

@@ -14,6 +14,13 @@ type
     class function Recast<TEnum>(const Value: TEnum): Integer; static;
   end;
 
+  TIntBooleanInterceptor = class(TJSONInterceptor)
+  public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
   TStringDateTimeInterceptor = class(TJSONInterceptor)
   public
     constructor Create; reintroduce;
@@ -31,17 +38,35 @@ type
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
-  TBirthDateVisibilityInterceptor = TEnumInterceptor<TVkBirthDateVisibility>;
+  TBirthDateVisibilityInterceptor = class(TEnumInterceptor<TVkBirthDateVisibility>)
+    constructor Create; reintroduce;
+  end;
 
-  TPoliticalInterceptor = TEnumInterceptor<TVkPolitical>;
+  TPoliticalInterceptor = class(TEnumInterceptor<TVkPolitical>)
+    constructor Create; reintroduce;
+  end;
 
-  TPlatformInterceptor = TEnumInterceptor<TVkPlatform>;
+  TPlatformInterceptor = class(TEnumInterceptor<TVkPlatform>)
+    constructor Create; reintroduce;
+  end;
 
-  TSexInterceptor = TEnumInterceptor<TVkSex>;
+  TSexInterceptor = class(TEnumInterceptor<TVkSex>)
+    constructor Create; reintroduce;
+  end;
 
-  TRelationInterceptor = TEnumInterceptor<TVkRelation>;
+  TRelationInterceptor = class(TEnumInterceptor<TVkRelation>)
+    constructor Create; reintroduce;
+  end;
 
-  TNameRequestStatusInterceptor = TEnumInterceptor<TVkNameRequestStatus>;
+  TNameRequestStatusInterceptor = class(TEnumInterceptor<TVkNameRequestStatus>)
+    constructor Create; reintroduce;
+  end;
+
+  TPeerTypeInterceptor = class(TEnumInterceptor<TVkPeerType>)
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
 
   TDeactivatedInterceptor = class(TJSONInterceptor)
   public
@@ -58,6 +83,9 @@ type
   end;
 
 implementation
+
+uses
+  System.StrUtils;
 
 { TEnumHelp }
 
@@ -211,6 +239,108 @@ var
   v: TValue;
 begin
   value := TVkAudioGenre.Create(StrToIntDef(Arg, 0));
+  v := v.From(value);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+end;
+
+{ TSexInterceptor }
+
+constructor TSexInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+{ TBirthDateVisibilityInterceptor }
+
+constructor TBirthDateVisibilityInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+{ TPoliticalInterceptor }
+
+constructor TPoliticalInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+{ TPlatformInterceptor }
+
+constructor TPlatformInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+{ TRelationInterceptor }
+
+constructor TRelationInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+{ TNameRequestStatusInterceptor }
+
+constructor TNameRequestStatusInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+{ TIntBooleanInterceptor }
+
+constructor TIntBooleanInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TIntBooleanInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: Boolean;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<Boolean>;
+  result := IfThen(value, '1', '0');
+end;
+
+procedure TIntBooleanInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: Boolean;
+begin
+  value := Arg = '1';
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, value);
+end;
+
+{ TPeerTypeInterceptor }
+
+constructor TPeerTypeInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TPeerTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: TVkPeerType;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkPeerType>;
+  result := value.ToString;
+end;
+
+procedure TPeerTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: TVkPeerType;
+  v: TValue;
+begin
+  value := TVkPeerType.Create(Arg);
   v := v.From(value);
   ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
 end;

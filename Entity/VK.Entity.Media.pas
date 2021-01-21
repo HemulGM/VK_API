@@ -9,8 +9,8 @@ uses
   VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note,
   VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
   VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Common.List,
-  VK.Entity.Common.ExtendedList;
+  VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Info,
+  VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
 
 type
   TVkAttachment = class;

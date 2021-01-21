@@ -255,6 +255,8 @@ begin
       Memo1.Lines.Add('Movies: ' + Users.Items[i].Movies);
       Memo1.Lines.Add('------------');
     end;
+    Memo1.Lines.Add(Users.Items[2].ToJsonString);
+    Memo1.Lines.Add('------------');
     Users.Free;
   end;
 end;

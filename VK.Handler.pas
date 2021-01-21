@@ -259,8 +259,9 @@ function TVkHandler.FExecute(Request: TRESTRequest): TResponse;
 var
   IsDone, IsError: Boolean;
   Thr: TThread;
-  Er: Exception;
+  ErrStr: string;
 begin
+  IsError := False;
   Result.Success := False;
   if FLogging then
     FLog(Request.GetFullRequestURL);
@@ -268,7 +269,6 @@ begin
     Request.Response := TRESTResponse.Create(Request);
     if (TThread.Current.ThreadID = MainThreadID) and FUsePseudoAsync then
     begin
-      IsError := False;
       IsDone := False;
       Thr := TThread.CreateAnonymousThread(
         procedure
@@ -282,7 +282,7 @@ begin
               on E: Exception do
               begin
                 IsError := True;
-                Er := E;
+                ErrStr := E.Message;
               end;
             end;
           end;
@@ -294,7 +294,7 @@ begin
         Application.ProcessMessages;
       Thr.Free;
       if IsError then
-        raise Er;
+        raise TVkHandlerException.Create(ErrStr);
     end
     else
     begin
@@ -302,7 +302,16 @@ begin
       if not FCancelAll then
         Request.Execute;
     end;
+  except
+    on E: Exception do
+    begin
+      IsError := True;
+      DoProcError(Self, E, ERROR_VK_NETWORK, E.Message);
+    end;
+  end;
 
+  if not IsError then
+  begin
     if FCancelAll then
     begin
       if not Waiting then
@@ -320,9 +329,6 @@ begin
         Result := ProcessResponse(Request);
       end;
     end;
-  except
-    on E: Exception do
-      DoProcError(Self, E, ERROR_VK_UNKNOWN, E.Message);
   end;
 end;
 
@@ -331,7 +337,7 @@ var
   JS: TJSONValue;
   CaptchaSID: string;
   CaptchaImg: string;
-  CaptchaAns: string;
+  Answer: string;
 begin
   Result.Error.Code := -1;
   if TestCaptcha or Request.Response.JSONValue.TryGetValue<TJSONValue>('error', JS) then
@@ -355,10 +361,10 @@ begin
           CaptchaSID := JS.GetValue<string>('captcha_sid', '');
           CaptchaImg := JS.GetValue<string>('captcha_img', '');
 
-          if AskCaptcha(Self, CaptchaImg, CaptchaAns) then
+          if AskCaptcha(Self, CaptchaImg, Answer) then
           begin
             Request.Params.AddItem('captcha_sid', CaptchaSID);
-            Request.Params.AddItem('captcha_key', CaptchaAns);
+            Request.Params.AddItem('captcha_key', Answer);
             FCaptchaWait := False;
             Result := Execute(Request);
             Request.Params.Delete('captcha_sid');
@@ -368,26 +374,24 @@ begin
           begin
             FCancelAll := True;
             FCaptchaWait := False;
-            raise TVkCaptchaException.Create(Result.Error.Text);
-             ProcError(Result.Error.Code, );
+            raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
           end;
         end;
       VK_ERROR_CONFIRM: //Подтверждение для ВК
         begin
-          CaptchaAns := JS.GetValue<string>('confirmation_text', '');
-          if DoConfirm(CaptchaAns) then
+          Answer := JS.GetValue<string>('confirmation_text', '');
+          if DoConfirm(Answer) then
           begin
             Request.Params.AddItem('confirm', '1');
             Result := Execute(Request);
             Request.Params.Delete('confirm');
           end
           else
-            ProcError(Result.Error.Code, Result.Error.Text);
+            raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
         end;
       VK_ERROR_REQUESTLIMIT: //Превышено кол-во запросов в сек
         begin
-          ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests,
-            RequestLimit, FStartRequest]));
+          FLog(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests, RequestLimit, FStartRequest]));
           WaitTime(1000);
           Result := Execute(Request);
         end;
@@ -397,7 +401,7 @@ begin
           Result := Execute(Request);
         end;
     else
-      ProcError(Result.Error.Code, Result.Error.Text);
+      raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
     end;
   end
   else
@@ -412,7 +416,7 @@ begin
       end;
     end
     else
-       raise TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString);
+      raise TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString);
   end;
 end;
 

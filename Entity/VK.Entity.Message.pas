@@ -6,7 +6,7 @@ uses
   Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
   VK.Entity.Common, VK.Entity.Media, VK.Types, VK.Entity.Keyboard,
   VK.Entity.ClientInfo, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
+  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Wrap.Interceptors;
 
 type
   TVkMessageSendResponse = class(TVkEntity)
@@ -99,7 +99,8 @@ type
     FFwd_messages: TArray<TVkMessage>;
     FImportant: Boolean;
     FIs_hidden: Boolean;
-    FOut: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FOut: Boolean;
     FPeer_id: Integer;
     FRandom_id: Integer;
     FText: string;
@@ -113,8 +114,6 @@ type
     FAction: TVkMessageAction;
     FWas_listened: Boolean;
     function GetPayloadButton: TVkPayloadButton;
-    function GetOut: Boolean;
-    procedure SetOut(const Value: Boolean);
   public
     property Date: TDateTime read FDate write FDate;
     property PeerId: Integer read FPeer_id write FPeer_id;
@@ -137,7 +136,7 @@ type
     function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
-    property&Out: Boolean read GetOut write SetOut;
+    property&Out: Boolean read FOut write FOut;
     destructor Destroy; override;
   end;
 
@@ -219,11 +218,6 @@ begin
   end;
 end;
 
-function TVkMessage.GetOut: Boolean;
-begin
-  Result := FOut = 1;
-end;
-
 function TVkMessage.GetPayloadButton: TVkPayloadButton;
 begin
   if Payload.IsEmpty then
@@ -236,11 +230,6 @@ begin
   except
     Exit(nil);
   end;
-end;
-
-procedure TVkMessage.SetOut(const Value: Boolean);
-begin
-  FOut := BoolToInt(Value);
 end;
 
 { TVkMessageSendResponses }

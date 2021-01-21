@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List;
+  VK.Entity.Photo, VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkMarketSection = TVkBasicObject;

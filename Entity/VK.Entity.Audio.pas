@@ -104,7 +104,9 @@ type
     FUrl: string;
     FLyrics_id: Integer;
     FAlbum_id: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FNo_search: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_hq: Boolean;
     FContent_restricted: Integer;
     FAudio_chart_info: TVkAudioChartInfo;

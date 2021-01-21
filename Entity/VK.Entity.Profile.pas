@@ -407,15 +407,22 @@ type
     FAbout: string;
     FActivities: string;
     FBdate: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FBlacklisted: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FBlacklisted_by_me: Boolean;
     FBooks: string;
     FCan_access_closed: Boolean;
     FCan_be_invited_group: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_post: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_see_all_posts: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_see_audio: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_send_friend_request: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_write_private_message: Boolean;
     FCareer: TArray<TVkCareer>;
     FCommon_count: Integer;
@@ -433,15 +440,20 @@ type
     FFriend_status: Integer;
     FGames: string;
     FGraduation: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FHas_mobile: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FHas_photo: Boolean;
     FHome_phone: string;
     FHome_town: string;
     FInstagram: string;
     FInterests: string;
     FIs_closed: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_favorite: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_friend: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_hidden_from_feed: Boolean;
     FLast_name: string;
     FLast_seen: TVkLastSeen;
@@ -451,6 +463,7 @@ type
     FMusic: string;
     FNickname: string;
     FOccupation: TVkOccupation;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FOnline: Boolean;
     FPersonal: TVkPersonal;
     FPhoto_100: string;
@@ -473,13 +486,15 @@ type
     FSite: string;
     FSkype: string;
     FStatus: string;
-    FTimezone: Integer;
+    FTimezone: Extended;
     FTv: string;
     FTwitter: string;
     FUniversities: TArray<TVkUniversities>;
     FUniversity: Integer;
     FUniversity_name: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FVerified: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FTrending: Boolean;
     FActivity: string;
     FCity: TVkCity;
@@ -913,7 +928,7 @@ type
     /// <summary>
     /// Временная зона. Только при запросе информации о текущем пользователе
     /// </summary>
-    property TimeZone: Integer read FTimezone write FTimezone;
+    property TimeZone: Extended read FTimezone write FTimezone;
     /// <summary>
     /// TrackCode
     /// </summary>

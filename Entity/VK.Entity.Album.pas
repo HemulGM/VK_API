@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Attachment, VK.Entity.Privacy, VK.Entity.Common.List;
+  VK.Entity.Attachment, VK.Entity.Privacy, VK.Entity.Common.List, VK.Wrap.Interceptors;
 
 type
   TVkPhotoAlbum = class(TVkObject, IAttachment)
@@ -19,12 +19,15 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FUpdated: TDateTime;
     FThumb_id: integer;
-    FThumb_is_last: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FThumb_is_last: Boolean;
     FPrivacy_view: TVkPrivacy;
     FPrivacy_comment: TVkPrivacy;
     FSizes: TVkSizes;
     FThumb_src: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FUpload_by_admins_only: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FComments_disabled: Boolean;
     FCan_upload: Boolean;
     FAccess_key: string;
@@ -41,7 +44,7 @@ type
     property Sizes: TVkSizes read FSizes write FSizes;
     property Thumb: TVkThumb read FThumb write FThumb;
     property ThumbId: integer read FThumb_id write FThumb_id;
-    property ThumbIsLast: Integer read FThumb_is_last write FThumb_is_last;
+    property ThumbIsLast: Boolean read FThumb_is_last write FThumb_is_last;
     property ThumbSrc: string read FThumb_src write FThumb_src;
     property Title: string read FTitle write FTitle;
     property Updated: TDateTime read FUpdated write FUpdated;

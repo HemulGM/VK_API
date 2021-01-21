@@ -3,8 +3,10 @@ unit VK.Entity.Conversation;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile,
-  VK.Entity.Group, VK.Types, VK.Entity.Common.ExtendedList;
+  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common,
+  VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group, VK.Types,
+  VK.Entity.Common.ExtendedList, REST.JsonReflect, REST.Json.Interceptors,
+  VK.Wrap.Interceptors;
 
 type
   TVkChatAccess = class(TVkEntity)
@@ -70,18 +72,42 @@ type
     FIs_service: Boolean;
   public
     property ACL: TVkChatAccess read FAcl write FAcl;
-    property ActiveIds: TArray<Integer> read FActive_ids write FActive_ids;
-    property AdminIds: TArray<Integer> read FAdmin_ids write FAdmin_ids;
-    property MembersCount: Integer read FMembers_count write FMembers_count;
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property IsGroupChannel: Boolean read FIs_group_channel write FIs_group_channel;
-    property Photo: TVkChatPhoto read FPhoto write FPhoto;
-    property PinnedMessage: TVkMessage read FPinned_message write FPinned_message;
-    property State: string read FState write FState;
-    property Title: string read FTitle write FTitle;
+    property AdminIds: TArray<Integer> read FAdmin_ids write FAdmin_ids;
     property Permissions: TVkChatPermissions read FPermissions write FPermissions;
     property IsDisappearing: Boolean read FIs_disappearing write FIs_disappearing;
     property IsService: Boolean read FIs_service write FIs_service;
+    /// <summary>
+    /// Идентификаторы последних пользователей, писавших в чат
+    /// </summary>
+    property ActiveIds: TArray<Integer> read FActive_ids write FActive_ids;
+    /// <summary>
+    /// Число участников
+    /// </summary>
+    property MembersCount: Integer read FMembers_count write FMembers_count;
+    /// <summary>
+    /// Информация о том, является ли беседа каналом сообщества
+    /// </summary>
+    property IsGroupChannel: Boolean read FIs_group_channel write FIs_group_channel;
+    /// <summary>
+    /// Изображение-обложка чата
+    /// </summary>
+    property Photo: TVkChatPhoto read FPhoto write FPhoto;
+    /// <summary>
+    /// Объект закреплённого сообщения, если есть
+    /// </summary>
+    property PinnedMessage: TVkMessage read FPinned_message write FPinned_message;
+    /// <summary>
+    ///  Статус текущего пользователя. Возможные значения:
+    ///  in — состоит в чате;
+    ///  kicked — исключён из чата;
+    ///  left — покинул чат.
+    /// </summary>
+    property State: string read FState write FState;
+    /// <summary>
+    /// Название
+    /// </summary>
+    property Title: string read FTitle write FTitle;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -109,15 +135,24 @@ type
   TVkPeer = class(TVkObject)
   private
     FLocal_id: Integer;
-    FType: string;
-    function GetType: TVkPeerType;
-    procedure SetType(const Value: TVkPeerType);
+    [JsonReflectAttribute(ctString, rtString, TPeerTypeInterceptor)]
+    FType: TVkPeerType;
     function GetIsChat: Boolean;
     function GetIsGroup: Boolean;
     function GetIsUser: Boolean;
   public
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Локальный идентификатор назначения. Для чатов — id - 2000000000, для сообществ — -id, для e-mail — -(id+2000000000).
+    /// </summary>
     property LocalId: Integer read FLocal_id write FLocal_id;
-    property&Type: TVkPeerType read GetType write SetType;
+    /// <summary>
+    /// Тип. Возможные значения: user, chat, group, email
+    /// </summary>
+    property&Type: TVkPeerType read FType write FType;
     property IsUser: Boolean read GetIsUser;
     property IsGroup: Boolean read GetIsGroup;
     property IsChat: Boolean read GetIsChat;
@@ -130,6 +165,22 @@ type
   public
     property MajorId: Integer read FMajor_id write FMajor_id;
     property MinorId: Integer read FMinor_id write FMinor_id;
+  end;
+
+  TVkChatPushSettings = class(TVkEntity)
+  private
+    FDisabled_forever: Boolean;
+    FNo_sound: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDisabled_until: TDateTime;
+    FDisabled_mass_mentions: Boolean;
+    FDisabled_mentions: Boolean;
+  public
+    property DisabledUntil: TDateTime read FDisabled_until write FDisabled_until;
+    property DisabledForever: Boolean read FDisabled_forever write FDisabled_forever;
+    property NoSound: Boolean read FNo_sound write FNo_sound;
+    property DisabledMentions: Boolean read FDisabled_mentions write FDisabled_mentions;
+    property DisabledMassMentions: Boolean read FDisabled_mass_mentions write FDisabled_mass_mentions;
   end;
 
   TVkConversation = class(TVkEntity)
@@ -147,24 +198,56 @@ type
     FCan_receive_money: Boolean;
     FSort_id: TVkConversationSort;
     FIs_marked_unread: Boolean;
+    FPush_settings: TVkChatPushSettings;
     function GetIsChat: Boolean;
     function GetIsUser: Boolean;
-  public
+  public  //[JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    /// <summary>
+    /// Информация о том, может ли пользователь писать в диалог
+    /// </summary>
     property CanWrite: TVkCanWrite read FCan_write write FCan_write;
+    /// <summary>
+    /// Настройки чата
+    /// </summary>
     property ChatSettings: TVkChatSettings read FChat_settings write FChat_settings;
+    /// <summary>
+    /// Идентификатор последнего прочтенного входящего сообщения.
+    /// </summary>
     property InRead: Integer read FIn_read write FIn_read;
+    /// <summary>
+    /// Идентификатор последнего сообщения.
+    /// </summary>
     property LastMessageId: Integer read FLast_message_id write FLast_message_id;
+    /// <summary>
+    /// Идентификатор последнего прочтенного исходящего сообщения.
+    /// </summary>
     property OutRead: Integer read FOut_read write FOut_read;
+    /// <summary>
+    /// Информация о собеседнике
+    /// </summary>
     property Peer: TVkPeer read FPeer write FPeer;
     property SortId: TVkConversationSort read FSort_id write FSort_id;
     property IsMarkedUnread: Boolean read FIs_marked_unread write FIs_marked_unread;
+    /// <summary>
+    /// Число непрочитанных сообщений.
+    /// </summary>
     property UnreadCount: Integer read FUnread_count write FUnread_count;
+    /// <summary>
+    /// True, если диалог помечен как неотвеченный (только для сообщений сообществ).
+    /// </summary>
     property Unanswered: Boolean read FUnanswered write FUnanswered;
+    /// <summary>
+    /// True, если диалог помечен как важный (только для сообщений сообществ).
+    /// </summary>
     property Important: Boolean read FImportant write FImportant;
     property CanSendMoney: Boolean read FCan_send_money write FCan_send_money;
     property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
     property IsChat: Boolean read GetIsChat;
     property IsUser: Boolean read GetIsUser;
+    /// <summary>
+    /// Настройки Push-уведомлений
+    /// </summary>
+    property PushSettings: TVkChatPushSettings read FPush_settings write FPush_settings;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -259,16 +342,6 @@ begin
   Result := PeerIdIsUser(FId);
 end;
 
-function TVkPeer.GetType: TVkPeerType;
-begin
-  Result := TVkPeerType.Create(FType);
-end;
-
-procedure TVkPeer.SetType(const Value: TVkPeerType);
-begin
-  FType := Value.ToString;
-end;
-
 {TVkConversation}
 
 constructor TVkConversation.Create;
@@ -286,6 +359,8 @@ begin
   FCan_write.Free;
   if Assigned(FChat_settings) then
     FChat_settings.Free;
+  if Assigned(FPush_settings) then
+    FPush_settings.Free;
   inherited;
 end;
 
