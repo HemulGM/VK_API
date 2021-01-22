@@ -46,6 +46,8 @@ const
   ERROR_VK_NOTOKEN = -2;
   ERROR_VK_INTERNAL = -3;
   ERROR_VK_NETWORK = -4;
+  ERROR_VK_PARSE = -5;
+  ERROR_VK_AUTH = -6;
 
   //Message Flags
   MF_UNREAD = 1;

@@ -3,9 +3,8 @@ unit VK.Entity.Group;
 interface
 
 uses
-  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common,
-  VK.Entity.Photo, VK.Entity.Market, VK.Entity.Group.Counters,
-  VK.Entity.Database.Cities, VK.Entity.Database.Countries, VK.Entity.Common.List;
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market,
+  VK.Entity.Group.Counters, VK.Entity.Database.Cities, VK.Entity.Database.Countries, VK.Entity.Common.List;
 
 type
   TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
@@ -42,6 +41,7 @@ type
   public
     property Enabled: Boolean read FEnabled write FEnabled;
     property Images: TArray<TVkImage> read FImages write FImages;
+    destructor Destroy; override;
   end;
 
   TVkGroupLink = class(TVkBasicObject)
@@ -117,6 +117,7 @@ type
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Name: string read FName write FName;
     property Currency_text: string read FCurrency_text write FCurrency_text;
+    destructor Destroy; override;
   end;
 
   TVkGroupAddress = class(TVkObject)
@@ -360,7 +361,6 @@ type
     property Verified: Boolean read FVerified write FVerified;
     property Wall: Integer read FWall write FWall;
     property WikiPage: string read FWiki_page write FWiki_page;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -397,11 +397,6 @@ end;
 
 {TVkGroup}
 
-constructor TVkGroup.Create;
-begin
-  inherited;
-end;
-
 destructor TVkGroup.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkContact>(FContacts);
@@ -422,6 +417,8 @@ begin
     FCrop_photo.Free;
   if Assigned(FMarket) then
     FMarket.Free;
+  if Assigned(FPlace) then
+    FPlace.Free;
   inherited;
 end;
 
@@ -457,6 +454,23 @@ begin
   if FStatus = 'answer_mark' then
     Exit(gsAnswermark);
   Result := gsNone;
+end;
+
+{ TVkGroupMarket }
+
+destructor TVkGroupMarket.Destroy;
+begin
+  if Assigned(FCurrency) then
+    FCurrency.Free;
+  inherited;
+end;
+
+{ TVkCover }
+
+destructor TVkCover.Destroy;
+begin
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
+  inherited;
 end;
 
 end.

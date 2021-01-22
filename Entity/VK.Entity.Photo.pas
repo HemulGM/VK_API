@@ -3,8 +3,8 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Info, VK.Entity.Attachment;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Info,
+  VK.Entity.Attachment;
 
 type
   TVkPhotoTag = class(TVkObject)
@@ -114,6 +114,7 @@ type
     property Photo: TVkPhoto read FPhoto write FPhoto;
     property Crop: TVkCrop read FCrop write FCrop;
     property Rect: TVkRect read FRect write FRect;
+    destructor Destroy; override;
   end;
 
   TVkPostedPhoto = class(TVkObject)
@@ -211,6 +212,19 @@ end;
 destructor TVkPhotoTags.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPhotoTag>(FItems);
+  inherited;
+end;
+
+{ TVkCropPhoto }
+
+destructor TVkCropPhoto.Destroy;
+begin
+  if Assigned(FCrop) then
+    FCrop.Free;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  if Assigned(FRect) then
+    FRect.Free;
   inherited;
 end;
 

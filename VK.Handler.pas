@@ -310,25 +310,30 @@ begin
     end;
   end;
 
-  if not IsError then
-  begin
-    if FCancelAll then
+  try
+    if not IsError then
     begin
-      if not Waiting then
-        FCancelAll := False;
-      if FLogging then
-        FLog(Request.GetFullRequestURL + ' - canceled');
-      Result.Success := False;
-    end
-    else
-    begin
-      if not Application.Terminated then
+      if FCancelAll then
       begin
-        if FLogResponse then
-          FLog(Request.Response.JSONText);
-        Result := ProcessResponse(Request);
+        if not Waiting then
+          FCancelAll := False;
+        if FLogging then
+          FLog(Request.GetFullRequestURL + ' - canceled');
+        Result.Success := False;
+      end
+      else
+      begin
+        if not Application.Terminated then
+        begin
+          if FLogResponse then
+            FLog(Request.Response.JSONText);
+          Result := ProcessResponse(Request);
+        end;
       end;
     end;
+  except
+    on E: TVkMethodException do
+      DoProcError(Self, E, E.Code, E.Message);
   end;
 end;
 

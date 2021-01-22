@@ -22,7 +22,6 @@ type
     property OnCaptcha;
     property OnConfirm;
     property OnError;
-    property OnErrorLogin;
     property OnLog;
     property OnLogin;
     property Permissions nodefault; // default 'groups,friends,wall,photos,video,docs,notes,market';

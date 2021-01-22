@@ -78,7 +78,6 @@ type
     FOnCaptcha: TOnCaptcha;
     FOnConfirm: TOnConfirm;
     FOnError: TOnVKError;
-    FOnErrorLogin: TOnVKError;
     FOnLog: TOnLog;
     FOnLogin: TOnLogin;
     FOrders: TOrdersController;
@@ -109,7 +108,6 @@ type
     function GetTokenExpiry: Int64;
     procedure DoLogin;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
-    procedure FAuthError(const AText: string; AStatusCode: Integer);
     procedure FLog(Sender: TObject; const Value: string);
     procedure FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure SetAPIVersion(const Value: string);
@@ -124,7 +122,6 @@ type
     procedure SetOnCaptcha(const Value: TOnCaptcha);
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure SetOnError(const Value: TOnVKError);
-    procedure SetOnErrorLogin(const Value: TOnVKError);
     procedure SetOnLog(const Value: TOnLog);
     procedure SetOnLogin(const Value: TOnLogin);
     procedure SetPermissions(const Value: TVkPermissions);
@@ -394,10 +391,6 @@ type
     /// Событие, которое происходит при возникновении ошибки
     /// </summary>
     property OnError: TOnVKError read FOnError write SetOnError;
-    /// <summary>
-    /// Событие, которые происходит при не удачной авторизации
-    /// </summary>
-    property OnErrorLogin: TOnVKError read FOnErrorLogin write SetOnErrorLogin;
     /// <summary>
     /// Событие, которое происходит при логировании
     /// </summary>
@@ -713,21 +706,6 @@ begin
       FOnLog(Self, Value);
 end;
 
-procedure TCustomVK.FAuthError(const AText: string; AStatusCode: Integer);
-var
-  E: TVkException;
-begin
-  E := TVkException.Create('Токен не был получен');
-  if Assigned(FOnErrorLogin) then
-  begin
-    FOnErrorLogin(Self, E, AStatusCode, AText);
-    if Assigned(E) then
-      E.Free;
-  end
-  else
-    raise E;
-end;
-
 procedure TCustomVK.FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
   if not DoOnError(Self, E, Code, Text) then
@@ -825,7 +803,8 @@ begin
                               end;
                             end;
                           except
-                            FAuthError(Response.DataString, -1);
+                            on E: Exception do
+                              DoOnError(Self, E, ERROR_VK_PARSE, Response.DataString);
                           end;
                           FormData.Free;
                         end;
@@ -851,14 +830,15 @@ begin
                 end;
                 if Info.Error = 'invalid_client' then
                 begin
-                  FAuthError(Info.ErrorDescription, -1);
+                  raise TVkParserException.Create(Info.ErrorDescription);
                 end;
               end;
             finally
               Info.Free;
             end;
           except
-            FAuthError(Response.DataString, -1);
+            on E: Exception do
+              DoOnError(Self, E, ERROR_VK_PARSE, Response.DataString);
           end;
         end;
       200:
@@ -869,20 +849,26 @@ begin
         end;
     end;
   except
-    FAuthError('Login request error', -2);
+    on E: Exception do
+      DoOnError(Self, E, ERROR_VK_PARSE, 'Login request error');
   end;
   Response.Free;
   HTTP.Free;
   Result := not Token.IsEmpty;
-  if Result and CheckAuth then
-  begin
-    DoLogin;
-    Exit(True);
-  end
-  else
-  begin
-    Result := False;
-    FAuthError('Ошибка авторизации', -1);
+  try
+    if Result and CheckAuth then
+    begin
+      DoLogin;
+      Exit(True);
+    end
+    else
+    begin
+      Result := False;
+      raise TVkAuthException.Create('Login request error');
+    end;
+  except
+    on E: Exception do
+      DoOnError(Self, E, ERROR_VK_AUTH, E.Message);
   end;
 end;
 
@@ -927,7 +913,7 @@ begin
       Result := True;
     end
     else
-      FAuthError('Ошибка авторизации', -1);
+      Result := False;
   end;
 end;
 
@@ -1035,11 +1021,6 @@ end;
 procedure TCustomVK.SetOnError(const Value: TOnVKError);
 begin
   FOnError := Value;
-end;
-
-procedure TCustomVK.SetOnErrorLogin(const Value: TOnVKError);
-begin
-  FOnErrorLogin := Value;
 end;
 
 procedure TCustomVK.SetOnLog(const Value: TOnLog);
