@@ -611,6 +611,8 @@ type
     class function Create(Value: string): TVkAttachmentType; static;
   end;
 
+  TVkDocumentType = (dtNone, dtText, dtArchive, dtGIF, dtPicture, dtAudio, dtVideo, dtBook, dtUnknown);
+
   TVkPeerType = (ptUnknown, ptUser, ptChat, ptGroup, ptEmail);
 
   TVkPeerTypeHelper = record helper for TVkPeerType

@@ -15,11 +15,24 @@ type
     FOwner_id: Integer;
     FWaveform: TArray<Integer>;
   public
+    property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Длительность аудиосообщения в секундах
+    /// </summary>
     property Duration: Int64 read FDuration write FDuration;
+    /// <summary>
+    /// URL .mp3-файла
+    /// </summary>
     property LinkMp3: string read FLink_mp3 write FLink_mp3;
+    /// <summary>
+    /// URL .ogg-файла
+    /// </summary>
     property LinkOgg: string read FLink_ogg write FLink_ogg;
     property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Массив значений (integer) для визуального отображения звука
+    /// </summary>
     property WaveForm: TArray<Integer> read FWaveform write FWaveform;
     function ToAttachment: string;
   end;

@@ -13,17 +13,6 @@ uses
   VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
 
 type
-  TVkNewsCopyright = class(TVkEntity)
-  private
-    FLink: string;
-    FName: string;
-    FType: string;
-  public
-    property Link: string read FLink write FLink;
-    property Name: string read FName write FName;
-    property&Type: string read FType write FType;
-  end;
-
   TVkNewsItem = class(TVkObject)
   private
     FOwner_id: Integer;
@@ -59,7 +48,7 @@ type
     FSource_id: Integer;
     FCan_doubt_category: Boolean;
     FPhotos: TVkPhotos;
-    FCopyright: TVkNewsCopyright;
+    FCopyright: TVkCopyright;
   public
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
     property CanDelete: Boolean read FCan_delete write FCan_delete;
@@ -69,7 +58,7 @@ type
     property CanSetCategory: Boolean read FCan_set_category write FCan_set_category;
     property Comments: TVkCommentsInfo read FComments write FComments;
     property CopyHistory: TArray<TVkPost> read FCopy_history write FCopy_history;
-    property Copyright: TVkNewsCopyright read FCopyright write FCopyright;
+    property Copyright: TVkCopyright read FCopyright write FCopyright;
     property CreatedBy: Integer read FCreated_by write FCreated_by;
     property Date: TDateTime read FDate write FDate;
     property FriendsOnly: Boolean read FFriends_only write FFriends_only;

@@ -3,8 +3,9 @@ unit VK.Entity.Link;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Entity.Photo, VK.Types;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo, VK.Entity.Market,
+  VK.Types;
 
 type
   TVkLinkStatus = class(TVkEntity)
@@ -38,6 +39,9 @@ type
     destructor Destroy; override;
   end;
 
+  /// <summary>
+  /// Прикрепленная ссылка
+  /// </summary>
   TVkLink = class(TVkEntity)
   private
     FButton: TVkLinkButton;
@@ -47,15 +51,57 @@ type
     FTitle: string;
     FUrl: string;
     FText: string;
+    FAccess_key: string;
+    FProduct: TVkProduct;
+    FPreview_page: string;
+    FPreview_url: string;
+    FImage_src: string;
   public
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Информация о кнопке для перехода (если имеется)
+    /// </summary>
     property Button: TVkLinkButton read FButton write FButton;
+    /// <summary>
+    /// Подпись ссылки (если имеется)
+    /// </summary>
     property Caption: string read FCaption write FCaption;
+    /// <summary>
+    /// Описание ссылки
+    /// </summary>
     property Description: string read FDescription write FDescription;
+    /// <summary>
+    /// URL изображения для превью ссылки. (Для версий API ниже 5.37)
+    /// </summary>
+    property ImageSrc: string read FImage_src write FImage_src;
+    /// <summary>
+    /// Изображение превью, объект фотографии (если имеется)
+    /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
+    /// <summary>
+    /// Идентификатор вики-страницы с контентом для предпросмотра содержимого страницы. Возвращается в формате "owner_id_page_id".
+    /// </summary>
+    property PreviewPage: string read FPreview_page write FPreview_page;
+    /// <summary>
+    /// URL страницы с контентом для предпросмотра содержимого страницы
+    /// </summary>
+    property PreviewUrl: string read FPreview_url write FPreview_url;
+    /// <summary>
+    /// Информация о продукте (если имеется). Поле возвращается для ссылок на магазины, например, Aliexpress. Объект с единственным полем price (object)
+    /// </summary>
+    property Product: TVkProduct read FProduct write FProduct;
+    /// <summary>
+    /// Заголовок ссылки
+    /// </summary>
     property Title: string read FTitle write FTitle;
     property Text: string read FText write FText;
+    /// <summary>
+    /// URL ссылки
+    /// </summary>
     property Url: string read FUrl write FUrl;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -156,17 +202,14 @@ end;
 
 {TLinkClass}
 
-constructor TVkLink.Create;
-begin
-  inherited;
-  FPhoto := TVkPhoto.Create();
-  FButton := TVkLinkButton.Create();
-end;
-
 destructor TVkLink.Destroy;
 begin
-  FPhoto.Free;
-  FButton.Free;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  if Assigned(FButton) then
+    FButton.Free;
+  if Assigned(FProduct) then
+    FProduct.Free;
   inherited;
 end;
 

@@ -3,8 +3,9 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Attachment,
-  VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  Vk.Types, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Common.List,
+  VK.Wrap.Interceptors, VK.Entity.AudioMessage;
 
 type
   TVkPreviewPhoto = class
@@ -15,15 +16,30 @@ type
     destructor Destroy; override;
   end;
 
-  TVkPreview = class
+  TVkPreview = class(TVkEntity)
   private
     FPhoto: TVkPreviewPhoto;
+    FGraffiti: TVkSize;
+    FAudio_message: TVkAudioMessage;
   public
+    /// <summary>
+    /// Изображения для предпросмотра
+    /// </summary>
     property Photo: TVkPreviewPhoto read FPhoto write FPhoto;
-    constructor Create;
+    /// <summary>
+    /// Данные о граффити
+    /// </summary>
+    property Graffiti: TVkSize read FGraffiti write FGraffiti;
+    /// <summary>
+    /// Данные об аудиосообщении
+    /// </summary>
+    property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
     destructor Destroy; override;
   end;
 
+  /// <summary>
+  /// Объект, описывающий документ
+  /// </summary>
   TVkDocument = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
@@ -45,20 +61,52 @@ type
     7 — электронные книги;
     8 — неизвестно.
     }
-    FType: Integer;
+    [JsonReflectAttribute(ctString, rtString, TDocumentTypeInterceptor)]
+    FType: TVkDocumentType;
     FUrl: string;
     function GetSizeStr: string;
   public
+    /// <summary>
+    /// Идентификатор документа
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Дата добавления
+    /// </summary>
     property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Расширение документа
+    /// </summary>
     property Ext: string read FExt write FExt;
     property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
+    /// <summary>
+    /// Идентификатор пользователя, загрузившего документ
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Информация для предварительного просмотра документа
+    /// </summary>
     property Preview: TVkPreview read FPreview write FPreview;
+    /// <summary>
+    /// Размер документа в байтах
+    /// </summary>
     property Size: Integer read FSize write FSize;
     property SizeStr: string read GetSizeStr;
+    /// <summary>
+    /// Название документа
+    /// </summary>
     property Title: string read FTitle write FTitle;
-    property&Type: Integer read FType write FType;
+    /// <summary>
+    /// Тип документа
+    /// </summary>
+    property&Type: TVkDocumentType read FType write FType;
+    /// <summary>
+    /// Адрес документа, по которому его можно загрузить
+    /// </summary>
     property Url: string read FUrl write FUrl;
     constructor Create; override;
     destructor Destroy; override;
@@ -84,16 +132,15 @@ end;
 
 {TVkPreview}
 
-constructor TVkPreview.Create;
-begin
-  inherited;
-  FPhoto := TVkPreviewPhoto.Create();
-end;
-
 destructor TVkPreview.Destroy;
 begin
   {$IFNDEF AUTOREFCOUNT}
-  FPhoto.Free;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  if Assigned(FGraffiti) then
+    FGraffiti.Free;
+  if Assigned(FAudio_message) then
+    FAudio_message.Free;
   {$ENDIF}
   inherited;
 end;

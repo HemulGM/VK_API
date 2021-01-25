@@ -26,9 +26,29 @@ type
     FHeight: Integer;
     FLength: Integer;
   public
+    /// <summary>
+    /// Ширина в миллиметрах
+    /// </summary>
     property Width: Integer read FWidth write FWidth;
+    /// <summary>
+    /// Высота в миллиметрах
+    /// </summary>
     property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// Длина в миллиметрах
+    /// </summary>
     property Length: Integer read FLength write FLength;
+  end;
+
+  TVkCopyright = class(TVkEntity)
+  private
+    FLink: string;
+    FName: string;
+    FType: string;
+  public
+    property Link: string read FLink write FLink;
+    property Name: string read FName write FName;
+    property&Type: string read FType write FType;
   end;
 
   TVkLastActivity = class(TVkEntity)
@@ -48,7 +68,17 @@ type
     property Name: string read FName write FName;
   end;
 
-  TVkProductCurrency = TVkBasicObject;
+  TVkProductCurrency = class(TVkBasicObject)
+  public
+    /// <summary>
+    /// Идентификатор валюты
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Обозначение валюты
+    /// </summary>
+    property Name;
+  end;
 
   TVkRect = class(TVkEntity)
   private
@@ -106,6 +136,9 @@ type
 
   TVkTags = TVkCounterEntity;
 
+  /// <summary>
+  /// Объект post_source, описывающий способ размещения записи на стене
+  /// </summary>
   TVkPostSource = class(TVkEntity)
   private
     FData: string;
@@ -113,9 +146,32 @@ type
     FType: string;
     FUrl: string;
   public
+    /// <summary>
+    /// Тип действия (только для type = vk или widget)
+    /// Возможные значения:
+    /// profile_activity — изменение статуса под именем пользователя (для type = vk);
+    /// profile_photo — изменение профильной фотографии пользователя (для type = vk);
+    /// comments — виджет комментариев (для type = widget);
+    /// like — виджет «Мне нравится» (для type = widget);
+    /// poll — виджет опросов (для type = widget);
+    /// </summary>
     property Data: string read FData write FData;
+    /// <summary>
+    /// Название платформы, если оно доступно (android; iphone; wphone)
+    /// </summary>
     property&Platform: string read FPlatform write FPlatform;
+    /// <summary>
+    /// Тип источника
+    ///  vk — запись создана через основной интерфейс сайта (http://vk.com/);
+    ///  widget — запись создана через виджет на стороннем сайте;
+    ///  api — запись создана приложением через API;
+    ///  rss— запись создана посредством импорта RSS-ленты со стороннего сайта;
+    ///  sms — запись создана посредством отправки SMS-сообщения на специальный номер.
+    /// </summary>
     property&Type: string read FType write FType;
+    /// <summary>
+    /// URL ресурса, с которого была опубликована запись
+    /// </summary>
     property Url: string read FUrl write FUrl;
   end;
 
@@ -157,6 +213,7 @@ type
   /// <summary>
   /// Формат описания размеров фотографии
   /// https://vk.com/dev/photo_sizes
+  /// Для фотографий, загруженных на сайт до 2012 года, значения width и height могут быть недоступны, в этом случае соответствующие поля содержат 0
   /// </summary>
   TVkSize = class(TVkEntity)
   private
@@ -166,11 +223,23 @@ type
     FWidth: Integer;
     FSrc: string;
   public
+    /// <summary>
+    /// Высота копии в пикселах
+    /// </summary>
     property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// Обозначение размера и пропорций копии
+    /// </summary>
     property&Type: string read FType write FType;
+    /// <summary>
+    /// URL копии
+    /// </summary>
     property Url: string read FUrl write FUrl;
-    property Src: string read FSrc write FSrc;
+    /// <summary>
+    /// Ширина копии в пикселах
+    /// </summary>
     property Width: Integer read FWidth write FWidth;
+    property Src: string read FSrc write FSrc;
   end;
 
   TVkSizes = TArray<TVkSize>;
@@ -202,29 +271,72 @@ type
     property Longitude: Extended read FLongitude write FLongitude;
   end;
 
+  /// <summary>
+  /// Объект, описывающий место
+  /// </summary>
   TVkPlace = class(TVkObject)
   private
-    FCity: string; // — название города;
-    FCountry: string; // — название страны;
-    FTitle: string; // — название места (если назначено);
-    FLatitude: Extended; // — географическая широта;
-    FLongitude: Extended; // — географическая долгота;
+    FCity: string;
+    FCountry: string;
+    FTitle: string;
+    FLatitude: Extended;
+    FLongitude: Extended;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
-    FCreated: TDateTime; // — дата создания (если назначено);
+    FCreated: TDateTime;
     FIcon: string;
-    FType: string;
+    FType: Integer;
     FAddress: string;
-    FCheckins: Integer; // — URL изображения-иконки;
+    FCheckins: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUpdated: TDateTime;
   public
+    /// <summary>
+    /// Идентификатор места
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Число отметок в этом месте
+    /// </summary>
     property Checkins: Integer read FCheckins write FCheckins;
+    /// <summary>
+    /// Название места
+    /// </summary>
     property Title: string read FTitle write FTitle;
+    /// <summary>
+    /// Географическая широта, заданная в градусах (от -90 до 90)
+    /// </summary>
     property Latitude: Extended read FLatitude write FLatitude;
+    /// <summary>
+    /// Географическая широта, заданная в градусах (от -90 до 90)
+    /// </summary>
     property Longitude: Extended read FLongitude write FLongitude;
-    property&Type: string read FType write FType;
+    /// <summary>
+    /// Тип места
+    /// </summary>
+    property&Type: Integer read FType write FType;
+    /// <summary>
+    /// Идентификатор страны
+    /// </summary>
     property Country: string read FCountry write FCountry;
+    /// <summary>
+    /// Идентификатор города
+    /// </summary>
     property City: string read FCity write FCity;
+    /// <summary>
+    /// Дата создания места
+    /// </summary>
     property Created: TDateTime read FCreated write FCreated;
+    /// <summary>
+    /// дата обновления места в Unixtime.
+    /// </summary>
+    property Updated: TDateTime read FUpdated write FUpdated;
+    /// <summary>
+    /// Иконка места, URL изображения
+    /// </summary>
     property Icon: string read FIcon write FIcon;
+    /// <summary>
+    /// Адрес места
+    /// </summary>
     property Address: string read FAddress write FAddress;
   end;
 
@@ -234,10 +346,18 @@ type
     FPlace: TVkPlace;
     FType: string;
   public
+    /// <summary>
+    /// Координаты места
+    /// </summary>
     property Coordinates: string read FCoordinates write FCoordinates;
+    /// <summary>
+    /// Описание места (если оно добавлено)
+    /// </summary>
     property Place: TVkPlace read FPlace write FPlace;
+    /// <summary>
+    /// Тип места
+    /// </summary>
     property&Type: string read FType write FType;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -315,15 +435,10 @@ uses
 
 {TVkGeo}
 
-constructor TVkGeo.Create;
-begin
-  inherited;
-  FPlace := TVkPlace.Create();
-end;
-
 destructor TVkGeo.Destroy;
 begin
-  FPlace.Free;
+  if Assigned(FPlace) then
+    FPlace.Free;
   inherited;
 end;
 

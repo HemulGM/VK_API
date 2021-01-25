@@ -10,7 +10,8 @@ uses
   VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
   VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
   VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Info,
-  VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
+  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
+  VK.Wrap.Interceptors;
 
 type
   TVkAttachment = class;
@@ -23,7 +24,8 @@ type
 
   TVkAttachment = class(TVkEntity)
   private
-    FType: string;
+    [JsonReflectAttribute(ctString, rtString, TAttachmentTypeInterceptor)]
+    FType: TVkAttachmentType;
     FLink: TVkLink;
     FPosted_photo: TVkPostedPhoto;
     FAudio_message: TVkAudioMessage;
@@ -46,34 +48,100 @@ type
     FPretty_cards: TVkPrettyCards;
     FEvent: TVkEvent;
     FCall: TVkCall;
-    function GetType: TVkAttachmentType;
-    procedure SetType(const Value: TVkAttachmentType);
   public
-    property&Type: TVkAttachmentType read GetType write SetType;
+    property&Type: TVkAttachmentType read FType write FType;
+    /// <summary>
+    /// Ссылка
+    /// </summary>
     property Link: TVkLink read FLink write FLink;
+    /// <summary>
+    /// Фотография, загруженная напрямую (Это устаревший тип вложения. Он может быть возвращен лишь для записей, созданных раньше 2013 года)
+    /// </summary>
     property PostedPhoto: TVkPostedPhoto read FPosted_photo write FPosted_photo;
+    /// <summary>
+    /// Аудиосообщение
+    /// </summary>
     property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
+    /// <summary>
+    /// Комментарий на стене
+    /// </summary>
     property WallReply: TVkComment read FWall_reply write FWall_reply;
+    /// <summary>
+    /// Запись на стене
+    /// </summary>
     property Wall: TVkPost read FWall write FWall;
+    /// <summary>
+    /// Звонок
+    /// </summary>
     property Call: TVkCall read FCall write FCall;
+    /// <summary>
+    /// Стикер
+    /// </summary>
     property Sticker: TVkSticker read FSticker write FSticker;
+    /// <summary>
+    /// Подарок
+    /// </summary>
     property Gift: TVkGift read FGift write FGift;
+    /// <summary>
+    /// Подборка товаров
+    /// </summary>
     property MarketAlbum: TVkMarketAlbum read FMarket_album write FMarket_album;
+    /// <summary>
+    /// Товар
+    /// </summary>
     property Market: TVkProduct read FMarket write FMarket;
+    /// <summary>
+    /// Документ
+    /// </summary>
     property Doc: TVkDocument read FDoc write FDoc;
+    /// <summary>
+    /// Аудиозапись
+    /// </summary>
     property Audio: TVkAudio read FAudio write FAudio;
+    /// <summary>
+    /// Видеозапись
+    /// </summary>
     property Video: TVkVideo read FVideo write FVideo;
+    /// <summary>
+    /// Фотография
+    /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
+    /// <summary>
+    /// Граффити (Это устаревший тип вложения. Он может быть возвращен лишь для записей, созданных раньше 2013 года. Для более новых записей граффити возвращается в виде вложения с типом photo.)
+    /// </summary>
     property Graffiti: TVkGraffiti read FGraffiti write FGraffiti;
+    /// <summary>
+    /// Заметка
+    /// </summary>
     property Note: TVkNote read FNote write FNote;
+    /// <summary>
+    /// Контент приложения (Это устаревший тип вложений. Он может быть возвращен лишь для записей, созданных раньше 2013 года.)
+    /// </summary>
     property App: TVkOldApp read FApp write FApp;
+    /// <summary>
+    /// Опрос
+    /// </summary>
     property Poll: TVkPoll read FPoll write FPoll;
+    /// <summary>
+    /// Вики-страница
+    /// </summary>
     property Page: TVkPage read FPage write FPage;
+    /// <summary>
+    /// Альбом с фотографиями
+    /// </summary>
     property Album: TVkPhotoAlbum read FAlbum write FAlbum;
+    // /// <summary>
+    // /// Список фотографий
+    // /// </summary>
     //property PhotosList: TVkPhotosList read FPhotosList write FPhotosList; -- я хз че это и где найти структуру)
+    /// <summary>
+    /// Карточки
+    /// </summary>
     property PrettyCards: TVkPrettyCards read FPretty_cards write FPretty_cards;
+    /// <summary>
+    /// Встреча
+    /// </summary>
     property Event: TVkEvent read FEvent write FEvent;
-    constructor Create; override;
     destructor Destroy; override;
     function GetPreviewUrl: string;
   end;
@@ -100,6 +168,9 @@ type
 
   TVkAttachments = TVkEntityList<TVkAttachment>;
 
+  /// <summary>
+  /// Объект, описывающий комментарий к записи
+  /// </summary>
   TVkComment = class(TVkObject)
   private
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
@@ -117,23 +188,67 @@ type
     FLikes: TVkLikesInfo;
     FThread: TVkCommentThread;
     FPid: Integer;
+    FAccess_key: string;
+    FDonut: TVkDonutInfo;
   public
+    /// <summary>
+    /// Идентификатор комментария
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Дата создания комментария
+    /// </summary>
     property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Информация о VK Donut
+    /// </summary>
+    property Donut: TVkDonutInfo read FDonut write FDonut;
+    /// <summary>
+    /// Идентификатор автора комментария
+    /// </summary>
     property FromId: Integer read FFrom_id write FFrom_id;
     /// <summary>
     ///  Идентификатор фотографии, к которой был оставлен комментарий
     /// </summary>
     property PhotoId: Integer read FPid write FPid;
+    /// <summary>
+    /// Идентификатор записи, к которой оставлен комментари
+    /// </summary>
     property PostId: Integer read FPost_id write FPost_id;
+    /// <summary>
+    /// Идентификатор владельца стены, на которой оставлен комментарий
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property PostOwnerId: Integer read FPost_owner_id write FPost_owner_id;
+    /// <summary>
+    /// Идентификатор комментария, в ответ на который оставлен текущий (если применимо)
+    /// </summary>
     property ReplyToComment: Integer read FReply_to_comment write FReply_to_comment;
+    /// <summary>
+    /// Идентификатор пользователя или сообщества, в ответ которому оставлен текущий комментарий (если применимо)
+    /// </summary>
     property ReplyToUser: Integer read FReply_to_user write FReply_to_user;
+    /// <summary>
+    /// Текст комментария
+    /// </summary>
     property Text: string read FText write FText;
     property Likes: TVkLikesInfo read FLikes write FLikes;
+    /// <summary>
+    /// Массив идентификаторов родительских комментариев
+    /// </summary>
     property ParentsStack: TArray<Integer> read FParents_stack write FParents_stack;
     property Deleted: Boolean read FDeleted write FDeleted;
+    /// <summary>
+    /// Медиавложения комментария (фотографии, ссылки и т.п.)
+    /// </summary>
     property Attachments: TVkAttachments read FAttachments write FAttachments;
+    /// <summary>
+    /// Информация о вложенной ветке комментариев
+    /// </summary>
     property Thread: TVkCommentThread read FThread write FThread;
     constructor Create; override;
     destructor Destroy; override;
@@ -145,10 +260,25 @@ type
     FShow_reply_button: Boolean;
     FGroups_can_post: Boolean;
   public
+    /// <summary>
+    /// Массив объектов комментариев к записи (только для метода wall.getComments)
+    /// </summary>
     property Items;
+    /// <summary>
+    /// Количество комментариев в ветке
+    /// </summary>
     property Count;
+    /// <summary>
+    /// Может ли текущий пользователь оставлять комментарии в этой ветке
+    /// </summary>
     property CanPost: Boolean read FCan_post write FCan_post;
+    /// <summary>
+    /// Нужно ли отображать кнопку «ответить» в ветке
+    /// </summary>
     property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
+    /// <summary>
+    /// Могут ли сообщества оставлять комментарии в ветке
+    /// </summary>
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
   end;
 
@@ -165,6 +295,9 @@ type
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
   end;
 
+  /// <summary>
+  /// Объект, описывающий запись на стене пользователя или сообщества
+  /// </summary>
   TVkPost = class(TVkObject)
   private
     FOwner_id: Integer;
@@ -175,7 +308,8 @@ type
     FText: string;
     FReply_owner_id: Integer;
     FReply_post_id: Integer;
-    FFriends_only: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FFriends_only: Boolean;
     FComments: TVkCommentsInfo;
     FLikes: TVkLikesInfo;
     FReposts: TVkRepostsInfo;
@@ -186,40 +320,142 @@ type
     FGeo: TVkGeo;
     FSigner_id: Integer;
     FCopy_history: TArray<TVkPost>;
-    FCan_pin: Integer;
-    FCan_delete: Integer;
-    FCan_edit: Integer;
-    FIs_pinned: Integer;
-    FMarked_as_ads: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_pin: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_delete: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_edit: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FIs_pinned: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FMarked_as_ads: Boolean;
     FIs_favorite: Boolean;
     FPostponed_id: Integer;
     FTo_id: Integer;
+    FAccess_key: string;
+    FCopyright: TVkCopyright;
+    FDonut: TVkDonut;
   public
+    /// <summary>
+    /// Идентификатор записи
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Медиавложения записи (фотографии, ссылки и т.п.)
+    /// </summary>
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
-    property CanDelete: Integer read FCan_delete write FCan_delete;
-    property CanEdit: Integer read FCan_edit write FCan_edit;
-    property CanPin: Integer read FCan_pin write FCan_pin;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь удалить запись
+    /// </summary>
+    property CanDelete: Boolean read FCan_delete write FCan_delete;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь редактировать запись
+    /// </summary>
+    property CanEdit: Boolean read FCan_edit write FCan_edit;
+    /// <summary>
+    /// Информация о том, может ли текущий пользователь закрепить запись
+    /// </summary>
+    property CanPin: Boolean read FCan_pin write FCan_pin;
+    /// <summary>
+    /// Информация о комментариях к записи
+    /// </summary>
     property Comments: TVkCommentsInfo read FComments write FComments;
+    /// <summary>
+    /// Массив, содержащий историю репостов для записи. Возвращается только в том случае, если запись является репостом. Каждый из объектов массива, в свою очередь, является объектом-записью стандартного формата.
+    /// </summary>
     property CopyHistory: TArray<TVkPost> read FCopy_history write FCopy_history;
+    /// <summary>
+    /// Источник материала
+    /// </summary>
+    property Copyright: TVkCopyright read FCopyright write FCopyright;
+    /// <summary>
+    /// Идентификатор администратора, который опубликовал запись (возвращается только для сообществ при запросе с ключом доступа администратора). Возвращается в записях, опубликованных менее 24 часов назад.
+    /// </summary>
     property CreatedBy: Integer read FCreated_by write FCreated_by;
+    /// <summary>
+    /// Время публикации записи
+    /// </summary>
     property Date: TDateTime read FDate write FDate;
-    property FriendsOnly: Integer read FFriends_only write FFriends_only;
+    /// <summary>
+    /// Информация о записи VK Donut
+    /// </summary>
+    property Donut: TVkDonut read FDonut write FDonut;
+    /// <summary>
+    /// True, если запись была создана с опцией «Только для друзей».
+    /// </summary>
+    property FriendsOnly: Boolean read FFriends_only write FFriends_only;
+    /// <summary>
+    /// Идентификатор автора записи (от чьего имени опубликована запись)
+    /// </summary>
     property FromId: Integer read FFrom_id write FFrom_id;
+    /// <summary>
+    /// Информация о местоположении
+    /// </summary>
     property Geo: TVkGeo read FGeo write FGeo;
+    /// <summary>
+    /// True, если объект добавлен в закладки у текущего пользователя.
+    /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
-    property IsPinned: Integer read FIs_pinned write FIs_pinned;
+    /// <summary>
+    /// Информация о том, что запись закреплена
+    /// </summary>
+    property IsPinned: Boolean read FIs_pinned write FIs_pinned;
+    /// <summary>
+    /// Информация о лайках к записи
+    /// </summary>
     property Likes: TVkLikesInfo read FLikes write FLikes;
-    property MarkedAsAds: Integer read FMarked_as_ads write FMarked_as_ads;
+    /// <summary>
+    /// Информация о том, содержит ли запись отметку "реклама"
+    /// </summary>
+    property MarkedAsAds: Boolean read FMarked_as_ads write FMarked_as_ads;
+    /// <summary>
+    /// Идентификатор владельца стены, на которой размещена запись. В версиях API ниже 5.7 это поле называется ToId
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Идентификатор отложенной записи. Это поле возвращается тогда, когда запись стояла на таймере
+    /// </summary>
     property PostponedId: Integer read FPostponed_id write FPostponed_id;
+    /// <summary>
+    /// Информация о способе размещения записи (Поле возвращается только для Standalone-приложений с ключом доступа, полученным в Implicit Flow.)
+    /// </summary>
     property PostSource: TVkPostSource read FPost_source write FPost_source;
+    /// <summary>
+    /// Тип записи, может принимать следующие значения: post, copy, reply, postpone, suggest.
+    /// </summary>
     property PostType: string read FPost_type write FPost_type;
+    /// <summary>
+    /// Идентификатор владельца записи, в ответ на которую была оставлена текущая
+    /// </summary>
     property ReplyOwnerId: Integer read FReply_owner_id write FReply_owner_id;
+    /// <summary>
+    /// Идентификатор записи, в ответ на которую была оставлена текущая
+    /// </summary>
     property ReplyPostId: Integer read FReply_post_id write FReply_post_id;
+    /// <summary>
+    /// Информация о репостах записи («Рассказать друзьям»)
+    /// </summary>
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
+    /// <summary>
+    /// Идентификатор автора, если запись была опубликована от имени сообщества и подписана пользователем
+    /// </summary>
     property SignerId: Integer read FSigner_id write FSigner_id;
+    /// <summary>
+    /// Текст записи
+    /// </summary>
     property Text: string read FText write FText;
+    /// <summary>
+    /// Идентификатор владельца стены, на которой размещена запись (API ниже 5.7)
+    /// </summary>
     property ToId: Integer read FTo_id write FTo_id;
+    /// <summary>
+    /// Информация о просмотрах записи
+    /// </summary>
     property Views: TVkViewsInfo read FViews write FViews;
     constructor Create; override;
     destructor Destroy; override;
@@ -246,11 +482,6 @@ uses
   System.DateUtils, VK.CommonUtils;
 
 {TVkAttachment}
-
-constructor TVkAttachment.Create;
-begin
-  inherited;
-end;
 
 destructor TVkAttachment.Destroy;
 begin
@@ -302,11 +533,6 @@ begin
   inherited;
 end;
 
-function TVkAttachment.GetType: TVkAttachmentType;
-begin
-  Result := TVkAttachmentType.Create(FType);
-end;
-
 function TVkAttachment.GetPreviewUrl: string;
 begin
   case&Type of
@@ -337,11 +563,6 @@ begin
   end;
 end;
 
-procedure TVkAttachment.SetType(const Value: TVkAttachmentType);
-begin
-  FType := Value.ToString;
-end;
-
 { TVkComment }
 
 constructor TVkComment.Create;
@@ -364,23 +585,28 @@ end;
 constructor TVkPost.Create;
 begin
   inherited;
-  FPost_source := TVkPostSource.Create();
   FComments := TVkCommentsInfo.Create();
   FLikes := TVkLikesInfo.Create();
   FReposts := TVkRepostsInfo.Create();
-  FGeo := TVkGeo.Create;
+  FViews := TVkViewsInfo.Create;
 end;
 
 destructor TVkPost.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPost>(FCopy_history);
   TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
-  FGeo.Free;
-  FPost_source.Free;
   FComments.Free;
   FLikes.Free;
   FReposts.Free;
   FViews.Free;
+  if Assigned(FGeo) then
+    FGeo.Free;
+  if Assigned(FPost_source) then
+    FPost_source.Free;
+  if Assigned(FCopyright) then
+    FCopyright.Free;
+  if Assigned(FDonut) then
+    FDonut.Free;
   inherited;
 end;
 

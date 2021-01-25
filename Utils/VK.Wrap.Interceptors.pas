@@ -62,6 +62,10 @@ type
     constructor Create; reintroduce;
   end;
 
+  TDocumentTypeInterceptor = class(TEnumInterceptor<TVkDocumentType>)
+    constructor Create; reintroduce;
+  end;
+
   TPeerTypeInterceptor = class(TEnumInterceptor<TVkPeerType>)
     constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
@@ -76,6 +80,13 @@ type
   end;
 
   TAudioGenreInterceptor = class(TJSONInterceptor)
+  public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TAttachmentTypeInterceptor = class(TJSONInterceptor)
   public
     constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
@@ -343,6 +354,42 @@ begin
   value := TVkPeerType.Create(Arg);
   v := v.From(value);
   ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+end;
+
+{ TAttachmentTypeInterceptor }
+
+constructor TAttachmentTypeInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TAttachmentTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: TVkAttachmentType;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAttachmentType>;
+  result := value.ToString;
+end;
+
+procedure TAttachmentTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: TVkAttachmentType;
+  v: TValue;
+begin
+  value := TVkAttachmentType.Create(Arg);
+  v := v.From(value);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+end;
+
+{ TDocumentTypeInterceptor }
+
+constructor TDocumentTypeInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
 end;
 
 end.

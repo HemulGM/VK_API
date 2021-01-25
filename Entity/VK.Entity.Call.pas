@@ -3,7 +3,8 @@ unit VK.Entity.Call;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common;
 
 type
   TVkCall = class(TVkEntity)
@@ -15,7 +16,9 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FTime: TDateTime;
     FVideo: Boolean;
+    FAccess_key: string;
   public
+    property AccessKey: string read FAccess_key write FAccess_key;
     property Duration: Integer read FDuration write FDuration;
     property InitiatorId: Integer read FInitiator_id write FInitiator_id;
     property ReceiverId: Integer read FReceiver_id write FReceiver_id;
