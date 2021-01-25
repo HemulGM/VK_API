@@ -84,35 +84,35 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
+    function GroupId(Value: Integer): TVkParamsBoardGet;
     /// <summary>
     /// Список идентификаторов тем, которые необходимо получить (не более 100). По умолчанию возвращаются все темы. Если указан данный параметр, игнорируются параметры order, offset и count (возвращаются все запрошенные темы в указанном порядке).
     /// </summary>
-    function TopicIds(Value: TIdList): Integer;
+    function TopicIds(Value: TIdList): TVkParamsBoardGet;
     /// <summary>
     /// Порядок, в котором необходимо вернуть список тем.
     /// </summary>
-    function Order(Value: TVkBoardTopicOrder): Integer;
+    function Order(Value: TVkBoardTopicOrder): TVkParamsBoardGet;
     /// <summary>
     /// Количество тем, которое необходимо получить (но не более 100). По умолчанию — 40.
     /// </summary>
-    function Count(Value: Integer = 40): Integer;
+    function Count(Value: Integer = 40): TVkParamsBoardGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества тем.
     /// </summary>
-    function Offset(Value: Integer = 0): Integer;
+    function Offset(Value: Integer = 0): TVkParamsBoardGet;
     /// <summary>
     /// Если указать в качестве этого параметра True, то будет возвращена информация о пользователях, являющихся создателями тем или оставившими в них последнее сообщение. По умолчанию False.
     /// </summary>
-    function Extended(Value: Boolean = False): Integer;
+    function Extended(Value: Boolean = False): TVkParamsBoardGet;
     /// <summary>
     /// Набор флагов, определяющий, необходимо ли вернуть вместе с информацией о темах текст первых и последних сообщений в них. Является суммой флагов
     /// </summary>
-    function Preview(Value: TVkBoardTopicPreview): Integer;
+    function Preview(Value: TVkBoardTopicPreview): TVkParamsBoardGet;
     /// <summary>
     /// Количество символов, по которому нужно обрезать первое и последнее сообщение. Укажите 0, если Вы не хотите обрезать сообщение. (по умолчанию — 90).
     /// </summary>
-    function PreviewLength(Value: Integer = 90): Integer;
+    function PreviewLength(Value: Integer = 90): TVkParamsBoardGet;
   end;
 
   TVkParamsBoardAdd = record
@@ -120,23 +120,23 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
+    function GroupId(Value: Integer): TVkParamsBoardAdd;
     /// <summary>
     /// Название обсуждения.
     /// </summary>
-    function Title(Value: string): Integer;
+    function Title(Value: string): TVkParamsBoardAdd;
     /// <summary>
     /// Текст первого сообщения в обсуждении.
     /// </summary>
-    function Text(Value: string): Integer;
+    function Text(Value: string): TVkParamsBoardAdd;
     /// <summary>
     /// True — тема будет создана от имени группы, False — тема будет создана от имени пользователя (по умолчанию).
     /// </summary>
-    function FromGroup(Value: Boolean): Integer;
+    function FromGroup(Value: Boolean): TVkParamsBoardAdd;
     /// <summary>
     /// Cписок объектов, приложенных к записи
     /// </summary>
-    function Attachments(Value: TAttachmentArray): Integer;
+    function Attachments(Value: TAttachmentArray): TVkParamsBoardAdd;
   end;
 
   TVkParamsBoardCommentsGet = record
@@ -144,35 +144,35 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
+    function GroupId(Value: Integer): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Идентификатор обсуждения.
     /// </summary>
-    function TopicId(Value: Integer): Integer;
+    function TopicId(Value: Integer): TVkParamsBoardCommentsGet;
     /// <summary>
     /// True — будет возвращено дополнительное поле likes. По умолчанию поле likes не возвращается.
     /// </summary>
-    function NeedLikes(Value: Boolean): Integer;
+    function NeedLikes(Value: Boolean): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Идентификатор комментария, начиная с которого нужно вернуть список (подробности см. ниже).
     /// </summary>
-    function StartCommentId(Value: Integer): Integer;
+    function StartCommentId(Value: Integer): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Количество тем, которое необходимо получить (но не более 100). По умолчанию — 20.
     /// </summary>
-    function Count(Value: Integer = 20): Integer;
+    function Count(Value: Integer = 20): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества тем.
     /// </summary>
-    function Offset(Value: Integer = 0): Integer;
+    function Offset(Value: Integer = 0): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Если указать в качестве этого параметра True, то будет возвращена информация о пользователях, являющихся авторами сообщений. По умолчанию False.
     /// </summary>
-    function Extended(Value: Boolean): Integer;
+    function Extended(Value: Boolean): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Порядок сортировки комментариев: asc — хронологический, desc — антихронологический
     /// </summary>
-    function Sort(Value: Boolean): Integer;
+    function Sort(Value: Boolean): TVkParamsBoardCommentsGet;
   end;
 
   TBoardController = class(TVkController)
@@ -510,116 +510,137 @@ end;
 
 { TVkParamsBoardGet }
 
-function TVkParamsBoardGet.Count(Value: Integer): Integer;
+function TVkParamsBoardGet.Count(Value: Integer): TVkParamsBoardGet;
 begin
-  Result := List.Add('count', Value);
+  Result := Self;
+  List.Add('count', Value);
 end;
 
-function TVkParamsBoardGet.Extended(Value: Boolean): Integer;
+function TVkParamsBoardGet.Extended(Value: Boolean): TVkParamsBoardGet;
 begin
-  Result := List.Add('extended', Value);
+  Result := Self;
+  List.Add('extended', Value);
 end;
 
-function TVkParamsBoardGet.GroupId(Value: Integer): Integer;
+function TVkParamsBoardGet.GroupId(Value: Integer): TVkParamsBoardGet;
 begin
-  Result := List.Add('group_id', Value);
+  Result := Self;
+  List.Add('group_id', Value);
 end;
 
-function TVkParamsBoardGet.Offset(Value: Integer): Integer;
+function TVkParamsBoardGet.Offset(Value: Integer): TVkParamsBoardGet;
 begin
-  Result := List.Add('offset', Value);
+  Result := Self;
+  List.Add('offset', Value);
 end;
 
-function TVkParamsBoardGet.Order(Value: TVkBoardTopicOrder): Integer;
+function TVkParamsBoardGet.Order(Value: TVkBoardTopicOrder): TVkParamsBoardGet;
 begin
-  Result := List.Add('order', Value.ToConst);
+  Result := Self;
+  List.Add('order', Value.ToConst);
 end;
 
-function TVkParamsBoardGet.Preview(Value: TVkBoardTopicPreview): Integer;
+function TVkParamsBoardGet.Preview(Value: TVkBoardTopicPreview): TVkParamsBoardGet;
 begin
-  Result := List.Add('preview', Value.ToConst);
+  Result := Self;
+  List.Add('preview', Value.ToConst);
 end;
 
-function TVkParamsBoardGet.PreviewLength(Value: Integer): Integer;
+function TVkParamsBoardGet.PreviewLength(Value: Integer): TVkParamsBoardGet;
 begin
-  Result := List.Add('preview_length', Value);
+  Result := Self;
+  List.Add('preview_length', Value);
 end;
 
-function TVkParamsBoardGet.TopicIds(Value: TIdList): Integer;
+function TVkParamsBoardGet.TopicIds(Value: TIdList): TVkParamsBoardGet;
 begin
-  Result := List.Add('topic_ids', Value);
+  Result := Self;
+  List.Add('topic_ids', Value);
 end;
 
 { TVkParamsBoardAdd }
 
-function TVkParamsBoardAdd.Attachments(Value: TAttachmentArray): Integer;
+function TVkParamsBoardAdd.Attachments(Value: TAttachmentArray): TVkParamsBoardAdd;
 begin
-  Result := List.Add('attachments', Value);
+  Result := Self;
+  List.Add('attachments', Value);
 end;
 
-function TVkParamsBoardAdd.FromGroup(Value: Boolean): Integer;
+function TVkParamsBoardAdd.FromGroup(Value: Boolean): TVkParamsBoardAdd;
 begin
-  Result := List.Add('from_group', Value);
+  Result := Self;
+  List.Add('from_group', Value);
 end;
 
-function TVkParamsBoardAdd.GroupId(Value: Integer): Integer;
+function TVkParamsBoardAdd.GroupId(Value: Integer): TVkParamsBoardAdd;
 begin
-  Result := List.Add('group_id', Value);
+  Result := Self;
+  List.Add('group_id', Value);
 end;
 
-function TVkParamsBoardAdd.Text(Value: string): Integer;
+function TVkParamsBoardAdd.Text(Value: string): TVkParamsBoardAdd;
 begin
-  Result := List.Add('text', Value);
+  Result := Self;
+  List.Add('text', Value);
 end;
 
-function TVkParamsBoardAdd.Title(Value: string): Integer;
+function TVkParamsBoardAdd.Title(Value: string): TVkParamsBoardAdd;
 begin
-  Result := List.Add('title', Value);
+  Result := Self;
+  List.Add('title', Value);
 end;
 
 { TVkParamsBoardCommentsGet }
 
-function TVkParamsBoardCommentsGet.Count(Value: Integer): Integer;
+function TVkParamsBoardCommentsGet.Count(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := List.Add('count', Value);
+  Result := Self;
+  List.Add('count', Value);
 end;
 
-function TVkParamsBoardCommentsGet.Extended(Value: Boolean): Integer;
+function TVkParamsBoardCommentsGet.Extended(Value: Boolean): TVkParamsBoardCommentsGet;
 begin
-  Result := List.Add('extended', Value);
+  Result := Self;
+  List.Add('extended', Value);
 end;
 
-function TVkParamsBoardCommentsGet.GroupId(Value: Integer): Integer;
+function TVkParamsBoardCommentsGet.GroupId(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := List.Add('group_id', Value);
+  Result := Self;
+  List.Add('group_id', Value);
 end;
 
-function TVkParamsBoardCommentsGet.NeedLikes(Value: Boolean): Integer;
+function TVkParamsBoardCommentsGet.NeedLikes(Value: Boolean): TVkParamsBoardCommentsGet;
 begin
-  Result := List.Add('need_likes', Value);
+  Result := Self;
+  List.Add('need_likes', Value);
 end;
 
-function TVkParamsBoardCommentsGet.Offset(Value: Integer): Integer;
+function TVkParamsBoardCommentsGet.Offset(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := List.Add('offset', Value);
+  Result := Self;
+  List.Add('offset', Value);
 end;
 
-function TVkParamsBoardCommentsGet.Sort(Value: Boolean): Integer;
+function TVkParamsBoardCommentsGet.Sort(Value: Boolean): TVkParamsBoardCommentsGet;
 begin
+  Result := Self;
   if Value then
-    Result := List.Add('sort', 'asc')
+    List.Add('sort', 'asc')
   else
-    Result := List.Add('sort', 'desc');
+    List.Add('sort', 'desc');
 end;
 
-function TVkParamsBoardCommentsGet.StartCommentId(Value: Integer): Integer;
+function TVkParamsBoardCommentsGet.StartCommentId(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := List.Add('start_comment_id', Value);
+  Result := Self;
+  List.Add('start_comment_id', Value);
 end;
 
-function TVkParamsBoardCommentsGet.TopicId(Value: Integer): Integer;
+function TVkParamsBoardCommentsGet.TopicId(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := List.Add('topic_id', Value);
+  Result := Self;
+  List.Add('topic_id', Value);
 end;
 
 end.

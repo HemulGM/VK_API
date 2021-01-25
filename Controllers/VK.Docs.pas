@@ -3,9 +3,8 @@ unit VK.Docs;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Doc.Save,
-  VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Doc.Save, VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
 
 type
   TVkDocUploadType = (dutDoc, dutAudioMessage);
@@ -17,23 +16,23 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежат документы.
     /// </summary>
-    function OwnerId(Value: Integer): Integer;
+    function OwnerId(Value: Integer): TVkParamsDocsGet;
     /// <summary>
     /// Фильтр по типу документа.
     /// </summary>
-    function &Type(Value: TVkDocTypeFilter): Integer;
+    function &Type(Value: TVkDocTypeFilter): TVkParamsDocsGet;
     /// <summary>
     /// Возвращать теги
     /// </summary>
-    function ReturnTags(Value: Boolean): Integer;
+    function ReturnTags(Value: Boolean): TVkParamsDocsGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества документов.
     /// </summary>
-    function Offset(Value: Integer): Integer;
+    function Offset(Value: Integer): TVkParamsDocsGet;
     /// <summary>
     /// Количество документов, информацию о которых нужно вернуть.
     /// </summary>
-    function Count(Value: Integer): Integer;
+    function Count(Value: Integer): TVkParamsDocsGet;
   end;
 
   TVkParamsDocsSearch = record
@@ -41,23 +40,23 @@ type
     /// <summary>
     /// True — искать среди собственных документов пользователя.
     /// </summary>
-    function SearchOwn(Value: Boolean): Integer;
+    function SearchOwn(Value: Boolean): TVkParamsDocsSearch;
     /// <summary>
     /// Строка поискового запроса. Например, зеленые тапочки.
     /// </summary>
-    function Query(Value: string): Integer;
+    function Query(Value: string): TVkParamsDocsSearch;
     /// <summary>
     /// Количество документов, информацию о которых нужно вернуть.
     /// </summary>
-    function Count(Value: Integer): Integer;
+    function Count(Value: Integer): TVkParamsDocsSearch;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества документов.
     /// </summary>
-    function Offset(Value: Integer): Integer;
+    function Offset(Value: Integer): TVkParamsDocsSearch;
     /// <summary>
     /// Возвращать теги.
     /// </summary>
-    function ReturnTags(Value: Boolean): Integer;
+    function ReturnTags(Value: Boolean): TVkParamsDocsSearch;
   end;
 
   TDocController = class(TVkController)
@@ -77,7 +76,8 @@ type
     /// <summary>
     /// Сохраняет аудиосообщение
     /// </summary>
-    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0; ReturnTags: Boolean = False): Boolean;
+    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0;
+      ReturnTags: Boolean = False): Boolean;
     /// <summary>
     /// Возвращает расширенную информацию о документах пользователя или сообщества.
     /// </summary>
@@ -233,7 +233,8 @@ begin
   Result := Handler.Execute('docs.save', Params).GetObject<TVkDocSaved>(Doc);
 end;
 
-function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
+function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer;
+  ReturnTags: Boolean): Boolean;
 var
   Url, Response: string;
 begin
@@ -258,56 +259,66 @@ end;
 
 { TVkParamsDocsGet }
 
-function TVkParamsDocsGet.Count(Value: Integer): Integer;
+function TVkParamsDocsGet.Count(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := List.Add('count', Value);
+  Result := Self;
+  List.Add('count', Value);
 end;
 
-function TVkParamsDocsGet.Offset(Value: Integer): Integer;
+function TVkParamsDocsGet.Offset(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := List.Add('offset', Value);
+  Result := Self;
+  List.Add('offset', Value);
 end;
 
-function TVkParamsDocsGet.OwnerId(Value: Integer): Integer;
+function TVkParamsDocsGet.OwnerId(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := List.Add('owner_id', Value);
+  Result := Self;
+  List.Add('owner_id', Value);
 end;
 
-function TVkParamsDocsGet.ReturnTags(Value: Boolean): Integer;
+function TVkParamsDocsGet.ReturnTags(Value: Boolean): TVkParamsDocsGet;
 begin
-  Result := List.Add('return_tags', Value);
+  Result := Self;
+  List.Add('return_tags', Value);
 end;
 
-function TVkParamsDocsGet.&Type(Value: TVkDocTypeFilter): Integer;
+function TVkParamsDocsGet.&Type(Value: TVkDocTypeFilter): TVkParamsDocsGet;
 begin
-  Result := List.Add('type', Ord(Value));
+  Result := Self;
+  List.Add('type', Ord(Value));
 end;
 
 { TVkParamsDocsSearch }
 
-function TVkParamsDocsSearch.Count(Value: Integer): Integer;
+function TVkParamsDocsSearch.Count(Value: Integer): TVkParamsDocsSearch;
 begin
-  Result := List.Add('count', Value);
+  Result := Self;
+  List.Add('count', Value);
 end;
 
-function TVkParamsDocsSearch.Offset(Value: Integer): Integer;
+function TVkParamsDocsSearch.Offset(Value: Integer): TVkParamsDocsSearch;
 begin
-  Result := List.Add('offset', Value);
+  Result := Self;
+  List.Add('offset', Value);
 end;
 
-function TVkParamsDocsSearch.Query(Value: string): Integer;
+function TVkParamsDocsSearch.Query(Value: string): TVkParamsDocsSearch;
 begin
-  Result := List.Add('q', Value);
+  Result := Self;
+  List.Add('q', Value);
 end;
 
-function TVkParamsDocsSearch.ReturnTags(Value: Boolean): Integer;
+function TVkParamsDocsSearch.ReturnTags(Value: Boolean): TVkParamsDocsSearch;
 begin
-  Result := List.Add('return_tags', Value);
+  Result := Self;
+  List.Add('return_tags', Value);
 end;
 
-function TVkParamsDocsSearch.SearchOwn(Value: Boolean): Integer;
+function TVkParamsDocsSearch.SearchOwn(Value: Boolean): TVkParamsDocsSearch;
 begin
-  Result := List.Add('search_own', Value);
+  Result := Self;
+  List.Add('search_own', Value);
 end;
 
 end.
