@@ -75,7 +75,6 @@ type
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_post: Boolean;
     FGroups_can_post: Boolean;
-    FCanOpen: Boolean;
     FCan_close: Boolean;
     FCan_open: Boolean;
   public

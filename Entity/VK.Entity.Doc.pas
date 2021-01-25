@@ -118,7 +118,7 @@ type
 implementation
 
 uses
-  VK.Types, System.SysUtils, System.DateUtils, VK.CommonUtils;
+  System.SysUtils, System.DateUtils, VK.CommonUtils;
 
 {TVkPreviewPhoto}
 
