@@ -9,6 +9,16 @@ uses
   VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Wrap.Interceptors;
 
 type
+  TVkLastActivity = class(TVkEntity)
+  private
+    FOnline: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTime: TDateTime;
+  public
+    property Online: Boolean read FOnline write FOnline;
+    property Time: TDateTime read FTime write FTime;
+  end;
+
   TVkMessageSendResponse = class(TVkEntity)
   private
     FMessage_id: Integer;

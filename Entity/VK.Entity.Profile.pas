@@ -357,14 +357,14 @@ type
 
   TVkCropPhoto = class(TVkEntity)
   private
-    FCrop: TVkCrop;
+    FCrop: TVkRect;
     FPhoto: TVkPhoto;
     FRect: TVkRect;
   public
     /// <summary>
     /// Вырезанная фотография сообщества.
     /// </summary>
-    property Crop: TVkCrop read FCrop write FCrop;
+    property Crop: TVkRect read FCrop write FCrop;
     /// <summary>
     /// Объект photo фотографии пользователя, из которой вырезается главное фото сообщества.
     /// </summary>
@@ -1014,7 +1014,7 @@ constructor TVkCropPhoto.Create;
 begin
   inherited;
   FPhoto := TVkPhoto.Create();
-  FCrop := TVkCrop.Create();
+  FCrop := TVkRect.Create();
   FRect := TVkRect.Create();
 end;
 

@@ -3,8 +3,10 @@ unit VK.Entity.Group;
 interface
 
 uses
-  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Market,
-  VK.Entity.Group.Counters, VK.Entity.Database.Cities, VK.Entity.Database.Countries, VK.Entity.Common.List;
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common,
+  VK.Entity.Photo, REST.JsonReflect, REST.Json.Interceptors, VK.Entity.Market,
+  VK.Entity.Group.Counters, VK.Wrap.Interceptors, VK.Entity.Database.Cities,
+  VK.Entity.Database.Countries, VK.Entity.Common.List;
 
 type
   TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
@@ -148,6 +150,38 @@ type
   TVkGroupAddresses = TVkEntityList<TVkGroupAddress>;
 
   TVkGroupState = (gsOpen = 0, gsClose = 1, gsPrivate = 2);
+
+  TVkBanInfo = class
+  private
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FEnd_date: TDateTime;
+    FComment: string;
+  public
+    property EndDate: TDateTime read FEnd_date write FEnd_date;
+    property Comment: string read FComment write FComment;
+  end;
+
+  TVkContact = class
+  private
+    FEmail: string;
+    FPhone: string;
+    FDesc: string;
+    FUser_id: Integer;
+  public
+    property UserId: Integer read FUser_id write FUser_id;
+    property Desc: string read FDesc write FDesc;
+    property Phone: string read FPhone write FPhone;
+    property Email: string read FEmail write FEmail;
+  end;
+
+  TVkAddresses = class
+  private
+    FIs_enabled: Boolean;
+    FMain_address_id: Integer;
+  public
+    property IsEnabled: Boolean read FIs_enabled write FIs_enabled;
+    property MainAddressId: Integer read FMain_address_id write FMain_address_id;
+  end;
 
   TVkGroup = class(TVkObject)
   private

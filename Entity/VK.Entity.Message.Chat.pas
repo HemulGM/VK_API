@@ -3,7 +3,8 @@ unit VK.Entity.Message.Chat;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Types, VK.Entity.Common.List;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Common, VK.Types, VK.Entity.Common.List;
 
 type
   TVkChat = class(TVkObject)
@@ -67,6 +68,13 @@ type
     property Members: TArrayOfInteger read FMembers write FMembers;
     property Title: string read FTitle write FTitle;
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
+  end;
+
+  TVkEmail = class(TVkObject)
+  private
+    FAddress: string;
+  public
+    property Address: string read FAddress write FAddress;
   end;
 
   TVkChatPreview = class(TVkEntity)

@@ -13,6 +13,13 @@ type
     constructor Create; virtual;
   end;
 
+  TVkCounterEntity = class(TVkEntity)
+  private
+    FCount: Integer;
+  public
+    property Count: Integer read FCount write FCount;
+  end;
+
   TVkObject = class(TVkEntity)
   protected
     FId: Integer;
@@ -20,24 +27,11 @@ type
     property Id: Integer read FId write FId;
   end;
 
-  TVkDimensions = class(TVkEntity)
+  TVkBasicObject = class(TVkObject)
   private
-    FWidth: Integer;
-    FHeight: Integer;
-    FLength: Integer;
+    FName: string;
   public
-    /// <summary>
-    /// Ширина в миллиметрах
-    /// </summary>
-    property Width: Integer read FWidth write FWidth;
-    /// <summary>
-    /// Высота в миллиметрах
-    /// </summary>
-    property Height: Integer read FHeight write FHeight;
-    /// <summary>
-    /// Длина в миллиметрах
-    /// </summary>
-    property Length: Integer read FLength write FLength;
+    property Name: string read FName write FName;
   end;
 
   TVkCopyright = class(TVkEntity)
@@ -49,23 +43,6 @@ type
     property Link: string read FLink write FLink;
     property Name: string read FName write FName;
     property&Type: string read FType write FType;
-  end;
-
-  TVkLastActivity = class(TVkEntity)
-  private
-    FOnline: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
-    FTime: TDateTime;
-  public
-    property Online: Boolean read FOnline write FOnline;
-    property Time: TDateTime read FTime write FTime;
-  end;
-
-  TVkBasicObject = class(TVkObject)
-  private
-    FName: string;
-  public
-    property Name: string read FName write FName;
   end;
 
   TVkProductCurrency = class(TVkBasicObject)
@@ -92,49 +69,6 @@ type
     property Y: Integer read FY write FY;
     property Y2: Integer read FY2 write FY2;
   end;
-
-  TVkAddresses = class
-  private
-    FIs_enabled: Boolean;
-    FMain_address_id: Integer;
-  public
-    property IsEnabled: Boolean read FIs_enabled write FIs_enabled;
-    property MainAddressId: Integer read FMain_address_id write FMain_address_id;
-  end;
-
-  TVkContact = class
-  private
-    FEmail: string;
-    FPhone: string;
-    FDesc: string;
-    FUser_id: Integer;
-  public
-    property UserId: Integer read FUser_id write FUser_id;
-    property Desc: string read FDesc write FDesc;
-    property Phone: string read FPhone write FPhone;
-    property Email: string read FEmail write FEmail;
-  end;
-
-  TVkBanInfo = class
-  private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
-    FEnd_date: TDateTime;
-    FComment: string;
-  public
-    property EndDate: TDateTime read FEnd_date write FEnd_date;
-    property Comment: string read FComment write FComment;
-  end;
-
-  TVkCrop = TVkRect;
-
-  TVkCounterEntity = class(TVkEntity)
-  private
-    FCount: Integer;
-  public
-    property Count: Integer read FCount write FCount;
-  end;
-
-  TVkTags = TVkCounterEntity;
 
   /// <summary>
   /// Объект post_source, описывающий способ размещения записи на стене
@@ -255,22 +189,6 @@ type
     function GetSizeMax(Value: string = 'w'; Circular: Boolean = False): TVkSize;
   end;
 
-  TVkEmail = class(TVkObject)
-  private
-    FAddress: string;
-  public
-    property Address: string read FAddress write FAddress;
-  end;
-
-  TVkCoordinates = class(TVkEntity)
-  private
-    FLatitude: Extended;
-    FLongitude: Extended;
-  public
-    property Latitude: Extended read FLatitude write FLatitude;
-    property Longitude: Extended read FLongitude write FLongitude;
-  end;
-
   /// <summary>
   /// Объект, описывающий место
   /// </summary>
@@ -381,23 +299,6 @@ type
     /// </summary>
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
-  end;
-
-  TVkOwnerPhoto = class(TVkEntity)
-  private
-    FPhoto_src: string;
-    FPhoto_src_small: string;
-    FPhoto_src_big: string;
-    FPost_id: Integer;
-    FPhoto_hash: string;
-    FSaved: Boolean;
-  public
-    property PhotoHash: string read FPhoto_hash write FPhoto_hash;
-    property PhotoSrc: string read FPhoto_src write FPhoto_src;
-    property PhotoSrcBig: string read Fphoto_src_big write Fphoto_src_big;
-    property PhotoSrcSmall: string read FPhoto_src_small write FPhoto_src_small;
-    property Saved: Boolean read FSaved write FSaved;
-    property PostId: Integer read FPost_id write FPost_id;
   end;
 
   TVkThumb = class

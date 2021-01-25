@@ -75,6 +75,26 @@ type
 
   TVkProductCategories = TVkEntityList<TVkProductCategory>;
 
+  TVkDimensions = class(TVkEntity)
+  private
+    FWidth: Integer;
+    FHeight: Integer;
+    FLength: Integer;
+  public
+    /// <summary>
+    /// Ширина в миллиметрах
+    /// </summary>
+    property Width: Integer read FWidth write FWidth;
+    /// <summary>
+    /// Высота в миллиметрах
+    /// </summary>
+    property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// Длина в миллиметрах
+    /// </summary>
+    property Length: Integer read FLength write FLength;
+  end;
+
   TVkProduct = class(TVkObject)
   private
     {

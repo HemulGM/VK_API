@@ -7,6 +7,23 @@ uses
   VK.Entity.Common, VK.Entity.Info, VK.Entity.Attachment;
 
 type
+  TVkOwnerPhoto = class(TVkEntity)
+  private
+    FPhoto_src: string;
+    FPhoto_src_small: string;
+    FPhoto_src_big: string;
+    FPost_id: Integer;
+    FPhoto_hash: string;
+    FSaved: Boolean;
+  public
+    property PhotoHash: string read FPhoto_hash write FPhoto_hash;
+    property PhotoSrc: string read FPhoto_src write FPhoto_src;
+    property PhotoSrcBig: string read Fphoto_src_big write Fphoto_src_big;
+    property PhotoSrcSmall: string read FPhoto_src_small write FPhoto_src_small;
+    property Saved: Boolean read FSaved write FSaved;
+    property PostId: Integer read FPost_id write FPost_id;
+  end;
+
   TVkPhotoTag = class(TVkObject)
   private
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
@@ -53,7 +70,7 @@ type
     FOwner_id: Integer;
     FReposts: TVkRepostsInfo;
     FSizes: TVkSizes;
-    FTags: TVkTags;
+    FTags: TVkCounterEntity;
     FText: string;
     FUser_id: Integer;
     FWidth: Integer;
@@ -114,7 +131,7 @@ type
     property Comments: TVkCommentsInfo read FComments write FComments;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
-    property Tags: TVkTags read FTags write FTags;
+    property Tags: TVkCounterEntity read FTags write FTags;
     /// <summary>
     /// Ключ доступа
     /// </summary>
@@ -161,12 +178,12 @@ type
 
   TVkCropPhoto = class(TVkEntity)
   private
-    FCrop: TVkCrop;
+    FCrop: TVkRect;
     FPhoto: TVkPhoto;
     FRect: TVkRect;
   public
     property Photo: TVkPhoto read FPhoto write FPhoto;
-    property Crop: TVkCrop read FCrop write FCrop;
+    property Crop: TVkRect read FCrop write FCrop;
     property Rect: TVkRect read FRect write FRect;
     destructor Destroy; override;
   end;
@@ -228,7 +245,7 @@ begin
   FLikes := TVkLikesInfo.Create;
   FReposts := TVkRepostsInfo.Create;
   FComments := TVkCommentsInfo.Create;
-  FTags := TVkTags.Create;
+  FTags := TVkCounterEntity.Create;
 end;
 
 destructor TVkPhoto.Destroy;
