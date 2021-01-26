@@ -3,8 +3,8 @@ unit VK.Wrap.Interceptors;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, TypInfo, System.Types, System.RTTI,
-  Rest.Json, REST.JsonReflect, REST.Json.Interceptors, VK.Types;
+  Generics.Collections, System.SysUtils, TypInfo, System.Types, System.RTTI, Rest.Json, REST.JsonReflect,
+  REST.Json.Interceptors, VK.Types;
 
 type
   TEnumHelp = record
@@ -88,6 +88,12 @@ type
 
   TAttachmentTypeInterceptor = class(TJSONInterceptor)
   public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TKeyboardButtonColorInterceptor = class(TEnumInterceptor<TVkKeyboardButtonColor>)
     constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
@@ -390,6 +396,34 @@ constructor TDocumentTypeInterceptor.Create;
 begin
   ConverterType := ctString;
   ReverterType := rtString;
+end;
+
+{ TKeyboardButtonColorInterceptor }
+
+constructor TKeyboardButtonColorInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TKeyboardButtonColorInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: TVkKeyboardButtonColor;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkKeyboardButtonColor>;
+  result := value.ToString;
+end;
+
+procedure TKeyboardButtonColorInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: TVkKeyboardButtonColor;
+  v: TValue;
+begin
+  value := TVkKeyboardButtonColor.Create(Arg);
+  v := v.From(value);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
 end;
 
 end.

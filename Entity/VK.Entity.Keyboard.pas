@@ -3,15 +3,9 @@ unit VK.Entity.Keyboard;
 interface
 
 uses
-  Generics.Collections, Rest.Json, System.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, System.Json, VK.Types, VK.Entity.Common, VK.Wrap.Interceptors, REST.JsonReflect;
 
 type
-  TVkKeyboardButtonColor = (bcPositive, bcNegative, bcPrimary, bcSecondary);
-
-  TVkKeyboardButtonColorHelper = record helper for TVkKeyboardButtonColor
-    function ToString: string; inline;
-  end;
-
   TVkPayloadButton = class(TVkEntity)
   private
     FButton: string;
@@ -41,11 +35,20 @@ type
   TVkKeyboardButton = class(TVkEntity)
   private
     FAction: TVkKeyboardAction;
-    FColor: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FColor: TVkKeyboardButtonColor;
   public
     property Action: TVkKeyboardAction read FAction write FAction;
-    property Color: string read FColor write FColor;
+    property Color: TVkKeyboardButtonColor read FColor write FColor;
     constructor Create; override;
+    constructor CreateText(const Text, Payload: string);
+    constructor CreateOpenLink(const Text, Link, Payload: string);
+    constructor CreateLocation(const Payload: string);
+    constructor CreateVKApps(const AppId: Integer; const Payload, Text, Hash: string; OwnerId: Integer = 0);
+    {$WARNINGS OFF}
+    constructor CreateVKPay(const Payload, Hash: string);
+    constructor CreateCallback(const Text, Payload: string);
+    {$WARNINGS ON}
     destructor Destroy; override;
   end;
 
@@ -58,6 +61,8 @@ type
     FInline: Boolean;
     FAuthor_id: Integer;
   public
+    function AddButtonLine: Integer;
+    function AddButtonToLine(const Index: Integer; const Button: TVkKeyboardButton): Integer;
     property Buttons: TArray<TVkKeyboardButtons> read FButtons write FButtons;
     property OneTime: Boolean read FOne_time write FOne_time;
     property&Inline: Boolean read FInline write FInline;
@@ -71,6 +76,19 @@ uses
   VK.CommonUtils;
 
 {TVkKeyboardAction}
+
+function TVkKeyboard.AddButtonLine: Integer;
+begin
+  SetLength(FButtons, Length(FButtons) + 1);
+  Result := High(FButtons);
+end;
+
+function TVkKeyboard.AddButtonToLine(const Index: Integer; const Button: TVkKeyboardButton): Integer;
+begin
+  SetLength(FButtons[Index], Length(FButtons[Index]) + 1);
+  Result := High(FButtons[Index]);
+  FButtons[Index][Result] := Button;
+end;
 
 destructor TVkKeyboard.Destroy;
 begin
@@ -86,28 +104,63 @@ begin
   Action := TVkKeyboardAction.Create;
 end;
 
+{$WARNINGS OFF}
+constructor TVkKeyboardButton.CreateVKPay;
+begin
+  Create;
+  Action.&Type := 'vkpay';
+  Action.Payload := Payload;
+  Action.Hash := Hash;
+end;
+
+constructor TVkKeyboardButton.CreateCallback;
+begin
+  Create;
+  Action.&Type := 'callback';
+  Action.&Label := Text;
+  Action.Payload := Payload;
+end;
+{$WARNINGS ON}
+
+constructor TVkKeyboardButton.CreateLocation;
+begin
+  Create;
+  Action.&Type := 'location';
+  Action.Payload := Payload;
+end;
+
+constructor TVkKeyboardButton.CreateOpenLink;
+begin
+  Create;
+  Action.&Type := 'open_link';
+  Action.&Label := Text;
+  Action.Payload := Payload;
+  Action.Link := Link;
+end;
+
+constructor TVkKeyboardButton.CreateText;
+begin
+  Create;
+  Action.&Type := 'text';
+  Action.&Label := Text;
+  Action.Payload := Payload;
+end;
+
+constructor TVkKeyboardButton.CreateVKApps;
+begin
+  Create;
+  Action.&Type := 'open_app';
+  Action.&Label := Text;
+  Action.Payload := Payload;
+  Action.Hash := Hash;
+  Action.AppId := AppId;
+  Action.OwnerId := OwnerId;
+end;
+
 destructor TVkKeyboardButton.Destroy;
 begin
   FAction.Free;
   inherited;
-end;
-
-{ TVkKeyboardButtonColorHelper }
-
-function TVkKeyboardButtonColorHelper.ToString: string;
-begin
-  case Self of
-    bcPositive:
-      Result := 'positive';
-    bcNegative:
-      Result := 'negative';
-    bcPrimary:
-      Result := 'primary';
-    bcSecondary:
-      Result := 'secondary';
-  else
-    Result := ''
-  end;
 end;
 
 end.
