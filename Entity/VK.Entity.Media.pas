@@ -11,7 +11,7 @@ uses
   VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
   VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Info,
   VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
-  VK.Wrap.Interceptors;
+  VK.Entity.Attachment, VK.Wrap.Interceptors;
 
 type
   TVkAttachment = class;
@@ -171,7 +171,7 @@ type
   /// <summary>
   /// Объект, описывающий комментарий к записи
   /// </summary>
-  TVkComment = class(TVkObject)
+  TVkComment = class(TVkObject, IAttachment)
   private
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
@@ -252,6 +252,7 @@ type
     property Thread: TVkCommentThread read FThread write FThread;
     constructor Create; override;
     destructor Destroy; override;
+    function ToAttachment: string;
   end;
 
   TVkCommentThread = class(TVkEntityList<TVkComment>)
@@ -298,7 +299,7 @@ type
   /// <summary>
   /// Объект, описывающий запись на стене пользователя или сообщества
   /// </summary>
-  TVkPost = class(TVkObject)
+  TVkPost = class(TVkObject, IAttachment)
   private
     FOwner_id: Integer;
     FFrom_id: Integer;
@@ -459,6 +460,7 @@ type
     property Views: TVkViewsInfo read FViews write FViews;
     constructor Create; override;
     destructor Destroy; override;
+    function ToAttachment: string;
   end;
 
   TVkPosts = TVkEntityExtendedList<TVkPost>;
@@ -580,6 +582,11 @@ begin
   inherited;
 end;
 
+function TVkComment.ToAttachment: string;
+begin
+  Result := Attachment.WallReply(OwnerId, Id, AccessKey);
+end;
+
 {TVkPost}
 
 constructor TVkPost.Create;
@@ -608,6 +615,11 @@ begin
   if Assigned(FDonut) then
     FDonut.Free;
   inherited;
+end;
+
+function TVkPost.ToAttachment: string;
+begin
+  Result := Attachment.Wall(Id, OwnerId, AccessKey);
 end;
 
 { TVkAttachmentHistoryItem }

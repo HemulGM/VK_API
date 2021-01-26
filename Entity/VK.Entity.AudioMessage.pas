@@ -3,10 +3,10 @@ unit VK.Entity.AudioMessage;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Attachment, VK.Entity.Common;
 
 type
-  TVkAudioMessage = class(TVkObject)
+  TVkAudioMessage = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
     FDuration: Int64;

@@ -28,8 +28,6 @@ type
     constructor Create(const Msg: string; Code: Integer);
   end;
 
-  TVkWrongParamException = TVkException;
-
   TVkLongPollServerException = TVkException;
 
   TVkLongPollServerParseException = TVkLongPollServerException;
@@ -135,7 +133,6 @@ const
   AG_SPEECH = 19;
   AG_ELECTROPOPANDDISCO = 22;
   AG_OTHER = 18;
-
 
   //Group Dialog Flags
   GR_IMPORTANT = 1;

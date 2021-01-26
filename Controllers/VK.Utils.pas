@@ -46,7 +46,7 @@ type
     /// <summary>
     /// Возвращает текущее время на сервере ВКонтакте в unixtime.
     /// </summary>
-    function GetServerTime(var ServerTime: Int64): Boolean; overload;
+    function GetServerTimeUnix(var ServerTime: Int64): Boolean; overload;
     /// <summary>
     /// Позволяет получить URL, сокращенный с помощью vk.cc.
     /// </summary>
@@ -68,7 +68,7 @@ function TUtilsController.GetServerTime(var ServerTime: TDateTime): Boolean;
 var
   ST: Int64;
 begin
-  Result := GetServerTime(ST);
+  Result := GetServerTimeUnix(ST);
   if Result then
     ServerTime := UnixToDateTime(ST, False);
 end;
@@ -104,7 +104,7 @@ begin
   Result := Handler.Execute('utils.getLinkStats', Params).GetObject<TVkLinkStats>(Item);
 end;
 
-function TUtilsController.GetServerTime(var ServerTime: Int64): Boolean;
+function TUtilsController.GetServerTimeUnix(var ServerTime: Int64): Boolean;
 begin
   with Handler.Execute('utils.getServerTime') do
     Result := Success and TryStrToInt64(Response, ServerTime);

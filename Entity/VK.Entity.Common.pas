@@ -31,6 +31,7 @@ type
   private
     FName: string;
   public
+    property Id;
     property Name: string read FName write FName;
   end;
 
@@ -298,6 +299,9 @@ type
     /// URL изображения 200x200px;
     /// </summary>
     property Photo200: string read FPhoto_200 write FPhoto_200;
+    /// <summary>
+    /// Фото по умолчанию
+    /// </summary>
     property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
   end;
 
@@ -314,16 +318,16 @@ type
     FPhoto_1200: string;
     FId: string;
   public
-    property Height: Integer read FHeight write FHeight;
     property Id: string read FId write FId;
-    property Photo1200: string read FPhoto_1200 write FPhoto_1200;
+    property Height: Integer read FHeight write FHeight;
+    property Width: Integer read FWidth write FWidth;
+    property Photo34: string read FPhoto_34 write FPhoto_34;
+    property Photo68: string read FPhoto_68 write FPhoto_68;
     property Photo135: string read FPhoto_135 write FPhoto_135;
     property Photo270: string read FPhoto_270 write FPhoto_270;
     property Photo300: string read FPhoto_300 write FPhoto_300;
-    property Photo34: string read FPhoto_34 write FPhoto_34;
     property Photo600: string read FPhoto_600 write FPhoto_600;
-    property Photo68: string read FPhoto_68 write FPhoto_68;
-    property Width: Integer read FWidth write FWidth;
+    property Photo1200: string read FPhoto_1200 write FPhoto_1200;
   end;
 
 var

@@ -3,8 +3,9 @@ unit VK.Entity.App;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common.ExtendedList;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Common.ExtendedList;
 
 type
   TVkAppScreenshot = class(TVkObject)
@@ -25,6 +26,34 @@ type
     property Sizes: TArray<TVkSize> read FSizes write FSizes;
     property Text: string read FText write FText;
     property UserId: Integer read FUser_id write FUser_id;
+    destructor Destroy; override;
+  end;
+
+  TVkStore = class(TVkBasicObject)
+  public
+    /// <summary>
+    /// Идентификатор магазина
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Название магазина
+    /// </summary>
+    property Name;
+  end;
+
+  TVkStoreApplication = class(TVkEntity)
+  private
+    FApp_id: Integer;
+    FStore: TVkStore;
+  public
+    /// <summary>
+    /// Идентификатор приложения в магазине
+    /// </summary>
+    property AppId: Integer read FApp_id write FApp_id;
+    /// <summary>
+    /// Информация о магазине
+    /// </summary>
+    property Store: TVkStore read FStore write FStore;
     destructor Destroy; override;
   end;
 
@@ -61,9 +90,10 @@ type
     FFriends: TArray<Integer>;
     FCatalog_position: Integer;
   public
+    property Id;
     property AuthorOwnerId: Integer read FAuthor_owner_id write FAuthor_owner_id;
     property AuthorUrl: string read FAuthor_url write FAuthor_url;
-    property banner1120: string read FBanner_1120 write FBanner_1120;
+    property Banner1120: string read FBanner_1120 write FBanner_1120;
     property Banner560: string read FBanner_560 write FBanner_560;
     property CatalogPosition: Integer read FCatalog_position write FCatalog_position;
     property Description: string read FDescription write FDescription;
@@ -113,6 +143,15 @@ end;
 destructor TVkAppScreenshot.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
+  inherited;
+end;
+
+{ TVkStoreApplication }
+
+destructor TVkStoreApplication.Destroy;
+begin
+  if Assigned(FStore) then
+    FStore.Free;
   inherited;
 end;
 

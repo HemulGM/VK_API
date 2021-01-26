@@ -12,18 +12,6 @@ type
     function ToString: string; inline;
   end;
 
-  TVkKeyboardConstructor = record
-    FList: TArray<TArray<string>>;
-    FOneTime: Boolean;
-    FInline: Boolean;
-    procedure AddButtonText(Group: Integer; Caption, Payload, Color: string); overload;
-    procedure AddButtonText(Group: Integer; Caption, Payload: string; Color: TVkKeyboardButtonColor); overload;
-    procedure AddButtonOpenLink(Group: Integer; Link, Caption, Payload: string);
-    procedure SetOneTime(Value: Boolean);
-    procedure SetInline(Value: Boolean);
-    function ToJsonString: string;
-  end;
-
   TVkPayloadButton = class(TVkEntity)
   private
     FButton: string;
@@ -63,7 +51,7 @@ type
 
   TVkKeyboardButtons = TArray<TVkKeyboardButton>;
 
-  TVkKeyboard = class
+  TVkKeyboard = class(TVkEntity)
   private
     FButtons: TArray<TVkKeyboardButtons>;
     FOne_time: Boolean;
@@ -102,79 +90,6 @@ destructor TVkKeyboardButton.Destroy;
 begin
   FAction.Free;
   inherited;
-end;
-
-{ TVkKeyboardConstructor }
-
-procedure TVkKeyboardConstructor.AddButtonOpenLink(Group: Integer; Link, Caption, Payload: string);
-begin
-
-end;
-
-procedure TVkKeyboardConstructor.AddButtonText(Group: Integer; Caption, Payload, Color: string);
-var
-  JS, Act: TJSONObject;
-begin
-  while Length(FList) < Group + 1 do
-    SetLength(FList, Group + 1);
-  SetLength(FList[Group], Length(FList[Group]) + 1);
-
-  Act := TJSONObject.Create;
-  Act.AddPair('label', Caption);
-  Act.AddPair('payload', '{"button":"' + Payload + '"}');
-  Act.AddPair('type', 'text');
-
-  JS := TJSONObject.Create;
-  JS.AddPair('action', Act);
-  JS.AddPair('color', Color);
-  FList[Group][Length(FList[Group]) - 1] := JS.ToJSON;
-  JS.Free;
-end;
-
-procedure TVkKeyboardConstructor.AddButtonText(Group: Integer; Caption, Payload: string; Color: TVkKeyboardButtonColor);
-begin
-  AddButtonText(Group, Caption, Payload, Color.ToString);
-end;
-
-procedure TVkKeyboardConstructor.SetInline(Value: Boolean);
-begin
-  FInline := Value;
-end;
-
-procedure TVkKeyboardConstructor.SetOneTime(Value: Boolean);
-begin
-  FOneTime := Value;
-end;
-
-function TVkKeyboardConstructor.ToJsonString: string;
-var
-  FButtons: string;
-  i, j: Integer;
-begin
-  FButtons := '';
-  for i := Low(FList) to High(FList) do
-  begin
-    if FButtons <> '' then
-      FButtons := FButtons + ',';
-    FButtons := FButtons + '[';
-    for j := Low(FList[i]) to High(FList[i]) do
-    begin
-      if j <> Low(FList[i]) then
-        FButtons := FButtons + ',';
-      FButtons := FButtons + FList[i][j];
-    end;
-    FButtons := FButtons + ']';
-  end;
-  Result := '{"buttons": [' + FButtons + ']';
-  if FOneTime then
-    Result := Result + ',"one_time": true'
-  else
-    Result := Result + ',"one_time": false';
-  if FInline then
-    Result := Result + ',"inline": true'
-  else
-    Result := Result + ',"inline": false';
-  Result := Result + '}'
 end;
 
 { TVkKeyboardButtonColorHelper }

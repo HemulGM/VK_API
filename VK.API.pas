@@ -728,7 +728,7 @@ function TCustomVK.CheckAuth: Boolean;
 var
   MT: Int64;
 begin
-  Result := Utils.GetServerTime(MT);
+  Result := Utils.GetServerTimeUnix(MT);
 end;
 
 function TCustomVK.Login(ALogin, APassword: string; On2FA: TOn2FA): Boolean;

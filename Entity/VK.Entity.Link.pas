@@ -5,7 +5,7 @@ interface
 uses
   Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
   VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo, VK.Entity.Market,
-  VK.Types;
+  VK.Entity.App, VK.Types, VK.Entity.Attachment;
 
 type
   TVkLinkStatus = class(TVkEntity)
@@ -40,9 +40,21 @@ type
   end;
 
   /// <summary>
+  /// Объект rating, описывающий информацию о рейтинге продукта
+  /// </summary>
+  TVkRating = class
+  private
+    FReviews_count: Integer;
+    FStars: Integer;
+  public
+    property Stars: Integer read FStars write FStars;
+    property ReviewsCount: Integer read FReviews_count write FReviews_count;
+  end;
+
+  /// <summary>
   /// Прикрепленная ссылка
   /// </summary>
-  TVkLink = class(TVkEntity)
+  TVkLink = class(TVkEntity, IAttachment)
   private
     FButton: TVkLinkButton;
     FCaption: string;
@@ -56,11 +68,18 @@ type
     FPreview_page: string;
     FPreview_url: string;
     FImage_src: string;
+    FApplication: TVkStoreApplication;
+    FIs_external: Boolean;
+    FRating: TVkRating;
   public
     /// <summary>
     /// Ключ доступа
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Объект application (если имеется)
+    /// </summary>
+    property Application: TVkStoreApplication read FApplication write FApplication;
     /// <summary>
     /// Информация о кнопке для перехода (если имеется)
     /// </summary>
@@ -78,6 +97,10 @@ type
     /// </summary>
     property ImageSrc: string read FImage_src write FImage_src;
     /// <summary>
+    /// Является ли ссылкой на внешний ресурс (если имеется)
+    /// </summary>
+    property IsExternal: Boolean read FIs_external write FIs_external;
+    /// <summary>
     /// Изображение превью, объект фотографии (если имеется)
     /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
@@ -94,6 +117,10 @@ type
     /// </summary>
     property Product: TVkProduct read FProduct write FProduct;
     /// <summary>
+    /// Информацию о рейтинге продукта
+    /// </summary>
+    property Rating: TVkRating read FRating write FRating;
+    /// <summary>
     /// Заголовок ссылки
     /// </summary>
     property Title: string read FTitle write FTitle;
@@ -103,6 +130,7 @@ type
     /// </summary>
     property Url: string read FUrl write FUrl;
     destructor Destroy; override;
+    function ToAttachment: string;
   end;
 
   TVkShortLink = class(TVkEntity)
@@ -210,6 +238,10 @@ begin
     FButton.Free;
   if Assigned(FProduct) then
     FProduct.Free;
+  if Assigned(FApplication) then
+    FApplication.Free;
+  if Assigned(FRating) then
+    FRating.Free;
   inherited;
 end;
 
@@ -241,6 +273,12 @@ destructor TVkLinkStates.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkLinkStats>(FStats);
   inherited;
+end;
+
+function TVkLink.ToAttachment: string;
+begin
+  { TODO -oМалинин Геннадий -c : Додеать вложение ссылки 26.01.2021 12:23:45 }
+  Result := Attachment.Link(0, 0, AccessKey);
 end;
 
 end.

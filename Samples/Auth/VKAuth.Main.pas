@@ -165,7 +165,6 @@ type
     procedure Button21Click(Sender: TObject);
     procedure Button22Click(Sender: TObject);
     procedure VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
-    procedure VK1ErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure Button23Click(Sender: TObject);
     procedure Button24Click(Sender: TObject);
     procedure Button25Click(Sender: TObject);
@@ -922,12 +921,6 @@ procedure TFormMain.VK1Error(Sender: TObject; E: Exception; Code: Integer; Text:
 begin
   ShowMessage('Ошибка: ' + Code.ToString + ' - ' + Text);
   MemoLog.Lines.Add('Ошибка: ' + Code.ToString + ' - ' + Text);
-end;
-
-procedure TFormMain.VK1ErrorLogin(Sender: TObject; E: Exception; Code: Integer; Text: string);
-begin
-  MemoLog.Lines.Add('Ошибка авторизации: ' + Code.ToString + ' - ' + Text);
-  LabelLogin.Caption := 'login error';
 end;
 
 procedure TFormMain.VK1Log(Sender: TObject; const Value: string);

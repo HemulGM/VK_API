@@ -537,7 +537,6 @@ object FormMain: TFormMain
     LogResponse = True
     OnAuth = VK1Auth
     OnError = VK1Error
-    OnErrorLogin = VK1ErrorLogin
     OnLog = VK1Log
     OnLogin = VK1Login
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
