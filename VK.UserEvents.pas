@@ -3,8 +3,8 @@ unit VK.UserEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
   TCustomUserEvents = class(TComponent)
@@ -28,75 +28,60 @@ type
     FOnUserCall: TOnUserCall;
     FOnCountChange: TOnCountChange;
     FOnNotifyChange: TOnNotifyChange;
+    FOnUnhandledEvents: TOnUnhandledEvents;
     FVersion: string;
     FLogging: Boolean;
-    procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
-    procedure DoEvent(Sender: TObject; Update: TJSONValue);
-    procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer;
-      ExtraFields: TEventExtraFields);
-    procedure DoUserTyping(const UserId, ChatId: Integer);
-    procedure DoUserCall(const UserId, CallId: Integer);
-    procedure DoUsersTyping(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
-    procedure DoUsersRecording(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
+    function GetIsWork: Boolean;
     procedure DoChangeDialogFlags(const PeerId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer);
-    procedure DoNewMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
-    procedure DoUserStateChange(IsOnline: Boolean; UserId, Extra, TimeStamp: Integer);
-    procedure DoEditMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
-    procedure DoReadMessages(const Incoming: Boolean; PeerId, LocalId: Integer);
-    procedure DoRecoverMessages(const PeerId, LocalId: Integer);
-    procedure DoDeleteMessages(const PeerId, LocalId: Integer);
+    procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoChatChanged(const ChatId: Integer; IsSelf: Boolean);
     procedure DoChatChangeInfo(const PeerId, TypeId, Info: Integer);
-    procedure SetOnChangeDialogFlags(const Value: TOnChangeDialogFlags);
-    procedure SetOnChangeMessageFlags(const Value: TOnChangeMessageFlags);
-    procedure SetOnChatChanged(const Value: TOnChatChanged);
-    procedure SetOnChatChangeInfo(const Value: TOnChatChangeInfo);
-    procedure SetOnDeleteMessages(const Value: TOnRecoverOrDeleteMessages);
-    procedure SetOnEditMessage(const Value: TOnEditMessage);
-    procedure SetOnNewMessage(const Value: TOnNewMessage);
-    procedure SetOnReadMessages(const Value: TOnReadMessages);
-    procedure SetOnRecoverMessages(const Value: TOnRecoverOrDeleteMessages);
-    procedure SetOnUserOffline(const Value: TOnUserOffline);
-    procedure SetOnUserOnline(const Value: TOnUserOnline);
-    procedure SetOnUsersRecording(const Value: TOnUsersRecording);
-    procedure SetOnUsersTyping(const Value: TOnUsersTyping);
-    procedure SetOnUserTyping(const Value: TOnUserTyping);
-    procedure SetVK(const Value: TCustomVK);
-    procedure SetOnUserCall(const Value: TOnUserCall);
     procedure DoCountChange(const Count: Integer);
-    procedure SetOnCountChange(const Value: TOnCountChange);
+    procedure DoDeleteMessages(const PeerId, LocalId: Integer);
+    procedure DoEditMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
+    procedure DoEvent(Sender: TObject; Update: TJSONValue);
+    procedure DoNewMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoNotifyChange(const PeerId, Sound, DisabledUntil: Integer);
-    procedure SetOnNotifyChange(const Value: TOnNotifyChange);
+    procedure DoReadMessages(const Incoming: Boolean; PeerId, LocalId: Integer);
+    procedure DoRecoverMessages(const PeerId, LocalId: Integer);
+    procedure DoUnhandledEvents(const JSON: TJSONValue);
+    procedure DoUserCall(const UserId, CallId: Integer);
+    procedure DoUsersRecording(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
+    procedure DoUserStateChange(IsOnline: Boolean; UserId, Extra, TimeStamp: Integer);
+    procedure DoUsersTyping(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
+    procedure DoUserTyping(const UserId, ChatId: Integer);
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
-    function GetIsWork: Boolean;
-    procedure SetVersion(const Value: string);
+    procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure SetLogging(const Value: Boolean);
+    procedure SetVersion(const Value: string);
+    procedure SetVK(const Value: TCustomVK);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Stop;
     function Start: Boolean;
-    property VK: TCustomVK read FVK write SetVK;
+    procedure Stop;
     property IsWork: Boolean read GetIsWork;
     property Logging: Boolean read FLogging write SetLogging;
-    property OnNewMessage: TOnNewMessage read FOnNewMessage write SetOnNewMessage;
-    property OnEditMessage: TOnEditMessage read FOnEditMessage write SetOnEditMessage;
-    property OnUserOnline: TOnUserOnline read FOnUserOnline write SetOnUserOnline;
-    property OnUserOffline: TOnUserOffline read FOnUserOffline write SetOnUserOffline;
-    property OnChangeMessageFlags: TOnChangeMessageFlags read FOnChangeMessageFlags write SetOnChangeMessageFlags;
-    property OnChangeDialogFlags: TOnChangeDialogFlags read FOnChangeDialogFlags write SetOnChangeDialogFlags;
-    property OnReadMessages: TOnReadMessages read FOnReadMessages write SetOnReadMessages;
-    property OnRecoverMessages: TOnRecoverOrDeleteMessages read FOnRecoverMessages write SetOnRecoverMessages;
-    property OnDeleteMessages: TOnRecoverOrDeleteMessages read FOnDeleteMessages write SetOnDeleteMessages;
-    property OnChatChanged: TOnChatChanged read FOnChatChanged write SetOnChatChanged;
-    property OnChatChangeInfo: TOnChatChangeInfo read FOnChatChangeInfo write SetOnChatChangeInfo;
-    property OnUserTyping: TOnUserTyping read FOnUserTyping write SetOnUserTyping;
-    property OnUsersTyping: TOnUsersTyping read FOnUsersTyping write SetOnUsersTyping;
-    property OnUsersRecording: TOnUsersRecording read FOnUsersRecording write SetOnUsersRecording;
-    property OnUserCall: TOnUserCall read FOnUserCall write SetOnUserCall;
-    property OnCountChange: TOnCountChange read FOnCountChange write SetOnCountChange;
-    property OnNotifyChange: TOnNotifyChange read FOnNotifyChange write SetOnNotifyChange;
+    property OnChangeDialogFlags: TOnChangeDialogFlags read FOnChangeDialogFlags write FOnChangeDialogFlags;
+    property OnChangeMessageFlags: TOnChangeMessageFlags read FOnChangeMessageFlags write FOnChangeMessageFlags;
+    property OnChatChanged: TOnChatChanged read FOnChatChanged write FOnChatChanged;
+    property OnChatChangeInfo: TOnChatChangeInfo read FOnChatChangeInfo write FOnChatChangeInfo;
+    property OnCountChange: TOnCountChange read FOnCountChange write FOnCountChange;
+    property OnDeleteMessages: TOnRecoverOrDeleteMessages read FOnDeleteMessages write FOnDeleteMessages;
+    property OnEditMessage: TOnEditMessage read FOnEditMessage write FOnEditMessage;
+    property OnNewMessage: TOnNewMessage read FOnNewMessage write FOnNewMessage;
+    property OnNotifyChange: TOnNotifyChange read FOnNotifyChange write FOnNotifyChange;
+    property OnReadMessages: TOnReadMessages read FOnReadMessages write FOnReadMessages;
+    property OnRecoverMessages: TOnRecoverOrDeleteMessages read FOnRecoverMessages write FOnRecoverMessages;
+    property OnUnhandledEvents: TOnUnhandledEvents read FOnUnhandledEvents write FOnUnhandledEvents;
+    property OnUserCall: TOnUserCall read FOnUserCall write FOnUserCall;
+    property OnUserOffline: TOnUserOffline read FOnUserOffline write FOnUserOffline;
+    property OnUserOnline: TOnUserOnline read FOnUserOnline write FOnUserOnline;
+    property OnUsersRecording: TOnUsersRecording read FOnUsersRecording write FOnUsersRecording;
+    property OnUsersTyping: TOnUsersTyping read FOnUsersTyping write FOnUsersTyping;
+    property OnUserTyping: TOnUserTyping read FOnUserTyping write FOnUserTyping;
     property Version: string read FVersion write SetVersion;
+    property VK: TCustomVK read FVK write SetVK;
   end;
 
 implementation
@@ -137,13 +122,14 @@ var
   EventType, A1, A2, A3: Integer;
   i: Integer;
   ExtraFields: TEventExtraFields;
-  UserIds: TIds;
+  UserIds: TIdList;
   Arr: TJSONArray;
 begin
   try
     EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
   except
-    raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+    Exit;
+    //raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
   end;
   case EventType of
     1..4: //Изменение флагов сообщений и новое сообщение
@@ -286,15 +272,13 @@ begin
     63, 64: //Пользователи в беседе набирают текст или записывают аудио
       begin
         try
-          Arr := TJSONArray(TJSONArray(Update).Items[1]);
-          SetLength(UserIds, 0);
-          for i := 0 to Arr.Count do
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+          Arr := TJSONArray(TJSONArray(Update).Items[2]);
+          SetLength(UserIds, Arr.Count);
+          for i := 0 to Pred(Arr.Count) do
           begin
-            SetLength(UserIds, Length(UserIds) + 1);
-            UserIds[Length(UserIds) - 1] := Arr.Items[i].GetValue<Integer>;
+            UserIds[i] := Arr.Items[i].GetValue<Integer>;
           end;
-
-          A1 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
           A2 := TJSONArray(Update).Items[3].GetValue<Integer>;
           A3 := TJSONArray(Update).Items[4].GetValue<Integer>;
         except
@@ -342,6 +326,8 @@ begin
         end;
         DoNotifyChange(A1, A2, A3);
       end;
+  else
+    DoUnhandledEvents(Update);
   end;
 end;
 
@@ -364,91 +350,6 @@ procedure TCustomUserEvents.SetLogging(const Value: Boolean);
 begin
   FLogging := Value;
   FLongPollServer.Logging := Value;
-end;
-
-procedure TCustomUserEvents.SetOnChangeDialogFlags(const Value: TOnChangeDialogFlags);
-begin
-  FOnChangeDialogFlags := Value;
-end;
-
-procedure TCustomUserEvents.SetOnChangeMessageFlags(const Value: TOnChangeMessageFlags);
-begin
-  FOnChangeMessageFlags := Value;
-end;
-
-procedure TCustomUserEvents.SetOnChatChanged(const Value: TOnChatChanged);
-begin
-  FOnChatChanged := Value;
-end;
-
-procedure TCustomUserEvents.SetOnChatChangeInfo(const Value: TOnChatChangeInfo);
-begin
-  FOnChatChangeInfo := Value;
-end;
-
-procedure TCustomUserEvents.SetOnCountChange(const Value: TOnCountChange);
-begin
-  FOnCountChange := Value;
-end;
-
-procedure TCustomUserEvents.SetOnDeleteMessages(const Value: TOnRecoverOrDeleteMessages);
-begin
-  FOnDeleteMessages := Value;
-end;
-
-procedure TCustomUserEvents.SetOnEditMessage(const Value: TOnEditMessage);
-begin
-  FOnEditMessage := Value;
-end;
-
-procedure TCustomUserEvents.SetOnNewMessage(const Value: TOnNewMessage);
-begin
-  FOnNewMessage := Value;
-end;
-
-procedure TCustomUserEvents.SetOnNotifyChange(const Value: TOnNotifyChange);
-begin
-  FOnNotifyChange := Value;
-end;
-
-procedure TCustomUserEvents.SetOnReadMessages(const Value: TOnReadMessages);
-begin
-  FOnReadMessages := Value;
-end;
-
-procedure TCustomUserEvents.SetOnRecoverMessages(const Value: TOnRecoverOrDeleteMessages);
-begin
-  FOnRecoverMessages := Value;
-end;
-
-procedure TCustomUserEvents.SetOnUserCall(const Value: TOnUserCall);
-begin
-  FOnUserCall := Value;
-end;
-
-procedure TCustomUserEvents.SetOnUserOffline(const Value: TOnUserOffline);
-begin
-  FOnUserOffline := Value;
-end;
-
-procedure TCustomUserEvents.SetOnUserOnline(const Value: TOnUserOnline);
-begin
-  FOnUserOnline := Value;
-end;
-
-procedure TCustomUserEvents.SetOnUsersRecording(const Value: TOnUsersRecording);
-begin
-  FOnUsersRecording := Value;
-end;
-
-procedure TCustomUserEvents.SetOnUsersTyping(const Value: TOnUsersTyping);
-begin
-  FOnUsersTyping := Value;
-end;
-
-procedure TCustomUserEvents.SetOnUserTyping(const Value: TOnUserTyping);
-begin
-  FOnUserTyping := Value;
 end;
 
 procedure TCustomUserEvents.SetVersion(const Value: string);
@@ -481,8 +382,7 @@ begin
   FLongPollServer.Stop;
 end;
 
-procedure TCustomUserEvents.DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData:
-  Integer; ExtraFields: TEventExtraFields);
+procedure TCustomUserEvents.DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
 var
   MessageChangeData: TMessageChangeData;
 begin
@@ -575,6 +475,14 @@ begin
   end;
 end;
 
+procedure TCustomUserEvents.DoUnhandledEvents(const JSON: TJSONValue);
+begin
+  if Assigned(FOnUnhandledEvents) then
+  begin
+    FOnUnhandledEvents(Self, JSON);
+  end;
+end;
+
 procedure TCustomUserEvents.DoUserCall(const UserId, CallId: Integer);
 begin
   if Assigned(FOnUserCall) then
@@ -599,7 +507,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoUsersRecording(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
+procedure TCustomUserEvents.DoUsersRecording(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
 var
   Data: TChatRecordingData;
 begin
@@ -641,7 +549,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoUsersTyping(const UserId: TIds; PeerId, TotalCount, Ts: Integer);
+procedure TCustomUserEvents.DoUsersTyping(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
 var
   Data: TChatTypingData;
 begin

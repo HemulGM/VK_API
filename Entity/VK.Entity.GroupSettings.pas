@@ -6,29 +6,25 @@ uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Group, VK.Entity.Market;
 
 type
-  TVkGroupSettingStr = class
+  TVkGroupSettingStr = class(TVkEntity)
   private
     FNew_value: string;
     FOld_value: string;
   public
     property NewValue: string read FNew_value write FNew_value;
     property OldValue: string read FOld_value write FOld_value;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupSettingStr;
   end;
 
-  TVkGroupSettingInt = class
+  TVkGroupSettingInt = class(TVkEntity)
   private
     FNew_value: Integer;
     FOld_value: Integer;
   public
     property NewValue: Integer read FNew_value write FNew_value;
     property OldValue: Integer read FOld_value write FOld_value;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupSettingInt;
   end;
 
-  TVkGroupChangeList = class
+  TVkGroupChangeList = class(TVkEntity)
   private
     FCity_id: TVkGroupSettingInt;
     FDescription: TVkGroupSettingStr;
@@ -63,26 +59,22 @@ type
     property Title: TVkGroupSettingStr read FTitle write FTitle;
     property ScreenName: TVkGroupSettingStr read FScreen_name write FScreen_name;
     property Website: TVkGroupSettingStr read FWebsite write FWebsite;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupChangeList;
   end;
 
-  TVkGroupSettingsChange = class
+  TVkGroupSettingsChange = class(TVkEntity)
   private
     FChanges: TVkGroupChangeList;
     FUser_id: Integer;
   public
     property Changes: TVkGroupChangeList read FChanges write FChanges;
     property UserId: Integer read FUser_id write FUser_id;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupSettingsChange;
   end;
 
-  TVkGroupMarket = class
+  TVkGroupMarket = class(TVkEntity)
   private
     FCity_ids: TArray<Integer>;
     FComments_enabled: Integer;
@@ -97,13 +89,11 @@ type
     property CountryIds: TArray<Integer> read FCountry_ids write FCountry_ids;
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Enabled: Integer read FEnabled write FEnabled;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupMarket;
   end;
 
-  TVkGroupSettings = class
+  TVkGroupSettings = class(TVkEntity)
   private
     FAccess: Integer;
     FAddress: string;
@@ -148,37 +138,14 @@ type
     property Wall: Integer read FWall write FWall;
     property Website: string read FWebsite write FWebsite;
     property Wiki: Integer read FWiki write FWiki;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupSettings;
   end;
 
 implementation
 
-{TVkGroupSettingStr}
-
-function TVkGroupSettingStr.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupSettingStr.FromJsonString(AJsonString: string): TVkGroupSettingStr;
-begin
-  result := TJson.JsonToObject<TVkGroupSettingStr>(AJsonString)
-end;
-
-{TVkGroupSettingInt}
-
-function TVkGroupSettingInt.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupSettingInt.FromJsonString(AJsonString: string): TVkGroupSettingInt;
-begin
-  result := TJson.JsonToObject<TVkGroupSettingInt>(AJsonString)
-end;
+uses
+  VK.CommonUtils;
 
 {TVkGroupChangeList}
 
@@ -224,16 +191,6 @@ begin
   inherited;
 end;
 
-function TVkGroupChangeList.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupChangeList.FromJsonString(AJsonString: string): TVkGroupChangeList;
-begin
-  result := TJson.JsonToObject<TVkGroupChangeList>(AJsonString)
-end;
-
 {TVkGroupSettingsChange}
 
 constructor TVkGroupSettingsChange.Create;
@@ -248,16 +205,6 @@ begin
   inherited;
 end;
 
-function TVkGroupSettingsChange.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupSettingsChange.FromJsonString(AJsonString: string): TVkGroupSettingsChange;
-begin
-  result := TJson.JsonToObject<TVkGroupSettingsChange>(AJsonString)
-end;
-
 { TVkGroupSettings }
 
 constructor TVkGroupSettings.Create;
@@ -267,24 +214,11 @@ begin
 end;
 
 destructor TVkGroupSettings.Destroy;
-var
-  Item: TVkGroupSubject;
 begin
-  for Item in FSubject_list do
-    Item.Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroupSubject>(FSubject_list);
   FPlace.Free;
   FMarket.Free;
   inherited;
-end;
-
-class function TVkGroupSettings.FromJsonString(AJsonString: string): TVkGroupSettings;
-begin
-  result := TJson.JsonToObject<TVkGroupSettings>(AJsonString)
-end;
-
-function TVkGroupSettings.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkGroupMarket }
@@ -298,16 +232,6 @@ destructor TVkGroupMarket.Destroy;
 begin
   FCurrency.Free;
   inherited;
-end;
-
-class function TVkGroupMarket.FromJsonString(AJsonString: string): TVkGroupMarket;
-begin
-  result := TJson.JsonToObject<TVkGroupMarket>(AJsonString)
-end;
-
-function TVkGroupMarket.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

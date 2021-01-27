@@ -3,10 +3,10 @@ unit VK.Entity.Login;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common;
 
 type
-  TVkLoginInfo = class
+  TVkLoginInfo = class(TVkEntity)
   private
     FError: string;
     FError_description: string;
@@ -14,7 +14,8 @@ type
     FRedirect_uri: string;
     FValidation_sid: string;
     FValidation_type: string;
-    FExpires_in: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FExpires_in: TDateTime;
     FUser_id: Integer;
     FAccess_token: string;
     FCaptcha_img: string;
@@ -27,27 +28,13 @@ type
     property ValidationSid: string read FValidation_sid write FValidation_sid;
     property ValidationType: string read FValidation_type write FValidation_type;
     property AccessToken: string read FAccess_token write FAccess_token;
-    property ExpiresIn: Int64 read FExpires_in write FExpires_in;
+    property ExpiresIn: TDateTime read FExpires_in write FExpires_in;
     property UserId: Integer read FUser_id write FUser_id;
     property CaptchaImg: string read FCaptcha_img write FCaptcha_img;
     property CaptchaSid: string read FCaptcha_sid write FCaptcha_sid;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLoginInfo;
   end;
 
 implementation
-
-{TVkLoginInfo}
-
-function TVkLoginInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkLoginInfo.FromJsonString(AJsonString: string): TVkLoginInfo;
-begin
-  result := TJson.JsonToObject<TVkLoginInfo>(AJsonString)
-end;
 
 end.
 

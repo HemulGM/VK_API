@@ -3,10 +3,10 @@ unit VK.Entity.Search;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkSearchItem = class
+  TVkSearchItem = class(TVkEntity)
   private
     FDescription: string;
     FProfile: TVkProfile;
@@ -35,32 +35,17 @@ type
     /// </summary>
     property Global: Boolean read FGlobal write FGlobal;
     property&Type: string read FType write FType;
-    constructor Create;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSearchItem;
   end;
 
-  TVkSearchItems = class
-  private
-    FCount: Integer;
-    FItems: TArray<TVkSearchItem>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkSearchItem> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSearchItems;
-  end;
+  TVkSearchItems = TVkEntityList<TVkSearchItem>;
 
 implementation
 
-{TVkSearchItem}
+uses
+  VK.CommonUtils;
 
-constructor TVkSearchItem.Create;
-begin
-  inherited;
-end;
+{TVkSearchItem}
 
 destructor TVkSearchItem.Destroy;
 begin
@@ -69,35 +54,6 @@ begin
   if Assigned(FGroup) then
     FGroup.Free;
   inherited;
-end;
-
-function TVkSearchItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSearchItem.FromJsonString(AJsonString: string): TVkSearchItem;
-begin
-  result := TJson.JsonToObject<TVkSearchItem>(AJsonString)
-end;
-
-{TVkSearchItems}
-
-destructor TVkSearchItems.Destroy;
-begin
-  for var LitemsItem in FItems do
-    LitemsItem.Free;
-  inherited;
-end;
-
-function TVkSearchItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSearchItems.FromJsonString(AJsonString: string): TVkSearchItems;
-begin
-  result := TJson.JsonToObject<TVkSearchItems>(AJsonString)
 end;
 
 end.

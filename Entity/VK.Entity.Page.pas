@@ -3,15 +3,17 @@ unit VK.Entity.Page;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Common.List, VK.Wrap.Interceptors;
 
 type
-  TVkPage = class
+  TVkPage = class(TVkObject)
   private
-    FCreated: Int64;
-    FEdited: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FCreated: TDateTime;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FEdited: TDateTime;
     FGroup_id: Integer;
-    FId: Integer;
     FParent2: string;
     FTitle: string;
     FView_url: string;
@@ -19,142 +21,115 @@ type
     FWho_can_edit: Integer;
     FWho_can_view: Integer;
     FCreator_id: Integer;
-    FCurrent_user_can_edit: Integer;
-    FCurrent_user_can_edit_access: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCurrent_user_can_edit: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCurrent_user_can_edit_access: Boolean;
     FEditor_id: Integer;
     FParent: string;
     FSource: string;
     FHtml: string;
+    FAccess_key: string;
   public
-    property Id: Integer read FId write FId;
+    /// <summary>
+    /// »дентификатор вики-страницы
+    /// </summary>
+    property Id;
+    /// <summary>
+    ///  люч доступа
+    /// </summary>
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// »дентификатор группы, которой принадлежит вики-страница.
+    /// </summary>
     property GroupId: Integer read FGroup_id write FGroup_id;
+    /// <summary>
+    /// »дентификатор создател€ вики-страницы.
+    /// </summary>
     property CreatorId: Integer read FCreator_id write FCreator_id;
+    /// <summary>
+    /// Ќазвание вики-страницы.
+    /// </summary>
     property Title: string read FTitle write FTitle;
-    property CurrentUserCanEdit: Integer read FCurrent_user_can_edit write FCurrent_user_can_edit;
-    property CurrentUserCanEditAccess: Integer read FCurrent_user_can_edit_access write FCurrent_user_can_edit_access;
+    /// <summary>
+    /// True, если текущий пользователь может редактировать текст вики-страницы, иначе Ч False.
+    /// </summary>
+    property CurrentUserCanEdit: Boolean read FCurrent_user_can_edit write FCurrent_user_can_edit;
+    /// <summary>
+    /// True, если текущий пользователь может измен€ть права доступа на вики-страницу, иначе Ч False.
+    /// </summary>
+    property CurrentUserCanEditAccess: Boolean read FCurrent_user_can_edit_access write FCurrent_user_can_edit_access;
+    /// <summary>
+    /// »нформаци€ о том, кто может просматривать вики-страницу:
+    /// 2 Ч просматривать страницу могут все;
+    /// 1 Ч только участники сообщества;
+    /// 0 Ч только руководители сообщества.
+    /// </summary>
     property WhoCanView: Integer read FWho_can_view write FWho_can_view;
+    /// <summary>
+    /// указывает, кто может редактировать вики-страницу:
+    /// 2 Ч редактировать страницу могут все;
+    /// 1 Ч только участники сообщества;
+    /// 0 Ч только руководители сообщества.
+    /// </summary>
     property WhoCanEdit: Integer read FWho_can_edit write FWho_can_edit;
-    property Edited: Int64 read FEdited write FEdited;
-    property Created: Int64 read FCreated write FCreated;
+    /// <summary>
+    /// ƒата последнего изменени€ вики-страницы
+    /// </summary>
+    property Edited: TDateTime read FEdited write FEdited;
+    /// <summary>
+    /// ƒата создани€ вики-страницы
+    /// </summary>
+    property Created: TDateTime read FCreated write FCreated;
+    /// <summary>
+    /// »дентификатор пользовател€, который редактировал вики-страницу последним
+    /// </summary>
     property EditorId: Integer read FEditor_id write FEditor_id;
+    /// <summary>
+    ///  оличество просмотров вики-страницы
+    /// </summary>
     property Views: Integer read FViews write FViews;
+    /// <summary>
+    /// «аголовок родительской страницы дл€ навигации, если есть
+    /// </summary>
     property Parent: string read FParent write FParent;
+    /// <summary>
+    /// «аголовок второй родительской страницы дл€ навигации, если есть
+    /// </summary>
     property Parent2: string read FParent2 write FParent2;
+    /// <summary>
+    /// “екст страницы в вики-формате, если был запрошен
+    /// </summary>
     property Source: string read FSource write FSource;
+    /// <summary>
+    /// “екст страницы в html-формате, если был запрошен
+    /// </summary>
     property Html: string read FHtml write FHtml;
+    /// <summary>
+    /// јдрес страницы дл€ отображени€ вики-страницы
+    /// </summary>
     property ViewUrl: string read FView_url write FView_url;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPage;
   end;
 
-  TVkPages = class
-  private
-    FItems: TArray<TVkPage>;
-    FCount: Integer;
-  public
-    property Items: TArray<TVkPage> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPages;
-  end;
+  TVkPages = TVkEntityList<TVkPage>;
 
-  TVkPageVersion = class
+  TVkPageVersion = class(TVkObject)
   private
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FEditor_id: Integer;
     FEditor_name: string;
-    FId: Integer;
     FLength: Integer;
   public
-    property Date: Int64 read FDate write FDate;
+    property Date: TDateTime read FDate write FDate;
     property EditorId: Integer read FEditor_id write FEditor_id;
     property EditorName: string read FEditor_name write FEditor_name;
-    property Id: Integer read FId write FId;
     property Length: Integer read FLength write FLength;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPageVersion;
   end;
 
-  TVkPageVersions = class
-  private
-    FItems: TArray<TVkPageVersion>;
-    FCount: Integer;
-  public
-    property Items: TArray<TVkPageVersion> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPageVersions;
-  end;
+  TVkPageVersions = TVkEntityList<TVkPageVersion>;
 
 implementation
-
-{TVkPage}
-
-function TVkPage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPage.FromJsonString(AJsonString: string): TVkPage;
-begin
-  result := TJson.JsonToObject<TVkPage>(AJsonString)
-end;
-
-{ TVkPageVersion }
-
-class function TVkPageVersion.FromJsonString(AJsonString: string): TVkPageVersion;
-begin
-  result := TJson.JsonToObject<TVkPageVersion>(AJsonString)
-end;
-
-function TVkPageVersion.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkPageVersions }
-
-destructor TVkPageVersions.Destroy;
-var
-  LItemsItem: TVkPageVersion;
-begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-  inherited;
-end;
-
-class function TVkPageVersions.FromJsonString(AJsonString: string): TVkPageVersions;
-begin
-  result := TJson.JsonToObject<TVkPageVersions>(AJsonString)
-end;
-
-function TVkPageVersions.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkPages }
-
-destructor TVkPages.Destroy;
-var
-  LItemsItem: TVkPage;
-begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-  inherited;
-end;
-
-class function TVkPages.FromJsonString(AJsonString: string): TVkPages;
-begin
-  result := TJson.JsonToObject<TVkPages>(AJsonString)
-end;
-
-function TVkPages.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
 
 end.
 

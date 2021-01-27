@@ -14,6 +14,7 @@ type
     /// </summary>
     function GetAudio(var Catalog: TVkCatalog; NeedBlocks: Boolean = False): Boolean;
     function GetSection(var Section: TVkSectionData; SectionId: string; NeedBlocks: Boolean = False): Boolean;
+    //function GetAudioSearch(): Boolean;
   end;
 
 implementation
@@ -30,18 +31,7 @@ begin
   if NeedBlocks then
     Params.Add('need_blocks', True);
   Params.Add('https', True);
-  with Handler.Execute('catalog.getAudio', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Catalog := TVkCatalog.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('catalog.getAudio', Params).GetObject<TVkCatalog>(Catalog);
 end;
 
 function TCatalogController.GetSection(var Section: TVkSectionData; SectionId: string; NeedBlocks: Boolean): Boolean;
@@ -52,18 +42,7 @@ begin
     Params.Add('need_blocks', True);
   Params.Add('https', True);
   Params.Add('section_id', SectionId);
-  with Handler.Execute('catalog.getSection', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Section := TVkSectionData.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('catalog.getSection', Params).GetObject<TVkSectionData>(Section);
 end;
 
 end.

@@ -3,14 +3,15 @@ unit VK.Entity.Note;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkNote = class
+  TVkNote = class(TVkObject)
   private
     FComments: Integer;
-    FDate: Int64;
-    FId: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FOwner_id: Integer;
     FRead_comments: Integer;
     FTitle: string;
@@ -18,153 +19,73 @@ type
     FText: string;
     FPrivacy: Integer;
     FComment_privacy: Integer;
-    FCan_comment: Integer;
-    function GetDate: TDateTime;
-    procedure SetDate(const Value: TDateTime);
+    FCan_comment: Boolean;
+    FAccess_key: string;
   public
-    property Id: Integer read FId write FId;
+    /// <summary>
+    /// Идентификатор заметки
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Идентификатор владельца заметки
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Количество комментариев
+    /// </summary>
     property Comments: Integer read FComments write FComments;
-    property Date: TDateTime read GetDate write SetDate;
+    /// <summary>
+    /// Дата создания заметки
+    /// </summary>
+    property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Количество прочитанных комментариев (только при запросе информации о заметке текущего пользователя)
+    /// </summary>
     property ReadComments: Integer read FRead_comments write FRead_comments;
+    /// <summary>
+    /// Заголовок заметки
+    /// </summary>
     property Title: string read FTitle write FTitle;
+    /// <summary>
+    /// Текст заметки
+    /// </summary>
     property Text: string read FText write FText;
+    /// <summary>
+    /// URL страницы для отображения заметки
+    /// </summary>
     property ViewUrl: string read FView_url write FView_url;
     property Privacy: Integer read FPrivacy write FPrivacy;
     property CommentPrivacy: Integer read FComment_privacy write FComment_privacy;
-    property CanComment: Integer read FCan_comment write FCan_comment;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNote;
+    property CanComment: Boolean read FCan_comment write FCan_comment;
   end;
 
-  TVkNotes = class
-  private
-    FCount: Integer;
-    FItems: TArray<TVkNote>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkNote> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNotes;
-  end;
+  TVkNotes = TVkEntityList<TVkNote>;
 
-  TVkNoteComment = class
+  TVkNoteComment = class(TVkObject)
   private
-    FDate: Int64;
-    FId: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FMessage: string;
     FNid: Integer;
     FOid: Integer;
     FReply_to: Integer;
     FUid: Integer;
   public
-    property Date: Int64 read FDate write FDate;
-    property Id: Integer read FId write FId;
+    property Date: TDateTime read FDate write FDate;
     property Message: string read FMessage write FMessage;
     property NoteId: Integer read FNid write FNid;
     property OwnerId: Integer read FOid write FOid;
     property ReplyTo: Integer read FReply_to write FReply_to;
     property UserId: Integer read FUid write FUid;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNoteComment;
   end;
 
-  TVkNoteComments = class
-  private
-    FCount: Integer;
-    FItems: TArray<TVkNoteComment>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkNoteComment> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkNoteComments;
-  end;
+  TVkNoteComments = TVkEntityList<TVkNoteComment>;
 
 implementation
-
-uses
-  System.DateUtils;
-
-{TVkNote}
-
-function TVkNote.GetDate: TDateTime;
-begin
-  Result := UnixToDateTime(FDate, False);
-end;
-
-procedure TVkNote.SetDate(const Value: TDateTime);
-begin
-  FDate := DateTimeToUnix(Value, False);
-end;
-
-function TVkNote.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNote.FromJsonString(AJsonString: string): TVkNote;
-begin
-  result := TJson.JsonToObject<TVkNote>(AJsonString)
-end;
-
-{TVkNotes}
-
-destructor TVkNotes.Destroy;
-var
-  LitemsItem: TVkNote;
-begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
-  inherited;
-end;
-
-function TVkNotes.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkNotes.FromJsonString(AJsonString: string): TVkNotes;
-begin
-  result := TJson.JsonToObject<TVkNotes>(AJsonString)
-end;
-
-{ TVkNoteComment }
-
-class function TVkNoteComment.FromJsonString(AJsonString: string): TVkNoteComment;
-begin
-  result := TJson.JsonToObject<TVkNoteComment>(AJsonString)
-end;
-
-function TVkNoteComment.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkNoteComments }
-
-destructor TVkNoteComments.Destroy;
-var
-  LitemsItem: TVkNoteComment;
-begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-  inherited;
-end;
-
-class function TVkNoteComments.FromJsonString(AJsonString: string): TVkNoteComments;
-begin
-  result := TJson.JsonToObject<TVkNoteComments>(AJsonString)
-end;
-
-function TVkNoteComments.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
 
 end.
 

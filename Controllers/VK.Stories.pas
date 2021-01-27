@@ -3,8 +3,9 @@ unit VK.Stories;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Stories, VK.Entity.Stories.Sticker,
-  VK.Entity.Stories.Stats, VK.Entity.Stories.Viewed;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Stories, VK.Entity.Stories.Sticker, VK.Entity.Stories.Stats,
+  VK.Entity.Stories.Viewed;
 
 type
   TVkParamsStoriesGet = record
@@ -17,7 +18,7 @@ type
   TVkParamsStoriesGetUploadServer = record
     List: TParams;
     function AddToNews(const Value: Boolean): Integer;
-    function UserIds(const Value: TIds): Integer;
+    function UserIds(const Value: TIdList): Integer;
     function ReplyToStory(const Value: string): Integer;
     function LinkText(const Value: string): Integer;
     function LinkUrl(const Value: string): Integer;
@@ -74,7 +75,7 @@ type
     /// <summary>
     /// Позволяет скрыть из ленты новостей истории от выбранных источников.
     /// </summary>
-    function BanOwner(const OwnersIds: TIds): Boolean;
+    function BanOwner(const OwnersIds: TIdList): Boolean;
     /// <summary>
     /// Удаляет историю.
     /// </summary>
@@ -94,13 +95,11 @@ type
     /// <summary>
     /// Возвращает список источников историй, скрытых из ленты текущего пользователя.
     /// </summary>
-    function GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean = False; ProfileFields: TVkProfileFields = [];
-      GroupFields: TVkGroupFields = []): Boolean; overload;
+    function GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean = False; ProfileFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
     /// Возвращает истории, доступные для текущего пользователя.
     /// </summary>
-    function GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean = False; ProfileFields:
-      TVkProfileFields = []; GroupFields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean = False; ProfileFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
     /// Позволяет получить адрес для загрузки истории с фотографией.
     /// </summary>
@@ -149,7 +148,7 @@ type
     /// <summary>
     /// Позволяет вернуть пользователя или сообщество в список отображаемых историй в ленте.
     /// </summary>
-    function UnbanOwner(const OwnersIds: TIds): Boolean;
+    function UnbanOwner(const OwnersIds: TIdList): Boolean;
   end;
 
 implementation
@@ -159,20 +158,16 @@ uses
 
 { TStoriesController }
 
-function TStoriesController.BanOwner(const OwnersIds: TIds): Boolean;
+function TStoriesController.BanOwner(const OwnersIds: TIdList): Boolean;
 begin
   with Handler.Execute('stories.banOwner', ['owners_ids', OwnersIds.ToString]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.Delete(const OwnerId, StoryId: Integer): Boolean;
 begin
   with Handler.Execute('stories.delete', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.Get(var Items: TVkStoriesBlock; const OwnerId: Integer): Boolean;
@@ -184,30 +179,17 @@ begin
   Result := Get(Items, Params.List);
 end;
 
-function TStoriesController.GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean; ProfileFields:
-  TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
+function TStoriesController.GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean; ProfileFields: TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
 var
   Params: TParams;
 begin
   Params.Add('extended', Extended);
   if (ProfileFields <> []) or (GroupFields <> []) then
     Params.Add('fields', [ProfileFields.ToString, GroupFields.ToString]);
-  with Handler.Execute('stories.getBanned', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoriesBanned.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getBanned', Params).GetObject<TVkStoriesBanned>(Items);
 end;
 
-function TStoriesController.GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean;
-  ProfileFields: TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
+function TStoriesController.GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean; ProfileFields: TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
 var
   Params: TParams;
 begin
@@ -215,22 +197,10 @@ begin
   Params.Add('extended', Extended);
   if (ProfileFields <> []) or (GroupFields <> []) then
     Params.Add('fields', [ProfileFields.ToString, GroupFields.ToString]);
-  with Handler.Execute('stories.getById', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoryItems.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getById', Params).GetObject<TVkStoryItems>(Items);
 end;
 
-function TStoriesController.GetPhotoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer):
-  Boolean;
+function TStoriesController.GetPhotoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer): Boolean;
 begin
   with Handler.Execute('stories.getPhotoUploadServer', Params.List) do
     Result := Success and GetValue('upload_result', UploadResult);
@@ -238,38 +208,16 @@ end;
 
 function TStoriesController.GetReplies(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesGetReplies): Boolean;
 begin
-  with Handler.Execute('stories.getReplies', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoriesBlock.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getReplies', Params.List).GetObject<TVkStoriesBlock>(Items);
 end;
 
 function TStoriesController.GetStats(var Items: TVkStoryStat; const OwnerId, StoryId: Integer): Boolean;
 begin
-  with Handler.Execute('stories.getStats', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoryStat.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getStats', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).GetObject
+    <TVkStoryStat>(Items);
 end;
 
-function TStoriesController.GetVideoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer):
-  Boolean;
+function TStoriesController.GetVideoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer): Boolean;
 begin
   with Handler.Execute('stories.getVideoUploadServer', Params.List) do
     Result := Success and GetValue('upload_result', UploadResult);
@@ -277,50 +225,24 @@ end;
 
 function TStoriesController.GetViewers(var Items: TVkStoryViews; const Params: TVkParamsStoriesGetViewers): Boolean;
 begin
-  with Handler.Execute('stories.getViewers', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoryViews.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.getViewers', Params.List).GetObject<TVkStoryViews>(Items);
 end;
 
 function TStoriesController.HideAllReplies(const OwnerId, GroupId: Integer): Boolean;
 begin
   with Handler.Execute('stories.hideAllReplies', [['owner_id', OwnerId.ToString], ['group_id', GroupId.ToString]]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.HideReply(const OwnerId, StoryId: Integer): Boolean;
 begin
   with Handler.Execute('stories.hideReply', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.Save(var Items: TVkStoryItems; const UploadResults: TArrayOfString): Boolean;
 begin
-  with Handler.Execute('stories.save', ['upload_results', UploadResults.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoryItems.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.save', ['upload_results', UploadResults.ToString]).GetObject<TVkStoryItems>(Items);
 end;
 
 function TStoriesController.Search(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesSearch): Boolean;
@@ -336,28 +258,15 @@ begin
   end;
 end;
 
-function TStoriesController.UnbanOwner(const OwnersIds: TIds): Boolean;
+function TStoriesController.UnbanOwner(const OwnersIds: TIdList): Boolean;
 begin
   with Handler.Execute('stories.unbanOwner', ['owners_ids', OwnersIds.ToString]) do
-  begin
     Result := Success and ResponseIsTrue;
-  end;
 end;
 
 function TStoriesController.Search(var Items: TVkStoriesBlock; const Params: TParams): Boolean;
 begin
-  with Handler.Execute('stories.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoriesBlock.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.search', Params).GetObject<TVkStoriesBlock>(Items);
 end;
 
 function TStoriesController.Get(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesGet): Boolean;
@@ -367,18 +276,7 @@ end;
 
 function TStoriesController.Get(var Items: TVkStoriesBlock; const Params: TParams): Boolean;
 begin
-  with Handler.Execute('stories.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStoriesBlock.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stories.get', Params).GetObject<TVkStoriesBlock>(Items);
 end;
 
 { TVkParamsStoriesGet }
@@ -405,7 +303,7 @@ begin
   Result := List.Add('add_to_news', Value);
 end;
 
-function TVkParamsStoriesGetUploadServer.UserIds(const Value: TIds): Integer;
+function TVkParamsStoriesGetUploadServer.UserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;

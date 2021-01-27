@@ -3,7 +3,8 @@ unit VK.Polls;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Poll;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Poll;
 
 type
   TVkVoteAnswer = record
@@ -25,7 +26,7 @@ type
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function PollId(Value: Integer): Integer;
-    function AnswerIds(Value: TIds): Integer;
+    function AnswerIds(Value: TIdList): Integer;
     function IsBoard(Value: Boolean): Integer;
   end;
 
@@ -57,7 +58,7 @@ type
     function Question(Value: string): Integer;
     function AddAnswers(Value: TArrayOfString): Integer;
     function EditAnswers(Value: TVkVoteAnswers): Integer;
-    function DeleteAnswers(Value: TIds): Integer;
+    function DeleteAnswers(Value: TIdList): Integer;
     function EndDate(Value: TDateTime): Integer;
     function PhotoId(Value: Integer): Integer;
     function BackgroundId(Value: Integer): Integer;
@@ -78,7 +79,7 @@ type
     List: TParams;
     function OwnerId(Value: Integer): Integer;
     function PollId(Value: Integer): Integer;
-    function AnswerIds(Value: TIds): Integer;
+    function AnswerIds(Value: TIdList): Integer;
     function IsBoard(Value: Boolean): Integer;
     function FriendsOnly(Value: Boolean): Integer;
     function Offset(Value: Integer): Integer;
@@ -153,18 +154,7 @@ end;
 
 function TPollsController.&Create(var Item: TVkPoll; const Params: TVkParamsPollsCreate): Boolean;
 begin
-  with Handler.Execute('polls.create', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkPoll.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('polls.create', Params.List).GetObject<TVkPoll>(Item);
 end;
 
 function TPollsController.DeleteVote(const Params: TVkParamsPollsDeleteVote): Boolean;
@@ -181,18 +171,7 @@ end;
 
 function TPollsController.GetBackgrounds(var Items: TVkPollBackgrounds): Boolean;
 begin
-  with Handler.Execute('polls.getBackgrounds') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPollBackgrounds.FromJsonString(AppendItemsTag(Response));
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('polls.getBackgrounds').GetObjects<TVkPollBackgrounds>(Items);
 end;
 
 function TPollsController.GetById(var Item: TVkPoll; PollId: Integer): Boolean;
@@ -232,34 +211,12 @@ function TPollsController.GetVoters(var Items: TVkPollVoters; Params: TParams): 
 begin
   if not Params.KeyExists('fields') then
     Params.Add('fields', 'domain');
-  with Handler.Execute('polls.getVoters', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPollVoters.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('polls.getVoters', Params).GetObject<TVkPollVoters>(Items);
 end;
 
 function TPollsController.GetById(var Item: TVkPoll; Params: TVkParamsPollsGetById): Boolean;
 begin
-  with Handler.Execute('polls.getById', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkPoll.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('polls.getById', Params.List).GetObject<TVkPoll>(Item);
 end;
 
 { TVkParamsPollsAddVote }
@@ -274,7 +231,7 @@ begin
   Result := List.Add('poll_id', Value);
 end;
 
-function TVkParamsPollsAddVote.AnswerIds(Value: TIds): Integer;
+function TVkParamsPollsAddVote.AnswerIds(Value: TIdList): Integer;
 begin
   Result := List.Add('answer_ids', Value);
 end;
@@ -380,7 +337,7 @@ begin
   Result := List.Add('edit_answers', Value.ToJson);
 end;
 
-function TVkParamsPollsEdit.DeleteAnswers(Value: TIds): Integer;
+function TVkParamsPollsEdit.DeleteAnswers(Value: TIdList): Integer;
 begin
   Result := List.Add('delete_answers', Value.ToJson);
 end;
@@ -490,7 +447,7 @@ begin
   Result := List.Add('poll_id', Value);
 end;
 
-function TVkParamsPollsGetVoters.AnswerIds(Value: TIds): Integer;
+function TVkParamsPollsGetVoters.AnswerIds(Value: TIdList): Integer;
 begin
   Result := List.Add('answer_ids', Value);
 end;

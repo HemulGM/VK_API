@@ -3,11 +3,17 @@ unit VK.GroupEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo, VK.Entity.GroupSettings;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  REST.Client, System.JSON, VK.Types, System.Generics.Collections,
+  VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
+  VK.Entity.GroupSettings;
 
 type
+  TLongPollEventProc = procedure(GroupId: Integer; EventObject: TJSONValue; EventId: string) of object;
+
+  TLongPollEvents = TDictionary<string, TLongPollEventProc>;
+
   TVkObjectInfo = record
     Id: Integer;
     OwnerId: Integer;
@@ -68,8 +74,7 @@ type
     GroupId: Integer;
   end;
 
-  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId:
-    string) of object;
+  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId: string) of object;
 
   TOnCommentDelete = procedure(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string) of object;
 
@@ -79,15 +84,13 @@ type
 
   TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; EventId: string) of object;
 
-  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId:
-    string) of object;
+  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId: string) of object;
 
   TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string) of object;
 
   TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; EventId: string) of object;
 
-  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string)
-    of object;
+  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string) of object;
 
   TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction; EventId: string) of object;
 
@@ -103,15 +106,15 @@ type
 
   TOnAudioNew = procedure(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string) of object;
 
-  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo;
-    EventId: string) of object;
+  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string) of object;
 
   TOnGroupMessageAction = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string) of object;
 
   TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string; EventId: string) of object;
 
-  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId:
-    string) of object;
+  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId: string) of object;
+
+  TOnGroupUnhandledEvents = procedure(Sender: TObject; GroupId: Integer; const JSON: TJSONValue) of object;
 
   TCustomGroupEvents = class(TComponent)
   private
@@ -161,6 +164,8 @@ type
     FOnMessageTypingState: TOnGroupMessageTypingState;
     FVersion: string;
     FLogging: Boolean;
+    FLongPollEvents: TLongPollEvents;
+    FOnGroupUnhandledEvents: TOnGroupUnhandledEvents;
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
@@ -208,6 +213,7 @@ type
     procedure DoGroupChangePhoto(GroupId: Integer; EventObject: TJSONValue; EventId: string);
     procedure DoVkPayTransaction(GroupId: Integer; EventObject: TJSONValue; EventId: string);
     procedure DoAppPayload(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+    procedure DoGroupUnhandledEvents(GroupId: Integer; const JSON: TJSONValue);
     //
     procedure SetOnWallReplyNew(const Value: TOnCommentAction);
     procedure SetOnWallReplyEdit(const Value: TOnCommentAction);
@@ -250,6 +256,7 @@ type
     procedure SetOnGroupAppPayload(const Value: TOnGroupAppPayload);
     procedure SetOnGroupPayTransaction(const Value: TOnGroupPayTransaction);
     procedure SetOnMessageTypingState(const Value: TOnGroupMessageTypingState);
+    procedure SetOnGroupUnhandledEvents(const Value: TOnGroupUnhandledEvents);
     function GetIsWork: Boolean;
     procedure SetVersion(const Value: string);
     procedure SetLogging(const Value: Boolean);
@@ -258,6 +265,7 @@ type
     destructor Destroy; override;
     procedure Stop;
     function Start: Boolean;
+    procedure FillEvents;
     property LongPollServer: TVkLongPollServer read FLongPollServer;
     property VK: TCustomVK read FVK write SetVK;
     property GroupID: Integer read FGroupID write SetGroupID;
@@ -305,6 +313,7 @@ type
     property OnGroupChangePhoto: TOnGroupChangePhoto read FOnGroupChangePhoto write SetOnGroupChangePhoto;
     property OnGroupPayTransaction: TOnGroupPayTransaction read FOnGroupPayTransaction write SetOnGroupPayTransaction;
     property OnGroupAppPayload: TOnGroupAppPayload read FOnGroupAppPayload write SetOnGroupAppPayload;
+    property OnGroupUnhandledEvents: TOnGroupUnhandledEvents read FOnGroupUnhandledEvents write SetOnGroupUnhandledEvents;
     property Version: string read FVersion write SetVersion;
   end;
 
@@ -357,52 +366,12 @@ type
     FOnGroupPayTransaction: TOnGroupPayTransaction;
     FOnGroupAppPayload: TOnGroupAppPayload;
     FOnMessageTypingState: TOnGroupMessageTypingState;
+    FOnGroupUnhandledEvents: TOnGroupUnhandledEvents;
     FVersion: string;
     FLogging: Boolean;
     procedure SetItems(const Value: TGroupEventsItems);
     procedure SetGroups(const Value: TStrings);
     procedure SetVK(const Value: TCustomVK);
-    procedure SetOnWallReplyNew(const Value: TOnCommentAction);
-    procedure SetOnWallReplyEdit(const Value: TOnCommentAction);
-    procedure SetOnWallReplyRestore(const Value: TOnCommentAction);
-    procedure SetOnWallReplyDelete(const Value: TOnCommentDelete);
-    procedure SetOnWallPostNew(const Value: TOnWallPostAction);
-    procedure SetOnWallRepost(const Value: TOnWallPostAction);
-    procedure SetOnAudioNew(const Value: TOnAudioNew);
-    procedure SetOnVideoNew(const Value: TOnVideoNew);
-    procedure SetOnMessageNew(const Value: TOnGroupMessageNew);
-    procedure SetOnMessageEdit(const Value: TOnGroupMessageAction);
-    procedure SetOnMessageReply(const Value: TOnGroupMessageAction);
-    procedure SetOnMessageAllow(const Value: TOnGroupMessageAccess);
-    procedure SetOnMessageDeny(const Value: TOnGroupMessageAccess);
-    procedure SetOnPhotoNew(const Value: TOnPhotoNew);
-    procedure SetOnVideoCommentDelete(const Value: TOnCommentDelete);
-    procedure SetOnVideoCommentEdit(const Value: TOnCommentAction);
-    procedure SetOnVideoCommentNew(const Value: TOnCommentAction);
-    procedure SetOnVideoCommentRestore(const Value: TOnCommentAction);
-    procedure SetOnPhotoCommentDelete(const Value: TOnCommentDelete);
-    procedure SetOnPhotoCommentEdit(const Value: TOnCommentAction);
-    procedure SetOnPhotoCommentNew(const Value: TOnCommentAction);
-    procedure SetOnPhotoCommentRestore(const Value: TOnCommentAction);
-    procedure SetOnBoardPostDelete(const Value: TOnCommentDelete);
-    procedure SetOnBoardPostEdit(const Value: TOnCommentAction);
-    procedure SetOnBoardPostNew(const Value: TOnCommentAction);
-    procedure SetOnBoardPostRestore(const Value: TOnCommentAction);
-    procedure SetOnMarketCommentDelete(const Value: TOnCommentDelete);
-    procedure SetOnMarketCommentEdit(const Value: TOnCommentAction);
-    procedure SetOnMarketCommentNew(const Value: TOnCommentAction);
-    procedure SetOnMarketCommentRestore(const Value: TOnCommentAction);
-    procedure SetOnGroupLeave(const Value: TOnGroupLeave);
-    procedure SetOnGroupJoin(const Value: TOnGroupJoin);
-    procedure SetOnUserBlock(const Value: TOnGroupUserBlock);
-    procedure SetOnUserUnBlock(const Value: TOnGroupUserUnBlock);
-    procedure SetOnGroupPollVoteNew(const Value: TOnGroupPollVoteNew);
-    procedure SetOnGroupOfficersEdit(const Value: TOnGroupOfficersEdit);
-    procedure SetOnGroupChangeSettings(const Value: TOnGroupChangeSettings);
-    procedure SetOnGroupChangePhoto(const Value: TOnGroupChangePhoto);
-    procedure SetOnGroupAppPayload(const Value: TOnGroupAppPayload);
-    procedure SetOnGroupPayTransaction(const Value: TOnGroupPayTransaction);
-    procedure SetOnMessageTypingState(const Value: TOnGroupMessageTypingState);
     procedure SetVersion(const Value: string);
     procedure SetLogging(const Value: Boolean);
   public
@@ -417,47 +386,48 @@ type
     property VK: TCustomVK read FVK write SetVK;
     property Groups: TStrings read FGroups write SetGroups;
     property Logging: Boolean read FLogging write SetLogging;
-    property OnWallReplyNew: TOnCommentAction read FOnWallReplyNew write SetOnWallReplyNew;
-    property OnWallReplyEdit: TOnCommentAction read FOnWallReplyEdit write SetOnWallReplyEdit;
-    property OnWallReplyRestore: TOnCommentAction read FOnWallReplyRestore write SetOnWallReplyRestore;
-    property OnWallReplyDelete: TOnCommentDelete read FOnWallReplyDelete write SetOnWallReplyDelete;
-    property OnWallPostNew: TOnWallPostAction read FOnWallPostNew write SetOnWallPostNew;
-    property OnWallRepost: TOnWallPostAction read FOnWallRepost write SetOnWallRepost;
-    property OnAudioNew: TOnAudioNew read FOnAudioNew write SetOnAudioNew;
-    property OnVideoNew: TOnVideoNew read FOnVideoNew write SetOnVideoNew;
-    property OnPhotoNew: TOnPhotoNew read FOnPhotoNew write SetOnPhotoNew;
-    property OnMessageNew: TOnGroupMessageNew read FOnMessageNew write SetOnMessageNew;
-    property OnMessageReply: TOnGroupMessageAction read FOnMessageReply write SetOnMessageReply;
-    property OnMessageEdit: TOnGroupMessageAction read FOnMessageEdit write SetOnMessageEdit;
-    property OnMessageAllow: TOnGroupMessageAccess read FOnMessageAllow write SetOnMessageAllow;
-    property OnMessageDeny: TOnGroupMessageAccess read FOnMessageDeny write SetOnMessageDeny;
-    property OnMessageTypingState: TOnGroupMessageTypingState read FOnMessageTypingState write SetOnMessageTypingState;
-    property OnVideoCommentNew: TOnCommentAction read FOnVideoCommentNew write SetOnVideoCommentNew;
-    property OnVideoCommentEdit: TOnCommentAction read FOnVideoCommentEdit write SetOnVideoCommentEdit;
-    property OnVideoCommentRestore: TOnCommentAction read FOnVideoCommentRestore write SetOnVideoCommentRestore;
-    property OnVideoCommentDelete: TOnCommentDelete read FOnVideoCommentDelete write SetOnVideoCommentDelete;
-    property OnPhotoCommentNew: TOnCommentAction read FOnPhotoCommentNew write SetOnPhotoCommentNew;
-    property OnPhotoCommentEdit: TOnCommentAction read FOnPhotoCommentEdit write SetOnPhotoCommentEdit;
-    property OnPhotoCommentRestore: TOnCommentAction read FOnPhotoCommentRestore write SetOnPhotoCommentRestore;
-    property OnPhotoCommentDelete: TOnCommentDelete read FOnPhotoCommentDelete write SetOnPhotoCommentDelete;
-    property OnBoardPostNew: TOnCommentAction read FOnBoardPostNew write SetOnBoardPostNew;
-    property OnBoardPostEdit: TOnCommentAction read FOnBoardPostEdit write SetOnBoardPostEdit;
-    property OnBoardPostRestore: TOnCommentAction read FOnBoardPostRestore write SetOnBoardPostRestore;
-    property OnBoardPostDelete: TOnCommentDelete read FOnBoardPostDelete write SetOnBoardPostDelete;
-    property OnMarketCommentNew: TOnCommentAction read FOnMarketCommentNew write SetOnMarketCommentNew;
-    property OnMarketCommentEdit: TOnCommentAction read FOnMarketCommentEdit write SetOnMarketCommentEdit;
-    property OnMarketCommentRestore: TOnCommentAction read FOnMarketCommentRestore write SetOnMarketCommentRestore;
-    property OnMarketCommentDelete: TOnCommentDelete read FOnMarketCommentDelete write SetOnMarketCommentDelete;
-    property OnGroupLeave: TOnGroupLeave read FOnGroupLeave write SetOnGroupLeave;
-    property OnGroupJoin: TOnGroupJoin read FOnGroupJoin write SetOnGroupJoin;
-    property OnUserBlock: TOnGroupUserBlock read FOnUserBlock write SetOnUserBlock;
-    property OnUserUnBlock: TOnGroupUserUnBlock read FOnUserUnBlock write SetOnUserUnBlock;
-    property OnGroupPollVoteNew: TOnGroupPollVoteNew read FOnGroupPollVoteNew write SetOnGroupPollVoteNew;
-    property OnGroupOfficersEdit: TOnGroupOfficersEdit read FOnGroupOfficersEdit write SetOnGroupOfficersEdit;
-    property OnGroupChangeSettings: TOnGroupChangeSettings read FOnGroupChangeSettings write SetOnGroupChangeSettings;
-    property OnGroupChangePhoto: TOnGroupChangePhoto read FOnGroupChangePhoto write SetOnGroupChangePhoto;
-    property OnGroupPayTransaction: TOnGroupPayTransaction read FOnGroupPayTransaction write SetOnGroupPayTransaction;
-    property OnGroupAppPayload: TOnGroupAppPayload read FOnGroupAppPayload write SetOnGroupAppPayload;
+    property OnWallReplyNew: TOnCommentAction read FOnWallReplyNew write FOnWallReplyNew;
+    property OnWallReplyEdit: TOnCommentAction read FOnWallReplyEdit write FOnWallReplyEdit;
+    property OnWallReplyRestore: TOnCommentAction read FOnWallReplyRestore write FOnWallReplyRestore;
+    property OnWallReplyDelete: TOnCommentDelete read FOnWallReplyDelete write FOnWallReplyDelete;
+    property OnWallPostNew: TOnWallPostAction read FOnWallPostNew write FOnWallPostNew;
+    property OnWallRepost: TOnWallPostAction read FOnWallRepost write FOnWallRepost;
+    property OnAudioNew: TOnAudioNew read FOnAudioNew write FOnAudioNew;
+    property OnVideoNew: TOnVideoNew read FOnVideoNew write FOnVideoNew;
+    property OnPhotoNew: TOnPhotoNew read FOnPhotoNew write FOnPhotoNew;
+    property OnMessageNew: TOnGroupMessageNew read FOnMessageNew write FOnMessageNew;
+    property OnMessageReply: TOnGroupMessageAction read FOnMessageReply write FOnMessageReply;
+    property OnMessageEdit: TOnGroupMessageAction read FOnMessageEdit write FOnMessageEdit;
+    property OnMessageAllow: TOnGroupMessageAccess read FOnMessageAllow write FOnMessageAllow;
+    property OnMessageDeny: TOnGroupMessageAccess read FOnMessageDeny write FOnMessageDeny;
+    property OnMessageTypingState: TOnGroupMessageTypingState read FOnMessageTypingState write FOnMessageTypingState;
+    property OnVideoCommentNew: TOnCommentAction read FOnVideoCommentNew write FOnVideoCommentNew;
+    property OnVideoCommentEdit: TOnCommentAction read FOnVideoCommentEdit write FOnVideoCommentEdit;
+    property OnVideoCommentRestore: TOnCommentAction read FOnVideoCommentRestore write FOnVideoCommentRestore;
+    property OnVideoCommentDelete: TOnCommentDelete read FOnVideoCommentDelete write FOnVideoCommentDelete;
+    property OnPhotoCommentNew: TOnCommentAction read FOnPhotoCommentNew write FOnPhotoCommentNew;
+    property OnPhotoCommentEdit: TOnCommentAction read FOnPhotoCommentEdit write FOnPhotoCommentEdit;
+    property OnPhotoCommentRestore: TOnCommentAction read FOnPhotoCommentRestore write FOnPhotoCommentRestore;
+    property OnPhotoCommentDelete: TOnCommentDelete read FOnPhotoCommentDelete write FOnPhotoCommentDelete;
+    property OnBoardPostNew: TOnCommentAction read FOnBoardPostNew write FOnBoardPostNew;
+    property OnBoardPostEdit: TOnCommentAction read FOnBoardPostEdit write FOnBoardPostEdit;
+    property OnBoardPostRestore: TOnCommentAction read FOnBoardPostRestore write FOnBoardPostRestore;
+    property OnBoardPostDelete: TOnCommentDelete read FOnBoardPostDelete write FOnBoardPostDelete;
+    property OnMarketCommentNew: TOnCommentAction read FOnMarketCommentNew write FOnMarketCommentNew;
+    property OnMarketCommentEdit: TOnCommentAction read FOnMarketCommentEdit write FOnMarketCommentEdit;
+    property OnMarketCommentRestore: TOnCommentAction read FOnMarketCommentRestore write FOnMarketCommentRestore;
+    property OnMarketCommentDelete: TOnCommentDelete read FOnMarketCommentDelete write FOnMarketCommentDelete;
+    property OnGroupLeave: TOnGroupLeave read FOnGroupLeave write FOnGroupLeave;
+    property OnGroupJoin: TOnGroupJoin read FOnGroupJoin write FOnGroupJoin;
+    property OnUserBlock: TOnGroupUserBlock read FOnUserBlock write FOnUserBlock;
+    property OnUserUnBlock: TOnGroupUserUnBlock read FOnUserUnBlock write FOnUserUnBlock;
+    property OnGroupPollVoteNew: TOnGroupPollVoteNew read FOnGroupPollVoteNew write FOnGroupPollVoteNew;
+    property OnGroupOfficersEdit: TOnGroupOfficersEdit read FOnGroupOfficersEdit write FOnGroupOfficersEdit;
+    property OnGroupChangeSettings: TOnGroupChangeSettings read FOnGroupChangeSettings write FOnGroupChangeSettings;
+    property OnGroupChangePhoto: TOnGroupChangePhoto read FOnGroupChangePhoto write FOnGroupChangePhoto;
+    property OnGroupPayTransaction: TOnGroupPayTransaction read FOnGroupPayTransaction write FOnGroupPayTransaction;
+    property OnGroupAppPayload: TOnGroupAppPayload read FOnGroupAppPayload write FOnGroupAppPayload;
+    property OnGroupUnhandledEvents: TOnGroupUnhandledEvents read FOnGroupUnhandledEvents write FOnGroupUnhandledEvents;
     property Version: string read FVersion write SetVersion;
   end;
 
@@ -482,15 +452,18 @@ begin
         Break;
       end;
   end;
+  FLongPollEvents := TLongPollEvents.Create;
   FVersion := '3';
   FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
   FLongPollServer.Logging := True;
+  FillEvents;
 end;
 
 destructor TCustomGroupEvents.Destroy;
 begin
+  FLongPollEvents.Free;
   FLongPollServer.Free;
   inherited;
 end;
@@ -510,90 +483,11 @@ begin
     raise TVkGroupEventsException.Create('Не был получен объект события');
   if EventType.IsEmpty then
     raise TVkGroupEventsException.Create('Не был получен тип события');
-  //message_typing_state
   try
-    if EventType = 'message_new' then
-      DoMessageNew(GroupId, EventObject, EventId)
-    else if (EventType = 'message_reply') then
-      DoMessageReply(GroupId, EventObject, EventId)
-    else if (EventType = 'message_edit') then
-      DoMessageEdit(GroupId, EventObject, EventId)
-    else if EventType = 'message_allow' then
-      DoMessageAllow(GroupId, EventObject, EventId)
-    else if EventType = 'message_deny' then
-      DoMessageDeny(GroupId, EventObject, EventId)
-    else if EventType = 'message_typing_state' then
-      DoMessageTypingState(GroupId, EventObject, EventId)
-    else if EventType = 'photo_new' then
-      DoPhotoNew(GroupId, EventObject, EventId)
-    else if EventType = 'photo_comment_new' then
-      DoPhotoCommentNew(GroupId, EventObject, EventId)
-    else if EventType = 'photo_comment_edit' then
-      DoPhotoCommentEdit(GroupId, EventObject, EventId)
-    else if EventType = 'photo_comment_restore' then
-      DoPhotoCommentRestore(GroupId, EventObject, EventId)
-    else if EventType = 'photo_comment_delete' then
-      DoPhotoCommentDelete(GroupId, EventObject, EventId)
-    else if EventType = 'audio_new' then
-      DoAudioNew(GroupId, EventObject, EventId)
-    else if EventType = 'video_new' then
-      DoVideoNew(GroupId, EventObject, EventId)
-    else if EventType = 'video_comment_new' then
-      DoVideoCommentNew(GroupId, EventObject, EventId)
-    else if EventType = 'video_comment_edit' then
-      DoVideoCommentEdit(GroupId, EventObject, EventId)
-    else if EventType = 'video_comment_restore' then
-      DoVideoCommentRestore(GroupId, EventObject, EventId)
-    else if EventType = 'video_comment_delete' then
-      DoVideoCommentDelete(GroupId, EventObject, EventId)
-    else if EventType = 'wall_post_new' then
-      DoWallPostNew(GroupId, EventObject, EventId)
-    else if EventType = 'wall_repost' then
-      DoWallRepost(GroupId, EventObject, EventId)
-    else if EventType = 'wall_reply_new' then
-      DoWallReplyNew(GroupId, EventObject, EventId)
-    else if EventType = 'wall_reply_edit' then
-      DoWallReplyEdit(GroupId, EventObject, EventId)
-    else if EventType = 'wall_reply_restore' then
-      DoWallReplyRestore(GroupId, EventObject, EventId)
-    else if EventType = 'wall_reply_delete' then
-      DoWallReplyDelete(GroupId, EventObject, EventId)
-    else if EventType = 'board_post_new' then
-      DoBoardPostNew(GroupId, EventObject, EventId)
-    else if EventType = 'board_post_edit' then
-      DoBoardPostEdit(GroupId, EventObject, EventId)
-    else if EventType = 'board_post_restore' then
-      DoBoardPostRestore(GroupId, EventObject, EventId)
-    else if EventType = 'board_post_delete' then
-      DoBoardPostDelete(GroupId, EventObject, EventId)
-    else if EventType = 'market_comment_new' then
-      DoMarketCommentNew(GroupId, EventObject, EventId)
-    else if EventType = 'market_comment_edit' then
-      DoMarketCommentEdit(GroupId, EventObject, EventId)
-    else if EventType = 'market_comment_restore' then
-      DoMarketCommentRestore(GroupId, EventObject, EventId)
-    else if EventType = 'market_comment_delete' then
-      DoMarketCommentDelete(GroupId, EventObject, EventId)
-    else if EventType = 'group_leave' then
-      DoGroupLeave(GroupId, EventObject, EventId)
-    else if EventType = 'group_join' then
-      DoGroupJoin(GroupId, EventObject, EventId)
-    else if EventType = 'group_officers_edit' then
-      DoGroupOfficersEdit(GroupId, EventObject, EventId)
-    else if EventType = 'user_block' then
-      DoUserBlock(GroupId, EventObject, EventId)
-    else if EventType = 'user_unblock' then
-      DoUserUnblock(GroupId, EventObject, EventId)
-    else if EventType = 'group_change_settings' then
-      DoGroupChangeSettings(GroupId, EventObject, EventId)
-    else if EventType = 'group_change_photo' then
-      DoGroupChangePhoto(GroupId, EventObject, EventId)
-    else if EventType = 'vkpay_transaction' then
-      DoVkPayTransaction(GroupId, EventObject, EventId)
-    else if EventType = 'app_payload' then
-      DoAppPayload(GroupId, EventObject, EventId)
-    else if EventType = 'poll_vote_new' then
-      DoPollVoteNew(GroupId, EventObject, EventId);
+    if FLongPollEvents.ContainsKey(EventType) then
+      FLongPollEvents.Items[EventType](GroupId, EventObject, EventId)
+    else
+      DoGroupUnhandledEvents(GroupId, Update);
   except
     //
   end;
@@ -605,7 +499,7 @@ var
 begin
   if Assigned(FOnAudioNew) then
   begin
-    Audio := TVkAudio.FromJsonString(EventObject.ToString);
+    Audio := TVkAudio.FromJsonString<TVkAudio>(EventObject.ToString);
     try
       FOnAudioNew(Self, GroupId, Audio, EventId);
     finally
@@ -650,7 +544,7 @@ var
 begin
   if Assigned(FOnBoardPostEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -668,7 +562,7 @@ var
 begin
   if Assigned(FOnBoardPostNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -686,7 +580,7 @@ var
 begin
   if Assigned(FOnBoardPostRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('topic_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('topic_owner_id', -1);
     try
@@ -704,7 +598,7 @@ begin
   if Assigned(FOnGroupChangePhoto) then
   begin
     Changes.UserId := EventObject.GetValue<Integer>('user_id', -1);
-    Changes.Photo := TVkPhoto.FromJsonString(EventObject.GetValue<TJSONValue>('photo', nil).ToString);
+    Changes.Photo := TVkPhoto.FromJsonString<TVkPhoto>(EventObject.GetValue<TJSONValue>('photo', nil).ToString);
     try
       FOnGroupChangePhoto(Self, GroupId, Changes, EventId);
     finally
@@ -719,7 +613,7 @@ var
 begin
   if Assigned(FOnGroupChangeSettings) then
   begin
-    Changes := TVkGroupSettingsChange.FromJsonString(EventObject.ToString);
+    Changes := TVkGroupSettingsChange.FromJsonString<TVkGroupSettingsChange>(EventObject.ToString);
     try
       FOnGroupChangeSettings(Self, GroupId, Changes, EventId);
     finally
@@ -768,6 +662,14 @@ begin
   end;
 end;
 
+procedure TCustomGroupEvents.DoGroupUnhandledEvents(GroupId: Integer; const JSON: TJSONValue);
+begin
+  if Assigned(FOnGroupUnhandledEvents) then
+  begin
+    FOnGroupUnhandledEvents(Self, GroupId, JSON);
+  end;
+end;
+
 procedure TCustomGroupEvents.DoMarketCommentDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
 var
   Info: TVkCommentInfo;
@@ -790,7 +692,7 @@ var
 begin
   if Assigned(FOnMarketCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -808,7 +710,7 @@ var
 begin
   if Assigned(FOnMarketCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -826,7 +728,7 @@ var
 begin
   if Assigned(FOnMarketCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('item_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
     try
@@ -867,7 +769,7 @@ var
 begin
   if Assigned(FOnMessageEdit) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.ToString);
     try
       FOnMessageEdit(Self, GroupId, Message, EventId);
     finally
@@ -883,8 +785,8 @@ var
 begin
   if Assigned(FOnMessageNew) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.GetValue<TJSONValue>('message').ToString);
-    ClientInfo := TVkClientInfo.FromJsonString(EventObject.GetValue<TJSONValue>('client_info').ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.GetValue<TJSONValue>('message').ToString);
+    ClientInfo := TVkClientInfo.FromJsonString<TVkClientInfo>(EventObject.GetValue<TJSONValue>('client_info').ToString);
     try
       FOnMessageNew(Self, GroupId, Message, ClientInfo, EventId);
     finally
@@ -900,7 +802,7 @@ var
 begin
   if Assigned(FOnMessageReply) then
   begin
-    Message := TVkMessage.FromJsonString(EventObject.ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.ToString);
     try
       FOnMessageReply(Self, GroupId, Message, EventId);
     finally
@@ -944,7 +846,7 @@ var
 begin
   if Assigned(FOnPhotoCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -962,7 +864,7 @@ var
 begin
   if Assigned(FOnPhotoCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -980,7 +882,7 @@ var
 begin
   if Assigned(FOnPhotoCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('photo_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('photo_owner_id', -1);
     try
@@ -997,7 +899,7 @@ var
 begin
   if Assigned(FOnPhotoNew) then
   begin
-    Photo := TVkPhoto.FromJsonString(EventObject.ToString);
+    Photo := TVkPhoto.FromJsonString<TVkPhoto>(EventObject.ToString);
     try
       FOnPhotoNew(Self, GroupId, Photo, EventId);
     finally
@@ -1070,7 +972,7 @@ var
 begin
   if Assigned(FOnVideoCommentEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1088,7 +990,7 @@ var
 begin
   if Assigned(FOnVideoCommentNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1106,7 +1008,7 @@ var
 begin
   if Assigned(FOnVideoCommentRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('video_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('video_owner_id', -1);
     try
@@ -1123,7 +1025,7 @@ var
 begin
   if Assigned(FOnVideoNew) then
   begin
-    Video := TVkVideo.FromJsonString(EventObject.ToString);
+    Video := TVkVideo.FromJsonString<TVkVideo>(EventObject.ToString);
     try
       FOnVideoNew(Self, GroupId, Video, EventId);
     finally
@@ -1152,7 +1054,7 @@ var
 begin
   if Assigned(FOnWallPostNew) then
   begin
-    Post := TVkPost.FromJsonString(EventObject.ToString);
+    Post := TVkPost.FromJsonString<TVkPost>(EventObject.ToString);
     try
       FOnWallPostNew(Self, GroupId, Post, EventId);
     finally
@@ -1183,7 +1085,7 @@ var
 begin
   if Assigned(FOnWallReplyEdit) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1201,7 +1103,7 @@ var
 begin
   if Assigned(FOnWallReplyNew) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1219,7 +1121,7 @@ var
 begin
   if Assigned(FOnWallReplyRestore) then
   begin
-    Comment := TVkComment.FromJsonString(EventObject.ToString);
+    Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
     Info.Id := EventObject.GetValue<Integer>('post_id', -1);
     Info.OwnerId := EventObject.GetValue<Integer>('post_owner_id', -1);
     try
@@ -1236,13 +1138,58 @@ var
 begin
   if Assigned(FOnWallRepost) then
   begin
-    Post := TVkPost.FromJsonString(EventObject.ToString);
+    Post := TVkPost.FromJsonString<TVkPost>(EventObject.ToString);
     try
       FOnWallRepost(Self, GroupId, Post, EventId);
     finally
       Post.Free;
     end;
   end;
+end;
+
+procedure TCustomGroupEvents.FillEvents;
+begin
+  FLongPollEvents.Add('message_new', DoMessageNew);
+  FLongPollEvents.Add('message_reply', DoMessageReply);
+  FLongPollEvents.Add('message_edit', DoMessageEdit);
+  FLongPollEvents.Add('message_allow', DoMessageAllow);
+  FLongPollEvents.Add('message_deny', DoMessageDeny);
+  FLongPollEvents.Add('message_typing_state', DoMessageTypingState);
+  FLongPollEvents.Add('photo_new', DoPhotoNew);
+  FLongPollEvents.Add('photo_comment_new', DoPhotoCommentNew);
+  FLongPollEvents.Add('photo_comment_edit', DoPhotoCommentEdit);
+  FLongPollEvents.Add('photo_comment_restore', DoPhotoCommentRestore);
+  FLongPollEvents.Add('photo_comment_delete', DoPhotoCommentDelete);
+  FLongPollEvents.Add('audio_new', DoAudioNew);
+  FLongPollEvents.Add('video_new', DoVideoNew);
+  FLongPollEvents.Add('video_comment_new', DoVideoCommentNew);
+  FLongPollEvents.Add('video_comment_edit', DoVideoCommentEdit);
+  FLongPollEvents.Add('video_comment_restore', DoVideoCommentRestore);
+  FLongPollEvents.Add('video_comment_delete', DoVideoCommentDelete);
+  FLongPollEvents.Add('wall_post_new', DoWallPostNew);
+  FLongPollEvents.Add('wall_repost', DoWallRepost);
+  FLongPollEvents.Add('wall_reply_new', DoWallReplyNew);
+  FLongPollEvents.Add('wall_reply_edit', DoWallReplyEdit);
+  FLongPollEvents.Add('wall_reply_restore', DoWallReplyRestore);
+  FLongPollEvents.Add('wall_reply_delete', DoWallReplyDelete);
+  FLongPollEvents.Add('board_post_new', DoBoardPostNew);
+  FLongPollEvents.Add('board_post_edit', DoBoardPostEdit);
+  FLongPollEvents.Add('board_post_restore', DoBoardPostRestore);
+  FLongPollEvents.Add('board_post_delete', DoBoardPostDelete);
+  FLongPollEvents.Add('market_comment_new', DoMarketCommentNew);
+  FLongPollEvents.Add('market_comment_edit', DoMarketCommentEdit);
+  FLongPollEvents.Add('market_comment_restore', DoMarketCommentRestore);
+  FLongPollEvents.Add('market_comment_delete', DoMarketCommentDelete);
+  FLongPollEvents.Add('group_leave', DoGroupLeave);
+  FLongPollEvents.Add('group_join', DoGroupJoin);
+  FLongPollEvents.Add('group_officers_edit', DoGroupOfficersEdit);
+  FLongPollEvents.Add('user_block', DoUserBlock);
+  FLongPollEvents.Add('user_unblock', DoUserUnblock);
+  FLongPollEvents.Add('group_change_settings', DoGroupChangeSettings);
+  FLongPollEvents.Add('group_change_photo', DoGroupChangePhoto);
+  FLongPollEvents.Add('vkpay_transaction', DoVkPayTransaction);
+  FLongPollEvents.Add('app_payload', DoAppPayload);
+  FLongPollEvents.Add('poll_vote_new', DoPollVoteNew);
 end;
 
 procedure TCustomGroupEvents.FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
@@ -1334,6 +1281,11 @@ end;
 procedure TCustomGroupEvents.SetOnGroupPollVoteNew(const Value: TOnGroupPollVoteNew);
 begin
   FOnGroupPollVoteNew := Value;
+end;
+
+procedure TCustomGroupEvents.SetOnGroupUnhandledEvents(const Value: TOnGroupUnhandledEvents);
+begin
+  FOnGroupUnhandledEvents := Value;
 end;
 
 procedure TCustomGroupEvents.SetOnMarketCommentDelete(const Value: TOnCommentDelete);
@@ -1590,11 +1542,15 @@ begin
 end;
 
 destructor TCustomGroupEventControl.Destroy;
+  {$IFNDEF AUTOREFCOUNT}
 var
   i: Integer;
+  {$ENDIF}
 begin
+  {$IFNDEF AUTOREFCOUNT}
   for i := 0 to FItems.Count - 1 do
     FItems[i].Free;
+  {$ENDIF}
   FItems.Free;
   FGroups.Free;
   inherited;
@@ -1627,211 +1583,6 @@ begin
   FLogging := Value;
   for i := 0 to FItems.Count - 1 do
     FItems[i].Logging := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnAudioNew(const Value: TOnAudioNew);
-begin
-  FOnAudioNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnBoardPostDelete(const Value: TOnCommentDelete);
-begin
-  FOnBoardPostDelete := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnBoardPostEdit(const Value: TOnCommentAction);
-begin
-  FOnBoardPostEdit := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnBoardPostNew(const Value: TOnCommentAction);
-begin
-  FOnBoardPostNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnBoardPostRestore(const Value: TOnCommentAction);
-begin
-  FOnBoardPostRestore := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnGroupAppPayload(const Value: TOnGroupAppPayload);
-begin
-  FOnGroupAppPayload := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnGroupChangePhoto(const Value: TOnGroupChangePhoto);
-begin
-  FOnGroupChangePhoto := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnGroupChangeSettings(const Value: TOnGroupChangeSettings);
-begin
-  FOnGroupChangeSettings := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnGroupJoin(const Value: TOnGroupJoin);
-begin
-  FOnGroupJoin := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnGroupLeave(const Value: TOnGroupLeave);
-begin
-  FOnGroupLeave := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnGroupOfficersEdit(const Value: TOnGroupOfficersEdit);
-begin
-  FOnGroupOfficersEdit := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnGroupPayTransaction(const Value: TOnGroupPayTransaction);
-begin
-  FOnGroupPayTransaction := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnGroupPollVoteNew(const Value: TOnGroupPollVoteNew);
-begin
-  FOnGroupPollVoteNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMarketCommentDelete(const Value: TOnCommentDelete);
-begin
-  FOnMarketCommentDelete := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMarketCommentEdit(const Value: TOnCommentAction);
-begin
-  FOnMarketCommentEdit := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMarketCommentNew(const Value: TOnCommentAction);
-begin
-  FOnMarketCommentNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMarketCommentRestore(const Value: TOnCommentAction);
-begin
-  FOnMarketCommentRestore := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMessageAllow(const Value: TOnGroupMessageAccess);
-begin
-  FOnMessageAllow := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMessageDeny(const Value: TOnGroupMessageAccess);
-begin
-  FOnMessageDeny := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMessageEdit(const Value: TOnGroupMessageAction);
-begin
-  FOnMessageEdit := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMessageNew(const Value: TOnGroupMessageNew);
-begin
-  FOnMessageNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMessageReply(const Value: TOnGroupMessageAction);
-begin
-  FOnMessageReply := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnMessageTypingState(const Value: TOnGroupMessageTypingState);
-begin
-  FOnMessageTypingState := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnPhotoCommentDelete(const Value: TOnCommentDelete);
-begin
-  FOnPhotoCommentDelete := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnPhotoCommentEdit(const Value: TOnCommentAction);
-begin
-  FOnPhotoCommentEdit := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnPhotoCommentNew(const Value: TOnCommentAction);
-begin
-  FOnPhotoCommentNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnPhotoCommentRestore(const Value: TOnCommentAction);
-begin
-  FOnPhotoCommentRestore := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnPhotoNew(const Value: TOnPhotoNew);
-begin
-  FOnPhotoNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnUserBlock(const Value: TOnGroupUserBlock);
-begin
-  FOnUserBlock := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnUserUnBlock(const Value: TOnGroupUserUnBlock);
-begin
-  FOnUserUnBlock := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnVideoCommentDelete(const Value: TOnCommentDelete);
-begin
-  FOnVideoCommentDelete := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnVideoCommentEdit(const Value: TOnCommentAction);
-begin
-  FOnVideoCommentEdit := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnVideoCommentNew(const Value: TOnCommentAction);
-begin
-  FOnVideoCommentNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnVideoCommentRestore(const Value: TOnCommentAction);
-begin
-  FOnVideoCommentRestore := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnVideoNew(const Value: TOnVideoNew);
-begin
-  FOnVideoNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnWallPostNew(const Value: TOnWallPostAction);
-begin
-  FOnWallPostNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnWallReplyDelete(const Value: TOnCommentDelete);
-begin
-  FOnWallReplyDelete := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnWallReplyEdit(const Value: TOnCommentAction);
-begin
-  FOnWallReplyEdit := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnWallReplyNew(const Value: TOnCommentAction);
-begin
-  FOnWallReplyNew := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnWallReplyRestore(const Value: TOnCommentAction);
-begin
-  FOnWallReplyRestore := Value;
-end;
-
-procedure TCustomGroupEventControl.SetOnWallRepost(const Value: TOnWallPostAction);
-begin
-  FOnWallRepost := Value;
 end;
 
 procedure TCustomGroupEventControl.SetVersion(const Value: string);

@@ -3,27 +3,14 @@ unit VK.Entity.PrettyCard;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Link;
+  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkCardImage = class
-  private
-    FHeight: Extended;
-    FUrl: string;
-    FWidth: Extended;
-  public
-    property Height: Extended read FHeight write FHeight;
-    property Url: string read FUrl write FUrl;
-    property Width: Extended read FWidth write FWidth;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCardImage;
-  end;
-
-  TVkPrettyCard = class
+  TVkPrettyCard = class(TVkEntity)
   private
     FButton: TVkLinkButton;
     FCard_id: string;
-    FImages: TArray<TVkCardImage>;
+    FImages: TArray<TVkImage>;
     FLink_url: string;
     FPrice: string;
     FPrice_old: string;
@@ -31,40 +18,21 @@ type
   public
     property Button: TVkLinkButton read FButton write FButton;
     property CardId: string read FCard_id write FCard_id;
-    property Images: TArray<TVkCardImage> read FImages write FImages;
+    property Images: TArray<TVkImage> read FImages write FImages;
     property LinkUrl: string read FLink_url write FLink_url;
     property Price: string read FPrice write FPrice;
     property PriceOld: string read FPrice_old write FPrice_old;
     property Title: string read FTitle write FTitle;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPrettyCard;
   end;
 
-  TVkPrettyCards = class
-  private
-    FItems: TArray<TVkPrettyCard>;
-  public
-    property Items: TArray<TVkPrettyCard> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPrettyCards;
-  end;
+  TVkPrettyCards = TVkEntityList<TVkPrettyCard>;
 
 implementation
 
-{TVkCardImage}
-
-function TVkCardImage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkCardImage.FromJsonString(AJsonString: string): TVkCardImage;
-begin
-  result := TJson.JsonToObject<TVkCardImage>(AJsonString)
-end;
+uses
+  VK.CommonUtils;
 
 {TVkPrettyCard}
 
@@ -75,48 +43,10 @@ begin
 end;
 
 destructor TVkPrettyCard.Destroy;
-var
-  LimagesItem: TVkCardImage;
 begin
-
-  for LimagesItem in FImages do
-    LimagesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
   FButton.Free;
   inherited;
-end;
-
-function TVkPrettyCard.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPrettyCard.FromJsonString(AJsonString: string): TVkPrettyCard;
-begin
-  result := TJson.JsonToObject<TVkPrettyCard>(AJsonString)
-end;
-
-{TVkPrettyCards}
-
-destructor TVkPrettyCards.Destroy;
-var
-  LItemsItem: TVkPrettyCard;
-begin
-
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-
-  inherited;
-end;
-
-function TVkPrettyCards.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPrettyCards.FromJsonString(AJsonString: string): TVkPrettyCards;
-begin
-  result := TJson.JsonToObject<TVkPrettyCards>(AJsonString)
 end;
 
 end.

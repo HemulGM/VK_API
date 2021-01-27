@@ -3,7 +3,8 @@ unit VK.Stats;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Stats;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Stats;
 
 type
   TVkStatInterval = (siDay, siWeek, siMonth, siYear, siAll);
@@ -48,7 +49,7 @@ type
     /// Статистика записей в настоящий момент доступна только для сообществ с количеством участников от 5000 и выше, а также официальных сообществ.
     /// Пользователь, от имени которого вызывается метод, должен быть редактором или администратором сообщества, в котором размещена запись.
     /// </summary>
-    function GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIds): Boolean; overload;
+    function GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIdList): Boolean; overload;
     /// <summary>
     /// Добавляет данные о текущем сеансе в статистику посещаемости приложения.
     /// После первого вызова данного метода в разделе «Статистика» настроек Вашего приложения станет доступна вкладка «Посещаемость». В ней будет отображена информация о числе запусков и уникальных посетителей Вашего приложения.
@@ -66,18 +67,7 @@ uses
 
 function TStatsController.Get(var Items: TVkStatItems; const Params: TParams): Boolean;
 begin
-  with Handler.Execute('stats.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStatItems.FromJsonString(ResponseWithItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stats.get', Params).GetObjects<TVkStatItems>(Items);
 end;
 
 function TStatsController.Get(var Items: TVkStatItems; const Params: TVkParamsStatsGet): Boolean;
@@ -85,20 +75,12 @@ begin
   Result := Get(Items, Params.List);
 end;
 
-function TStatsController.GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIds): Boolean;
+function TStatsController.GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIdList): Boolean;
 begin
-  with Handler.Execute('stats.getPostReach', [['owner_id', OwnerId.ToString], ['post_ids', PostIds.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStatPostReachItems.FromJsonString(ResponseWithItems);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('stats.getPostReach', [
+    ['owner_id', OwnerId.ToString],
+    ['post_ids', PostIds.ToString]]).
+    GetObjects<TVkStatPostReachItems>(Items);
 end;
 
 function TStatsController.TrackVisitor: Boolean;

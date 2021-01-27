@@ -29,18 +29,7 @@ begin
   Params.Add('user_id', UserId);
   Params.Add('count', Count);
   Params.Add('offset', Offset);
-  with Handler.Execute('gifts.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkGiftItems.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('gifts.get', Params).GetObject<TVkGiftItems>(Items);
 end;
 
 end.

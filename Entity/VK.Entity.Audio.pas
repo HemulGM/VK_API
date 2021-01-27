@@ -3,64 +3,66 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types, VK.Entity.Attachment;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors,
+  System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types,
+  VK.Entity.Attachment, VK.Entity.Common.List, VK.Wrap.Interceptors,
+  VK.Entity.Group;
 
 type
-  TVkAudioArtist = class
+  TVkAudioArtistPhoto = class(TVkEntity)
+  private
+    FType: string;
+    FPhoto: TArray<TVkImage>;
+  public
+    property&Type: string read FType write FType;
+    property Photo: TArray<TVkImage> read FPhoto write FPhoto;
+    destructor Destroy; override;
+  end;
+
+  TVkAudioArtist = class(TVkEntity)
   private
     FDomain: string;
-    FId: string;
     FName: string;
+    FPhoto: TArray<TVkImage>;
+    FId: string;
+    FPages: TArray<Integer>;
+    FGroups: TArray<TVkGroup>;
+    FPhotos: TArray<TVkAudioArtistPhoto>;
   public
-    property Domain: string read FDomain write FDomain;
+    /// <summary>
+    /// Идентификатор артиста/группы
+    /// </summary>
     property Id: string read FId write FId;
+    /// <summary>
+    /// Домен-ссылка на аккаунт
+    /// </summary>
+    property Domain: string read FDomain write FDomain;
+    /// <summary>
+    /// Имя артиста/название группы
+    /// </summary>
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioArtist;
+    property Photo: TArray<TVkImage> read FPhoto write FPhoto;
+    property Photos: TArray<TVkAudioArtistPhoto> read FPhotos write FPhotos;
+    property Pages: TArray<Integer> read FPages write FPages;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    destructor Destroy; override;
   end;
 
-  TVkAlbumThumb = class
-  private
-    FHeight: Integer;
-    FPhoto_135: string;
-    FPhoto_270: string;
-    FPhoto_300: string;
-    FPhoto_34: string;
-    FPhoto_600: string;
-    FPhoto_68: string;
-    FWidth: Integer;
-    FPhoto_1200: string;
-  public
-    property Height: Integer read FHeight write FHeight;
-    property Width: Integer read FWidth write FWidth;
-    property Photo135: string read FPhoto_135 write FPhoto_135;
-    property Photo270: string read FPhoto_270 write FPhoto_270;
-    property Photo300: string read FPhoto_300 write FPhoto_300;
-    property Photo34: string read FPhoto_34 write FPhoto_34;
-    property Photo600: string read FPhoto_600 write FPhoto_600;
-    property Photo68: string read FPhoto_68 write FPhoto_68;
-    property Photo1200: string read FPhoto_1200 write FPhoto_1200;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAlbumThumb;
-  end;
+  TVkAudioArtists = TVkEntityList<TVkAudioArtist>;
 
-  TVkAudioAlbum = class
+  TVkAudioAlbum = class(TVkObject)
   private
     FAccess_key: string;
-    FId: Extended;
-    FOwner_id: Extended;
-    FThumb: TVkAlbumThumb;
+    FOwner_id: Integer;
+    FThumb: TVkThumb;
     FTitle: string;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
-    property Id: Extended read FId write FId;
-    property OwnerId: Extended read FOwner_id write FOwner_id;
-    property Thumb: TVkAlbumThumb read FThumb write FThumb;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property Thumb: TVkThumb read FThumb write FThumb;
     property Title: string read FTitle write FTitle;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioAlbum;
   end;
 
   TVkAudioAds = class
@@ -74,8 +76,6 @@ type
     property ContentId: string read FContent_id write FContent_id;
     property Duration: string read FDuration write FDuration;
     property PUID22: string read FPuid22 write FPuid22;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioAds;
   end;
 
   TVkAudioChartInfo = class
@@ -83,8 +83,6 @@ type
     FPosition: Integer;
   public
     property Position: Integer read FPosition write FPosition;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioChartInfo;
   end;
 
   TVkAudio = class(TVkObject, IAttachment)
@@ -93,10 +91,11 @@ type
     FAds: TVkAudioAds;
     FAlbum: TVkAudioAlbum;
     FArtist: string;
-    FDate: Extended;
-    FDuration: Extended;
-    FGenre_id: Integer;
-    FId: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
+    FDuration: Integer;
+    [JsonReflectAttribute(ctString, rtString, TAudioGenreInterceptor)]
+    FGenre_id: TVkAudioGenre;
     FIs_licensed: Boolean;
     FMain_artists: TArray<TVkAudioArtist>;
     FOwner_id: Integer;
@@ -105,49 +104,138 @@ type
     FUrl: string;
     FLyrics_id: Integer;
     FAlbum_id: Integer;
-    FNo_search: Integer;
-    FIs_hq: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FNo_search: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FIs_hq: Boolean;
     FContent_restricted: Integer;
     FAudio_chart_info: TVkAudioChartInfo;
     FIs_explicit: Boolean;
     FStories_allowed: Boolean;
     FShort_videos_allowed: Boolean;
-    function GetAudioGenre: TAudioGenre;
-    procedure SetAudioGenre(const Value: TAudioGenre);
+    FIs_focus_track: Boolean;
+    FStories_cover_allowed: Boolean;
+    FFeatured_artists: TArray<TVkAudioArtist>;
+    FSubtitle: string;
+    [JsonReflectAttribute(ctString, rtString, TAudioGenreInterceptor)]
+    FTrack_genre_id: TVkAudioGenre;
   public
-    property Id: Integer read FId write FId;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Artist: string read FArtist write FArtist;
-    property Title: string read FTitle write FTitle;
-    property Duration: Extended read FDuration write FDuration;
-    property Url: string read FUrl write FUrl;
-    property LyricsId: Integer read FLyrics_id write FLyrics_id;
-    property AlbumId: Integer read FAlbum_id write FAlbum_id;
-    property GenreId: Integer read FGenre_id write FGenre_id;
-    property Date: Extended read FDate write FDate;
-    property NoSearch: Integer read FNo_search write FNo_search;
-    property IsHQ: Integer read FIs_hq write FIs_hq;
-    //
+    /// <summary>
+    /// Идентификатор аудиозаписи
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Информация о рекламе
+    /// </summary>
     property Ads: TVkAudioAds read FAds write FAds;
-    property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
-    property TrackCode: string read FTrack_code write FTrack_code;
+    /// <summary>
+    /// Альбом аудиозаписи
+    /// </summary>
     property Album: TVkAudioAlbum read FAlbum write FAlbum;
-    property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
-    property ContentRestricted: Integer read FContent_restricted write FContent_restricted;
+    /// <summary>
+    /// Идентификатор альбома, в котором находится аудиозапись (если присвоен)
+    /// </summary>
+    property AlbumId: Integer read FAlbum_id write FAlbum_id;
+    /// <summary>
+    /// Исполнитель
+    /// </summary>
+    property Artist: string read FArtist write FArtist;
+    /// <summary>
+    /// Информация о позиции в Чарте
+    /// </summary>
     property AudioChartInfo: TVkAudioChartInfo read FAudio_chart_info write FAudio_chart_info;
+    /// <summary>
+    /// Доступна ли аудиозапись
+    /// </summary>
+    property ContentRestricted: Integer read FContent_restricted write FContent_restricted;
+    /// <summary>
+    /// Дата добавления
+    /// </summary>
+    property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Длительность аудиозаписи в секундах
+    /// </summary>
+    property Duration: Integer read FDuration write FDuration;
+    /// <summary>
+    /// Список второстепенных исполнителей
+    /// </summary>
+    property FeaturedArtists: TArray<TVkAudioArtist> read FFeatured_artists write FFeatured_artists;
+    /// <summary>
+    /// Идентификатор жанра из списка аудио жанров
+    /// </summary>
+    property Genre: TVkAudioGenre read FGenre_id write FGenre_id;
+    /// <summary>
+    /// Идентификатор жанра из списка аудио жанров
+    /// </summary>
+    property TrackGenreId: TVkAudioGenre read FTrack_genre_id write FTrack_genre_id;
+    /// <summary>
+    /// Содержит ли трек ненормативную лексику
+    /// </summary>
     property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
-    //
+    /// <summary>
+    /// [Не документирован]
+    /// </summary>
+    property IsFocusTrack: Boolean read FIs_focus_track write FIs_focus_track;
+    /// <summary>
+    /// True, если аудио в высоком качестве
+    /// </summary>
+    property IsHQ: Boolean read FIs_hq write FIs_hq;
+    /// <summary>
+    /// True, если аудиозапись лицензируется
+    /// </summary>
+    property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
+    /// <summary>
+    /// Идентификатор текста аудиозаписи (если доступно)
+    /// </summary>
+    property LyricsId: Integer read FLyrics_id write FLyrics_id;
+    /// <summary>
+    /// Список главных исполнителей
+    /// </summary>
+    property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
+    /// <summary>
+    /// True, если включена опция «Не выводить при поиске». Если опция отключена, поле не возвращается
+    /// </summary>
+    property NoSearch: Boolean read FNo_search write FNo_search;
+    /// <summary>
+    /// Идентификатор владельца аудиозаписи
+    /// </summary>
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Возможно ли использование этого трека в "Клипах"
+    /// </summary>
     property ShortVideosAllowed: Boolean read FShort_videos_allowed write FShort_videos_allowed;
+    /// <summary>
+    /// Возможно ли использование этого трека в "Историях"
+    /// </summary>
     property StoriesAllowed: Boolean read FStories_allowed write FStories_allowed;
-    //
-    property Genre: TAudioGenre read GetAudioGenre write SetAudioGenre;
-    constructor Create;
+    /// <summary>
+    /// Возможно ли использование обложки этого трека в "Историях"
+    /// </summary>
+    property StoriesCoverAllowed: Boolean read FStories_cover_allowed write FStories_cover_allowed;
+    /// <summary>
+    /// Подзаголовок композиции
+    /// </summary>
+    property Subtitle: string read FSubtitle write FSubtitle;
+    /// <summary>
+    /// Название композиции
+    /// </summary>
+    property Title: string read FTitle write FTitle;
+    /// <summary>
+    /// [Не документирован]
+    /// </summary>
+    property TrackCode: string read FTrack_code write FTrack_code;
+    /// <summary>
+    /// Ссылка на аудиозапись (привязана к ip-адресу клиентского приложения)
+    /// </summary>
+    property Url: string read FUrl write FUrl;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
     function ToAttachment: string;
-    class function FromJsonString(AJsonString: string): TVkAudio;
-    class function FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
+    function DurationText(const AFormat: string): string;
   end;
 
   TVkAudioIndex = record
@@ -157,90 +245,21 @@ type
 
   TVkAudioIndexes = TArray<TVkAudioIndex>;
 
-  TVkAudios = class
-  private
-    FItems: TArray<TVkAudio>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkAudio> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Audios: TVkAudios);
-    constructor Create;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudios;
-  end;
+  TVkAudios = TVkEntityList<TVkAudio>;
 
-  TVkAudioInfo = class
+  TVkAudioInfo = class(TVkEntity)
   private
     FAudio_id: Integer;
   public
     property AudioId: Integer read FAudio_id write FAudio_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioInfo;
   end;
 
-  TVkAudioInfoItems = class
-  private
-    FItems: TArray<TVkAudioInfo>;
-  public
-    property Items: TArray<TVkAudioInfo> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAudioInfoItems;
-  end;
+  TVkAudioInfoItems = TVkEntityList<TVkAudioInfo>;
 
 implementation
 
-{TVkAudioInfo}
-
-function TVkAudioInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioInfo.FromJsonString(AJsonString: string): TVkAudioInfo;
-begin
-  result := TJson.JsonToObject<TVkAudioInfo>(AJsonString)
-end;
-
-{TVkAudioInfoItems}
-
-destructor TVkAudioInfoItems.Destroy;
-var
-  LItemsItem: TVkAudioInfo;
-begin
-
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-
-  inherited;
-end;
-
-function TVkAudioInfoItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioInfoItems.FromJsonString(AJsonString: string): TVkAudioInfoItems;
-begin
-  result := TJson.JsonToObject<TVkAudioInfoItems>(AJsonString)
-end;
-
-{TVkAudioAds}
-
-function TVkAudioAds.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioAds.FromJsonString(AJsonString: string): TVkAudioAds;
-begin
-  result := TJson.JsonToObject<TVkAudioAds>(AJsonString)
-end;
+uses
+  VK.CommonUtils;
 
 {TVkAudio}
 
@@ -250,11 +269,9 @@ begin
 end;
 
 destructor TVkAudio.Destroy;
-var
-  Artist: TVkAudioArtist;
 begin
-  for Artist in FMain_artists do
-    Artist.Free;
+  TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FMain_artists);
+  TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FFeatured_artists);
   if Assigned(FAudio_chart_info) then
     FAudio_chart_info.Free;
   if Assigned(FAlbum) then
@@ -264,58 +281,19 @@ begin
   inherited;
 end;
 
+function TVkAudio.DurationText(const AFormat: string): string;
+var
+  M, S: Integer;
+begin
+  S := Trunc(Duration);
+  M := S div 60;
+  S := S mod 60;
+  Result := Format(AFormat, [M, S]);
+end;
+
 function TVkAudio.ToAttachment: string;
 begin
   Result := Attachment.Audio(Id, OwnerId, AccessKey);
-end;
-
-function TVkAudio.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudio.FromJsonObject(AJsonObject: TJSONObject): TVkAudio;
-begin
-  Result := TJson.JsonToObject<TVkAudio>(AJsonObject);
-end;
-
-class function TVkAudio.FromJsonString(AJsonString: string): TVkAudio;
-begin
-  result := TJson.JsonToObject<TVkAudio>(AJsonString)
-end;
-
-function TVkAudio.GetAudioGenre: TAudioGenre;
-begin
-  Result := TAudioGenre.Create(FGenre_Id);
-end;
-
-procedure TVkAudio.SetAudioGenre(const Value: TAudioGenre);
-begin
-  FGenre_id := VkAudioGenres[Value];
-end;
-
-{TMain_artistsClass}
-
-function TVkAudioArtist.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioArtist.FromJsonString(AJsonString: string): TVkAudioArtist;
-begin
-  result := TJson.JsonToObject<TVkAudioArtist>(AJsonString)
-end;
-
-{TThumbClass}
-
-function TVkAlbumThumb.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAlbumThumb.FromJsonString(AJsonString: string): TVkAlbumThumb;
-begin
-  result := TJson.JsonToObject<TVkAlbumThumb>(AJsonString)
 end;
 
 {TAlbumClass}
@@ -323,7 +301,7 @@ end;
 constructor TVkAudioAlbum.Create;
 begin
   inherited;
-  FThumb := TVkAlbumThumb.Create();
+  FThumb := TVkThumb.Create();
 end;
 
 destructor TVkAudioAlbum.Destroy;
@@ -332,71 +310,22 @@ begin
   inherited;
 end;
 
-function TVkAudioAlbum.ToJsonString: string;
+{ TVkAudioArtist }
+
+destructor TVkAudioArtist.Destroy;
 begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAudioAlbum.FromJsonString(AJsonString: string): TVkAudioAlbum;
-begin
-  result := TJson.JsonToObject<TVkAudioAlbum>(AJsonString)
-end;
-
-{ TVkAudios }
-
-procedure TVkAudios.Append(Audios: TVkAudios);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Audios.Items));
-  Move(Audios.Items[0], FItems[OldLen], Length(Audios.Items) * SizeOf(TVkAudio));
-end;
-
-constructor TVkAudios.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkAudios.Destroy;
-var
-  LItemsItem: TVkAudio;
-begin
-  if not FSaveObjects then
-  begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
-  end;
-
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FPhoto);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  TArrayHelp.FreeArrayOfObject<TVkAudioArtistPhoto>(FPhotos);
   inherited;
 end;
 
-class function TVkAudios.FromJsonString(AJsonString: string): TVkAudios;
-begin
-  result := TJson.JsonToObject<TVkAudios>(AJsonString);
-end;
+{ TVkAudioArtistPhoto }
 
-procedure TVkAudios.SetSaveObjects(const Value: Boolean);
+destructor TVkAudioArtistPhoto.Destroy;
 begin
-  FSaveObjects := Value;
-end;
-
-function TVkAudios.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkAudioChartInfo }
-
-class function TVkAudioChartInfo.FromJsonString(AJsonString: string): TVkAudioChartInfo;
-begin
-  result := TJson.JsonToObject<TVkAudioChartInfo>(AJsonString);
-end;
-
-function TVkAudioChartInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FPhoto);
+  inherited;
 end;
 
 end.

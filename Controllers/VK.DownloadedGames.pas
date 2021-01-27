@@ -25,12 +25,8 @@ uses
 { TDownloadedGamesController }
 
 function TDownloadedGamesController.GetPaidStatus(var IsPaid: Boolean; UserId: Integer): Boolean;
-var
-  Params: TParams;
 begin
-  Params.Add('user_id', UserId);
-  with Handler.Execute('downloadedGames.getPaidStatus', Params) do
-    Result := Success and GetValue('is_paid', IsPaid);
+  Result := Handler.Execute('downloadedGames.getPaidStatus', ['user_id', UserId.ToString]).GetValue('is_paid', IsPaid);
 end;
 
 end.

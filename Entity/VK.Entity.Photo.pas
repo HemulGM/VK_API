@@ -3,37 +3,52 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Attachment;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Info, VK.Entity.Attachment;
 
 type
-  TVkPhotoTag = class
+  TVkOwnerPhoto = class(TVkEntity)
   private
-    FDate: Int64;
-    FId: Integer;
+    FPhoto_src: string;
+    FPhoto_src_small: string;
+    FPhoto_src_big: string;
+    FPost_id: Integer;
+    FPhoto_hash: string;
+    FSaved: Boolean;
+  public
+    property PhotoHash: string read FPhoto_hash write FPhoto_hash;
+    property PhotoSrc: string read FPhoto_src write FPhoto_src;
+    property PhotoSrcBig: string read Fphoto_src_big write Fphoto_src_big;
+    property PhotoSrcSmall: string read FPhoto_src_small write FPhoto_src_small;
+    property Saved: Boolean read FSaved write FSaved;
+    property PostId: Integer read FPost_id write FPost_id;
+  end;
+
+  TVkPhotoTag = class(TVkObject)
+  private
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FPlacer_id: Integer;
     FTagged_name: string;
     FUser_id: Integer;
-    FViewed: Integer;
+    FViewed: Boolean;
     FX: Integer;
     FX2: Integer;
     FY: Integer;
     FY2: Integer;
   public
-    property Date: Int64 read FDate write FDate;
-    property Id: Integer read FId write FId;
+    property Date: TDateTime read FDate write FDate;
     property PlacerId: Integer read FPlacer_id write FPlacer_id;
     property TaggedName: string read FTagged_name write FTagged_name;
     property UserId: Integer read FUser_id write FUser_id;
-    property Viewed: Integer read FViewed write FViewed;
+    property Viewed: Boolean read FViewed write FViewed;
     property X: Integer read FX write FX;
     property X2: Integer read FX2 write FX2;
     property Y: Integer read FY write FY;
     property Y2: Integer read FY2 write FY2;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoTag;
   end;
 
-  TVkPhotoTags = class
+  TVkPhotoTags = class(TVkEntity)
   private
     FItems: TArray<TVkPhotoTag>;
     FCount: Integer;
@@ -41,8 +56,6 @@ type
     property Items: TArray<TVkPhotoTag> read FItems write FItems;
     property Count: Integer read FCount write FCount;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoTags;
   end;
 
   TVkPhoto = class(TVkObject, IAttachment)
@@ -51,12 +64,13 @@ type
     FCan_comment: Integer;
     FCan_repost: Integer;
     FComments: TVkCommentsInfo;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FLikes: TVkLikesInfo;
     FOwner_id: Integer;
     FReposts: TVkRepostsInfo;
     FSizes: TVkSizes;
-    FTags: TVkTags;
+    FTags: TVkCounterEntity;
     FText: string;
     FUser_id: Integer;
     FWidth: Integer;
@@ -69,17 +83,47 @@ type
     FPhoto_2560: string;
     FPhoto_130: string;
     FHas_tags: Boolean;
-    FTag_created: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTag_created: TDateTime;
     FPlacer_id: Integer;
     FTag_id: Integer;
+    FPost_id: Integer;
   public
+    /// <summary>
+    /// Идентификатор фотографии
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Идентификатор альбома, в котором находится фотография
+    /// </summary>
     property AlbumId: Integer read FAlbum_id write FAlbum_id;
+    /// <summary>
+    /// Идентификатор владельца фотографии
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Идентификатор пользователя, загрузившего фото (если фотография размещена в сообществе). Для фотографий, размещенных от имени сообщества, user_id = 100.
+    /// </summary>
     property UserId: Integer read FUser_id write FUser_id;
+    /// <summary>
+    /// Текст описания фотографии
+    /// </summary>
     property Text: string read FText write FText;
-    property Date: Int64 read FDate write FDate;
+    /// <summary>
+    /// Дата добавления
+    /// </summary>
+    property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Массив с копиями изображения в разных размерах
+    /// </summary>
     property Sizes: TVkSizes read FSizes write FSizes;
+    /// <summary>
+    /// Ширина оригинала фотографии в пикселах
+    /// </summary>
     property Width: Integer read FWidth write FWidth;
+    /// <summary>
+    /// Высота оригинала фотографии в пикселах
+    /// </summary>
     property Height: Integer read FHeight write FHeight;
     //
     property CanComment: Integer read FCan_comment write FCan_comment;
@@ -87,57 +131,93 @@ type
     property Comments: TVkCommentsInfo read FComments write FComments;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
-    property Tags: TVkTags read FTags write FTags;
+    property Tags: TVkCounterEntity read FTags write FTags;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     property HasTags: Boolean read FHas_tags write FHas_tags;
     // old field api < 5.77
-    property Photo1280: string read FPhoto_1280 write FPhoto_1280;
-    property Photo130: string read FPhoto_130 write FPhoto_130;
-    property Photo2560: string read FPhoto_2560 write FPhoto_2560;
-    property Photo604: string read FPhoto_604 write FPhoto_604;
+    /// <summary>
+    /// URL копии фотографии с максимальным размером 75x75px
+    /// </summary>
     property Photo75: string read FPhoto_75 write FPhoto_75;
+    /// <summary>
+    /// URL копии фотографии с максимальным размером 130x130px
+    /// </summary>
+    property Photo130: string read FPhoto_130 write FPhoto_130;
+    /// <summary>
+    /// UURL копии фотографии с максимальным размером 604x604px
+    /// </summary>
+    property Photo604: string read FPhoto_604 write FPhoto_604;
+    /// <summary>
+    /// URL копии фотографии с максимальным размером 807x807px
+    /// </summary>
     property Photo807: string read FPhoto_807 write FPhoto_807;
+    /// <summary>
+    /// URL копии фотографии с максимальным размером 1280x1024px
+    /// </summary>
+    property Photo1280: string read FPhoto_1280 write FPhoto_1280;
+    /// <summary>
+    /// URL копии фотографии с максимальным размером 2560x2048px
+    /// </summary>
+    property Photo2560: string read FPhoto_2560 write FPhoto_2560;
     //
     property PlacerId: Integer read FPlacer_id write FPlacer_id;
-    property TagCreated: Int64 read FTag_created write FTag_created;
+    property TagCreated: TDateTime read FTag_created write FTag_created;
     property TagId: Integer read FTag_id write FTag_id;
+    /// <summary>
+    /// Идентификатор записи, в которую была загружена фотография
+    /// </summary>
+    property PostId: Integer read FPost_id write FPost_id;
     //
-    constructor Create();
+    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: string;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhoto;
   end;
 
-  TVkCropPhoto = class
+  TVkCropPhoto = class(TVkEntity)
   private
-    FCrop: TVkCrop;
+    FCrop: TVkRect;
     FPhoto: TVkPhoto;
     FRect: TVkRect;
   public
     property Photo: TVkPhoto read FPhoto write FPhoto;
-    property Crop: TVkCrop read FCrop write FCrop;
+    property Crop: TVkRect read FCrop write FCrop;
     property Rect: TVkRect read FRect write FRect;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkCropPhoto;
+    destructor Destroy; override;
   end;
 
-  TVkPostedPhoto = class
+  TVkPostedPhoto = class(TVkObject)
   private
-    FId: Integer;
     FOwner_id: Integer;
     FPhoto_130: string;
     FPhoto_604: string;
+    FAccess_key: string;
   public
-    property Id: Integer read FId write FId;
+    /// <summary>
+    /// Идентификатор фотографии
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Идентификатор владельца фотографии
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// URL изображения для предпросмотра
+    /// </summary>
     property Photo130: string read FPhoto_130 write FPhoto_130;
+    /// <summary>
+    /// URL полноразмерного изображения
+    /// </summary>
     property Photo604: string read FPhoto_604 write FPhoto_604;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPostedPhoto;
   end;
 
-  TVkPhotos = class
+  TVkPhotos = class(TVkEntity)
   private
     FItems: TArray<TVkPhoto>;
     FCount: Integer;
@@ -148,36 +228,29 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkPhotos);
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotos;
   end;
 
 implementation
 
 uses
-  VK.Types;
+  VK.Types, VK.CommonUtils;
 
 {TVkPhoto}
 
-constructor TVkPhoto.Create();
+constructor TVkPhoto.Create;
 begin
   inherited;
-  FLikes := TVkLikesInfo.Create();
-  FReposts := TVkRepostsInfo.Create();
-  FComments := TVkCommentsInfo.Create();
-  FTags := TVkTags.Create();
+  FLikes := TVkLikesInfo.Create;
+  FReposts := TVkRepostsInfo.Create;
+  FComments := TVkCommentsInfo.Create;
+  FTags := TVkCounterEntity.Create;
 end;
 
 destructor TVkPhoto.Destroy;
-var
-  LsizesItem: TVkSize;
 begin
-
-  for LsizesItem in FSizes do
-    LsizesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   FLikes.Free;
   FReposts.Free;
   FComments.Free;
@@ -188,28 +261,6 @@ end;
 function TVkPhoto.ToAttachment: string;
 begin
   Attachment.Photo(Id, OwnerId, AccessKey);
-end;
-
-function TVkPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhoto.FromJsonString(AJsonString: string): TVkPhoto;
-begin
-  result := TJson.JsonToObject<TVkPhoto>(AJsonString)
-end;
-
-{ TVkPostedPhoto }
-
-class function TVkPostedPhoto.FromJsonString(AJsonString: string): TVkPostedPhoto;
-begin
-  result := TJson.JsonToObject<TVkPostedPhoto>(AJsonString)
-end;
-
-function TVkPostedPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 {TVkPhotos}
@@ -230,26 +281,14 @@ begin
 end;
 
 destructor TVkPhotos.Destroy;
-var
-  LItemsItem: TVkPhoto;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   if not FSaveObjects then
   begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
+    TArrayHelp.FreeArrayOfObject<TVkPhoto>(FItems);
   end;
-
+  {$ENDIF}
   inherited;
-end;
-
-function TVkPhotos.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhotos.FromJsonString(AJsonString: string): TVkPhotos;
-begin
-  result := TJson.JsonToObject<TVkPhotos>(AJsonString);
 end;
 
 procedure TVkPhotos.SetSaveObjects(const Value: Boolean);
@@ -257,49 +296,25 @@ begin
   FSaveObjects := Value;
 end;
 
-{ TVkCropPhoto }
-
-class function TVkCropPhoto.FromJsonString(AJsonString: string): TVkCropPhoto;
-begin
-  result := TJson.JsonToObject<TVkCropPhoto>(AJsonString);
-end;
-
-function TVkCropPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkPhotoTag }
-
-class function TVkPhotoTag.FromJsonString(AJsonString: string): TVkPhotoTag;
-begin
-  result := TJson.JsonToObject<TVkPhotoTag>(AJsonString);
-end;
-
-function TVkPhotoTag.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
 { TVkPhotoTags }
 
 destructor TVkPhotoTags.Destroy;
-var
-  LItemsItem: TVkPhotoTag;
 begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPhotoTag>(FItems);
   inherited;
 end;
 
-class function TVkPhotoTags.FromJsonString(AJsonString: string): TVkPhotoTags;
-begin
-  result := TJson.JsonToObject<TVkPhotoTags>(AJsonString);
-end;
+{ TVkCropPhoto }
 
-function TVkPhotoTags.ToJsonString: string;
+destructor TVkCropPhoto.Destroy;
 begin
-  result := TJson.ObjectToJsonString(self);
+  if Assigned(FCrop) then
+    FCrop.Free;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  if Assigned(FRect) then
+    FRect.Free;
+  inherited;
 end;
 
 end.

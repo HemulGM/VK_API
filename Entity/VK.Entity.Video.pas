@@ -3,51 +3,55 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment,
+  VK.Entity.Common.List, VK.Entity.Info, VK.Wrap.Interceptors;
 
 type
-  TVkVideoFiles = class
+  TVkVideoFiles = class(TVkEntity)
   private
     FExternal: string;
+    FMp4_720: string;
+    FMp4_360: string;
   public
-    property external: string read FExternal write FExternal;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoFiles;
+    property&External: string read FExternal write FExternal;
+    property Mp4720: string read FMp4_720 write FMp4_720;
+    property Mp4360: string read FMp4_360 write FMp4_360;
   end;
 
-  TVkVideoImage = class
+  TVkVideoImage = class(TVkImage)
   private
-    FHeight: Extended;
-    FUrl: string;
-    FWidth: Extended;
-    FWith_padding: Extended;
+    FWith_padding: Integer;
   public
-    property Height: Extended read FHeight write FHeight;
-    property Url: string read FUrl write FUrl;
-    property Width: Extended read FWidth write FWidth;
-    property WithPadding: Extended read FWith_padding write FWith_padding;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoImage;
+    property WithPadding: Integer read FWith_padding write FWith_padding;
   end;
 
   TVkVideo = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
-    FAdded: Int64;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FAdded: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_add: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_add_to_faves: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_attach_link: Boolean;
     FCan_comment: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_edit: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_like: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_repost: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_subscribe: Boolean;
     FComments: Integer;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FDescription: string;
     FDuration: Integer;
     FFiles: TVkVideoFiles;
-    FId: Integer;
     FImage: TArray<TVkVideoImage>;
     FIs_favorite: Boolean;
     FLikes: TVkLikesInfo;
@@ -69,142 +73,238 @@ type
     Fphoto_320: string;
     Ffirst_frame_1280: string;
     Fphoto_130: string;
-    FAdding_date: Int64;
-    FIs_private: Integer;
-    FProcessing: Integer;
-    FLive: Integer;
-    FUpcoming: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FAdding_date: TDateTime;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FIs_private: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FProcessing: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FLive: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FUpcoming: Boolean;
+    FFirstFrame: TArray<TVkImage>;
+    FWidth: Integer;
+    FHeight: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FRepeat: Boolean;
+    FUser_id: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FConverting: Boolean;
+    FIs_subscribed: Boolean;
+    FBalance: Integer;
+    FLive_status: string;
+    FSpectators: Integer;
   public
-    property Id: Integer read FId write FId;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Title: string read FTitle write FTitle;
+    /// <summary>
+    /// Ключ доступа к объекту
+    /// </summary>
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Добавлено ли видео в альбомы пользователя
+    /// </summary>
+    property Added: Boolean read FAdded write FAdded;
+    /// <summary>
+    /// Дата добавления видеозаписи пользователем или группой
+    /// </summary>
+    property AddingDate: TDateTime read FAdding_date write FAdding_date;
+    /// <summary>
+    /// Баланс донатов в прямой трансляции
+    /// </summary>
+    property Balance: Integer read FBalance write FBalance;
+    /// <summary>
+    /// Может ли пользователь добавить видеозапись к себе
+    /// </summary>
+    property CanAdd: Boolean read FCan_add write FCan_add;
+    /// <summary>
+    /// Может ли пользователь добавить видео в избранное
+    /// </summary>
+    property CanAddToFaves: Boolean read FCan_add_to_faves write FCan_add_to_faves;
+    /// <summary>
+    /// Может ли пользователь прикрепить кнопку действия к видео
+    /// </summary>
+    property CanAttachLink: Boolean read FCan_attach_link write FCan_attach_link;
+    /// <summary>
+    /// Может ли пользователь комментировать видео
+    /// </summary>
+    property CanComment: Boolean read FCan_comment write FCan_comment;
+    /// <summary>
+    /// Может ли пользователь редактировать видео
+    /// </summary>
+    property CanEdit: Boolean read FCan_edit write FCan_edit;
+    /// <summary>
+    /// Может ли пользователь добавить видео в список <<Мне нравится>>
+    /// </summary>
+    property CanLike: Boolean read FCan_like write FCan_like;
+    /// <summary>
+    /// Может ли пользователь сделать репост видео
+    /// </summary>
+    property CanRepost: Boolean read FCan_repost write FCan_repost;
+    /// <summary>
+    /// Может ли пользователь подписаться на автора видео
+    /// </summary>
+    property CanSubscribe: Boolean read FCan_subscribe write FCan_subscribe;
+    /// <summary>
+    /// Количество комментариев к видеозаписи
+    /// </summary>
+    property Comments: Integer read FComments write FComments;
+    /// <summary>
+    /// Конвертируется ли видео
+    /// </summary>
+    property Converting: Boolean read FConverting write FConverting;
+    /// <summary>
+    /// Дата создания видеозаписи
+    /// </summary>
+    property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Текст описания видеозаписи
+    /// </summary>
     property Description: string read FDescription write FDescription;
+    /// <summary>
+    /// Длительность ролика в секундах
+    /// </summary>
     property Duration: Integer read FDuration write FDuration;
+    property Files: TVkVideoFiles read FFiles write FFiles;
+    property FirstFrame1280: string read Ffirst_frame_1280 write Ffirst_frame_1280;
+    property FirstFrame130: string read Ffirst_frame_130 write Ffirst_frame_130;
+    property FirstFrame320: string read Ffirst_frame_320 write Ffirst_frame_320;
+    property FirstFrame640: string read Ffirst_frame_640 write Ffirst_frame_640;
+    property FirstFrame800: string read Ffirst_frame_800 write Ffirst_frame_800;
+    /// <summary>
+    /// Изображение первого кадра
+    /// </summary>
+    property FirstFrame: TArray<TVkImage> read FFirstFrame write FFirstFrame;
+    /// <summary>
+    /// Высота видео
+    /// </summary>
+    property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// Идентификатор видеозаписи
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Изображение обложки
+    /// </summary>
+    property Image: TArray<TVkVideoImage> read FImage write FImage;
+    /// <summary>
+    /// True, если объект добавлен в закладки у текущего пользователя
+    /// </summary>
+    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
+    /// <summary>
+    /// Поле возвращается, если видеозапись приватная (например, была загружена в личное сообщение), всегда содержит True
+    /// </summary>
+    property IsPrivate: Boolean read FIs_private write FIs_private;
+    /// <summary>
+    /// Подписан ли пользователь на автора видео
+    /// </summary>
+    property IsSubscribed: Boolean read FIs_subscribed write FIs_subscribed;
+    /// <summary>
+    /// Содержит объект отметки <<Мне нравится>>
+    /// </summary>
+    property Likes: TVkLikesInfo read FLikes write FLikes;
+    /// <summary>
+    /// Поле возвращается в том случае, если видеозапись является прямой трансляцией, всегда содержит True. Обратите внимание, в этом случае в поле duration содержится значение False
+    /// </summary>
+    property Live: Boolean read FLive write FLive;
+    /// <summary>
+    /// Статус прямой трансляции. Может принимать значения: "waiting", "started", "finished", "failed", "upcoming"
+    /// </summary>
+    property LiveStatus: string read FLive_status write FLive_status;
+    /// <summary>
+    /// Если видео внешнее, количество просмотров в ВК
+    /// </summary>
+    property LocalViews: Integer read FLocal_views write FLocal_views;
+    /// <summary>
+    /// Идентификатор владельца видеозаписи
+    /// </summary>
+    property OwnerId: Integer read FOwner_id write FOwner_id;
     property Photo130: string read Fphoto_130 write Fphoto_130;
     property Photo320: string read Fphoto_320 write Fphoto_320;
     property Photo640: string read Fphoto_640 write Fphoto_640;
     property Photo800: string read Fphoto_800 write Fphoto_800;
     property Photo1280: string read Fphoto_1280 write Fphoto_1280;
-    property FirstFrame130: string read Ffirst_frame_130 write Ffirst_frame_130;
-    property FirstFrame320: string read Ffirst_frame_320 write Ffirst_frame_320;
-    property FirstFrame640: string read Ffirst_frame_640 write Ffirst_frame_640;
-    property FirstFrame800: string read Ffirst_frame_800 write Ffirst_frame_800;
-    property FirstFrame1280: string read Ffirst_frame_1280 write Ffirst_frame_1280;
-    property Date: Int64 read FDate write FDate;
-    property AddingDate: Int64 read FAdding_date write FAdding_date;
-    property Views: Integer read FViews write FViews;
-    property Comments: Integer read FComments write FComments;
+    /// <summary>
+    /// URL страницы с плеером, который можно использовать для воспроизведения ролика в браузере. Поддерживается flash и html5, плеер всегда масштабируется по размеру окна
+    /// </summary>
     property Player: string read FPlayer write FPlayer;
-    property&Platform: string read FPlatform write FPlatform;
-    property CanEdit: Boolean read FCan_edit write FCan_edit;
-    property CanAdd: Boolean read FCan_add write FCan_add;
-    property IsPrivate: Integer read FIs_private write FIs_private;
-    property AccessKey: string read FAccess_key write FAccess_key;
-    property Processing: Integer read FProcessing write FProcessing;
-    property Live: Integer read FLive write FLive;
-    property UpComing: Integer read FUpcoming write FUpcoming;
-    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
-    //
-    property Added: Int64 read FAdded write FAdded;
-    property CanAddToFaves: Boolean read FCan_add_to_faves write FCan_add_to_faves;
-    property CanAttachLink: Boolean read FCan_attach_link write FCan_attach_link;
-    property CanComment: Boolean read FCan_comment write FCan_comment;
-    property CanLike: Boolean read FCan_like write FCan_like;
-    property CanRepost: Boolean read FCan_repost write FCan_repost;
-    property CanSubscribe: Boolean read FCan_subscribe write FCan_subscribe;
-    property Files: TVkVideoFiles read FFiles write FFiles;
-    property Image: TArray<TVkVideoImage> read FImage write FImage;
-    property Likes: TVkLikesInfo read FLikes write FLikes;
-    property LocalViews: Integer read FLocal_views write FLocal_views;
+    /// <summary>
+    /// Поле возвращается в том случае, если видеоролик находится в процессе обработки, всегда содержит 1
+    /// </summary>
+    property Processing: Boolean read FProcessing write FProcessing;
+    /// <summary>
+    /// Поле возвращается в том случае, если видео зациклено, всегда содержит 1
+    /// </summary>
+    property&Repeat: Boolean read FRepeat write FRepeat;
+    /// <summary>
+    /// Содержит объект репоста
+    /// </summary>
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
+    /// <summary>
+    /// Количество зрителей прямой трансляции
+    /// </summary>
+    property Spectators: Integer read FSpectators write FSpectators;
+    /// <summary>
+    /// Название видеозаписи
+    /// </summary>
+    property Title: string read FTitle write FTitle;
+    /// <summary>
+    /// Поле свидетельствует о том, что трансляция скоро начнётся (для live = 1)
+    /// </summary>
+    property UpComing: Boolean read FUpcoming write FUpcoming;
+    /// <summary>
+    /// Идентификатор пользователя, загрузившего видео, если оно было загружено в группу одним из участников
+    /// </summary>
+    property UserId: Integer read FUser_id write FUser_id;
+    /// <summary>
+    /// Количество просмотров видеозаписи
+    /// </summary>
+    property Views: Integer read FViews write FViews;
+    /// <summary>
+    /// Ширина видео
+    /// </summary>
+    property Width: Integer read FWidth write FWidth;
+    /// <summary>
+    /// Название платформы (для видеозаписей, добавленных с внешних сайтов)
+    /// </summary>
+    property&Platform: string read FPlatform write FPlatform;
+    /// <summary>
+    /// Тип видеозаписи. Может принимать значения: "video", "music_video", "movie"
+    /// </summary>
     property&Type: string read FType write FType;
+    ///Методы
     function ToAttachment: string;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideo;
   end;
 
-  TVkVideos = class
-  private
-    FItems: TArray<TVkVideo>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkVideo> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Users: TVkVideos);
-    constructor Create;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideos;
-  end;
+  TVkVideos = TVkEntityList<TVkVideo>;
 
-  TVkVideoAlbum = class
+  TVkVideoAlbum = class(TVkObject)
   private
     FCount: Integer;
-    FId: Integer;
     FImage: TArray<TVkVideoImage>;
     FOwner_id: Integer;
     FPrivacy: TVkPrivacy;
     FTitle: string;
-    FUpdated_time: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUpdated_time: TDateTime;
   public
     property Count: Integer read FCount write FCount;
-    property Id: Integer read FId write FId;
     property Image: TArray<TVkVideoImage> read FImage write FImage;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Privacy: TVkPrivacy read FPrivacy write FPrivacy;
     property Title: string read FTitle write FTitle;
-    property UpdatedTime: Int64 read FUpdated_time write FUpdated_time;
-    constructor Create;
+    property UpdatedTime: TDateTime read FUpdated_time write FUpdated_time;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoAlbum;
   end;
 
-  TVkVideoAlbums = class
-  private
-    FCount: Integer;
-    FItems: TArray<TVkVideoAlbum>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkVideoAlbum> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkVideoAlbums;
-  end;
+  TVkVideoAlbums = TVkEntityList<TVkVideoAlbum>;
 
 implementation
 
 uses
-  VK.Types;
-
-{TVkVideoFiles}
-
-function TVkVideoFiles.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoFiles.FromJsonString(AJsonString: string): TVkVideoFiles;
-begin
-  result := TJson.JsonToObject<TVkVideoFiles>(AJsonString)
-end;
-
-{TVkVideoImage}
-
-function TVkVideoImage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoImage.FromJsonString(AJsonString: string): TVkVideoImage;
-begin
-  result := TJson.JsonToObject<TVkVideoImage>(AJsonString)
-end;
+  VK.Types, VK.CommonUtils;
 
 {TVkVideo}
 
@@ -217,13 +317,9 @@ begin
 end;
 
 destructor TVkVideo.Destroy;
-var
-  LimageItem: TVkVideoImage;
 begin
-
-  for LimageItem in FImage do
-    LimageItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FFirstFrame);
   FFiles.Free;
   FLikes.Free;
   FReposts.Free;
@@ -235,61 +331,6 @@ begin
   Result := Attachment.Video(Id, OwnerId, AccessKey);
 end;
 
-function TVkVideo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideo.FromJsonString(AJsonString: string): TVkVideo;
-begin
-  result := TJson.JsonToObject<TVkVideo>(AJsonString)
-end;
-
-{TVkVideos}
-
-procedure TVkVideos.Append(Users: TVkVideos);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Users.Items));
-  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkVideo));
-end;
-
-constructor TVkVideos.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkVideos.Destroy;
-var
-  LItemsItem: TVkVideo;
-begin
-  if not FSaveObjects then
-  begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
-  end;
-
-  inherited;
-end;
-
-function TVkVideos.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideos.FromJsonString(AJsonString: string): TVkVideos;
-begin
-  result := TJson.JsonToObject<TVkVideos>(AJsonString);
-end;
-
-procedure TVkVideos.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
 {TVkVideoAlbum}
 
 constructor TVkVideoAlbum.Create;
@@ -299,48 +340,10 @@ begin
 end;
 
 destructor TVkVideoAlbum.Destroy;
-var
-  LimageItem: TVkVideoImage;
 begin
-
-  for LimageItem in FImage do
-    LimageItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
   FPrivacy.Free;
   inherited;
-end;
-
-function TVkVideoAlbum.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoAlbum.FromJsonString(AJsonString: string): TVkVideoAlbum;
-begin
-  result := TJson.JsonToObject<TVkVideoAlbum>(AJsonString)
-end;
-
-{TVkVideoAlbums}
-
-destructor TVkVideoAlbums.Destroy;
-var
-  LitemsItem: TVkVideoAlbum;
-begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
-  inherited;
-end;
-
-function TVkVideoAlbums.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkVideoAlbums.FromJsonString(AJsonString: string): TVkVideoAlbums;
-begin
-  result := TJson.JsonToObject<TVkVideoAlbums>(AJsonString)
 end;
 
 end.

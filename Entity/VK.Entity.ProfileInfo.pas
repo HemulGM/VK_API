@@ -3,45 +3,80 @@ unit VK.Entity.ProfileInfo;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Database.Countries;
+  Generics.Collections, Rest.Json, REST.JsonReflect, VK.Wrap.Interceptors, VK.Entity.Common,
+  VK.Entity.Database.Countries, VK.Entity.Database.Cities, VK.Types, VK.Entity.Profile;
 
 type
-  TVkProfileInfo = class
+  TVkNameRequest = class(TVkObject)
   private
-    FBdate: string;
-    FBdate_visibility: Extended;
+    FLast_name: string;
+    FFirst_name: string;
+    FStatus: TVkNameRequestStatus;
+  public
+    /// <summary>
+    /// Cтатус заявки
+    /// </summary>
+    [JsonReflectAttribute(ctString, rtString, TNameRequestStatusInterceptor)]
+    property Status: TVkNameRequestStatus read FStatus write FStatus;
+    /// <summary>
+    /// имя пользователя, указанное в заявке;
+    /// </summary>
+    property FirstName: string read FFirst_name write FFirst_name;
+    /// <summary>
+    ///  фамилия пользователя, указанная в заявке.
+    /// </summary>
+    property LastName: string read FLast_name write FLast_name;
+  end;
+
+  TVkProfileInfo = class(TVkEntity)
+  private
+    [JsonReflectAttribute(ctString, rtString, TStringDateTimeInterceptor)]
+    FBdate: TDate;
+    [JsonReflectAttribute(ctString, rtString, TBirthDateVisibilityInterceptor)]
+    FBdate_visibility: TVkBirthDateVisibility;
     FCountry: TVkCountry;
     FFirst_name: string;
     FHome_town: string;
     FLast_name: string;
     FPhone: string;
-    FRelation: Extended;
-    FRelation_partner: TVkRelationPartner;
-    FRelation_requests: TArray<TVkRelationRequests>;
+    [JsonReflectAttribute(ctString, rtString, TRelationInterceptor)]
+    FRelation: TVkRelation;
+    FRelation_partner: TVkProfile;
+    FRelation_requests: TArray<TVkProfile>;
     FScreen_name: string;
-    FSex: Extended;
+    [JsonReflectAttribute(ctString, rtString, TSexInterceptor)]
+    FSex: TVkSex;
     FStatus: string;
+    FCity: TVkCity;
+    FMaiden_name: string;
+    FRelation_pending: Boolean;
+    FName_request: TVkNameRequest;
   public
-    property BirthDate: string read FBdate write FBdate;
-    property BirthDateVisibility: Extended read FBdate_visibility write FBdate_visibility;
+    property BirthDate: TDate read FBdate write FBdate;
+    property BirthDateVisibility: TVkBirthDateVisibility read FBdate_visibility write FBdate_visibility;
     property Country: TVkCountry read FCountry write FCountry;
+    property City: TVkCity read FCity write FCity;
     property FirstName: string read FFirst_name write FFirst_name;
-    property HomeTown: string read FHome_town write FHome_town;
     property LastName: string read FLast_name write FLast_name;
+    property HomeTown: string read FHome_town write FHome_town;
+    property MaidenName: string read FMaiden_name write FMaiden_name;
     property Phone: string read FPhone write FPhone;
-    property Relation: Extended read FRelation write FRelation;
-    property RelationPartner: TVkRelationPartner read FRelation_partner write FRelation_partner;
-    property RelationRequests: TArray<TVkRelationRequests> read FRelation_requests write FRelation_requests;
+    property Relation: TVkRelation read FRelation write FRelation;
+    property RelationPartner: TVkProfile read FRelation_partner write FRelation_partner;
+    property RelationRequests: TArray<TVkProfile> read FRelation_requests write FRelation_requests;
     property ScreenName: string read FScreen_name write FScreen_name;
-    property Sex: Extended read FSex write FSex;
+    property Sex: TVkSex read FSex write FSex;
     property Status: string read FStatus write FStatus;
-    constructor Create;
+    property RelationPending: Boolean read FRelation_pending write FRelation_pending;
+    property NameRequest: TVkNameRequest read FName_request write FName_request;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProfileInfo;
   end;
 
 implementation
+
+uses
+  VK.CommonUtils, System.StrUtils;
 
 {TVkProfileInfo}
 
@@ -49,30 +84,19 @@ constructor TVkProfileInfo.Create;
 begin
   inherited;
   FCountry := TVkCountry.Create();
-  FRelation_partner := TVkRelationPartner.Create();
+  FCity := TVkCity.Create();
 end;
 
 destructor TVkProfileInfo.Destroy;
-var
-  Lrelation_requestsItem: TVkRelationRequests;
 begin
-
-  for Lrelation_requestsItem in FRelation_requests do
-    Lrelation_requestsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FRelation_requests);
   FCountry.Free;
-  FRelation_partner.Free;
+  FCity.Free;
+  if Assigned(FRelation_partner) then
+    FRelation_partner.Free;
+  if Assigned(FName_request) then
+    FName_request.Free;
   inherited;
-end;
-
-function TVkProfileInfo.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProfileInfo.FromJsonString(AJsonString: string): TVkProfileInfo;
-begin
-  result := TJson.JsonToObject<TVkProfileInfo>(AJsonString)
 end;
 
 end.

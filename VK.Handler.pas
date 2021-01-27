@@ -41,9 +41,6 @@ type
     FWaitCount: Integer;
     function DoConfirm(Answer: string): Boolean;
     function DoProcError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
-    procedure ProcError(Code: Integer; Text: string = ''); overload;
-    procedure ProcError(E: Exception); overload;
-    procedure ProcError(Msg: string); overload;
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure SetOnError(const Value: TOnVKError);
     procedure FLog(const Value: string);
@@ -154,7 +151,7 @@ begin
   FExecuting := 0;
   FStartRequest := 0;
   FRequests := 0;
-  FUsePseudoAsync := True;
+  FUsePseudoAsync := False;
   FRESTClient := TRESTClient.Create(nil);
   FRESTClient.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
   FRESTClient.AcceptCharset := 'UTF-8, *;q=0.8';
@@ -262,8 +259,9 @@ function TVkHandler.FExecute(Request: TRESTRequest): TResponse;
 var
   IsDone, IsError: Boolean;
   Thr: TThread;
-  Er: Exception;
+  ErrStr: string;
 begin
+  IsError := False;
   Result.Success := False;
   if FLogging then
     FLog(Request.GetFullRequestURL);
@@ -271,7 +269,6 @@ begin
     Request.Response := TRESTResponse.Create(Request);
     if (TThread.Current.ThreadID = MainThreadID) and FUsePseudoAsync then
     begin
-      IsError := False;
       IsDone := False;
       Thr := TThread.CreateAnonymousThread(
         procedure
@@ -285,7 +282,7 @@ begin
               on E: Exception do
               begin
                 IsError := True;
-                Er := E;
+                ErrStr := E.Message;
               end;
             end;
           end;
@@ -297,7 +294,7 @@ begin
         Application.ProcessMessages;
       Thr.Free;
       if IsError then
-        raise Er;
+        raise TVkHandlerException.Create(ErrStr);
     end
     else
     begin
@@ -305,27 +302,38 @@ begin
       if not FCancelAll then
         Request.Execute;
     end;
+  except
+    on E: Exception do
+    begin
+      IsError := True;
+      DoProcError(Self, E, ERROR_VK_NETWORK, E.Message);
+    end;
+  end;
 
-    if FCancelAll then
+  try
+    if not IsError then
     begin
-      if not Waiting then
-        FCancelAll := False;
-      if FLogging then
-        FLog(Request.GetFullRequestURL + ' - canceled');
-      Result.Success := False;
-    end
-    else
-    begin
-      if not Application.Terminated then
+      if FCancelAll then
       begin
-        if FLogResponse then
-          FLog(Request.Response.JSONText);
-        Result := ProcessResponse(Request);
+        if not Waiting then
+          FCancelAll := False;
+        if FLogging then
+          FLog(Request.GetFullRequestURL + ' - canceled');
+        Result.Success := False;
+      end
+      else
+      begin
+        if not Application.Terminated then
+        begin
+          if FLogResponse then
+            FLog(Request.Response.JSONText);
+          Result := ProcessResponse(Request);
+        end;
       end;
     end;
   except
-    on E: Exception do
-      ProcError(E);
+    on E: TVkMethodException do
+      DoProcError(Self, E, E.Code, E.Message);
   end;
 end;
 
@@ -334,8 +342,9 @@ var
   JS: TJSONValue;
   CaptchaSID: string;
   CaptchaImg: string;
-  CaptchaAns: string;
+  Answer: string;
 begin
+  Result.Error.Code := -1;
   if TestCaptcha or Request.Response.JSONValue.TryGetValue<TJSONValue>('error', JS) then
   begin
     Result.Success := False;
@@ -357,10 +366,10 @@ begin
           CaptchaSID := JS.GetValue<string>('captcha_sid', '');
           CaptchaImg := JS.GetValue<string>('captcha_img', '');
 
-          if AskCaptcha(Self, CaptchaImg, CaptchaAns) then
+          if AskCaptcha(Self, CaptchaImg, Answer) then
           begin
             Request.Params.AddItem('captcha_sid', CaptchaSID);
-            Request.Params.AddItem('captcha_key', CaptchaAns);
+            Request.Params.AddItem('captcha_key', Answer);
             FCaptchaWait := False;
             Result := Execute(Request);
             Request.Params.Delete('captcha_sid');
@@ -370,25 +379,24 @@ begin
           begin
             FCancelAll := True;
             FCaptchaWait := False;
-            ProcError(Result.Error.Code, Result.Error.Text);
+            raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
           end;
         end;
       VK_ERROR_CONFIRM: //Подтверждение для ВК
         begin
-          CaptchaAns := JS.GetValue<string>('confirmation_text', '');
-          if DoConfirm(CaptchaAns) then
+          Answer := JS.GetValue<string>('confirmation_text', '');
+          if DoConfirm(Answer) then
           begin
             Request.Params.AddItem('confirm', '1');
             Result := Execute(Request);
             Request.Params.Delete('confirm');
           end
           else
-            ProcError(Result.Error.Code, Result.Error.Text);
+            raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
         end;
       VK_ERROR_REQUESTLIMIT: //Превышено кол-во запросов в сек
         begin
-          ProcError(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests,
-            RequestLimit, FStartRequest]));
+          FLog(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests, RequestLimit, FStartRequest]));
           WaitTime(1000);
           Result := Execute(Request);
         end;
@@ -398,7 +406,7 @@ begin
           Result := Execute(Request);
         end;
     else
-      ProcError(Result.Error.Code, Result.Error.Text);
+      raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
     end;
   end
   else
@@ -413,7 +421,7 @@ begin
       end;
     end
     else
-      ProcError(TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString));
+      raise TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString);
   end;
 end;
 
@@ -482,27 +490,6 @@ end;
 procedure TVkHandler.SetOnConfirm(const Value: TOnConfirm);
 begin
   FOnConfirm := Value;
-end;
-
-procedure TVkHandler.ProcError(Msg: string);
-begin
-  DoProcError(Self, TVkHandlerException.Create(Msg), ERROR_VK_UNKNOWN, Msg);
-end;
-
-procedure TVkHandler.ProcError(Code: Integer; Text: string);
-begin
-  if Text.IsEmpty then
-    Text := VKErrorString(Code);
-  DoProcError(Self, TVkHandlerException.Create(Text), Code, Text);
-end;
-
-procedure TVkHandler.ProcError(E: Exception);
-begin
-  try
-    DoProcError(Self, TVkHandlerException.Create(E.Message), ERROR_VK_UNKNOWN, E.Message);
-  finally
-    E.Free;
-  end;
 end;
 
 end.

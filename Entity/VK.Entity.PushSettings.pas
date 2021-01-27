@@ -3,35 +3,24 @@ unit VK.Entity.PushSettings;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  TVkConversation = class
+  TVkConversation = class(TVkEntity)
   private
-    FDisabled_until: Extended;
-    FPeer_id: Extended;
-    FSound: Extended;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDisabled_until: TDateTime;
+    FPeer_id: Integer;
+    FSound: Boolean;
   public
-    property DisabledUntil: Extended read FDisabled_until write FDisabled_until;
-    property PeerId: Extended read FPeer_id write FPeer_id;
-    property Sound: Extended read FSound write FSound;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkConversation;
+    property DisabledUntil: TDateTime read FDisabled_until write FDisabled_until;
+    property PeerId: Integer read FPeer_id write FPeer_id;
+    property Sound: Boolean read FSound write FSound;
   end;
 
-  TVkConversations = class
-  private
-    FCount: Extended;
-    FItems: TArray<TVkConversation>;
-  public
-    property Count: Extended read FCount write FCount;
-    property Items: TArray<TVkConversation> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkConversations;
-  end;
+  TVkConversations = TVkEntityList<TVkConversation>;
 
-  TVkPushSettingsItem = class
+  TVkPushSettingsItem = class(TVkEntity)
   private
     FApp_request: TArray<string>;
     FBirthday: TArray<string>;
@@ -74,73 +63,25 @@ type
     property TagPhoto: TArray<string> read FTag_photo write FTag_photo;
     property WallPost: TArray<string> read FWall_post write FWall_post;
     property WallPublish: TArray<string> read FWall_publish write FWall_publish;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPushSettingsItem;
   end;
 
-  TVkPushSettings = class
+  TVkPushSettings = class(TVkEntity)
   private
     FConversations: TVkConversations;
-    FDisabled: Extended;
+    FDisabled: Boolean;
     Fsettings: TVkPushSettingsItem;
   public
     property Conversations: TVkConversations read FConversations write FConversations;
-    property Disabled: Extended read FDisabled write FDisabled;
+    property Disabled: Boolean read FDisabled write FDisabled;
     property Settings: TVkPushSettingsItem read Fsettings write Fsettings;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPushSettings;
   end;
 
 implementation
 
-{TVkConversation}
-
-function TVkConversation.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkConversation.FromJsonString(AJsonString: string): TVkConversation;
-begin
-  result := TJson.JsonToObject<TVkConversation>(AJsonString)
-end;
-
-{TVkConversations}
-
-destructor TVkConversations.Destroy;
-var
-  LitemsItem: TVkConversation;
-begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
-  inherited;
-end;
-
-function TVkConversations.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkConversations.FromJsonString(AJsonString: string): TVkConversations;
-begin
-  result := TJson.JsonToObject<TVkConversations>(AJsonString)
-end;
-
-{TRootClass}
-
-function TVkPushSettingsItem.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPushSettingsItem.FromJsonString(AJsonString: string): TVkPushSettingsItem;
-begin
-  result := TJson.JsonToObject<TVkPushSettingsItem>(AJsonString)
-end;
+uses
+  VK.CommonUtils;
 
 {TVkPushSettings}
 
@@ -154,16 +95,6 @@ destructor TVkPushSettings.Destroy;
 begin
   FConversations.Free;
   inherited;
-end;
-
-function TVkPushSettings.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPushSettings.FromJsonString(AJsonString: string): TVkPushSettings;
-begin
-  result := TJson.JsonToObject<TVkPushSettings>(AJsonString)
 end;
 
 end.

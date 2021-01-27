@@ -3,8 +3,8 @@ unit VK.Newsfeed;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Newsfeed,
-  VK.Entity.Media;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Newsfeed, VK.Entity.Media;
 
 type
   /// <summary>
@@ -79,7 +79,7 @@ type
     function StartTime(Value: TDateTime): Integer;
     function EndTime(Value: TDateTime): Integer;
     function MaxPhotos(Value: Integer): Integer;
-    function SourceIds(Value: TIds): Integer;
+    function SourceIds(Value: TIdList): Integer;
     function StartFrom(Value: string): Integer;
     function Count(Value: Integer): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
@@ -135,11 +135,11 @@ type
     /// <summary>
     /// Запрещает показывать новости от заданных пользователей и групп в ленте новостей текущего пользователя.
     /// </summary>
-    function AddBan(UserIds: TIds = []; GroupIds: TIds = []): Boolean;
+    function AddBan(UserIds: TIdList = []; GroupIds: TIdList = []): Boolean;
     /// <summary>
     /// Разрешает показывать новости от заданных пользователей и групп в ленте новостей текущего пользователя.
     /// </summary>
-    function DeleteBan(UserIds: TIds = []; GroupIds: TIds = []): Boolean;
+    function DeleteBan(UserIds: TIdList = []; GroupIds: TIdList = []): Boolean;
     /// <summary>
     /// Метод позволяет удалить пользовательский список новостей.
     /// </summary>
@@ -171,7 +171,7 @@ type
     /// <summary>
     /// Возвращает пользовательские списки новостей.
     /// </summary>
-    function GetLists(var Items: TVkNewsfeedLists; ListIds: TIds; Extended: Boolean = False): Boolean; overload;
+    function GetLists(var Items: TVkNewsfeedLists; ListIds: TIdList; Extended: Boolean = False): Boolean; overload;
     /// <summary>
     /// Возвращает список записей пользователей на своих стенах, в которых упоминается указанный пользователь.
     /// </summary>
@@ -187,8 +187,7 @@ type
     /// <summary>
     /// Возвращает сообщества и пользователей, на которые текущему пользователю рекомендуется подписаться.
     /// </summary>
-    function GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean = False; Count: Integer = 20; Offset:
-      Integer = 0): Boolean;
+    function GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean = False; Count: Integer = 20; Offset: Integer = 0): Boolean;
     /// <summary>
     /// Позволяет скрыть объект из ленты новостей.
     /// </summary>
@@ -196,11 +195,11 @@ type
     /// <summary>
     /// Метод позволяет создавать или редактировать пользовательские списки для просмотра новостей.
     /// </summary>
-    function SaveList(var ListId: Integer; Title: string; SourceIds: TIds; NoReposts: Boolean = False): Boolean; overload;
+    function SaveList(var ListId: Integer; Title: string; SourceIds: TIdList; NoReposts: Boolean = False): Boolean; overload;
     /// <summary>
     /// Метод позволяет создавать или редактировать пользовательские списки для просмотра новостей.
     /// </summary>
-    function SaveList(const ListId: Integer; SourceIds: TIds; NoReposts: Boolean = False): Boolean; overload;
+    function SaveList(const ListId: Integer; SourceIds: TIdList; NoReposts: Boolean = False): Boolean; overload;
     /// <summary>
     /// Возвращает результаты поиска по статусам. Новости возвращаются в порядке от более новых к более старым.
     /// </summary>
@@ -226,7 +225,7 @@ uses
 
 { TNewsfeedController }
 
-function TNewsfeedController.AddBan(UserIds, GroupIds: TIds): Boolean;
+function TNewsfeedController.AddBan(UserIds, GroupIds: TIdList): Boolean;
 var
   Params: TParams;
 begin
@@ -235,10 +234,10 @@ begin
   if Length(GroupIds) > 0 then
     Params.Add('group_ids', GroupIds);
   with Handler.Execute('newsfeed.addBan', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
-function TNewsfeedController.DeleteBan(UserIds, GroupIds: TIds): Boolean;
+function TNewsfeedController.DeleteBan(UserIds, GroupIds: TIdList): Boolean;
 var
   Params: TParams;
 begin
@@ -247,13 +246,13 @@ begin
   if Length(GroupIds) > 0 then
     Params.Add('group_ids', GroupIds);
   with Handler.Execute('newsfeed.deleteBan', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.DeleteList(ListId: Integer): Boolean;
 begin
   with Handler.Execute('newsfeed.deleteList', ['list_id', ListId.ToString]) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.Get(var Items: TVkNews; Params: TVkParamsNewsfeedGet): Boolean;
@@ -264,18 +263,7 @@ end;
 function TNewsfeedController.GetBanned(var Items: TVkNewsfeedBanned; Params: TVkParamsNewsfeedBanned): Boolean;
 begin
   Params.Extended(True);
-  with Handler.Execute('newsfeed.getBanned', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNewsfeedBanned.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.getBanned', Params.List).GetObject<TVkNewsfeedBanned>(Items);
 end;
 
 function TNewsfeedController.GetComments(var Items: TVkNews; Params: TVkParamsNewsfeedGetComments): Boolean;
@@ -283,20 +271,12 @@ begin
   Result := GetComments(Items, Params.List);
 end;
 
-function TNewsfeedController.GetLists(var Items: TVkNewsfeedLists; ListIds: TIds; Extended: Boolean): Boolean;
+function TNewsfeedController.GetLists(var Items: TVkNewsfeedLists; ListIds: TIdList; Extended: Boolean): Boolean;
 begin
-  with Handler.Execute('newsfeed.getLists', [['list_ids', ListIds.ToString], ['extended', BoolToString(Extended)]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNewsfeedLists.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.getLists', [
+    ['list_ids', ListIds.ToString],
+    ['extended', BoolToString(Extended)]]).
+    GetObject<TVkNewsfeedLists>(Items);
 end;
 
 function TNewsfeedController.GetMentions(var Items: TVkPosts; Params: TVkParamsNewsfeedGetMentions): Boolean;
@@ -306,45 +286,24 @@ end;
 
 function TNewsfeedController.GetRecommended(var Items: TVkNews; Params: TVkParamsNewsfeedGetRecommended): Boolean;
 begin
-  with Handler.Execute('newsfeed.getRecommended', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNews.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.getRecommended', Params.List).GetObject<TVkNews>(Items);
 end;
 
 function TNewsfeedController.GetSuggestedSources(var Items: TVkSuggestedList; Shuffle: Boolean; Count, Offset: Integer): Boolean;
 begin
-  with Handler.Execute('newsfeed.getSuggestedSources', [['shuffle', BoolToString(Shuffle)], ['count', Count.ToString], ['offset',
-    Offset.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkSuggestedList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.getSuggestedSources', [
+    ['shuffle', BoolToString(Shuffle)],
+    ['count', Count.ToString],
+    ['offset', Offset.ToString]]).GetObject<TVkSuggestedList>(Items);
 end;
 
 function TNewsfeedController.IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer): Boolean;
 begin
-  with Handler.Execute('newsfeed.ignoreItem', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id',
-    ItemId.ToString]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('newsfeed.ignoreItem', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
-function TNewsfeedController.SaveList(const ListId: Integer; SourceIds: TIds; NoReposts: Boolean): Boolean;
+function TNewsfeedController.SaveList(const ListId: Integer; SourceIds: TIdList; NoReposts: Boolean): Boolean;
 var
   Items: TVkNewsfeedLists;
   Id: Integer;
@@ -380,33 +339,21 @@ begin
   if not TrackCode.IsEmpty then
     Params.Add('track_code', TrackCode);
   with Handler.Execute('newsfeed.unignoreItem', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId, ItemId: Integer): Boolean;
 begin
-  with Handler.Execute('newsfeed.unsubscribe', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id',
-    ItemId.ToString]]) do
-    Result := Success and (Response = '1');
+  with Handler.Execute('newsfeed.unsubscribe', [['type', ItemType.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString]]) do
+    Result := Success and ResponseIsTrue;
 end;
 
 function TNewsfeedController.Search(var Items: TVkNews; Params: TParams): Boolean;
 begin
-  with Handler.Execute('newsfeed.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNews.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.search', Params).GetObject<TVkNews>(Items);
 end;
 
-function TNewsfeedController.SaveList(var ListId: Integer; Title: string; SourceIds: TIds; NoReposts: Boolean): Boolean;
+function TNewsfeedController.SaveList(var ListId: Integer; Title: string; SourceIds: TIdList; NoReposts: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -416,73 +363,28 @@ begin
   if Length(SourceIds) > 0 then
     Params.Add('source_ids', SourceIds);
   Params.Add('no_reposts', NoReposts);
-  with Handler.Execute('newsfeed.saveList', Params) do
-    Result := Success and (TryStrToInt(Response, ListId));
+  Result := Handler.Execute('newsfeed.saveList', Params).ResponseAsInt(ListId);
 end;
 
 function TNewsfeedController.GetMentions(var Items: TVkPosts; Params: TParams): Boolean;
 begin
-  with Handler.Execute('newsfeed.getMentions', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkPosts.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.getMentions', Params).GetObject<TVkPosts>(Items);
 end;
 
 function TNewsfeedController.GetComments(var Items: TVkNews; Params: TParams): Boolean;
 begin
-  with Handler.Execute('newsfeed.getComments', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNews.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.getComments', Params).GetObject<TVkNews>(Items);
 end;
 
 function TNewsfeedController.GetBanned(var Items: TVkNewsfeedBannedIds; Params: TVkParamsNewsfeedBanned): Boolean;
 begin
   Params.Extended(False);
-  with Handler.Execute('newsfeed.getBanned', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNewsfeedBannedIds.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.getBanned', Params.List).GetObject<TVkNewsfeedBannedIds>(Items);
 end;
 
 function TNewsfeedController.Get(var Items: TVkNews; Params: TParams): Boolean;
 begin
-  with Handler.Execute('newsfeed.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNews.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('newsfeed.get', Params).GetObject<TVkNews>(Items);
 end;
 
 { TVkNewsfeedTypeHelper }
@@ -561,7 +463,7 @@ begin
   Result := List.Add('section', Value);
 end;
 
-function TVkParamsNewsfeedGet.SourceIds(Value: TIds): Integer;
+function TVkParamsNewsfeedGet.SourceIds(Value: TIdList): Integer;
 begin
   Result := List.Add('source_ids', Value);
 end;

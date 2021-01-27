@@ -5,10 +5,10 @@ interface
 uses
   System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
   VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
-  VK.Wall, VK.Uploader, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
-  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages,
-  VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
-  VK.Apps, VK.Clients,
+  VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market,
+  VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages, VK.Polls,
+  VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps,
+  VK.Clients, VK.Donut,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -39,66 +39,67 @@ type
         property UserName: string read GetUserName write SetUserName;
         property Password: string read GetPassword write SetPassword;
       end;
+    const
+      Version = '5.126';
   private
     FAccount: TAccountController;
     FAPIVersion: string;
     FAppID: string;
     FAppKey: string;
+    FApps: TAppsController;
     FAudio: TAudioController;
     FAuth: TAuthController;
     FBaseURL: string;
     FBoard: TBoardController;
     FCatalog: TCatalogController;
     FChangePasswordHash: string;
+    FDatabase: TDatabaseController;
     FDoc: TDocController;
+    FDonut: TDonutController;
+    FDownloadedGames: TDownloadedGamesController;
     FEndPoint: string;
     FFave: TFaveController;
     FFriends: TFriendsController;
+    FGifts: TGiftsController;
     FGroups: TGroupsController;
     FHandler: TVkHandler;
     FIsLogin: Boolean;
     FLang: TVkLang;
     FLikes: TLikesController;
     FLogging: Boolean;
+    FLogResponse: Boolean;
     FMarket: TMarketController;
     FMessages: TMessagesController;
+    FNewsfeed: TNewsfeedController;
     FNotes: TNotesController;
+    FNotifications: TNotificationsController;
     FOAuth2Authenticator: TOAuth2Authenticator;
     FOnAuth: TOnAuth;
     FOnCaptcha: TOnCaptcha;
     FOnConfirm: TOnConfirm;
     FOnError: TOnVKError;
-    FOnErrorLogin: TOnVKError;
     FOnLog: TOnLog;
     FOnLogin: TOnLogin;
+    FOrders: TOrdersController;
+    FPages: TPagesController;
     FPermissions: TVkPermissions;
     FPhotos: TPhotosController;
+    FPodcasts: TPodcastsController;
+    FPolls: TPollsController;
     FProxy: TVkProxy;
+    FSearch: TSearchController;
+    FSecure: TSecureController;
     FServiceKey: string;
+    FStats: TStatsController;
     FStatus: TStatusController;
-    FUploader: TUploader;
+    FStorage: TStorageController;
+    FStories: TStoriesController;
     FUserId: Integer;
     FUsers: TUsersController;
     FUseServiceKeyOnly: Boolean;
     FUtils: TUtilsController;
     FVideo: TVideoController;
     FWall: TWallController;
-    FGifts: TGiftsController;
-    FNewsfeed: TNewsfeedController;
-    FLogResponse: Boolean;
-    FNotifications: TNotificationsController;
-    FOrders: TOrdersController;
-    FPages: TPagesController;
-    FPolls: TPollsController;
-    FPodcasts: TPodcastsController;
-    FSearch: TSearchController;
-    FDatabase: TDatabaseController;
-    FStorage: TStorageController;
-    FDownloadedGames: TDownloadedGamesController;
-    FSecure: TSecureController;
-    FStats: TStatsController;
-    FStories: TStoriesController;
-    FApps: TAppsController;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -107,7 +108,6 @@ type
     function GetTokenExpiry: Int64;
     procedure DoLogin;
     procedure FAskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string);
-    procedure FAuthError(const AText: string; AStatusCode: Integer);
     procedure FLog(Sender: TObject; const Value: string);
     procedure FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure SetAPIVersion(const Value: string);
@@ -122,7 +122,6 @@ type
     procedure SetOnCaptcha(const Value: TOnCaptcha);
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure SetOnError(const Value: TOnVKError);
-    procedure SetOnErrorLogin(const Value: TOnVKError);
     procedure SetOnLog(const Value: TOnLog);
     procedure SetOnLogin(const Value: TOnLogin);
     procedure SetPermissions(const Value: TVkPermissions);
@@ -171,19 +170,11 @@ type
     /// <summary>
     /// Выполнить метод
     /// </summary>
-    procedure CallMethod(MethodName: string; Callback: TCallMethodCallback = nil); overload;
-    /// <summary>
-    /// Выполнить метод
-    /// </summary>
-    procedure CallMethod(MethodName: string; Param: TParam; Callback: TCallMethodCallback = nil); overload;
-    /// <summary>
-    /// Выполнить метод
-    /// </summary>
-    procedure CallMethod(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethod(MethodName: string; Params: TParams = []; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Выполнить метод асинхронно
     /// </summary>
-    procedure CallMethodAsync(MethodName: string; Params: TParams; Callback: TCallMethodCallback = nil); overload;
+    procedure CallMethodAsync(MethodName: string; Params: TParams = []; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
     /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
     /// https://vk.com/dev/execute
@@ -201,13 +192,11 @@ type
     /// Вспомогательный метод, для выполнения методов с Count и Offset
     /// </summary>
     procedure Walk(Method: TWalkMethod; Count: Integer);
-    ////////////////////////////////////////////////////////////////////////////
-    //Tools
     /// <summary>
-    /// Методы для загрузки файлов на сервера ВК
+    /// Метод для загрузки файлов на сервер. UploadUrl должен быть получен соответствющим типу файла образом.
+    /// Например, для Фото в альбом - Photos.GetUploadServer.
     /// </summary>
-    property Uploader: TUploader read FUploader;
-    ////////////////////////////////////////////////////////////////////////////
+    function Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;
     //Группы методов
     /// <summary>
     /// Методы для работы с аккаунтом.
@@ -241,6 +230,10 @@ type
     /// Методы для работы с документами.
     /// </summary>
     property Docs: TDocController read FDoc;
+    /// <summary>
+    /// Методы для работы с донатом.
+    /// </summary>
+    property Donut: TDonutController read FDonut;
     /// <summary>
     /// Список методов секции downloadedGames.
     /// </summary>
@@ -399,10 +392,6 @@ type
     /// </summary>
     property OnError: TOnVKError read FOnError write SetOnError;
     /// <summary>
-    /// Событие, которые происходит при не удачной авторизации
-    /// </summary>
-    property OnErrorLogin: TOnVKError read FOnErrorLogin write SetOnErrorLogin;
-    /// <summary>
     /// Событие, которое происходит при логировании
     /// </summary>
     property OnLog: TOnLog read FOnLog write SetOnLog;
@@ -470,7 +459,8 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
+  System.DateUtils, System.Net.Mime, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile,
+  VK.Entity.Login;
 
 { TCustomVK }
 
@@ -480,9 +470,7 @@ var
 begin
   Response := Handler.Execute(MethodName, Params);
   if Assigned(Callback) then
-  begin
     Callback(Response);
-  end;
 end;
 
 procedure TCustomVK.CallMethodAsync(MethodName: string; Params: TParams; Callback: TCallMethodCallback);
@@ -494,31 +482,48 @@ begin
     begin
       Response := Handler.Execute(MethodName, Params);
       if Assigned(Callback) then
-      begin
         Callback(Response);
-      end;
     end).Start;
 end;
 
-procedure TCustomVK.CallMethod(MethodName: string; Param: TParam; Callback: TCallMethodCallback);
+function TCustomVK.Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;
 var
-  Response: TResponse;
+  HTTP: THTTPClient;
+  Data: TMultipartFormData;
+  ResStream: TStringStream;
+  JSON: TJSONValue;
+  FileName: string;
 begin
-  Response := Handler.Execute(MethodName, [Param]);
-  if Assigned(Callback) then
-  begin
-    Callback(Response);
-  end;
-end;
-
-procedure TCustomVK.CallMethod(MethodName: string; Callback: TCallMethodCallback);
-var
-  Response: TResponse;
-begin
-  Response := Handler.Execute(MethodName);
-  if Assigned(Callback) then
-  begin
-    Callback(Response);
+  Result := False;
+  Data := TMultipartFormData.Create;
+  HTTP := THTTPClient.Create;
+  ResStream := TStringStream.Create;
+  try
+    for FileName in FileNames do
+    begin
+      if not FileName.IsEmpty then
+        Data.AddFile('file', FileName);
+    end;
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      try
+        JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
+        try
+          Response := JSON.GetValue<string>('file');
+        finally
+          JSON.Free;
+        end;
+      except
+        Response := '';
+      end;
+      Result := not Response.IsEmpty;
+      if not Result then
+        Response := ResStream.DataString;
+    end;
+  finally
+    ResStream.Free;
+    Data.Free;
+    HTTP.Free;
   end;
 end;
 
@@ -541,7 +546,7 @@ begin
   //Defaults
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
-  SetAPIVersion('5.126');
+  SetAPIVersion(Version);
   Permissions := [
     TVkPermission.Groups,
     TVkPermission.Friends,
@@ -555,6 +560,7 @@ begin
   FAccount := TAccountController.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
   FApps := TAppsController.Create(FHandler);
+  FDonut := TDonutController.Create(FHandler);
   FUsers := TUsersController.Create(FHandler);
   FMessages := TMessagesController.Create(FHandler);
   FNewsfeed := TNewsfeedController.Create(FHandler);
@@ -586,8 +592,6 @@ begin
   FFave := TFaveController.Create(FHandler);
   FNotes := TNotesController.Create(FHandler);
   FNotifications := TNotificationsController.Create(FHandler);
-  //Tools
-  FUploader := TUploader.Create;
 end;
 
 destructor TCustomVK.Destroy;
@@ -613,7 +617,6 @@ begin
   FAudio.Free;
   FDoc.Free;
   FDownloadedGames.Free;
-  FUploader.Free;
   FWall.Free;
   FStatus.Free;
   FSearch.Free;
@@ -624,6 +627,7 @@ begin
   FUsers.Free;
   FAccount.Free;
   FApps.Free;
+  FDonut.Free;
   FAuth.Free;
   FMessages.Free;
   FNotifications.Free;
@@ -702,32 +706,9 @@ begin
       FOnLog(Self, Value);
 end;
 
-procedure TCustomVK.FAuthError(const AText: string; AStatusCode: Integer);
-var
-  E: Exception;
-begin
-  E := TVkException.Create('Токен не был получен');
-  if Assigned(FOnErrorLogin) then
-  begin
-    FOnErrorLogin(Self, E, AStatusCode, AText);
-    if Assigned(E) then
-      E.Free;
-  end
-  else
-  begin
-    DoLog(Self, E.Message);
-    E.Free;
-  end;
-end;
-
 procedure TCustomVK.FVKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
-  if DoOnError(Self, E, Code, Text) then
-  begin
-    if Assigned(E) then
-      E.Free;
-  end
-  else
+  if not DoOnError(Self, E, Code, Text) then
     raise E;
 end;
 
@@ -747,7 +728,7 @@ function TCustomVK.CheckAuth: Boolean;
 var
   MT: Int64;
 begin
-  Result := Utils.GetServerTime(MT);
+  Result := Utils.GetServerTimeUnix(MT);
 end;
 
 function TCustomVK.Login(ALogin, APassword: string; On2FA: TOn2FA): Boolean;
@@ -771,7 +752,9 @@ begin
       401:
         begin
           try
-            Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(AnsiString(Response.DataString)));
+            {$WARNINGS OFF}
+            Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
+            {$WARNINGS ON}
             try
               if not Info.Error.IsEmpty then
               begin
@@ -792,7 +775,7 @@ begin
 
                             HTTP.HandleRedirects := False;
                             EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash, FormData);
-                            //Response.SaveToFile('D:\temp.txt');
+                            Response.SaveToFile('D:\temp.txt');
                             while EndResponse.StatusCode = 200 do
                             begin
                               Response.LoadFromStream(EndResponse.ContentStream);
@@ -820,7 +803,8 @@ begin
                               end;
                             end;
                           except
-                            FAuthError(Response.DataString, -1);
+                            on E: Exception do
+                              DoOnError(Self, E, ERROR_VK_PARSE, Response.DataString);
                           end;
                           FormData.Free;
                         end;
@@ -836,7 +820,9 @@ begin
                   begin
                     EndResponse := HTTP.Get(Url + '&captcha_sid=' + Info.CaptchaSid + '&captcha_key=' + Code, Response);
                     Info.Free;
-                    Info := TVkLoginInfo.FromJsonString(UTF8ToWideString(AnsiString(Response.DataString)));
+                    {$WARNINGS OFF}
+                    Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
+                    {$WARNINGS ON}
                     Token := Info.AccessToken;
                   end
                   else
@@ -844,32 +830,33 @@ begin
                 end;
                 if Info.Error = 'invalid_client' then
                 begin
-                  FAuthError(Info.ErrorDescription, -1);
+                  raise TVkParserException.Create(Info.ErrorDescription);
                 end;
               end;
             finally
               Info.Free;
             end;
           except
-            FAuthError(Response.DataString, -1);
+            on E: Exception do
+              DoOnError(Self, E, ERROR_VK_PARSE, Response.DataString);
           end;
         end;
       200:
         begin
-          Info := TVkLoginInfo.FromJsonString(Response.DataString);
+          Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(Response.DataString);
           Token := Info.AccessToken;
           Info.Free;
         end;
     end;
   except
-    FAuthError('Login request error', -2);
+    on E: Exception do
+      DoOnError(Self, E, ERROR_VK_PARSE, 'Login request error');
   end;
   Response.Free;
   HTTP.Free;
   Result := not Token.IsEmpty;
-  if Result then
-  begin
-    if CheckAuth then
+  try
+    if Result and CheckAuth then
     begin
       DoLogin;
       Exit(True);
@@ -877,8 +864,11 @@ begin
     else
     begin
       Result := False;
-      FAuthError('Ошибка авторизации', -1);
+      raise TVkAuthException.Create('Login request error');
     end;
+  except
+    on E: Exception do
+      DoOnError(Self, E, ERROR_VK_AUTH, E.Message);
   end;
 end;
 
@@ -923,7 +913,7 @@ begin
       Result := True;
     end
     else
-      FAuthError('Ошибка авторизации', -1);
+      Result := False;
   end;
 end;
 
@@ -1031,11 +1021,6 @@ end;
 procedure TCustomVK.SetOnError(const Value: TOnVKError);
 begin
   FOnError := Value;
-end;
-
-procedure TCustomVK.SetOnErrorLogin(const Value: TOnVKError);
-begin
-  FOnErrorLogin := Value;
 end;
 
 procedure TCustomVK.SetOnLog(const Value: TOnLog);

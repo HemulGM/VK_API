@@ -192,25 +192,14 @@ uses
 
 function TFaveController.Get(var Faves: TVkFaves; Params: TParams): Boolean;
 begin
-  with Handler.Execute('fave.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Faves := TVkFaves.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('fave.get', Params).GetObject<TVkFaves>(Faves);
 end;
 
 function TFaveController.AddLink(Link: string): Boolean;
 begin
   with Handler.Execute('fave.addLink', ['link', Link]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -221,7 +210,7 @@ begin
   Params.List.Add('access_key', AccessKey);
   with Handler.Execute('fave.addPost', Params.List) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -229,7 +218,7 @@ function TFaveController.AddProduct(OwnerId, Id: Integer; AccessKey: string): Bo
 begin
   with Handler.Execute('fave.addProduct', [['owner_id', OwnerId.ToString], ['id', Id.ToString], ['access_key', AccessKey]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -237,7 +226,7 @@ function TFaveController.AddTag(Name: string; Position: TVkTagPosition): Boolean
 begin
   with Handler.Execute('fave.addVideo', [['name', Name], ['position', Position.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -245,7 +234,7 @@ function TFaveController.AddArticle(Url: string): Boolean;
 begin
   with Handler.Execute('fave.addArticle', ['url', Url]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -253,7 +242,7 @@ function TFaveController.AddGroupPage(Id: Integer): Boolean;
 begin
   with Handler.Execute('fave.addPage', ['group_id', Id.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -261,7 +250,7 @@ function TFaveController.AddUserPage(Id: Integer): Boolean;
 begin
   with Handler.Execute('fave.addPage', ['user_id', Id.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -269,7 +258,7 @@ function TFaveController.AddVideo(OwnerId, Id: Integer; AccessKey: string): Bool
 begin
   with Handler.Execute('fave.addVideo', [['owner_id', OwnerId.ToString], ['id', Id.ToString], ['access_key', AccessKey]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -277,7 +266,7 @@ function TFaveController.EditTag(Id: Integer; Name: string): Boolean;
 begin
   with Handler.Execute('fave.editTag', [['id', Id.ToString], ['name', Name]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -288,41 +277,19 @@ end;
 
 function TFaveController.GetPages(var Items: TVkFavePages; Params: TVkParamsFavePagesGet): Boolean;
 begin
-  with Handler.Execute('fave.getPages', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkFavePages.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('fave.getPages', Params.List).GetObject<TVkFavePages>(Items);
 end;
 
 function TFaveController.GetTags(var Items: TVkFaveTags): Boolean;
 begin
-  with Handler.Execute('fave.getTags') do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkFaveTags.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('fave.getTags').GetObject<TVkFaveTags>(Items);
 end;
 
 function TFaveController.MarkSeen: Boolean;
 begin
   with Handler.Execute('fave.markSeen') do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -331,7 +298,7 @@ begin
   with Handler.Execute('fave.removeArticle', [['owner_id', OwnerId.ToString], ['article_id', ArticleId.ToString], ['ref',
     Ref]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -339,7 +306,7 @@ function TFaveController.RemoveGroupPage(GroupId: Integer): Boolean;
 begin
   with Handler.Execute('fave.removePage', ['group_id', GroupId.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -347,7 +314,7 @@ function TFaveController.RemoveLink(LinkId: Integer): Boolean;
 begin
   with Handler.Execute('fave.removeLink', ['link_id', LinkId.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -355,7 +322,7 @@ function TFaveController.RemovePost(OwnerId, Id: Integer): Boolean;
 begin
   with Handler.Execute('fave.removePost', [['owner_id', OwnerId.ToString], ['id', Id.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -363,7 +330,7 @@ function TFaveController.RemoveProduct(OwnerId, Id: Integer): Boolean;
 begin
   with Handler.Execute('fave.removeProduct', [['owner_id', OwnerId.ToString], ['id', Id.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -371,7 +338,7 @@ function TFaveController.RemoveTag(Id: Integer): Boolean;
 begin
   with Handler.Execute('fave.removeTag', ['id', Id.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -379,7 +346,7 @@ function TFaveController.RemoveUserPage(UserId: Integer): Boolean;
 begin
   with Handler.Execute('fave.removePage', ['user_id', UserId.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -387,7 +354,7 @@ function TFaveController.RemoveVideo(OwnerId, Id: Integer): Boolean;
 begin
   with Handler.Execute('fave.removeVideo', [['owner_id', OwnerId.ToString], ['id', Id.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -395,7 +362,7 @@ function TFaveController.ReorderTags(Ids: TArrayOfInteger): Boolean;
 begin
   with Handler.Execute('fave.reorderTags', ['ids', Ids.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -403,7 +370,7 @@ function TFaveController.SetGroupPageTags(GroupId: Integer; Tags: TArrayOfIntege
 begin
   with Handler.Execute('fave.setPageTags', [['group_id', GroupId.ToString], ['tag_ids', Tags.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -411,7 +378,7 @@ function TFaveController.SetPageTags(Params: TVkParamsFavePageTagsSet): Boolean;
 begin
   with Handler.Execute('fave.setPageTags', Params.List) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -419,7 +386,7 @@ function TFaveController.SetTags(Params: TVkParamsFaveTagsSet): Boolean;
 begin
   with Handler.Execute('fave.setTags', Params.List) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -427,7 +394,7 @@ function TFaveController.SetUserPageTags(UserId: Integer; Tags: TArrayOfInteger)
 begin
   with Handler.Execute('fave.setPageTags', [['user_id', UserId.ToString], ['tag_ids', Tags.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -435,7 +402,7 @@ function TFaveController.TrackPageInteractionGroup(GroupId: Integer): Boolean;
 begin
   with Handler.Execute('fave.trackPageInteraction', ['group_id', GroupId.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -443,7 +410,7 @@ function TFaveController.TrackPageInteractionUser(UserId: Integer): Boolean;
 begin
   with Handler.Execute('fave.trackPageInteraction', ['user_id', UserId.ToString]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 

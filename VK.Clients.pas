@@ -93,6 +93,18 @@ begin
   Result.AppKey := 'VeWdmVclDCtn6ihuP1nt';
 end;
 
+class function TVkApplicationData.WindowsDesktop: TVkApplicationData;
+begin
+  Result.AppId := '3697615';
+  Result.AppKey := 'AlVXZFMUqyrnABp8ncuU';
+end;
+
+class function TVkApplicationData.WindowsPhone: TVkApplicationData;
+begin
+  Result.AppId := '3502557';
+  Result.AppKey := 'PEObAuQi6KloPM4T30DV';
+end;
+
 class function TVkApplicationData.VKAdmin: TVkApplicationData;
 begin
   Result.AppId := '6121396';
@@ -169,18 +181,6 @@ class function TVkApplicationData.VKAPI: TVkApplicationData;
 begin
   Result.AppId := '3116505';
   Result.AppKey := '';
-end;
-
-class function TVkApplicationData.WindowsDesktop: TVkApplicationData;
-begin
-  Result.AppId := '3697615';
-  Result.AppKey := 'AlVXZFMUqyrnABp8ncuU';
-end;
-
-class function TVkApplicationData.WindowsPhone: TVkApplicationData;
-begin
-  Result.AppId := '3502557';
-  Result.AppKey := 'PEObAuQi6KloPM4T30DV';
 end;
 
 end.

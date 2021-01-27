@@ -3,64 +3,91 @@ unit VK.Entity.Message;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Entity.Keyboard, VK.Entity.ClientInfo,
-  VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Types,
+  VK.Entity.Keyboard, VK.Entity.ClientInfo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common.List,
+  VK.Entity.Common.ExtendedList, VK.Wrap.Interceptors;
 
 type
-  TVkMessageSendResponse = class
+  TVkLastActivity = class(TVkEntity)
   private
-    FMessage_id: Integer; // Ч идентификатор сообщени€;
-    FPeer_id: Integer;    // Ч идентификатор назначени€;
-    FError: string;       // Ч сообщение об ошибке, если сообщение не было доставлено получателю.
+    FOnline: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTime: TDateTime;
   public
-    property PeerId: Integer read FPeer_id write FPeer_id;
-    property MessageId: Integer read FMessage_id write FMessage_id;
-    property Error: string read FError write FError;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessageSendResponse;
+    property Online: Boolean read FOnline write FOnline;
+    property Time: TDateTime read FTime write FTime;
   end;
 
-  TVkMessageSendResponses = class
+  TVkMessageSendResponse = class(TVkEntity)
   private
-    FItems: TArray<TVkMessageSendResponse>;
-    Fsuccess: Boolean;
-    Fresponse: Integer;
+    FMessage_id: Integer;
+    FPeer_id: Integer;
+    FError: string;
+  public
+    /// <summary>
+    /// »дентификатор назначени€
+    /// </summary>
+    property PeerId: Integer read FPeer_id write FPeer_id;
+    /// <summary>
+    /// »дентификатор сообщени€
+    /// </summary>
+    property MessageId: Integer read FMessage_id write FMessage_id;
+    /// <summary>
+    /// —ообщение об ошибке, если сообщение не было доставлено получателю
+    /// </summary>
+    property Error: string read FError write FError;
+  end;
+
+  TVkMessageSendResponses = class(TVkEntityList<TVkMessageSendResponse>)
+  private
+    FSuccess: Boolean;
+    FResponse: Integer;
     procedure SetSuccess(const Value: Boolean);
     procedure SetResponse(const Value: Integer);
   public
-    property Items: TArray<TVkMessageSendResponse> read FItems write FItems;
-    property Success: Boolean read Fsuccess write SetSuccess;
+    property Success: Boolean read FSuccess write SetSuccess;
     property Response: Integer read Fresponse write SetResponse;
     constructor CreateFalse;
     constructor CreateTrue(ARespone: Integer);
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessageSendResponses;
+    class function FromJsonString(AJsonString: string): TVkMessageSendResponses; static;
   end;
 
-  TVkMessageAction = class
+  TVkMessageAction = class(TVkEntity)
   private
-    FText: string; // Ч название беседы (дл€ служебных сообщений с type = chat_create или chat_title_update).
-    FType: string; // Ч тип действи€. ¬озможные значени€:
-                   {chat_photo_update Ч обновлена фотографи€ беседы;
-                    chat_photo_remove Ч удалена фотографи€ беседы;
-                    chat_create Ч создана беседа;
-                    chat_title_update Ч обновлено название беседы;
-                    chat_invite_user Ч приглашен пользователь;
-                    chat_kick_user Ч исключен пользователь;
-                    chat_pin_message Ч закреплено сообщение;
-                    chat_unpin_message Ч откреплено сообщение;
-                    chat_invite_user_by_link Ч пользователь присоединилс€ к беседе по ссылке.}
-    FEmail: string; // Ч email, который пригласили или исключили (дл€ служебных сообщений с type = chat_invite_user или chat_kick_user и отрицательным member_id).
-    FMember_id: integer; // Ч идентификатор пользовател€ (если > 0) или email (если < 0), которого пригласили или исключили (дл€ служебных сообщений с type = chat_invite_user или chat_kick_user). »дентификатор пользовател€, который закрепил/открепил сообщение дл€ action = chat_pin_message или chat_unpin_message.
-    FPhoto: TVkChatPhoto; // Ч изображение-обложка чата. ќбъект, который содержит пол€:
+    FText: string;
+    FType: string;
+    FEmail: string;
+    FMember_id: integer;
+    FPhoto: TVkChatPhoto;
+    function GetType: TVkMessageActionType;
+    procedure SetType(const Value: TVkMessageActionType);
   public
+    /// <summary>
+    /// Ќазвание беседы (дл€ служебных сообщений с type = chat_create или chat_title_update)
+    /// </summary>
     property Text: string read FText write FText;
-    property&Type: string read FType write FType;
+    /// <summary>
+    /// “ип действи€ (строка)
+    /// </summary>
+    property TypeStr: string read FType write FType;
+    /// <summary>
+    /// “ип действи€
+    /// </summary>
+    property&Type: TVkMessageActionType read GetType write SetType;
+    /// <summary>
+    /// »дентификатор пользовател€ (если > 0) или email (если < 0), которого пригласили или исключили
+    /// (дл€ служебных сообщений с type = chat_invite_user или chat_kick_user).
+    /// »дентификатор пользовател€, который закрепил/открепил сообщение дл€ action = chat_pin_message или chat_unpin_message
+    /// </summary>
     property MemberId: integer read FMember_id write FMember_id;
+    /// <summary>
+    /// Email, который пригласили или исключили (дл€ служебных сообщений с type = chat_invite_user или chat_kick_user и отрицательным member_id)
+    /// </summary>
     property Email: string read FEmail write FEmail;
+    /// <summary>
+    /// »зображение-обложка чата
+    /// </summary>
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessageAction;
   end;
 
   TVkMessageDelete = class
@@ -71,17 +98,18 @@ type
     property Items: TDictionary<string, Boolean> read FItems write SetItems;
   end;
 
-  TVkMessage = class
+  TVkMessage = class(TVkObject)
   private
     FAttachments: TArray<TVkAttachment>;
     FConversation_message_id: Integer;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FFrom_id: Integer;
     FFwd_messages: TArray<TVkMessage>;
-    FId: Integer;
     FImportant: Boolean;
     FIs_hidden: Boolean;
-    FOut: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FOut: Boolean;
     FPeer_id: Integer;
     FRandom_id: Integer;
     FText: string;
@@ -95,13 +123,8 @@ type
     FAction: TVkMessageAction;
     FWas_listened: Boolean;
     function GetPayloadButton: TVkPayloadButton;
-    function GetOut: Boolean;
-    procedure SetOut(const Value: Boolean);
-    function GetDate: TDateTime;
-    procedure SetDate(const Value: TDateTime);
   public
-    property Id: Integer read FId write FId;
-    property Date: TDateTime read GetDate write SetDate;
+    property Date: TDateTime read FDate write FDate;
     property PeerId: Integer read FPeer_id write FPeer_id;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Text: string read FText write FText;
@@ -122,79 +145,53 @@ type
     function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
-    property&Out: Boolean read GetOut write SetOut;
+    property&Out: Boolean read FOut write FOut;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessage;
   end;
 
-  TVkMessages = class
-  private
-    FItems: TArray<TVkMessage>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkMessage> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Users: TVkMessages);
-    constructor Create;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMessages;
-  end;
+  TVkMessages = TVkEntityExtendedList<TVkMessage>;
 
-  TVkLongPollHistory = class
+  TVkLongPollHistory = class(TVkEntity)
   private
     FHistory: TArray<TArray<Integer>>;
     FMessages: TVkMessages;
     FProfiles: TArray<TVkProfile>;
     FNew_pts: Integer;
+    FGroups: TArray<TVkGroup>;
   public
     property History: TArray<TArray<Integer>> read FHistory write FHistory;
     property Messages: TVkMessages read FMessages write FMessages;
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property NewPts: Integer read FNew_pts write FNew_pts;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkLongPollHistory;
   end;
 
 implementation
 
 uses
-  SysUtils, DateUtils, VK.CommonUtils, VK.Types;
+  System.SysUtils, System.DateUtils, VK.CommonUtils;
 
 {TVkMessageAction}
 
-function TVkMessageAction.ToJsonString: string;
+function TVkMessageAction.GetType: TVkMessageActionType;
 begin
-  result := TJson.ObjectToJsonString(self);
+  Result := TVkMessageActionType.Create(FType);
 end;
 
-class function TVkMessageAction.FromJsonString(AJsonString: string): TVkMessageAction;
+procedure TVkMessageAction.SetType(const Value: TVkMessageActionType);
 begin
-  result := TJson.JsonToObject<TVkMessageAction>(AJsonString)
+  FType := Value.ToString;
 end;
 
 {TVkMessage}
 
 destructor TVkMessage.Destroy;
-var
-  Lfwd_messagesItem: TVkMessage;
-  LattachmentsItem: TVkAttachment;
 begin
-
-  for Lfwd_messagesItem in FFwd_messages do
-    Lfwd_messagesItem.Free;
-  for LattachmentsItem in FAttachments do
-    LattachmentsItem.Free;
+  {$IFNDEF AUTOREFCOUNT}
+  TArrayHelp.FreeArrayOfObject<TVkMessage>(FFwd_messages);
+  TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
   if Assigned(FReply_message) then
     FReply_message.Free;
   if Assigned(FKeyboard) then
@@ -205,45 +202,29 @@ begin
     FGeo.Free;
   if Assigned(FPayloadButton) then
     FPayloadButton.Free;
+  {$ENDIF}
   inherited;
 end;
 
 function TVkMessage.GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
 var
-  i, c: Integer;
+  c: Integer;
+  Item: TVkAttachment;
 begin
-  c := -1;
   Result := False;
-  for i := Low(FAttachments) to High(FAttachments) do
-    if FAttachments[i].&Type in [atPhoto, atVideo] then
+  c := -1;
+  for Item in FAttachments do
+  begin
+    if Item.&Type in [atPhoto, atVideo] then
     begin
       Inc(c);
       if c = Index then
       begin
-        Url := FAttachments[i].GetPreviewUrl;
+        Url := Item.GetPreviewUrl;
         Exit(True);
       end;
     end;
-end;
-
-function TVkMessage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkMessage.FromJsonString(AJsonString: string): TVkMessage;
-begin
-  result := TJson.JsonToObject<TVkMessage>(AJsonString)
-end;
-
-function TVkMessage.GetDate: TDateTime;
-begin
-  Result := UnixToDateTime(FDate, False);
-end;
-
-function TVkMessage.GetOut: Boolean;
-begin
-  Result := FOut = 1;
+  end;
 end;
 
 function TVkMessage.GetPayloadButton: TVkPayloadButton;
@@ -253,33 +234,11 @@ begin
   if Assigned(FPayloadButton) then
     Exit(FPayloadButton);
   try
-    FPayloadButton := TVkPayloadButton.FromJsonString(Payload);
+    FPayloadButton := TVkPayloadButton.FromJsonString<TVkPayloadButton>(Payload);
     Result := FPayloadButton;
   except
     Exit(nil);
   end;
-end;
-
-procedure TVkMessage.SetDate(const Value: TDateTime);
-begin
-  FDate := DateTimeToUnix(Value, False);
-end;
-
-procedure TVkMessage.SetOut(const Value: Boolean);
-begin
-  FOut := BoolToInt(Value);
-end;
-
-{ TVkMessageSendResponse }
-
-class function TVkMessageSendResponse.FromJsonString(AJsonString: string): TVkMessageSendResponse;
-begin
-  result := TJson.JsonToObject<TVkMessageSendResponse>(AJsonString);
-end;
-
-function TVkMessageSendResponse.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkMessageSendResponses }
@@ -287,87 +246,31 @@ end;
 constructor TVkMessageSendResponses.CreateFalse;
 begin
   inherited;
-  Fsuccess := False;
+  FSuccess := False;
 end;
 
 constructor TVkMessageSendResponses.CreateTrue(ARespone: Integer);
 begin
   inherited;
-  Fsuccess := True;
+  FSuccess := True;
   Fresponse := ARespone;
 end;
 
 class function TVkMessageSendResponses.FromJsonString(AJsonString: string): TVkMessageSendResponses;
 begin
-  result := TJson.JsonToObject<TVkMessageSendResponses>(AJsonString);
-  result.Fsuccess := True;
+  Result := TJson.JsonToObject<TVkMessageSendResponses>(AJsonString);
+  Result.FSuccess := True;
   Result.Response := -1;
 end;
 
 procedure TVkMessageSendResponses.SetResponse(const Value: Integer);
 begin
-  Fresponse := Value;
+  FResponse := Value;
 end;
 
 procedure TVkMessageSendResponses.SetSuccess(const Value: Boolean);
 begin
-  Fsuccess := Value;
-end;
-
-function TVkMessageSendResponses.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{TVkMessages}
-
-procedure TVkMessages.Append(Users: TVkMessages);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Users.Items));
-  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkMessage));
-end;
-
-constructor TVkMessages.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkMessages.Destroy;
-var
-  LItemsItem: TVkMessage;
-  LGroupItem: TVkGroup;
-  LUserItem: TVkProfile;
-begin
-  if not FSaveObjects then
-  begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
-    for LUserItem in FProfiles do
-      LUserItem.Free;
-    for LGroupItem in FGroups do
-      LGroupItem.Free;
-  end;
-
-  inherited;
-end;
-
-function TVkMessages.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkMessages.FromJsonString(AJsonString: string): TVkMessages;
-begin
-  result := TJson.JsonToObject<TVkMessages>(AJsonString);
-end;
-
-procedure TVkMessages.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
+  FSuccess := Value;
 end;
 
 { TVkMessageDelete }
@@ -385,23 +288,13 @@ begin
 end;
 
 destructor TVkLongPollHistory.Destroy;
-var
-  LUserItem: TVkProfile;
 begin
-  for LUserItem in FProfiles do
-    LUserItem.Free;
+  {$IFNDEF AUTOREFCOUNT}
+  TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   FMessages.Free;
+  {$ENDIF}
   inherited;
-end;
-
-class function TVkLongPollHistory.FromJsonString(AJsonString: string): TVkLongPollHistory;
-begin
-  result := TJson.JsonToObject<TVkLongPollHistory>(AJsonString);
-end;
-
-function TVkLongPollHistory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

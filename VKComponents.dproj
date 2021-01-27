@@ -127,7 +127,6 @@
         <DCCReference Include="VK.Handler.pas"/>
         <DCCReference Include="VK.LongPollServer.pas"/>
         <DCCReference Include="VK.Types.pas"/>
-        <DCCReference Include="VK.Uploader.pas"/>
         <DCCReference Include="VK.UserEvents.pas"/>
         <DCCReference Include="VK.CommonUtils.pas"/>
         <DCCReference Include="Entity\VK.Entity.AccountInfo.pas"/>
@@ -140,7 +139,7 @@
         <DCCReference Include="Entity\VK.Entity.Catalog.pas"/>
         <DCCReference Include="Entity\VK.Entity.Catalog.Section.pas"/>
         <DCCReference Include="Entity\VK.Entity.ClientInfo.pas"/>
-        <DCCReference Include="Entity\VK.Entity.CommentInfo.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Info.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.pas"/>
         <DCCReference Include="Entity\VK.Entity.Conversation.pas"/>
         <DCCReference Include="Entity\VK.Entity.Counters.pas"/>
@@ -217,12 +216,11 @@
         <DCCReference Include="Entity\VK.Entity.Group.CallBackServer.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.CallbackSettings.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.Categories.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Group.Longpoll.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Longpoll.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.LongpollSettings.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.TokenPermissions.pas"/>
         <DCCReference Include="Entity\VK.Entity.Message.Chat.pas"/>
         <DCCReference Include="Entity\VK.Entity.Call.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Message.LongPoll.pas"/>
         <DCCReference Include="Controllers\VK.Newsfeed.pas"/>
         <DCCReference Include="Entity\VK.Entity.Newsfeed.pas"/>
         <DCCReference Include="Controllers\VK.Notifications.pas"/>
@@ -268,6 +266,13 @@
         <DCCReference Include="Entity\VK.Entity.Login.pas"/>
         <DCCReference Include="VK.Clients.pas"/>
         <DCCReference Include="Entity\VK.Entity.Attachment.pas"/>
+        <DCCReference Include="Controllers\VK.Donut.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Donut.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Auth.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Common.List.pas"/>
+        <DCCReference Include="Utils\VK.Wrap.Interceptors.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Common.ExtendedList.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Invites.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
@@ -325,7 +330,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\..\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKComponents.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

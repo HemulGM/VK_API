@@ -5,12 +5,14 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, REST.Json, System.SysUtils, System.Generics.Collections, System.JSON;
+  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Generics.Collections, System.JSON, VK.Entity.Common;
 
 type
   TVkException = Exception;
 
   TVkAuthException = TVkException;
+
+  TVkCaptchaException = TVkException;
 
   TVkParserException = TVkException;
 
@@ -24,8 +26,6 @@ type
     property Code: Integer read FCode write SetCode;
     constructor Create(const Msg: string; Code: Integer);
   end;
-
-  TVkWrongParamException = TVkException;
 
   TVkLongPollServerException = TVkException;
 
@@ -42,6 +42,9 @@ const
   ERROR_VK_UNKNOWN = -1;
   ERROR_VK_NOTOKEN = -2;
   ERROR_VK_INTERNAL = -3;
+  ERROR_VK_NETWORK = -4;
+  ERROR_VK_PARSE = -5;
+  ERROR_VK_AUTH = -6;
 
   //Message Flags
   MF_UNREAD = 1;
@@ -130,7 +133,6 @@ const
   AG_ELECTROPOPANDDISCO = 22;
   AG_OTHER = 18;
 
-
   //Group Dialog Flags
   GR_IMPORTANT = 1;
   GR_UNANSWERED = 2;
@@ -165,7 +167,6 @@ type
 
   {$IFDEF OLD_VERSION}
   TArrayOfInteger = array of Integer;
-
   {$ELSE}
 
   TArrayOfInteger = TArray<Integer>;
@@ -185,7 +186,7 @@ type
 
   TParamInt = TArrayOfInteger;
 
-  TIds = TArrayOfInteger;
+  TIdList = TArrayOfInteger;
 
   {$IFDEF OLD_VERSION}
   TParams = array of TParam;
@@ -200,8 +201,11 @@ type
   {$ENDIF}
 
   TParamsHelper = record helper for TParams
+  private
+    function AddParam(var Dest: TParams; Param: TParam): Integer; inline;
+  public
     function Add(Param: TParam): Integer; overload; inline;
-    function Add(Key, Value: string): Integer; overload; inline;
+    function Add(Key: string; Value: string): Integer; overload; inline;
     function Add(Key: string; Value: Integer): Integer; overload; inline;
     function Add(Key: string; Value: Extended): Integer; overload; inline;
     function Add(Key: string; Value: TDateTime): Integer; overload; inline;
@@ -226,12 +230,19 @@ type
 
   Attachment = class
   public
-    class function Album(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
-    class function Doc(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
-    class function Video(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
-    class function Audio(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
-    class function Photo(Id: Integer; OwnerId: Integer = 0; AccessKey: string = ''): string;
-    class function Create(&Type: string; OwnerId, Id: Integer; AccessKey: string): string; static;
+    class function Photo(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Video(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Audio(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Doc(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Link(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Market(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function MarketAlbum(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Wall(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function WallReply(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Sticker(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Gift(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Album(OwnerId, Id: Integer; AccessKey: string = ''): string;
+    class function Create(&Type: string; OwnerId, Id: Integer; AccessKey: string = ''): string; static;
   end;
 
   TAttachment = string;
@@ -265,23 +276,41 @@ type
   TMessageFlags = set of TMessageFlag;
 
   TMessageFlagsHelper = record helper for TMessageFlags
-    function ToString: string; overload; inline;
     class function FlagDataToFlag(FlagData: Integer): TMessageFlag; static;
     class function Create(Data: Integer): TMessageFlags; static;
+    function ToString: string;
+  end;
+
+ {
+  chat_photo_update Ч обновлена фотографи€ беседы;
+  chat_photo_remove Ч удалена фотографи€ беседы;
+  chat_create Ч создана беседа;
+  chat_title_update Ч обновлено название беседы;
+  chat_invite_user Ч приглашен пользователь;
+  chat_kick_user Ч исключен пользователь;
+  chat_pin_message Ч закреплено сообщение;
+  chat_unpin_message Ч откреплено сообщение;
+  chat_invite_user_by_link Ч пользователь присоединилс€ к беседе по ссылке.
+ }
+  TVkMessageActionType = (maUnknown, maChatPhotoUpdate, maChatPhotoRemove, maChatCreate, maChatTitleUpdate,
+    maChatInviteUser, maChatKickUser, maChatPinMessage, maChatUnpinMessage, maChatInviteUserByLink);
+
+  TVkMessageActionTypeHelper = record helper for TVkMessageActionType
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkMessageActionType; static;
   end;
 
   /// <summary>
   ///  ∆анры музыки
   /// </summary>
-
-  TAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
+  TVkAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
     agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
     agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 
-  TAudioGenreHelper = record helper for TAudioGenre
+  TVkAudioGenreHelper = record helper for TVkAudioGenre
     function ToConst: Integer;
     function ToString: string; inline;
-    class function Create(Value: Integer): TAudioGenre; static;
+    class function Create(Value: Integer): TVkAudioGenre; static;
   end;
 
   TVkSort = (stAsc, stDesc);
@@ -407,6 +436,13 @@ type
   /// “ут список цветов -> VkGroupTagColors
   /// </summary>
   TVkGroupTagColor = string;
+
+  TVkDeactivated = (pdNone, pdDeleted, pdBanned);
+
+  TVkDeactivatedHelper = record helper for TVkDeactivated
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkDeactivated; static;
+  end;
 
   TVkAgeLimits = (alNone = 1, al16Plus = 2, al18Plus = 3);
 
@@ -543,6 +579,25 @@ type
   /// </summary>
   TVkPlatform = (pfUnknown, pfMobile, pfIPhone, pfIPad, pfAndroid, pfWindowsPhone, pfWindows, pfWeb);
 
+  TVkPlatformHelper = record helper for TVkPlatform
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkPlatform; static;
+  end;
+
+  /// <summary>
+  /// Cтатус за€вки
+  /// rsProcessing Ц за€вка рассматриваетс€;
+  /// rsDeclined Ц за€вка отклонена;
+  /// rsResponse Ц общий ответ по статусу обработки за€вки;
+  /// rsResponseWithLink Ц общий ответ по статусу обработки за€вки, содержащий ссылку в поле link;
+  /// </summary>
+  TVkNameRequestStatus = (rsProcessing, rsDeclined, rsResponse, rsResponseWithLink);
+
+  TVkNameRequestStatusHelper = record helper for TVkNameRequestStatus
+    class function Create(const Value: string): TVkNameRequestStatus; static;
+    function ToString: string; inline;
+  end;
+
   /// <summary>
   ///  “ип смены флагов
   /// </summary>
@@ -574,6 +629,8 @@ type
     class function Create(Value: string): TVkAttachmentType; static;
   end;
 
+  TVkDocumentType = (dtNone, dtText, dtArchive, dtGIF, dtPicture, dtAudio, dtVideo, dtBook, dtUnknown);
+
   TVkPeerType = (ptUnknown, ptUser, ptChat, ptGroup, ptEmail);
 
   TVkPeerTypeHelper = record helper for TVkPeerType
@@ -581,11 +638,22 @@ type
     class function Create(Value: string): TVkPeerType; static;
   end;
 
+  TVkKeyboardButtonColor = (bcPositive, bcNegative, bcPrimary, bcSecondary);
+
+  TVkKeyboardButtonColorHelper = record helper for TVkKeyboardButtonColor
+    function ToString: string; inline;
+    function ToColor: TAlphaColor; inline;
+    class function Create(Value: string): TVkKeyboardButtonColor; static;
+  end;
+
   TVkPostType = (ptSuggests, ptPostponed, ptOwner, ptOthers, ptAll);
 
   TVkPostTypeHelper = record helper for TVkPostType
     function ToString: string; inline;
   end;
+
+  TVkPolitical = (plNone, plCommunist, plSocialist, plModerate, plLiberal, plConservative, plMonarchical,
+    plUltraConservative, plIndifferent, plLibertarian);
 
   /// <summary>
   /// именительный Ц nom, родительный Ц gen, дательный Ц dat, винительный Ц acc, творительный Ц ins, предложный Ц abl
@@ -599,7 +667,7 @@ type
   /// <summary>
   ///  ѕол
   /// </summary>
-  TVkSex = (sxMale, sxFemale);
+  TVkSex = (sxNone, sxFemale, sxMale);
 
   /// <summary>
   ///  ѕол - поиск
@@ -609,7 +677,7 @@ type
   /// <summary>
   ///  ¬идимость даты рождени€
   /// </summary>
-  TVkBirthDateVisibility = (dvVisible, dvDayMonOnly, dvHidden);
+  TVkBirthDateVisibility = (dvHidden, dvVisible, dvDayMonOnly);
 
   /// <summary>
   /// ќтношени€.
@@ -659,18 +727,25 @@ type
   end;
 
   TResponse = record
+  private
+    function AppendItemsTag(JSON: string): string; inline;
+  public
     Success: Boolean;
     Response: string;
     JSON: string;
     Error: TResponseError;
-    function ResponseWithItems: string;
+    function ResponseAsItems: string;
     function ResponseIsTrue: Boolean;
     function ResponseIsFalse: Boolean;
+    function ResponseAsBool(var Value: Boolean): Boolean;
     function ResponseAsInt(var Value: Integer): Boolean;
     function ResponseAsStr(var Value: string): Boolean;
     function GetJSONValue: TJSONValue;
     function GetJSONResponse: TJSONValue;
     function GetValue<T>(const Field: string; var Value: T): Boolean;
+    function GetObject<T: TVkEntity, constructor>(var Value: T): Boolean;
+    function GetObjects<T: TVkEntity, constructor>(var Value: T): Boolean;
+    function IsError: Boolean;
   end;
 
   TEventExtraFields = record
@@ -683,13 +758,13 @@ type
   end;
 
   TChatTypingData = record
-    UserIds: TIds;
+    UserIds: TIdList;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
 
   TChatRecordingData = record
-    UserIds: TIds;
+    UserIds: TIdList;
     PeerId, TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
@@ -822,8 +897,12 @@ type
 
   TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
 
+  TOnUnhandledEvents = procedure(Sender: TObject; const JSON: TJSONValue) of object;
+
 var
   VkUserActive: array[Boolean] of string = ('Ѕездействие', 'ѕокинул сайт');
+  VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone',
+    'iPad', 'Android', 'Windows Phone', 'Windows', 'Web');
   VkGroupLevel: array[TVkGroupLevel] of string = ('”частник', 'ћодератор',
     '–едактор', 'јдминистратор');
   VkUserBlockReason: array[TVkUserBlockReason] of string = ('ƒругое', '—пам',
@@ -835,6 +914,11 @@ var
     'Unknown_5', 'Unknown_4', 'UnreadMultichat', 'Unknown_3', 'Unknown_2',
     'Unknown_1', 'Media', 'Fixed', 'Deleted', 'Spam', 'Friends', 'Chat',
     'Important', 'Replied', 'Outbox', 'Unread');
+  VkAudioGenresStr: array[TVkAudioGenre] of string = ('', 'Rock', 'Pop',
+    'RapAndHipHop', 'EasyListening', 'HouseAndDance', 'Instrumental', 'Metal',
+    'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson',
+    'Ethnic', 'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech',
+    'ElectropopAndDisco', 'Other');
 
 var
   VkMessageFlags: array[TMessageFlag] of Integer = (MF_UNKNOWN_9, MF_UNKNOWN_8,
@@ -842,19 +926,15 @@ var
     MF_UNKNOWN_5, MF_UNKNOWN_4, MF_UNREAD_MULTICHAT, MF_UNKNOWN_3, MF_UNKNOWN_2,
     MF_UNKNOWN_1, MF_MEDIA, MF_FIXED, MF_DEL≈T≈D, MF_SPAM, MF_FRIENDS, MF_CHAT,
     MF_IMPORTANT, MF_REPLIED, MF_OUTBOX, MF_UNREAD);
-  VkAudioGenres: array[TAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP,
+  VkAudioGenres: array[TVkAudioGenre] of Integer = (AG_NONE, AG_ROCK, AG_POP,
     AG_RAPANDHIPHOP, AG_EASYLISTENING, AG_HOUSEANDDANCE, AG_INSTRUMENTAL,
     AG_METAL, AG_ALTERNATIVE, AG_DUBSTEP, AG_JAZZANDBLUES, AG_DRUMANDBASS,
     AG_TRANCE, AG_CHANSON, AG_ETHNIC, AG_ACOUSTICANDVOCAL, AG_REGGAE,
     AG_CLASSICAL, AG_INDIEPOP, AG_SPEECH, AG_ELECTROPOPANDDISCO, AG_OTHER);
-  VkAudioGenresStr: array[TAudioGenre] of string = ('', 'Rock', 'Pop',
-    'RapAndHipHop', 'EasyListening', 'HouseAndDance', 'Instrumental', 'Metal',
-    'Alternative', 'Dubstep', 'JazzAndBlues', 'DrumAndBass', 'Trance', 'Chanson',
-    'Ethnic', 'AcousticAndVocal', 'Reggae', 'Classical', 'IndiePop', 'Speech',
-    'ElectropopAndDisco', 'Other');
   VkDialogFlags: array[TDialogFlag] of Integer = (GR_UNANSWERED, GR_IMPORTANT);
-  VkPlatforms: array[TVkPlatform] of string = ('Unknown', 'Mobile', 'iPhone',
-    'iPad', 'Android', 'Windows Phone', 'Windows', 'Web');
+  //
+  VkPlatformsType: array[TVkPlatform] of string = ('', 'mobile', 'ios',
+    'ios', 'android', 'winphone', 'windows', 'web');
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video',
     'audio', 'doc', 'link', 'market', 'market_album', 'wall', 'wall_reply',
     'sticker', 'gift', 'call', 'audio_message', 'posted_photo', 'graffiti', 'note',
@@ -905,12 +985,19 @@ var
     'city_id', 'metro_station_id', 'latitude', 'longitude', 'work_info_status', 'time_offset');
   VkGroupTagColors: array of string = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a',
     '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
+  VkMessageActionType: array[TVkMessageActionType] of string = (
+    '',
+    'chat_photo_update',
+    'chat_photo_remove',
+    'chat_create',
+    'chat_title_update',
+    'chat_invite_user',
+    'chat_kick_user',
+    'chat_pin_message',
+    'chat_unpin_message',
+    'chat_invite_user_by_link');
 
 function VKErrorString(ErrorCode: Integer): string;
-
-function AddParam(var Dest: TParams; Param: TParam): Integer;
-
-function AppendItemsTag(JSON: string): string;
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -947,26 +1034,6 @@ begin
   if Value > VK_GROUP_ID_START then
     Exit(-(Value - VK_GROUP_ID_START));
   Result := Value;
-end;
-
-function AppendItemsTag(JSON: string): string;
-begin
-  Result := '{"Items": ' + JSON + '}';
-end;
-
-function AddParam(var Dest: TParams; Param: TParam): Integer;
-var
-  i: Integer;
-begin
-  for i := Low(Dest) to High(Dest) do
-    if Dest[i][0] = Param[0] then
-    begin
-      Dest[i] := Param;
-      Exit(i);
-    end;
-  Result := Length(Dest) + 1;
-  SetLength(Dest, Result);
-  Dest[Result - 1] := Param;
 end;
 
 function VKErrorString(ErrorCode: Integer): string;
@@ -1501,10 +1568,11 @@ end;
 
 function TMessageFlagsHelper.ToString: string;
 var
-  Flag: TMessageFlag;
+  Item: TMessageFlag;
 begin
-  for Flag in Self do
-    Result := Result + Flag.ToString + ' ';
+  for Item in Self do
+    Result := Result + Item.ToString + ',';
+  Result.TrimRight([',']);
 end;
 
 { TDialogFlagsHelper }
@@ -1671,6 +1739,21 @@ end;
 
 { TParamsHelper }
 
+function TParamsHelper.AddParam(var Dest: TParams; Param: TParam): Integer;
+var
+  i: Integer;
+begin
+  for i := Low(Dest) to High(Dest) do
+    if Dest[i][0] = Param[0] then
+    begin
+      Dest[i] := Param;
+      Exit(i);
+    end;
+  Result := Length(Dest) + 1;
+  SetLength(Dest, Result);
+  Dest[Result - 1] := Param;
+end;
+
 function TParamsHelper.Add(Param: TParam): Integer;
 begin
   Result := AddParam(Self, Param);
@@ -1744,18 +1827,11 @@ begin
     end;
 end;
 
-{ TMessageFlagHelper }
+{ TVkAudioGenreHelper }
 
-function TMessageFlagHelper.ToString: string;
-begin
-  Result := VkMessageFlagTypes[Self];
-end;
-
-{ TAudioGenreHelper }
-
-class function TAudioGenreHelper.Create(Value: Integer): TAudioGenre;
+class function TVkAudioGenreHelper.Create(Value: Integer): TVkAudioGenre;
 var
-  i: TAudioGenre;
+  i: TVkAudioGenre;
 begin
   Result := agOther;
   for i := Low(VkAudioGenres) to High(VkAudioGenres) do
@@ -1763,12 +1839,12 @@ begin
       Exit(i);
 end;
 
-function TAudioGenreHelper.ToConst: Integer;
+function TVkAudioGenreHelper.ToConst: Integer;
 begin
   Result := VkAudioGenres[Self];
 end;
 
-function TAudioGenreHelper.ToString: string;
+function TVkAudioGenreHelper.ToString: string;
 begin
   Result := VkAudioGenresStr[Self];
 end;
@@ -1912,8 +1988,7 @@ begin
     9:
       Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach9, FAttach9_type);
     10:
-      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach10,
-        FAttach10_type);
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach10, FAttach10_type);
   end;
 end;
 
@@ -1964,44 +2039,92 @@ begin
     Result := nil;
 end;
 
+function TResponse.GetObject<T>(var Value: T): Boolean;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      Value := T.FromJsonString<T>(Response);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TResponse.GetObjects<T>(var Value: T): Boolean;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      Value := T.FromJsonString<T>(ResponseAsItems);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
 function TResponse.GetValue<T>(const Field: string; var Value: T): Boolean;
 var
   JSONItem: TJSONValue;
 begin
-  try
-    JSONItem := TJSONObject.ParseJSONValue(Response);
+  Result := Success;
+  if Result then
+  begin
     try
-      Result := JSONItem.TryGetValue<T>(Field, Value);
-    finally
-      JSONItem.Free;
+      JSONItem := TJSONObject.ParseJSONValue(Response);
+      try
+        Result := JSONItem.TryGetValue<T>(Field, Value);
+      finally
+        JSONItem.Free;
+      end;
+    except
+      Result := False;
     end;
-  except
-    Result := False;
   end;
+end;
+
+function TResponse.IsError: Boolean;
+begin
+  Result := (not Success) or (Error.Code <> -1);
 end;
 
 function TResponse.ResponseIsFalse: Boolean;
 begin
-  Result := Response = '0';
+  Result := Success and (Response = '0');
 end;
 
 function TResponse.ResponseAsInt(var Value: Integer): Boolean;
 begin
-  Result := TryStrToInt(Response, Value);
+  Result := Success and TryStrToInt(Response, Value);
 end;
 
 function TResponse.ResponseAsStr(var Value: string): Boolean;
 begin
-  Result := True;
-  Value := Response;
+  Result := Success;
+  if Result then
+    Value := Response;
+end;
+
+function TResponse.ResponseAsBool(var Value: Boolean): Boolean;
+begin
+  Result := Success;
+  if Result then
+    Value := ResponseIsTrue;
 end;
 
 function TResponse.ResponseIsTrue: Boolean;
 begin
-  Result := Response = '1';
+  Result := Success and (Response = '1');
 end;
 
-function TResponse.ResponseWithItems: string;
+function TResponse.AppendItemsTag(JSON: string): string;
+begin
+  Result := '{"Items": ' + JSON + '}';
+end;
+
+function TResponse.ResponseAsItems: string;
 begin
   Result := AppendItemsTag(Response);
 end;
@@ -2075,9 +2198,7 @@ var
   Item: TVkPermission;
 begin
   for Item in Self do
-  begin
     Result := Result + Item.ToString + ',';
-  end;
   Result.TrimRight([',']);
 end;
 
@@ -2102,9 +2223,7 @@ var
   Item: TVkGroupField;
 begin
   for Item in Self do
-  begin
     Result := Result + Item.ToString + ',';
-  end;
   Result.TrimRight([',']);
 end;
 
@@ -2116,8 +2235,10 @@ begin
     ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufOnline, ufDomain, ufHasMobile, ufContacts,
     ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation,
     ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufActivities, ufInterests, ufMusic,
-    ufMovies, ufTV, ufBooks, ufGames,
-    ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup];
+    ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio,
+    ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName,
+    ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe,
+    ufCanBeInvitedGroup];
 end;
 
 function TVkProfileFieldsHelper.ToString: string;
@@ -2125,9 +2246,7 @@ var
   Item: TVkProfileField;
 begin
   for Item in Self do
-  begin
     Result := Result + Item.ToString + ',';
-  end;
   Result.TrimRight([',']);
 end;
 
@@ -2157,9 +2276,7 @@ var
   Item: TVkGroupFilter;
 begin
   for Item in Self do
-  begin
     Result := Result + Item.ToString + ',';
-  end;
   Result.TrimRight([',']);
 end;
 
@@ -2185,9 +2302,7 @@ var
   Item: TVkGroupMemberField;
 begin
   for Item in Self do
-  begin
     Result := Result + Item.ToString + ',';
-  end;
   Result.TrimRight([',']);
 end;
 
@@ -2239,9 +2354,7 @@ var
   Item: TVkCounterFilter;
 begin
   for Item in Self do
-  begin
     Result := Result + Item.ToString + ',';
-  end;
   Result.TrimRight([',']);
 end;
 
@@ -2259,9 +2372,7 @@ var
   Item: TVkInfoFilter;
 begin
   for Item in Self do
-  begin
     Result := Result + Item.ToString + ',';
-  end;
   Result.TrimRight([',']);
 end;
 
@@ -2320,9 +2431,7 @@ var
   Item: TVkGroupAddressField;
 begin
   for Item in Self do
-  begin
     Result := Result + Item.ToString + ',';
-  end;
   Result.TrimRight([',']);
 end;
 
@@ -2385,9 +2494,9 @@ end;
 
 { Attachment }
 
-class function Attachment.Audio(Id, OwnerId: Integer; AccessKey: string): string;
+class function Attachment.Audio(OwnerId, Id: Integer; AccessKey: string): string;
 begin
-  Result := Create('audio', Id, OwnerId, AccessKey);
+  Result := Create('audio', OwnerId, Id, AccessKey);
 end;
 
 class function Attachment.Create(&Type: string; OwnerId, Id: Integer; AccessKey: string): string;
@@ -2397,24 +2506,59 @@ begin
     Result := Result + '_' + AccessKey;
 end;
 
-class function Attachment.Doc(Id, OwnerId: Integer; AccessKey: string): string;
+class function Attachment.Doc(OwnerId, Id: Integer; AccessKey: string): string;
 begin
-  Result := Create('doc', Id, OwnerId, AccessKey);
+  Result := Create('doc', OwnerId, Id, AccessKey);
 end;
 
-class function Attachment.Photo(Id, OwnerId: Integer; AccessKey: string): string;
+class function Attachment.Gift(OwnerId, Id: Integer; AccessKey: string): string;
 begin
-  Result := Create('photo', Id, OwnerId, AccessKey);
+  Result := Create('gift', OwnerId, Id, AccessKey);
 end;
 
-class function Attachment.Video(Id, OwnerId: Integer; AccessKey: string): string;
+class function Attachment.Link(OwnerId, Id: Integer; AccessKey: string): string;
 begin
-  Result := Create('video', Id, OwnerId, AccessKey);
+  Result := Create('link', OwnerId, Id, AccessKey);
 end;
 
-class function Attachment.Album(Id, OwnerId: Integer; AccessKey: string): string;
+class function Attachment.Market(OwnerId, Id: Integer; AccessKey: string): string;
 begin
-  Result := Create('album', Id, OwnerId, AccessKey);
+  Result := Create('market', OwnerId, Id, AccessKey);
+end;
+
+class function Attachment.MarketAlbum(OwnerId, Id: Integer; AccessKey: string): string;
+begin
+  Result := Create('market_album', OwnerId, Id, AccessKey);
+end;
+
+class function Attachment.Photo(OwnerId, Id: Integer; AccessKey: string): string;
+begin
+  Result := Create('photo', OwnerId, Id, AccessKey);
+end;
+
+class function Attachment.Sticker(OwnerId, Id: Integer; AccessKey: string): string;
+begin
+  Result := Create('sticker', OwnerId, Id, AccessKey);
+end;
+
+class function Attachment.Video(OwnerId, Id: Integer; AccessKey: string): string;
+begin
+  Result := Create('video', OwnerId, Id, AccessKey);
+end;
+
+class function Attachment.Wall(OwnerId, Id: Integer; AccessKey: string): string;
+begin
+  Result := Create('wall', OwnerId, Id, AccessKey);
+end;
+
+class function Attachment.WallReply(OwnerId, Id: Integer; AccessKey: string): string;
+begin
+  Result := Create('wall_reply', OwnerId, Id, AccessKey);
+end;
+
+class function Attachment.Album(OwnerId, Id: Integer; AccessKey: string): string;
+begin
+  Result := Create('album', OwnerId, Id, AccessKey);
 end;
 
 { TVkPostLinkButtonHelper }
@@ -2428,14 +2572,16 @@ end;
 
 class function TVkLinkStatusTypeHelper.FromString(Value: string): TVkLinkStatusType;
 begin
-  if Value = 'not_banned' then
-    Result := lsNotBanned
-  else if Value = 'banned' then
-    Result := lsBanned
-  else if Value = 'processing' then
-    Result := lsProcessing
+  case IndexStr(Value, ['not_banned', 'banned', 'processing']) of
+    0:
+      Result := lsNotBanned;
+    1:
+      Result := lsBanned;
+    2:
+      Result := lsProcessing;
   else
     Result := lsProcessing;
+  end;
 end;
 
 function TVkLinkStatusTypeHelper.ToString: string;
@@ -2461,6 +2607,157 @@ begin
       Result := vtApp;
   else
     Result := vtUnknown;
+  end;
+end;
+
+{ TMessageFlagHelper }
+
+function TMessageFlagHelper.ToString: string;
+begin
+  Result := VkMessageFlagTypes[Self];
+end;
+
+{ TVkMessageActionTypeHelper }
+
+class function TVkMessageActionTypeHelper.Create(const Value: string): TVkMessageActionType;
+var
+  Action: TVkMessageActionType;
+begin
+  Result := maUnknown;
+  for Action := maChatPhotoUpdate to maChatInviteUserByLink do
+    if VkMessageActionType[Action] = Value then
+      Exit(Action);
+end;
+
+function TVkMessageActionTypeHelper.ToString: string;
+begin
+  Result := VkMessageActionType[Self];
+end;
+
+{ TVkPlatformHelper }
+
+class function TVkPlatformHelper.Create(const Value: string): TVkPlatform;
+var
+  Item: TVkPlatform;
+begin
+  Result := pfUnknown;
+  for Item := pfMobile to pfWeb do
+    if VkPlatformsType[Item] = Value then
+      Exit(Item);
+end;
+
+function TVkPlatformHelper.ToString: string;
+begin
+  Result := VkPlatformsType[Self];
+end;
+
+{ TVkNameRequestStatusHelper }
+
+class function TVkNameRequestStatusHelper.Create(const Value: string): TVkNameRequestStatus;
+begin
+  case IndexStr(Value, ['processing', 'declined', 'response', 'response_with_link']) of
+    0:
+      Exit(rsProcessing);
+    1:
+      Exit(rsDeclined);
+    2:
+      Exit(rsResponse);
+    3:
+      Exit(rsResponseWithLink);
+  else
+    Result := rsProcessing;
+  end;
+end;
+
+function TVkNameRequestStatusHelper.ToString: string;
+begin
+  case Self of
+    rsProcessing:
+      Exit('processing');
+    rsDeclined:
+      Exit('declined');
+    rsResponse:
+      Exit('response');
+    rsResponseWithLink:
+      Exit('response_with_link');
+  else
+    Result := '';
+  end;
+end;
+
+{ TVkDeactivatedHelper }
+
+class function TVkDeactivatedHelper.Create(const Value: string): TVkDeactivated;
+begin
+  case IndexStr(Value, ['deleted', 'banned']) of
+    0:
+      Exit(TVkDeactivated.pdDeleted);
+    1:
+      Exit(TVkDeactivated.pdBanned);
+  else
+    Exit(TVkDeactivated.pdNone);
+  end;
+end;
+
+function TVkDeactivatedHelper.ToString: string;
+begin
+  case Self of
+    pdDeleted:
+      Exit('deleted');
+    pdBanned:
+      Exit('banned');
+  else
+    Exit('');
+  end;
+end;
+
+{ TVkKeyboardButtonColorHelper }
+
+class function TVkKeyboardButtonColorHelper.Create(Value: string): TVkKeyboardButtonColor;
+begin
+  case IndexStr(Value, ['positive', 'negative', 'primary', 'secondary']) of
+    0:
+      Result := bcPositive;
+    1:
+      Result := bcNegative;
+    2:
+      Result := bcPrimary;
+    3:
+      Result := bcSecondary;
+  else
+    Result := bcPositive;
+  end;
+end;
+
+function TVkKeyboardButtonColorHelper.ToColor: TAlphaColor;
+begin
+  case Self of
+    bcPositive:
+      Result := $FF4BB34B;
+    bcNegative:
+      Result := $FFE64646;
+    bcPrimary:
+      Result := $FF5181B8;
+    bcSecondary:
+      Result := $FFFFFFFF;
+  else
+    Result := $FFFFFFFF;
+  end;
+end;
+
+function TVkKeyboardButtonColorHelper.ToString: string;
+begin
+  case Self of
+    bcPositive:
+      Result := 'positive';
+    bcNegative:
+      Result := 'negative';
+    bcPrimary:
+      Result := 'primary';
+    bcSecondary:
+      Result := 'secondary';
+  else
+    Result := ''
   end;
 end;
 

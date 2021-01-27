@@ -2,7 +2,9 @@ program VKAuth;
 
 uses
   Vcl.Forms,
-  VKAuth.Main in 'VKAuth.Main.pas' {FormMain};
+  VKAuth.Main in 'VKAuth.Main.pas' {FormMain},
+  VK.Entity.Common.ExtendedList in '..\..\Entity\VK.Entity.Common.ExtendedList.pas',
+  VK.Entity.Group.Invites in '..\..\Entity\VK.Entity.Group.Invites.pas';
 
 {$R *.res}
 

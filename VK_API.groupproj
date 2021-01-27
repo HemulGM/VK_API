@@ -6,16 +6,16 @@
         <Projects Include="Samples\Auth\VKAuth.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\VKClean\VKClean.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="VKComponents.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\VKBotTemplate\VKBotApp.dproj">
+        <Projects Include="Samples\Bot\VKBotTemplate.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Samples\VKBotTemplate.dproj">
+        <Projects Include="Samples\SQLite\SQLiteWork.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\SQLite\SampleFMX\SQLiteFMX.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -35,15 +35,6 @@
     <Target Name="VKAuth:Make">
         <MSBuild Projects="Samples\Auth\VKAuth.dproj" Targets="Make"/>
     </Target>
-    <Target Name="VKClean">
-        <MSBuild Projects="..\VKClean\VKClean.dproj"/>
-    </Target>
-    <Target Name="VKClean:Clean">
-        <MSBuild Projects="..\VKClean\VKClean.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="VKClean:Make">
-        <MSBuild Projects="..\VKClean\VKClean.dproj" Targets="Make"/>
-    </Target>
     <Target Name="VKComponents">
         <MSBuild Projects="VKComponents.dproj"/>
     </Target>
@@ -53,32 +44,41 @@
     <Target Name="VKComponents:Make">
         <MSBuild Projects="VKComponents.dproj" Targets="Make"/>
     </Target>
-    <Target Name="VKBotApp">
-        <MSBuild Projects="..\VKBotTemplate\VKBotApp.dproj"/>
-    </Target>
-    <Target Name="VKBotApp:Clean">
-        <MSBuild Projects="..\VKBotTemplate\VKBotApp.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="VKBotApp:Make">
-        <MSBuild Projects="..\VKBotTemplate\VKBotApp.dproj" Targets="Make"/>
-    </Target>
     <Target Name="VKBotTemplate">
-        <MSBuild Projects="Samples\VKBotTemplate.dproj"/>
+        <MSBuild Projects="Samples\Bot\VKBotTemplate.dproj"/>
     </Target>
     <Target Name="VKBotTemplate:Clean">
-        <MSBuild Projects="Samples\VKBotTemplate.dproj" Targets="Clean"/>
+        <MSBuild Projects="Samples\Bot\VKBotTemplate.dproj" Targets="Clean"/>
     </Target>
     <Target Name="VKBotTemplate:Make">
-        <MSBuild Projects="Samples\VKBotTemplate.dproj" Targets="Make"/>
+        <MSBuild Projects="Samples\Bot\VKBotTemplate.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SQLiteWork">
+        <MSBuild Projects="Samples\SQLite\SQLiteWork.dproj"/>
+    </Target>
+    <Target Name="SQLiteWork:Clean">
+        <MSBuild Projects="Samples\SQLite\SQLiteWork.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SQLiteWork:Make">
+        <MSBuild Projects="Samples\SQLite\SQLiteWork.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SQLiteFMX">
+        <MSBuild Projects="..\SQLite\SampleFMX\SQLiteFMX.dproj"/>
+    </Target>
+    <Target Name="SQLiteFMX:Clean">
+        <MSBuild Projects="..\SQLite\SampleFMX\SQLiteFMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SQLiteFMX:Make">
+        <MSBuild Projects="..\SQLite\SampleFMX\SQLiteFMX.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="VKAuth;VKClean;VKComponents;VKBotApp;VKBotTemplate"/>
+        <CallTarget Targets="VKAuth;VKComponents;VKBotTemplate;SQLiteWork;SQLiteFMX"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="VKAuth:Clean;VKClean:Clean;VKComponents:Clean;VKBotApp:Clean;VKBotTemplate:Clean"/>
+        <CallTarget Targets="VKAuth:Clean;VKComponents:Clean;VKBotTemplate:Clean;SQLiteWork:Clean;SQLiteFMX:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="VKAuth:Make;VKClean:Make;VKComponents:Make;VKBotApp:Make;VKBotTemplate:Make"/>
+        <CallTarget Targets="VKAuth:Make;VKComponents:Make;VKBotTemplate:Make;SQLiteWork:Make;SQLiteFMX:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -3,7 +3,9 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Attachment;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  Vk.Types, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Common.List,
+  VK.Wrap.Interceptors, VK.Entity.AudioMessage;
 
 type
   TVkPreviewPhoto = class
@@ -12,27 +14,38 @@ type
   public
     property Sizes: TVkSizes read FSizes write FSizes;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPreviewPhoto;
   end;
 
-  TVkPreview = class
+  TVkPreview = class(TVkEntity)
   private
     FPhoto: TVkPreviewPhoto;
+    FGraffiti: TVkSize;
+    FAudio_message: TVkAudioMessage;
   public
+    /// <summary>
+    /// Изображения для предпросмотра
+    /// </summary>
     property Photo: TVkPreviewPhoto read FPhoto write FPhoto;
-    constructor Create;
+    /// <summary>
+    /// Данные о граффити
+    /// </summary>
+    property Graffiti: TVkSize read FGraffiti write FGraffiti;
+    /// <summary>
+    /// Данные об аудиосообщении
+    /// </summary>
+    property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPreview;
   end;
 
+  /// <summary>
+  /// Объект, описывающий документ
+  /// </summary>
   TVkDocument = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FExt: string;
-    FId: Integer;
     FIs_licensed: Boolean;
     FOwner_id: Integer;
     FPreview: TVkPreview;
@@ -48,98 +61,88 @@ type
     7 — электронные книги;
     8 — неизвестно.
     }
-    FType: Integer;
+    [JsonReflectAttribute(ctString, rtString, TDocumentTypeInterceptor)]
+    FType: TVkDocumentType;
     FUrl: string;
-    function GetDate: TDateTime;
-    procedure SetDate(const Value: TDateTime);
     function GetSizeStr: string;
   public
+    /// <summary>
+    /// Идентификатор документа
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Ключ доступа
+    /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
-    property Date: TDateTime read GetDate write SetDate;
+    /// <summary>
+    /// Дата добавления
+    /// </summary>
+    property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Расширение документа
+    /// </summary>
     property Ext: string read FExt write FExt;
-    property Id: Integer read FId write FId;
     property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
+    /// <summary>
+    /// Идентификатор пользователя, загрузившего документ
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
+    /// <summary>
+    /// Информация для предварительного просмотра документа
+    /// </summary>
     property Preview: TVkPreview read FPreview write FPreview;
+    /// <summary>
+    /// Размер документа в байтах
+    /// </summary>
     property Size: Integer read FSize write FSize;
     property SizeStr: string read GetSizeStr;
+    /// <summary>
+    /// Название документа
+    /// </summary>
     property Title: string read FTitle write FTitle;
-    property&Type: Integer read FType write FType;
+    /// <summary>
+    /// Тип документа
+    /// </summary>
+    property&Type: TVkDocumentType read FType write FType;
+    /// <summary>
+    /// Адрес документа, по которому его можно загрузить
+    /// </summary>
     property Url: string read FUrl write FUrl;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
     function ToAttachment: string;
-    class function FromJsonString(AJsonString: string): TVkDocument;
   end;
 
-  TVkDocuments = class
-  private
-    FItems: TArray<TVkDocument>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkDocument> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Audios: TVkDocuments);
-    constructor Create;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkDocuments;
-  end;
+  TVkDocuments = TVkEntityList<TVkDocument>;
 
 implementation
 
 uses
-  VK.Types, System.SysUtils, System.DateUtils;
+  System.SysUtils, System.DateUtils, VK.CommonUtils;
 
 {TVkPreviewPhoto}
 
 destructor TVkPreviewPhoto.Destroy;
-var
-  LsizesItem: TVkSize;
 begin
-
-  for LsizesItem in FSizes do
-    LsizesItem.Free;
-
+  {$IFNDEF AUTOREFCOUNT}
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
+  {$ENDIF}
   inherited;
-end;
-
-function TVkPreviewPhoto.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPreviewPhoto.FromJsonString(AJsonString: string): TVkPreviewPhoto;
-begin
-  result := TJson.JsonToObject<TVkPreviewPhoto>(AJsonString)
 end;
 
 {TVkPreview}
 
-constructor TVkPreview.Create;
-begin
-  inherited;
-  FPhoto := TVkPreviewPhoto.Create();
-end;
-
 destructor TVkPreview.Destroy;
 begin
-  FPhoto.Free;
+  {$IFNDEF AUTOREFCOUNT}
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  if Assigned(FGraffiti) then
+    FGraffiti.Free;
+  if Assigned(FAudio_message) then
+    FAudio_message.Free;
+  {$ENDIF}
   inherited;
-end;
-
-function TVkPreview.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPreview.FromJsonString(AJsonString: string): TVkPreview;
-begin
-  result := TJson.JsonToObject<TVkPreview>(AJsonString)
 end;
 
 {TVkDocument}
@@ -152,7 +155,9 @@ end;
 
 destructor TVkDocument.Destroy;
 begin
+  {$IFNDEF AUTOREFCOUNT}
   FPreview.Free;
+  {$ENDIF}
   inherited;
 end;
 
@@ -161,77 +166,12 @@ begin
   Result := Attachment.Doc(FId, FOwner_id, FAccess_key);
 end;
 
-function TVkDocument.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkDocument.FromJsonString(AJsonString: string): TVkDocument;
-begin
-  result := TJson.JsonToObject<TVkDocument>(AJsonString)
-end;
-
-function TVkDocument.GetDate: TDateTime;
-begin
-  Result := UnixToDateTime(FDate, False);
-end;
-
 function TVkDocument.GetSizeStr: string;
 begin
   if FSize / (1024 * 1024) > 1 then
     Result := FormatFloat('0.00 мб', FSize / 1024 / 1024)
   else
     Result := FormatFloat('0.00 кб', FSize / 1024);
-end;
-
-procedure TVkDocument.SetDate(const Value: TDateTime);
-begin
-  FDate := DateTimeToUnix(Value, False);
-end;
-
-{ TVkDocuments }
-
-procedure TVkDocuments.Append(Audios: TVkDocuments);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Audios.Items));
-  Move(Audios.Items[0], FItems[OldLen], Length(Audios.Items) * SizeOf(TVkDocument));
-end;
-
-constructor TVkDocuments.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkDocuments.Destroy;
-var
-  LItemsItem: TVkDocument;
-begin
-  if not FSaveObjects then
-  begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
-  end;
-
-  inherited;
-end;
-
-class function TVkDocuments.FromJsonString(AJsonString: string): TVkDocuments;
-begin
-  result := TJson.JsonToObject<TVkDocuments>(AJsonString);
-end;
-
-procedure TVkDocuments.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
-function TVkDocuments.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

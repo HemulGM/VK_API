@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheet9
+      ActivePage = TabSheet7
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -244,6 +244,15 @@ object FormMain: TFormMain
           Caption = 'Account.Offline'
           TabOrder = 8
           OnClick = Button10Click
+        end
+        object Button40: TButton
+          Left = 146
+          Top = 3
+          Width = 137
+          Height = 25
+          Caption = 'Account.GetProfileInfo'
+          TabOrder = 9
+          OnClick = Button40Click
         end
       end
       object TabSheet2: TTabSheet
@@ -522,94 +531,101 @@ object FormMain: TFormMain
   end
   object VK1: TVK
     AppID = '6121396'
-    EndPoint = 'https://oauth.vk.com/authorize'
-    Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     BaseURL = 'https://api.vk.com/method'
-    Proxy.Port = 0
+    EndPoint = 'https://oauth.vk.com/authorize'
+    Logging = True
+    LogResponse = True
     OnAuth = VK1Auth
-    OnLogin = VK1Login
-    OnLog = VK1Log
     OnError = VK1Error
-    OnErrorLogin = VK1ErrorLogin
+    OnLog = VK1Log
+    OnLogin = VK1Login
+    Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
+    Proxy.Port = 0
+    UsePseudoAsync = True
     Left = 96
     Top = 56
   end
   object VkUserEvents1: TVkUserEvents
-    VK = VK1
-    OnNewMessage = VkUserEvents1NewMessage
-    OnEditMessage = VkUserEvents1EditMessage
-    OnUserOnline = VkUserEvents1UserOnline
-    OnUserOffline = VkUserEvents1UserOffline
-    OnChangeMessageFlags = VkUserEvents1ChangeMessageFlags
+    Logging = True
     OnChangeDialogFlags = VkUserEvents1ChangeDialogFlags
-    OnReadMessages = VkUserEvents1ReadMessages
-    OnRecoverMessages = VkUserEvents1RecoverMessages
-    OnDeleteMessages = VkUserEvents1DeleteMessages
+    OnChangeMessageFlags = VkUserEvents1ChangeMessageFlags
     OnChatChanged = VkUserEvents1ChatChanged
     OnChatChangeInfo = VkUserEvents1ChatChangeInfo
-    OnUserTyping = VkUserEvents1UserTyping
-    OnUsersTyping = VkUserEvents1UsersTyping
-    OnUsersRecording = VkUserEvents1UsersRecording
-    OnUserCall = VkUserEvents1UserCall
     OnCountChange = VkUserEvents1CountChange
+    OnDeleteMessages = VkUserEvents1DeleteMessages
+    OnEditMessage = VkUserEvents1EditMessage
+    OnNewMessage = VkUserEvents1NewMessage
     OnNotifyChange = VkUserEvents1NotifyChange
+    OnReadMessages = VkUserEvents1ReadMessages
+    OnRecoverMessages = VkUserEvents1RecoverMessages
+    OnUnhandledEvents = VkUserEvents1UnhandledEvents
+    OnUserCall = VkUserEvents1UserCall
+    OnUserOffline = VkUserEvents1UserOffline
+    OnUserOnline = VkUserEvents1UserOnline
+    OnUsersRecording = VkUserEvents1UsersRecording
+    OnUsersTyping = VkUserEvents1UsersTyping
+    OnUserTyping = VkUserEvents1UserTyping
     Version = '3'
+    VK = VK1
     Left = 208
     Top = 56
   end
   object VkGroupEventsController1: TVkGroupEventsController
-    VK = VK1
     Groups.Strings = (
       '-145962568'
       '-184755622')
-    OnWallReplyNew = VkGroupEventsController1WallReplyNew
-    OnWallReplyEdit = VkGroupEventsController1WallReplyEdit
-    OnWallReplyRestore = VkGroupEventsController1WallReplyRestore
-    OnWallReplyDelete = VkGroupEventsController1WallReplyDelete
-    OnWallPostNew = VkGroupEventsController1WallPostNew
-    OnWallRepost = VkGroupEventsController1WallRepost
+    Logging = True
     OnAudioNew = VkGroupEventsController1AudioNew
-    OnVideoNew = VkGroupEventsController1VideoNew
-    OnVideoCommentNew = VkGroupEventsController1VideoCommentNew
-    OnVideoCommentEdit = VkGroupEventsController1VideoCommentEdit
-    OnVideoCommentRestore = VkGroupEventsController1VideoCommentRestore
-    OnVideoCommentDelete = VkGroupEventsController1VideoCommentDelete
-    OnPhotoNew = VkGroupEventsController1PhotoNew
-    OnPhotoCommentNew = VkGroupEventsController1PhotoCommentNew
-    OnPhotoCommentEdit = VkGroupEventsController1PhotoCommentEdit
-    OnPhotoCommentRestore = VkGroupEventsController1PhotoCommentRestore
-    OnPhotoCommentDelete = VkGroupEventsController1PhotoCommentDelete
-    OnMessageNew = VkGroupEventsController1MessageNew
-    OnMessageReply = VkGroupEventsController1MessageReply
-    OnMessageEdit = VkGroupEventsController1MessageEdit
+    OnBoardPostDelete = VkGroupEventsController1BoardPostDelete
+    OnBoardPostEdit = VkGroupEventsController1BoardPostEdit
+    OnBoardPostNew = VkGroupEventsController1BoardPostNew
+    OnBoardPostRestore = VkGroupEventsController1BoardPostRestore
+    OnGroupAppPayload = VkGroupEventsController1GroupAppPayload
+    OnGroupChangePhoto = VkGroupEventsController1GroupChangePhoto
+    OnGroupChangeSettings = VkGroupEventsController1GroupChangeSettings
+    OnGroupJoin = VkGroupEventsController1GroupJoin
+    OnGroupLeave = VkGroupEventsController1GroupLeave
+    OnGroupOfficersEdit = VkGroupEventsController1GroupOfficersEdit
+    OnGroupPayTransaction = VkGroupEventsController1GroupPayTransaction
+    OnGroupPollVoteNew = VkGroupEventsController1GroupPollVoteNew
+    OnGroupUnhandledEvents = VkGroupEventsController1GroupUnhandledEvents
+    OnMarketCommentDelete = VkGroupEventsController1MarketCommentDelete
+    OnMarketCommentEdit = VkGroupEventsController1MarketCommentEdit
+    OnMarketCommentNew = VkGroupEventsController1MarketCommentNew
+    OnMarketCommentRestore = VkGroupEventsController1MarketCommentRestore
     OnMessageAllow = VkGroupEventsController1MessageAllow
     OnMessageDeny = VkGroupEventsController1MessageDeny
+    OnMessageEdit = VkGroupEventsController1MessageEdit
+    OnMessageNew = VkGroupEventsController1MessageNew
+    OnMessageReply = VkGroupEventsController1MessageReply
     OnMessageTypingState = VkGroupEventsController1MessageTypingState
-    OnBoardPostNew = VkGroupEventsController1BoardPostNew
-    OnBoardPostEdit = VkGroupEventsController1BoardPostEdit
-    OnBoardPostRestore = VkGroupEventsController1BoardPostRestore
-    OnBoardPostDelete = VkGroupEventsController1BoardPostDelete
-    OnMarketCommentNew = VkGroupEventsController1MarketCommentNew
-    OnMarketCommentEdit = VkGroupEventsController1MarketCommentEdit
-    OnMarketCommentRestore = VkGroupEventsController1MarketCommentRestore
-    OnMarketCommentDelete = VkGroupEventsController1MarketCommentDelete
-    OnGroupLeave = VkGroupEventsController1GroupLeave
-    OnGroupJoin = VkGroupEventsController1GroupJoin
+    OnPhotoCommentDelete = VkGroupEventsController1PhotoCommentDelete
+    OnPhotoCommentEdit = VkGroupEventsController1PhotoCommentEdit
+    OnPhotoCommentNew = VkGroupEventsController1PhotoCommentNew
+    OnPhotoCommentRestore = VkGroupEventsController1PhotoCommentRestore
+    OnPhotoNew = VkGroupEventsController1PhotoNew
     OnUserBlock = VkGroupEventsController1UserBlock
     OnUserUnBlock = VkGroupEventsController1UserUnBlock
-    OnGroupPollVoteNew = VkGroupEventsController1GroupPollVoteNew
-    OnGroupOfficersEdit = VkGroupEventsController1GroupOfficersEdit
-    OnGroupChangeSettings = VkGroupEventsController1GroupChangeSettings
-    OnGroupChangePhoto = VkGroupEventsController1GroupChangePhoto
-    OnGroupPayTransaction = VkGroupEventsController1GroupPayTransaction
-    OnGroupAppPayload = VkGroupEventsController1GroupAppPayload
+    OnVideoCommentDelete = VkGroupEventsController1VideoCommentDelete
+    OnVideoCommentEdit = VkGroupEventsController1VideoCommentEdit
+    OnVideoCommentNew = VkGroupEventsController1VideoCommentNew
+    OnVideoCommentRestore = VkGroupEventsController1VideoCommentRestore
+    OnVideoNew = VkGroupEventsController1VideoNew
+    OnWallPostNew = VkGroupEventsController1WallPostNew
+    OnWallReplyDelete = VkGroupEventsController1WallReplyDelete
+    OnWallReplyEdit = VkGroupEventsController1WallReplyEdit
+    OnWallReplyNew = VkGroupEventsController1WallReplyNew
+    OnWallReplyRestore = VkGroupEventsController1WallReplyRestore
+    OnWallRepost = VkGroupEventsController1WallRepost
     Version = '3'
+    VK = VK1
     Left = 96
     Top = 120
   end
   object VkGroupEvents1: TVkGroupEvents
-    VK = VK1
+    Logging = True
     Version = '3'
+    VK = VK1
     Left = 208
     Top = 120
   end

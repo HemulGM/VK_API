@@ -3,7 +3,8 @@ unit VK.Storage;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Storage;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Storage;
 
 type
   /// <summary>
@@ -44,18 +45,7 @@ begin
   Params.Add('keys', Keys);
   if UserId <> 0 then
     Params.Add('user_id', UserId);
-  with Handler.Execute('storage.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStorageItems.FromJsonString(AppendItemsTag(Response));
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('storage.get', Params).GetObjects<TVkStorageItems>(Items);
 end;
 
 function TStorageController.&Set(const Key, Value: string; UserId: Integer): Boolean;
@@ -85,10 +75,13 @@ begin
     begin
       try
         Value := '';
-        Items := TVkStorageItems.FromJsonString(AppendItemsTag(Response));
-        if Length(Items.Items) > 0 then
-          Value := Items.Items[0].Value;
-        Items.Free;
+        Items := TVkStorageItems.FromJsonString<TVkStorageItems>(ResponseAsItems);
+        try
+          if Length(Items.Items) > 0 then
+            Value := Items.Items[0].Value;
+        finally
+          Items.Free;
+        end;
       except
         Result := False;
       end;
@@ -104,18 +97,7 @@ begin
   Params.Add('count', Count);
   if UserId <> 0 then
     Params.Add('user_id', UserId);
-  with Handler.Execute('storage.getKeys', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkStorageKeys.FromJsonString(AppendItemsTag(Response));
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('storage.getKeys', Params).GetObjects<TVkStorageKeys>(Items);
 end;
 
 end.

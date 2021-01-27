@@ -3,7 +3,8 @@ unit VK.Search;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Search;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Search;
 
 type
   TVkSearchFilter = (sfFriends, sfIdols, sfPublics, sfGroups, sfEvents, sfCorrespondents, sfMutualFriends);
@@ -56,18 +57,7 @@ uses
 
 function TSearchController.GetHints(var Items: TVkSearchItems; Params: TParams): Boolean;
 begin
-  with Handler.Execute('search.getHints', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkSearchItems.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('search.getHints', Params).GetObject<TVkSearchItems>(Items);
 end;
 
 function TSearchController.GetHints(var Items: TVkSearchItems; Params: TVkParamsSearch): Boolean;

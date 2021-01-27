@@ -16,23 +16,23 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежат документы.
     /// </summary>
-    function OwnerId(Value: Integer): Integer;
+    function OwnerId(Value: Integer): TVkParamsDocsGet;
     /// <summary>
     /// Фильтр по типу документа.
     /// </summary>
-    function &Type(Value: TVkDocTypeFilter): Integer;
+    function &Type(Value: TVkDocTypeFilter): TVkParamsDocsGet;
     /// <summary>
     /// Возвращать теги
     /// </summary>
-    function ReturnTags(Value: Boolean): Integer;
+    function ReturnTags(Value: Boolean): TVkParamsDocsGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества документов.
     /// </summary>
-    function Offset(Value: Integer): Integer;
+    function Offset(Value: Integer): TVkParamsDocsGet;
     /// <summary>
     /// Количество документов, информацию о которых нужно вернуть.
     /// </summary>
-    function Count(Value: Integer): Integer;
+    function Count(Value: Integer): TVkParamsDocsGet;
   end;
 
   TVkParamsDocsSearch = record
@@ -40,23 +40,23 @@ type
     /// <summary>
     /// True — искать среди собственных документов пользователя.
     /// </summary>
-    function SearchOwn(Value: Boolean): Integer;
+    function SearchOwn(Value: Boolean): TVkParamsDocsSearch;
     /// <summary>
     /// Строка поискового запроса. Например, зеленые тапочки.
     /// </summary>
-    function Query(Value: string): Integer;
+    function Query(Value: string): TVkParamsDocsSearch;
     /// <summary>
     /// Количество документов, информацию о которых нужно вернуть.
     /// </summary>
-    function Count(Value: Integer): Integer;
+    function Count(Value: Integer): TVkParamsDocsSearch;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества документов.
     /// </summary>
-    function Offset(Value: Integer): Integer;
+    function Offset(Value: Integer): TVkParamsDocsSearch;
     /// <summary>
     /// Возвращать теги.
     /// </summary>
-    function ReturnTags(Value: Boolean): Integer;
+    function ReturnTags(Value: Boolean): TVkParamsDocsSearch;
   end;
 
   TDocController = class(TVkController)
@@ -130,7 +130,6 @@ uses
 function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: Integer): Boolean;
 var
   Params: TParams;
-  JSONItem: TJSONValue;
 begin
   case&Type of
     dutDoc:
@@ -140,40 +139,12 @@ begin
   end;
   if PeerId <> 0 then
     Params.Add('peer_id', PeerId);
-  with Handler.Execute('docs.getMessagesUploadServer', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.getMessagesUploadServer', Params).GetValue('upload_url', UploadUrl)
 end;
 
 function TDocController.Get(var Items: TVkDocuments; Params: TParams): Boolean;
 begin
-  with Handler.Execute('docs.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDocuments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.get', Params).GetObject<TVkDocuments>(Items);
 end;
 
 function TDocController.Add(var Id: Integer; OwnerId, DocId: Integer; AccessKey: string): Boolean;
@@ -184,17 +155,14 @@ begin
   Params.Add('doc_id', DocId);
   if not AccessKey.IsEmpty then
     Params.Add('access_key', AccessKey);
-  with Handler.Execute('docs.Add', Params) do
-  begin
-    Result := Success and TryStrToInt(Response, Id);
-  end;
+  Result := Handler.Execute('docs.Add', Params).ResponseAsInt(Id);
 end;
 
 function TDocController.Delete(OwnerId, DocId: Integer): Boolean;
 begin
   with Handler.Execute('docs.delete', [['doc_id', DocId.ToString], ['owner_id', OwnerId.ToString]]) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -208,7 +176,7 @@ begin
   Params.Add('tags', Tags);
   with Handler.Execute('docs.edit', Params) do
   begin
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
   end;
 end;
 
@@ -219,24 +187,15 @@ end;
 
 function TDocController.GetById(var Items: TVkDocuments; Docs: TArrayOfString; ReturnTags: Boolean): Boolean;
 begin
-  with Handler.Execute('docs.getById', [['docs', Docs.ToString], ['return_tags', BoolToString(ReturnTags)]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDocuments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.getById', [
+    ['docs', Docs.ToString],
+    ['return_tags', BoolToString(ReturnTags)]]).
+    GetObject<TVkDocuments>(Items);
 end;
 
 function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType): Boolean;
 var
   Params: TParams;
-  JSONItem: TJSONValue;
 begin
   case&Type of
     dutDoc:
@@ -244,88 +203,22 @@ begin
     dutAudioMessage:
       Params.Add('type', 'audio_message');
   end;
-  with Handler.Execute('docs.getMessagesUploadServer', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.getMessagesUploadServer', Params).GetValue('upload_url', UploadUrl);
 end;
 
 function TDocController.GetTypes(var Items: TVkDocTypes; OwnerId: Integer): Boolean;
 begin
-  with Handler.Execute('docs.getTypes', ['owner_id', OwnerId.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDocTypes.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.getTypes', ['owner_id', OwnerId.ToString]).GetObject<TVkDocTypes>(Items);
 end;
 
 function TDocController.GetUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
-var
-  JSONItem: TJSONValue;
 begin
-  with Handler.Execute('docs.getUploadServer', ['group_id', GroupId.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.getUploadServer', ['group_id', GroupId.ToString]).GetValue('upload_url', UploadUrl);
 end;
 
 function TDocController.GetWallUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
-var
-  JSONItem: TJSONValue;
 begin
-  with Handler.Execute('docs.getWallUploadServer', ['group_id', GroupId.ToString]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        JSONItem := TJSONObject.ParseJSONValue(Response);
-        try
-          UploadUrl := JSONItem.GetValue<string>('upload_url', '');
-        finally
-          JSONItem.Free;
-        end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.getWallUploadServer', ['group_id', GroupId.ToString]).GetValue('upload_url', UploadUrl);
 end;
 
 function TDocController.Save(var Doc: TVkDocSaved; FileData: string; Title, Tags: string; ReturnTags: Boolean): Boolean;
@@ -337,18 +230,7 @@ begin
   Params.Add('tags', Tags);
   if ReturnTags then
     Params.Add('return_tags', BoolToString(ReturnTags));
-  with Handler.Execute('docs.save', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Doc := TVkDocSaved.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.save', Params).GetObject<TVkDocSaved>(Doc);
 end;
 
 function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer;
@@ -360,10 +242,8 @@ begin
   if GetMessagesUploadServer(Url, dutAudioMessage, PeerId) then
   begin
     try
-      if TCustomVK(VK).Uploader.Upload(Url, FileName, Response) then
-      begin
-        Result := Save(Doc, Response, Title, Tags);
-      end
+      if TCustomVK(VK).Upload(Url, FileName, Response) then
+        Result := Save(Doc, Response, Title, Tags)
       else
         TCustomVK(VK).DoError(Self, TVkException.Create(Response), -1, Response);
     except
@@ -374,72 +254,71 @@ end;
 
 function TDocController.Search(var Items: TVkDocuments; Params: TVkParamsDocsSearch): Boolean;
 begin
-  with Handler.Execute('docs.search', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkDocuments.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('docs.search', Params.List).GetObject<TVkDocuments>(Items);
 end;
 
 { TVkParamsDocsGet }
 
-function TVkParamsDocsGet.Count(Value: Integer): Integer;
+function TVkParamsDocsGet.Count(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := List.Add('count', Value);
+  Result := Self;
+  List.Add('count', Value);
 end;
 
-function TVkParamsDocsGet.Offset(Value: Integer): Integer;
+function TVkParamsDocsGet.Offset(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := List.Add('offset', Value);
+  Result := Self;
+  List.Add('offset', Value);
 end;
 
-function TVkParamsDocsGet.OwnerId(Value: Integer): Integer;
+function TVkParamsDocsGet.OwnerId(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := List.Add('owner_id', Value);
+  Result := Self;
+  List.Add('owner_id', Value);
 end;
 
-function TVkParamsDocsGet.ReturnTags(Value: Boolean): Integer;
+function TVkParamsDocsGet.ReturnTags(Value: Boolean): TVkParamsDocsGet;
 begin
-  Result := List.Add('return_tags', Value);
+  Result := Self;
+  List.Add('return_tags', Value);
 end;
 
-function TVkParamsDocsGet.&Type(Value: TVkDocTypeFilter): Integer;
+function TVkParamsDocsGet.&Type(Value: TVkDocTypeFilter): TVkParamsDocsGet;
 begin
-  Result := List.Add('type', Ord(Value));
+  Result := Self;
+  List.Add('type', Ord(Value));
 end;
 
 { TVkParamsDocsSearch }
 
-function TVkParamsDocsSearch.Count(Value: Integer): Integer;
+function TVkParamsDocsSearch.Count(Value: Integer): TVkParamsDocsSearch;
 begin
-  Result := List.Add('count', Value);
+  Result := Self;
+  List.Add('count', Value);
 end;
 
-function TVkParamsDocsSearch.Offset(Value: Integer): Integer;
+function TVkParamsDocsSearch.Offset(Value: Integer): TVkParamsDocsSearch;
 begin
-  Result := List.Add('offset', Value);
+  Result := Self;
+  List.Add('offset', Value);
 end;
 
-function TVkParamsDocsSearch.Query(Value: string): Integer;
+function TVkParamsDocsSearch.Query(Value: string): TVkParamsDocsSearch;
 begin
-  Result := List.Add('q', Value);
+  Result := Self;
+  List.Add('q', Value);
 end;
 
-function TVkParamsDocsSearch.ReturnTags(Value: Boolean): Integer;
+function TVkParamsDocsSearch.ReturnTags(Value: Boolean): TVkParamsDocsSearch;
 begin
-  Result := List.Add('return_tags', Value);
+  Result := Self;
+  List.Add('return_tags', Value);
 end;
 
-function TVkParamsDocsSearch.SearchOwn(Value: Boolean): Integer;
+function TVkParamsDocsSearch.SearchOwn(Value: Boolean): TVkParamsDocsSearch;
 begin
-  Result := List.Add('search_own', Value);
+  Result := Self;
+  List.Add('search_own', Value);
 end;
 
 end.

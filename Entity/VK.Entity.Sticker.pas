@@ -3,75 +3,59 @@ unit VK.Entity.Sticker;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common;
 
 type
-  TVkStickerImage = class
-  private
-    FHeight: Extended;
-    FUrl: string;
-    FWidth: Extended;
-  public
-    property Height: Extended read FHeight write FHeight;
-    property Url: string read FUrl write FUrl;
-    property Width: Extended read FWidth write FWidth;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStickerImage;
-  end;
-
   TVkSticker = class
   private
-    FImages: TArray<TVkStickerImage>;
-    FImages_with_background: TArray<TVkStickerImage>;
-    FProduct_id: Extended;
-    FSticker_id: Extended;
+    FImages: TArray<TVkImage>;
+    FImages_with_background: TArray<TVkImage>;
+    FProduct_id: Integer;
+    FSticker_id: Integer;
+    FAccess_key: string;
+    FAnimation_url: string;
+    FIs_allowed: Boolean;
   public
-    property Images: TArray<TVkStickerImage> read FImages write FImages;
-    property ImagesWithBackground: TArray<TVkStickerImage> read FImages_with_background write FImages_with_background;
-    property ProductId: Extended read FProduct_id write FProduct_id;
-    property StickerId: Extended read FSticker_id write FSticker_id;
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// URL анимации стикера.
+    /// </summary>
+    property AnimationUrl: string read FAnimation_url write FAnimation_url;
+    /// <summary>
+    /// Изображения для стикера (с прозрачным фоном)
+    /// </summary>
+    property Images: TArray<TVkImage> read FImages write FImages;
+    /// <summary>
+    /// Изображения для стикера (с непрозрачным фоном)
+    /// </summary>
+    property ImagesWithBackground: TArray<TVkImage> read FImages_with_background write FImages_with_background;
+    /// <summary>
+    /// Идентификатор набора.
+    /// </summary>
+    property ProductId: Integer read FProduct_id write FProduct_id;
+    /// <summary>
+    /// Идентификатор стикера.
+    /// </summary>
+    property StickerId: Integer read FSticker_id write FSticker_id;
+    /// <summary>
+    /// Информация о том, доступен ли стикер.
+    /// </summary>
+    property IsAllowed: Boolean read FIs_allowed write FIs_allowed;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkSticker;
   end;
 
 implementation
 
-{TVkStickerImage}
-
-function TVkStickerImage.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStickerImage.FromJsonString(AJsonString: string): TVkStickerImage;
-begin
-  result := TJson.JsonToObject<TVkStickerImage>(AJsonString)
-end;
+uses
+  VK.CommonUtils;
 
 {TVkSticker}
 
 destructor TVkSticker.Destroy;
-var
-  LimagesItem: TVkStickerImage;
 begin
-
-  for LimagesItem in FImages do
-    LimagesItem.Free;
-  for LimagesItem in FImages_with_background do
-    LimagesItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
+  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages_with_background);
   inherited;
-end;
-
-function TVkSticker.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkSticker.FromJsonString(AJsonString: string): TVkSticker;
-begin
-  result := TJson.JsonToObject<TVkSticker>(AJsonString)
 end;
 
 end.

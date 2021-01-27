@@ -3,8 +3,8 @@ unit VK.Notifications;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Notifications;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Notifications;
 
 type
   /// <summary>
@@ -42,7 +42,7 @@ type
     /// <summary>
     /// Список идентификаторов пользователей, которым нужно отправить уведомление (максимум 100 идентификаторов).
     /// </summary>
-    function UserIds(Value: TIds): Integer;
+    function UserIds(Value: TIdList): Integer;
     /// <summary>
     /// Текст уведомления. Максимальная длина 254
     /// </summary>
@@ -83,8 +83,7 @@ type
     /// <summary>
     /// Отправляет уведомление пользователю приложения VK Apps.
     /// </summary>
-    function SendMessage(var Status: TVkNotificationMessageStatuses; Params: TVkParamsNotificationsSendMessage): Boolean;
-      overload;
+    function SendMessage(var Status: TVkNotificationMessageStatuses; Params: TVkParamsNotificationsSendMessage): Boolean; overload;
   end;
 
 implementation
@@ -96,18 +95,7 @@ uses
 
 function TNotificationsController.Get(var Items: TVkNotifications; Params: TParams): Boolean;
 begin
-  with Handler.Execute('notifications.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkNotifications.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('notifications.get', Params).GetObject<TVkNotifications>(Items);
 end;
 
 function TNotificationsController.Get(var Items: TVkNotifications; Params: TVkParamsNotificationsGet): Boolean;
@@ -116,38 +104,20 @@ begin
 end;
 
 function TNotificationsController.MarkAsViewed(var WasNotifies: Boolean): Boolean;
-var
-  FWasItems: Integer;
 begin
-  with Handler.Execute('notifications.markAsViewed') do
-  begin
-    Result := Success and TryStrToInt(Response, FWasItems);
-    if Result then
-      WasNotifies := FWasItems = 1;
-  end;
+  Result := Handler.Execute('notifications.markAsViewed').ResponseAsBool(WasNotifies);
 end;
 
-function TNotificationsController.SendMessage(var Status: TVkNotificationMessageStatuses; Params:
-  TVkParamsNotificationsSendMessage): Boolean;
+function TNotificationsController.SendMessage(var Status: TVkNotificationMessageStatuses; Params: TVkParamsNotificationsSendMessage): Boolean;
 begin
   Result := SendMessage(Status, Params.List);
 end;
 
 function TNotificationsController.SendMessage(var Status: TVkNotificationMessageStatuses; Params: TParams): Boolean;
 begin
-  with Handler.Execute('notifications.sendMessage', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Status := TVkNotificationMessageStatuses.FromJsonString(AppendItemsTag(Response));
-        Status.Count := Length(Status.Items);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('notifications.sendMessage', Params).GetObjects<TVkNotificationMessageStatuses>(Status);
+  if Result then
+    Status.Count := Length(Status.Items);
 end;
 
 { TVkParamsNotificationsGet }
@@ -236,7 +206,7 @@ begin
   Result := List.Add('random_id', Value);
 end;
 
-function TVkParamsNotificationsSendMessage.UserIds(Value: TIds): Integer;
+function TVkParamsNotificationsSendMessage.UserIds(Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;

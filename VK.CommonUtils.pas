@@ -7,6 +7,12 @@ interface
 uses
   System.Classes, System.Net.HttpClient;
 
+type
+  TArrayHelp = class
+    class procedure FreeArrayOfObject<T: class>(var Target: TArray<T>); overload;
+    class procedure FreeArrayOfArrayOfObject<T: class>(var Target: TArray<TArray<T>>); overload;
+  end;
+
 function DownloadURL(URL: string): TMemoryStream; overload;
 
 function DownloadURL(URL: string; FileName: string): Boolean; overload;
@@ -67,7 +73,7 @@ begin
   i := Pos(Pattern, Html);
   if i > 0 then
   begin
-    Hash := Copy(Html, i + Pattern.Length, 50);
+    Hash := Copy(Html, i + Pattern.Length, 150);
     i := Pos('"', Hash);
     if i > 0 then
     begin
@@ -87,7 +93,7 @@ begin
   i := Pos(Pattern, Html);
   if i > 0 then
   begin
-    CaptchaUrl := Copy(Html, i + Pattern.Length, 50);
+    CaptchaUrl := Copy(Html, i + Pattern.Length, 150);
     i := Pos('"', CaptchaUrl);
     if i > 0 then
     begin
@@ -123,7 +129,6 @@ end;
 
 function GetRandomId: Int64;
 begin
-
   {$IFDEF OLD_VERSION}
   Result := DateTimeToUnix(Now) + 1234567;
   {$ELSE}
@@ -180,5 +185,34 @@ begin
   end;
 end;
 
+class procedure TArrayHelp.FreeArrayOfObject<T>(var Target: TArray<T>);
+  {$IFNDEF AUTOREFCOUNT}
+var
+  Item: T;
+  {$ENDIF}
+begin
+  {$IFNDEF AUTOREFCOUNT}
+  for Item in Target do
+    Item.Free;
+  SetLength(Target, 0);
+  {$ENDIF}
+end;
+
+class procedure TArrayHelp.FreeArrayOfArrayOfObject<T>(var Target: TArray<TArray<T>>);
+  {$IFNDEF AUTOREFCOUNT}
+var
+  Item: T;
+  Items: TArray<T>;
+  {$ENDIF}
+begin
+  {$IFNDEF AUTOREFCOUNT}
+  for Items in Target do
+    for Item in Items do
+      Item.Free;
+  SetLength(Target, 0);
+  {$ENDIF}
+end;
+
 end.
+
 

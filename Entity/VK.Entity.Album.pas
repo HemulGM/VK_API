@@ -3,116 +3,103 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Privacy;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Privacy,
+  VK.Entity.Common.List, VK.Wrap.Interceptors;
 
 type
-  TVkAlbumThumb = class
-  private
-    FHeight: Integer;
-    FPhoto_135: string;
-    FPhoto_270: string;
-    FPhoto_300: string;
-    FPhoto_34: string;
-    FPhoto_600: string;
-    FPhoto_68: string;
-    FWidth: Integer;
-  public
-    property Height: Integer read FHeight write FHeight;
-    property Width: Integer read FWidth write FWidth;
-    property Photo135: string read FPhoto_135 write FPhoto_135;
-    property Photo270: string read FPhoto_270 write FPhoto_270;
-    property Photo300: string read FPhoto_300 write FPhoto_300;
-    property Photo34: string read FPhoto_34 write FPhoto_34;
-    property Photo600: string read FPhoto_600 write FPhoto_600;
-    property Photo68: string read FPhoto_68 write FPhoto_68;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkAlbumThumb;
-  end;
-
   TVkPhotoAlbum = class(TVkObject, IAttachment)
   private
-    FCreated: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FCreated: TDateTime;
     FDescription: string;
-    FId: integer;
     FOwner_id: Integer;
     FSize: Integer;
-    FThumb: TVkAlbumThumb;
+    FThumb: TVkThumb;
     FTitle: string;
-    FUpdated: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUpdated: TDateTime;
     FThumb_id: integer;
-    FThumb_is_last: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FThumb_is_last: Boolean;
     FPrivacy_view: TVkPrivacy;
     FPrivacy_comment: TVkPrivacy;
     FSizes: TVkSizes;
     FThumb_src: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FUpload_by_admins_only: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FComments_disabled: Boolean;
     FCan_upload: Boolean;
     FAccess_key: string;
-    function GetCreated: TDateTime;
-    function GetUpdated: TDateTime;
-    procedure SetCreated(const Value: TDateTime);
-    procedure SetUpdated(const Value: TDateTime);
   public
-    property Created: TDateTime read GetCreated write SetCreated;
-    property Description: string read FDescription write FDescription;
-    property Id: integer read FId write FId;
-    property ThumbId: integer read FThumb_id write FThumb_id;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Size: Integer read FSize write FSize;
-    property Thumb: TVkAlbumThumb read FThumb write FThumb;
-    property Sizes: TVkSizes read FSizes write FSizes;
-    property Title: string read FTitle write FTitle;
-    property ThumbSrc: string read FThumb_src write FThumb_src;
-    property Updated: TDateTime read GetUpdated write SetUpdated;
-    property ThumbIsLast: Integer read FThumb_is_last write FThumb_is_last;
-    property PrivacyView: TVkPrivacy read FPrivacy_view write FPrivacy_view;
-    property PrivacyComment: TVkPrivacy read FPrivacy_comment write FPrivacy_comment;
-    property UploadByAdminsOnly: Boolean read FUpload_by_admins_only write FUpload_by_admins_only;
-    property CommentsDisabled: Boolean read FComments_disabled write FComments_disabled;
-    property CanUpload: Boolean read FCan_upload write FCan_upload;
+    /// <summary>
+    /// Идентификатор альбома
+    /// </summary>
+    property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
-    constructor Create;
+    property CanUpload: Boolean read FCan_upload write FCan_upload;
+    property CommentsDisabled: Boolean read FComments_disabled write FComments_disabled;
+    /// <summary>
+    /// Дата создания альбома
+    /// </summary>
+    property Created: TDateTime read FCreated write FCreated;
+    /// <summary>
+    /// Описание альбома
+    /// </summary>
+    property Description: string read FDescription write FDescription;
+    /// <summary>
+    /// Идентификатор владельца альбома
+    /// </summary>
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property PrivacyComment: TVkPrivacy read FPrivacy_comment write FPrivacy_comment;
+    property PrivacyView: TVkPrivacy read FPrivacy_view write FPrivacy_view;
+    /// <summary>
+    /// Количество фотографий в альбоме
+    /// </summary>
+    property Size: Integer read FSize write FSize;
+    property Sizes: TVkSizes read FSizes write FSizes;
+    /// <summary>
+    /// Обложка альбома, объект photo
+    /// </summary>
+    property Thumb: TVkThumb read FThumb write FThumb;
+    property ThumbId: integer read FThumb_id write FThumb_id;
+    property ThumbIsLast: Boolean read FThumb_is_last write FThumb_is_last;
+    property ThumbSrc: string read FThumb_src write FThumb_src;
+    /// <summary>
+    /// Название альбома.
+    /// </summary>
+    property Title: string read FTitle write FTitle;
+    /// <summary>
+    /// Дата последнего обновления альбома
+    /// </summary>
+    property Updated: TDateTime read FUpdated write FUpdated;
+    property UploadByAdminsOnly: Boolean read FUpload_by_admins_only write FUpload_by_admins_only;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
     function ToAttachment: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoAlbum;
   end;
 
-  TVkPhotoAlbums = class
-  private
-    FCount: Integer;
-    FItems: TArray<TVkPhotoAlbum>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkPhotoAlbum> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoAlbums;
-  end;
+  TVkPhotoAlbums = TVkEntityList<TVkPhotoAlbum>;
 
 implementation
 
 uses
-  System.DateUtils, VK.Types;
+  System.DateUtils, VK.Types, VK.CommonUtils;
 
 {TVkPhotoAlbum}
 
 constructor TVkPhotoAlbum.Create;
 begin
   inherited;
-  FThumb := TVkAlbumThumb.Create();
+  FThumb := TVkThumb.Create();
   FPrivacy_view := TVkPrivacy.Create();
   FPrivacy_comment := TVkPrivacy.Create();
 end;
 
 destructor TVkPhotoAlbum.Destroy;
-var
-  LsizesItem: TVkSize;
 begin
-
-  for LsizesItem in FSizes do
-    LsizesItem.Free;
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
   FThumb.Free;
   FPrivacy_view.Free;
   FPrivacy_comment.Free;
@@ -122,71 +109,6 @@ end;
 function TVkPhotoAlbum.ToAttachment: string;
 begin
   Result := Attachment.Album(Id, OwnerId, AccessKey);
-end;
-
-function TVkPhotoAlbum.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhotoAlbum.FromJsonString(AJsonString: string): TVkPhotoAlbum;
-begin
-  result := TJson.JsonToObject<TVkPhotoAlbum>(AJsonString)
-end;
-
-function TVkPhotoAlbum.GetCreated: TDateTime;
-begin
-  Result := UnixToDateTime(FCreated, False);
-end;
-
-function TVkPhotoAlbum.GetUpdated: TDateTime;
-begin
-  Result := UnixToDateTime(FUpdated, False);
-end;
-
-procedure TVkPhotoAlbum.SetCreated(const Value: TDateTime);
-begin
-  FCreated := DateTimeToUnix(Value, False);
-end;
-
-procedure TVkPhotoAlbum.SetUpdated(const Value: TDateTime);
-begin
-  FUpdated := DateTimeToUnix(Value, False);
-end;
-
-{TVkAlbumThumb}
-
-function TVkAlbumThumb.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkAlbumThumb.FromJsonString(AJsonString: string): TVkAlbumThumb;
-begin
-  result := TJson.JsonToObject<TVkAlbumThumb>(AJsonString)
-end;
-
-{TVkPhotoAlbums}
-
-destructor TVkPhotoAlbums.Destroy;
-var
-  LitemsItem: TVkPhotoAlbum;
-begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
-  inherited;
-end;
-
-function TVkPhotoAlbums.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhotoAlbums.FromJsonString(AJsonString: string): TVkPhotoAlbums;
-begin
-  result := TJson.JsonToObject<TVkPhotoAlbums>(AJsonString)
 end;
 
 end.

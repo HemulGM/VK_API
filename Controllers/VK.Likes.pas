@@ -3,7 +3,8 @@ unit VK.Likes;
 interface
 
 uses
-  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.Profile, System.JSON;
+  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Common, VK.Entity.Profile,
+  System.JSON, VK.Entity.Common.List;
 
 type
   TVkLikesParams = record
@@ -56,16 +57,22 @@ uses
 
 function TLikesController.Add(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
 begin
-  with Handler.Execute('likes.add', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
-    ['access_key', AccessKey]]) do
-    Result := Success and TryStrToInt(Response, Items);
+  Result := Handler.Execute('likes.add', [
+    ['type', &Type.ToString],
+    ['owner_id', OwnerId.ToString],
+    ['item_id', ItemId.ToString],
+    ['access_key', AccessKey]]).
+    ResponseAsInt(Items);
 end;
 
 function TLikesController.Delete(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
 begin
-  with Handler.Execute('likes.delete', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
-    ['access_key', AccessKey]]) do
-    Result := Success and TryStrToInt(Response, Items);
+  Result := Handler.Execute('likes.delete', [
+    ['type', &Type.ToString],
+    ['owner_id', OwnerId.ToString],
+    ['item_id', ItemId.ToString],
+    ['access_key', AccessKey]]).
+    ResponseAsInt(Items);
 end;
 
 function TLikesController.GetList(var Items: TVkProfiles; Params: TVkLikesParams): Boolean;
@@ -76,52 +83,23 @@ end;
 function TLikesController.GetListIds(var Items: TVkIdList; Params: TVkLikesParams): Boolean;
 begin
   Params.List.Add('extended', False);
-  with Handler.Execute('likes.getList', Params.List) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkIdList.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('likes.getList', Params.List).GetObject<TVkIdList>(Items);
 end;
 
 function TLikesController.IsLiked(var Item: TVkLiked; UserId: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer): Boolean;
 begin
-  with Handler.Execute('likes.isLiked', [['type', &Type.ToString], ['owner_id', OwnerId.ToString], ['item_id', ItemId.ToString],
-    ['user_id', UserId.ToString]]) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Item := TVkLiked.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('likes.isLiked', [
+    ['type', &Type.ToString],
+    ['owner_id', OwnerId.ToString],
+    ['item_id', ItemId.ToString],
+    ['user_id', UserId.ToString]]).
+    GetObject<TVkLiked>(Item);
 end;
 
 function TLikesController.GetList(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   Params.Add('extended', True);
-  with Handler.Execute('likes.getList', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      try
-        Items := TVkProfiles.FromJsonString(Response);
-      except
-        Result := False;
-      end;
-    end;
-  end;
+  Result := Handler.Execute('likes.getList', Params).GetObject<TVkProfiles>(Items);
 end;
 
 { TVkLikesParams }

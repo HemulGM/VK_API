@@ -3,23 +3,19 @@ unit VK.Entity.Database.MetroStations;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkMetroStation = class
+  TVkMetroStation = class(TVkObject)
   private
     FColor: string;
-    FId: Integer;
     FName: string;
   public
     property Color: string read FColor write FColor;
-    property Id: Integer read FId write FId;
     property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMetroStation;
   end;
 
-  TVkMetroStations = class
+  TVkMetroStations = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkMetroStation>;
@@ -27,45 +23,21 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkMetroStation> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkMetroStations;
   end;
 
 implementation
 
-{TVkMetroStation}
-
-function TVkMetroStation.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkMetroStation.FromJsonString(AJsonString: string): TVkMetroStation;
-begin
-  result := TJson.JsonToObject<TVkMetroStation>(AJsonString)
-end;
+uses
+  VK.CommonUtils;
 
 {TVkMetroStations}
 
 destructor TVkMetroStations.Destroy;
-var
-  LitemsItem: TVkMetroStation;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  {$IFNDEF AUTOREFCOUNT}
+  TArrayHelp.FreeArrayOfObject<TVkMetroStation>(FItems);
+  {$ENDIF}
   inherited;
-end;
-
-function TVkMetroStations.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkMetroStations.FromJsonString(AJsonString: string): TVkMetroStations;
-begin
-  result := TJson.JsonToObject<TVkMetroStations>(AJsonString)
 end;
 
 end.

@@ -3,13 +3,13 @@ unit VK.Users;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
-  VK.Entity.Subscription;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Profile, VK.Entity.Subscription;
 
 type
   TVkParamsUsersGet = record
     List: TParams;
-    function UserIds(Value: TIds): Integer;
+    function UserIds(Value: TIdList): Integer;
     function Fields(Value: string): Integer; overload;
     function Fields(Value: TVkProfileFields): Integer; overload;
     function NameCase(Value: TVkNameCase): Integer; overload;
@@ -60,7 +60,7 @@ type
     function HasPhoto(Value: Boolean): Integer;
     function SchoolCountry(Value: Integer): Integer;
     function SchoolCity(Value: Integer): Integer;
-    function SchoolClass(Value: TIds): Integer;
+    function SchoolClass(Value: TIdList): Integer;
     function School(Value: Integer): Integer;
     function SchoolYear(Value: Integer): Integer;
     function Religion(Value: string): Integer;
@@ -75,13 +75,11 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean;
-      overload;
+    function Get(var Items: TVkProfiles; UserIds: TIdList; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean;
-      overload;
+    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
@@ -147,15 +145,18 @@ begin
     if Result then
     begin
       try
-        Users := TVkProfiles.FromJsonString(AppendItemsTag(Response));
-        if Length(Users.Items) > 0 then
-        begin
-          Users.SaveObjects := True;
-          User := Users.Items[0];
-        end
-        else
-          Result := False;
-        Users.Free;
+        Users := TVkProfiles.FromJsonString<TVkProfiles>(ResponseAsItems);
+        try
+          if Length(Users.Items) > 0 then
+          begin
+            Users.SaveObjects := True;
+            User := Users.Items[0];
+          end
+          else
+            Result := False;
+        finally
+          Users.Free;
+        end;
       except
         Result := False;
       end;
@@ -163,7 +164,7 @@ begin
   end;
 end;
 
-function TUsersController.Get(var Items: TVkProfiles; UserIds: TIds; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var Items: TVkProfiles; UserIds: TIdList; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
 var
   Params: TParams;
 begin
@@ -177,16 +178,7 @@ end;
 
 function TUsersController.Get(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('users.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkProfiles.FromJsonString(AppendItemsTag(Response));
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('users.get', Params).GetObjects<TVkProfiles>(Items);
 end;
 
 function TUsersController.Get(var Items: TVkProfiles; Params: TVkParamsUsersGet): Boolean;
@@ -218,7 +210,7 @@ begin
   if not Comment.IsEmpty then
     Params.Add('comment', Comment);
   with Handler.Execute('users.report', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 function TUsersController.Search(var Items: TVkProfiles; Params: TVkParamsUsersSearch): Boolean;
@@ -228,44 +220,17 @@ end;
 
 function TUsersController.Search(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('users.search', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkProfiles.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('users.search', Params).GetObject<TVkProfiles>(Items);
 end;
 
 function TUsersController.GetSubscriptions(var Items: TVkSubscriptions; Params: TParams): Boolean;
 begin
-  with Handler.Execute('users.getSubscriptions', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkSubscriptions.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('users.getSubscriptions', Params).GetObject<TVkSubscriptions>(Items);
 end;
 
 function TUsersController.GetFollowers(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  with Handler.Execute('users.getFollowers', Params) do
-  begin
-    Result := Success;
-    if Result then
-    try
-      Items := TVkProfiles.FromJsonString(Response);
-    except
-      Result := False;
-    end;
-  end;
+  Result := Handler.Execute('users.getFollowers', Params).GetObject<TVkProfiles>(Items);
 end;
 
 { TVkParamsUsersGet }
@@ -285,7 +250,7 @@ begin
   Result := List.Add('name_case', Value.ToString);
 end;
 
-function TVkParamsUsersGet.UserIds(Value: TIds): Integer;
+function TVkParamsUsersGet.UserIds(Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
@@ -471,7 +436,7 @@ begin
   Result := List.Add('school_city', Value);
 end;
 
-function TVkParamsUsersSearch.SchoolClass(Value: TIds): Integer;
+function TVkParamsUsersSearch.SchoolClass(Value: TIdList): Integer;
 begin
   Result := List.Add('school_class', Value);
 end;

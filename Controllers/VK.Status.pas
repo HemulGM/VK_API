@@ -3,8 +3,7 @@ unit VK.Status;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Status;
+  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Status;
 
 type
   TStatusController = class(TVkController)
@@ -39,14 +38,7 @@ begin
     Params.Add('group_id', Id)
   else if Id >= 0 then
     Params.Add('user_id', Id);
-  with Handler.Execute('status.get', Params) do
-  begin
-    Result := Success;
-    if Result then
-    begin
-      Status := TVkStatus.FromJsonString(Response);
-    end;
-  end;
+  Result := Handler.Execute('status.get', Params).GetObject<TVkStatus>(Status);
 end;
 
 function TStatusController.&Set(Text: string; GroupId: Integer = -1): Boolean;
@@ -57,7 +49,7 @@ begin
   if GroupId >= 0 then
     Params.Add('group_id', GroupId);
   with Handler.Execute('status.set', Params) do
-    Result := Success and (Response = '1');
+    Result := Success and ResponseIsTrue;
 end;
 
 end.

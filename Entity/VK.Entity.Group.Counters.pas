@@ -31,23 +31,9 @@ type
     property Docs: Integer read FDocs write FDocs;
     property Narratives: Integer read FNarratives write FNarratives;
     property Addresses: Integer read FAddresses write FAddresses;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkGroupCounters;
   end;
 
 implementation
-
-{TVkGroupCounters}
-
-function TVkGroupCounters.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkGroupCounters.FromJsonString(AJsonString: string): TVkGroupCounters;
-begin
-  result := TJson.JsonToObject<TVkGroupCounters>(AJsonString)
-end;
 
 end.
 

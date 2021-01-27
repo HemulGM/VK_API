@@ -9,7 +9,7 @@ uses
 type
   TFormFMXOAuth2 = class;
 
-  TAuthResult = reference to procedure(From: TFormFMXOAuth2);
+  TAuthResult = reference to procedure(Form: TFormFMXOAuth2);
 
   TFormFMXOAuth2 = class(TForm)
     Browser: TWebBrowser;
@@ -43,6 +43,8 @@ type
     procedure SetIsError(const Value: Boolean);
   public
     procedure ShowWithURL(const AURL: string; Modal: Boolean); overload;
+    procedure InternatlFixIE;
+    procedure InternatlDeleteCache(URLContains: string);
     property Token: string read FToken write SetToken;
     property TokenExpiry: Int64 read FTokenExpiry write SetTokenExpiry;
     property IsError: Boolean read FIsError write SetIsError;
@@ -178,6 +180,13 @@ begin
   end;
 end;
 
+procedure TFormFMXOAuth2.InternatlDeleteCache(URLContains: string);
+begin
+  {$IFDEF MSWINDOWS}
+  DeleteCache(URLContains);
+  {$ENDIF}
+end;
+
 procedure TFormFMXOAuth2.FAfterRedirect(const AURL: string; var DoCloseWebView: Boolean);
 var
   FTokenExpiryStr: string;
@@ -191,6 +200,13 @@ begin
     end;
   end;
   DoCloseWebView := not FToken.IsEmpty;
+end;
+
+procedure TFormFMXOAuth2.InternatlFixIE;
+begin
+  {$IFDEF MSWINDOWS}
+  FixIE;
+  {$ENDIF}
 end;
 
 procedure TFormFMXOAuth2.FormClose(Sender: TObject; var Action: TCloseAction);

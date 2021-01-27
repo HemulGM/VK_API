@@ -3,64 +3,60 @@ unit VK.Components;
 interface
 
 uses
-  System.SysUtils, System.Classes, VK.GroupEvents,
-  {$IFDEF NEEDFMX}
-  FMX.Types,
-  {$ELSE}
-  System.Types,
-  {$ENDIF}  VK.API, VK.Types, VK.UserEvents;
+  System.SysUtils, System.Classes, VK.API, VK.Types, VK.GroupEvents,
+  VK.UserEvents;
 
 type
   [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVK = class(TCustomVK)
   published
+    property APIVersion;  // readonly
     property AppID;       // default empty
     property AppKey;      // default empty
-    property EndPoint;    // default 'https://oauth.vk.com/authorize';
-    property Permissions nodefault; // default 'groups,friends,wall,photos,video,docs,notes,market';
-    property APIVersion;  // readonly
     property BaseURL;     // default 'https://api.vk.com/method';
-    property ServiceKey;  // default empty
-    property UseServiceKeyOnly default False;
+    property EndPoint;    // default 'https://oauth.vk.com/authorize';
+    property Lang default vlAuto;
     property Logging default False;
     property LogResponse default False;
-    property TestMode default False;
-    property Token;
-    property Lang default vlAuto;
-    property UsePseudoAsync default True;
-    property Proxy;
     property OnAuth;
-    property OnLogin;
-    property OnLog;
-    property OnError;
-    property OnErrorLogin;
     property OnCaptcha;
     property OnConfirm;
+    property OnError;
+    property OnLog;
+    property OnLogin;
+    property Permissions nodefault; // default 'groups,friends,wall,photos,video,docs,notes,market';
+    property Proxy;
+    property ServiceKey;  // default empty
+    property TestMode default False;
+    property Token;
+    property UsePseudoAsync default False;
+    property UseServiceKeyOnly default False;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVkUserEvents = class(TCustomUserEvents)
   published
-    property VK;
-    property OnNewMessage;
-    property OnEditMessage;
-    property OnUserOnline;
-    property OnUserOffline;
-    property OnChangeMessageFlags;
+    property Logging default False;
     property OnChangeDialogFlags;
-    property OnReadMessages;
-    property OnRecoverMessages;
-    property OnDeleteMessages;
+    property OnChangeMessageFlags;
     property OnChatChanged;
     property OnChatChangeInfo;
-    property OnUserTyping;
-    property OnUsersTyping;
-    property OnUsersRecording;
-    property OnUserCall;
     property OnCountChange;
+    property OnDeleteMessages;
+    property OnEditMessage;
+    property OnNewMessage;
     property OnNotifyChange;
+    property OnReadMessages;
+    property OnRecoverMessages;
+    property OnUnhandledEvents;
+    property OnUserCall;
+    property OnUserOffline;
+    property OnUserOnline;
+    property OnUsersRecording;
+    property OnUsersTyping;
+    property OnUserTyping;
     property Version;
-    property Logging default False;
+    property VK;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]
@@ -71,51 +67,52 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property ActualVersion: string read FActualVersion;
-    property VK;
     property GroupID default 0;
-    property OnWallReplyNew;
-    property OnWallReplyEdit;
-    property OnWallReplyRestore;
-    property OnWallReplyDelete;
-    property OnWallPostNew;
-    property OnWallRepost;
+    property Logging default False;
     property OnAudioNew;
-    property OnVideoNew;
-    property OnVideoCommentNew;
-    property OnVideoCommentEdit;
-    property OnVideoCommentRestore;
-    property OnVideoCommentDelete;
-    property OnPhotoNew;
-    property OnPhotoCommentNew;
-    property OnPhotoCommentEdit;
-    property OnPhotoCommentRestore;
-    property OnPhotoCommentDelete;
-    property OnMessageNew;
-    property OnMessageReply;
-    property OnMessageEdit;
+    property OnBoardPostDelete;
+    property OnBoardPostEdit;
+    property OnBoardPostNew;
+    property OnBoardPostRestore;
+    property OnGroupAppPayload;
+    property OnGroupChangePhoto;
+    property OnGroupChangeSettings;
+    property OnGroupJoin;
+    property OnGroupLeave;
+    property OnGroupOfficersEdit;
+    property OnGroupPayTransaction;
+    property OnGroupPollVoteNew;
+    property OnGroupUnhandledEvents;
+    property OnMarketCommentDelete;
+    property OnMarketCommentEdit;
+    property OnMarketCommentNew;
+    property OnMarketCommentRestore;
     property OnMessageAllow;
     property OnMessageDeny;
+    property OnMessageEdit;
+    property OnMessageNew;
+    property OnMessageReply;
     property OnMessageTypingState;
-    property OnBoardPostNew;
-    property OnBoardPostEdit;
-    property OnBoardPostRestore;
-    property OnBoardPostDelete;
-    property OnMarketCommentNew;
-    property OnMarketCommentEdit;
-    property OnMarketCommentRestore;
-    property OnMarketCommentDelete;
-    property OnGroupLeave;
-    property OnGroupJoin;
+    property OnPhotoCommentDelete;
+    property OnPhotoCommentEdit;
+    property OnPhotoCommentNew;
+    property OnPhotoCommentRestore;
+    property OnPhotoNew;
     property OnUserBlock;
     property OnUserUnBlock;
-    property OnGroupPollVoteNew;
-    property OnGroupOfficersEdit;
-    property OnGroupChangeSettings;
-    property OnGroupChangePhoto;
-    property OnGroupPayTransaction;
-    property OnGroupAppPayload;
+    property OnVideoCommentDelete;
+    property OnVideoCommentEdit;
+    property OnVideoCommentNew;
+    property OnVideoCommentRestore;
+    property OnVideoNew;
+    property OnWallPostNew;
+    property OnWallReplyDelete;
+    property OnWallReplyEdit;
+    property OnWallReplyNew;
+    property OnWallReplyRestore;
+    property OnWallRepost;
     property Version;
-    property Logging default False;
+    property VK;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]
@@ -126,51 +123,52 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property ActualVersion: string read FActualVersion;
-    property VK;
     property Groups;
-    property OnWallReplyNew;
-    property OnWallReplyEdit;
-    property OnWallReplyRestore;
-    property OnWallReplyDelete;
-    property OnWallPostNew;
-    property OnWallRepost;
+    property Logging default False;
     property OnAudioNew;
-    property OnVideoNew;
-    property OnVideoCommentNew;
-    property OnVideoCommentEdit;
-    property OnVideoCommentRestore;
-    property OnVideoCommentDelete;
-    property OnPhotoNew;
-    property OnPhotoCommentNew;
-    property OnPhotoCommentEdit;
-    property OnPhotoCommentRestore;
-    property OnPhotoCommentDelete;
-    property OnMessageNew;
-    property OnMessageReply;
-    property OnMessageEdit;
+    property OnBoardPostDelete;
+    property OnBoardPostEdit;
+    property OnBoardPostNew;
+    property OnBoardPostRestore;
+    property OnGroupAppPayload;
+    property OnGroupChangePhoto;
+    property OnGroupChangeSettings;
+    property OnGroupJoin;
+    property OnGroupLeave;
+    property OnGroupOfficersEdit;
+    property OnGroupPayTransaction;
+    property OnGroupPollVoteNew;
+    property OnGroupUnhandledEvents;
+    property OnMarketCommentDelete;
+    property OnMarketCommentEdit;
+    property OnMarketCommentNew;
+    property OnMarketCommentRestore;
     property OnMessageAllow;
     property OnMessageDeny;
+    property OnMessageEdit;
+    property OnMessageNew;
+    property OnMessageReply;
     property OnMessageTypingState;
-    property OnBoardPostNew;
-    property OnBoardPostEdit;
-    property OnBoardPostRestore;
-    property OnBoardPostDelete;
-    property OnMarketCommentNew;
-    property OnMarketCommentEdit;
-    property OnMarketCommentRestore;
-    property OnMarketCommentDelete;
-    property OnGroupLeave;
-    property OnGroupJoin;
+    property OnPhotoCommentDelete;
+    property OnPhotoCommentEdit;
+    property OnPhotoCommentNew;
+    property OnPhotoCommentRestore;
+    property OnPhotoNew;
     property OnUserBlock;
     property OnUserUnBlock;
-    property OnGroupPollVoteNew;
-    property OnGroupOfficersEdit;
-    property OnGroupChangeSettings;
-    property OnGroupChangePhoto;
-    property OnGroupPayTransaction;
-    property OnGroupAppPayload;
+    property OnVideoCommentDelete;
+    property OnVideoCommentEdit;
+    property OnVideoCommentNew;
+    property OnVideoCommentRestore;
+    property OnVideoNew;
+    property OnWallPostNew;
+    property OnWallReplyDelete;
+    property OnWallReplyEdit;
+    property OnWallReplyNew;
+    property OnWallReplyRestore;
+    property OnWallRepost;
     property Version;
-    property Logging default False;
+    property VK;
   end;
 
 procedure Register;
@@ -190,7 +188,7 @@ end;
 constructor TVkGroupEventsController.Create(AOwner: TComponent);
 begin
   inherited;
-  FActualVersion := '1.503';
+  FActualVersion := TVK.Version;
 end;
 
 { TVkGroupEvents }
@@ -198,7 +196,7 @@ end;
 constructor TVkGroupEvents.Create(AOwner: TComponent);
 begin
   inherited;
-  FActualVersion := '1.503';
+  FActualVersion := TVK.Version;
 end;
 
 end.

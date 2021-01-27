@@ -3,22 +3,20 @@ unit VK.Entity.Stories;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Link,
-  VK.Entity.App;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Video,
+  VK.Entity.Group, VK.Entity.Link, VK.Entity.App, VK.Entity.Common.List,
+  VK.Entity.Common.ExtendedList;
 
 type
-  TVkStoryReplies = class
+  TVkStoryReplies = class(TVkCounterEntity)
   private
-    FCount: Integer;
     FNew: Integer;
   public
-    property Count: Integer read FCount write FCount;
     property New: Integer read FNew write FNew;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoryReplies;
   end;
 
-  TVkStory = class
+  TVkStory = class(TVkObject)
   private
     FAccess_key: string;
     FCan_ask: Boolean;
@@ -29,9 +27,10 @@ type
     FCan_reply: Boolean;
     FCan_see: Boolean;
     FCan_share: Boolean;
-    FDate: Int64;
-    FExpires_at: Int64;
-    FId: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FExpires_at: TDateTime;
     FOwner_id: Integer;
     FPhoto: TVkPhoto;
     FReplies: TVkStoryReplies;
@@ -45,7 +44,11 @@ type
     FNeed_mute: Boolean;
     FSeen: Integer;
     FMute_reply: Boolean;
+    FIs_ads: Boolean;
+    FPreloading_enabled: Boolean;
+    FVideo: TVkVideo;
   public
+    property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
     property CanAsk: Boolean read FCan_ask write FCan_ask;
     property CanAskAnonymous: Boolean read FCan_ask_anonymous write FCan_ask_anonymous;
@@ -55,15 +58,9 @@ type
     property CanReply: Boolean read FCan_reply write FCan_reply;
     property CanSee: Boolean read FCan_see write FCan_see;
     property CanShare: Boolean read FCan_share write FCan_share;
-    property Date: Int64 read FDate write FDate;
-    property ExpiresAt: Int64 read FExpires_at write FExpires_at;
-    property Id: Integer read FId write FId;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Photo: TVkPhoto read FPhoto write FPhoto;
-    property Replies: TVkStoryReplies read FReplies write FReplies;
-    property TrackCode: string read FTrack_code write FTrack_code;
-    property&Type: string read FType write FType;
-    //
+    property Date: TDateTime read FDate write FDate;
+    property ExpiresAt: TDateTime read FExpires_at write FExpires_at;
+    property IsAds: Boolean read FIs_ads write FIs_ads;
     property IsOneTime: Boolean read FIs_one_time write FIs_one_time;
     property IsOwnerPinned: Boolean read FIs_owner_pinned write FIs_owner_pinned;
     property IsRestricted: Boolean read FIs_restricted write FIs_restricted;
@@ -71,30 +68,21 @@ type
     property MuteReply: Boolean read FMute_reply write FMute_reply;
     property NeedMute: Boolean read FNeed_mute write FNeed_mute;
     property NoSound: Boolean read FNo_sound write FNo_sound;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property PreloadingEnabled: Boolean read FPreloading_enabled write FPreloading_enabled;
+    property Replies: TVkStoryReplies read FReplies write FReplies;
     property Seen: Integer read FSeen write FSeen;
-    constructor Create;
+    property TrackCode: string read FTrack_code write FTrack_code;
+    property&Type: string read FType write FType;
+    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property Video: TVkVideo read FVideo write FVideo;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStory;
   end;
 
-  TVkStoryItems = class
-  private
-    FCount: Integer;
-    FItems: TArray<TVkStory>;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkStory> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoryItems;
-  end;
+  TVkStoryItems = TVkEntityExtendedList<TVkStory>;
 
-  TVkStories = class
+  TVkStories = class(TVkEntity)
   private
     FStories: TArray<TVkStory>;
     FGrouped: TArray<TVkStories>;
@@ -115,57 +103,21 @@ type
     property IsAppGroupedStories: Boolean read GetIsAppGroupedStories;
     property App: TVkApp read FApp write FApp;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStories;
   end;
 
-  TVkStoriesBlock = class
+  TVkStoriesBlock = class(TVkEntityExtendedList<TVkStories>)
   private
-    FCount: Integer;
-    FItems: TArray<TVkStories>;
     FNeed_upload_screen: Boolean;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
   public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkStories> read FItems write FItems;
     property NeedUploadScreen: Boolean read FNeed_upload_screen write FNeed_upload_screen;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoriesBlock;
   end;
 
-  TVkStoriesBanned = class
-  private
-    FCount: Integer;
-    FItems: TArray<Integer>;
-    FProfiles: TArray<TVkProfile>;
-    FGroups: TArray<TVkGroup>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<Integer> read FItems write FItems;
-    property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    property Groups: TArray<TVkGroup> read FGroups write FGroups;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkStoriesBanned;
-  end;
+  TVkStoriesBanned = TVkEntityExtendedSimpleList<Integer>;
 
 implementation
 
-{TVkStoryReplies}
-
-function TVkStoryReplies.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStoryReplies.FromJsonString(AJsonString: string): TVkStoryReplies;
-begin
-  result := TJson.JsonToObject<TVkStoryReplies>(AJsonString)
-end;
+uses
+  VK.CommonUtils;
 
 {TVkStory}
 
@@ -182,44 +134,20 @@ begin
   FPhoto.Free;
   FLink.Free;
   FReplies.Free;
+  if Assigned(FVideo) then
+    FVideo.Free;
   inherited;
-end;
-
-function TVkStory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStory.FromJsonString(AJsonString: string): TVkStory;
-begin
-  result := TJson.JsonToObject<TVkStory>(AJsonString)
 end;
 
 {TVkStories}
 
 destructor TVkStories.Destroy;
-var
-  LstoriesItem: TVkStory;
-  LstoriesItems: TVkStories;
 begin
-
-  for LstoriesItem in FStories do
-    LstoriesItem.Free;
-  for LstoriesItems in FGrouped do
-    LstoriesItems.Free;
+  TArrayHelp.FreeArrayOfObject<TVkStory>(FStories);
+  TArrayHelp.FreeArrayOfObject<TVkStories>(FGrouped);
   if Assigned(FApp) then
     FApp.Free;
   inherited;
-end;
-
-function TVkStories.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStories.FromJsonString(AJsonString: string): TVkStories;
-begin
-  result := TJson.JsonToObject<TVkStories>(AJsonString)
 end;
 
 function TVkStories.GetIsAppGroupedStories: Boolean;
@@ -235,78 +163,6 @@ end;
 function TVkStories.GetIsStories: Boolean;
 begin
   Result := &Type = 'stories';
-end;
-
-{TVkStoriesItems}
-
-destructor TVkStoriesBlock.Destroy;
-var
-  i: Integer;
-begin
-  for i := Low(FItems) to High(FItems) do
-    FItems[i].Free;
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
-
-  inherited;
-end;
-
-function TVkStoriesBlock.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkStoriesBlock.FromJsonString(AJsonString: string): TVkStoriesBlock;
-begin
-  result := TJson.JsonToObject<TVkStoriesBlock>(AJsonString)
-end;
-
-{ TVkStoriesBanned }
-
-destructor TVkStoriesBanned.Destroy;
-var
-  i: Integer;
-begin
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
-  inherited;
-end;
-
-class function TVkStoriesBanned.FromJsonString(AJsonString: string): TVkStoriesBanned;
-begin
-  result := TJson.JsonToObject<TVkStoriesBanned>(AJsonString)
-end;
-
-function TVkStoriesBanned.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkStoryItems }
-
-destructor TVkStoryItems.Destroy;
-var
-  i: Integer;
-begin
-  for i := Low(FGroups) to High(FGroups) do
-    FGroups[i].Free;
-  for i := Low(FProfiles) to High(FProfiles) do
-    FProfiles[i].Free;
-  inherited;
-end;
-
-class function TVkStoryItems.FromJsonString(AJsonString: string): TVkStoryItems;
-begin
-  result := TJson.JsonToObject<TVkStoryItems>(AJsonString)
-end;
-
-function TVkStoryItems.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

@@ -3,10 +3,10 @@ unit VK.Entity.Photo.Upload;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  VK.Entity.Common;
 
 type
-  TVkPhotoUploadResponse = class
+  TVkPhotoUploadResponse = class(TVkEntity)
   private
     FHash: string;
     FPhoto: string;
@@ -15,11 +15,9 @@ type
     property Hash: string read FHash write FHash;
     property Photo: string read FPhoto write FPhoto;
     property Server: Integer read FServer write FServer;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoUploadResponse;
   end;
 
-  TVkPhotoGetUploadResponse = class
+  TVkPhotoGetUploadResponse = class(TVkEntity)
   private
     FAlbum_id: Integer;
     FUpload_url: string;
@@ -30,35 +28,9 @@ type
     property UploadUrl: string read FUpload_url write FUpload_url;
     property UserId: Integer read FUser_id write FUser_id;
     property GroupId: Integer read FGroup_id write FGroup_id;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkPhotoGetUploadResponse;
   end;
 
 implementation
-
-{TVkPhotoUploadResponse}
-
-function TVkPhotoUploadResponse.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhotoUploadResponse.FromJsonString(AJsonString: string): TVkPhotoUploadResponse;
-begin
-  result := TJson.JsonToObject<TVkPhotoUploadResponse>(AJsonString)
-end;
-
-{TVkPhotoGetUploadResponse}
-
-function TVkPhotoGetUploadResponse.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkPhotoGetUploadResponse.FromJsonString(AJsonString: string): TVkPhotoGetUploadResponse;
-begin
-  result := TJson.JsonToObject<TVkPhotoGetUploadResponse>(AJsonString)
-end;
 
 end.
 

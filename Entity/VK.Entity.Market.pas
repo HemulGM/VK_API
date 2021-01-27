@@ -3,68 +3,120 @@ unit VK.Entity.Market;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Photo, VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List,
+  VK.Wrap.Interceptors;
 
 type
-  TVkMarketSection = TVkBasicObject;
+  TVkMarketSection = class(TVkBasicObject)
+  public
+    /// <summary>
+    /// Идентификатор секции
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Название секции
+    /// </summary>
+    property Name;
+  end;
 
-  TVkProductPrice = class
+  TVkProductPrice = class(TVkEntity)
   private
     FAmount: string;
     FCurrency: TVkProductCurrency;
     FText: string;
+    FOld_amount: string;
+    FOld_amount_text: string;
+    FDiscount_rate: Integer;
+    FAccess_key: string;
   public
+    property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Цена товара в сотых долях единицы валюты
+    /// </summary>
     property Amount: string read FAmount write FAmount;
+    /// <summary>
+    /// Старая цена товара в сотых долях единицы валюты
+    /// </summary>
+    property OldAmount: string read FOld_amount write FOld_amount;
+    property OldAmountText: string read FOld_amount_text write FOld_amount_text;
+    /// <summary>
+    /// Валюта
+    /// </summary>
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
+    /// <summary>
+    /// Строковое представление цены
+    /// </summary>
     property Text: string read FText write FText;
-    constructor Create;
+    property DiscountRate: Integer read FDiscount_rate write FDiscount_rate;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProductPrice;
   end;
 
-  TVkProductCategory = class
+  TVkProductCategory = class(TVkBasicObject)
   private
-    FId: Integer;
-    FName: string;
     FSection: TVkMarketSection;
   public
-    property Id: Integer read FId write FId;
-    property Name: string read FName write FName;
+    /// <summary>
+    /// Идентификатор категории
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Название категории
+    /// </summary>
+    property Name;
+    /// <summary>
+    /// Секция
+    /// </summary>
     property Section: TVkMarketSection read FSection write FSection;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProductCategory;
   end;
 
-  TVkProductCategories = class
+  TVkProductCategories = TVkEntityList<TVkProductCategory>;
+
+  TVkDimensions = class(TVkEntity)
   private
-    FItems: TArray<TVkProductCategory>;
-    FCount: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
+    FLength: Integer;
   public
-    property Items: TArray<TVkProductCategory> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProductCategories;
+    /// <summary>
+    /// Ширина в миллиметрах
+    /// </summary>
+    property Width: Integer read FWidth write FWidth;
+    /// <summary>
+    /// Высота в миллиметрах
+    /// </summary>
+    property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// Длина в миллиметрах
+    /// </summary>
+    property Length: Integer read FLength write FLength;
   end;
 
-  TVkProduct = class
+  TVkProduct = class(TVkObject)
   private
-    FAvailability: Boolean;
+    {
+        0 — товар доступен;
+        1 — товар удален;
+        2 — товар недоступен.
+    }
+    FAvailability: Integer;
     FCategory: TVkProductCategory;
-    FDate: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDate: TDateTime;
     FDescription: string;
     FExternal_id: string;
-    FId: Integer;
     FOwner_id: Integer;
     FPrice: TVkProductPrice;
     FThumb_photo: string;
     FTitle: string;
     FPhotos: TArray<TVkPhoto>;
     FAlbums_ids: TArray<Integer>;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_comment: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_repost: Boolean;
     FViews_count: Integer;
     FLikes: TVkLikesInfo;
@@ -74,56 +126,108 @@ type
     FCart_quantity: Integer;
     FVariants_grouping_id: Integer;
     FQuantity: Integer;
+    FDimensions: TVkDimensions;
+    FWeight: Integer;
+    FSku: string;
+    FUrl: string;
+    FButton_title: string;
   public
-    property Availability: Boolean read FAvailability write FAvailability;
-    property Category: TVkProductCategory read FCategory write FCategory;
-    property Date: Int64 read FDate write FDate;
-    property Description: string read FDescription write FDescription;
-    property ExternalId: string read FExternal_id write FExternal_id;
-    property Id: Integer read FId write FId;
+    /// <summary>
+    /// Идентификатор товара.
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Идентификатор владельца товара.
+    /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Price: TVkProductPrice read FPrice write FPrice;
-    property ThumbPhoto: string read FThumb_photo write FThumb_photo;
-    property Title: string read FTitle write FTitle;
     property AlbumsIds: TArray<Integer> read FAlbums_ids write FAlbums_ids;
-    property Reposts: TVkRepostsInfo read FReposts write FReposts;
-    //
+    /// <summary>
+    /// Статус доступности товара
+    /// </summary>
+    property Availability: Integer read FAvailability write FAvailability;
+    /// <summary>
+    /// Текст на кнопке товара. Возможные значения:
+    /// Купить
+    /// Перейти в магазин
+    /// Купить билет
+    /// </summary>
+    property ButtonTitle: string read FButton_title write FButton_title;
+    /// <summary>
+    /// Возможность комментировать товар для текущего пользователя
+    /// </summary>
+    property CanComment: Boolean read FCan_comment write FCan_comment;
+    /// <summary>
+    /// Возможность сделать репост товара для текущего пользователя
+    /// </summary>
+    property CanRepost: Boolean read FCan_repost write FCan_repost;
     property CartQuantity: Integer read FCart_quantity write FCart_quantity;
+    /// <summary>
+    /// Категория товара
+    /// </summary>
+    property Category: TVkProductCategory read FCategory write FCategory;
+    /// <summary>
+    /// Дата создания товара
+    /// </summary>
+    property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Текст описания товара.
+    /// </summary>
+    property Description: string read FDescription write FDescription;
+    /// <summary>
+    /// Габариты товара
+    /// </summary>
+    property Dimensions: TVkDimensions read FDimensions write FDimensions;
+    property ExternalId: string read FExternal_id write FExternal_id;
+    /// <summary>
+    /// True, если объект добавлен в закладки у текущего пользователя
+    /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property IsMainVariant: Boolean read FIs_main_variant write FIs_main_variant;
-    property VariantsGroupingId: Integer read FVariants_grouping_id write FVariants_grouping_id;
-    //Extended
-    property CanComment: Boolean read FCan_comment write FCan_comment;
-    property CanRepost: Boolean read FCan_repost write FCan_repost;
+    /// <summary>
+    /// Информация об отметках «Мне нравится»
+    /// </summary>
     property Likes: TVkLikesInfo read FLikes write FLikes;
+    /// <summary>
+    /// Изображения товара. Массив объектов, описывающих фотографии.
+    /// </summary>
     property Photos: TArray<TVkPhoto> read FPhotos write FPhotos;
-    property ViewsCount: Integer read FViews_count write FViews_count;
-    //
+    /// <summary>
+    /// Цена
+    /// </summary>
+    property Price: TVkProductPrice read FPrice write FPrice;
     property Quantity: Integer read FQuantity write FQuantity;
-
-    constructor Create;
+    property Reposts: TVkRepostsInfo read FReposts write FReposts;
+    /// <summary>
+    /// URL изображения-обложки товара
+    /// </summary>
+    property ThumbPhoto: string read FThumb_photo write FThumb_photo;
+    /// <summary>
+    /// Название товара
+    /// </summary>
+    property Title: string read FTitle write FTitle;
+    property VariantsGroupingId: Integer read FVariants_grouping_id write FVariants_grouping_id;
+    property ViewsCount: Integer read FViews_count write FViews_count;
+    /// <summary>
+    /// Вес в граммах
+    /// </summary>
+    property Weight: Integer read FWeight write FWeight;
+    /// <summary>
+    /// Артикул товара, произвольная строка длиной до 50 символов
+    /// </summary>
+    property Sku: string read FSku write FSku;
+    /// <summary>
+    /// Ссылка на товар во внешних ресурсах
+    /// </summary>
+    property Url: string read FUrl write FUrl;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProduct;
   end;
 
-  TVkProducts = class
-  private
-    FItems: TArray<TVkProduct>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkProduct> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    constructor Create;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkProducts;
-  end;
+  TVkProducts = TVkEntityList<TVkProduct>;
 
 implementation
+
+uses
+  VK.CommonUtils;
 
 {TVkMarketPrice}
 
@@ -137,16 +241,6 @@ destructor TVkProductPrice.Destroy;
 begin
   FCurrency.Free;
   inherited;
-end;
-
-function TVkProductPrice.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProductPrice.FromJsonString(AJsonString: string): TVkProductPrice;
-begin
-  result := TJson.JsonToObject<TVkProductPrice>(AJsonString)
 end;
 
 {TVkMarketCategory}
@@ -163,105 +257,22 @@ begin
   inherited;
 end;
 
-function TVkProductCategory.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProductCategory.FromJsonString(AJsonString: string): TVkProductCategory;
-begin
-  result := TJson.JsonToObject<TVkProductCategory>(AJsonString)
-end;
-
 {TVkMarket}
 
-constructor TVkProduct.Create;
-begin
-  inherited;
-  FCategory := TVkProductCategory.Create();
-  FPrice := TVkProductPrice.Create();
-end;
-
 destructor TVkProduct.Destroy;
-var
-  LItemsItem: TVkPhoto;
 begin
-  for LItemsItem in FPhotos do
-    LItemsItem.Free;
-  FCategory.Free;
-  FPrice.Free;
+  TArrayHelp.FreeArrayOfObject<TVkPhoto>(FPhotos);
+  if Assigned(FCategory) then
+    FCategory.Free;
+  if Assigned(FPrice) then
+    FPrice.Free;
   if Assigned(FLikes) then
     FLikes.Free;
   if Assigned(FReposts) then
     FReposts.Free;
+  if Assigned(FDimensions) then
+    FDimensions.Free;
   inherited;
-end;
-
-function TVkProduct.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkProduct.FromJsonString(AJsonString: string): TVkProduct;
-begin
-  result := TJson.JsonToObject<TVkProduct>(AJsonString)
-end;
-
-{ TVkMarkets }
-
-constructor TVkProducts.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkProducts.Destroy;
-var
-  LItemsItem: TVkProduct;
-begin
-  if not FSaveObjects then
-  begin
-    for LItemsItem in FItems do
-      LItemsItem.Free;
-  end;
-
-  inherited;
-end;
-
-class function TVkProducts.FromJsonString(AJsonString: string): TVkProducts;
-begin
-  result := TJson.JsonToObject<TVkProducts>(AJsonString);
-end;
-
-procedure TVkProducts.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
-function TVkProducts.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-{ TVkProductCategories }
-
-destructor TVkProductCategories.Destroy;
-var
-  LItemsItem: TVkProductCategory;
-begin
-  for LItemsItem in FItems do
-    LItemsItem.Free;
-  inherited;
-end;
-
-class function TVkProductCategories.FromJsonString(AJsonString: string): TVkProductCategories;
-begin
-  result := TJson.JsonToObject<TVkProductCategories>(AJsonString);
-end;
-
-function TVkProductCategories.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 end.

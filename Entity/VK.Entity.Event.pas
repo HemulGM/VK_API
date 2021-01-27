@@ -3,45 +3,35 @@ unit VK.Entity.Event;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
 
 type
-  TVkEvent = class
+  TVkEvent = class(TVkObject)
   private
     FAddress: string;
     FButton_text: string;
-    FFriends: TArray<Extended>;
-    FId: Extended;
+    FFriends: TArray<Integer>;
     FIs_favorite: Boolean;
-    FMember_status: Extended;
+    FMember_status: Integer;
     FText: string;
-    FTime: Extended;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FTime: TDateTime;
+    FAccess_key: string;
   public
+    property AccessKey: string read FAccess_key write FAccess_key;
     property Address: string read FAddress write FAddress;
     property ButtonText: string read FButton_text write FButton_text;
-    property Friends: TArray<Extended> read FFriends write FFriends;
-    property Id: Extended read FId write FId;
+    property Friends: TArray<Integer> read FFriends write FFriends;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
-    property MemberStatus: Extended read FMember_status write FMember_status;
+    {1 -- точно идёт;
+      2 -- возможно пойдёт;
+      3 -- не идёт.}
+    property MemberStatus: Integer read FMember_status write FMember_status;
     property Text: string read FText write FText;
-    property Time: Extended read FTime write FTime;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkEvent;
+    property Time: TDateTime read FTime write FTime;
   end;
 
 implementation
-
-{TVkEvent}
-
-function TVkEvent.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkEvent.FromJsonString(AJsonString: string): TVkEvent;
-begin
-  result := TJson.JsonToObject<TVkEvent>(AJsonString)
-end;
 
 end.
 

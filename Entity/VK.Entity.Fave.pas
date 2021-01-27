@@ -3,7 +3,8 @@ unit VK.Entity.Fave;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Media, VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Link, VK.Entity.Media,
+  VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkFaveType = (ftPost, ftVideo, ftProduct, ftArticle, ftLink);
@@ -13,32 +14,14 @@ type
     class function FromString(Value: string): TVkFaveType; static; inline;
   end;
 
-  TVkFaveTag = class
-  private
-    FId: Integer;
-    FName: string;
-  public
-    property Id: Integer read FId write FId;
-    property Name: string read FName write FName;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFaveTag;
-  end;
+  TVkFaveTag = TVkBasicObject;
 
-  TVkFaveTags = class
-  private
-    FCount: Integer;
-    FItems: TArray<TVkFaveTag>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkFaveTag> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFaveTags;
-  end;
+  TVkFaveTags = TVkEntityList<TVkFaveTag>;
 
-  TVkFave = class
+  TVkFave = class(TVkEntity)
   private
-    FAdded_date: Int64;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FAdded_date: TDateTime;
     FSeen: Boolean;
     FTags: TArray<TVkFaveTag>;
     FType: string;
@@ -47,12 +30,10 @@ type
     FVideo: TVkVideo;
     FProduct: TVkProduct;
     FPhoto: TVkPhoto;
-    function GetAdded_date: TDateTime;
-    procedure SetAdded_date(const Value: TDateTime);
     function GetType: TVkFaveType;
     procedure SetType(const Value: TVkFaveType);
   public
-    property AddedDate: TDateTime read GetAdded_date write SetAdded_date;
+    property AddedDate: TDateTime read FAdded_date write FAdded_date;
     property Link: TVkLink read FLink write FLink;
     property Post: TVkPost read FPost write FPost;
     property Video: TVkVideo read FVideo write FVideo;
@@ -61,57 +42,19 @@ type
     property Seen: Boolean read FSeen write FSeen;
     property Tags: TArray<TVkFaveTag> read FTags write FTags;
     property&Type: TVkFaveType read GetType write SetType;
-    constructor Create;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFave;
   end;
 
-  TVkFaves = class
-  private
-    FCount: Integer;
-    FItems: TArray<TVkFave>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkFave> read FItems write FItems;
-    destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkFaves;
-  end;
+  TVkFaves = TVkEntityList<TVkFave>;
 
 implementation
 
 uses
-  System.DateUtils;
-
-{TTagsClass}
-
-function TVkFaveTag.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkFaveTag.FromJsonString(AJsonString: string): TVkFaveTag;
-begin
-  result := TJson.JsonToObject<TVkFaveTag>(AJsonString)
-end;
-
-{TItemsClass}
-
-constructor TVkFave.Create;
-begin
-  inherited;
-  //FLink := TLinkClass.Create();
-end;
+  System.DateUtils, VK.CommonUtils;
 
 destructor TVkFave.Destroy;
-var
-  LtagsItem: TVkFaveTag;
 begin
-
-  for LtagsItem in FTags do
-    LtagsItem.Free;
-
+  TArrayHelp.FreeArrayOfObject<TVkFaveTag>(FTags);
   if Assigned(FLink) then
     FLink.Free;
   if Assigned(FPost) then
@@ -125,80 +68,14 @@ begin
   inherited;
 end;
 
-function TVkFave.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkFave.FromJsonString(AJsonString: string): TVkFave;
-begin
-  result := TJson.JsonToObject<TVkFave>(AJsonString)
-end;
-
-function TVkFave.GetAdded_date: TDateTime;
-begin
-  Result := UnixToDateTime(FAdded_date, False);
-end;
-
 function TVkFave.GetType: TVkFaveType;
 begin
   Result := TVkFaveType.FromString(FType);
 end;
 
-procedure TVkFave.SetAdded_date(const Value: TDateTime);
-begin
-  FAdded_date := DateTimeToUnix(Value, False);
-end;
-
 procedure TVkFave.SetType(const Value: TVkFaveType);
 begin
   FType := Value.ToString;
-end;
-
-{TVkFaves}
-
-destructor TVkFaves.Destroy;
-var
-  LitemsItem: TVkFave;
-begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
-  inherited;
-end;
-
-function TVkFaves.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkFaves.FromJsonString(AJsonString: string): TVkFaves;
-begin
-  result := TJson.JsonToObject<TVkFaves>(AJsonString)
-end;
-
-{ TVkFaveTags }
-
-destructor TVkFaveTags.Destroy;
-var
-  LitemsItem: TVkFaveTag;
-begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
-  inherited;
-end;
-
-class function TVkFaveTags.FromJsonString(AJsonString: string): TVkFaveTags;
-begin
-  result := TJson.JsonToObject<TVkFaveTags>(AJsonString)
-end;
-
-function TVkFaveTags.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
 end;
 
 { TVkFaveTypeHelper }

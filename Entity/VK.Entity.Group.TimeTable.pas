@@ -3,7 +3,7 @@ unit VK.Entity.Group.TimeTable;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
   TVkTimeTableDay = class
@@ -17,11 +17,9 @@ type
     property BreakOpenTime: Integer read FBreak_open_time write FBreak_open_time;
     property CloseTime: Integer read FClose_time write FClose_time;
     property OpenTime: Integer read FOpen_time write FOpen_time;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkTimeTableDay;
   end;
 
-  TVkTimeTable = class
+  TVkTimeTable = class(TVkEntity)
   private
     FFri: TVkTimeTableDay;
     FMon: TVkTimeTableDay;
@@ -38,25 +36,11 @@ type
     property Tuesday: TVkTimeTableDay read FTue write FTue;
     property Wednesday: TVkTimeTableDay read FWed write FWed;
     property Sunday: TVkTimeTableDay read FSun write FSun;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkTimeTable;
   end;
 
 implementation
-
-{TVkTimeTableDay}
-
-function TVkTimeTableDay.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkTimeTableDay.FromJsonString(AJsonString: string): TVkTimeTableDay;
-begin
-  result := TJson.JsonToObject<TVkTimeTableDay>(AJsonString)
-end;
 
 {TVkTimeTable}
 
@@ -82,16 +66,6 @@ begin
   FSat.Free;
   FSun.Free;
   inherited;
-end;
-
-function TVkTimeTable.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkTimeTable.FromJsonString(AJsonString: string): TVkTimeTable;
-begin
-  result := TJson.JsonToObject<TVkTimeTable>(AJsonString)
 end;
 
 end.

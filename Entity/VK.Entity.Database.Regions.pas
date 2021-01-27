@@ -3,21 +3,17 @@ unit VK.Entity.Database.Regions;
 interface
 
 uses
-  Generics.Collections, Rest.Json;
+  Generics.Collections, Rest.Json, VK.Entity.Common;
 
 type
-  TVkRegion = class
+  TVkRegion = class(TVkObject)
   private
-    FId: Integer;
     FTitle: string;
   public
-    property Id: Integer read FId write FId;
     property Title: string read FTitle write FTitle;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkRegion;
   end;
 
-  TVkRegions = class
+  TVkRegions = class(TVkEntity)
   private
     FCount: Integer;
     FItems: TArray<TVkRegion>;
@@ -25,45 +21,21 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<TVkRegion> read FItems write FItems;
     destructor Destroy; override;
-    function ToJsonString: string;
-    class function FromJsonString(AJsonString: string): TVkRegions;
   end;
 
 implementation
 
-{TVkRegion}
-
-function TVkRegion.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkRegion.FromJsonString(AJsonString: string): TVkRegion;
-begin
-  result := TJson.JsonToObject<TVkRegion>(AJsonString)
-end;
+uses
+  VK.CommonUtils;
 
 {TVkRegions}
 
 destructor TVkRegions.Destroy;
-var
-  LitemsItem: TVkRegion;
 begin
-
-  for LitemsItem in FItems do
-    LitemsItem.Free;
-
+  {$IFNDEF AUTOREFCOUNT}
+  TArrayHelp.FreeArrayOfObject<TVkRegion>(FItems);
+  {$ENDIF}
   inherited;
-end;
-
-function TVkRegions.ToJsonString: string;
-begin
-  result := TJson.ObjectToJsonString(self);
-end;
-
-class function TVkRegions.FromJsonString(AJsonString: string): TVkRegions;
-begin
-  result := TJson.JsonToObject<TVkRegions>(AJsonString)
 end;
 
 end.
