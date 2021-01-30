@@ -35,20 +35,18 @@ type
   TVkKeyboardButton = class(TVkEntity)
   private
     FAction: TVkKeyboardAction;
-    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TKeyboardButtonColorInterceptor)]
     FColor: TVkKeyboardButtonColor;
   public
     property Action: TVkKeyboardAction read FAction write FAction;
     property Color: TVkKeyboardButtonColor read FColor write FColor;
     constructor Create; override;
-    constructor CreateText(const Text, Payload: string);
-    constructor CreateOpenLink(const Text, Link, Payload: string);
-    constructor CreateLocation(const Payload: string);
-    constructor CreateVKApps(const AppId: Integer; const Payload, Text, Hash: string; OwnerId: Integer = 0);
-    {$WARNINGS OFF}
-    constructor CreateVKPay(const Payload, Hash: string);
-    constructor CreateCallback(const Text, Payload: string);
-    {$WARNINGS ON}
+    class function CreateOpenLink(const Text, Link, Payload: string): TVkKeyboardButton;
+    class function CreateLocation(const Payload: string): TVkKeyboardButton;
+    class function CreateVKApps(const AppId: Integer; const Payload, Text, Hash: string; OwnerId: Integer = 0): TVkKeyboardButton;
+    class function CreateText(const Text, Payload: string): TVkKeyboardButton;
+    class function CreateVKPay(const Payload, Hash: string): TVkKeyboardButton;
+    class function CreateCallback(const Text, Payload: string): TVkKeyboardButton;
     destructor Destroy; override;
   end;
 
@@ -104,57 +102,55 @@ begin
   Action := TVkKeyboardAction.Create;
 end;
 
-{$WARNINGS OFF}
-constructor TVkKeyboardButton.CreateVKPay;
+class function TVkKeyboardButton.CreateVKPay;
 begin
-  Create;
-  Action.&Type := 'vkpay';
-  Action.Payload := Payload;
-  Action.Hash := Hash;
+  Result := TVkKeyboardButton.Create;
+  Result.Action.&Type := 'vkpay';
+  Result.Action.Payload := Payload;
+  Result.Action.Hash := Hash;
 end;
 
-constructor TVkKeyboardButton.CreateCallback;
+class function TVkKeyboardButton.CreateCallback;
 begin
-  Create;
-  Action.&Type := 'callback';
-  Action.&Label := Text;
-  Action.Payload := Payload;
-end;
-{$WARNINGS ON}
-
-constructor TVkKeyboardButton.CreateLocation;
-begin
-  Create;
-  Action.&Type := 'location';
-  Action.Payload := Payload;
+  Result := TVkKeyboardButton.Create;
+  Result.Action.&Type := 'callback';
+  Result.Action.&Label := Text;
+  Result.Action.Payload := Payload;
 end;
 
-constructor TVkKeyboardButton.CreateOpenLink;
+class function TVkKeyboardButton.CreateText;
 begin
-  Create;
-  Action.&Type := 'open_link';
-  Action.&Label := Text;
-  Action.Payload := Payload;
-  Action.Link := Link;
+  Result := TVkKeyboardButton.Create;
+  Result.Action.&Type := 'text';
+  Result.Action.&Label := Text;
+  Result.Action.Payload := Payload;
 end;
 
-constructor TVkKeyboardButton.CreateText;
+class function TVkKeyboardButton.CreateLocation;
 begin
-  Create;
-  Action.&Type := 'text';
-  Action.&Label := Text;
-  Action.Payload := Payload;
+  Result := TVkKeyboardButton.Create;
+  Result.Action.&Type := 'location';
+  Result.Action.Payload := Payload;
 end;
 
-constructor TVkKeyboardButton.CreateVKApps;
+class function TVkKeyboardButton.CreateOpenLink;
 begin
-  Create;
-  Action.&Type := 'open_app';
-  Action.&Label := Text;
-  Action.Payload := Payload;
-  Action.Hash := Hash;
-  Action.AppId := AppId;
-  Action.OwnerId := OwnerId;
+  Result := TVkKeyboardButton.Create;
+  Result.Action.&Type := 'open_link';
+  Result.Action.&Label := Text;
+  Result.Action.Payload := Payload;
+  Result.Action.Link := Link;
+end;
+
+class function TVkKeyboardButton.CreateVKApps;
+begin
+  Result := TVkKeyboardButton.Create;
+  Result.Action.&Type := 'open_app';
+  Result.Action.&Label := Text;
+  Result.Action.Payload := Payload;
+  Result.Action.Hash := Hash;
+  Result.Action.AppId := AppId;
+  Result.Action.OwnerId := OwnerId;
 end;
 
 destructor TVkKeyboardButton.Destroy;
