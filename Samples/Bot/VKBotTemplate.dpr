@@ -18,7 +18,7 @@ begin
     OnMessage :=
       procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
       begin
-        if Assigned(Message.Action) and (Message.Action.&Type = maChatInviteUser) then
+        if Message.Action.&Type = maChatInviteUser then
           Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome')
         else
           Bot.API.Messages.SendToPeer(Message.PeerId, '=)');

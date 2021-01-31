@@ -55,25 +55,20 @@ type
   TVkMessageAction = class(TVkEntity)
   private
     FText: string;
-    FType: string;
+    [JsonReflectAttribute(ctString, rtString, TMessageActionTypeInterceptor)]
+    FType: TVkMessageActionType;
     FEmail: string;
     FMember_id: integer;
     FPhoto: TVkChatPhoto;
-    function GetType: TVkMessageActionType;
-    procedure SetType(const Value: TVkMessageActionType);
   public
     /// <summary>
     /// Название беседы (для служебных сообщений с type = chat_create или chat_title_update)
     /// </summary>
     property Text: string read FText write FText;
     /// <summary>
-    /// Тип действия (строка)
-    /// </summary>
-    property TypeStr: string read FType write FType;
-    /// <summary>
     /// Тип действия
     /// </summary>
-    property&Type: TVkMessageActionType read GetType write SetType;
+    property&Type: TVkMessageActionType read FType write FType;
     /// <summary>
     /// Идентификатор пользователя (если > 0) или email (если < 0), которого пригласили или исключили
     /// (для служебных сообщений с type = chat_invite_user или chat_kick_user).
@@ -88,6 +83,7 @@ type
     /// Изображение-обложка чата
     /// </summary>
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
+    destructor Destroy; override;
   end;
 
   TVkMessageDelete = class
@@ -146,6 +142,7 @@ type
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
     property&Out: Boolean read FOut write FOut;
+    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -175,17 +172,20 @@ uses
 
 {TVkMessageAction}
 
-function TVkMessageAction.GetType: TVkMessageActionType;
+destructor TVkMessageAction.Destroy;
 begin
-  Result := TVkMessageActionType.Create(FType);
-end;
-
-procedure TVkMessageAction.SetType(const Value: TVkMessageActionType);
-begin
-  FType := Value.ToString;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  inherited;
 end;
 
 {TVkMessage}
+
+constructor TVkMessage.Create;
+begin
+  inherited;
+  FAction := TVkMessageAction.Create;
+end;
 
 destructor TVkMessage.Destroy;
 begin
@@ -196,12 +196,11 @@ begin
     FReply_message.Free;
   if Assigned(FKeyboard) then
     FKeyboard.Free;
-  if Assigned(FAction) then
-    FAction.Free;
   if Assigned(FGeo) then
     FGeo.Free;
   if Assigned(FPayloadButton) then
     FPayloadButton.Free;
+  FAction.Free;
   {$ENDIF}
   inherited;
 end;

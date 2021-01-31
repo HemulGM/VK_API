@@ -99,6 +99,12 @@ type
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
+  TMessageActionTypeInterceptor = class(TEnumInterceptor<TVkMessageActionType>)
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
 implementation
 
 uses
@@ -422,6 +428,34 @@ var
   v: TValue;
 begin
   value := TVkKeyboardButtonColor.Create(Arg);
+  v := v.From(value);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+end;
+
+{ TMessageActionTypeInterceptor }
+
+constructor TMessageActionTypeInterceptor.Create;
+begin
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TMessageActionTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  value: TVkMessageActionType;
+begin
+  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkMessageActionType>;
+  result := value.ToString;
+end;
+
+procedure TMessageActionTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+var
+  ctx: TRTTIContext;
+  value: TVkMessageActionType;
+  v: TValue;
+begin
+  value := TVkMessageActionType.Create(Arg);
   v := v.From(value);
   ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
 end;
