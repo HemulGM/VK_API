@@ -3,12 +3,15 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
-  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
-  VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market,
-  VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages, VK.Polls,
-  VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps,
-  VK.Clients, VK.Donut,
+  System.SysUtils, System.Variants, System.Classes, REST.Client,
+  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
+  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
+  VK.Status, VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types,
+  VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave, VK.Notes,
+  VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders,
+  Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
+  VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
+  VK.Donut,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -459,8 +462,8 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.Mime, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile,
-  VK.Entity.Login;
+  System.DateUtils, System.Net.Mime, System.Net.HttpClient,
+  VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
 
 { TCustomVK }
 
@@ -752,9 +755,9 @@ begin
       401:
         begin
           try
-            {$WARNINGS OFF}
+              {$WARNINGS OFF}
             Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
-            {$WARNINGS ON}
+              {$WARNINGS ON}
             try
               if not Info.Error.IsEmpty then
               begin
@@ -820,9 +823,9 @@ begin
                   begin
                     EndResponse := HTTP.Get(Url + '&captcha_sid=' + Info.CaptchaSid + '&captcha_key=' + Code, Response);
                     Info.Free;
-                    {$WARNINGS OFF}
+                      {$WARNINGS OFF}
                     Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
-                    {$WARNINGS ON}
+                      {$WARNINGS ON}
                     Token := Info.AccessToken;
                   end
                   else
@@ -859,7 +862,6 @@ begin
     if Result and CheckAuth then
     begin
       DoLogin;
-      Exit(True);
     end
     else
     begin

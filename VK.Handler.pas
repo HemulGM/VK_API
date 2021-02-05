@@ -85,6 +85,9 @@ var
 
 implementation
 
+uses
+  VK.Errors;
+
 procedure TVkHandler.WaitTime(MS: Int64);
 var
   TS: Cardinal;
@@ -349,7 +352,7 @@ begin
   begin
     Result.Success := False;
     Result.Error.Code := JS.GetValue<Integer>('error_code', -1);
-    Result.Error.Text := JS.GetValue<string>('error_msg', VKErrorString(Result.Error.Code));
+    Result.Error.Text := JS.GetValue<string>('error_msg', VKErrors.Get(Result.Error.Code));
     if TestCaptcha then
     begin
       Result.Error.Code := VK_ERROR_CAPTCHA;

@@ -5,7 +5,8 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Generics.Collections, System.JSON, VK.Entity.Common;
+  System.Classes, System.UITypes, REST.Json, System.SysUtils,
+  System.Generics.Collections, System.JSON, VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -137,13 +138,6 @@ const
   GR_IMPORTANT = 1;
   GR_UNANSWERED = 2;
 
-  //Error Codes
-  VK_ERROR_INVALID_TOKEN = 5;
-  VK_ERROR_CAPTCHA = 14;
-  VK_ERROR_CONFIRM = 24;
-  VK_ERROR_REQUESTLIMIT = 6;
-  VK_ERROR_INTERNAL_SERVER = 10;
-
   //
   VK_CHAT_ID_START = 2000000000;
   VK_GROUP_ID_START = 1000000000;
@@ -265,9 +259,7 @@ type
   /// <summary>
   ///  Флаги сообщений
   /// </summary>
-  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden,
-    mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted,
-    mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
+  TMessageFlag = (mfUNKNOWN_9, mfUNKNOWN_8, mfUNKNOWN_7, mfUNKNOWN_6, mfNotDelivered, mfDeleteForAll, mfHidden, mfUNKNOWN_5, mfUNKNOWN_4, mfUnreadMultichat, mfUNKNOWN_3, mfUNKNOWN_2, mfUNKNOWN_1, mfMedia, mfFixed, mfDeleted, mfSpam, mfFriends, mfChat, mfImportant, mfReplied, mfOutbox, mfUnread);
 
   TMessageFlagHelper = record helper for TMessageFlag
     function ToString: string; inline;
@@ -292,8 +284,7 @@ type
   chat_unpin_message — откреплено сообщение;
   chat_invite_user_by_link — пользователь присоединился к беседе по ссылке.
  }
-  TVkMessageActionType = (maUnknown, maChatPhotoUpdate, maChatPhotoRemove, maChatCreate, maChatTitleUpdate,
-    maChatInviteUser, maChatKickUser, maChatPinMessage, maChatUnpinMessage, maChatInviteUserByLink);
+  TVkMessageActionType = (maUnknown, maChatPhotoUpdate, maChatPhotoRemove, maChatCreate, maChatTitleUpdate, maChatInviteUser, maChatKickUser, maChatPinMessage, maChatUnpinMessage, maChatInviteUserByLink);
 
   TVkMessageActionTypeHelper = record helper for TVkMessageActionType
     function ToString: string; inline;
@@ -303,9 +294,7 @@ type
   /// <summary>
   ///  Жанры музыки
   /// </summary>
-  TVkAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal,
-    agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae,
-    agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
+  TVkAudioGenre = (agNone, agRock, agPop, agRapAndHipHop, agEasyListening, agHouseAndDance, agInstrumental, agMetal, agAlternative, agDubstep, agJazzAndBlues, agDrumAndBass, agTrance, agChanson, agEthnic, agAcousticAndVocal, agReggae, agClassical, agIndiePop, agSpeech, agElectropopAndDisco, agOther);
 
   TVkAudioGenreHelper = record helper for TVkAudioGenre
     function ToConst: Integer;
@@ -345,22 +334,14 @@ type
   /// Играть, Подать заявку, Получить предложение, Написать, Откликнуться
   /// Подробное описание тут https://vk.com/dev/wall.postAdsStealth
   /// </summary>
-  TVkPostLinkButton = (lbAuto, lbAppJoin, lbAppGameJoin, lbOpenUrl, lbOpen, lbMore, lbCall, lbBook, lbEnroll, lbRegister,
-    lbBuy, lbBuyTicket, lbOrder, lbCreate, lbInstall, lbContact, lbFill, lbJoinPublic, lbJoinEvent, lbJoin, lbIM, lbIM2,
-    lbBegin, lbGet, lbWatch, lbDownload, lbParticipate, lbPlay, lbApply, lbGetAnOffer, lbToWrite, lbReply);
+  TVkPostLinkButton = (lbAuto, lbAppJoin, lbAppGameJoin, lbOpenUrl, lbOpen, lbMore, lbCall, lbBook, lbEnroll, lbRegister, lbBuy, lbBuyTicket, lbOrder, lbCreate, lbInstall, lbContact, lbFill, lbJoinPublic, lbJoinEvent, lbJoin, lbIM, lbIM2, lbBegin, lbGet, lbWatch, lbDownload, lbParticipate, lbPlay, lbApply, lbGetAnOffer, lbToWrite, lbReply);
 
   TVkPostLinkButtonHelper = record helper for TVkPostLinkButton
     function ToString: string; inline;
   end;
 
-  TVkProfileField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50,
-    ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufPhotoBig, ufPhotoMedium,
-    ufOnline, ufLists, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus,
-    usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal,
-    ufConnections, ufExports, ufWallComments, ufActivities, ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames,
-    ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest,
-    ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus,
-    ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
+  TVkProfileField = (ufPhotoId, ufVerified, ufSex, ufBirthDate, ufCity, ufCountry, ufHomeTown, ufHasPhoto, ufPhoto50, ufPhoto100, ufPhoto200Orig, ufPhoto200, ufPhoto400Orig, ufPhotoMax, ufPhotoMaxOrig, ufPhotoBig, ufPhotoMedium, ufOnline, ufLists, ufDomain, ufHasMobile, ufContacts, ufSite, ufEducation, ufUniversities, ufSchools, ufStatus, usLastSeen, ufFollowersCount, ufCommonCount, ufOccupation, ufNickname, ufRelatives, ufRelation, ufPersonal, ufConnections, ufExports, ufWallComments, ufActivities,
+    ufInterests, ufMusic, ufMovies, ufTV, ufBooks, ufGames, ufAbout, ufQuotes, ufCanPost, ufCanSeeAllPosts, ufCanSeeAudio, ufCanWritePrivateMessage, ufCanSendFriendRequest, ufIsFavorite, ufIsHiddenFromFeed, ufTimeZone, ufScreenName, ufMaidenName, ufCropPhoto, ufIsFriend, ufFriendStatus, ufCareer, ufMilitary, ufBlacklisted, ufBlacklistedByMe, ufCanBeInvitedGroup);
 
   TVkProfileFieldHelper = record helper for TVkProfileField
     function ToString: string; inline;
@@ -374,10 +355,7 @@ type
     class function All: TVkProfileFields; static; inline;
   end;
 
-  TVkGroupMemberField = (mfSex, mfBdate, mfCity, mfCountry, mfPhoto50, mfPhoto100, mfPhoto200orig, mfPhoto200,
-    mfPhoto400orig, mfPhotoMax, mfPhotoMaxOrig, mfOnline, mfOnlineMobile, mfLists, mfDomain, mfHasMobile, mfContacts,
-    mfConnections, mfSite, mfEducation, mfUniversities, mfSchools, mfCanPost, mfCanSeeAllPosts, mfCanSeeAudio,
-    mfCanWritePrivateMessage, mfStatus, mfLastSeen, mfCommonCount, mfRelation, mfRelatives);
+  TVkGroupMemberField = (mfSex, mfBdate, mfCity, mfCountry, mfPhoto50, mfPhoto100, mfPhoto200orig, mfPhoto200, mfPhoto400orig, mfPhotoMax, mfPhotoMaxOrig, mfOnline, mfOnlineMobile, mfLists, mfDomain, mfHasMobile, mfContacts, mfConnections, mfSite, mfEducation, mfUniversities, mfSchools, mfCanPost, mfCanSeeAllPosts, mfCanSeeAudio, mfCanWritePrivateMessage, mfStatus, mfLastSeen, mfCommonCount, mfRelation, mfRelatives);
 
   TVkGroupMemberFieldHelper = record helper for TVkGroupMemberField
     function ToString: string; inline;
@@ -391,9 +369,7 @@ type
     class function All: TVkGroupMemberFields; static; inline;
   end;
 
-  TVkGroupField = (gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate,
-    gfFinishDate, gfCanPost, gfCanSeeAllPosts, gfActivity, gfStatus, gfContacts, gfLinks, gfFixedPost, gfVerified,
-    gfSite, gfCanCreateTopic, gfPhoto50);
+  TVkGroupField = (gfCity, gfCountry, gfPlace, gfDescription, gfWikiPage, gfMembersCount, gfCounters, gfStartDate, gfFinishDate, gfCanPost, gfCanSeeAllPosts, gfActivity, gfStatus, gfContacts, gfLinks, gfFixedPost, gfVerified, gfSite, gfCanCreateTopic, gfPhoto50);
 
   TVkGroupFieldHelper = record helper for TVkGroupField
     function ToString: string; inline;
@@ -406,8 +382,7 @@ type
     class function All: TVkGroupFields; static; inline;
   end;
 
-  TVkGroupAddressField = (gafTitle, gafAddress, gafAdditionalAddress, gafCountryId, gafCityId, gafMetroStationId,
-    gafLatitude, gafLongitude, gafWorkInfoStatus, gafTimeOffset);
+  TVkGroupAddressField = (gafTitle, gafAddress, gafAdditionalAddress, gafCountryId, gafCityId, gafMetroStationId, gafLatitude, gafLongitude, gafWorkInfoStatus, gafTimeOffset);
 
   TVkGroupAddressFieldHelper = record helper for TVkGroupAddressField
     function ToString: string; inline;
@@ -610,8 +585,7 @@ type
   /// <summary>
   ///  Типы объектов
   /// </summary>
-  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment,
-    itTopicComment, itMarketComment, itSitepage, itStory);
+  TVkItemType = (itPost, itComment, itPhoto, itAudio, itVideo, itNote, itMarket, itPhotoComment, itVideoComment, itTopicComment, itMarketComment, itSitepage, itStory);
 
   TVkItemTypeHelper = record helper for TVkItemType
     function ToString: string; inline;
@@ -620,9 +594,7 @@ type
   /// <summary>
   ///  Типы вложений
   /// </summary>
-  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWallReply,
-    atSticker, atGift, atCall, atAudioMessage, atPostedPhoto, atGraffiti, atNote, atApp, atPoll, atPage, atAlbum,
-    atPhotosList, atPrettyCards, atEvent);
+  TVkAttachmentType = (atUnknown, atPhoto, atVideo, atAudio, atDoc, atLink, atMarket, atMarketAlbum, atWall, atWallReply, atSticker, atGift, atCall, atAudioMessage, atPostedPhoto, atGraffiti, atNote, atApp, atPoll, atPage, atAlbum, atPhotosList, atPrettyCards, atEvent);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToString: string; inline;
@@ -652,8 +624,7 @@ type
     function ToString: string; inline;
   end;
 
-  TVkPolitical = (plNone, plCommunist, plSocialist, plModerate, plLiberal, plConservative, plMonarchical,
-    plUltraConservative, plIndifferent, plLibertarian);
+  TVkPolitical = (plNone, plCommunist, plSocialist, plModerate, plLiberal, plConservative, plMonarchical, plUltraConservative, plIndifferent, plLibertarian);
 
   /// <summary>
   /// именительный – nom, родительный – gen, дательный – dat, винительный – acc, творительный – ins, предложный – abl
@@ -691,8 +662,7 @@ type
   ///  rnInLove — влюблён/влюблена;
   ///  rnCivilMarriage — в гражданском браке;
   /// </summary>
-  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove,
-    rnCivilMarriage);
+  TVkRelation = (rnNone, rnNotMarried, rnHaveFriend, rnAffiance, rnMarried, rnComplicated, rnnActivelyLooking, rnInLove, rnCivilMarriage);
 
   /// <summary>
   /// Структура события входящего сообщения
@@ -809,8 +779,7 @@ type
     function ToString: string; overload; inline;
   end;
 
-  TVkCounterFilter = (cfFriends, cfMessages, cfPhotos, cfVideos, cfNotes, cfGifts, cfEvents, cfGroups, cfNotifications,
-    cfSdk, cfAppRequests, cfFriendsRecommendations);
+  TVkCounterFilter = (cfFriends, cfMessages, cfPhotos, cfVideos, cfNotes, cfGifts, cfEvents, cfGroups, cfNotifications, cfSdk, cfAppRequests, cfFriendsRecommendations);
 
   TVkCounterFilterHelper = record helper for TVkCounterFilter
     function ToString: string; overload; inline;
@@ -834,8 +803,7 @@ type
     function ToString: string; overload; inline;
   end;
 
-  TVkPermission = (Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline,
-    Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage);
+  TVkPermission = (Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage);
 
   TVkPermissionHelper = record helper for TVkPermission
     function ToString: string; overload; inline;
@@ -850,8 +818,7 @@ type
 
   TOnLogin = procedure(Sender: TObject) of object;
 
-  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash:
-    string) of object;
+  TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string) of object;
 
   TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
 
@@ -983,8 +950,7 @@ var
   VkCurrencyId: array[TVkCurrency] of Integer = (643, 980, 398, 978, 840);
   VkGroupAddressField: array[TVkGroupAddressField] of string = ('title', 'address', 'additional_address', 'country_id',
     'city_id', 'metro_station_id', 'latitude', 'longitude', 'work_info_status', 'time_offset');
-  VkGroupTagColors: array of string = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a',
-    '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
+  VkGroupTagColors: array of string = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a', '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
   VkMessageActionType: array[TVkMessageActionType] of string = (
     '',
     'chat_photo_update',
@@ -996,8 +962,6 @@ var
     'chat_pin_message',
     'chat_unpin_message',
     'chat_invite_user_by_link');
-
-function VKErrorString(ErrorCode: Integer): string;
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -1034,449 +998,6 @@ begin
   if Value > VK_GROUP_ID_START then
     Exit(-(Value - VK_GROUP_ID_START));
   Result := Value;
-end;
-
-function VKErrorString(ErrorCode: Integer): string;
-var
-  ErrStr: string;
-begin
-  case ErrorCode of
-    1:
-      ErrStr :=
-        'Произошла неизвестная ошибка. Попробуйте повторить запрос позже.';
-    2:
-      ErrStr :=
-        'Приложение выключено. Необходимо включить приложение в настройках https://vk.com/editapp?id={Ваш API_ID} или использовать тестовый режим (test_mode=1)';
-    3:
-      ErrStr :=
-        'Передан неизвестный метод. Проверьте, правильно ли указано название вызываемого метода: https://vk.com/dev/methods.';
-    4:
-      ErrStr :=
-        'Неверная подпись.';
-    VK_ERROR_INVALID_TOKEN:
-      ErrStr :=
-        'Авторизация пользователя не удалась. Убедитесь, что Вы используете верную схему авторизации.';
-    6:
-      ErrStr :=
-        'Слишком много запросов в секунду. Задайте больший интервал между вызовами или используйте метод execute. Подробнее об ограничениях на частоту вызовов см. на странице https://vk.com/dev/api_requests.';
-    7:
-      ErrStr :=
-        'Нет прав для выполнения этого действия. Проверьте, получены ли нужные права доступа при авторизации. Это можно сделать с помощью метода account.getAppPermissions.';
-    8:
-      ErrStr :=
-        'Неверный запрос. Проверьте синтаксис запроса и список используемых параметров (его можно найти на странице с описанием метода).';
-    9:
-      ErrStr :=
-        'Слишком много однотипных действий. Нужно сократить число однотипных обращений. Для более эффективной работы Вы можете использовать execute или JSONP.';
-    10:
-      ErrStr :=
-        'Произошла внутренняя ошибка сервера. Попробуйте повторить запрос позже.';
-    11:
-      ErrStr :=
-        'В тестовом режиме приложение должно быть выключено или пользователь должен быть залогинен. Выключите приложение в настройках https://vk.com/editapp?id={Ваш API_ID}';
-    14:
-      ErrStr :=
-        'Требуется ввод кода с картинки (Captcha).';
-    15:
-      ErrStr :=
-        'Доступ запрещён. Убедитесь, что Вы используете верные идентификаторы, и доступ к контенту для текущего пользователя есть в полной версии сайта.';
-    16:
-      ErrStr :=
-        'Требуется выполнение запросов по протоколу HTTPS, т.к. пользователь включил настройку, требующую работу через безопасное соединение.'#13#10 +
-        ' Чтобы избежать появления такой ошибки, в Standalone-приложении Вы можете предварительно проверять состояние этой настройки у пользователя методом account.getInfo.';
-    17:
-      ErrStr :=
-        'Требуется валидация пользователя. Действие требует подтверждения — необходимо перенаправить пользователя на служебную страницу для валидации.';
-    18:
-      ErrStr :=
-        'Страница удалена или заблокирована. Страница пользователя была удалена или заблокирована';
-    19:
-      ErrStr :=
-        'Контент недоступен.';
-    20:
-      ErrStr :=
-        'Данное действие запрещено для не Standalone приложений. Если ошибка возникает несмотря на то, что Ваше приложение имеет тип Standalone, убедитесь, что при авторизации Вы используете redirect_uri=https://oauth.vk.com/blank.html.';
-    21:
-      ErrStr :=
-        'Данное действие разрешено только для Standalone и Open API приложений.';
-    22:
-      ErrStr :=
-        'Ошибка загрузки.';
-    23:
-      ErrStr :=
-        'Метод был выключен. Все актуальные методы ВК API, которые доступны в настоящий момент, перечислены здесь: https://vk.com/dev/methods.';
-    24:
-      ErrStr :=
-        'Требуется подтверждение со стороны пользователя.';
-    27:
-      ErrStr :=
-        'Ключ доступа сообщества недействителен.';
-    28:
-      ErrStr :=
-        'Ключ доступа приложения недействителен.';
-    29:
-      ErrStr :=
-        'Достигнут количественный лимит на вызов метода Подробнее об ограничениях на количество вызовов см. на странице https://vk.com/dev/data_limits';
-    30:
-      ErrStr :=
-        'Профиль является приватным Информация, запрашиваемая о профиле, недоступна с используемым ключом доступа';
-    33:
-      ErrStr :=
-        'Not implemented yet';
-    100:
-      ErrStr :=
-        'Один из необходимых параметров был не передан или неверен. Проверьте список требуемых параметров и их формат на странице с описанием метода.';
-    101:
-      ErrStr :=
-        'Неверный API ID приложения. Найдите приложение в списке администрируемых на странице https://vk.com/apps?act=settings и укажите в запросе верный API_ID (идентификатор приложения).';
-    103:
-      ErrStr :=
-        'Превышено ограничение.';
-    104:
-      ErrStr :=
-        'Not found';
-    113:
-      ErrStr :=
-        'Неверный идентификатор пользователя. Убедитесь, что Вы используете верный идентификатор. Получить ID по короткому имени можно методом utils.resolveScreenName.';
-    114:
-      ErrStr :=
-        'Недопустимый идентификатор альбома.';
-    118:
-      ErrStr :=
-        'Недопустимый сервер.';
-    119:
-      ErrStr :=
-        'Недопустимое название.';
-    121:
-      ErrStr :=
-        'Неверный хэш.';
-    122:
-      ErrStr :=
-        'Неверные идентификаторы фотографий.';
-    125:
-      ErrStr :=
-        'Invalid group id';
-    129:
-      ErrStr :=
-        'Недопустимый формат фотографии';
-    140:
-      ErrStr :=
-        'Страница не найдена.';
-    141:
-      ErrStr :=
-        'Нет доступа к странице.';
-    148:
-      ErrStr :=
-        'Пользователь не установил приложение в левое меню';
-    150:
-      ErrStr :=
-        'Неверный timestamp. Получить актуальное значение Вы можете методом utils.getServerTime.';
-    180:
-      ErrStr :=
-        'Заметка не найдена.';
-    181:
-      ErrStr :=
-        'Нет доступа к заметке.';
-    182:
-      ErrStr :=
-        'Вы не можете оставлять комментарии к этой заметке.';
-    183:
-      ErrStr :=
-        'Нет доступа к комментарию.';
-    200:
-      ErrStr :=
-        'Доступ к альбому запрещён. Убедитесь, что Вы используете верные идентификаторы (для пользователей owner_idположительный, для сообществ — отрицательный), и доступ к запрашиваемому контенту для текущего пользователя есть в полной версии сайта.';
-    201:
-      ErrStr :=
-        'Доступ к аудио запрещён. Убедитесь, что Вы используете верные идентификаторы (для пользователей owner_idположительный, для сообществ — отрицательный), и доступ к запрашиваемому контенту для текущего пользователя есть в полной версии сайта.';
-    203:
-      ErrStr :=
-        'Доступ к группе запрещён. Убедитесь, что текущий пользователь является участником или руководителем сообщества (для закрытых и частных групп и встреч).';
-    204:
-      ErrStr :=
-        'Нет доступа.';
-    210:
-      ErrStr :=
-        'Нет доступа к записи.';
-    211:
-      ErrStr :=
-        'Нет доступа к комментариям на этой стене.';
-    212:
-      ErrStr :=
-        'Access to post comments denied.';
-    214:
-      ErrStr :=
-        'Нет прав на добавление поста.';
-    219:
-      ErrStr :=
-        'Рекламный пост уже недавно добавлялся.';
-    220:
-      ErrStr :=
-        'Слишком много получателей.';
-    221:
-      ErrStr :=
-        'Пользователь выключил трансляцию названий аудио в статус';
-    222:
-      ErrStr :=
-        'Запрещено размещать ссылки.';
-    224:
-      ErrStr :=
-        'Too many ads posts';
-    225:
-      ErrStr :=
-        'Donut is disabled';
-    250:
-      ErrStr :=
-        'Нет доступа к опросу.';
-    251:
-      ErrStr :=
-        'Недопустимый идентификатор опроса.';
-    252:
-      ErrStr :=
-        'Недопустимый идентификатор ответа.';
-    253:
-      ErrStr :=
-        'Access denied, please vote first';
-    260:
-      ErrStr :=
-        'Access to the groups list is denied due to the user''s privacy settings';
-    300:
-      ErrStr :=
-        'Альбом переполнен. Перед продолжением работы нужно удалить лишние объекты из альбома или использовать другой альбом.';
-    302:
-      ErrStr :=
-        'Создано максимальное количество альбомов.';
-    500:
-      ErrStr :=
-        'Действие запрещено. Вы должны включить переводы голосов в настройках приложения. Проверьте настройки приложения: https://vk.com/editapp?id={Ваш API_ID}&section=payments';
-    504:
-      ErrStr :=
-        'Not enough money on owner''s balance';
-    600:
-      ErrStr :=
-        'Нет прав на выполнение данных операций с рекламным кабинетом.';
-    603:
-      ErrStr :=
-        'Произошла ошибка при работе с рекламным кабинетом.';
-    700:
-      ErrStr :=
-        'Невозможно изменить полномочия создателя.';
-    701:
-      ErrStr :=
-        'Пользователь должен состоять в сообществе.';
-    702:
-      ErrStr :=
-        'Достигнут лимит на количество руководителей в сообществе.';
-    703:
-      ErrStr :=
-        'You need to enable 2FA for this action';
-    704:
-      ErrStr :=
-        'Вы не можете назначить пользователя руководителем, если у Вас не подключена функция подтверждения входа.';
-    706:
-      ErrStr :=
-        'Too many addresses in club';
-    711:
-      ErrStr :=
-        'Application is not installed in community';
-    800:
-      ErrStr :=
-        'Это видео уже добавлено.';
-    801:
-      ErrStr :=
-        'Comments for this video are closed';
-    900:
-      ErrStr :=
-        'Нельзя отправлять сообщение пользователю из черного списка';
-    901:
-      ErrStr :=
-        'Пользователь не давал разрешения на отправку сообщений';
-    902:
-      ErrStr :=
-        'Нельзя отправлять сообщения этому пользователю в связи с настройками приватности';
-    907:
-      ErrStr :=
-        'Значение ts или pts слишком маленькое, получите новое значение.';
-    908:
-      ErrStr :=
-        'Значение ts или pts слишком большое, получите новое значение.';
-    909:
-      ErrStr :=
-        'Невозможно отредактировать сообщение после 24 часов';
-    910:
-      ErrStr :=
-        'Невозможно отредактировать сообщение, поскольку оно слишком большое';
-    911:
-      ErrStr :=
-        'Keyboard format is invalid';
-    912:
-      ErrStr :=
-        'This is a chat bot feature, change this status in settings';
-    913:
-      ErrStr :=
-        'Слишком много пересланных сообщений';
-    914:
-      ErrStr :=
-        'Сообщение слишком длинное';
-    917:
-      ErrStr :=
-        'У вас нет доступа в эту беседу';
-    919:
-      ErrStr :=
-        'Вам недоступны ссылки для приглашения в этот чат.';
-    920:
-      ErrStr :=
-        'Невозможно отредактировать сообщение такого типа';
-    921:
-      ErrStr :=
-        'Невозможно переслать выбранные сообщения';
-    924:
-      ErrStr :=
-        'Невозможно удалить сообщение для получателей';
-    925:
-      ErrStr :=
-        'You are not admin of this chat';
-    931:
-      ErrStr :=
-        'You can''t change invite link for this chat';
-    932:
-      ErrStr :=
-        'Your community can''t interact with this peer';
-    935:
-      ErrStr :=
-        'Такого пользователя в чате нет.';
-    936:
-      ErrStr :=
-        'Contact not found';
-    940:
-      ErrStr :=
-        'Too many posts in messages';
-    942:
-      ErrStr :=
-        'Cannot pin one-time story';
-    943:
-      ErrStr :=
-        'Cannot use this intent';
-    944:
-      ErrStr :=
-        'Limits overflow for this intent';
-    945:
-      ErrStr :=
-        'Chat was disabled';
-    946:
-      ErrStr :=
-        'Chat not supported';
-    949:
-      ErrStr :=
-        'Can''t edit pinned message yet';
-    950:
-      ErrStr :=
-        'Can''t send message, reply timed out';
-    1160:
-      ErrStr :=
-        'Оригинал фотографии был изменен.';
-    1170:
-      ErrStr :=
-        'Слишком много списков новостей (максимум 10)';
-    1251:
-      ErrStr :=
-        'This achievement is already unlocked.';
-    1260:
-      ErrStr :=
-        'Invalid screen name';
-    1310:
-      ErrStr :=
-        'Каталог не доступен для пользователя';
-    1311:
-      ErrStr :=
-        'Категории каталога не доступны для пользователя';
-    1400:
-      ErrStr :=
-        'Товар невозможно восстановить, прошло слишком много времени с момента удаления.';
-    1401:
-      ErrStr :=
-        'Comments for this market are closed';
-    1402:
-      ErrStr :=
-        'Подборка с заданным идентификатором не найдена.';
-    1403:
-      ErrStr :=
-        'Товар с заданным идентификатором не найден.';
-    1404:
-      ErrStr :=
-        'Товар уже добавлен в выбранную подборку.';
-    1405:
-      ErrStr :=
-        'Превышен лимит на количество товаров (15000).';
-    1406:
-      ErrStr :=
-        'Превышен лимит на количество товаров в подборке.';
-    1407:
-      ErrStr :=
-        'Превышен лимит на количество подборок.';
-    1408:
-      ErrStr :=
-        'Недопустимые ссылки в описании товара.';
-    1409:
-      ErrStr :=
-        'Shop not enabled';
-    1416:
-      ErrStr :=
-        'Variant not found';
-    1417:
-      ErrStr :=
-        'Property not found';
-    1425:
-      ErrStr :=
-        'Grouping must have two or more items';
-    1426:
-      ErrStr :=
-        'Item must have distinct properties';
-    1427:
-      ErrStr :=
-        'Cart is empty';
-    1429:
-      ErrStr :=
-        'Specify width, length, height and weight all together';
-    1430:
-      ErrStr :=
-        'VK Pay status can not be changed';
-    1600:
-      ErrStr :=
-        'Срок хранения истории истёк.';
-    1602:
-      ErrStr :=
-        'Нельзя ответить на историю в связи с настройками приватности.';
-    2000:
-      ErrStr :=
-        'Нельзя добавить больше 10 серверов';
-    3102:
-      ErrStr :=
-        'Specified link is incorrect (can''t find source)';
-    3300:
-      ErrStr :=
-        'Recaptcha needed';
-    3301:
-      ErrStr :=
-        'Phone validation needed';
-    3302:
-      ErrStr :=
-        'Password validation needed';
-    3303:
-      ErrStr :=
-        'Otp app validation needed';
-    3304:
-      ErrStr :=
-        'Email confirmation needed';
-    3305:
-      ErrStr :=
-        'Assert votes';
-  else
-    ErrStr :=
-      'Неизвестная ошибка';
-  end;
-
-  Result := ErrStr;
 end;
 
 { TMessageChangeTypeHelper }

@@ -273,6 +273,7 @@
         <DCCReference Include="Utils\VK.Wrap.Interceptors.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.ExtendedList.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.Invites.pas"/>
+        <DCCReference Include="VK.Errors.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
