@@ -3,8 +3,8 @@ unit VK.UserEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, System.JSON, VK.Types,
+  System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
   TCustomUserEvents = class(TComponent)
@@ -124,9 +124,18 @@ var
   ExtraFields: TEventExtraFields;
   UserIds: TIdList;
   Arr: TJSONArray;
+
+  procedure DoRaiseProcessing;
+  begin
+    raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+  end;
+
 begin
   try
     EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
+    A1 := 0;
+    A2 := 0;
+    A3 := 0;
   except
     Exit;
     //raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
@@ -153,7 +162,7 @@ begin
               ExtraFields.RandomId := TJSONArray(Update).Items[8].GetValue<Integer>;
           end;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         case EventType of
           1: //1	$message_id (integer) $flags (integer) extra_fields*	Замена флагов сообщения (FLAGS:=$flags).
@@ -175,7 +184,7 @@ begin
           ExtraFields.TimeStamp := TJSONArray(Update).Items[4].GetValue<Integer>;
           ExtraFields.Text := TJSONArray(Update).Items[5].GetValue<string>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoEditMessage(A1, A2, ExtraFields);
       end;
@@ -185,7 +194,7 @@ begin
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoReadMessages(EventType = 6, A1, A2);
       end;
@@ -196,7 +205,7 @@ begin
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
           A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoUserStateChange(EventType = 8, A1, A2, A3);
       end;
@@ -206,7 +215,7 @@ begin
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         case EventType of
           10: //$peer_id (integer) $mask (integer)	Сброс флагов диалога $peer_id. Соответствует операции (PEER_FLAGS &= ~$flags). Только для диалогов сообществ.
@@ -223,7 +232,7 @@ begin
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         case EventType of
           13: //Удаление всех сообщений в диалоге $peer_id с идентификаторами вплоть до $local_id.
@@ -241,7 +250,7 @@ begin
           else
             A2 := 0;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoChatChanged(A1, A2 = 1);
       end;
@@ -252,7 +261,7 @@ begin
           A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
           A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoChatChangeInfo(A2, A1, A3);
       end;
@@ -265,7 +274,7 @@ begin
           else
             A2 := A1;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoUserTyping(A1, A2);
       end;
@@ -282,7 +291,7 @@ begin
           A2 := TJSONArray(Update).Items[3].GetValue<Integer>;
           A3 := TJSONArray(Update).Items[4].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         case EventType of
           63:
@@ -297,7 +306,7 @@ begin
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoUserCall(A1, A2);
       end;
@@ -306,7 +315,7 @@ begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoCountChange(A1);
       end;
@@ -322,7 +331,7 @@ begin
           else
             A3 := 0;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoNotifyChange(A1, A2, A3);
       end;
