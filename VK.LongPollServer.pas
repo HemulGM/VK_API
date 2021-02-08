@@ -69,6 +69,17 @@ type
 
 const
   DefaultLongPollServerInterval = 1000;
+  // Настройки лонгпул сервера
+  VK_LP_VERSION = '3';
+  VK_LP_WAIT = '25';
+  VK_LP_MODE = '10';
+  // Поля
+  VK_LP_FIELD_GROUP_ID = 'group_id';
+  VK_LP_FIELD_VERSION = 'lp_version';
+  VK_LP_FIELD_TS = 'ts';
+  VK_LP_FIELD_SERVER = 'server';
+  VK_LP_FIELD_KEY = 'key';
+  VK_LP_FIELD_ACTION_CHECK = 'a_check';
 
 implementation
 
@@ -149,13 +160,13 @@ begin
   if Result and Assigned(ResponseJSON) then
   begin
     try
-      FLongPollData.Action := 'a_check';
-      FLongPollData.Mode := '10';
-      FLongPollData.Key := ResponseJSON.GetValue('key', '');
-      FLongPollData.Server := ResponseJSON.GetValue('server', '');
-      FLongPollData.TS := ResponseJSON.GetValue('ts', '');
-      FLongPollData.Wait := '25';
-      FLongPollData.Version := '3';
+      FLongPollData.Action := VK_LP_FIELD_ACTION_CHECK;
+      FLongPollData.Mode := VK_LP_MODE;
+      FLongPollData.Key := ResponseJSON.GetValue(VK_LP_FIELD_KEY, '');
+      FLongPollData.Server := ResponseJSON.GetValue(VK_LP_FIELD_SERVER, '');
+      FLongPollData.TS := ResponseJSON.GetValue(VK_LP_FIELD_TS, '');
+      FLongPollData.Wait := VK_LP_WAIT;
+      FLongPollData.Version := VK_LP_VERSION;
       Result := not FLongPollData.Server.IsEmpty;
     finally
       ResponseJSON.Free;
@@ -165,9 +176,7 @@ begin
     Result := False;
 
   if not Result then
-  begin
     DoError(TVkLongPollServerException.Create('QueryLongPollServer error '#13#10 + JSText));
-  end;
 end;
 
 procedure TVkLongPollServer.OnLongPollRecieve(Updates: TJSONArray);
@@ -235,7 +244,7 @@ begin
   FParams := Value;
   //Сохраним id группы, если его передали
   for Param in FParams do
-    if Param[0] = 'group_id' then
+    if Param[0] = VK_LP_FIELD_GROUP_ID then
       FGroupID := Param[1];
 end;
 
@@ -252,7 +261,7 @@ begin
   end;
   try
     //Обновляем данные лонгпул сервера
-    FLongPollData.TS := JSON.GetValue('ts', '');
+    FLongPollData.TS := JSON.GetValue(VK_LP_FIELD_TS, '');
     //Пробуем получить список обновлений
     if JSON.TryGetValue<TJSONArray>('updates', Updates) then
     begin
@@ -315,9 +324,7 @@ begin
             ReqCode := HTTP.Get(FLongPollData.Request, Stream).StatusCode;
           except
             on E: Exception do
-            begin
               DoError(TVkLongPollServerHTTPException.Create(E.Message));
-            end;
           end;
           //Если пора останавливаться - выходим из цикла
           if FLongPollNeedStop then
@@ -329,9 +336,7 @@ begin
           begin
             //Если ошибка, то пробуем переподключиться к лонгпул серверу
             if not QueryLongPollServer then
-            begin
               DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: ' + Stream.DataString));
-            end;
           end;
           //Интервал между запросами
           Sleep(FInterval);

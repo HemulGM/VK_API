@@ -453,7 +453,7 @@ begin
       end;
   end;
   FLongPollEvents := TLongPollEvents.Create;
-  FVersion := '3';
+  FVersion := VK_LP_VERSION;
   FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
@@ -1444,8 +1444,8 @@ begin
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
   FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'groups.getLongPollServer';
-  FLongPollServer.Params.Add('lp_version', FVersion);
-  FLongPollServer.Params.Add('group_id', FGroupID);
+  FLongPollServer.Params.Add(VK_LP_FIELD_VERSION, FVersion);
+  FLongPollServer.Params.Add(VK_LP_FIELD_GROUP_ID, FGroupID);
   Result := FLongPollServer.Start;
   if Result then
     FVK.DoLog(FLongPollServer, FGroupID.ToString + ' started')
@@ -1525,7 +1525,7 @@ begin
       end;
     end;
   end;
-  FVersion := '3';
+  FVersion := VK_LP_VERSION;
   FReaded := False;
   FItems := TGroupEventsItems.Create;
   FGroups := TStringList.Create;
@@ -1542,10 +1542,10 @@ begin
 end;
 
 destructor TCustomGroupEventControl.Destroy;
-  {$IFNDEF AUTOREFCOUNT}
+{$IFNDEF AUTOREFCOUNT}
 var
   i: Integer;
-  {$ENDIF}
+{$ENDIF}
 begin
   {$IFNDEF AUTOREFCOUNT}
   for i := 0 to FItems.Count - 1 do

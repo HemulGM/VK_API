@@ -3,8 +3,8 @@ unit VK.UserEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
   TCustomUserEvents = class(TComponent)
@@ -105,7 +105,7 @@ begin
         Break;
       end;
   end;
-  FVersion := '3';
+  FVersion := VK_LP_VERSION;
   FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
@@ -377,7 +377,7 @@ begin
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
   FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'messages.getLongPollServer';
-  FLongPollServer.Params.Add('lp_version', FVersion);
+  FLongPollServer.Params.Add(VK_LP_FIELD_VERSION, FVersion);
   FLongPollServer.OnError := FOnError;
   Result := FLongPollServer.Start;
   if Result then
