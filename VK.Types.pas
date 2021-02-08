@@ -46,6 +46,7 @@ const
   ERROR_VK_NETWORK = -4;
   ERROR_VK_PARSE = -5;
   ERROR_VK_AUTH = -6;
+  ERROR_VK_LONGPOLL = -7;
 
   //Message Flags
   MF_UNREAD = 1;

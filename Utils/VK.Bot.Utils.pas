@@ -6,7 +6,8 @@ uses
   {$IFDEF MSWINDOWS}
   Winapi.Windows, Winapi.Messages,
   {$ENDIF}
-  System.SysUtils, System.UITypes, System.Variants, System.Classes, System.StrUtils;
+  System.SysUtils, System.UITypes, System.Variants, System.Classes,
+  System.StrUtils;
 
 type
   TOnInput = reference to procedure(Command: string; var Quit: Boolean);
@@ -113,11 +114,11 @@ var
   Input: string;
   Quit: Boolean;
 begin
-  if not Assigned(OnCommand) then
-    Exit;
   repeat
     System.Readln(Input);
-    OnCommand(Input, Quit);
+    Quit := True;
+    if Assigned(OnCommand) then
+      OnCommand(Input, Quit);
   until Quit;
   AddLine('Завершение ...');
 end;
