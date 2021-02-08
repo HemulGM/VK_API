@@ -3,21 +3,24 @@ unit VK.Auth;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Auth;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Auth;
 
 type
   TAuthController = class(TVkController)
   public
     /// <summary>
+    /// <b>Данный метод устарел и может быть отключён через некоторое время, пожалуйста, избегайте его использования.</b>
     /// Проверяет правильность введённого номера (возможность его использования для регистрации или авторизации).
     /// </summary>
-    function CheckPhone(var Status: Boolean; Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean = False): Boolean; overload;
+    function CheckPhone(var Status: Boolean; Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean = False):
+      Boolean; overload; deprecated 'Метод отключен на уровне API v5.124+';
     /// <summary>
+    /// <b>Данный метод устарел и может быть отключён через некоторое время, пожалуйста, избегайте его использования.</b>
     /// Проверяет правильность введённого номера (возможность его использования для регистрации или авторизации).
     /// С указанием текущих данных приложения ClientId и ClientSecret
     /// </summary>
-    function CheckPhone(var Status: Boolean; Phone: string; AuthByPhone: Boolean = False): Boolean; overload;
+    function CheckPhone(var Status: Boolean; Phone: string; AuthByPhone: Boolean = False): Boolean; overload; deprecated
+      'Метод отключен на уровне API v5.124+';
     /// <summary>
     /// Позволяет восстановить доступ к аккаунту, используя код, полученный через SMS.
     /// Для завершения восстановления доступа необходимо обратиться по адресу:
@@ -42,7 +45,8 @@ uses
 
 { TAuthController }
 
-function TAuthController.CheckPhone(var Status: Boolean; Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean): Boolean;
+function TAuthController.CheckPhone(var Status: Boolean; Phone: string; ClientId, ClientSecret: string; AuthByPhone:
+  Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -59,7 +63,9 @@ var
 begin
   ClientId := TCustomVK(VK).AppID;
   ClientSecret := TCustomVK(VK).AppKey;
+  {$WARNINGS OFF}
   Result := CheckPhone(Status, Phone, ClientId, ClientSecret, AuthByPhone);
+  {$WARNINGS ON}
 end;
 
 function TAuthController.Restore(var Status: TVkAuthRestore; const Phone, LastName: string): Boolean;

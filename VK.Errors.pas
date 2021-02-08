@@ -80,7 +80,7 @@ begin
   Add(119, 'Недопустимое название.');
   Add(121, 'Неверный хэш.');
   Add(122, 'Неверные идентификаторы фотографий.');
-  Add(125, 'Invalid group id');
+  Add(125, 'Неверный идентификатор группы');
   Add(129, 'Недопустимый формат фотографии');
   Add(140, 'Страница не найдена.');
   Add(141, 'Нет доступа к странице.');
@@ -168,12 +168,12 @@ begin
   Add(1406, 'Превышен лимит на количество товаров в подборке.');
   Add(1407, 'Превышен лимит на количество подборок.');
   Add(1408, 'Недопустимые ссылки в описании товара.');
-  Add(1409, 'Shop not enabled');
-  Add(1416, 'Variant not found');
-  Add(1417, 'Property not found');
+  Add(1409, 'Магазин не включен');
+  Add(1416, 'Вариант не найден');
+  Add(1417, 'Свойство не найдено');
   Add(1425, 'Grouping must have two or more items');
   Add(1426, 'Item must have distinct properties');
-  Add(1427, 'Cart is empty');
+  Add(1427, 'Корзина пуста');
   Add(1429, 'Specify width, length, height and weight all together');
   Add(1430, 'VK Pay status can not be changed');
   Add(1600, 'Срок хранения истории истёк.');
@@ -184,7 +184,7 @@ begin
   Add(3301, 'Phone validation needed');
   Add(3302, 'Password validation needed');
   Add(3303, 'Otp app validation needed');
-  Add(3304, 'Email confirmation needed');
+  Add(3304, 'Требуется подтверждение Email');
   Add(3305, 'Assert votes');
 end;
 
