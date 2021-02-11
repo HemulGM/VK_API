@@ -1192,7 +1192,7 @@ end;
 
 function TVkMessageNew.Attachment(const Value: TAttachmentArray): TVkMessageNew;
 begin
-  Params.Add('attachment', Value);
+  Params.Add('attachment', Value.ToStrings);
   Result := Self;
 end;
 
@@ -1418,7 +1418,7 @@ end;
 
 function TVkParamsMessageSend.Attachment(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachment', Value);
+  Result := List.Add('attachment', Value.ToStrings);
 end;
 
 function TVkParamsMessageSend.Attachment(const Value: string): Integer;
@@ -1520,7 +1520,7 @@ end;
 
 function TVkParamsMessageSendIds.Attachment(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachment', Value);
+  Result := List.Add('attachment', Value.ToStrings);
 end;
 
 function TVkParamsMessageSendIds.Attachment(const Value: string): Integer;
@@ -1634,7 +1634,7 @@ end;
 
 function TVkParamsMessageEdit.Attachment(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachment', Value);
+  Result := List.Add('attachment', Value.ToStrings);
 end;
 
 function TVkParamsMessageEdit.ConversationMessageId(const Value: Integer): Integer;

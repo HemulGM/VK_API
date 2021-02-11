@@ -701,7 +701,7 @@ end;
 
 function TVkParamsMarketCreateComment.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsMarketCreateComment.FromGroup(Value: Boolean): Integer;
@@ -847,7 +847,7 @@ end;
 
 function TVkParamsMarketEditComment.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 { TVkParamsMarketEditOrder }

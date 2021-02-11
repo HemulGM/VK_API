@@ -3,13 +3,14 @@ unit VK.Entity.Common;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  REST.Json.Types;
+  Generics.Collections, System.Json, REST.JsonReflect, REST.Json.Interceptors,
+  Rest.Json, REST.Json.Types;
 
 type
   TVkEntity = class(TInterfacedObject)
     function ToJsonString: string;
     class function FromJsonString<T: class, constructor>(AJsonString: string): T;
+    procedure FromJson(AJson: TJSONObject);
     constructor Create; virtual;
   end;
 
@@ -336,7 +337,7 @@ var
 implementation
 
 uses
-  System.SysUtils, System.Json, VK.CommonUtils;
+  System.SysUtils, VK.CommonUtils;
 
 {TVkGeo}
 
@@ -423,6 +424,11 @@ end;
 constructor TVkEntity.Create;
 begin
   //
+end;
+
+procedure TVkEntity.FromJson(AJson: TJSONObject);
+begin
+  TJson.JsonToObject(Self, AJson);
 end;
 
 class function TVkEntity.FromJsonString<T>(AJsonString: string): T;

@@ -11,12 +11,17 @@ uses
 type
   TVkProfile = class;
 
-  TVkExport = class
+  TVkExport = class(TVkEntity)
+  private
+    FInstagram: Boolean;
+    FLivejournal: Boolean;
+    FFacebook: Boolean;
+    FTwitter: Boolean;
   public
-   { property Twitter: Boolean;
-    property Facebook: Boolean;
-    property Livejournal: Boolean;
-    property Instagram : Boolean; }
+    property Twitter: Boolean read FTwitter write FTwitter;
+    property Facebook: Boolean read FFacebook write FTwitter;
+    property Livejournal: Boolean read FLivejournal write FTwitter;
+    property Instagram: Boolean read FInstagram write FTwitter;
   end;
 
   TVkFriendsMutual = class(TVkCounterEntity)
@@ -465,7 +470,8 @@ type
     FOccupation: TVkOccupation;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FOnline: Boolean;
-    FPersonal: TVkPersonal;
+    //[JsonReflectAttribute(ctObject, rtObject, TIntBooleanInterceptor)]
+    //FPersonal: TVkPersonal;
     FPhoto_100: string;
     FPhoto_200: string;
     FPhoto_200_orig: string;
@@ -832,7 +838,7 @@ type
     /// <summary>
     /// Информация о полях из раздела «Жизненная позиция»
     /// </summary>
-    property Personal: TVkPersonal read FPersonal write FPersonal;
+    //property Personal: TVkPersonal read FPersonal write FPersonal;
     /// <summary>
     /// Фото 50
     /// </summary>
@@ -1050,8 +1056,8 @@ begin
     FOccupation.Free;
   if Assigned(FRelation_partner) then
     FRelation_partner.Free;
-  if Assigned(FPersonal) then
-    FPersonal.Free;
+  //if Assigned(FPersonal) then
+  //  FPersonal.Free;
   if Assigned(FMutual) then
     FMutual.Free;
   if Assigned(FCounters) then

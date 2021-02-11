@@ -584,7 +584,7 @@ end;
 
 function TVkComment.ToAttachment: string;
 begin
-  Result := Attachment.WallReply(OwnerId, Id, AccessKey);
+  Result := TAttachment.WallReply(OwnerId, Id, AccessKey);
 end;
 
 {TVkPost}
@@ -619,7 +619,7 @@ end;
 
 function TVkPost.ToAttachment: string;
 begin
-  Result := Attachment.Wall(Id, OwnerId, AccessKey);
+  Result := TAttachment.Wall(Id, OwnerId, AccessKey);
 end;
 
 { TVkAttachmentHistoryItem }

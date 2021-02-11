@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheet9
+      ActivePage = TabSheet11
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -550,7 +550,6 @@ object FormMain: TFormMain
     OnChangeDialogFlags = VkUserEvents1ChangeDialogFlags
     OnChangeMessageFlags = VkUserEvents1ChangeMessageFlags
     OnChatChanged = VkUserEvents1ChatChanged
-    OnChatChangeInfo = VkUserEvents1ChatChangeInfo
     OnCountChange = VkUserEvents1CountChange
     OnDeleteMessages = VkUserEvents1DeleteMessages
     OnEditMessage = VkUserEvents1EditMessage

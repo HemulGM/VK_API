@@ -163,7 +163,7 @@ end;
 
 function TVkDocument.ToAttachment: string;
 begin
-  Result := Attachment.Doc(FId, FOwner_id, FAccess_key);
+  Result := TAttachment.Doc(FId, FOwner_id, FAccess_key);
 end;
 
 function TVkDocument.GetSizeStr: string;

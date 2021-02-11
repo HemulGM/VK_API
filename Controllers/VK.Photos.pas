@@ -1389,7 +1389,7 @@ end;
 
 function TVkParamsPhotosCreateComment.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsPhotosCreateComment.FromGroup(Value: Boolean): Integer;
@@ -1515,7 +1515,7 @@ end;
 
 function TVkParamsPhotosEditComment.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsPhotosEditComment.CommentId(Value: Integer): Integer;

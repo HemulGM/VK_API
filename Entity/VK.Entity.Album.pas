@@ -108,7 +108,7 @@ end;
 
 function TVkPhotoAlbum.ToAttachment: string;
 begin
-  Result := Attachment.Album(Id, OwnerId, AccessKey);
+  Result := TAttachment.Album(Id, OwnerId, AccessKey);
 end;
 
 end.

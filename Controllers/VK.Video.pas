@@ -725,7 +725,7 @@ end;
 
 function TVkParamsVideoCreateComment.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsVideoCreateComment.FromGroup(Value: Integer): Integer;

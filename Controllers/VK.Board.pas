@@ -417,7 +417,7 @@ end;
 function TVkParamsBoardCommentEdit.Attachments(Value: TAttachmentArray): TVkParamsBoardCommentEdit;
 begin
   Result := Self;
-  List.Add('attachments', Value.ToString)
+  List.Add('attachments', Value.ToStrings)
 end;
 
 function TVkParamsBoardCommentEdit.FromGroup(Value: Boolean): TVkParamsBoardCommentEdit;
@@ -455,7 +455,7 @@ end;
 function TVkParamsBoardCommentCreate.Attachments(Value: TAttachmentArray): TVkParamsBoardCommentCreate;
 begin
   Result := Self;
-  List.Add('attachments', Value.ToString)
+  List.Add('attachments', Value.ToStrings)
 end;
 
 function TVkParamsBoardCommentCreate.FromGroup(Value: Boolean): TVkParamsBoardCommentCreate;
@@ -563,7 +563,7 @@ end;
 function TVkParamsBoardAdd.Attachments(Value: TAttachmentArray): TVkParamsBoardAdd;
 begin
   Result := Self;
-  List.Add('attachments', Value);
+  List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsBoardAdd.FromGroup(Value: Boolean): TVkParamsBoardAdd;

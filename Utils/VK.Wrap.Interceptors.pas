@@ -3,8 +3,8 @@ unit VK.Wrap.Interceptors;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, TypInfo, System.Types, System.RTTI, Rest.Json, REST.JsonReflect,
-  REST.Json.Interceptors, VK.Types;
+  Generics.Collections, System.SysUtils, TypInfo, System.Types, System.RTTI,
+  Rest.Json, REST.JsonReflect, REST.Json.Interceptors, VK.Types;
 
 type
   TEnumHelp = record
@@ -14,26 +14,30 @@ type
     class function Recast<TEnum>(const Value: TEnum): Integer; static;
   end;
 
-  TIntBooleanInterceptor = class(TJSONInterceptor)
-  public
-    constructor Create; reintroduce;
-    function StringConverter(Data: TObject; Field: string): string; override;
-    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
-  end;
-
-  TStringDateTimeInterceptor = class(TJSONInterceptor)
-  public
-    constructor Create; reintroduce;
-    function StringConverter(Data: TObject; Field: string): string; override;
-    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
-  end;
-
   TJSONInterceptorStringToString = class(TJSONInterceptor)
+  protected
+    RTTI: TRttiContext;
+  public
     constructor Create; reintroduce;
+  end;
+
+  TIntBooleanInterceptor = class(TJSONInterceptorStringToString)
+  public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TStringDateTimeInterceptor = class(TJSONInterceptorStringToString)
+  public
+    constructor Create; reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
   TEnumInterceptor<TEnum> = class(TJSONInterceptorStringToString)
   public
+    constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
@@ -66,41 +70,35 @@ type
     constructor Create; reintroduce;
   end;
 
-  TPeerTypeInterceptor = class(TEnumInterceptor<TVkPeerType>)
-    constructor Create; reintroduce;
+  TPeerTypeInterceptor = class(TJSONInterceptorStringToString)
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
-  TDeactivatedInterceptor = class(TJSONInterceptor)
+  TDeactivatedInterceptor = class(TJSONInterceptorStringToString)
   public
-    constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
-  TAudioGenreInterceptor = class(TJSONInterceptor)
+  TAudioGenreInterceptor = class(TJSONInterceptorStringToString)
   public
-    constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
-  TAttachmentTypeInterceptor = class(TJSONInterceptor)
+  TAttachmentTypeInterceptor = class(TJSONInterceptorStringToString)
   public
-    constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
   TKeyboardButtonColorInterceptor = class(TEnumInterceptor<TVkKeyboardButtonColor>)
-    constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
   TMessageActionTypeInterceptor = class(TEnumInterceptor<TVkMessageActionType>)
-    constructor Create; reintroduce;
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
@@ -164,24 +162,20 @@ end;
 
 { TEnumInterceptor<TEnum> }
 
-function TEnumInterceptor<TEnum>.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  value: TEnum;
+constructor TEnumInterceptor<TEnum>.Create;
 begin
-  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TEnum>;
-  result := Ord(TEnumHelp.Recast<TEnum>(value)).ToString;
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TEnumInterceptor<TEnum>.StringConverter(Data: TObject; Field: string): string;
+begin
+  result := Ord(TEnumHelp.Recast<TEnum>(RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TEnum>)).ToString;
 end;
 
 procedure TEnumInterceptor<TEnum>.StringReverter(Data: TObject; Field, Arg: string);
-var
-  ctx: TRTTIContext;
-  value: TEnum;
-  v: TValue;
 begin
-  value := TEnumHelp.Cast<TEnum>(StrToIntDef(Arg, 0));
-  v := v.From<TEnum>(value);
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From<TEnum>(TEnumHelp.Cast<TEnum>(StrToIntDef(Arg, 0))));
 end;
 
 { TStringDateTimeInterceptor }
@@ -193,77 +187,37 @@ begin
 end;
 
 function TStringDateTimeInterceptor.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  date: TDateTime;
 begin
-  date := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TDateTime>;
-  result := DateToStr(date);
+  Result := DateToStr(RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TDateTime>);
 end;
 
 procedure TStringDateTimeInterceptor.StringReverter(Data: TObject; Field: string; Arg: string);
-var
-  ctx: TRTTIContext;
-  datetime: TDateTime;
 begin
-  datetime := StrToDateDef(Arg, 0);
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, datetime);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, StrToDateDef(Arg, 0));
 end;
 
 { TDeactivatedInterceptor }
 
-constructor TDeactivatedInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
 function TDeactivatedInterceptor.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  value: TVkDeactivated;
 begin
-  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkDeactivated>;
-  result := value.ToString;
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkDeactivated>.ToString;
 end;
 
 procedure TDeactivatedInterceptor.StringReverter(Data: TObject; Field, Arg: string);
-var
-  ctx: TRTTIContext;
-  value: TVkDeactivated;
-  v: TValue;
 begin
-  value := TVkDeactivated.Create(Arg);
-  v := v.From(value);
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkDeactivated.Create(Arg)));
 end;
 
 { TAudioGenreInterceptor }
 
-constructor TAudioGenreInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
 function TAudioGenreInterceptor.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  value: TVkAudioGenre;
 begin
-  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAudioGenre>;
-  result := value.ToString;
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAudioGenre>.ToString;
 end;
 
 procedure TAudioGenreInterceptor.StringReverter(Data: TObject; Field, Arg: string);
-var
-  ctx: TRTTIContext;
-  value: TVkAudioGenre;
-  v: TValue;
 begin
-  value := TVkAudioGenre.Create(StrToIntDef(Arg, 0));
-  v := v.From(value);
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAudioGenre.Create(StrToIntDef(Arg, 0))));
 end;
 
 { TSexInterceptor }
@@ -323,77 +277,37 @@ begin
 end;
 
 function TIntBooleanInterceptor.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  value: Boolean;
 begin
-  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<Boolean>;
-  result := IfThen(value, '1', '0');
+  Result := IfThen(RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<Boolean>, '1', '0');
 end;
 
 procedure TIntBooleanInterceptor.StringReverter(Data: TObject; Field, Arg: string);
-var
-  ctx: TRTTIContext;
-  value: Boolean;
 begin
-  value := Arg = '1';
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, value);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, Arg = '1');
 end;
 
 { TPeerTypeInterceptor }
 
-constructor TPeerTypeInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
 function TPeerTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  value: TVkPeerType;
 begin
-  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkPeerType>;
-  result := value.ToString;
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkPeerType>.ToString;
 end;
 
 procedure TPeerTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
-var
-  ctx: TRTTIContext;
-  value: TVkPeerType;
-  v: TValue;
 begin
-  value := TVkPeerType.Create(Arg);
-  v := v.From(value);
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkPeerType.Create(Arg)));
 end;
 
 { TAttachmentTypeInterceptor }
 
-constructor TAttachmentTypeInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
 function TAttachmentTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  value: TVkAttachmentType;
 begin
-  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAttachmentType>;
-  result := value.ToString;
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAttachmentType>.ToString;
 end;
 
 procedure TAttachmentTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
-var
-  ctx: TRTTIContext;
-  value: TVkAttachmentType;
-  v: TValue;
 begin
-  value := TVkAttachmentType.Create(Arg);
-  v := v.From(value);
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAttachmentType.Create(Arg)));
 end;
 
 { TDocumentTypeInterceptor }
@@ -406,58 +320,26 @@ end;
 
 { TKeyboardButtonColorInterceptor }
 
-constructor TKeyboardButtonColorInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
 function TKeyboardButtonColorInterceptor.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  value: TVkKeyboardButtonColor;
 begin
-  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkKeyboardButtonColor>;
-  result := value.ToString;
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkKeyboardButtonColor>.ToString;
 end;
 
 procedure TKeyboardButtonColorInterceptor.StringReverter(Data: TObject; Field, Arg: string);
-var
-  ctx: TRTTIContext;
-  value: TVkKeyboardButtonColor;
-  v: TValue;
 begin
-  value := TVkKeyboardButtonColor.Create(Arg);
-  v := v.From(value);
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkKeyboardButtonColor.Create(Arg)));
 end;
 
 { TMessageActionTypeInterceptor }
 
-constructor TMessageActionTypeInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
 function TMessageActionTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
-var
-  ctx: TRTTIContext;
-  value: TVkMessageActionType;
 begin
-  value := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkMessageActionType>;
-  result := value.ToString;
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkMessageActionType>.ToString;
 end;
 
 procedure TMessageActionTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
-var
-  ctx: TRTTIContext;
-  value: TVkMessageActionType;
-  v: TValue;
 begin
-  value := TVkMessageActionType.Create(Arg);
-  v := v.From(value);
-  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, v);
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkMessageActionType.Create(Arg)));
 end;
 
 end.

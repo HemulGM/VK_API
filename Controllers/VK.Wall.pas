@@ -628,7 +628,7 @@ end;
 
 function TVkParamsWallPost.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsWallPost.Attachments(Value: TAttachment): Integer;
@@ -716,7 +716,7 @@ end;
 
 function TVkCommentCreateParams.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkCommentCreateParams.FromGroup(Value: Boolean): Integer;
@@ -851,7 +851,7 @@ end;
 
 function TVkParamsWallEdit.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsWallEdit.CloseComments(Value: Boolean): Integer;
@@ -908,7 +908,7 @@ end;
 
 function TVkParamsWallEditAdsStealth.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsWallEditAdsStealth.LatLong(Lat, Long: Extended): Integer;
@@ -966,7 +966,7 @@ end;
 
 function TVkParamsWallEditComment.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 { TVkParamsWallGetById }
@@ -1087,9 +1087,9 @@ begin
   Result := List.Add('message', Value);
 end;
 
-function TVkParamsWallPostAdsStealth.Attachments(Value: TArrayOfString): Integer;
+function TVkParamsWallPostAdsStealth.Attachments(Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value);
+  Result := List.Add('attachments', Value.ToStrings);
 end;
 
 function TVkParamsWallPostAdsStealth.Signed(Value: Boolean): Integer;

@@ -278,7 +278,7 @@ end;
 function TVkLink.ToAttachment: string;
 begin
   { TODO -oМалинин Геннадий -c : Додеать вложение ссылки 26.01.2021 12:23:45 }
-  Result := Attachment.Link(0, 0, AccessKey);
+  Result := TAttachment.Link(0, 0, AccessKey);
 end;
 
 end.

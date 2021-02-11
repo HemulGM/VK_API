@@ -17,7 +17,7 @@ type
 
   TVkBotError = reference to procedure(Bot: TVkBot; E: Exception; Code: Integer; Text: string);
 
-  TVkBotJoin = reference to procedure(Bot: TVkBot; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; EventId: string);
+  TVkBotJoin = reference to procedure(Bot: TVkBot; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; const EventId: string);
 
   TVkBot = class
     class var
@@ -29,27 +29,27 @@ type
     FOnDestroy: TVkBotCallback;
     FOnError: TVkBotError;
     function GetGroupId: Integer;
+    function GetToken: string;
     procedure SetOnInit(const Value: TVkBotCallback);
     procedure SetOnDestroy(const Value: TVkBotCallback);
     procedure FOnVkError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure SetOnError(const Value: TVkBotError);
     procedure SetGroupId(const Value: Integer);
-    function GetToken: string;
     procedure SetToken(const Value: string);
   public
     class function GetInstance<T: TVkBot>: T; overload;
-    function Init: Boolean; virtual;
     constructor Create; virtual;
     destructor Destroy; override;
+    function Init: Boolean; virtual;
     function Run: Boolean;
     procedure Stop;
-    property OnInit: TVkBotCallback read FOnInit write SetOnInit;
-    property OnError: TVkBotError read FOnError write SetOnError;
-    property OnDestroy: TVkBotCallback read FOnDestroy write SetOnDestroy;
     property API: TCustomVK read FVK;
     property GroupId: Integer read GetGroupId write SetGroupId;
-    property Token: string read GetToken write SetToken;
     property LongPoll: TVkGroupEvents read FLongPoll;
+    property OnDestroy: TVkBotCallback read FOnDestroy write SetOnDestroy;
+    property OnError: TVkBotError read FOnError write SetOnError;
+    property OnInit: TVkBotCallback read FOnInit write SetOnInit;
+    property Token: string read GetToken write SetToken;
   end;
 
   TVkBotChat = class(TVkBot)
@@ -58,9 +58,9 @@ type
     FOnMessage: TVkBotMessage;
     FOnMessageEdit: TVkBotMessageEdit;
     FOnJoin: TVkBotJoin;
-    procedure FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
-    procedure FOnEditMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string);
-    procedure FOnGroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; EventId: string);
+    procedure FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);
+    procedure FOnEditMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; const EventId: string);
+    procedure FOnGroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; const EventId: string);
     procedure SetOnMessageEdit(const Value: TVkBotMessageEdit);
     procedure SetOnMessage(const Value: TVkBotMessage);
     procedure SetSkipOtherBotMessages(const Value: Boolean);
@@ -68,8 +68,8 @@ type
   public
     class function GetInstance: TVkBotChat; overload;
     constructor Create; override;
-    property OnMessage: TVkBotMessage read FOnMessage write SetOnMessage;
     property OnJoin: TVkBotJoin read FOnJoin write SetOnJoin;
+    property OnMessage: TVkBotMessage read FOnMessage write SetOnMessage;
     property OnMessageEdit: TVkBotMessageEdit read FOnMessageEdit write SetOnMessageEdit;
     property SkipOtherBotMessages: Boolean read FSkipOtherBotMessages write SetSkipOtherBotMessages;
   end;
@@ -190,7 +190,7 @@ begin
   LongPoll.OnGroupJoin := FOnGroupJoin;
 end;
 
-procedure TVkBotChat.FOnEditMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string);
+procedure TVkBotChat.FOnEditMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; const EventId: string);
 begin
   if Assigned(FOnMessage) then
   begin
@@ -201,19 +201,15 @@ begin
       procedure
       begin
         try
-          try
-            FOnMessageEdit(Self, GroupId, Message);
-          finally
-            Message.Free;
-          end;
-        except
-          //
+          FOnMessageEdit(Self, GroupId, Message);
+        finally
+          Message.Free;
         end;
       end);
   end;
 end;
 
-procedure TVkBotChat.FOnGroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; EventId: string);
+procedure TVkBotChat.FOnGroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; const EventId: string);
 begin
   if Assigned(FOnJoin) then
   begin
@@ -222,16 +218,12 @@ begin
     TTask.Run(
       procedure
       begin
-        try
-          FOnJoin(Self, GroupId, UserId, JoinType, EventId);
-        except
-          //
-        end;
+        FOnJoin(Self, GroupId, UserId, JoinType, EventId);
       end);
   end;
 end;
 
-procedure TVkBotChat.FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
+procedure TVkBotChat.FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);
 begin
   if Assigned(FOnMessage) then
   begin
@@ -243,14 +235,10 @@ begin
       procedure
       begin
         try
-          try
-            FOnMessage(Self, GroupId, Message, ClientInfo);
-          finally
-            Message.Free;
-            ClientInfo.Free;
-          end;
-        except
-          //
+          FOnMessage(Self, GroupId, Message, ClientInfo);
+        finally
+          Message.Free;
+          ClientInfo.Free;
         end;
       end);
   end;
