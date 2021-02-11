@@ -433,7 +433,7 @@ end;
 
 class function TVkEntity.FromJsonString<T>(AJsonString: string): T;
 begin
-  Result := TJson.JsonToObject<T>(AJsonString);
+  Result := TJson.JsonToObject<T>(AJsonString, [joIgnoreEmptyArrays]);
 end;
 
 function TVkEntity.ToJsonString: string;

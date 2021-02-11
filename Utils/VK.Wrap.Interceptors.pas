@@ -14,63 +14,62 @@ type
     class function Recast<TEnum>(const Value: TEnum): Integer; static;
   end;
 
+  //Base Interceptor classes
+
   TJSONInterceptorStringToString = class(TJSONInterceptor)
+    constructor Create; reintroduce;
   protected
     RTTI: TRttiContext;
-  public
-    constructor Create; reintroduce;
-  end;
-
-  TIntBooleanInterceptor = class(TJSONInterceptorStringToString)
-  public
-    constructor Create; reintroduce;
-    function StringConverter(Data: TObject; Field: string): string; override;
-    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
-  end;
-
-  TStringDateTimeInterceptor = class(TJSONInterceptorStringToString)
-  public
-    constructor Create; reintroduce;
-    function StringConverter(Data: TObject; Field: string): string; override;
-    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
   TEnumInterceptor<TEnum> = class(TJSONInterceptorStringToString)
-  public
     constructor Create; reintroduce;
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  /// <summary>
+  ///  0 -> False, 1 -> True
+  /// </summary>
+  TIntBooleanInterceptor = class(TJSONInterceptorStringToString)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  /// <summary>
+  /// StrToDate, DateToStr
+  /// </summary>
+  TStringDateTimeInterceptor = class(TJSONInterceptorStringToString)
+  public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
   TBirthDateVisibilityInterceptor = class(TEnumInterceptor<TVkBirthDateVisibility>)
-    constructor Create; reintroduce;
   end;
 
   TPoliticalInterceptor = class(TEnumInterceptor<TVkPolitical>)
-    constructor Create; reintroduce;
   end;
 
   TPlatformInterceptor = class(TEnumInterceptor<TVkPlatform>)
-    constructor Create; reintroduce;
   end;
 
   TSexInterceptor = class(TEnumInterceptor<TVkSex>)
-    constructor Create; reintroduce;
   end;
 
   TRelationInterceptor = class(TEnumInterceptor<TVkRelation>)
-    constructor Create; reintroduce;
   end;
 
   TNameRequestStatusInterceptor = class(TEnumInterceptor<TVkNameRequestStatus>)
-    constructor Create; reintroduce;
   end;
 
   TDocumentTypeInterceptor = class(TEnumInterceptor<TVkDocumentType>)
-    constructor Create; reintroduce;
   end;
 
   TPeerTypeInterceptor = class(TJSONInterceptorStringToString)
+  public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
@@ -94,11 +93,13 @@ type
   end;
 
   TKeyboardButtonColorInterceptor = class(TEnumInterceptor<TVkKeyboardButtonColor>)
+  public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
   TMessageActionTypeInterceptor = class(TEnumInterceptor<TVkMessageActionType>)
+  public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
@@ -112,17 +113,17 @@ uses
 
 class function TEnumHelp.Cast<TEnum>(const Value: Integer): TEnum;
 var
-  typeInf: PTypeInfo;
-  typeData: PTypeData;
+  Inf: PTypeInfo;
+  Data: PTypeData;
 begin
-  typeInf := PTypeInfo(TypeInfo(TEnum));
-  if (typeInf = nil) or (typeInf^.Kind <> tkEnumeration) then
+  Inf := PTypeInfo(TypeInfo(TEnum));
+  if (Inf = nil) or (Inf^.Kind <> tkEnumeration) then
     raise ETEnumHelpError.Create('Not an enumeration type');
-  typeData := GetTypeData(typeInf);
-  if (Value < typeData^.MinValue) then
-    raise ETEnumHelpError.CreateFmt('%d is below min value [%d]', [Value, typeData^.MinValue])
-  else if (Value > typeData^.MaxValue) then
-    raise ETEnumHelpError.CreateFmt('%d is above max value [%d]', [Value, typeData^.MaxValue]);
+  Data := GetTypeData(Inf);
+  if (Value < Data^.MinValue) then
+    raise ETEnumHelpError.CreateFmt('%d is below min value [%d]', [Value, Data^.MinValue])
+  else if (Value > Data^.MaxValue) then
+    raise ETEnumHelpError.CreateFmt('%d is above max value [%d]', [Value, Data^.MaxValue]);
   case Sizeof(TEnum) of
     1:
       pByte(@Result)^ := Value;
@@ -134,14 +135,7 @@ begin
 end;
 
 class function TEnumHelp.Recast<TEnum>(const Value: TEnum): Integer;
-var
-  typeInf: PTypeInfo;
-  typeData: PTypeData;
 begin
-  typeInf := PTypeInfo(TypeInfo(TEnum));
-  if (typeInf = nil) or (typeInf^.Kind <> tkEnumeration) then
-    raise ETEnumHelpError.Create('Not an enumeration type');
-  typeData := GetTypeData(typeInf);
   case Sizeof(TEnum) of
     1:
       Result := pByte(@Value)^;
@@ -180,12 +174,6 @@ end;
 
 { TStringDateTimeInterceptor }
 
-constructor TStringDateTimeInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
 function TStringDateTimeInterceptor.StringConverter(Data: TObject; Field: string): string;
 begin
   Result := DateToStr(RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TDateTime>);
@@ -220,61 +208,7 @@ begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAudioGenre.Create(StrToIntDef(Arg, 0))));
 end;
 
-{ TSexInterceptor }
-
-constructor TSexInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
-{ TBirthDateVisibilityInterceptor }
-
-constructor TBirthDateVisibilityInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
-{ TPoliticalInterceptor }
-
-constructor TPoliticalInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
-{ TPlatformInterceptor }
-
-constructor TPlatformInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
-{ TRelationInterceptor }
-
-constructor TRelationInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
-{ TNameRequestStatusInterceptor }
-
-constructor TNameRequestStatusInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
-
 { TIntBooleanInterceptor }
-
-constructor TIntBooleanInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
-end;
 
 function TIntBooleanInterceptor.StringConverter(Data: TObject; Field: string): string;
 begin
@@ -308,14 +242,6 @@ end;
 procedure TAttachmentTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAttachmentType.Create(Arg)));
-end;
-
-{ TDocumentTypeInterceptor }
-
-constructor TDocumentTypeInterceptor.Create;
-begin
-  ConverterType := ctString;
-  ReverterType := rtString;
 end;
 
 { TKeyboardButtonColorInterceptor }

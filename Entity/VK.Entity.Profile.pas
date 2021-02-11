@@ -471,7 +471,7 @@ type
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FOnline: Boolean;
     //[JsonReflectAttribute(ctObject, rtObject, TIntBooleanInterceptor)]
-    //FPersonal: TVkPersonal;
+    FPersonal: TVkPersonal;
     FPhoto_100: string;
     FPhoto_200: string;
     FPhoto_200_orig: string;
@@ -838,7 +838,7 @@ type
     /// <summary>
     /// Информация о полях из раздела «Жизненная позиция»
     /// </summary>
-    //property Personal: TVkPersonal read FPersonal write FPersonal;
+    property Personal: TVkPersonal read FPersonal write FPersonal;
     /// <summary>
     /// Фото 50
     /// </summary>
@@ -1056,8 +1056,8 @@ begin
     FOccupation.Free;
   if Assigned(FRelation_partner) then
     FRelation_partner.Free;
-  //if Assigned(FPersonal) then
-  //  FPersonal.Free;
+  if Assigned(FPersonal) then
+    FPersonal.Free;
   if Assigned(FMutual) then
     FMutual.Free;
   if Assigned(FCounters) then
