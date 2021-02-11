@@ -3,8 +3,8 @@ unit VK.Wrap.Interceptors;
 interface
 
 uses
-  Generics.Collections, System.SysUtils, TypInfo, System.Types, System.RTTI,
-  Rest.Json, REST.JsonReflect, REST.Json.Interceptors, VK.Types;
+  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect,
+  REST.Json.Interceptors, VK.Types;
 
 type
   TEnumHelp = record
@@ -66,6 +66,12 @@ type
   end;
 
   TDocumentTypeInterceptor = class(TEnumInterceptor<TVkDocumentType>)
+  end;
+
+  TOrderStatusInterceptor = class(TEnumInterceptor<TVkOrderStatus>)
+  end;
+
+  TProductAvailabilityInterceptor = class(TEnumInterceptor<TVkProductAvailability>)
   end;
 
   TPeerTypeInterceptor = class(TJSONInterceptorStringToString)

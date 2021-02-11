@@ -5,7 +5,7 @@ interface
 uses
   Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
   VK.Entity.Photo, VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Wrap.Interceptors;
+  VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkMarketSection = class(TVkBasicObject)
@@ -97,12 +97,8 @@ type
 
   TVkProduct = class(TVkObject)
   private
-    {
-        0 — товар доступен;
-        1 — товар удален;
-        2 — товар недоступен.
-    }
-    FAvailability: Integer;
+    [JsonReflectAttribute(ctString, rtString, TProductAvailabilityInterceptor)]
+    FAvailability: TVkProductAvailability;
     FCategory: TVkProductCategory;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
@@ -144,7 +140,7 @@ type
     /// <summary>
     /// Статус доступности товара
     /// </summary>
-    property Availability: Integer read FAvailability write FAvailability;
+    property Availability: TVkProductAvailability read FAvailability write FAvailability;
     /// <summary>
     /// Текст на кнопке товара. Возможные значения:
     /// Купить

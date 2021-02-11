@@ -79,7 +79,7 @@ type
     function UserId(Value: Integer): Integer;
     function OrderId(Value: Integer): Integer;
     function MerchantComment(Value: string): Integer;
-    function Status(Value: Integer): Integer;
+    function Status(Value: TVkOrderStatus): Integer;
     function TrackNumber(Value: string): Integer;
     function PaymentStatus(Value: string): Integer;
     function DeliveryPrice(Value: Integer): Integer;
@@ -867,9 +867,9 @@ begin
   Result := List.Add('merchant_comment', Value);
 end;
 
-function TVkParamsMarketEditOrder.Status(Value: Integer): Integer;
+function TVkParamsMarketEditOrder.Status(Value: TVkOrderStatus): Integer;
 begin
-  Result := List.Add('status', Value);
+  Result := List.Add('status', Ord(Value));
 end;
 
 function TVkParamsMarketEditOrder.TrackNumber(Value: string): Integer;

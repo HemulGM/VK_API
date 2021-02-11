@@ -3,8 +3,9 @@ unit VK.Account;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.AccountInfo,
-  VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers,
+  VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
   VK.Entity.AccountInfoRequest, VK.Entity.Account.Banned, VK.CommonUtils;
 
 type
@@ -46,8 +47,7 @@ type
     /// <summary>
     /// Позволяет сменить пароль пользователя после успешного восстановления доступа к аккаунту через СМС, используя метод Auth.Restore.
     /// </summary>
-    function ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string):
-      Boolean;
+    function ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string): Boolean;
     /// <summary>
     /// Возвращает список активных рекламных предложений (офферов), выполнив которые пользователь сможет получить соответствующее количество голосов на свой счёт внутри приложения.
     /// </summary>
@@ -120,13 +120,9 @@ type
 
 implementation
 
-uses
-  System.Json;
-
 { TAccountController }
 
-function TAccountController.ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash,
-  OldPassword: string): Boolean;
+function TAccountController.ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string): Boolean;
 begin
   Result := Handler.Execute('account.changePassword', [
     ['new_password', NewPassword],
@@ -222,8 +218,7 @@ begin
   Result := Handler.Execute('account.setPushSettings', Params).ResponseAsBool(Status);
 end;
 
-function TAccountController.SetSilenceMode(var Status: Boolean; const DeviceId: string; Time: Integer; PeerId: string;
-  Sound: Boolean): Boolean;
+function TAccountController.SetSilenceMode(var Status: Boolean; const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -244,8 +239,7 @@ begin
   Result := Handler.Execute('account.unban', ['owner_id', OwnerID.ToString]).ResponseAsBool(Status);
 end;
 
-function TAccountController.UnRegisterDevice(var Status: Boolean; const DeviceId: string; const Token: string; Sandbox:
-  Boolean): Boolean;
+function TAccountController.UnRegisterDevice(var Status: Boolean; const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -312,7 +306,7 @@ end;
 function TVkParamsProfileInfo.BirthDateVisibility(Value: TVkBirthDateVisibility): TVkParamsProfileInfo;
 begin
   Result := Self;
-  List.Add('bdate_visibility', Ord(Value).ToString);
+  List.Add('bdate_visibility', Ord(Value));
 end;
 
 function TVkParamsProfileInfo.CancelRequestId(Value: Integer): TVkParamsProfileInfo;
@@ -360,7 +354,7 @@ end;
 function TVkParamsProfileInfo.Relation(Value: TVkRelation): TVkParamsProfileInfo;
 begin
   Result := Self;
-  List.Add('relation', Ord(Value).ToString);
+  List.Add('relation', Ord(Value));
 end;
 
 function TVkParamsProfileInfo.RelationPartnerId(Value: Integer): TVkParamsProfileInfo;
@@ -378,7 +372,7 @@ end;
 function TVkParamsProfileInfo.Sex(Value: TVkSex): TVkParamsProfileInfo;
 begin
   Result := Self;
-  List.Add('sex', Ord(Value).ToString);
+  List.Add('sex', Ord(Value));
 end;
 
 function TVkParamsProfileInfo.Status(Value: string): TVkParamsProfileInfo;

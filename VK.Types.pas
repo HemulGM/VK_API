@@ -5,7 +5,7 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, System.UITypes, REST.Json, System.SysUtils,
+  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types,
   System.Generics.Collections, System.JSON, VK.Entity.Common;
 
 type
@@ -204,8 +204,8 @@ type
     function Add(Key: string; Value: Integer): Integer; overload; inline;
     function Add(Key: string; Value: Extended): Integer; overload; inline;
     function Add(Key: string; Value: TDateTime): Integer; overload; inline;
-    function Add(Key: string; Value: TArrayOfString): Integer; overload; inline;
     function Add(Key: string; Value: Boolean): Integer; overload; inline;
+    function Add(Key: string; Value: TArrayOfString): Integer; overload; inline;
     function Add(Key: string; Value: TArrayOfInteger): Integer; overload; inline;
     function KeyExists(Key: string): Boolean; inline;
     function GetValue(Key: string): string; inline;
@@ -692,6 +692,26 @@ type
   TVkCounterFiltersHelper = record helper for TVkCounterFilters
     function ToString: string; overload; inline;
   end;
+
+  /// <summary>
+  /// Статус заказа
+  /// New - новый;
+  /// Approved - согласуется;
+  /// Assembled - собирается;
+  /// Delivered - доставляется;
+  /// Completed - выполнен;
+  /// Canceled - отменен;
+  /// Returned - возвращен.
+  /// </summary>
+  TVkOrderStatus = (New, Approved, Assembled, Delivered, Completed, Canceled, Returned);
+
+  /// <summary>
+  /// Статус доступности товара
+  /// 0 — товар доступен;
+  /// 1 — товар удален;
+  /// 2 — товар недоступен.
+  /// </summary>
+  TVkProductAvailability = (Available, Removed, NotAvailable);
 
   TVkInfoFilter = (ifCountry, ifHttpsRequired, ifOwnPostsDefault, ifNoWallReplies, ifIntro, ifLang);
 
