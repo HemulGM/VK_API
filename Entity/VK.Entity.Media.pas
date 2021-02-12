@@ -337,6 +337,10 @@ type
     FAccess_key: string;
     FCopyright: TVkCopyright;
     FDonut: TVkDonut;
+    FType: string;
+    FCan_archive: Boolean;
+    FIs_archived: Boolean;
+    FShort_text_rate: Extended;
   public
     /// <summary>
     /// Идентификатор записи
@@ -350,6 +354,10 @@ type
     /// Медиавложения записи (фотографии, ссылки и т.п.)
     /// </summary>
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
+    /// <summary>
+    /// Информация о том, может ли запись помещена в арихв
+    /// </summary>
+    property CanArchive: Boolean read FCan_archive write FCan_archive;
     /// <summary>
     /// Информация о том, может ли текущий пользователь удалить запись
     /// </summary>
@@ -399,6 +407,10 @@ type
     /// </summary>
     property Geo: TVkGeo read FGeo write FGeo;
     /// <summary>
+    /// Архивная запись
+    /// </summary>
+    property IsArchived: Boolean read FIs_archived write FIs_archived;
+    /// <summary>
     /// True, если объект добавлен в закладки у текущего пользователя.
     /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
@@ -447,6 +459,10 @@ type
     /// </summary>
     property SignerId: Integer read FSigner_id write FSigner_id;
     /// <summary>
+    /// [Получено экспериментальным путём]
+    /// </summary>
+    property ShortTextRate: Extended read FShort_text_rate write FShort_text_rate;
+    /// <summary>
     /// Текст записи
     /// </summary>
     property Text: string read FText write FText;
@@ -454,6 +470,10 @@ type
     /// Идентификатор владельца стены, на которой размещена запись (API ниже 5.7)
     /// </summary>
     property ToId: Integer read FTo_id write FTo_id;
+    /// <summary>
+    /// Тип записи, может принимать следующие значения: post, copy, reply, postpone, suggest.
+    /// </summary>
+    property &Type: string read FType write FType;
     /// <summary>
     /// Информация о просмотрах записи
     /// </summary>

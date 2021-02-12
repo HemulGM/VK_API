@@ -81,6 +81,7 @@ type
     Button39: TButton;
     ButtonLogin: TButton;
     Button40: TButton;
+    ButtonWallGet: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -190,6 +191,7 @@ type
     procedure Button40Click(Sender: TObject);
     procedure VkUserEvents1UnhandledEvents(Sender: TObject; const JSON: TJSONValue);
     procedure VkGroupEventsController1GroupUnhandledEvents(Sender: TObject; GroupId: Integer; const JSON: TJSONValue);
+    procedure ButtonWallGetClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -871,6 +873,21 @@ end;
 procedure TFormMain.ButtonLoginClick(Sender: TObject);
 begin
   VK1.Login;
+end;
+
+procedure TFormMain.ButtonWallGetClick(Sender: TObject);
+var
+  Items: TVkPosts;
+  Params: TVkParamsWallGet;
+  i: Integer;
+begin
+  Params.OwnerId(Vk1.UserId);
+  if VK1.Wall.Get(Items, Params) then
+  begin
+    for i := 0 to High(Items.Items) do
+      Memo1.Lines.Add(Items.Items[i].ToJsonString);
+    Items.Free;
+  end;
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);

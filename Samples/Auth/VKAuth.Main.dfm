@@ -100,7 +100,7 @@ object FormMain: TFormMain
         end
         object Button8: TButton
           Left = 145
-          Top = 96
+          Top = 83
           Width = 137
           Height = 25
           Caption = 'CallMethod'
@@ -108,8 +108,8 @@ object FormMain: TFormMain
           OnClick = Button8Click
         end
         object Button34: TButton
-          Left = 3
-          Top = 147
+          Left = 2
+          Top = 83
           Width = 137
           Height = 25
           Caption = 'Search.GetHints'
@@ -117,8 +117,8 @@ object FormMain: TFormMain
           OnClick = Button34Click
         end
         object Button35: TButton
-          Left = 2
-          Top = 178
+          Left = 1
+          Top = 114
           Width = 137
           Height = 25
           Caption = 'Database.GetRegions'
@@ -126,8 +126,8 @@ object FormMain: TFormMain
           OnClick = Button35Click
         end
         object Button36: TButton
-          Left = 3
-          Top = 209
+          Left = 2
+          Top = 145
           Width = 137
           Height = 25
           Caption = 'Database.GetSchoolClasses'
@@ -135,8 +135,8 @@ object FormMain: TFormMain
           OnClick = Button36Click
         end
         object Button37: TButton
-          Left = 2
-          Top = 240
+          Left = 1
+          Top = 176
           Width = 137
           Height = 25
           Caption = 'Storage.Get'
@@ -144,8 +144,8 @@ object FormMain: TFormMain
           OnClick = Button37Click
         end
         object Button38: TButton
-          Left = 2
-          Top = 271
+          Left = 1
+          Top = 207
           Width = 137
           Height = 25
           Caption = 'Secure.GetBalance'
@@ -153,8 +153,8 @@ object FormMain: TFormMain
           OnClick = Button38Click
         end
         object Button39: TButton
-          Left = 2
-          Top = 302
+          Left = 1
+          Top = 238
           Width = 137
           Height = 25
           Caption = 'Stories.Get'
@@ -399,6 +399,15 @@ object FormMain: TFormMain
           Caption = 'Wall.Post'
           TabOrder = 0
           OnClick = Button19Click
+        end
+        object ButtonWallGet: TButton
+          Left = 3
+          Top = 34
+          Width = 137
+          Height = 25
+          Caption = 'ButtonWallGet'
+          TabOrder = 1
+          OnClick = ButtonWallGetClick
         end
       end
       object TabSheet7: TTabSheet

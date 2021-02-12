@@ -71,6 +71,8 @@ type
     FApplication: TVkStoreApplication;
     FIs_external: Boolean;
     FRating: TVkRating;
+    FTarget: string;
+    FIs_favorite: Boolean;
   public
     /// <summary>
     /// Ключ доступа
@@ -100,6 +102,7 @@ type
     /// Является ли ссылкой на внешний ресурс (если имеется)
     /// </summary>
     property IsExternal: Boolean read FIs_external write FIs_external;
+    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     /// <summary>
     /// Изображение превью, объект фотографии (если имеется)
     /// </summary>
@@ -120,6 +123,7 @@ type
     /// Информацию о рейтинге продукта
     /// </summary>
     property Rating: TVkRating read FRating write FRating;
+    property Target: string read FTarget write FTarget;
     /// <summary>
     /// Заголовок ссылки
     /// </summary>
