@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheet9
+      ActivePage = TabSheet2
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -263,9 +263,18 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Auth.CheckPhone'
+          Caption = 'auth.checkPhone'
           TabOrder = 0
           OnClick = Button11Click
+        end
+        object Button41: TButton
+          Left = 3
+          Top = 34
+          Width = 137
+          Height = 25
+          Caption = 'auth.signup'
+          TabOrder = 1
+          OnClick = Button41Click
         end
       end
       object TabSheet3: TTabSheet

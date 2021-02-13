@@ -62,44 +62,44 @@ end;
 
 function TVkParamsAppsGet.AppId(Value: Integer): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('app_ids', Value);
+  Result := Self;
 end;
 
 function TVkParamsAppsGet.AppIds(Value: TIdList): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('app_ids', Value);
+  Result := Self;
 end;
 
 function TVkParamsAppsGet.&Platform(Value: TVkPlatform): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('platform', Value.ToString);
+  Result := Self;
 end;
 
 function TVkParamsAppsGet.Extended(Value: Boolean): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('extended', Value);
+  Result := Self;
 end;
 
 function TVkParamsAppsGet.ReturnFriends(Value: Boolean): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('return_friends', Value);
+  Result := Self;
 end;
 
 function TVkParamsAppsGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
 function TVkParamsAppsGet.NameCase(Value: TVkNameCase): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('name_case', Value.ToString);
+  Result := Self;
 end;
 
 end.

@@ -8,17 +8,17 @@ uses
 type
   TVkParamsDonutGetFriends = record
     List: TParams;
-    function OwnerId(Value: Integer): Integer;
-    function Fields(UserFields: TVkProfileFields = []): Integer;
-    function Offset(Value: Integer): Integer;
-    function Count(Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsDonutGetFriends;
+    function Fields(const Value: TVkProfileFields = []): TVkParamsDonutGetFriends;
+    function Offset(const Value: Integer): TVkParamsDonutGetFriends;
+    function Count(const Value: Integer): TVkParamsDonutGetFriends;
   end;
 
   TVkParamsDonutGetSubscriptions = record
     List: TParams;
-    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
-    function Offset(Value: Integer): Integer;
-    function Count(Value: Integer): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsDonutGetSubscriptions;
+    function Offset(const Value: Integer): TVkParamsDonutGetSubscriptions;
+    function Count(const Value: Integer): TVkParamsDonutGetSubscriptions;
   end;
 
   /// <summary>
@@ -96,41 +96,48 @@ end;
 
 { TVkParamsDonutGetFriends }
 
-function TVkParamsDonutGetFriends.Offset(Value: Integer): Integer;
+function TVkParamsDonutGetFriends.Offset(const Value: Integer): TVkParamsDonutGetFriends;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsDonutGetFriends.OwnerId(Value: Integer): Integer;
+function TVkParamsDonutGetFriends.OwnerId(const Value: Integer): TVkParamsDonutGetFriends;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsDonutGetFriends.Count(Value: Integer): Integer;
+function TVkParamsDonutGetFriends.Count(const Value: Integer): TVkParamsDonutGetFriends;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsDonutGetFriends.Fields(UserFields: TVkProfileFields): Integer;
+function TVkParamsDonutGetFriends.Fields(const Value: TVkProfileFields): TVkParamsDonutGetFriends;
 begin
-  Result := List.Add('fields', UserFields.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
 { TVkParamsDonutGetSubscriptions }
 
-function TVkParamsDonutGetSubscriptions.Count(Value: Integer): Integer;
+function TVkParamsDonutGetSubscriptions.Count(const Value: Integer): TVkParamsDonutGetSubscriptions;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsDonutGetSubscriptions.Fields(GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
+function TVkParamsDonutGetSubscriptions.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsDonutGetSubscriptions;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsDonutGetSubscriptions.Offset(Value: Integer): Integer;
+function TVkParamsDonutGetSubscriptions.Offset(const Value: Integer): TVkParamsDonutGetSubscriptions;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
 end.

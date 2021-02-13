@@ -68,13 +68,11 @@ type
     /// <summary>
     /// Возвращает список факультетов.
     /// </summary>
-    function GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset: Integer = 0; Count: Integer =
-      100): Boolean;
+    function GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает список станций метро.
     /// </summary>
-    function GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean = False; Offset:
-      Integer = 0; Count: Integer = 100): Boolean;
+    function GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean = False; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает информацию об одной или нескольких станциях метро по их идентификаторам.
     /// </summary>
@@ -82,8 +80,7 @@ type
     /// <summary>
     /// Возвращает список регионов.
     /// </summary>
-    function GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string = ''; Offset: Integer = 0; Count:
-      Integer = 100): Boolean;
+    function GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает список классов, характерных для школ определенной страны.
     /// </summary>
@@ -91,8 +88,7 @@ type
     /// <summary>
     /// Возвращает список школ.
     /// </summary>
-    function GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string = ''; Offset: Integer = 0; Count:
-      Integer = 100): Boolean;
+    function GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
     /// Возвращает список высших учебных заведений.
     /// </summary>
@@ -149,8 +145,7 @@ begin
     GetObject<TVkFaculties>(Items);
 end;
 
-function TDatabaseController.GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean;
-  Offset, Count: Integer): Boolean;
+function TDatabaseController.GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean; Offset, Count: Integer): Boolean;
 begin
   Result := Handler.Execute('database.getMetroStations', [
     ['city_id', CityId.ToString],
@@ -166,8 +161,7 @@ begin
     GetObject<TVkMetroStations>(Items);
 end;
 
-function TDatabaseController.GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string; Offset, Count:
-  Integer): Boolean;
+function TDatabaseController.GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string; Offset, Count: Integer): Boolean;
 begin
   Result := Handler.Execute('database.getRegions', [
     ['country_id', CountryId.ToString],
@@ -182,8 +176,7 @@ begin
   Result := Handler.Execute('database.getSchoolClasses', ['country_id', CountryId.ToString]).GetObjects<TVkSchoolClasses>(Items);
 end;
 
-function TDatabaseController.GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string; Offset, Count:
-  Integer): Boolean;
+function TDatabaseController.GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string; Offset, Count: Integer): Boolean;
 begin
   Result := Handler.Execute('database.getSchools', [
     ['city_id', CityId.ToString],
@@ -201,96 +194,96 @@ end;
 
 function TVkParamsGetCities.CountryId(Value: Integer): TVkParamsGetCities;
 begin
-  Result := Self;
   List.Add('country_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetCities.RegionId(Value: Integer): TVkParamsGetCities;
 begin
-  Result := Self;
   List.Add('region_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetCities.Query(Value: string): TVkParamsGetCities;
 begin
-  Result := Self;
   List.Add('q', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetCities.NeedAll(Value: Boolean): TVkParamsGetCities;
 begin
-  Result := Self;
   List.Add('need_all', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetCities.Offset(Value: Integer): TVkParamsGetCities;
 begin
-  Result := Self;
   List.Add('offset', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetCities.Count(Value: Integer): TVkParamsGetCities;
 begin
-  Result := Self;
   List.Add('count', Value);
+  Result := Self;
 end;
 
 { TVkParamsGetCountries }
 
 function TVkParamsGetCountries.NeedAll(Value: Boolean): TVkParamsGetCountries;
 begin
-  Result := Self;
   List.Add('need_all', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetCountries.Code(Value: TArrayOfString): TVkParamsGetCountries;
 begin
-  Result := Self;
   List.Add('code', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetCountries.Offset(Value: Integer): TVkParamsGetCountries;
 begin
-  Result := Self;
   List.Add('offset', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetCountries.Count(Value: Integer): TVkParamsGetCountries;
 begin
-  Result := Self;
   List.Add('count', Value);
+  Result := Self;
 end;
 
 { TVkParamsGetUniversities }
 
 function TVkParamsGetUniversities.Query(Value: string): TVkParamsGetUniversities;
 begin
-  Result := Self;
   List.Add('q', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetUniversities.CountryId(Value: Integer): TVkParamsGetUniversities;
 begin
-  Result := Self;
   List.Add('country_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetUniversities.CityId(Value: Integer): TVkParamsGetUniversities;
 begin
-  Result := Self;
   List.Add('city_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetUniversities.Offset(Value: Integer): TVkParamsGetUniversities;
 begin
-  Result := Self;
   List.Add('offset', Value);
+  Result := Self;
 end;
 
 function TVkParamsGetUniversities.Count(Value: Integer): TVkParamsGetUniversities;
 begin
-  Result := Self;
   List.Add('count', Value);
+  Result := Self;
 end;
 
 end.

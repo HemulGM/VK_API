@@ -295,8 +295,7 @@ end;
 
 function TFaveController.RemoveArticle(OwnerId, ArticleId: Integer; Ref: string): Boolean;
 begin
-  with Handler.Execute('fave.removeArticle', [['owner_id', OwnerId.ToString], ['article_id', ArticleId.ToString], ['ref',
-    Ref]]) do
+  with Handler.Execute('fave.removeArticle', [['owner_id', OwnerId.ToString], ['article_id', ArticleId.ToString], ['ref', Ref]]) do
   begin
     Result := Success and ResponseIsTrue;
   end;

@@ -3,9 +3,8 @@ unit VK.Account;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers,
-  VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.AccountInfo,
+  VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
   VK.Entity.AccountInfoRequest, VK.Entity.Account.Banned, VK.CommonUtils;
 
 type
@@ -255,130 +254,130 @@ end;
 
 function TVkParamsRegisterDevice.DeviceId(Value: string): TVkParamsRegisterDevice;
 begin
-  Result := Self;
   List.Add('device_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsRegisterDevice.DeviceModel(Value: string): TVkParamsRegisterDevice;
 begin
-  Result := Self;
   List.Add('device_model', Value);
+  Result := Self;
 end;
 
 function TVkParamsRegisterDevice.DeviceYear(Value: Integer): TVkParamsRegisterDevice;
 begin
-  Result := Self;
   List.Add('device_year', Value);
+  Result := Self;
 end;
 
 function TVkParamsRegisterDevice.Sandbox(Value: string): TVkParamsRegisterDevice;
 begin
-  Result := Self;
   List.Add('sandbox', Value);
+  Result := Self;
 end;
 
 function TVkParamsRegisterDevice.Settings(Value: string): TVkParamsRegisterDevice;
 begin
-  Result := Self;
   List.Add('settings', Value);
+  Result := Self;
 end;
 
 function TVkParamsRegisterDevice.SystemVersion(Value: string): TVkParamsRegisterDevice;
 begin
-  Result := Self;
   List.Add('system_version', Value);
+  Result := Self;
 end;
 
 function TVkParamsRegisterDevice.Token(Value: string): TVkParamsRegisterDevice;
 begin
-  Result := Self;
   List.Add('token', Value);
+  Result := Self;
 end;
 
 { TVkProfileInfoParams }
 
 function TVkParamsProfileInfo.BirthDate(Value: TDateTime): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('bdate', FormatDateTime('DD.MM.YYYY', Value));
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.BirthDateVisibility(Value: TVkBirthDateVisibility): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('bdate_visibility', Ord(Value));
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.CancelRequestId(Value: Integer): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('cancel_request_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.CityId(Value: Integer): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('city_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.CountryId(Value: Integer): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('country_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.FirstName(Value: string): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('first_name', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.HomeTown(Value: string): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('home_town', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.LastName(Value: string): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('last_name', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.MaidenName(Value: string): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('maiden_name', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.Relation(Value: TVkRelation): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('relation', Ord(Value));
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.RelationPartnerId(Value: Integer): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('relation_partner_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.ScreenName(Value: string): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('screen_name', Value);
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.Sex(Value: TVkSex): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('sex', Ord(Value));
+  Result := Self;
 end;
 
 function TVkParamsProfileInfo.Status(Value: string): TVkParamsProfileInfo;
 begin
-  Result := Self;
   List.Add('status', Value);
+  Result := Self;
 end;
 
 end.

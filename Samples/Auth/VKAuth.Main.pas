@@ -3,14 +3,11 @@ unit VKAuth.Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types,
-  System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
-  Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler,
-  Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents,
-  VK.GroupEvents, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
-  System.Net.HttpClientComponent, VK.Entity.Message, VK.Entity.ClientInfo,
-  VK.Entity.Video, VK.Entity.Photo, VK.Entity.Audio, System.JSON,
-  VK.Entity.GroupSettings;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler, Vcl.StdCtrls,
+  System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents, VK.Entity.Media, System.Net.URLClient,
+  System.Net.HttpClient, System.Net.HttpClientComponent, VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video,
+  VK.Entity.Photo, VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
 
 type
   TFormMain = class(TForm)
@@ -82,6 +79,7 @@ type
     ButtonLogin: TButton;
     Button40: TButton;
     ButtonWallGet: TButton;
+    Button41: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -192,6 +190,7 @@ type
     procedure VkUserEvents1UnhandledEvents(Sender: TObject; const JSON: TJSONValue);
     procedure VkGroupEventsController1GroupUnhandledEvents(Sender: TObject; GroupId: Integer; const JSON: TJSONValue);
     procedure ButtonWallGetClick(Sender: TObject);
+    procedure Button41Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -206,16 +205,13 @@ var
 implementation
 
 uses
-  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
-  VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
-  VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
-  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest,
-  VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
-  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
-  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
-  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
-  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
-  VK.Entity.Stories, VK.Entity.Podcast.Episode, REST.Json;
+  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
+  VK.Entity.PushSettings, VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save,
+  VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
+  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section,
+  VK.CommonUtils, VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
+  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories,
+  VK.Entity.Podcast.Episode, VK.Auth, VK.Entity.Auth, VK.Clients, REST.Json;
 
 {$R *.dfm}
 
@@ -332,10 +328,23 @@ end;
 
 procedure TFormMain.Button20Click(Sender: TObject);
 var
-  Url, Response: string;
+ // Url, Response: string;
   Doc: TVkDocSaved;
 begin
-  if VK1.Docs.GetMessagesUploadServer(Url, dutAudioMessage) then
+  if Vk1.Docs.SaveAudioMessage(Doc, '1.ogg', 'Тестовая аудиозапись', '') then
+  begin
+    Memo1.Lines.Add(Doc.&Type);
+    Memo1.Lines.Add(Doc.AudioMessage.LinkOgg);
+    Memo1.Lines.Add(Doc.AudioMessage.ToAttachment);
+    Doc.Free;
+  end
+  else
+  begin
+    Memo1.Lines.Add('Error ');
+  end;
+  //or
+  //
+  {if VK1.Docs.GetMessagesUploadServer(Url, dutAudioMessage) then
   begin
     if VK1.Upload(Url, ['1.ogg'], Response) then
     begin
@@ -351,7 +360,7 @@ begin
     begin
       Memo1.Lines.Add('Error ' + Response);
     end;
-  end;
+  end;   }
 end;
 
 procedure TFormMain.Button21Click(Sender: TObject);
@@ -601,6 +610,27 @@ begin
   end
   else
     Memo1.Lines.Add('error');
+end;
+
+procedure TFormMain.Button41Click(Sender: TObject);
+var
+  St: TVkAuthSignup;
+  Params: TVkParamsSignup;
+begin
+  Params := Params.
+    FirstName('Антон').
+    LastName('Антонов').
+    ClientId(VK1.AppID).
+    ClientSecret(VK1.AppKey).
+    Phone('+79530021369').
+    Password('123qweASD').
+    Sex(TVkSex.sxMale).
+    Birthday(StrToDate('22.03.1994'));
+  if VK1.Auth.Signup(St, Params) then
+  begin
+    Memo1.Lines.Add(St.ToJsonString);
+    St.Free;
+  end;
 end;
 
 procedure TFormMain.Button4Click(Sender: TObject);
@@ -895,9 +925,10 @@ begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
-  if TFile.Exists('token.tmp') then
-    VK1.Token := TFile.ReadAllText('token.tmp');
-  VK1.Login;
+  VK1.Application := TVkApplicationData.Android;
+  //if TFile.Exists('token.tmp') then
+  //  VK1.Token := TFile.ReadAllText('token.tmp');
+  //VK1.Login;
 end;
 
 {

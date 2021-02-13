@@ -402,8 +402,7 @@ end;
 
 function TBoardController.RestoreComment(GroupId, TopicId, CommentId: Integer): Boolean;
 begin
-  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id',
-    CommentId.ToString]]) do
+  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id', CommentId.ToString]]) do
     Result := Success and ResponseIsTrue;
 end;
 
@@ -416,82 +415,82 @@ end;
 
 function TVkParamsBoardCommentEdit.Attachments(Value: TAttachmentArray): TVkParamsBoardCommentEdit;
 begin
+  List.Add('attachments', Value.ToStrings);
   Result := Self;
-  List.Add('attachments', Value.ToStrings)
 end;
 
 function TVkParamsBoardCommentEdit.FromGroup(Value: Boolean): TVkParamsBoardCommentEdit;
 begin
-  Result := Self;
   List.Add('from_group', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentEdit.GroupId(Value: Integer): TVkParamsBoardCommentEdit;
 begin
-  Result := Self;
   List.Add('group_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentEdit.Message(Value: string): TVkParamsBoardCommentEdit;
 begin
-  Result := Self;
   List.Add('message', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentEdit.TopicId(Value: Integer): TVkParamsBoardCommentEdit;
 begin
-  Result := Self;
   List.Add('topic_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentEdit.CommentId(Value: Integer): TVkParamsBoardCommentEdit;
 begin
-  Result := Self;
   List.Add('comment_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsBoardCommentCreate }
 
 function TVkParamsBoardCommentCreate.Attachments(Value: TAttachmentArray): TVkParamsBoardCommentCreate;
 begin
+  List.Add('attachments', Value.ToStrings);
   Result := Self;
-  List.Add('attachments', Value.ToStrings)
 end;
 
 function TVkParamsBoardCommentCreate.FromGroup(Value: Boolean): TVkParamsBoardCommentCreate;
 begin
-  Result := Self;
   List.Add('from_group', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentCreate.GroupId(Value: Integer): TVkParamsBoardCommentCreate;
 begin
-  Result := Self;
   List.Add('group_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentCreate.Guid(Value: string): TVkParamsBoardCommentCreate;
 begin
-  Result := Self;
   List.Add('guid', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentCreate.Message(Value: string): TVkParamsBoardCommentCreate;
 begin
-  Result := Self;
   List.Add('message', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentCreate.StickerId(Value: Integer): TVkParamsBoardCommentCreate;
 begin
-  Result := Self;
   List.Add('sticker_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentCreate.TopicId(Value: Integer): TVkParamsBoardCommentCreate;
 begin
-  Result := Self;
   List.Add('topic_id', Value);
+  Result := Self;
 end;
 
 { TVkBoardTopicOrderHelper }
@@ -512,135 +511,135 @@ end;
 
 function TVkParamsBoardGet.Count(Value: Integer): TVkParamsBoardGet;
 begin
-  Result := Self;
   List.Add('count', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardGet.Extended(Value: Boolean): TVkParamsBoardGet;
 begin
-  Result := Self;
   List.Add('extended', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardGet.GroupId(Value: Integer): TVkParamsBoardGet;
 begin
-  Result := Self;
   List.Add('group_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardGet.Offset(Value: Integer): TVkParamsBoardGet;
 begin
-  Result := Self;
   List.Add('offset', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardGet.Order(Value: TVkBoardTopicOrder): TVkParamsBoardGet;
 begin
-  Result := Self;
   List.Add('order', Value.ToConst);
+  Result := Self;
 end;
 
 function TVkParamsBoardGet.Preview(Value: TVkBoardTopicPreview): TVkParamsBoardGet;
 begin
-  Result := Self;
   List.Add('preview', Value.ToConst);
+  Result := Self;
 end;
 
 function TVkParamsBoardGet.PreviewLength(Value: Integer): TVkParamsBoardGet;
 begin
-  Result := Self;
   List.Add('preview_length', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardGet.TopicIds(Value: TIdList): TVkParamsBoardGet;
 begin
-  Result := Self;
   List.Add('topic_ids', Value);
+  Result := Self;
 end;
 
 { TVkParamsBoardAdd }
 
 function TVkParamsBoardAdd.Attachments(Value: TAttachmentArray): TVkParamsBoardAdd;
 begin
-  Result := Self;
   List.Add('attachments', Value.ToStrings);
+  Result := Self;
 end;
 
 function TVkParamsBoardAdd.FromGroup(Value: Boolean): TVkParamsBoardAdd;
 begin
-  Result := Self;
   List.Add('from_group', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardAdd.GroupId(Value: Integer): TVkParamsBoardAdd;
 begin
-  Result := Self;
   List.Add('group_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardAdd.Text(Value: string): TVkParamsBoardAdd;
 begin
-  Result := Self;
   List.Add('text', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardAdd.Title(Value: string): TVkParamsBoardAdd;
 begin
-  Result := Self;
   List.Add('title', Value);
+  Result := Self;
 end;
 
 { TVkParamsBoardCommentsGet }
 
 function TVkParamsBoardCommentsGet.Count(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := Self;
   List.Add('count', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentsGet.Extended(Value: Boolean): TVkParamsBoardCommentsGet;
 begin
-  Result := Self;
   List.Add('extended', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentsGet.GroupId(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := Self;
   List.Add('group_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentsGet.NeedLikes(Value: Boolean): TVkParamsBoardCommentsGet;
 begin
-  Result := Self;
   List.Add('need_likes', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentsGet.Offset(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := Self;
   List.Add('offset', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentsGet.Sort(Value: Boolean): TVkParamsBoardCommentsGet;
 begin
-  Result := Self;
   if Value then
     List.Add('sort', 'asc')
   else
     List.Add('sort', 'desc');
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentsGet.StartCommentId(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := Self;
   List.Add('start_comment_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsBoardCommentsGet.TopicId(Value: Integer): TVkParamsBoardCommentsGet;
 begin
-  Result := Self;
   List.Add('topic_id', Value);
+  Result := Self;
 end;
 
 end.

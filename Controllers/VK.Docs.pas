@@ -76,8 +76,7 @@ type
     /// <summary>
     /// Сохраняет аудиосообщение
     /// </summary>
-    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0;
-      ReturnTags: Boolean = False): Boolean;
+    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0; ReturnTags: Boolean = False): Boolean;
     /// <summary>
     /// Возвращает расширенную информацию о документах пользователя или сообщества.
     /// </summary>
@@ -233,8 +232,7 @@ begin
   Result := Handler.Execute('docs.save', Params).GetObject<TVkDocSaved>(Doc);
 end;
 
-function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer;
-  ReturnTags: Boolean): Boolean;
+function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
 var
   Url, Response: string;
 begin
@@ -261,64 +259,64 @@ end;
 
 function TVkParamsDocsGet.Count(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := Self;
   List.Add('count', Value);
+  Result := Self;
 end;
 
 function TVkParamsDocsGet.Offset(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := Self;
   List.Add('offset', Value);
+  Result := Self;
 end;
 
 function TVkParamsDocsGet.OwnerId(Value: Integer): TVkParamsDocsGet;
 begin
-  Result := Self;
   List.Add('owner_id', Value);
+  Result := Self;
 end;
 
 function TVkParamsDocsGet.ReturnTags(Value: Boolean): TVkParamsDocsGet;
 begin
-  Result := Self;
   List.Add('return_tags', Value);
+  Result := Self;
 end;
 
 function TVkParamsDocsGet.&Type(Value: TVkDocTypeFilter): TVkParamsDocsGet;
 begin
-  Result := Self;
   List.Add('type', Ord(Value));
+  Result := Self;
 end;
 
 { TVkParamsDocsSearch }
 
 function TVkParamsDocsSearch.Count(Value: Integer): TVkParamsDocsSearch;
 begin
-  Result := Self;
   List.Add('count', Value);
+  Result := Self;
 end;
 
 function TVkParamsDocsSearch.Offset(Value: Integer): TVkParamsDocsSearch;
 begin
-  Result := Self;
   List.Add('offset', Value);
+  Result := Self;
 end;
 
 function TVkParamsDocsSearch.Query(Value: string): TVkParamsDocsSearch;
 begin
-  Result := Self;
   List.Add('q', Value);
+  Result := Self;
 end;
 
 function TVkParamsDocsSearch.ReturnTags(Value: Boolean): TVkParamsDocsSearch;
 begin
-  Result := Self;
   List.Add('return_tags', Value);
+  Result := Self;
 end;
 
 function TVkParamsDocsSearch.SearchOwn(Value: Boolean): TVkParamsDocsSearch;
 begin
-  Result := Self;
   List.Add('search_own', Value);
+  Result := Self;
 end;
 
 end.
