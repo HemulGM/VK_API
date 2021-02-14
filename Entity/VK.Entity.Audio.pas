@@ -234,7 +234,7 @@ type
     property Url: string read FUrl write FUrl;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
     function DurationText(const AFormat: string): string;
   end;
 
@@ -291,7 +291,7 @@ begin
   Result := Format(AFormat, [M, S]);
 end;
 
-function TVkAudio.ToAttachment: string;
+function TVkAudio.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Audio(Id, OwnerId, AccessKey);
 end;

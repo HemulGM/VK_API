@@ -5,8 +5,8 @@ interface
 {$INCLUDE include.inc}
 
 uses
-  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types,
-  System.Generics.Collections, System.JSON, VK.Entity.Common;
+  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types, System.Generics.Collections, System.JSON,
+  VK.Entity.Common;
 
 type
   TVkException = Exception;

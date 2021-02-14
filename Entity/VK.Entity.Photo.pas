@@ -3,8 +3,8 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Info, VK.Entity.Attachment;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Info, VK.Types,
+  VK.Entity.Attachment;
 
 type
   TVkOwnerPhoto = class(TVkEntity)
@@ -173,7 +173,7 @@ type
     //
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkCropPhoto = class(TVkEntity)
@@ -235,7 +235,7 @@ type
 implementation
 
 uses
-  VK.Types, VK.CommonUtils;
+  VK.CommonUtils;
 
 {TVkPhoto}
 
@@ -258,7 +258,7 @@ begin
   inherited;
 end;
 
-function TVkPhoto.ToAttachment: string;
+function TVkPhoto.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Photo(Id, OwnerId, AccessKey);
 end;

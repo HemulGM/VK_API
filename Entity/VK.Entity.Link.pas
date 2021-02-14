@@ -134,7 +134,7 @@ type
     /// </summary>
     property Url: string read FUrl write FUrl;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkShortLink = class(TVkEntity)
@@ -279,7 +279,7 @@ begin
   inherited;
 end;
 
-function TVkLink.ToAttachment: string;
+function TVkLink.ToAttachment: TAttachment;
 begin
   { TODO -oМалинин Геннадий -c : Додеать вложение ссылки 26.01.2021 12:23:45 }
   Result := TAttachment.Link(0, 0, AccessKey);

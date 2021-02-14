@@ -3,9 +3,8 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Privacy,
-  VK.Entity.Common.List, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
+  VK.Entity.Attachment, VK.Entity.Privacy, VK.Entity.Common.List, VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkPhotoAlbum = class(TVkObject, IAttachment)
@@ -77,7 +76,7 @@ type
     property UploadByAdminsOnly: Boolean read FUpload_by_admins_only write FUpload_by_admins_only;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkPhotoAlbums = TVkEntityList<TVkPhotoAlbum>;
@@ -85,7 +84,7 @@ type
 implementation
 
 uses
-  System.DateUtils, VK.Types, VK.CommonUtils;
+  System.DateUtils, VK.CommonUtils;
 
 {TVkPhotoAlbum}
 
@@ -106,7 +105,7 @@ begin
   inherited;
 end;
 
-function TVkPhotoAlbum.ToAttachment: string;
+function TVkPhotoAlbum.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Album(Id, OwnerId, AccessKey);
 end;

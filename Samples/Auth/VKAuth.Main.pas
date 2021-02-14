@@ -307,7 +307,7 @@ procedure TFormMain.Button19Click(Sender: TObject);
 var
   Params: TVkParamsWallPost;
 begin
-//  VK1.Wall.Post('', -145962568, ['video58553419_456239240']);
+//  VK1.Wall.Post('', -145962568, TAttachment.Video(58553419, 456239240));
   Params.Message('Test Text');
   Params.OwnerId(-145962568);
   Params.FromGroup(True);
@@ -925,10 +925,10 @@ begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
-  VK1.Application := TVkApplicationData.Android;
-  //if TFile.Exists('token.tmp') then
-  //  VK1.Token := TFile.ReadAllText('token.tmp');
-  //VK1.Login;
+  //VK1.Application := TVkApplicationData.Android;
+  if TFile.Exists('token.tmp') then
+    VK1.Token := TFile.ReadAllText('token.tmp');
+  VK1.Login;
 end;
 
 {

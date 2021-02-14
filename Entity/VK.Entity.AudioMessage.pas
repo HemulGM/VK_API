@@ -3,7 +3,7 @@ unit VK.Entity.AudioMessage;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Attachment, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Attachment, VK.Types, VK.Entity.Common;
 
 type
   TVkAudioMessage = class(TVkObject, IAttachment)
@@ -34,17 +34,17 @@ type
     /// Массив значений (integer) для визуального отображения звука
     /// </summary>
     property WaveForm: TArray<Integer> read FWaveform write FWaveform;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
 implementation
 
 uses
-  VK.Types, System.SysUtils;
+  System.SysUtils;
 
 {TVkAudioMessage}
 
-function TVkAudioMessage.ToAttachment: string;
+function TVkAudioMessage.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Doc(FId, OwnerId, FAccess_key);
 end;

@@ -3,9 +3,8 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  Vk.Types, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Common.List,
-  VK.Wrap.Interceptors, VK.Entity.AudioMessage;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, Vk.Types, VK.Entity.Common,
+  VK.Entity.Attachment, VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.AudioMessage;
 
 type
   TVkPreviewPhoto = class
@@ -110,7 +109,7 @@ type
     property Url: string read FUrl write FUrl;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkDocuments = TVkEntityList<TVkDocument>;
@@ -161,7 +160,7 @@ begin
   inherited;
 end;
 
-function TVkDocument.ToAttachment: string;
+function TVkDocument.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Doc(FId, FOwner_id, FAccess_key);
 end;

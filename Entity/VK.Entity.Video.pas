@@ -3,9 +3,8 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment,
-  VK.Entity.Common.List, VK.Entity.Info, VK.Wrap.Interceptors;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Privacy,
+  VK.Entity.Attachment, VK.Entity.Common.List, VK.Entity.Info, VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkVideoFiles = class(TVkEntity)
@@ -272,7 +271,7 @@ type
     /// </summary>
     property&Type: string read FType write FType;
     ///Ìועמהû
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -304,7 +303,7 @@ type
 implementation
 
 uses
-  VK.Types, VK.CommonUtils;
+  VK.CommonUtils;
 
 {TVkVideo}
 
@@ -326,7 +325,7 @@ begin
   inherited;
 end;
 
-function TVkVideo.ToAttachment: string;
+function TVkVideo.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Video(Id, OwnerId, AccessKey);
 end;

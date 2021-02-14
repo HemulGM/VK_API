@@ -252,7 +252,7 @@ type
     property Thread: TVkCommentThread read FThread write FThread;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkCommentThread = class(TVkEntityList<TVkComment>)
@@ -480,7 +480,7 @@ type
     property Views: TVkViewsInfo read FViews write FViews;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkPosts = TVkEntityExtendedList<TVkPost>;
@@ -602,7 +602,7 @@ begin
   inherited;
 end;
 
-function TVkComment.ToAttachment: string;
+function TVkComment.ToAttachment: TAttachment;
 begin
   Result := TAttachment.WallReply(OwnerId, Id, AccessKey);
 end;
@@ -637,7 +637,7 @@ begin
   inherited;
 end;
 
-function TVkPost.ToAttachment: string;
+function TVkPost.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Wall(Id, OwnerId, AccessKey);
 end;
