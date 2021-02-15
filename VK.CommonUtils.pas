@@ -34,7 +34,7 @@ function CheckForCaptcha(const Html: string; var CaptchaUrl: string): Boolean;
 implementation
 
 uses
-  System.DateUtils, System.SysUtils, System.IOUtils;
+  System.DateUtils, system.Math, System.StrUtils, System.SysUtils, System.IOUtils;
 
 function GetTokenFromUrl(const Url: string; var Token, ChangePasswordHash, TokenExpiry: string): Boolean;
 var
@@ -96,35 +96,24 @@ begin
     CaptchaUrl := Copy(Html, i + Pattern.Length, 150);
     i := Pos('"', CaptchaUrl);
     if i > 0 then
-    begin
       CaptchaUrl := Copy(CaptchaUrl, 1, i - 1);
-    end;
   end;
   Result := not CaptchaUrl.IsEmpty;
 end;
 
 function BoolToInt(Value: Boolean): Integer; overload;
 begin
-  if Value then
-    Result := 1
-  else
-    Result := 0;
+  Result := IfThen(Value, 1, 0);
 end;
 
 function BoolToString(Value: Boolean): string;
 begin
-  if Value then
-    Result := '1'
-  else
-    Result := '0';
+  Result := IfThen(Value, '1', '0');
 end;
 
 function BoolToString(Value: Boolean; TrueValue, FalseValue: string): string;
 begin
-  if Value then
-    Result := TrueValue
-  else
-    Result := FalseValue;
+  Result := IfThen(Value, TrueValue, FalseValue);
 end;
 
 function GetRandomId: Int64;

@@ -52,14 +52,15 @@ type
     FUrl: string;
     FDesc: string;
     FPhoto_100: string;
-    FEdit_title: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FEdit_title: Boolean;
     FImage_processing: Integer;
   public
     property Url: string read FUrl write FUrl;
     property Desc: string read FDesc write FDesc;
     property Photo_50: string read FPhoto_50 write FPhoto_50;
     property Photo_100: string read FPhoto_100 write FPhoto_100;
-    property EditTitle: Integer read FEdit_title write FEdit_title;
+    property EditTitle: Boolean read FEdit_title write FEdit_title;
     property ImageProcessing: Integer read FImage_processing write FImage_processing;
   end;
 
@@ -186,9 +187,12 @@ type
   TVkGroup = class(TVkObject)
   private
     FAdmin_level: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_admin: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_advertiser: Boolean;
     FIs_closed: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_member: Boolean;
     FName: string;
     FPhoto_100: string;
@@ -198,6 +202,7 @@ type
     FType: string;
     FTrending: Boolean;
     FMembers_count: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FVerified: Boolean;
     FCountry: TVkCountry;
     FMember_status: Integer;
@@ -208,12 +213,18 @@ type
     FAddresses: TVkAddresses;
     FAge_limits: Integer;
     FBan_info: TVkBanInfo;
-    Fcan_create_topic: Boolean;
-    Fcan_message: Boolean;
-    Fcan_post: Boolean;
-    Fcan_see_all_posts: Boolean;
-    Fcan_upload_doc: Boolean;
-    Fcan_upload_video: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_create_topic: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_message: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_post: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_see_all_posts: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_upload_doc: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_upload_video: Boolean;
     FContacts: TArray<TVkContact>;
     FCover: TVkCover;
     FCrop_photo: TVkCropPhoto;
@@ -235,6 +246,8 @@ type
     FWiki_page: string;
     FCounters: TVkGroupCounters;
     FTrack_code: string;
+    [JsonReflectAttribute(ctString, rtString, TIntDateTimeInterceptor)]
+    FStart_date: TDateTime;
     function GetIsBanned: Boolean;
     function GetIsDeleted: Boolean;
     function GetIsDeactivated: Boolean;
@@ -389,6 +402,7 @@ type
     property PublicDateLabel: string read FPublic_date_label write FPublic_date_label;
     property ScreenName: string read FScreen_name write FScreen_name;
     property Site: string read FSite write FSite;
+    property StartDate: TDateTime read FStart_date write FStart_date;
     property Status: string read FStatus write FStatus;
     property&Type: string read FType write FType;
     property Trending: Boolean read FTrending write FTrending;

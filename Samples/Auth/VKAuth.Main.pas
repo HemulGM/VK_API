@@ -80,6 +80,8 @@ type
     Button40: TButton;
     ButtonWallGet: TButton;
     Button41: TButton;
+    Button42: TButton;
+    Button43: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -191,6 +193,8 @@ type
     procedure VkGroupEventsController1GroupUnhandledEvents(Sender: TObject; GroupId: Integer; const JSON: TJSONValue);
     procedure ButtonWallGetClick(Sender: TObject);
     procedure Button41Click(Sender: TObject);
+    procedure Button42Click(Sender: TObject);
+    procedure Button43Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -211,7 +215,7 @@ uses
   VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section,
   VK.CommonUtils, VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
   VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories,
-  VK.Entity.Podcast.Episode, VK.Auth, VK.Entity.Auth, VK.Clients, REST.Json;
+  VK.Entity.Podcast.Episode, VK.Auth, VK.Entity.Group, VK.Entity.Auth, VK.Clients, REST.Json;
 
 {$R *.dfm}
 
@@ -368,7 +372,10 @@ var
   List: TVkAudios;
   Audio: TVkAudio;
 begin
-  if VK1.Audio.Get(List, TVkParamsAudioGet.Create.OwnerId(415730216).AlbumId(86751037))
+  if VK1.Audio.Get(List, TVkParamsAudioGet.Create.
+    OwnerId(415730216).
+    AlbumId(86751037)
+    )
     then
   begin
     for Audio in List.Items do
@@ -551,12 +558,13 @@ end;
 
 procedure TFormMain.Button30Click(Sender: TObject);
 var
-  Catalog: TVkCatalog;
-  Section: TVkSectionData;
   Chart: TVkSectionData;
-  Block, i: Integer;
+  i: Integer;
+  {Catalog: TVkCatalog;
+  Section: TVkSectionData;
+  Block: Integer; }
 begin
-  if VK1.Catalog.GetAudio(Catalog, True) then
+  {if VK1.Catalog.GetAudio(Catalog, True) then
   begin
     if VK1.Catalog.GetSection(Section, Catalog.Catalog.Sections[1].Id, False) then
     begin
@@ -579,6 +587,15 @@ begin
       Section.Free;
     end;
     Catalog.Free;
+  end; }
+  if VK1.Catalog.GetChart(Chart) then
+  begin
+    Memo1.Clear;
+    for i := 0 to High(Chart.Audios) do
+    begin
+      Memo1.Lines.Add(Chart.Audios[i].AudioChartInfo.Position.ToString + ' - ' + Chart.Audios[i].Artist
+        + ' - ' + Chart.Audios[i].Title);
+    end;
   end;
 end;
 
@@ -630,6 +647,30 @@ begin
   begin
     Memo1.Lines.Add(St.ToJsonString);
     St.Free;
+  end;
+end;
+
+procedure TFormMain.Button42Click(Sender: TObject);
+var
+  Items: TVkGroups;
+begin
+  if Vk1.Groups.GetById(Items, 'proglib', TVkGroupFields.All) then
+  begin
+    Memo1.Lines.Add(Items.Items[0].Name);
+    Items.Free;
+  end;
+end;
+
+procedure TFormMain.Button43Click(Sender: TObject);
+var
+  Items: TVkGroups;
+  Params: TVkParamsGroupsGet;
+begin
+  Params.Fields(TVkGroupFields.All);
+  if Vk1.Groups.Get(Items, Params) then
+  begin
+    Memo1.Lines.Add(Items.Items[0].Name);
+    Items.Free;
   end;
 end;
 

@@ -3,14 +3,11 @@ unit VK.Groups;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json,
-  System.Json, VK.Controller, VK.Types, VK.Entity.Profile, System.Classes,
-  VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
-  VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer,
-  VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
-  VK.Entity.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings,
-  VK.Entity.Group.TokenPermissions, VK.Entity.Common.List,
-  VK.Entity.Group.Invites;
+  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller, VK.Types,
+  VK.Entity.Profile, System.Classes, VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
+  VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer, VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
+  VK.Entity.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings, VK.Entity.Group.TokenPermissions,
+  VK.Entity.Common.List, VK.Entity.Group.Invites;
 
 type
   TVkGroupTagAct = (gtaBind, gtaUnbind);
@@ -559,6 +556,10 @@ type
     /// </summary>
     function GetById(var Items: TVkGroups; GroupId: Integer; Fields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
+    ///  ¬озвращает информацию о заданном сообществе или о нескольких сообществах.
+    /// </summary>
+    function GetById(var Items: TVkGroups; GroupId: string; Fields: TVkGroupFields = []): Boolean; overload;
+    /// <summary>
     ///  ѕозвол€ет получить строку, необходимую дл€ подтверждени€ адреса сервера в Callback API.
     /// </summary>
     function GetCallbackConfirmationCode(var Code: string; GroupId: Integer): Boolean;
@@ -866,6 +867,14 @@ begin
     ['subcategories', BoolToString(Subcategories)],
     ['extended', BoolToString(Extended)]]).
     GetObject<TVkGroupCategories>(Items);
+end;
+
+function TGroupsController.GetById(var Items: TVkGroups; GroupId: string; Fields: TVkGroupFields): Boolean;
+begin
+  Result := Handler.Execute('groups.getById', [
+    ['group_ids', GroupId],
+    ['fields', Fields.ToString]]).
+    GetObjects<TVkGroups>(Items);
 end;
 
 function TGroupsController.GetById(var Items: TVkGroups; GroupIds: TIdList; Fields: TVkGroupFields): Boolean;

@@ -3,8 +3,7 @@ unit VK.Wrap.Interceptors;
 interface
 
 uses
-  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect,
-  REST.Json.Interceptors, VK.Types;
+  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect, REST.Json.Interceptors, VK.Types;
 
 type
   TEnumHelp = record
@@ -42,6 +41,15 @@ type
   /// StrToDate, DateToStr
   /// </summary>
   TStringDateTimeInterceptor = class(TJSONInterceptorStringToString)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  /// <summary>
+  /// 20131224 -> TDateTime
+  /// </summary>
+  TIntDateTimeInterceptor = class(TJSONInterceptorStringToString)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
@@ -187,6 +195,25 @@ end;
 
 procedure TStringDateTimeInterceptor.StringReverter(Data: TObject; Field: string; Arg: string);
 begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, StrToDateDef(Arg, 0));
+end;
+
+{ TIntDateTimeInterceptor }
+
+function TIntDateTimeInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  Dt: TDateTime;
+begin
+  Dt := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TDateTime>;
+  Result := FormatDateTime('YYYYMMDD', Dt);
+end;
+
+procedure TIntDateTimeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  if Arg.Length = 8 then
+    Arg := Arg.Chars[6] + Arg.Chars[7] +
+      FormatSettings.DateSeparator + Arg.Chars[4] + Arg.Chars[5] +
+      FormatSettings.DateSeparator + Arg.Substring(0, 4);
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, StrToDateDef(Arg, 0));
 end;
 

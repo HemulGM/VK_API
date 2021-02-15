@@ -9,9 +9,36 @@ uses
   {$ELSE}
   Vcl.Forms,
   {$ENDIF}
-  REST.Client, REST.Json, JSON, VK.Types;
+  REST.Client, REST.Json, JSON, VK.Types, VK.Entity.Common;
 
 type
+  TResponse = record
+  private
+    function AppendItemsTag(JSON: string): string; inline;
+  public
+    Success: Boolean;
+    Response: string;
+    JSON: string;
+    Error: record
+      Code: Integer;
+      Text: string;
+    end;
+    function ResponseAsItems: string;
+    function ResponseIsTrue: Boolean;
+    function ResponseIsFalse: Boolean;
+    function ResponseAsBool(var Value: Boolean): Boolean;
+    function ResponseAsInt(var Value: Integer): Boolean;
+    function ResponseAsStr(var Value: string): Boolean;
+    function GetJSONValue: TJSONValue;
+    function GetJSONResponse: TJSONValue;
+    function GetValue<T>(const Field: string; var Value: T): Boolean;
+    function GetObject<T: TVkEntity, constructor>(var Value: T): Boolean;
+    function GetObjects<T: TVkEntity, constructor>(var Value: T): Boolean;
+    function IsError: Boolean;
+  end;
+
+  TCallMethodCallback = reference to procedure(Respone: TResponse);
+
   TRequestConstruct = class
     class var
       Client: TRESTClient;
@@ -494,6 +521,116 @@ procedure TVkHandler.SetOnConfirm(const Value: TOnConfirm);
 begin
   FOnConfirm := Value;
 end;
+
+{ TResponse }
+
+{$WARNINGS OFF}
+function TResponse.GetJSONValue: TJSONValue;
+begin
+  if not JSON.IsEmpty then
+    Result := TJSONObject.ParseJSONValue(UTF8ToString(JSON))
+  else
+    Result := nil;
+end;
+
+function TResponse.GetObject<T>(var Value: T): Boolean;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      Value := T.FromJsonString<T>(Response);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TResponse.GetObjects<T>(var Value: T): Boolean;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      Value := T.FromJsonString<T>(ResponseAsItems);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TResponse.GetValue<T>(const Field: string; var Value: T): Boolean;
+var
+  JSONItem: TJSONValue;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      JSONItem := TJSONObject.ParseJSONValue(Response);
+      try
+        Result := JSONItem.TryGetValue<T>(Field, Value);
+      finally
+        JSONItem.Free;
+      end;
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TResponse.IsError: Boolean;
+begin
+  Result := (not Success) or (Error.Code <> -1);
+end;
+
+function TResponse.ResponseIsFalse: Boolean;
+begin
+  Result := Success and (Response = '0');
+end;
+
+function TResponse.ResponseAsInt(var Value: Integer): Boolean;
+begin
+  Result := Success and TryStrToInt(Response, Value);
+end;
+
+function TResponse.ResponseAsStr(var Value: string): Boolean;
+begin
+  Result := Success;
+  if Result then
+    Value := Response;
+end;
+
+function TResponse.ResponseAsBool(var Value: Boolean): Boolean;
+begin
+  Result := Success;
+  if Result then
+    Value := ResponseIsTrue;
+end;
+
+function TResponse.ResponseIsTrue: Boolean;
+begin
+  Result := Success and (Response = '1');
+end;
+
+function TResponse.AppendItemsTag(JSON: string): string;
+begin
+  Result := '{"Items": ' + JSON + '}';
+end;
+
+function TResponse.ResponseAsItems: string;
+begin
+  Result := AppendItemsTag(Response);
+end;
+
+function TResponse.GetJSONResponse: TJSONValue;
+begin
+  if not Response.IsEmpty then
+    Result := TJSONObject.ParseJSONValue(UTF8ToString(Response))
+  else
+    Result := nil;
+end;
+{$WARNINGS ON}
 
 end.
 

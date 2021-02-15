@@ -3,11 +3,12 @@ unit VK.LongPollServer;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, VK.Handler,
-  System.Generics.Collections;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON,
+  System.Net.HttpClient, VK.Types, VK.Handler, System.Generics.Collections;
 
 type
+  TOnLongPollServerUpdate = procedure(Sender: TObject; GroupID: string; Update: TJSONValue) of object;
+
   TVkLongPollData = record
     Key: string;
     Wait: string;

@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheet9
+      ActivePage = TabSheet8
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -443,6 +443,24 @@ object FormMain: TFormMain
           Caption = 'Groups.getMembers'
           TabOrder = 0
           OnClick = Button25Click
+        end
+        object Button42: TButton
+          Left = 3
+          Top = 34
+          Width = 137
+          Height = 25
+          Caption = 'GetById'
+          TabOrder = 1
+          OnClick = Button42Click
+        end
+        object Button43: TButton
+          Left = 3
+          Top = 65
+          Width = 137
+          Height = 25
+          Caption = 'Get'
+          TabOrder = 2
+          OnClick = Button43Click
         end
       end
       object TabSheet10: TTabSheet
