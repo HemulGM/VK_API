@@ -3,7 +3,7 @@ unit VK.Entity.Event;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
 
 type
   TVkEvent = class(TVkObject)
@@ -11,6 +11,7 @@ type
     FAddress: string;
     FButton_text: string;
     FFriends: TArray<Integer>;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_favorite: Boolean;
     FMember_status: Integer;
     FText: string;
@@ -26,6 +27,7 @@ type
     {1 -- точно идЄт;
       2 -- возможно пойдЄт;
       3 -- не идЄт.}
+    { TODO -oHemulGM -c : —делать тип 16.02.2021 13:56:39 }
     property MemberStatus: Integer read FMember_status write FMember_status;
     property Text: string read FText write FText;
     property Time: TDateTime read FTime write FTime;

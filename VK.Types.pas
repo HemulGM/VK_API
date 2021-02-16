@@ -213,13 +213,13 @@ type
   end;
 
 type
+  TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
+
   TVkValidationType = (vtUnknown, vtSMS, vtApp);
 
   TVkValidationTypeHelper = record helper for TVkValidationType
     class function FromString(const Value: string): TVkValidationType; static;
   end;
-
-  TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
 
   TOn2FA = reference to function(const ValidationType: TVkValidationType; var Code: string; var Remember: Boolean): Boolean;
 
@@ -337,6 +337,15 @@ type
   TVkLang = (vlAuto = -1, vlRU = 0, vlUK = 1, vlBE = 2, vlEN = 3, vlES = 4,   //
     vlFI = 5, vlDE = 6, vlIT = 7);
 
+  TVkGroupAdminLevel = (galNone, galModerator, galEditor, galAdministrator);
+
+  TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
+
+  TVkGroupStatusTypeHelper = record helper for TVkGroupStatusType
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkGroupStatusType; static;
+  end;
+
   /// <summary>
   ///  <b>friends</b> Ч будут возвращены только друзь€ в этом сообществе.
   ///  <b>unsure</b> Ч будут возвращены пользователи, которые выбрали Ђ¬озможно
@@ -447,15 +456,14 @@ type
 
   TVkGroupAccess = (gaOpen, gaClose, gaPrivate);
 
-  TVkGroupAccessHelper = record helper for TVkGroupAccess
-    function ToConst: Integer; inline;
-  end;
-
   TVkGroupRole = (grModerator, grEditor, grAdmin);
 
   TVkGroupRoleHelper = record helper for TVkGroupRole
     function ToString: string; inline;
   end;
+
+  TVkGroupMainSection = (msNone, msPhotos, msBoard, msAudios, msVideos,       //
+    msMarket);
 
   /// <summary>
   /// GroupTagColor
@@ -470,11 +478,7 @@ type
     class function Create(const Value: string): TVkDeactivated; static;
   end;
 
-  TVkAgeLimits = (alNone = 1, al16Plus = 2, al18Plus = 3);
-
-  TVkAgeLimitsHelper = record helper for TVkAgeLimits
-    function ToConst: Integer; inline;
-  end;
+  TVkAgeLimits = (alUnknown = 0, alNone = 1, al16Plus = 2, al18Plus = 3);
 
   TVkCurrency = (mcRUB, mcUAH, mcKZT, mcEUR, mcUSD);
 
@@ -482,10 +486,18 @@ type
     function ToConst: Integer; inline;
   end;
 
-  TVkGroupType = (gtGroup, gtEvent, gtPublic);
+  TVkGroupTypeCreate = (gtcGroup, gtcEvent, gtcPublic);
+
+  TVkGroupTypeCreateHelper = record helper for TVkGroupTypeCreate
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkGroupTypeCreate; static;
+  end;
+
+  TVkGroupType = (gtGroup, gtEvent, gtPage);
 
   TVkGroupTypeHelper = record helper for TVkGroupType
     function ToString: string; inline;
+    class function Create(const Value: string): TVkGroupType; static;
   end;
 
   TVkGroupFilter = (gftAdmin, gftEditor, gftModer, gftAdvertiser, gftGroups,  //
@@ -836,7 +848,6 @@ const
     'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50');
   VkGroupFilter: array[TVkGroupFilter] of string = ('admin', 'editor', 'moder', 'advertiser', 'groups', 'publics',
     'events', 'hasAddress');
-  VkGroupType: array[TVkGroupType] of string = ('group', 'event', 'public');
   VkGroupRole: array[TVkGroupRole] of string = ('moderator', 'editor', 'administrator');
   VkGroupMemberField: array[TVkGroupMemberField] of string = ('sex', 'bdate', 'city', 'country', 'photo_50', 'photo_100',
     'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig', 'online', 'online_mobile', 'lists',
@@ -861,6 +872,9 @@ const
     'chat_invite_user_by_link');
   VkKeyboardButtonColor: array[TVkKeyboardButtonColor] of string = ('positive', 'negative', 'primary', 'secondary');
   VkKeyboardButtonColorValue: array[TVkKeyboardButtonColor] of TAlphaColor = ($FF4BB34B, $FFE64646, $FF5181B8, $FFFFFFFF);
+  VkGroupStatusType: array[TVkGroupStatusType] of string = ('none', 'online', 'answer_mark');
+  VkGroupTypeCreate: array[TVkGroupTypeCreate] of string = ('group', 'event', 'public');
+  VkGroupType: array[TVkGroupType] of string = ('group', 'event', 'page');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -1557,23 +1571,26 @@ end;
 
 { TVkGroupTypeHelper }
 
+class function TVkGroupTypeCreateHelper.Create(const Value: string): TVkGroupTypeCreate;
+begin
+  Result := TVkGroupTypeCreate(IndexStr(Value, VkGroupTypeCreate));
+end;
+
+function TVkGroupTypeCreateHelper.ToString: string;
+begin
+  Result := VkGroupTypeCreate[Self];
+end;
+
+{ TVkGroupTypeHelper }
+
+class function TVkGroupTypeHelper.Create(const Value: string): TVkGroupType;
+begin
+  Result := TVkGroupType(IndexStr(Value, VkGroupType));
+end;
+
 function TVkGroupTypeHelper.ToString: string;
 begin
   Result := VkGroupType[Self];
-end;
-
-{ TVkGroupAccessHelper }
-
-function TVkGroupAccessHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
-end;
-
-{ TVkAgeLimitsHelper }
-
-function TVkAgeLimitsHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
 end;
 
 { TVkMarketCurrencyHelper }
@@ -1935,6 +1952,18 @@ begin
   SetLength(Result, Length(Self));
   for i := Low(Self) to High(Self) do
     Result[i] := Self[i];
+end;
+
+{ TVkGroupStatusTypeHelper }
+
+class function TVkGroupStatusTypeHelper.Create(const Value: string): TVkGroupStatusType;
+begin
+  Result := TVkGroupStatusType(IndexStr(Value, VkGroupStatusType));
+end;
+
+function TVkGroupStatusTypeHelper.ToString: string;
+begin
+  Result := VkGroupStatusType[Self];
 end;
 
 end.

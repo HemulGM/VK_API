@@ -3,11 +3,11 @@ unit VK.Entity.Common;
 interface
 
 uses
-  Generics.Collections, System.Json, REST.JsonReflect, REST.Json.Interceptors,
-  Rest.Json, REST.Json.Types;
+  Generics.Collections, System.Json, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, REST.Json.Types;
 
 type
   TVkEntity = class(TInterfacedObject)
+  public
     function ToJsonString: string;
     class function FromJsonString<T: class, constructor>(AJsonString: string): T;
     procedure FromJson(AJson: TJSONObject);
@@ -66,9 +66,21 @@ type
     FY: Integer;
     FY2: Integer;
   public
+    /// <summary>
+    /// Координата X левого верхнего угла в процентах
+    /// </summary>
     property X: Integer read FX write FX;
+    /// <summary>
+    /// Координата Y левого верхнего угла в процентах
+    /// </summary>
     property X2: Integer read FX2 write FX2;
+    /// <summary>
+    /// Координата X правого нижнего угла в процентах
+    /// </summary>
     property Y: Integer read FY write FY;
+    /// <summary>
+    /// Координата Y правого нижнего угла в процентах
+    /// </summary>
     property Y2: Integer read FY2 write FY2;
   end;
 
@@ -126,14 +138,22 @@ type
     FUrl: string;
     FWidth: Integer;
   public
-    property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// URL копии
+    /// </summary>
     property Url: string read FUrl write FUrl;
+    /// <summary>
+    /// Высота
+    /// </summary>
+    property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// Ширина
+    /// </summary>
     property Width: Integer read FWidth write FWidth;
   end;
 
-  {$REGION 'Fields Desc'}
+  {$REGION 'Возможные значения поля Type'}
   {
-    Возможные значения поля type
     s — пропорциональная копия изображения с максимальной стороной 75px;
     m — пропорциональная копия изображения с максимальной стороной 130px;
     x — пропорциональная копия изображения с максимальной стороной 604px;

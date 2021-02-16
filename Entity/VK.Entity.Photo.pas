@@ -182,8 +182,17 @@ type
     FPhoto: TVkPhoto;
     FRect: TVkRect;
   public
+    /// <summary>
+    /// Объект photo фотографии пользователя, из которой вырезается главное фото сообщества
+    /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
+    /// <summary>
+    /// Вырезанная фотография сообщества
+    /// </summary>
     property Crop: TVkRect read FCrop write FCrop;
+    /// <summary>
+    /// Миниатюрная квадратная фотография, вырезанная из фотографии Crop
+    /// </summary>
     property Rect: TVkRect read FRect write FRect;
     destructor Destroy; override;
   end;

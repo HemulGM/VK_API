@@ -82,6 +82,18 @@ type
   TProductAvailabilityInterceptor = class(TEnumInterceptor<TVkProductAvailability>)
   end;
 
+  TGroupAccessInterceptor = class(TEnumInterceptor<TVkGroupAccess>)
+  end;
+
+  TGroupAdminLevelInterceptor = class(TEnumInterceptor<TVkGroupAdminLevel>)
+  end;
+
+  TAgeLimitsInterceptor = class(TEnumInterceptor<TVkAgeLimits>)
+  end;
+
+  TGroupMainSectionInterceptor = class(TEnumInterceptor<TVkGroupMainSection>)
+  end;
+
   TPeerTypeInterceptor = class(TJSONInterceptorStringToString)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
@@ -89,6 +101,18 @@ type
   end;
 
   TDeactivatedInterceptor = class(TJSONInterceptorStringToString)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TGroupStatusTypeInterceptor = class(TJSONInterceptorStringToString)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TGroupTypeInterceptor = class(TJSONInterceptorStringToString)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
@@ -299,6 +323,30 @@ end;
 procedure TMessageActionTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkMessageActionType.Create(Arg)));
+end;
+
+{ TGroupStatusTypeInterceptor }
+
+function TGroupStatusTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkGroupStatusType>.ToString;
+end;
+
+procedure TGroupStatusTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkGroupStatusType.Create(Arg)));
+end;
+
+{ TGroupTypeInterceptor }
+
+function TGroupTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkGroupType>.ToString;
+end;
+
+procedure TGroupTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkGroupType.Create(Arg)));
 end;
 
 end.

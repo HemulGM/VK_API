@@ -7,7 +7,7 @@ uses
   VK.Entity.Profile, System.Classes, VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
   VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer, VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
   VK.Entity.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings, VK.Entity.Group.TokenPermissions,
-  VK.Entity.Common.List, VK.Entity.Group.Invites;
+  VK.Entity.Common.List, VK.Entity.Group.Invites, VK.Entity.Group.Status;
 
 type
   TVkGroupTagAct = (gtaBind, gtaUnbind);
@@ -135,7 +135,7 @@ type
     /// <summary>
     /// Тип создаваемого сообщества
     /// </summary>
-    function &Type(Value: TVkGroupType): Integer;
+    function &Type(Value: TVkGroupTypeCreate): Integer;
     /// <summary>
     /// Категория публичной страницы (только для Type = gtPublic).
     /// </summary>
@@ -273,7 +273,7 @@ type
   TVkParamsGroupsSearch = record
     List: TParams;
     function Query(Value: string): Integer;
-    function &Type(Value: TVkGroupType): Integer;
+    function &Type(Value: TVkGroupTypeCreate): Integer;
     function CountryId(Value: Integer): Integer;
     function CityId(Value: Integer): Integer;
     function Future(Value: Boolean): Integer;
@@ -1352,7 +1352,7 @@ begin
   Result := List.Add('title', Value);
 end;
 
-function TVkParamsGroupsCreate.&Type(Value: TVkGroupType): Integer;
+function TVkParamsGroupsCreate.&Type(Value: TVkGroupTypeCreate): Integer;
 begin
   Result := List.Add('type', Value.ToString);
 end;
@@ -1361,7 +1361,7 @@ end;
 
 function TVkParamsGroupsEdit.Access(Value: TVkGroupAccess): Integer;
 begin
-  Result := List.Add('access', Value.ToConst);
+  Result := List.Add('access', Ord(Value));
 end;
 
 function TVkParamsGroupsEdit.Addresses(Value: Boolean): Integer;
@@ -1371,7 +1371,7 @@ end;
 
 function TVkParamsGroupsEdit.AgeLimits(Value: TVkAgeLimits): Integer;
 begin
-  Result := List.Add('age_limits', Value.ToConst);
+  Result := List.Add('age_limits', Ord(Value));
 end;
 
 function TVkParamsGroupsEdit.Articles(Value: Boolean): Integer;
@@ -1766,7 +1766,7 @@ begin
   Result := List.Add('sort', Value.ToConst);
 end;
 
-function TVkParamsGroupsSearch.&Type(Value: TVkGroupType): Integer;
+function TVkParamsGroupsSearch.&Type(Value: TVkGroupTypeCreate): Integer;
 begin
   Result := List.Add('type', Value.ToString);
 end;
