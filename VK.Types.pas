@@ -1215,7 +1215,7 @@ end;
 
 function TParamsHelper.Add(Key: string; Value: TDateTime): Integer;
 begin
-  Result := AddParam(Self, [Key, DateTimeToUnix(Value).ToString]);
+  Result := AddParam(Self, [Key, DateTimeToUnix(Value, False).ToString]);
 end;
 
 function TParamsHelper.Add(Key: string; Value: Extended): Integer;

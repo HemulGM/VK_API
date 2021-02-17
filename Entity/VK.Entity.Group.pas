@@ -69,12 +69,17 @@ type
 
   TVkGroupMemberState = class(TVkEntity)
   private
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FMember: Boolean;
-    FUser_id: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_invite: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FRequest: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FInvitation: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_recall: Boolean;
+    FUser_id: Integer;
   public
     /// <summary>
     /// Является ли пользователь участником сообщества
