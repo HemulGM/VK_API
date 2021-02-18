@@ -162,7 +162,7 @@ end;
 
 function TVkDocument.ToAttachment: TAttachment;
 begin
-  Result := TAttachment.Doc(FId, FOwner_id, FAccess_key);
+  Result := TAttachment.Doc(OwnerId, Id, FAccess_key);
 end;
 
 function TVkDocument.GetSizeStr: string;

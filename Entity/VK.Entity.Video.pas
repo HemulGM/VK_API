@@ -327,7 +327,7 @@ end;
 
 function TVkVideo.ToAttachment: TAttachment;
 begin
-  Result := TAttachment.Video(Id, OwnerId, AccessKey);
+  Result := TAttachment.Video(OwnerId, Id, AccessKey);
 end;
 
 {TVkVideoAlbum}

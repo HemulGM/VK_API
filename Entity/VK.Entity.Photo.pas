@@ -269,7 +269,7 @@ end;
 
 function TVkPhoto.ToAttachment: TAttachment;
 begin
-  Result := TAttachment.Photo(Id, OwnerId, AccessKey);
+  Result := TAttachment.Photo(OwnerId, Id, AccessKey);
 end;
 
 {TVkPhotos}

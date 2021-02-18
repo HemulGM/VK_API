@@ -46,7 +46,7 @@ uses
 
 function TVkAudioMessage.ToAttachment: TAttachment;
 begin
-  Result := TAttachment.Doc(FId, OwnerId, FAccess_key);
+  Result := TAttachment.Doc(OwnerId, Id, FAccess_key);
 end;
 
 end.

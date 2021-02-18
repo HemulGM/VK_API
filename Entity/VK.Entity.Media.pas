@@ -639,7 +639,7 @@ end;
 
 function TVkPost.ToAttachment: TAttachment;
 begin
-  Result := TAttachment.Wall(Id, OwnerId, AccessKey);
+  Result := TAttachment.Wall(OwnerId, Id, AccessKey);
 end;
 
 { TVkAttachmentHistoryItem }

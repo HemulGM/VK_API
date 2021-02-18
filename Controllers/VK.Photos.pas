@@ -194,7 +194,7 @@ type
     function UserId(Value: Integer): Integer;
     function GroupId(Value: Integer): Integer;
     function Photo(Value: string): Integer;
-    function Server(Value: string): Integer;
+    function Server(Value: Integer): Integer;
     function Hash(Value: string): Integer;
     function Latitude(Value: Extended): Integer;
     function Longitude(Value: Extended): Integer;
@@ -486,11 +486,11 @@ type
     /// <summary>
     /// Сохраняет фотографии после успешной загрузки на URI, полученный методом photos.getWallUploadServer.
     /// </summary>
-    function SaveWallPhoto(var Item: TVkPhoto; Params: TParams): Boolean; overload;
+    function SaveWallPhoto(var Items: TVkPhotos; Params: TParams): Boolean; overload;
     /// <summary>
     /// Сохраняет фотографии после успешной загрузки на URI, полученный методом photos.getWallUploadServer.
     /// </summary>
-    function SaveWallPhoto(var Item: TVkPhoto; Params: TVkParamsPhotosSaveWallPhoto): Boolean; overload;
+    function SaveWallPhoto(var Items: TVkPhotos; Params: TVkParamsPhotosSaveWallPhoto): Boolean; overload;
     /// <summary>
     /// Осуществляет поиск изображений по местоположению или описанию.
     /// </summary>
@@ -1136,9 +1136,9 @@ begin
   Result := Handler.Execute('photos.saveOwnerPhoto', Params).GetObject<TVkOwnerPhoto>(Info);
 end;
 
-function TPhotosController.SaveWallPhoto(var Item: TVkPhoto; Params: TVkParamsPhotosSaveWallPhoto): Boolean;
+function TPhotosController.SaveWallPhoto(var Items: TVkPhotos; Params: TVkParamsPhotosSaveWallPhoto): Boolean;
 begin
-  Result := SaveWallPhoto(Item, Params.List);
+  Result := SaveWallPhoto(Items, Params.List);
 end;
 
 function TPhotosController.Search(var Items: TVkPhotos; Params: TVkParamsPhotosSearch): Boolean;
@@ -1170,9 +1170,9 @@ begin
   Result := Handler.Execute('photos.search', Params).GetObject<TVkPhotos>(Items);
 end;
 
-function TPhotosController.SaveWallPhoto(var Item: TVkPhoto; Params: TParams): Boolean;
+function TPhotosController.SaveWallPhoto(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.saveWallPhoto', Params).GetObject<TVkPhoto>(Item);
+  Result := Handler.Execute('photos.saveWallPhoto', Params).GetObjects<TVkPhotos>(Items);
 end;
 
 function TPhotosController.SaveMarketPhoto(var Items: TVkPhotos; Params: TParams): Boolean;
@@ -1824,7 +1824,7 @@ begin
   Result := List.Add('photo', Value);
 end;
 
-function TVkParamsPhotosSaveWallPhoto.Server(Value: string): Integer;
+function TVkParamsPhotosSaveWallPhoto.Server(Value: Integer): Integer;
 begin
   Result := List.Add('server', Value);
 end;

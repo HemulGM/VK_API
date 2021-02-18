@@ -293,7 +293,7 @@ end;
 
 function TVkAudio.ToAttachment: TAttachment;
 begin
-  Result := TAttachment.Audio(Id, OwnerId, AccessKey);
+  Result := TAttachment.Audio(OwnerId, Id, AccessKey);
 end;
 
 {TAlbumClass}

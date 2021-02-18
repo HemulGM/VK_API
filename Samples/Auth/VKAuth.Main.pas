@@ -215,7 +215,8 @@ uses
   VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section,
   VK.CommonUtils, VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
   VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories,
-  VK.Entity.Podcast.Episode, VK.Auth, VK.Entity.Group, VK.Entity.Auth, VK.Clients, REST.Json;
+  VK.Entity.Podcast.Episode, VK.Auth, VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
+  REST.Json;
 
 {$R *.dfm}
 
@@ -310,14 +311,45 @@ end;
 procedure TFormMain.Button19Click(Sender: TObject);
 var
   Params: TVkParamsWallPost;
+  Response: TVkPhotoUploadResponse;
+  UploadResp: TVkPhotoGetUploadResponse;
+  SaveParams: TVkParamsPhotosSaveWallPhoto;
+  Status: Boolean;
+  Photos: TVkPhotos;
 begin
+  Status := False;
+  if VK1.Photos.GetWallUploadServer(UploadResp, 145962568) then
+  begin
+    try
+      if VK1.Photos.Upload(UploadResp.UploadUrl, ['D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (100).jpg'], Response) then
+      begin
+        try
+          SaveParams.Photo(Response.Photo);
+          SaveParams.Hash(Response.Hash);
+          SaveParams.GroupId(145962568);
+          SaveParams.Server(Response.Server);
+          Status := VK1.Photos.SaveWallPhoto(Photos, SaveParams);
+        finally
+          Response.Free;
+        end;
+      end;
+    finally
+      UploadResp.Free;
+    end;
+  end;
 //  VK1.Wall.Post('', -145962568, TAttachment.Video(58553419, 456239240));
-  Params.Message('Test Text');
-  Params.OwnerId(-145962568);
-  Params.FromGroup(True);
-  Params.Signed(True);
-  Params.Attachments(TAttachment.Doc(533494309, 58553419, '657138cd5d7842ae0a'));
-  VK1.Wall.Post(Params);
+
+  if Status then
+  begin
+    Params.Message('Test Text');
+    Params.OwnerId(-145962568);
+    Params.FromGroup(True);
+    Params.Signed(True);  //TAttachment.Doc(533494309, 58553419, '657138cd5d7842ae0a')
+    //Params.Attachments('doc533494309_58553419');
+    Params.Attachments(Photos.Items[0].ToAttachment);
+    Photos.Free;
+    VK1.Wall.Post(Params);
+  end;
 end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
