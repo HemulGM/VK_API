@@ -311,22 +311,22 @@ end;
 procedure TFormMain.Button19Click(Sender: TObject);
 var
   Params: TVkParamsWallPost;
-  Response: TVkPhotoUploadResponse;
+  {Response: TVkPhotoUploadResponse;
   UploadResp: TVkPhotoGetUploadResponse;
-  SaveParams: TVkParamsPhotosSaveWallPhoto;
+  SaveParams: TVkParamsPhotosSaveWallPhoto;}
   Status: Boolean;
   Photos: TVkPhotos;
 begin
-  Status := False;
+  {Status := False;
   if VK1.Photos.GetWallUploadServer(UploadResp, 145962568) then
   begin
     try
       if VK1.Photos.Upload(UploadResp.UploadUrl, ['D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (100).jpg'], Response) then
       begin
         try
+          SaveParams.GroupId(145962568);
           SaveParams.Photo(Response.Photo);
           SaveParams.Hash(Response.Hash);
-          SaveParams.GroupId(145962568);
           SaveParams.Server(Response.Server);
           Status := VK1.Photos.SaveWallPhoto(Photos, SaveParams);
         finally
@@ -336,8 +336,11 @@ begin
     finally
       UploadResp.Free;
     end;
-  end;
-//  VK1.Wall.Post('', -145962568, TAttachment.Video(58553419, 456239240));
+  end;}
+
+  Status := VK1.Photos.UploadForGroupWall(Photos, 145962568, ['D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (100).jpg']);
+
+  //VK1.Wall.Post('', -145962568, TAttachment.Video(58553419, 456239240));
 
   if Status then
   begin
@@ -346,7 +349,7 @@ begin
     Params.FromGroup(True);
     Params.Signed(True);  //TAttachment.Doc(533494309, 58553419, '657138cd5d7842ae0a')
     //Params.Attachments('doc533494309_58553419');
-    Params.Attachments(Photos.Items[0].ToAttachment);
+    Params.Attachments(Photos.ToAttachments);
     Photos.Free;
     VK1.Wall.Post(Params);
   end;

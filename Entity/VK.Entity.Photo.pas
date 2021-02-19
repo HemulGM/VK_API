@@ -237,6 +237,7 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkPhotos);
+    function ToAttachments: TAttachmentArray;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -303,6 +304,15 @@ end;
 procedure TVkPhotos.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
+end;
+
+function TVkPhotos.ToAttachments: TAttachmentArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(FItems));
+  for i := Low(FItems) to High(FItems) do
+    Result[i] := FItems[i].ToAttachment;
 end;
 
 { TVkPhotoTags }

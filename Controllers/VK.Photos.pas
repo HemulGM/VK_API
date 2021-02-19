@@ -3,10 +3,8 @@ unit VK.Photos;
 interface
 
 uses
-  System.SysUtils, System.Types, System.Generics.Collections, System.Classes,
-  VK.Controller, VK.Types, VK.Entity.Album, System.JSON, REST.Json,
-  VK.Entity.Photo.Upload, VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group,
-  VK.Entity.Common;
+  System.SysUtils, System.Types, System.Generics.Collections, System.Classes, VK.Controller, VK.Types, VK.Entity.Album,
+  System.JSON, REST.Json, VK.Entity.Photo.Upload, VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkParamsPhotosGetAll = record
@@ -191,13 +189,37 @@ type
 
   TVkParamsPhotosSaveWallPhoto = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя, на стену которого нужно сохранить фотографию
+    /// </summary>
     function UserId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества, на стену которого нужно сохранить фотографию
+    /// </summary>
     function GroupId(Value: Integer): Integer;
+    /// <summary>
+    /// Параметр, возвращаемый в результате загрузки фотографии на сервер
+    /// </summary>
     function Photo(Value: string): Integer;
+    /// <summary>
+    /// Параметр, возвращаемый в результате загрузки фотографии на сервер
+    /// </summary>
     function Server(Value: Integer): Integer;
+    /// <summary>
+    /// Параметр, возвращаемый в результате загрузки фотографии на сервер
+    /// </summary>
     function Hash(Value: string): Integer;
+    /// <summary>
+    /// Географическая широта, заданная в градусах (от -90 до 90)
+    /// </summary>
     function Latitude(Value: Extended): Integer;
+    /// <summary>
+    /// Географическая долгота, заданная в градусах (от -180 до 180)
+    /// </summary>
     function Longitude(Value: Extended): Integer;
+    /// <summary>
+    /// Текст описания фотографии (максимум 2048 символов)
+    /// </summary>
     function Caption(Value: string): Integer;
   end;
 
@@ -500,28 +522,39 @@ type
     /// </summary>
     function Search(var Items: TVkPhotos; Params: TVkParamsPhotosSearch): Boolean; overload;
     /// <summary>
-    ///
+    /// Загрузки фотографии
     /// </summary>
     function Upload(const UploadUrl: string; const FileNames: array of string; var Response: TVkPhotoUploadResponse): Boolean; overload;
     /// <summary>
-    ///
+    /// Загрузки фотографии
     /// </summary>
-    function Upload(const UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
+    function Upload(const UploadUrl: string; Stream: TStream; const FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
     /// <summary>
-    ///
+    /// Загрузки фотографии для отправки в сообщении
     /// </summary>
     function UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of string): Boolean;
+    /// <summary>
+    /// Загрузки фотографии для публикации на стену пользователя или сообщества
+    /// </summary>
+    function UploadForWall(var Photos: TVkPhotos; const FileNames: array of string; Params: TVkParamsPhotosSaveWallPhoto; const GroupId: Integer = 0): Boolean;
+    /// <summary>
+    /// Загрузки фотографии для публикации на стену сообщества
+    /// </summary>
+    function UploadForGroupWall(var Photos: TVkPhotos; const GroupId: Integer; const FileNames: array of string): Boolean;
+    /// <summary>
+    /// Загрузки фотографии для публикации на стену пользователя
+    /// </summary>
+    function UploadForUserWall(var Photos: TVkPhotos; const UserId: Integer; const FileNames: array of string): Boolean;
   end;
 
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils, System.Net.HttpClient,
-  System.Net.Mime;
+  VK.API, VK.CommonUtils, System.DateUtils, System.Net.HttpClient, System.Net.Mime;
 
 { TPhotosController }
 
-function TPhotosController.Upload(const UploadUrl: string; Stream: TStream; FileName: string; var Response: TVkPhotoUploadResponse): Boolean;
+function TPhotosController.Upload(const UploadUrl: string; Stream: TStream; const FileName: string; var Response: TVkPhotoUploadResponse): Boolean;
 var
   HTTP: THTTPClient;
   Data: TMultipartFormData;
@@ -1146,6 +1179,14 @@ begin
   Result := Search(Items, Params.List);
 end;
 
+function TPhotosController.UploadForGroupWall(var Photos: TVkPhotos; const GroupId: Integer; const FileNames: array of string): Boolean;
+var
+  SaveParams: TVkParamsPhotosSaveWallPhoto;
+begin
+  SaveParams.GroupId(GroupId);
+  Result := UploadForWall(Photos, FileNames, SaveParams, GroupId);
+end;
+
 function TPhotosController.UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of string): Boolean;
 var
   Url: string;
@@ -1161,6 +1202,40 @@ begin
       finally
         Response.Free;
       end;
+    end;
+  end;
+end;
+
+function TPhotosController.UploadForUserWall(var Photos: TVkPhotos; const UserId: Integer; const FileNames: array of string): Boolean;
+var
+  SaveParams: TVkParamsPhotosSaveWallPhoto;
+begin
+  SaveParams.UserId(UserId);
+  Result := UploadForWall(Photos, FileNames, SaveParams);
+end;
+
+function TPhotosController.UploadForWall(var Photos: TVkPhotos; const FileNames: array of string; Params: TVkParamsPhotosSaveWallPhoto; const GroupId: Integer): Boolean;
+var
+  Response: TVkPhotoUploadResponse;
+  PhotoUpload: TVkPhotoGetUploadResponse;
+begin
+  Result := False;
+  if GetWallUploadServer(PhotoUpload, GroupId) then
+  begin
+    try
+      if Upload(PhotoUpload.UploadUrl, FileNames, Response) then
+      begin
+        try
+          Params.Photo(Response.Photo);
+          Params.Hash(Response.Hash);
+          Params.Server(Response.Server);
+          Result := SaveWallPhoto(Photos, Params);
+        finally
+          Response.Free;
+        end;
+      end;
+    finally
+      PhotoUpload.Free;
     end;
   end;
 end;
