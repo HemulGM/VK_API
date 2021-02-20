@@ -75,15 +75,15 @@ type
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var Items: TVkProfiles; UserIds: TIdList; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
+    function Get(var Items: TVkProfiles; UserIds: TIdList; Fields: TVkProfileFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
+    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
-    function Get(var User: TVkProfile; Fields: TVkProfileFields = []; NameCase: TVkNameCase = ncNom): Boolean; overload;
+    function Get(var User: TVkProfile; Fields: TVkProfileFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// </summary>
@@ -111,7 +111,7 @@ type
     /// <summary>
     /// Позволяет пожаловаться на пользователя.
     /// </summary>
-    function Report(UserId: Integer; Reason: TVkUserReport = urSpam; Comment: string = ''): Boolean;
+    function Report(UserId: Integer; Reason: TVkUserReport = TVkUserReport.Spam; Comment: string = ''): Boolean;
     /// <summary>
     /// Возвращает список пользователей в соответствии с заданным критерием поиска.
     /// </summary>

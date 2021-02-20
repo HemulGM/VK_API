@@ -214,7 +214,7 @@ begin
   c := -1;
   for Item in FAttachments do
   begin
-    if Item.&Type in [atPhoto, atVideo] then
+    if Item.&Type in [TVkAttachmentType.Photo, TVkAttachmentType.Video] then
     begin
       Inc(c);
       if c = Index then

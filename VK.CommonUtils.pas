@@ -31,10 +31,22 @@ function GetActionLinkHash(const Html: string; var Hash: string): Boolean;
 
 function CheckForCaptcha(const Html: string; var CaptchaUrl: string): Boolean;
 
+function IndexInt(const Value: Integer; const Items: array of Integer): Integer;
+
 implementation
 
 uses
   System.DateUtils, system.Math, System.StrUtils, System.SysUtils, System.IOUtils;
+
+function IndexInt(const Value: Integer; const Items: array of Integer): Integer;
+var
+  i: integer;
+begin
+  for i := Low(Items) to High(Items) do
+    if Value = Items[i] then
+      Exit(i);
+  Result := -1;
+end;
 
 function GetTokenFromUrl(const Url: string; var Token, ChangePasswordHash, TokenExpiry: string): Boolean;
 var

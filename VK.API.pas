@@ -536,7 +536,7 @@ begin
   FIsLogin := False;
   FLogging := False;
   FUserId := -1;
-  FLang := vlAuto;
+  FLang := TVkLang.Auto;
   FUseServiceKeyOnly := False;
   FProxy := TVkProxy.Create(Self);
   FOAuth2Authenticator := TOAuth2Authenticator.Create(Self);
@@ -763,7 +763,7 @@ begin
               begin
                 if Info.Error = 'need_validation' then
                 begin
-                  if TVkValidationType.FromString(Info.ValidationType) <> vtUnknown then
+                  if TVkValidationType.FromString(Info.ValidationType) <> TVkValidationType.Unknown then
                   begin
                     if HTTP.Get(Info.RedirectUri, Response).StatusCode = 200 then
                     begin
@@ -981,7 +981,7 @@ end;
 procedure TCustomVK.SetLang(const Value: TVkLang);
 begin
   FLang := Value;
-  if FLang <> vlAuto then
+  if FLang <> TVkLang.Auto then
     FHandler.Client.AddParameter('lang', Ord(Value).ToString)
   else
     FHandler.Client.Params.Delete('lang');

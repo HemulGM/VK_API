@@ -558,27 +558,27 @@ end;
 function TVkAttachment.GetPreviewUrl: string;
 begin
   case&Type of
-    atPhoto:
+    TVkAttachmentType.Photo:
       Exit(Self.FPhoto.Sizes[4].Url);
-    atVideo:
+    TVkAttachmentType.Video:
       Exit(Self.FVideo.Image[4].Url);
-    atAudio:
+    TVkAttachmentType.Audio:
       Exit('');
-    atDoc:
+    TVkAttachmentType.Doc:
       Exit('');
-    atLink:
+    TVkAttachmentType.Link:
       Exit('');
-    atMarket:
+    TVkAttachmentType.Market:
       Exit('');
-    atMarketAlbum:
+    TVkAttachmentType.MarketAlbum:
       Exit('');
-    atWall:
+    TVkAttachmentType.Wall:
       Exit('');
-    atWallReply:
+    TVkAttachmentType.WallReply:
       Exit('');
-    atSticker:
+    TVkAttachmentType.Sticker:
       Exit(Self.FSticker.Images[1].Url);
-    atGift:
+    TVkAttachmentType.Gift:
       Exit('');
   else
     Result := '';

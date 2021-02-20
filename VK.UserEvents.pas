@@ -91,7 +91,7 @@ type
   /// </summary>
   TMessageData = record
     MessageId: Integer;
-    Flags: TMessageFlags;
+    Flags: TVkMessageFlags;
     PeerId: Integer;
     TimeStamp: TDateTime;
     Text: string;
@@ -103,7 +103,7 @@ type
 
   TMessageChangeData = record
     MessageId: Integer;
-    Flags: TMessageFlags;
+    Flags: TVkMessageFlags;
     PeerId: Integer;
     ChangeType: TVkFlagsChangeType;
   end;
@@ -326,11 +326,11 @@ begin
         end;
         case EventType of
           1: //1	$message_id (integer) $flags (integer) extra_fields*	Замена флагов сообщения (FLAGS:=$flags).
-            DoChangeMessageFlags(A1, fcFlagsReplace, A2, ExtraFields);
+            DoChangeMessageFlags(A1, TVkFlagsChangeType.Replace, A2, ExtraFields);
           2: //2	$message_id (integer) $mask (integer) extra_fields*	Установка флагов сообщения (FLAGS|=$mask).
-            DoChangeMessageFlags(A1, fcFlagsSet, A2, ExtraFields);
+            DoChangeMessageFlags(A1, TVkFlagsChangeType.&Set, A2, ExtraFields);
           3: //3	$message_id (integer) $mask (integer) extra_fields*	Сброс флагов сообщения (FLAGS&=~$mask).
-            DoChangeMessageFlags(A1, fcFlagsReset, A2, ExtraFields);
+            DoChangeMessageFlags(A1, TVkFlagsChangeType.Reset, A2, ExtraFields);
           4: //4	$message_id (integer) $flags (integer) extra_fields*	Добавление нового сообщения.
             DoNewMessage(A1, A2, ExtraFields);
         end;
@@ -379,11 +379,11 @@ begin
         end;
         case EventType of
           10: //$peer_id (integer) $mask (integer)	Сброс флагов диалога $peer_id. Соответствует операции (PEER_FLAGS &= ~$flags). Только для диалогов сообществ.
-            DoChangeDialogFlags(A1, fcFlagsReset, A2);
+            DoChangeDialogFlags(A1, TVkFlagsChangeType.Reset, A2);
           11: //$peer_id (integer) $flags (integer)	Замена флагов диалога $peer_id. Соответствует операции (PEER_FLAGS:= $flags). Только для диалогов сообществ.
-            DoChangeDialogFlags(A1, fcFlagsReplace, A2);
+            DoChangeDialogFlags(A1, TVkFlagsChangeType.Replace, A2);
           12: //$peer_id (integer) $mask (integer)	Установка флагов диалога $peer_id. Соответствует операции (PEER_FLAGS|= $flags). Только для диалогов сообществ.
-            DoChangeDialogFlags(A1, fcFlagsSet, A2);
+            DoChangeDialogFlags(A1, TVkFlagsChangeType.&Set, A2);
         end;
       end;
     13, 14: //Удаление/восставноление сообщений
@@ -559,7 +559,7 @@ begin
   begin
     MessageChangeData.MessageId := MessageId;
     MessageChangeData.ChangeType := ChangeType;
-    MessageChangeData.Flags := TMessageFlags.Create(FlagsMasksData);
+    MessageChangeData.Flags := TVkMessageFlags.Create(FlagsMasksData);
     MessageChangeData.PeerId := ExtraFields.PeerId;
     FOnChangeMessageFlags(Self, MessageChangeData);
   end;
@@ -584,7 +584,7 @@ begin
   if Assigned(FOnNewMessage) then
   begin
     MessageData.MessageId := MessageId;
-    MessageData.Flags := TMessageFlags.Create(FlagsMasksData);
+    MessageData.Flags := TVkMessageFlags.Create(FlagsMasksData);
     MessageData.PeerId := ExtraFields.PeerId;
     MessageData.TimeStamp := UnixToDateTime(ExtraFields.TimeStamp, False);
     MessageData.RandomId := ExtraFields.RandomId;
@@ -626,7 +626,7 @@ begin
   if Assigned(FOnEditMessage) then
   begin
     MessageData.MessageId := MessageId;
-    MessageData.Flags := TMessageFlags.Create(FlagsMasksData);
+    MessageData.Flags := TVkMessageFlags.Create(FlagsMasksData);
     MessageData.PeerId := ExtraFields.PeerId;
     MessageData.TimeStamp := UnixToDateTime(ExtraFields.TimeStamp, False);
     MessageData.Text := ExtraFields.Text;
@@ -686,7 +686,7 @@ begin
       if Extra <> 0 then
         VkPlatform := TVkPlatform(Extra and 255)
       else
-        VkPlatform := pfUnknown;
+        VkPlatform := TVkPlatform.Unknown;
       FOnUserOnline(Self, UserId, VkPlatform, Dt);
     end;
   end

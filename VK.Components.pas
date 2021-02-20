@@ -15,7 +15,7 @@ type
     property AppKey;      // default empty
     property BaseURL;     // default 'https://api.vk.com/method';
     property EndPoint;    // default 'https://oauth.vk.com/authorize';
-    property Lang default vlAuto;
+    property Lang default TVkLang.Auto;
     property Logging default False;
     property LogResponse default False;
     property OnAuth;

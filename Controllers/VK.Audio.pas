@@ -150,7 +150,7 @@ type
     /// <summary>
     /// Returns a list of audio files from the "Popular".
     /// </summary>
-    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TVkAudioGenre = agNone; Count: Integer = 0; Offset: Integer = 0): Boolean; overload;
+    function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TVkAudioGenre = TVkAudioGenre.None; Count: Integer = 0; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает информацию об аудиозаписях
     /// </summary>
@@ -573,7 +573,7 @@ var
   Params: TVkParamsPopAudio;
 begin
   Params.OnlyEng(OnlyEng);
-  if GenreId <> agNone then
+  if GenreId <> TVkAudioGenre.None then
     Params.GenreId(GenreId);
   if Count > 0 then
     Params.Count(Count);

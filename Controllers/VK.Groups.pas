@@ -45,7 +45,7 @@ type
     function GroupId(Value: Integer): Integer; overload;
     function GroupId(Value: string): Integer; overload;
     function Filter(Value: TVkGroupMembersFilter): Integer;
-    function Fields(Value: TVkGroupMemberFields): Integer;
+    function Fields(Value: TVkProfileFields): Integer;
     function Count(Value: Integer = 1000): Integer;
     function Offset(Value: Integer = 0): Integer;
     function Sort(Value: TVkSortIdTime): Integer;
@@ -117,7 +117,7 @@ type
     function GroupId(Value: Integer): Integer;
     function OwnerId(Value: Integer): Integer;
     function EndDate(Value: TDateTime): Integer;
-    function Reason(Value: TVkUserBlockReason = brOther): Integer;
+    function Reason(Value: TVkUserBlockReason = TVkUserBlockReason.Other): Integer;
     function Comment(Value: string): Integer;
     function CommentVisible(Value: Boolean = False): Integer;
   end;
@@ -598,7 +598,7 @@ type
     /// <summary>
     ///  Возвращает список заявок на вступление в сообщество.
     /// </summary>
-    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [ufDomain]; Count: Integer = 20; Offset: Integer = 0): Boolean; overload;
+    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [TVkProfileField.Domain]; Count: Integer = 20; Offset: Integer = 0): Boolean; overload;
     /// <summary>
     ///  Возвращает список заявок на вступление в сообщество.
     /// </summary>
@@ -929,7 +929,7 @@ end;
 function TGroupsController.GetMembers(var Items: TVkProfiles; Params: TVkParamsGroupsGetMembers): Boolean;
 begin
   if not Params.List.KeyExists('fields') then
-    Params.Fields([mfDomain]);
+    Params.Fields([TVkProfileField.Domain]);
   Result := GetMembers(Items, Params.List);
 end;
 
@@ -957,7 +957,7 @@ begin
   Params.Add('count', Count);
   Params.Add('offset', Offset);
   if Fields = [] then
-    Fields := [ufDomain];
+    Fields := [TVkProfileField.Domain];
   Params.Add('fields', Fields.ToString);
   Result := Handler.Execute('groups.getRequests', Params).GetObject<TVkProfiles>(Items);
 end;
@@ -1125,7 +1125,7 @@ begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGroupsGetMembers.Fields(Value: TVkGroupMemberFields): Integer;
+function TVkParamsGroupsGetMembers.Fields(Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;

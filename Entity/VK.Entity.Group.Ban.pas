@@ -57,7 +57,7 @@ begin
   try
     Result := TVkUserBlockReason(FReason);
   except
-    Result := TVkUserBlockReason.brOther;
+    Result := TVkUserBlockReason.Other;
   end;
 end;
 

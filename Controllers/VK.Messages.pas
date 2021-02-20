@@ -769,7 +769,7 @@ end;
 function TMessagesController.GetChat(var Items: TVkChats; Params: TParams): Boolean;
 begin
   if not Params.KeyExists('fields') then
-    Params.Add('fields', TVkProfileField.ufDomain.ToString);
+    Params.Add('fields', TVkProfileField.Domain.ToString);
   Result := Handler.Execute('messages.getChat', Params).GetObjects<TVkChats>(Items);
 end;
 

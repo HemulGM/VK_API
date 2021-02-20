@@ -21,6 +21,9 @@ type
     RTTI: TRttiContext;
   end;
 
+  /// <summary>
+  /// TEnum <-> int
+  /// </summary>
   TEnumInterceptor<TEnum> = class(TJSONInterceptorStringToString)
     constructor Create; reintroduce;
   public
@@ -150,37 +153,26 @@ uses
 { TEnumHelp }
 
 class function TEnumHelp.Cast<TEnum>(const Value: Integer): TEnum;
-var
-  Inf: PTypeInfo;
-  Data: PTypeData;
 begin
-  Inf := PTypeInfo(TypeInfo(TEnum));
-  if (Inf = nil) or (Inf^.Kind <> tkEnumeration) then
-    raise ETEnumHelpError.Create('Not an enumeration type');
-  Data := GetTypeData(Inf);
-  if (Value < Data^.MinValue) then
-    raise ETEnumHelpError.CreateFmt('%d is below min value [%d]', [Value, Data^.MinValue])
-  else if (Value > Data^.MaxValue) then
-    raise ETEnumHelpError.CreateFmt('%d is above max value [%d]', [Value, Data^.MaxValue]);
-  case Sizeof(TEnum) of
+  case SizeOf(TEnum) of
     1:
-      pByte(@Result)^ := Value;
+      PByte(@Result)^ := Value;
     2:
-      pWord(@Result)^ := Value;
+      PWord(@Result)^ := Value;
     4:
-      pCardinal(@Result)^ := Value;
+      PCardinal(@Result)^ := Value;
   end;
 end;
 
 class function TEnumHelp.Recast<TEnum>(const Value: TEnum): Integer;
 begin
-  case Sizeof(TEnum) of
+  case SizeOf(TEnum) of
     1:
-      Result := pByte(@Value)^;
+      Result := PByte(@Value)^;
     2:
-      Result := pWord(@Value)^;
+      Result := PWord(@Value)^;
     4:
-      Result := pCardinal(@Value)^;
+      Result := PCardinal(@Value)^;
   end;
 end;
 
@@ -202,7 +194,7 @@ end;
 
 function TEnumInterceptor<TEnum>.StringConverter(Data: TObject; Field: string): string;
 begin
-  result := Ord(TEnumHelp.Recast<TEnum>(RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TEnum>)).ToString;
+  Result := Ord(TEnumHelp.Recast<TEnum>(RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TEnum>)).ToString;
 end;
 
 procedure TEnumInterceptor<TEnum>.StringReverter(Data: TObject; Field, Arg: string);

@@ -297,11 +297,11 @@ type
     /// <summary>
     /// Позволяет пожаловаться на комментарий к записи.
     /// </summary>
-    function ReportComment(const OwnerId, CommentId: Integer; Reason: TVkMediaReportReason = prSpam): Boolean; overload;
+    function ReportComment(const OwnerId, CommentId: Integer; Reason: TVkMediaReportReason = TVkMediaReportReason.Spam): Boolean; overload;
     /// <summary>
     /// Позволяет пожаловаться на запись.
     /// </summary>
-    function ReportPost(const OwnerId, PostId: Integer; Reason: TVkMediaReportReason = prSpam): Boolean; overload;
+    function ReportPost(const OwnerId, PostId: Integer; Reason: TVkMediaReportReason = TVkMediaReportReason.Spam): Boolean; overload;
     /// <summary>
     /// Позволяет пожаловаться на комментарий к записи.
     /// </summary>

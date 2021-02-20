@@ -366,12 +366,12 @@ end;
 
 function TVkConversation.GetIsChat: Boolean;
 begin
-  Result := Peer.&Type = ptChat;
+  Result := Peer.&Type = TVkPeerType.Chat;
 end;
 
 function TVkConversation.GetIsUser: Boolean;
 begin
-  Result := Peer.&Type = ptUser;
+  Result := Peer.&Type = TVkPeerType.User;
 end;
 
 { TVkConversationItem }

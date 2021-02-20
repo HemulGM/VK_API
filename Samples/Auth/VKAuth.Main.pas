@@ -336,7 +336,10 @@ begin
     finally
       UploadResp.Free;
     end;
-  end;}
+  end;
+
+  OR
+  }
 
   Status := VK1.Photos.UploadForGroupWall(Photos, 145962568, ['D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (100).jpg']);
 
@@ -676,7 +679,7 @@ begin
     ClientSecret(VK1.AppKey).
     Phone('+79530021369').
     Password('123qweASD').
-    Sex(TVkSex.sxMale).
+    Sex(TVkSex.Male).
     Birthday(StrToDate('22.03.1994'));
   if VK1.Auth.Signup(St, Params) then
   begin
@@ -1324,7 +1327,7 @@ end;
 
 procedure TFormMain.VkUserEvents1ChatChangeInfo(Sender: TObject; const PeerId: Integer; TypeId: TVkChatChangeInfoType; Info: Integer);
 begin
-  Memo1.Lines.Add('Изменения в беседе ' + PeerId.ToString + ': ' + TypeId.ToString + ' -> ' + Info.ToString);
+  Memo1.Lines.Add('Изменения в беседе ' + PeerId.ToString + ': ' + VkChatChangeInfoType[TypeId] + ' -> ' + Info.ToString);
 end;
 
 procedure TFormMain.VkUserEvents1CountChange(Sender: TObject; Count: Integer);
@@ -1358,7 +1361,7 @@ begin
     end;
     Msg.Free;
   end;  }
-  if mfOutbox in MessageData.Flags then
+  if TVkMessageFlag.Outbox in MessageData.Flags then
   begin
     //Сообщение от нас
   end
@@ -1380,7 +1383,7 @@ begin
     begin
       if Length(Msg.Items[0].Attachments) > 0 then
       begin
-        if Msg.Items[0].Attachments[0].&Type = atAudioMessage then
+        if Msg.Items[0].Attachments[0].&Type = TVkAttachmentType.AudioMessage then
           VK1.Messages.
             New.
             PeerId(MessageData.PeerId).
@@ -1451,4 +1454,3 @@ begin
 end;
 
 end.
-
