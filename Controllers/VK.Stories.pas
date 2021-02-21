@@ -3,9 +3,8 @@ unit VK.Stories;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.Stories, VK.Entity.Stories.Sticker, VK.Entity.Stories.Stats,
-  VK.Entity.Stories.Viewed;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Stories, VK.Entity.Stories.Sticker,
+  VK.Entity.Stories.Stats, VK.Entity.Stories.Viewed;
 
 type
   TVkParamsStoriesGet = record

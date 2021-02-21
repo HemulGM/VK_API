@@ -10,33 +10,6 @@ uses
   VK.Entity.Common.List, VK.Entity.Group.Invites, VK.Entity.Group.Status;
 
 type
-  TVkGroupTagAct = (gtaBind, gtaUnbind);
-
-  TVkGroupTagActHelper = record helper for TVkGroupTagAct
-    function ToString: string; inline;
-  end;
-
-  TVkNoteText = string;
-  /// <summary>
-  /// <b>wisNoInformation</b> Ч нет информации о расписании;
-  /// <b>wisTemporarilyClosed</b> Ч временно закрыто;
-  /// <b>wisAlwaysOpened</b> Ч открыто круглосуточно;
-  /// <b>wisForeverClosed</b> Ч закрыто навсегда;
-  /// <b>wisTimetable</b> Ч открыто в указанные часы работы. ƒл€ этого типа расписани€ необходимо передать параметр <b>Timetable: TVkTimeTable</b>;
-  /// </summary>
-
-  TVkWorkInfoStatus = (wisNoInformation, wisTemporarilyClosed, wisAlwaysOpened, wisForeverClosed, wisTimetable);
-
-  TVkWorkInfoStatusHelper = record helper for TVkWorkInfoStatus
-    function ToString: string; inline;
-  end;
-
-  TVkGroupSearchSort = (gssDefault, gssGrowthRate, gssDailyTraffic, gssNumberOfLikes, gssNumberOfComments, gssNumberOfPosts);
-
-  TVkGroupSearchSortHelper = record helper for TVkGroupSearchSort
-    function ToConst: Integer; inline;
-  end;
-
   TVkParamsGroupsGetMembers = record
     List: TParams;
     /// <summary>
@@ -103,7 +76,7 @@ type
     function Longitude(Value: Extended): Integer;
     function Phone(Value: string): Integer;
     function WorkInfoStatus(Value: TVkWorkInfoStatus): Integer;
-    function Timetable(Value: TVkTimeTable; FreeObject: Boolean = False): Integer;
+    function Timetable(Value: TVkTimeTable; FreeObject: Boolean = True): Integer;
     function IsMainAddress(Value: Boolean): Integer;
   end;
 
@@ -1209,26 +1182,6 @@ begin
   Result := List.Add('user_ids', Value);
 end;
 
-{ TVkWorkInfoStatusHelper }
-
-function TVkWorkInfoStatusHelper.ToString: string;
-begin
-  case Self of
-    wisNoInformation:
-      Result := 'no_information';
-    wisTemporarilyClosed:
-      Result := 'temporarily_closed';
-    wisAlwaysOpened:
-      Result := 'always_opened';
-    wisForeverClosed:
-      Result := 'forever_closed';
-    wisTimetable:
-      Result := 'timetable';
-  else
-    Result := '';
-  end;
-end;
-
 { TVkParamsGroupsAddAddress }
 
 function TVkParamsGroupsAddAddress.AdditionalAddress(Value: string): Integer;
@@ -1715,13 +1668,6 @@ end;
 function TVkParamsGroupsGetInvitedUsers.Offset(Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
-end;
-
-{ TVkGroupSearchSortHelper }
-
-function TVkGroupSearchSortHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
 end;
 
 { TVkParamsGroupsSearch }
@@ -2246,20 +2192,6 @@ end;
 function TVkParamsGroupsSetSettings.Messages(Value: Boolean): integer;
 begin
   Result := List.Add('messages', Value);
-end;
-
-{ TVkGroupTagActHelper }
-
-function TVkGroupTagActHelper.ToString: string;
-begin
-  case Self of
-    gtaBind:
-      Result := 'bind';
-    gtaUnbind:
-      Result := 'unbind';
-  else
-    Result := 'bind';
-  end;
 end;
 
 end.

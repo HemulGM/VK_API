@@ -7,19 +7,6 @@ uses
   VK.Entity.Status, VK.Entity.Media, VK.Entity.Video.Save;
 
 type
-  TVkVideosFilter = (vfMP4, vfYouTube, vfVimeo, vfShort, vfLong);
-
-  TVkVideosFilterHelper = record helper for TVkVideosFilter
-    function ToString: string; inline;
-  end;
-
-  TVkVideosFilters = set of TVkVideosFilter;
-
-  TVkVideosFiltersHelper = record helper for TVkVideosFilters
-    function ToString: string; inline;
-    class function All: TVkVideosFilters; static; inline;
-  end;
-
   TVkParamsVideoGet = record
     List: TParams;
     function OwnerId(Value: Integer): Integer;
@@ -255,8 +242,7 @@ type
     /// <summary>
     /// Возвращает список альбомов, в которых находится видеозапись.
     /// </summary>
-    function GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer = 0):
-      Boolean; overload;
+    function GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список комментариев к видеозаписи.
     /// </summary>
@@ -348,8 +334,7 @@ begin
   Result := GetAlbums(Items, Params.List);
 end;
 
-function TVideoController.GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer):
-  Boolean;
+function TVideoController.GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -602,9 +587,7 @@ begin
   begin
     Result := False;
     if TCustomVK(VK).Upload(VideoSaved.UploadUrl, [''], SaveResp) then
-    begin
-      Result := not SaveResp.IsEmpty;
-    end
+      Result := not SaveResp.IsEmpty
     else
       TCustomVK(VK).DoError(Self, TVkException.Create(SaveResp), -1, SaveResp);
   end;
@@ -1059,44 +1042,6 @@ end;
 function TVkParamsVideoSave.Compression(Value: Boolean): Integer;
 begin
   Result := List.Add('compression', Value);
-end;
-
-{ TVkVideosFilterHelper }
-
-function TVkVideosFilterHelper.ToString: string;
-begin
-  case Self of
-    vfMP4:
-      Result := 'mp4';
-    vfYouTube:
-      Result := 'youtube';
-    vfVimeo:
-      Result := 'vimeo';
-    vfShort:
-      Result := 'short';
-    vfLong:
-      Result := 'long';
-  else
-    Result := '';
-  end;
-end;
-
-{ TVkVideosFiltersHelper }
-
-class function TVkVideosFiltersHelper.All: TVkVideosFilters;
-begin
-  Result := [vfMP4, vfYouTube, vfVimeo, vfShort, vfLong];
-end;
-
-function TVkVideosFiltersHelper.ToString: string;
-var
-  Item: TVkVideosFilter;
-begin
-  for Item in Self do
-  begin
-    Result := Result + Item.ToString + ',';
-  end;
-  Result.TrimRight([',']);
 end;
 
 { TVkParamsVideosSearch }

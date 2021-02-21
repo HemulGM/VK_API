@@ -3,8 +3,8 @@ unit VK.Utils;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Link, VK.Entity.ScreenName;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Link,
+  VK.Entity.ScreenName;
 
 type
   TVkParamsUtilsGetLinkStats = record

@@ -7,18 +7,6 @@ uses
   VK.Entity.Fave, VK.Entity.Fave.Pages;
 
 type
-  TVkTagPosition = (tpFront, tpBack);
-
-  TVkTagPositionHelper = record helper for TVkTagPosition
-    function ToString: string; inline;
-  end;
-
-  TVkFavePageType = (ftUsers, ftGroups, ftHints);
-
-  TVkFavePageTypeHelper = record helper for TVkFavePageType
-    function ToString: string; inline;
-  end;
-
   TVkParamsFaveGet = record
     List: TParams;
     function TagId(Value: Integer): Integer;
@@ -524,36 +512,6 @@ end;
 function TVkParamsFavePagesGet.&Type(Value: TVkFavePageType): Integer;
 begin
   Result := List.Add('type', Value.ToString);
-end;
-
-{ TVkFavePageTypeHelper }
-
-function TVkFavePageTypeHelper.ToString: string;
-begin
-  case Self of
-    ftUsers:
-      Result := 'users';
-    ftGroups:
-      Result := 'groups';
-    ftHints:
-      Result := 'hints';
-  else
-    Result := '';
-  end;
-end;
-
-{ TVkTagPositionHelper }
-
-function TVkTagPositionHelper.ToString: string;
-begin
-  case Self of
-    tpFront:
-      Result := 'front';
-    tpBack:
-      Result := 'back';
-  else
-    Result := '';
-  end;
 end;
 
 { TVkParamsFavePostAdd }

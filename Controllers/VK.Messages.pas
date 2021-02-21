@@ -3,49 +3,11 @@ unit VK.Messages;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client,
-  System.Json, VK.Controller, VK.Types, VK.Handler, VK.Entity.Keyboard,
-  VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.LongPoll,
-  VK.Entity.Common.List;
+  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
+  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.LongPoll, VK.Entity.Common.List;
 
 type
-  TVkMessageActivity = (maTyping, maAudioMessage);
-
-  TVkMessageActivityHelper = record helper for TVkMessageActivity
-    function ToString: string; inline;
-  end;
-
-  /// <summary>
-  /// “ип материалов, который необходимо вернуть.
-  /// <b>haPhoto</b> Ч фотографии;
-  /// <b>haVideo</b> Ч видеозаписи;
-  /// <b>haAudio</b> Ч аудиозаписи;
-  /// <b>haDoc</b> Ч документы;
-  /// <b>haLink</b> Ч ссылки;
-  /// <b>haMarket</b> Ч товары;
-  /// <b>haWall</b> Ч записи;
-  /// <b>haShare</b> Ч ссылки, товары и записи.
-  /// ќбратите внимание Ч существует ограничение по дате отправки вложений. “ак, дл€ получени€ доступны вложени€ типов photo, video, audio, doc, отправленные не ранее 25.03.2013, link Ч не ранее 20.05.13, market, wall Ч 01.02.2016.
-  /// </summary>
-  TVkHistoryAttachment = (haPhoto, haVideo, haAudio, haDoc, haLink, haMarket, haWall, haShare);
-
-  TVkHistoryAttachmentHelper = record helper for TVkHistoryAttachment
-    function ToString: string; inline;
-  end;
-
-  /// <summary>
-  ///  »нтент Ч это метка, котора€ обозначает приблизительное содержание сообщени€ от сообщества. ѕередаЄтс€ в необ€зательном параметре messages.send Ч Intent.
-  /// <b>miPromoNewsletter</b> - интент, который должен сопровождать рекламную рассылку дл€ ботов.
-  /// <b>miBotAdInvite</b> - интент, который должен сопровождать сообщени€, запрашивающее подтверждение пользовател€ на отправку этому пользователю рекламы.
-  /// <b>miBotAdPromo</b> - интент, который должен сопровождать сообщение содержащее рекламу от бота.
-  /// </summary>
-  TVkMessageIntent = (miDefault, miPromoNewsletter, miBotAdInvite, miBotAdPromo);
-
-  TVkMessageIntentHelper = record helper for TVkMessageIntent
-    function ToString: string; inline;
-  end;
-
   TMessagesController = class;
 
   TVkMessageNew = class
@@ -1398,22 +1360,6 @@ begin
   Result := List.Add('spam', Value);
 end;
 
-{ TVkMessageIntentHelper }
-
-function TVkMessageIntentHelper.ToString: string;
-begin
-  case Self of
-    miDefault:
-      Result := 'default';
-    miPromoNewsletter:
-      Result := 'promo_newsletter';
-    miBotAdInvite:
-      Result := 'bot_ad_invite';
-    miBotAdPromo:
-      Result := 'bot_ad_promo';
-  end;
-end;
-
 { TVkParamsMessageSend }
 
 function TVkParamsMessageSend.Attachment(const Value: TAttachmentArray): Integer;
@@ -1779,32 +1725,6 @@ begin
   Result := List.Add('peer_ids', Value);
 end;
 
-{ TVkHistoryAttachmentHelper }
-
-function TVkHistoryAttachmentHelper.ToString: string;
-begin
-  case Self of
-    haPhoto:
-      Result := 'photo';
-    haVideo:
-      Result := 'video';
-    haAudio:
-      Result := 'audio';
-    haDoc:
-      Result := 'doc';
-    haLink:
-      Result := 'link';
-    haMarket:
-      Result := 'market';
-    haWall:
-      Result := 'wall';
-    haShare:
-      Result := 'share';
-  else
-    Result := 'photo';
-  end;
-end;
-
 { TVkParamsGetHistoryAttachments }
 
 function TVkParamsGetHistoryAttachments.Count(const Value: Integer): Integer;
@@ -2084,20 +2004,6 @@ end;
 function TVkParamsMessageSearchConversations.Query(const Value: string): Integer;
 begin
   Result := List.Add('q', Value);
-end;
-
-{ TVkMessageActivityHelper }
-
-function TVkMessageActivityHelper.ToString: string;
-begin
-  case Self of
-    maTyping:
-      Result := 'typing';
-    maAudioMessage:
-      Result := 'audiomessage';
-  else
-    Result := 'typing';
-  end;
 end;
 
 end.

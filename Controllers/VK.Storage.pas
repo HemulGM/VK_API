@@ -3,8 +3,7 @@ unit VK.Storage;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.Storage;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Storage;
 
 type
   /// <summary>

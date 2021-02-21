@@ -3,9 +3,8 @@ unit VK.Market;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.Media, VK.Entity.Market, VK.Entity.Market.Album,
-  VK.Entity.Market.Order;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Media, VK.Entity.Market,
+  VK.Entity.Market.Album, VK.Entity.Market.Order;
 
 type
   TVkParamsMarketAdd = record

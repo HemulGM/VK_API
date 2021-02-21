@@ -268,6 +268,19 @@ type
     function ToVkId: Integer; inline;
   end;
 
+  TVkVideosFilter = (MP4, YouTube, Vimeo, Short, Long);
+
+  TVkVideosFilterHelper = record helper for TVkVideosFilter
+    function ToString: string; inline;
+  end;
+
+  TVkVideosFilters = set of TVkVideosFilter;
+
+  TVkVideosFiltersHelper = record helper for TVkVideosFilters
+    function ToString: string; inline;
+    class function All: TVkVideosFilters; static; inline;
+  end;
+
   /// <summary>
   ///  Флаги сообщений
   /// </summary>
@@ -308,6 +321,120 @@ type
     class function Create(const Value: string): TVkMessageActionType; static;
   end;
 
+  TVkMessageActivity = (Typing, AudioMessage);
+
+  TVkMessageActivityHelper = record helper for TVkMessageActivity
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// Тип материалов, который необходимо вернуть.
+  /// <b>Photo</b> — фотографии;
+  /// <b>Video</b> — видеозаписи;
+  /// <b>Audio</b> — аудиозаписи;
+  /// <b>Doc</b> — документы;
+  /// <b>Link</b> — ссылки;
+  /// <b>Market</b> — товары;
+  /// <b>Wall</b> — записи;
+  /// <b>Share</b> — ссылки, товары и записи.
+  /// Обратите внимание — существует ограничение по дате отправки вложений. Так, для получения доступны вложения типов photo, video, audio, doc, отправленные не ранее 25.03.2013, link — не ранее 20.05.13, market, wall — 01.02.2016.
+  /// </summary>
+  TVkHistoryAttachment = (Photo, Video, Audio, Doc, Link, Market, Wall, Share);
+
+  TVkHistoryAttachmentHelper = record helper for TVkHistoryAttachment
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  ///  Интент — это метка, которая обозначает приблизительное содержание сообщения от сообщества. Передаётся в необязательном параметре messages.send — Intent.
+  ///  Default
+  /// <b>PromoNewsletter</b> - интент, который должен сопровождать рекламную рассылку для ботов.
+  /// <b>BotAdInvite</b> - интент, который должен сопровождать сообщения, запрашивающее подтверждение пользователя на отправку этому пользователю рекламы.
+  /// <b>BotAdPromo</b> - интент, который должен сопровождать сообщение содержащее рекламу от бота.
+  /// </summary>
+  TVkMessageIntent = (Default, PromoNewsletter, BotAdInvite, BotAdPromo);
+
+  TVkMessageIntentHelper = record helper for TVkMessageIntent
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// Post — новые записи со стен;
+  /// Photo — новые фотографии;
+  /// PhotoTag — новые отметки на фотографиях;
+  /// WallPhoto — новые фотографии на стенах;
+  /// Friend — новые друзья;
+  /// Note — новые заметки;
+  /// Audio — записи сообществ и друзей, содержащие аудиозаписи, а также новые аудиозаписи, добавленные ими;
+  /// Video — новые видеозаписи.
+  /// </summary>
+  TVkNewsfeedType = (Post, Photo, PhotoTag, WallPhoto, Friend, Note, Audio, Video);
+
+  TVkNewsfeedTypeHelper = record Helper for TVkNewsfeedType
+    function ToString: string; inline;
+  end;
+
+  TVkNewsfeedTypes = set of TVkNewsfeedType;
+
+  TVkNewsfeedTypesHelper = record Helper for TVkNewsfeedTypes
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// Wall — запись на стене;
+  /// Photo — фотография;
+  /// PhotoTag — отметка на фотографии;
+  /// ProfilePhoto — фотография профиля;
+  /// Video — видеозапись;
+  /// Audio — аудиозапись.
+  /// </summary>
+  TVkNewsfeedIgnoreType = (Wall, Photo, PhotoTag, ProfilePhoto, Video, Audio);
+
+  TVkNewsfeedIgnoreTypeHelper = record Helper for TVkNewsfeedIgnoreType
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// Post — новые комментарии к записям со стен;
+  /// Photo — новые комментарии к фотографиям;
+  /// Video — новые комментарии к видеозаписям;
+  /// Topic — новые сообщения в обсуждениях;
+  /// Market — новые комментарии к товарам;
+  /// Note — новые комментарии к заметкам.
+  /// </summary>
+  TVkNewsfeedCommentsType = (Post, Photo, Video, Topic, Market, Note);
+
+  TVkNewsfeedCommentsTypeHelper = record Helper for TVkNewsfeedCommentsType
+    function ToString: string; inline;
+  end;
+
+  TVkNewsfeedCommentsTypes = set of TVkNewsfeedCommentsType;
+
+  TVkNewsfeedCommentsTypesHelper = record Helper for TVkNewsfeedCommentsTypes
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// Wall — записи на стене пользователя;
+  /// Mentions — упоминания в записях на стене, в комментариях или в обсуждениях;
+  /// Comments — комментарии к записям на стене, фотографиям и видеозаписям;
+  /// Likes — отметки «Мне нравится»;
+  /// Reposts — скопированные у текущего пользователя записи на стене, фотографии и видеозаписи;
+  /// Followers — новые подписчики;
+  /// Friends — принятые заявки в друзья.
+  /// </summary>
+  TVkNotificationType = (Wall, Mentions, Comments, Likes, Reposts, Followers, Friends);
+
+  TVkNotificationTypeHelper = record Helper for TVkNotificationType
+    function ToString: string; inline;
+  end;
+
+  TVkNotificationFilter = set of TVkNotificationType;
+
+  TVkNotificationFilterHelper = record Helper for TVkNotificationFilter
+    function ToString: string; inline;
+  end;
+
   /// <summary>
   ///  Жанры музыки
   /// </summary>
@@ -322,6 +449,11 @@ type
     function ToString: string; inline;
     class function Create(Value: Integer): TVkAudioGenre; static;
   end;
+
+  TVkDocUploadType = (Doc, AudioMessage);
+
+  TVkDocTypeFilter = (All, Text, Archives, GIF, Pictures, Audios, Videos,     //
+    Books, Other);
 
   TVkSort = (Asc, Desc);
 
@@ -402,6 +534,20 @@ type
     class function All: TVkProfileFields; static; inline;
   end;
 
+  /// <summary>
+  /// <b>hints</b> — сортировать по рейтингу, аналогично тому, как друзья сортируются в разделе Мои друзья (Это значение доступно только для Standalone-приложений с ключом доступа, полученным по схеме Implicit Flow.).
+  /// <b>random</b> — возвращает друзей в случайном порядке.
+  /// <b>mobile</b> — возвращает выше тех друзей, у которых установлены мобильные приложения.
+  /// <b>name</b> — сортировать по имени. Данный тип сортировки работает медленно, так как сервер будет получать всех друзей а не только указанное количество count. (работает только при переданном параметре fields).
+  /// </summary>
+  TVkFriendsOrder = (None, Hints, Random, Mobile, Name);
+
+  TVkFriendsOrderHelper = record helper for TVkFriendsOrder
+    function ToString: string; inline;
+  end;
+
+  TVkFriendAddInfo = (faiSuccess = 1, faiApproved = 2, faiResended = 4);
+
   TVkGroupField = (City, Country, Place, Description, WikiPage, MembersCount, //
     Counters, StartDate, FinishDate, CanPost, CanSeeAllPosts, Activity,       //
     Status, Contacts, Links, FixedPost, Verified, Site, CanCreateTopic,       //
@@ -442,11 +588,58 @@ type
 
   TVkGroupMainSection = (None, Photos, Board, Audios, Videos, Market);
 
+  TVkGroupTagAct = (Bind, Unbind);
+
+  TVkGroupTagActHelper = record helper for TVkGroupTagAct
+    function ToString: string; inline;
+  end;
+
+  TVkOrderStateAction = (Cancel, Charge, Refund);
+
+  TVkOrderStateActionHelper = record helper for TVkOrderStateAction
+    function ToString: string; inline;
+  end;
+
+  TVkNoteText = string;
+
+  /// <summary>
+  /// <b>wisNoInformation</b> — нет информации о расписании;
+  /// <b>wisTemporarilyClosed</b> — временно закрыто;
+  /// <b>wisAlwaysOpened</b> — открыто круглосуточно;
+  /// <b>wisForeverClosed</b> — закрыто навсегда;
+  /// <b>wisTimetable</b> — открыто в указанные часы работы. Для этого типа расписания необходимо передать параметр <b>Timetable: TVkTimeTable</b>;
+  /// </summary>
+  TVkWorkInfoStatus = (NoInformation, TemporarilyClosed, AlwaysOpened, ForeverClosed, Timetable);
+
+  TVkWorkInfoStatusHelper = record helper for TVkWorkInfoStatus
+    function ToString: string; inline;
+  end;
+
+  TVkGroupSearchSort = (Default, GrowthRate, DailyTraffic, NumberOfLikes, NumberOfComments, NumberOfPosts);
+
+  TVkGroupSearchSortHelper = record helper for TVkGroupSearchSort
+    function ToConst: Integer; inline;
+  end;
+
   /// <summary>
   /// GroupTagColor
   /// Тут список цветов -> VkGroupTagColors
   /// </summary>
   TVkGroupTagColor = string;
+
+  TVkSearchFilter = (Friends, Idols, Publics, Groups, Events, Correspondents, MutualFriends);
+
+  TVkSearchFilterHelper = record helper for TVkSearchFilter
+    function ToString: string; inline;
+  end;
+
+  TVkSearchFilters = set of TVkSearchFilter;
+
+  TVkSearchFiltersHelper = record helper for TVkSearchFilters
+    function ToString: string; inline;
+  end;
+
+  TAppActivity = (NewLevel = 1, NewScore = 2);
 
   TVkDeactivated = (None, Deleted, Banned);
 
@@ -522,6 +715,12 @@ type
     class function Create(const Value: string): TVkPlatform; static;
   end;
 
+  TVkStatInterval = (Day, Week, Month, Year, All);
+
+  TVkStatIntervalHelper = record helper for TVkStatInterval
+    function ToString: string;
+  end;
+
   /// <summary>
   /// Cтатус заявки
   /// Processing – заявка рассматривается;
@@ -594,6 +793,18 @@ type
 
   TVkPolitical = (None, Communist, Socialist, Moderate, Liberal,              //
     Conservative, Monarchical, UltraConservative, Indifferent, Libertarian);
+
+  TVkTagPosition = (Front, Back);
+
+  TVkTagPositionHelper = record helper for TVkTagPosition
+    function ToString: string; inline;
+  end;
+
+  TVkFavePageType = (Users, Groups, Hints);
+
+  TVkFavePageTypeHelper = record helper for TVkFavePageType
+    function ToString: string; inline;
+  end;
 
   /// <summary>
   /// именительный – nom, родительный – gen, дательный – dat, винительный – acc,
@@ -859,6 +1070,29 @@ const
   VkUserReport: array[TVkUserReport] of string = ('porn', 'spam', 'insult', 'advertisеment');
   VkLinkStatusType: array[TVkLinkStatusType] of string = ('not_banned', 'banned', 'processing');
   VkValidationType: array[TVkValidationType] of string = ('', '2fa_sms', '2fa_app');
+  VkFriendsOrder: array[TVkFriendsOrder] of string = ('', 'hints', 'random', 'mobile', 'name');
+  VkFavePageType: array[TVkFavePageType] of string = ('users', 'groups', 'hints');
+  VkTagPosition: array[TVkTagPosition] of string = ('front', 'back');
+  VkWorkInfoStatus: array[TVkWorkInfoStatus] of string = ('no_information', 'temporarily_closed', 'always_opened',
+    'forever_closed', 'timetable');
+  VkGroupTagAct: array[TVkGroupTagAct] of string = ('bind', 'unbind');
+  VkMessageActivity: array[TVkMessageActivity] of string = ('typing', 'audiomessage');
+  VkHistoryAttachment: array[TVkHistoryAttachment] of string = ('photo', 'video', 'audio', 'doc', 'link', 'market',
+    'wall', 'share');
+  VkMessageIntent: array[TVkMessageIntent] of string = ('default', 'promo_newsletter', 'bot_ad_invite', 'bot_ad_promo');
+  VkNewsfeedIgnoreType: array[TVkNewsfeedIgnoreType] of string = ('wall', 'photo', 'tag', 'profilephoto', 'video',
+    'audio');
+  VkNewsfeedCommentsType: array[TVkNewsfeedCommentsType] of string = ('post', 'photo', 'video', 'topic', 'market',
+    'note');
+  VkNewsfeedType: array[TVkNewsfeedType] of string = ('post', 'photo', 'photo_tag', 'wall_photo', 'friend', 'note',
+    'audio', 'video');
+  VkNotificationType: array[TVkNotificationType] of string = ('wall', 'mentions', 'comments', 'likes', 'reposts',
+    'followers', 'friends');
+  VkOrderStateAction: array[TVkOrderStateAction] of string = ('cancel', 'charge', 'refund');
+  VkSearchFilter: array[TVkSearchFilter] of string = ('friends', 'idols', 'publics', 'groups', 'events', 'correspondents',
+    'mutual_friends');
+  VkStatInterval: array[TVkStatInterval] of string = ('day', 'week', 'month', 'year', 'all');
+  VkVideosFilter: array[TVkVideosFilter] of string = ('mp4', 'youtube', 'vimeo', 'short', 'long');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -1802,6 +2036,186 @@ end;
 function TVkGroupStatusTypeHelper.ToString: string;
 begin
   Result := VkGroupStatusType[Self];
+end;
+
+{ TVkFriendsSortHelper }
+
+function TVkFriendsOrderHelper.ToString: string;
+begin
+  Result := VkFriendsOrder[Self];
+end;
+
+{ TVkFavePageTypeHelper }
+
+function TVkFavePageTypeHelper.ToString: string;
+begin
+  Result := VkFavePageType[Self];
+end;
+
+{ TVkTagPositionHelper }
+
+function TVkTagPositionHelper.ToString: string;
+begin
+  Result := VkTagPosition[Self];
+end;
+
+{ TVkWorkInfoStatusHelper }
+
+function TVkWorkInfoStatusHelper.ToString: string;
+begin
+  Result := VkWorkInfoStatus[Self];
+end;
+
+{ TVkGroupSearchSortHelper }
+
+function TVkGroupSearchSortHelper.ToConst: Integer;
+begin
+  Result := Ord(Self);
+end;
+
+{ TVkGroupTagActHelper }
+
+function TVkGroupTagActHelper.ToString: string;
+begin
+  Result := VkGroupTagAct[Self];
+end;
+
+{ TVkMessageActivityHelper }
+
+function TVkMessageActivityHelper.ToString: string;
+begin
+  Result := VkMessageActivity[Self];
+end;
+
+{ TVkHistoryAttachmentHelper }
+
+function TVkHistoryAttachmentHelper.ToString: string;
+begin
+  Result := VkHistoryAttachment[Self];
+end;
+
+{ TVkMessageIntentHelper }
+
+function TVkMessageIntentHelper.ToString: string;
+begin
+  Result := VkMessageIntent[Self];
+end;
+
+{ TVkNewsfeedIgnoreTypeHelper }
+
+function TVkNewsfeedIgnoreTypeHelper.ToString: string;
+begin
+  Result := VkNewsfeedIgnoreType[Self];
+end;
+
+{ TVkNewsfeedCommentsTypeHelper }
+
+function TVkNewsfeedCommentsTypeHelper.ToString: string;
+begin
+  Result := VkNewsfeedCommentsType[Self];
+end;
+
+{ TVkNewsfeedCommentsTypesHelper }
+
+function TVkNewsfeedCommentsTypesHelper.ToString: string;
+var
+  Item: TVkNewsfeedCommentsType;
+begin
+  for Item in Self do
+    Result := Result + Item.ToString + ',';
+  Result.TrimRight([',']);
+end;
+
+{ TVkNewsfeedTypeHelper }
+
+function TVkNewsfeedTypeHelper.ToString: string;
+begin
+  Result := VkNewsfeedType[Self];
+end;
+
+{ TVkNewsfeedTypesHelper }
+
+function TVkNewsfeedTypesHelper.ToString: string;
+var
+  Item: TVkNewsfeedType;
+begin
+  for Item in Self do
+    Result := Result + Item.ToString + ',';
+  Result.TrimRight([',']);
+end;
+
+{ TVkNotificationTypeHelper }
+
+function TVkNotificationTypeHelper.ToString: string;
+begin
+  Result := VkNotificationType[Self];
+end;
+
+{ TVkNotificationFilterHelper }
+
+function TVkNotificationFilterHelper.ToString: string;
+var
+  Item: TVkNotificationType;
+begin
+  for Item in Self do
+    Result := Result + Item.ToString + ',';
+  Result.TrimRight([',']);
+end;
+
+{ TVkOrderStateActionHelper }
+
+function TVkOrderStateActionHelper.ToString: string;
+begin
+  Result := VkOrderStateAction[Self];
+end;
+
+{ TVkSearchFilterHelper }
+
+function TVkSearchFilterHelper.ToString: string;
+begin
+  Result := VkSearchFilter[Self];
+end;
+
+{ TVkSearchFiltersHelper }
+
+function TVkSearchFiltersHelper.ToString: string;
+var
+  Item: TVkSearchFilter;
+begin
+  for Item in Self do
+    Result := Result + Item.ToString + ',';
+  Result.TrimRight([',']);
+end;
+
+{ TVkStatIntervalHelper }
+
+function TVkStatIntervalHelper.ToString: string;
+begin
+  Result := VkStatInterval[Self];
+end;
+
+{ TVkVideosFilterHelper }
+
+function TVkVideosFilterHelper.ToString: string;
+begin
+  Result := VkVideosFilter[Self];
+end;
+
+{ TVkVideosFiltersHelper }
+
+class function TVkVideosFiltersHelper.All: TVkVideosFilters;
+begin
+  Result := [TVkVideosFilter.MP4, TVkVideosFilter.YouTube,
+    TVkVideosFilter.Vimeo, TVkVideosFilter.Short, TVkVideosFilter.Long];
+end;
+
+function TVkVideosFiltersHelper.ToString: string;
+var
+  Item: TVkVideosFilter;
+begin
+  for Item in Self do
+    Result := Result + Item.ToString + ',';
+  Result.TrimRight([',']);
 end;
 
 end.

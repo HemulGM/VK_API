@@ -7,34 +7,11 @@ uses
   VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  /// <summary>
-  /// <b>hints</b> Ч сортировать по рейтингу, аналогично тому, как друзь€ сортируютс€ в разделе ћои друзь€ (Ёто значение доступно только дл€ Standalone-приложений с ключом доступа, полученным по схеме Implicit Flow.).
-  /// <b>random</b> Ч возвращает друзей в случайном пор€дке.
-  /// <b>mobile</b> Ч возвращает выше тех друзей, у которых установлены мобильные приложени€.
-  /// <b>name</b> Ч сортировать по имени. ƒанный тип сортировки работает медленно, так как сервер будет получать всех друзей а не только указанное количество count. (работает только при переданном параметре fields).
-  /// </summary>
-  TVkFriendsSort = (fsNone, fsHints, fsRandom, fsMobile, fsName);
-
-  TVkFriendsSortHelper = record helper for TVkFriendsSort
-    function ToString: string; inline;
-  end;
-
-  TVkFriendAddInfo = (faiSuccess = 1, faiApproved = 2, faiResended = 4);
-
-  /// <summary>
-  /// <b>random</b> - возвращает друзей в случайном пор€дке, <b>hints</b> - сортировать по рейтингу, аналогично тому, как друзь€ сортируютс€ в разделе ћои друзь€ (данный параметр доступен только дл€ Desktop-приложений).
-  /// </summary>
-  TVkFriendsOnlineOrder = (fooRandom, fooHints);
-
-  TVkFriendsOnlineOrderHelper = record helper for TVkFriendsOnlineOrder
-    function ToString: string; inline;
-  end;
-
   TVkParamsFriendsGet = record
     List: TParams;
     function UserId(Value: Integer): Integer;
     function ListId(Value: Integer): Integer;
-    function Order(Value: TVkFriendsSort): Integer;
+    function Order(Value: TVkFriendsOrder): Integer;
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
     function Fields(Value: TVkProfileFields): Integer;
@@ -66,7 +43,7 @@ type
     function UserId(Value: Integer): Integer;
     function ListId(Value: Integer): Integer;
     function OnlineMobile(Value: Boolean): Integer;
-    function Order(Value: TVkFriendsOnlineOrder): Integer;
+    function Order(Value: TVkFriendsOrder): Integer;
     function Count(Value: Integer): Integer;
     function Offset(Value: Integer): Integer;
   end;
@@ -107,12 +84,11 @@ type
     /// <summary>
     /// ¬озвращает список идентификаторов друзей пользовател€ или расширенную информацию о друзь€х пользовател€ (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone):
-      Boolean; overload;
+    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsOrder = TVkFriendsOrder.None): Boolean; overload;
     /// <summary>
     /// ¬озвращает список идентификаторов друзей пользовател€ или расширенную информацию о друзь€х пользовател€ (при использовании параметра fields).
     /// </summary>
-    function Get(var Items: TVkProfiles; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
+    function Get(var Items: TVkProfiles; Fields: TVkProfileFields = []; Order: TVkFriendsOrder = TVkFriendsOrder.None): Boolean; overload;
     /// <summary>
     /// ¬озвращает список идентификаторов друзей пользовател€ или расширенную информацию о друзь€х пользовател€ (при использовании параметра fields).
     /// </summary>
@@ -226,26 +202,25 @@ uses
 
 { TFriendsController }
 
-function TFriendsController.Get(var Items: TVkProfiles; Fields: TVkProfileFields; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; Fields: TVkProfileFields; Order: TVkFriendsOrder): Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
   if Fields <> [] then
     Params.Fields(Fields);
-  if Order <> fsNone then
+  if Order <> TVkFriendsOrder.None then
     Params.Order(Order);
   Result := Get(Items, Params);
 end;
 
-function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields; Order: TVkFriendsSort):
-  Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields; Order: TVkFriendsOrder): Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
   Params.UserId(UserId);
   if Fields <> [] then
     Params.Fields(Fields);
-  if Order <> fsNone then
+  if Order <> TVkFriendsOrder.None then
     Params.Order(Order);
   Result := Get(Items, Params);
 end;
@@ -471,7 +446,7 @@ begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsFriendsGet.Order(Value: TVkFriendsSort): Integer;
+function TVkParamsFriendsGet.Order(Value: TVkFriendsOrder): Integer;
 begin
   Result := List.Add('order', Value.ToString);
 end;
@@ -484,24 +459,6 @@ end;
 function TVkParamsFriendsGet.UserId(Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
-end;
-
-{ TVkFriendsSortHelper }
-
-function TVkFriendsSortHelper.ToString: string;
-begin
-  case Self of
-    fsHints:
-      Exit('hints');
-    fsRandom:
-      Exit('random');
-    fsMobile:
-      Exit('mobile');
-    fsName:
-      Exit('name');
-  else
-    Exit('');
-  end;
 end;
 
 { TVkParamsFriendsListEdit }
@@ -566,20 +523,6 @@ begin
   Result := List.Add('target_uids', Value);
 end;
 
-{ TVkFriendsOnlineOrderHelper }
-
-function TVkFriendsOnlineOrderHelper.ToString: string;
-begin
-  case Self of
-    fooRandom:
-      Result := 'random';
-    fooHints:
-      Result := 'hints';
-  else
-    Result := '';
-  end;
-end;
-
 { TVkParamsFriendsGetOnline }
 
 function TVkParamsFriendsGetOnline.Count(Value: Integer): Integer;
@@ -602,7 +545,7 @@ begin
   Result := List.Add('online_mobile', Value);
 end;
 
-function TVkParamsFriendsGetOnline.Order(Value: TVkFriendsOnlineOrder): Integer;
+function TVkParamsFriendsGetOnline.Order(Value: TVkFriendsOrder): Integer;
 begin
   Result := List.Add('order', Value.ToString);
 end;

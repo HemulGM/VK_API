@@ -3,66 +3,10 @@ unit VK.Newsfeed;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, System.JSON, VK.Entity.Newsfeed, VK.Entity.Media;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Newsfeed,
+  VK.Entity.Media;
 
 type
-  /// <summary>
-  /// post Ч новые записи со стен;
-  /// photo Ч новые фотографии;
-  /// photo_tag Ч новые отметки на фотографи€х;
-  /// wall_photo Ч новые фотографии на стенах;
-  /// friend Ч новые друзь€;
-  /// note Ч новые заметки;
-  /// audio Ч записи сообществ и друзей, содержащие аудиозаписи, а также новые аудиозаписи, добавленные ими;
-  /// video Ч новые видеозаписи.
-  /// </summary>
-  TVkNewsfeedType = (ntPost, ntPhoto, ntPhotoTag, ntWallPhoto, ntFriend, ntNote, ntAudio, ntVideo);
-
-  TVkNewsfeedTypeHelper = record Helper for TVkNewsfeedType
-    function ToString: string; inline;
-  end;
-
-  TVkNewsfeedTypes = set of TVkNewsfeedType;
-
-  TVkNewsfeedTypesHelper = record Helper for TVkNewsfeedTypes
-    function ToString: string; inline;
-  end;
-
-  /// <summary>
-  /// wall Ч запись на стене;
-  /// photo Ч фотографи€;
-  /// tag Ч отметка на фотографии;
-  /// profilephoto Ч фотографи€ профил€;
-  /// video Ч видеозапись;
-  /// audio Ч аудиозапись.
-  /// </summary>
-  TVkNewsfeedIgnoreType = (nitWall, nitPhoto, nitPhotoTag, nitProfilePhoto, nitVideo, nitAudio);
-
-  TVkNewsfeedIgnoreTypeHelper = record Helper for TVkNewsfeedIgnoreType
-    function ToString: string; inline;
-  end;
-
-  /// <summary>
-  /// post Ч новые комментарии к запис€м со стен;
-  /// photo Ч новые комментарии к фотографи€м;
-  /// video Ч новые комментарии к видеозапис€м;
-  /// topic Ч новые сообщени€ в обсуждени€х;
-  /// market Ч новые комментарии к товарам;
-  /// note Ч новые комментарии к заметкам.
-  /// </summary>
-  TVkNewsfeedCommentsType = (nctPost, nctPhoto, nctVideo, nctTopic, nctMarket, nctNote);
-
-  TVkNewsfeedCommentsTypeHelper = record Helper for TVkNewsfeedCommentsType
-    function ToString: string; inline;
-  end;
-
-  TVkNewsfeedCommentsTypes = set of TVkNewsfeedCommentsType;
-
-  TVkNewsfeedCommentsTypesHelper = record Helper for TVkNewsfeedCommentsTypes
-    function ToString: string; inline;
-  end;
-
   TVkParamsNewsfeedBanned = record
   private
     List: TParams;
@@ -387,45 +331,6 @@ begin
   Result := Handler.Execute('newsfeed.get', Params).GetObject<TVkNews>(Items);
 end;
 
-{ TVkNewsfeedTypeHelper }
-
-function TVkNewsfeedTypeHelper.ToString: string;
-begin
-  case Self of
-    ntPost:
-      Result := 'post';
-    ntPhoto:
-      Result := 'photo';
-    ntPhotoTag:
-      Result := 'photo_tag';
-    ntWallPhoto:
-      Result := 'wall_photo';
-    ntFriend:
-      Result := 'friend';
-    ntNote:
-      Result := 'note';
-    ntAudio:
-      Result := 'audio';
-    ntVideo:
-      Result := 'video';
-  else
-    Result := ''
-  end;
-end;
-
-{ TVkNewsfeedTypesHelper }
-
-function TVkNewsfeedTypesHelper.ToString: string;
-var
-  Item: TVkNewsfeedType;
-begin
-  for Item in Self do
-  begin
-    Result := Result + Item.ToString + ',';
-  end;
-  Result.TrimRight([',']);
-end;
-
 { TVkParamsNewsfeedGet }
 
 function TVkParamsNewsfeedGet.Count(Value: Integer): Integer;
@@ -493,41 +398,6 @@ end;
 function TVkParamsNewsfeedBanned.NameCase(Value: TVkNameCase): Integer;
 begin
   Result := List.Add('name_case', Value.ToString);
-end;
-
-{ TVkNewsfeedCommentsTypeHelper }
-
-function TVkNewsfeedCommentsTypeHelper.ToString: string;
-begin
-  case Self of
-    nctPost:
-      Result := 'post';
-    nctPhoto:
-      Result := 'photo';
-    nctVideo:
-      Result := 'video';
-    nctTopic:
-      Result := 'topic';
-    nctMarket:
-      Result := 'market';
-    nctNote:
-      Result := 'note';
-  else
-    Result := ''
-  end;
-end;
-
-{ TVkNewsfeedCommentsTypesHelper }
-
-function TVkNewsfeedCommentsTypesHelper.ToString: string;
-var
-  Item: TVkNewsfeedCommentsType;
-begin
-  for Item in Self do
-  begin
-    Result := Result + Item.ToString + ',';
-  end;
-  Result.TrimRight([',']);
 end;
 
 { TVkParamsNewsfeedGetComments }
@@ -629,28 +499,6 @@ end;
 function TVkParamsNewsfeedGetRecommended.StartTime(Value: TDateTime): Integer;
 begin
   Result := List.Add('start_time', Value);
-end;
-
-{ TVkNewsfeedIgnoreTypeHelper }
-
-function TVkNewsfeedIgnoreTypeHelper.ToString: string;
-begin
-  case Self of
-    nitWall:
-      Result := 'wall';
-    nitPhoto:
-      Result := 'photo';
-    nitPhotoTag:
-      Result := 'tag';
-    nitProfilePhoto:
-      Result := 'profilephoto ';
-    nitVideo:
-      Result := 'video';
-    nitAudio:
-      Result := 'audio';
-  else
-    Result := '';
-  end;
 end;
 
 { TVkParamsNewsfeedSearch }

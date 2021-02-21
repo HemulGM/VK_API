@@ -3,8 +3,8 @@ unit VK.Wall;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Info;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
+  VK.Entity.Info;
 
 type
   TVkParamsWallPost = record

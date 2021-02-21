@@ -7,8 +7,6 @@ uses
   VK.Types, VK.Entity.Secure;
 
 type
-  TAppActivity = (aaNewLevel = 1, aaNewScore = 2);
-
   TSecureController = class(TVkController)
   public
     /// <summary>

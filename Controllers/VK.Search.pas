@@ -3,22 +3,9 @@ unit VK.Search;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.Search;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Search;
 
 type
-  TVkSearchFilter = (sfFriends, sfIdols, sfPublics, sfGroups, sfEvents, sfCorrespondents, sfMutualFriends);
-
-  TVkSearchFilterHelper = record helper for TVkSearchFilter
-    function ToString: string; inline;
-  end;
-
-  TVkSearchFilters = set of TVkSearchFilter;
-
-  TVkSearchFiltersHelper = record helper for TVkSearchFilters
-    function ToString: string; inline;
-  end;
-
   TVkParamsSearch = record
     List: TParams;
     function Query(Value: string): Integer;
@@ -103,40 +90,6 @@ end;
 function TVkParamsSearch.SearchGlobal(Value: Boolean): Integer;
 begin
   Result := List.Add('search_global', Value);
-end;
-
-{ TVkSearchFilterHelper }
-
-function TVkSearchFilterHelper.ToString: string;
-begin
-  Result := '';
-  case Self of
-    sfFriends:
-      Result := 'friends';
-    sfIdols:
-      Result := 'idols';
-    sfPublics:
-      Result := 'publics';
-    sfGroups:
-      Result := 'groups';
-    sfEvents:
-      Result := 'events';
-    sfCorrespondents:
-      Result := 'correspondents';
-    sfMutualFriends:
-      Result := 'mutual_friends';
-  end;
-end;
-
-{ TVkSearchFiltersHelper }
-
-function TVkSearchFiltersHelper.ToString: string;
-var
-  Item: TVkSearchFilter;
-begin
-  for Item in Self do
-    Result := Result + Item.ToString + ',';
-  Result.TrimRight([',']);
 end;
 
 end.

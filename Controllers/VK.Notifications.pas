@@ -3,31 +3,10 @@ unit VK.Notifications;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Notifications;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Notifications;
 
 type
-  /// <summary>
-  /// wall Ч записи на стене пользовател€;
-  /// mentions Ч упоминани€ в запис€х на стене, в комментари€х или в обсуждени€х;
-  /// comments Ч комментарии к запис€м на стене, фотографи€м и видеозапис€м;
-  /// likes Ч отметки Ђћне нравитс€ї;
-  /// reposts Ч скопированные у текущего пользовател€ записи на стене, фотографии и видеозаписи;
-  /// followers Ч новые подписчики;
-  /// friends Ч прин€тые за€вки в друзь€.
-  /// </summary>
-  TVkNotificationType = (nftWall, nftMentions, nftComments, nftLikes, nftReposts, nftFollowers, nftFriends);
-
-  TVkNotificationTypeHelper = record Helper for TVkNotificationType
-    function ToString: string; inline;
-  end;
-
-  TVkNotificationFilter = set of TVkNotificationType;
-
-  TVkNotificationFilterHelper = record Helper for TVkNotificationFilter
-    function ToString: string; inline;
-  end;
-
   TVkParamsNotificationsGet = record
     List: TParams;
     function Count(Value: Integer): Integer;
@@ -145,43 +124,6 @@ end;
 function TVkParamsNotificationsGet.StartTime(Value: TDateTime): Integer;
 begin
   Result := List.Add('start_time', Value);
-end;
-
-{ TVkNotificationTypeHelper }
-
-function TVkNotificationTypeHelper.ToString: string;
-begin
-  case Self of
-    nftWall:
-      Result := 'wall';
-    nftMentions:
-      Result := 'mentions';
-    nftComments:
-      Result := 'comments';
-    nftLikes:
-      Result := 'likes';
-    nftReposts:
-      Result := 'reposts';
-    nftFollowers:
-      Result := 'followers';
-    nftFriends:
-      Result := 'friends';
-  else
-    Result := ''
-  end;
-end;
-
-{ TVkNotificationFilterHelper }
-
-function TVkNotificationFilterHelper.ToString: string;
-var
-  Item: TVkNotificationType;
-begin
-  for Item in Self do
-  begin
-    Result := Result + Item.ToString + ',';
-  end;
-  Result.TrimRight([',']);
 end;
 
 { TVkParamsNotificationsSendMessage }

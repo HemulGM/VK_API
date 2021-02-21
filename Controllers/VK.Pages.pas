@@ -3,8 +3,7 @@ unit VK.Pages;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Page;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Page;
 
 type
   TVkParamsPagesGet = record

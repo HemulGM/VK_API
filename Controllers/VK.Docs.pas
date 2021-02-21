@@ -7,10 +7,6 @@ uses
   VK.Entity.Doc.Save, VK.Entity.Video.Save, VK.Entity.Doc, VK.Entity.Doc.Types;
 
 type
-  TVkDocUploadType = (dutDoc, dutAudioMessage);
-
-  TVkDocTypeFilter = (vdtAll, vdtText, vdtArchives, vdtGIF, vdtPictures, vdtAudios, vdtVideos, vdtBooks, vdtOther);
-
   TVkParamsDocsGet = record
     List: TParams;
     /// <summary>
@@ -131,9 +127,9 @@ var
   Params: TParams;
 begin
   case&Type of
-    dutDoc:
+    TVkDocUploadType.Doc:
       Params.Add('type', 'doc');
-    dutAudioMessage:
+    TVkDocUploadType.AudioMessage:
       Params.Add('type', 'audio_message');
   end;
   if PeerId <> 0 then
@@ -197,9 +193,9 @@ var
   Params: TParams;
 begin
   case&Type of
-    dutDoc:
+    TVkDocUploadType.Doc:
       Params.Add('type', 'doc');
-    dutAudioMessage:
+    TVkDocUploadType.AudioMessage:
       Params.Add('type', 'audio_message');
   end;
   Result := Handler.Execute('docs.getMessagesUploadServer', Params).GetValue('upload_url', UploadUrl);
@@ -237,7 +233,7 @@ var
   Url, Response: string;
 begin
   Result := False;
-  if GetMessagesUploadServer(Url, dutAudioMessage, PeerId) then
+  if GetMessagesUploadServer(Url, TVkDocUploadType.AudioMessage, PeerId) then
   begin
     try
       if TCustomVK(VK).Upload(Url, FileName, Response) then

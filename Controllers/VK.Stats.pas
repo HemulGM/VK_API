@@ -3,16 +3,9 @@ unit VK.Stats;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Stats;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Stats;
 
 type
-  TVkStatInterval = (siDay, siWeek, siMonth, siYear, siAll);
-
-  TVkStatIntervalHelper = record helper for TVkStatInterval
-    function ToString: string;
-  end;
-
   TVkParamsStatsGet = record
     List: TParams;
     function GroupId(Value: Integer): Integer;
@@ -87,24 +80,6 @@ function TStatsController.TrackVisitor: Boolean;
 begin
   with Handler.Execute('stats.trackVisitor') do
     Result := Success and ResponseIsTrue;
-end;
-
-{ TVkStatIntervalHelper }
-
-function TVkStatIntervalHelper.ToString: string;
-begin
-  case Self of
-    siDay:
-      Result := 'day';
-    siWeek:
-      Result := 'week';
-    siMonth:
-      Result := 'month';
-    siYear:
-      Result := 'year';
-    siAll:
-      Result := 'all';
-  end;
 end;
 
 { TVkParamsStatsGet }

@@ -3,8 +3,8 @@ unit VK.Notes;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Note;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
+  VK.Entity.Note;
 
 type
   TVkParamsNotesGet = record
