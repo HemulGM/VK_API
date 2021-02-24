@@ -180,20 +180,13 @@ type
 
   TParam = TArrayOfString;
 
-  TParamInt = TArrayOfInteger;
-
   TIdList = TArrayOfInteger;
 
   {$IFDEF OLD_VERSION}
   TParams = array of TParam;
-
-  TParamsInt = array of TParamInt;
-
   {$ELSE}
 
   TParams = TArray<TParam>;
-
-  TParamsInt = TArray<TParamInt>;
   {$ENDIF}
 
   TParamsHelper = record helper for TParams
