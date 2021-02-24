@@ -3,8 +3,9 @@ unit VK.LongPollServer;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON,
-  System.Net.HttpClient, VK.Types, VK.Handler, System.Generics.Collections;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, VK.Handler,
+  System.Generics.Collections;
 
 type
   TOnLongPollServerUpdate = procedure(Sender: TObject; GroupID: string; Update: TJSONValue) of object;
@@ -193,7 +194,7 @@ begin
       FOnUpdate(Self, FGroupID, Updates.Items[i]);
     except
       on E: Exception do
-        DoError(E);
+        DoError(TVkLongPollServerException.Create(E.Message));
     end;
   end;
 end;
@@ -347,7 +348,7 @@ begin
         end;
       except
         on E: Exception do
-          DoError(E);
+          DoError(TVkLongPollServerParseException.Create(E.Message));
       end;
       HTTP.Free;
       Stream.Free;

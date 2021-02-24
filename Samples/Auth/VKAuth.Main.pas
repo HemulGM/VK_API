@@ -3,11 +3,14 @@ unit VKAuth.Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler, Vcl.StdCtrls,
-  System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents, VK.Entity.Media, System.Net.URLClient,
-  System.Net.HttpClient, System.Net.HttpClientComponent, VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video,
-  VK.Entity.Photo, VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types,
+  System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
+  Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler,
+  Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents,
+  VK.GroupEvents, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
+  System.Net.HttpClientComponent, VK.Entity.Message, VK.Entity.ClientInfo,
+  VK.Entity.Video, VK.Entity.Photo, VK.Entity.Audio, System.JSON,
+  VK.Entity.GroupSettings;
 
 type
   TFormMain = class(TForm)
@@ -82,6 +85,7 @@ type
     Button41: TButton;
     Button42: TButton;
     Button43: TButton;
+    Button44: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -195,6 +199,7 @@ type
     procedure Button41Click(Sender: TObject);
     procedure Button42Click(Sender: TObject);
     procedure Button43Click(Sender: TObject);
+    procedure Button44Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -209,14 +214,17 @@ var
 implementation
 
 uses
-  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save,
-  VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
-  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section,
-  VK.CommonUtils, VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
-  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories,
-  VK.Entity.Podcast.Episode, VK.Auth, VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
-  REST.Json;
+  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
+  VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
+  VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
+  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest,
+  VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
+  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
+  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
+  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
+  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
+  VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
+  VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json;
 
 {$R *.dfm}
 
@@ -709,6 +717,21 @@ begin
   begin
     Memo1.Lines.Add(Items.Items[0].Name);
     Items.Free;
+  end;
+end;
+
+procedure TFormMain.Button44Click(Sender: TObject);
+var
+  Count: Integer;
+begin
+  try
+    if VK1.Audio.GetCount(Count, -172534590) then
+      Memo1.Lines.Add(Count.ToString)
+    else
+      Memo1.Lines.Add('error');
+  except
+    on E: Exception do
+      ShowMessage(E.Message);
   end;
 end;
 
@@ -1454,3 +1477,4 @@ begin
 end;
 
 end.
+

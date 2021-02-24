@@ -662,7 +662,12 @@ begin
   if Result then
   begin
     try
-      FOnError(Sender, E, Code, Text);
+      try
+        FOnError(Sender, E, Code, Text);
+      finally
+        if Assigned(E) then
+          E.Free;
+      end;
     except
       //Ну зачем так?
     end;
@@ -807,7 +812,7 @@ begin
                             end;
                           except
                             on E: Exception do
-                              DoOnError(Self, E, ERROR_VK_PARSE, Response.DataString);
+                              DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, Response.DataString);
                           end;
                           FormData.Free;
                         end;
@@ -841,7 +846,7 @@ begin
             end;
           except
             on E: Exception do
-              DoOnError(Self, E, ERROR_VK_PARSE, Response.DataString);
+              DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, Response.DataString);
           end;
         end;
       200:
@@ -853,7 +858,7 @@ begin
     end;
   except
     on E: Exception do
-      DoOnError(Self, E, ERROR_VK_PARSE, 'Login request error');
+      DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, 'Login request error');
   end;
   Response.Free;
   HTTP.Free;
@@ -870,7 +875,7 @@ begin
     end;
   except
     on E: Exception do
-      DoOnError(Self, E, ERROR_VK_AUTH, E.Message);
+      DoOnError(Self, E.Create(E.Message), ERROR_VK_AUTH, E.Message);
   end;
 end;
 
@@ -1126,7 +1131,7 @@ begin
     until (Cnt < Count) or Cancel;
   except
     on E: Exception do
-      DoError(Self, E, ERROR_INTERNAL);
+      DoError(Self, E.Create(E.Message), ERROR_INTERNAL);
   end;
 end;
 
