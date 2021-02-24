@@ -3,14 +3,11 @@ unit VKAuth.Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types,
-  System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
-  Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler,
-  Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents,
-  VK.GroupEvents, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
-  System.Net.HttpClientComponent, VK.Entity.Message, VK.Entity.ClientInfo,
-  VK.Entity.Video, VK.Entity.Photo, VK.Entity.Audio, System.JSON,
-  VK.Entity.GroupSettings;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler, Vcl.StdCtrls,
+  System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents, VK.Entity.Media, System.Net.URLClient,
+  System.Net.HttpClient, VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video,
+  VK.Entity.Photo, VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
 
 type
   TFormMain = class(TForm)
@@ -214,17 +211,14 @@ var
 implementation
 
 uses
-  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
-  VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
-  VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
-  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest,
-  VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
-  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
-  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
-  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
-  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
-  VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
-  VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json;
+  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
+  VK.Entity.PushSettings, VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save,
+  VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
+  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section,
+  VK.CommonUtils, VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
+  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories,
+  VK.Entity.Podcast.Episode, VK.Auth, VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
+  REST.Json;
 
 {$R *.dfm}
 
@@ -349,7 +343,10 @@ begin
   OR
   }
 
-  Status := VK1.Photos.UploadForGroupWall(Photos, 145962568, ['D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (100).jpg']);
+  Status := VK1.Photos.UploadForGroupWall(Photos, 145962568,
+    ['D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (100).jpg',
+    'D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (149).jpg'
+    ]);
 
   //VK1.Wall.Post('', -145962568, TAttachment.Video(58553419, 456239240));
 

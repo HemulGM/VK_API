@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheetPodcasts
+      ActivePage = TabSheet6
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet

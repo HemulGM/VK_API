@@ -584,14 +584,19 @@ var
   Data: TMultipartFormData;
   ResStream: TStringStream;
   FileName: string;
+  i: Integer;
 begin
   Result := False;
   Data := TMultipartFormData.Create;
   HTTP := THTTPClient.Create;
   ResStream := TStringStream.Create;
   try
+    i := 1;
     for FileName in FileNames do
-      Data.AddFile('file', FileName);
+    begin
+      Data.AddFile('file' + i.ToString, FileName);
+      Inc(i);
+    end;
     if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
     begin
       Response := TVkPhotoUploadResponse.FromJsonString<TVkPhotoUploadResponse>(ResStream.DataString);
@@ -1082,14 +1087,14 @@ begin
   end;
 end;
 
-function TPhotosController.Save(var Items: TVkPhotos; Params: TParams): Boolean;
-begin
-  Result := Handler.Execute('photos.save', Params).GetObjects<TVkPhotos>(Items);
-end;
-
 function TPhotosController.Save(var Items: TVkPhotos; Params: TVkParamsPhotosSave): Boolean;
 begin
   Result := Save(Items, Params.List);
+end;
+
+function TPhotosController.Save(var Items: TVkPhotos; Params: TParams): Boolean;
+begin
+  Result := Handler.ExecutePost('photos.save', Params).GetObjects<TVkPhotos>(Items);
 end;
 
 function TPhotosController.SaveMarketAlbumPhoto(var Items: TVkPhotos; GroupId: Integer; Photo, Server, Hash: string): Boolean;
@@ -1100,7 +1105,7 @@ begin
   Params.Add('photo', Photo);
   Params.Add('server', Server);
   Params.Add('hash', Hash);
-  Result := Handler.Execute('photos.saveMarketAlbumPhoto', Params).GetObjects<TVkPhotos>(Items);
+  Result := Handler.ExecutePost('photos.saveMarketAlbumPhoto', Params).GetObjects<TVkPhotos>(Items);
 end;
 
 function TPhotosController.SaveMarketPhoto(var Items: TVkPhotos; Params: TVkParamsPhotosSaveMarketPhoto): Boolean;
@@ -1115,7 +1120,7 @@ begin
   Params.Add('photo', Photo);
   Params.Add('server', Server);
   Params.Add('hash', Hash);
-  Result := Handler.Execute('photos.saveMessagesPhoto', Params).GetObjects<TVkPhotos>(Items);
+  Result := Handler.ExecutePost('photos.saveMessagesPhoto', Params).GetObjects<TVkPhotos>(Items);
 end;
 
 function TPhotosController.SaveOwnerCoverPhoto(var Items: TVkCoverImages; Photo, Hash: string): Boolean;
@@ -1124,7 +1129,7 @@ var
 begin
   Params.Add('photo', Photo);
   Params.Add('hash', Hash);
-  Result := Handler.Execute('photos.saveOwnerCoverPhoto', Params).GetObjects<TVkCoverImages>(Items);
+  Result := Handler.ExecutePost('photos.saveOwnerCoverPhoto', Params).GetObjects<TVkCoverImages>(Items);
 end;
 
 function TPhotosController.SaveOwnerPhoto(FileName: string): Boolean;
@@ -1247,7 +1252,7 @@ end;
 
 function TPhotosController.SaveWallPhoto(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.saveWallPhoto', Params).GetObjects<TVkPhotos>(Items);
+  Result := Handler.ExecutePost('photos.saveWallPhoto', Params).GetObjects<TVkPhotos>(Items);
 end;
 
 function TPhotosController.SaveMarketPhoto(var Items: TVkPhotos; Params: TParams): Boolean;

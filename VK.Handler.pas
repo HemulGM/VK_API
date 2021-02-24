@@ -9,7 +9,7 @@ uses
   {$ELSE}
   Vcl.Forms,
   {$ENDIF}
-  REST.Client, REST.Json, JSON, VK.Types, VK.Entity.Common;
+  REST.Client, REST.Json, REST.Types, JSON, VK.Types, VK.Entity.Common;
 
 type
   TResponse = record
@@ -43,7 +43,7 @@ type
     class var
       Client: TRESTClient;
   public
-    class function Request(Resource: string; Params: TParams): TRESTRequest;
+    class function Request(Resource: string; Params: TParams; Method: TRESTRequestMethod = rmGET): TRESTRequest;
   end;
 
   TVkHandler = class
@@ -90,6 +90,7 @@ type
     destructor Destroy; override;
     procedure Log(Sender: TObject; const Text: string);
     function AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
+    function ExecutePost(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Param: TParam): TResponse; overload;
     function Execute(Request: string): TResponse; overload;
@@ -132,13 +133,14 @@ end;
 
 { TRequsetConstruct }
 
-class function TRequestConstruct.Request(Resource: string; Params: TParams): TRESTRequest;
+class function TRequestConstruct.Request(Resource: string; Params: TParams; Method: TRESTRequestMethod): TRESTRequest;
 var
   Param: TParam;
 begin
   Result := TRESTRequest.Create(nil);
   Result.Client := Client;
   Result.Resource := Resource;
+  Result.Method := Method;
   for Param in Params do
   begin
     if not Param[0].IsEmpty then
@@ -247,6 +249,11 @@ end;
 function TVkHandler.Execute(Request: string; Params: TParams): TResponse;
 begin
   Result := Execute(TRequestConstruct.Request(Request, Params), True);
+end;
+
+function TVkHandler.ExecutePost(Request: string; Params: TParams): TResponse;
+begin
+  Result := Execute(TRequestConstruct.Request(Request, Params, rmPOST), True);
 end;
 
 function TVkHandler.Execute(Request: string): TResponse;
