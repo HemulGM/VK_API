@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheet3
+      ActivePage = TabSheetPodcasts
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -169,7 +169,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Account.Ban -1'
+          Caption = 'Ban -1'
           TabOrder = 0
           OnClick = Button1Click
         end
@@ -178,7 +178,7 @@ object FormMain: TFormMain
           Top = 34
           Width = 137
           Height = 25
-          Caption = 'Account.Unban -1'
+          Caption = 'Unban -1'
           TabOrder = 1
           OnClick = Button2Click
         end
@@ -187,7 +187,7 @@ object FormMain: TFormMain
           Top = 65
           Width = 137
           Height = 25
-          Caption = 'Account.ActiveOffers'
+          Caption = 'ActiveOffers'
           TabOrder = 2
           OnClick = Button3Click
         end
@@ -196,7 +196,7 @@ object FormMain: TFormMain
           Top = 96
           Width = 137
           Height = 25
-          Caption = 'Account.AppPermissions'
+          Caption = 'AppPermissions'
           TabOrder = 3
           OnClick = Button4Click
         end
@@ -205,7 +205,7 @@ object FormMain: TFormMain
           Top = 127
           Width = 137
           Height = 25
-          Caption = 'Account.Counters'
+          Caption = 'Counters'
           TabOrder = 4
           OnClick = Button5Click
         end
@@ -214,7 +214,7 @@ object FormMain: TFormMain
           Top = 158
           Width = 137
           Height = 25
-          Caption = 'Account.PushSettings'
+          Caption = 'PushSettings'
           TabOrder = 5
           OnClick = Button6Click
         end
@@ -223,7 +223,7 @@ object FormMain: TFormMain
           Top = 189
           Width = 137
           Height = 25
-          Caption = 'Account.SaveProfileInfo'
+          Caption = 'SaveProfileInfo'
           TabOrder = 6
           OnClick = Button7Click
         end
@@ -232,7 +232,7 @@ object FormMain: TFormMain
           Top = 220
           Width = 137
           Height = 25
-          Caption = 'Account.Online'
+          Caption = 'Online'
           TabOrder = 7
           OnClick = Button9Click
         end
@@ -241,7 +241,7 @@ object FormMain: TFormMain
           Top = 251
           Width = 137
           Height = 25
-          Caption = 'Account.Offline'
+          Caption = 'Offline'
           TabOrder = 8
           OnClick = Button10Click
         end
@@ -250,7 +250,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Account.GetProfileInfo'
+          Caption = 'GetProfileInfo'
           TabOrder = 9
           OnClick = Button40Click
         end
@@ -263,7 +263,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'auth.checkPhone'
+          Caption = 'CheckPhone'
           TabOrder = 0
           OnClick = Button11Click
         end
@@ -272,7 +272,7 @@ object FormMain: TFormMain
           Top = 34
           Width = 137
           Height = 25
-          Caption = 'auth.signup'
+          Caption = 'Signup'
           TabOrder = 1
           OnClick = Button41Click
         end
@@ -285,7 +285,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Audio.Get'
+          Caption = 'Get'
           TabOrder = 0
           OnClick = Button21Click
         end
@@ -294,7 +294,7 @@ object FormMain: TFormMain
           Top = 34
           Width = 137
           Height = 25
-          Caption = 'Audio.GetAlbums'
+          Caption = 'GetAlbums'
           TabOrder = 1
           OnClick = Button23Click
         end
@@ -303,7 +303,7 @@ object FormMain: TFormMain
           Top = 65
           Width = 137
           Height = 25
-          Caption = 'Audio.GetRecoms'
+          Caption = 'GetRecoms'
           TabOrder = 2
           OnClick = Button24Click
         end
@@ -312,7 +312,7 @@ object FormMain: TFormMain
           Top = 96
           Width = 137
           Height = 25
-          Caption = 'Audio.GetPop'
+          Caption = 'GetPop'
           TabOrder = 3
           OnClick = Button29Click
         end
@@ -366,7 +366,7 @@ object FormMain: TFormMain
           Top = 158
           Width = 137
           Height = 25
-          Caption = 'Audio.GetCount'
+          Caption = 'GetCount'
           TabOrder = 9
           OnClick = Button44Click
         end
@@ -379,7 +379,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Board.CreateComment'
+          Caption = 'CreateComment'
           TabOrder = 0
           OnClick = Button22Click
         end
@@ -392,7 +392,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Status.Get'
+          Caption = 'Get'
           TabOrder = 0
           OnClick = Button17Click
         end
@@ -401,7 +401,7 @@ object FormMain: TFormMain
           Top = 34
           Width = 137
           Height = 25
-          Caption = 'Status.Set'
+          Caption = 'Set'
           TabOrder = 1
           OnClick = Button18Click
         end
@@ -414,7 +414,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Wall.Post'
+          Caption = 'Post'
           TabOrder = 0
           OnClick = Button19Click
         end
@@ -423,7 +423,7 @@ object FormMain: TFormMain
           Top = 34
           Width = 137
           Height = 25
-          Caption = 'ButtonWallGet'
+          Caption = 'Get'
           TabOrder = 1
           OnClick = ButtonWallGetClick
         end
@@ -436,7 +436,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Users.get'
+          Caption = 'Get'
           TabOrder = 0
           OnClick = Button12Click
         end
@@ -449,7 +449,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Groups.getMembers'
+          Caption = 'GetMembers'
           TabOrder = 0
           OnClick = Button25Click
         end
@@ -480,7 +480,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 166
           Height = 25
-          Caption = 'Messages.GetConversations'
+          Caption = 'GetConversations'
           TabOrder = 0
           OnClick = Button27Click
         end
@@ -493,7 +493,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Friends.get'
+          Caption = 'Get'
           TabOrder = 0
           OnClick = Button28Click
         end
@@ -506,7 +506,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Polls.GetBackgrounds'
+          Caption = 'GetBackgrounds'
           TabOrder = 0
           OnClick = Button32Click
         end
@@ -519,7 +519,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Podcasts.Search'
+          Caption = 'Search'
           TabOrder = 0
           OnClick = Button33Click
         end
@@ -581,6 +581,7 @@ object FormMain: TFormMain
     Logging = True
     LogResponse = True
     OnAuth = VK1Auth
+    OnError = VK1Error
     OnLog = VK1Log
     OnLogin = VK1Login
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]

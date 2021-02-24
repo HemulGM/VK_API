@@ -662,7 +662,12 @@ begin
   if Result then
   begin
     try
-      FOnError(Sender, E, Code, Text);
+      try
+        FOnError(Sender, E, Code, Text);
+      finally
+        if Assigned(E) then
+          E.Free;
+      end;
     except
       //Ну зачем так?
     end;
