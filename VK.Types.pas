@@ -24,9 +24,8 @@ type
   TVkMethodException = class(TVkException)
   private
     FCode: Integer;
-    procedure SetCode(const Value: Integer);
   public
-    property Code: Integer read FCode write SetCode;
+    property Code: Integer read FCode write FCode;
     constructor Create(const Msg: string; Code: Integer);
   end;
 
@@ -1763,11 +1762,6 @@ constructor TVkMethodException.Create(const Msg: string; Code: Integer);
 begin
   inherited Create(Msg);
   FCode := Code;
-end;
-
-procedure TVkMethodException.SetCode(const Value: Integer);
-begin
-  FCode := Value;
 end;
 
 { TVkUserReportHelper }
