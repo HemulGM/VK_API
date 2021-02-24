@@ -336,7 +336,7 @@ begin
     on E: Exception do
     begin
       IsError := True;
-      DoProcError(Self, E, ERROR_VK_NETWORK, E.Message);
+      DoProcError(Self, E.Create(E.Message), ERROR_VK_NETWORK, E.Message);
     end;
   end;
 
@@ -363,7 +363,7 @@ begin
     end;
   except
     on E: TVkMethodException do
-      DoProcError(Self, E, E.Code, E.Message);
+      DoProcError(Self, TVkMethodException.Create(E.Message, E.Code), E.Code, E.Message);
   end;
 end;
 

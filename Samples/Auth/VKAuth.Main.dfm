@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheet6
+      ActivePage = TabSheet3
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -357,9 +357,18 @@ object FormMain: TFormMain
           Top = 96
           Width = 119
           Height = 25
-          Caption = 'Button31'
+          Caption = 'AddToPlaylist'
           TabOrder = 8
           OnClick = Button31Click
+        end
+        object Button44: TButton
+          Left = 3
+          Top = 158
+          Width = 137
+          Height = 25
+          Caption = 'Audio.GetCount'
+          TabOrder = 9
+          OnClick = Button44Click
         end
       end
       object TabSheet4: TTabSheet
@@ -572,7 +581,6 @@ object FormMain: TFormMain
     Logging = True
     LogResponse = True
     OnAuth = VK1Auth
-    OnError = VK1Error
     OnLog = VK1Log
     OnLogin = VK1Login
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
