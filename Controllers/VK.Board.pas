@@ -3,22 +3,11 @@ unit VK.Board;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
-  VK.Entity.Board, VK.Entity.Board.Comment;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Board,
+  VK.Entity.Board.Comment;
 
 type
-  TVkBoardTopicOrder = (btoDateUpCreate = -2, btoDateUpUpdate = -1, btoDateDownCreate = 2, btoDateDownUpdate = 1);
-
-  TVkBoardTopicOrderHelper = record helper for TVkBoardTopicOrder
-    function ToConst: Integer; inline;
-  end;
-
-  TVkBoardTopicPreview = (btpOnlyFirst = 1, btpOnlyLast = 2, btpBoth = 3);
-
-  TVkBoardTopicPreviewHelper = record helper for TVkBoardTopicPreview
-    function ToConst: Integer; inline;
-  end;
-
   TVkParamsBoardCommentCreate = record
     List: TParams;
     /// <summary>
@@ -491,20 +480,6 @@ function TVkParamsBoardCommentCreate.TopicId(Value: Integer): TVkParamsBoardComm
 begin
   List.Add('topic_id', Value);
   Result := Self;
-end;
-
-{ TVkBoardTopicOrderHelper }
-
-function TVkBoardTopicOrderHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
-end;
-
-{ TVkBoardTopicPreviewHelper }
-
-function TVkBoardTopicPreviewHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
 end;
 
 { TVkParamsBoardGet }

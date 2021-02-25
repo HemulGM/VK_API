@@ -3,8 +3,9 @@ unit VK.Audio;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  REST.Json, VK.CommonUtils, VK.Entity.Playlist, VK.Entity.Audio.Upload, VK.Entity.Audio.Catalog;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, REST.Json, VK.CommonUtils,
+  VK.Entity.Playlist, VK.Entity.Audio.Upload, VK.Entity.Audio.Catalog;
 
 type
   TVkParamsAudioGet = record
@@ -50,8 +51,6 @@ type
     function Count(Value: Integer): TVkParamsByArtist;
   end;
 
-  TVkAudioSort = (asDateAdd, asDuration, asPopular);
-
   TVkParamsAudioSearch = record
     List: TParams;
     function Query(Value: string): TVkParamsAudioSearch;
@@ -71,14 +70,12 @@ type
     function Count(Value: Integer): TVkParamsAudioBasicSearch;
   end;
 
-  TVkAudioPlaylistFilter = (pfAll, pfOwned, pfFollowed, pfAlbums);
-
   TVkParamsAudioPlaylistSearch = record
     List: TParams;
     function Query(Value: string): TVkParamsAudioPlaylistSearch;
     function Offset(Value: Integer): TVkParamsAudioPlaylistSearch;
     function Count(Value: Integer): TVkParamsAudioPlaylistSearch;
-    function Filters(Value: TVkAudioPlaylistFilter = pfAll): TVkParamsAudioPlaylistSearch;
+    function Filters(Value: TVkAudioPlaylistFilter = TVkAudioPlaylistFilter.All): TVkParamsAudioPlaylistSearch;
   end;
 
   TVkParamsAudioEdit = record
