@@ -9,160 +9,538 @@ uses
 type
   TVkParamsWallPost = record
     List: TParams;
-    function OwnerId(Value: Integer): Integer;
-    function FriendsOnly(Value: Boolean): Integer;
-    function FromGroup(Value: Boolean): Integer;
-    function Message(Value: string): Integer;
-    function Attachments(Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
     function Attachments(Value: TAttachment): Integer; overload;
-    function Services(Value: TArrayOfString): Integer;
-    function Signed(Value: Boolean): Integer;
-    function PublishDate(Value: TDateTime): Integer;
-    function LatLong(Lat, Long: Extended): Integer;
-    function PlaceId(Value: Integer): Integer;
-    function PostId(Value: Integer): Integer;
-    function Guid(Value: string): Integer;
-    function MarkAsAds(Value: Boolean): Integer;
-    function CloseComments(Value: Boolean): Integer;
-    function MuteNotifications(Value: Boolean): Integer;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
+    function Attachments(Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// True — комментарии к записи отключены.
+    /// False — комментарии к записи включены.
+    /// </summary>
+    function CloseComments(Value: Boolean = False): Integer;
+    /// <summary>
+    /// Источник материала. Поддерживаются внешние и внутренние ссылки
+    /// </summary>
     function Copyright(Value: string): Integer;
+    /// <summary>
+    /// Период времени в течение которого запись будет доступна для донов — платных подписчиков VK Donut
+    /// </summary>
+    function DonutPaidDuration(Value: TVkDonutPaidDuration): Integer;
+    /// <summary>
+    /// True — запись будет доступна только друзьям, False — всем пользователям.
+    /// По умолчанию публикуемые записи доступны всем пользователям
+    /// </summary>
+    function FriendsOnly(Value: Boolean = False): Integer;
+    /// <summary>
+    /// Данный параметр учитывается, если OwnerId меньше 0 (запись публикуется на стене группы).
+    /// True — запись будет опубликована от имени группы, False — запись будет опубликована от имени пользователя (по умолчанию)
+    /// </summary>
+    function FromGroup(Value: Boolean = False): Integer;
+    /// <summary>
+    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи. Действует в течение одного часа
+    /// </summary>
+    function Guid(Value: string): Integer;
+    /// <summary>
+    /// Географическая отметка
+    /// Lat - широта, заданная в градусах (от -90 до 90).
+    /// Long - долгота, заданная в градусах (от -180 до 180).
+    /// </summary>
+    function LatLong(Lat, Long: Extended): Integer;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// </summary>
+    function MarkAsAds(Value: Boolean): Integer;
+    /// <summary>
+    /// Текст сообщения (является обязательным, если не задан параметр attachments)
+    /// </summary>
+    function Message(Value: string): Integer;
+    /// <summary>
+    /// True — уведомления к записи отключены.
+    /// False — уведомления к записи включены.
+    /// </summary>
+    function MuteNotifications(Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор пользователя или сообщества, на стене которого должна быть опубликована запись
+    /// </summary>
+    function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор места, в котором отмечен пользователь
+    /// </summary>
+    function PlaceId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор записи, которую необходимо опубликовать. Данный параметр используется для публикации отложенных записей и предложенных новостей
+    /// </summary>
+    function PostId(Value: Integer): Integer;
+    /// <summary>
+    /// Дата публикации записи. Если параметр указан, публикация записи будет отложена до указанного времени
+    /// </summary>
+    function PublishDate(Value: TDateTime): Integer;
+    /// <summary>
+    /// Список сервисов или сайтов, на которые необходимо экспортировать запись, в случае если пользователь настроил соответствующую опцию. Например, twitter, facebook
+    /// </summary>
+    function Services(Value: TArrayOfString): Integer;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена подпись
+    /// (имя пользователя, разместившего запись), False — подписи добавлено не будет.
+    /// Параметр учитывается только при публикации на стене сообщества и указании параметра FromGroup.
+    /// По умолчанию подпись не добавляется
+    /// </summary>
+    function Signed(Value: Boolean = False): Integer;
   end;
 
   TVkParamsWallEdit = record
     List: TParams;
-    function OwnerId(Value: Integer): Integer;
-    function PostId(Value: Integer): Integer;
-    function FriendsOnly(Value: Boolean): Integer;
-    function Message(Value: string): Integer;
-    function Attachments(Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
     function Attachments(Value: TAttachment): Integer; overload;
-    function Services(Value: TArrayOfString): Integer;
-    function Signed(Value: Boolean): Integer;
-    function PublishDate(Value: TDateTime): Integer;
-    function LatLong(Lat, Long: Extended): Integer;
-    function PlaceId(Value: Integer): Integer;
-    function MarkAsAds(Value: Boolean): Integer;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
+    function Attachments(Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// True — комментарии к записи отключены.
+    /// False — комментарии к записи включены.
+    /// </summary>
     function CloseComments(Value: Boolean): Integer;
+    /// <summary>
+    /// Источник материала. Поддерживаются внешние и внутренние ссылки
+    /// </summary>
+    function Copyright(Value: string): Integer;
+    /// <summary>
+    /// True — запись будет доступна только друзьям, False — всем пользователям.
+    /// По умолчанию публикуемые записи доступны всем пользователям
+    /// </summary>
+    function FriendsOnly(Value: Boolean): Integer;
+    /// <summary>
+    /// Географическая отметка
+    /// Lat - широта, заданная в градусах (от -90 до 90).
+    /// Long - долгота, заданная в градусах (от -180 до 180).
+    /// </summary>
+    function LatLong(Lat, Long: Extended): Integer;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// </summary>
+    function MarkAsAds(Value: Boolean): Integer;
+    /// <summary>
+    /// Текст сообщения (является обязательным, если не задан параметр attachments)
+    /// </summary>
+    function Message(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор пользователя или сообщества, на стене которого должна быть опубликована запись
+    /// </summary>
+    function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор места, в котором отмечен пользователь
+    /// </summary>
+    function PlaceId(Value: Integer): Integer;
+    function PosterBkgAccessHash(Value: string): Integer;
     function PosterBkgId(Value: Integer): Integer;
     function PosterBkgOwnerId(Value: Integer): Integer;
-    function PosterBkgAccessHash(Value: string): Integer;
-    function Copyright(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор записи, которую необходимо опубликовать. Данный параметр используется для публикации отложенных записей и предложенных новостей
+    /// </summary>
+    function PostId(Value: Integer): Integer;
+    /// <summary>
+    /// Дата публикации записи. Если параметр указан, публикация записи будет отложена до указанного времени
+    /// </summary>
+    function PublishDate(Value: TDateTime): Integer;
+    /// <summary>
+    /// Список сервисов или сайтов, на которые необходимо экспортировать запись, в случае если пользователь настроил соответствующую опцию. Например, twitter, facebook
+    /// </summary>
+    function Services(Value: TArrayOfString): Integer;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена подпись
+    /// (имя пользователя, разместившего запись), False — подписи добавлено не будет.
+    /// Параметр учитывается только при публикации на стене сообщества и указании параметра FromGroup.
+    /// По умолчанию подпись не добавляется
+    /// </summary>
+    function Signed(Value: Boolean): Integer;
   end;
 
   TVkParamsWallEditAdsStealth = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца стены (идентификатор сообщества нужно указывать со знаком «минус»)
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор записи
+    /// </summary>
     function PostId(Value: Integer): Integer;
+    /// <summary>
+    /// Текст записи
+    /// </summary>
     function Message(Value: string): Integer;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
     function Attachments(Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
     function Attachments(Value: TAttachment): Integer; overload;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена подпись
+    /// (имя пользователя, разместившего запись), False — подписи добавлено не будет.
+    /// Параметр учитывается только при публикации на стене сообщества и указании параметра FromGroup.
+    /// По умолчанию подпись не добавляется
+    /// </summary>
     function Signed(Value: Boolean): Integer;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// </summary>
     function LatLong(Lat, Long: Extended): Integer;
+    /// <summary>
+    /// Идентификатор места, в котором отмечен пользователь
+    /// </summary>
     function PlaceId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор кнопки, которую необходимо добавить к сниппету для ссылки
+    /// </summary>
     function LinkButton(Value: string): Integer;
+    /// <summary>
+    /// Заголовок, который должен быть использован для сниппета. Если не указан, будет автоматически получен с целевой ссылки. Обязательно указывать в случае, если ссылка является номером телефона
+    /// </summary>
     function LinkTitle(Value: string): Integer;
+    /// <summary>
+    /// Ссылка на изображение, которое должно быть использовано для сниппета. Минимальное разрешение: 537x240. Если не указана, будет автоматически загружена с целевой ссылки. Обязательно указывать в случае, если ссылка является номером телефона. Одновременно может быть указан либо параметр LinkImage, либо параметр LinkVideo
+    /// </summary>
     function LinkImage(Value: string): Integer;
-    function LinkVideo(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор видео в формате "OwnerId_MediaId". Одновременно может быть указан либо параметр LinkImage, либо параметр LinkVideo. Кроме того, параметр LinkVideo может быть указан только вместе с параметрами LinkButton, LinkTitle
+    /// </summary>
+    function LinkVideo(Value: string): Integer; overload;
+    /// <summary>
+    /// Идентификатор видео. Одновременно может быть указан либо параметр LinkImage, либо параметр . Кроме того, параметр LinkVideo может быть указан только вместе с параметрами LinkButton, LinkTitle
+    /// </summary>
+    function LinkVideo(OwnerId, MediaId: Integer): Integer; overload;
   end;
 
   TVkParamsWallEditComment = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца стены
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор комментария, который необходимо отредактировать
+    /// </summary>
     function CommentId(Value: Integer): Integer;
+    /// <summary>
+    /// Новый текст комментария. Обязательный параметр, если не передан параметр Attachments
+    /// </summary>
     function Message(Value: string): Integer;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
     function Attachments(Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
     function Attachments(Value: TAttachment): Integer; overload;
   end;
 
   TVkParamsWallGet = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя или сообщества, со стены которого
+    /// необходимо получить записи (по умолчанию — текущий пользователь)
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Короткий адрес пользователя или сообщества
+    /// </summary>
     function Domain(Value: string): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества записей
+    /// </summary>
     function Offset(Value: Integer): Integer;
+    /// <summary>
+    /// Количество записей, которое необходимо получить. Максимальное значение: 100
+    /// </summary>
     function Count(Value: Integer): Integer;
-    function Filter(Value: TVkPostType): Integer;
-    function Extended(Value: Boolean): Integer;
+    /// <summary>
+    /// Определяет, какие типы записей на стене необходимо получить
+    /// </summary>
+    function Filter(Value: TVkPostType = TVkPostType.All): Integer;
+    /// <summary>
+    /// True — в ответе будут возвращены дополнительные поля profiles и groups,
+    /// содержащие информацию о пользователях и сообществах. По умолчанию: False
+    /// </summary>
+    function Extended(Value: Boolean = False): Integer;
+    /// <summary>
+    /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть.
+    /// Обратите внимание, этот параметр учитывается только при Extended = True
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsWallGetById = record
     List: TParams;
+    /// <summary>
+    /// Перечисленные через запятую идентификаторы, которые представляют
+    /// собой идущие через знак подчеркивания id владельцев стен и id самих
+    /// записей на стене. Максимум 100 идентификаторов.
+    /// Пример значения posts:
+    /// 93388_21539,93388_20904,-1_340364
+    /// </summary>
     function Posts(Value: TArrayOfString): Integer;
-    function Extended(Value: Boolean): Integer;
+    /// <summary>
+    /// True — в ответе будут возвращены дополнительные поля profiles и groups,
+    /// содержащие информацию о пользователях и сообществах. По умолчанию: False
+    /// </summary>
+    function Extended(Value: Boolean = False): Integer;
+    /// <summary>
+    /// Определяет размер массива copy_history, возвращаемого в ответе, если запись является репостом записи с другой стены
+    /// Например, copy_history_depth=1 — copy_history будет содержать один элемент с информацией о записи, прямым репостом которой является текущая.
+    /// copy_history_depth=2 — copy_history будет содержать два элемента, добавляется информация о записи, репостом которой является первый элемент, и так далее (при условии, что иерархия репостов требуемой глубины для текущей записи существует).
+    /// </summary>
     function CopyHistoryDepth(Value: Integer = 2): Integer;
+    /// <summary>
+    /// Список дополнительных полей для профилей и групп, которые необходимо вернуть
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsWallGetComment = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца стены (для сообществ — со знаком «минус»)
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор комментария
+    /// </summary>
     function CommentId(Value: Integer): Integer;
-    function Extended(Value: Boolean): Integer;
+    /// <summary>
+    /// True — в ответе будут возвращены дополнительные поля profiles и groups,
+    /// содержащие информацию о пользователях и сообществах. По умолчанию: False
+    /// </summary>
+    function Extended(Value: Boolean = False): Integer;
+    /// <summary>
+    /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkCommentCreateParams = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор записи
+    /// </summary>
     function PostId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя или сообщества, на чьей стене находится запись, к которой необходимо добавить комментарий
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Текст комментария. Обязательный параметр, если не передан параметр attachments
+    /// </summary>
     function Message(Value: string): Integer;
+    /// <summary>
+    /// Данный параметр учитывается, если OwnerId меньше 0 (запись публикуется на стене группы).
+    /// True — запись будет опубликована от имени группы, False — запись будет опубликована от имени пользователя (по умолчанию)
+    /// </summary>
     function FromGroup(Value: Boolean): Integer;
+    /// <summary>
+    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи. Действует в течение одного часа
+    /// </summary>
     function Guid(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор комментария, в ответ на который должен быть добавлен новый комментарий
+    /// </summary>
     function ReplyToComment(Value: Integer): Integer;
-    function Attachments(Value: TAttachmentArray): Integer;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
+    function Attachments(Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
+    function Attachments(Value: TAttachment): Integer; overload;
+    /// <summary>
+    /// Идентификатор стикера
+    /// </summary>
     function StickerID(Value: Integer): Integer;
   end;
 
   TVkParamsWallGetComments = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца страницы (пользователь или сообщество)
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор записи
+    /// </summary>
     function PostId(Value: Integer): Integer;
+    /// <summary>
+    /// True — возвращать информацию о лайках
+    /// </summary>
     function NeedLikes(Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор комментария, начиная с которого нужно вернуть список
+    /// </summary>
     function StartCommentId(Value: Integer): Integer;
+    /// <summary>
+    /// Сдвиг, необходимый для получения конкретной выборки результатов
+    /// </summary>
     function Offset(Value: Integer): Integer;
-    function Count(Value: Integer): Integer;
+    /// <summary>
+    /// Число комментариев, которые необходимо получить. По умолчанию: 10, максимальное значение: 100
+    /// </summary>
+    function Count(Value: Integer = 10): Integer;
+    /// <summary>
+    /// Порядок сортировки комментариев
+    /// </summary>
     function Sort(Value: TVkSort): Integer;
+    /// <summary>
+    /// Количество символов, по которому нужно обрезать текст комментария. Укажите 0, если Вы не хотите обрезать текст
+    /// </summary>
     function PreviewLength(Value: Integer): Integer;
+    /// <summary>
+    /// True — в ответе будут возвращены дополнительные поля profiles и groups,
+    /// содержащие информацию о пользователях и сообществах. По умолчанию: False
+    /// </summary>
     function Extended(Value: Boolean): Integer;
+    /// <summary>
+    /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    /// <summary>
+    /// Идентификатор комментария, ветку которого нужно получить
+    /// </summary>
     function CommentId(Value: Integer): Integer;
-    function ThreadItemsCount(Value: Integer): Integer;
+    /// <summary>
+    /// Максимальное число элементов в поле thread
+    /// </summary>
+    function ThreadItemsCount(Value: Integer = 0): Integer;
   end;
 
   TVkParamsWallPostAdsStealth = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца стены (идентификатор сообщества нужно указывать со знаком «минус»)
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Текст записи
+    /// </summary>
     function Message(Value: string): Integer;
-    function Attachments(Value: TAttachmentArray): Integer;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
+    function Attachments(Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Объект или несколько объектов, приложенных к записи
+    /// </summary>
+    function Attachments(Value: TAttachment): Integer; overload;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена подпись
+    /// (имя пользователя, разместившего запись), False — подписи добавлено не будет.
+    /// Параметр учитывается только при публикации на стене сообщества и указании параметра FromGroup.
+    /// По умолчанию подпись не добавляется
+    /// </summary>
     function Signed(Value: Boolean): Integer;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// </summary>
     function LatLong(Lat, Long: Extended): Integer;
+    /// <summary>
+    /// Идентификатор места, в котором отмечен пользователь
+    /// </summary>
     function PlaceId(Value: Integer): Integer;
+    /// <summary>
+    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи. Действует в течение одного часа
+    /// </summary>
     function Guid(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор кнопки, которую необходимо добавить к сниппету для ссылки
+    /// </summary>
     function LinkButton(Value: string): Integer; overload;
+    /// <summary>
+    /// Идентификатор кнопки, которую необходимо добавить к сниппету для ссылки
+    /// </summary>
     function LinkButton(Value: TVkPostLinkButton): Integer; overload;
+    /// <summary>
+    /// Заголовок, который должен быть использован для сниппета. Если не указан, будет автоматически получен с целевой ссылки. Обязательно указывать в случае, если ссылка является номером телефона
+    /// </summary>
     function LinkTitle(Value: string): Integer;
+    /// <summary>
+    /// Ссылка на изображение, которое должно быть использовано для сниппета. Минимальное разрешение: 537x240. Если не указана, будет автоматически загружена с целевой ссылки. Обязательно указывать в случае, если ссылка является номером телефона. Одновременно может быть указан либо параметр link_image, либо параметр link_video
+    /// </summary>
     function LinkImage(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор видео в формате "owner_id_media_id". Одновременно может быть указан либо параметр link_image, либо параметр link_video. Кроме того, параметр link_video может быть указан только вместе с параметрами link_button, link_title
+    /// </summary>
     function LinkVideo(Value: string): Integer;
   end;
 
   TVkParamsWallRepost = record
     List: TParams;
+    /// <summary>
+    /// строковый идентификатор объекта, который необходимо разместить на стене, например, wall66748_3675 или wall-1_340364.
+    /// Формируется из типа объекта (wall, photo, video и т.п.), идентификатора владельца объекта и идентификатора самого объекта
+    /// </summary>
     function &Object(Value: string): Integer;
+    /// <summary>
+    /// Сопроводительный текст, который будет добавлен к записи с объектом
+    /// </summary>
     function Message(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор сообщества, на стене которого будет размещена запись с объектом. Если не указан, запись будет размещена на стене текущего пользователя
+    /// </summary>
     function GroupId(Value: Integer): Integer;
+    /// <summary>
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// </summary>
     function MarkAsAds(Value: Boolean): Integer;
+    /// <summary>
+    /// True — уведомления к записи отключены.
+    /// False — уведомления к записи включены.
+    /// </summary>
     function MuteNotifications(Value: Boolean): Integer;
   end;
 
   TVkParamsWallSearch = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя или сообщества
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Короткий адрес пользователя или сообщества
+    /// </summary>
     function Domain(Value: string): Integer;
+    /// <summary>
+    /// Поисковой запрос. Для точного результата запрос необходимо передавать в двойных кавычках
+    /// </summary>
     function Query(Value: string): Integer;
+    /// <summary>
+    /// True — возвращать только записи от имени владельца стены
+    /// </summary>
     function OwnersOnly(Value: Boolean): Integer;
+    /// <summary>
+    /// Количество записей, которые необходимо вернуть
+    /// </summary>
     function Count(Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимо для получения определенного подмножества результатов
+    /// </summary>
     function Offset(Value: Integer): Integer;
+    /// <summary>
+    /// True — в ответе будут возвращены дополнительные поля profiles и groups,
+    /// содержащие информацию о пользователях и сообществах. По умолчанию: False
+    /// </summary>
     function Extended(Value: Boolean): Integer;
+    /// <summary>
+    /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
@@ -375,8 +753,7 @@ end;
 
 function TWallController.PostAdsStealth(var PostId: Integer; Params: TVkParamsWallPostAdsStealth): Boolean;
 begin
-  with Handler.Execute('wall.postAdsStealth', Params.List) do
-    Result := Success and GetValue('post_id', PostId);
+  Result := Handler.Execute('wall.postAdsStealth', Params.List).GetValue('post_id', PostId);
 end;
 
 function TWallController.ReportComment(const OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
@@ -386,8 +763,7 @@ begin
   Params.Add('comment_id', CommentId);
   Params.Add('owner_id', OwnerId);
   Params.Add('reason', Reason.ToString);
-  with Handler.Execute('wall.reportComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.reportComment', Params).ResponseIsTrue;
 end;
 
 function TWallController.ReportPost(const OwnerId, PostId: Integer; Reason: TVkMediaReportReason): Boolean;
@@ -397,8 +773,7 @@ begin
   Params.Add('post_id', PostId);
   Params.Add('owner_id', OwnerId);
   Params.Add('reason', Reason.ToString);
-  with Handler.Execute('wall.reportPost', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.reportPost', Params).ResponseIsTrue;
 end;
 
 function TWallController.Repost(var Info: TVkRepostInfo; Params: TVkParamsWallRepost): Boolean;
@@ -412,8 +787,7 @@ var
 begin
   Params.Add('post_id', PostId);
   Params.Add('owner_id', OwnerId);
-  with Handler.Execute('wall.restore', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.restore', Params).ResponseIsTrue;
 end;
 
 function TWallController.RestoreComment(const CommentId, OwnerId: Integer): Boolean;
@@ -422,8 +796,7 @@ var
 begin
   Params.Add('comment_id', CommentId);
   Params.Add('owner_id', OwnerId);
-  with Handler.Execute('wall.restoreComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.restoreComment', Params).ResponseIsTrue;
 end;
 
 function TWallController.Search(var Items: TVkPosts; Params: TVkParamsWallSearch): Boolean;
@@ -438,8 +811,7 @@ begin
   Params.Add('post_id', PostId);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  with Handler.Execute('wall.unpin', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.unpin', Params).ResponseIsTrue;
 end;
 
 function TWallController.Search(var Items: TVkPosts; Params: TParams): Boolean;
@@ -454,8 +826,7 @@ end;
 
 function TWallController.Post(var PostId: Integer; Params: TVkParamsWallPost): Boolean;
 begin
-  with Handler.Execute('wall.post', Params.List) do
-    Result := Success and GetValue('post_id', PostId);
+  Result := Handler.Execute('wall.post', Params.List).GetValue('post_id', PostId);
 end;
 
 function TWallController.Post(var PostId: Integer; Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
@@ -487,7 +858,7 @@ end;
 function TWallController.CloseComments(const OwnerId, PostId: Integer): Boolean;
 begin
   with Handler.Execute('wall.closeComments', [['owner_id', OwnerId.ToString], ['post_id', PostId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+    Result := ResponseIsTrue;
 end;
 
 function TWallController.CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
@@ -513,8 +884,7 @@ begin
   Params.Add('post_id', PostId);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  with Handler.Execute('wall.delete', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.delete', Params).ResponseIsTrue;
 end;
 
 function TWallController.DeleteComment(const CommentId: Integer; OwnerId: Integer): Boolean;
@@ -524,26 +894,22 @@ begin
   Params.Add('comment_id', CommentId);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  with Handler.Execute('wall.deleteComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.deleteComment', Params).ResponseIsTrue;
 end;
 
 function TWallController.Edit(var PostId: Integer; Params: TVkParamsWallEdit): Boolean;
 begin
-  with Handler.Execute('wall.edit', Params.List) do
-    Result := Success and ResponseAsInt(PostId);
+  Result := Handler.Execute('wall.edit', Params.List).ResponseAsInt(PostId);
 end;
 
 function TWallController.EditAdsStealth(Params: TVkParamsWallEditAdsStealth): Boolean;
 begin
-  with Handler.Execute('wall.editAdsStealth', Params.List) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.editAdsStealth', Params.List).ResponseIsTrue;
 end;
 
 function TWallController.EditComment(Params: TVkParamsWallEditComment): Boolean;
 begin
-  with Handler.Execute('wall.editComment', Params.List) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.editComment', Params.List).ResponseIsTrue;
 end;
 
 function TWallController.Get(var Items: TVkPosts; Offset, Count: Integer; OwnerId: Integer): Boolean;
@@ -614,14 +980,12 @@ begin
   Params.Add('post_id', PostId);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  with Handler.Execute('wall.pin', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.pin', Params).ResponseIsTrue;
 end;
 
 function TWallController.СheckCopyrightLink(const Link: string): Boolean;
 begin
-  with Handler.Execute('wall.checkCopyrightLink', ['link', Link]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.checkCopyrightLink', ['link', Link]).ResponseIsTrue;
 end;
 
 { TVkWallParams }
@@ -644,6 +1008,11 @@ end;
 function TVkParamsWallPost.Copyright(Value: string): Integer;
 begin
   Result := List.Add('copyright', Value);
+end;
+
+function TVkParamsWallPost.DonutPaidDuration(Value: TVkDonutPaidDuration): Integer;
+begin
+  Result := List.Add('donut_paid_duration', Ord(Value));
 end;
 
 function TVkParamsWallPost.FriendsOnly(Value: Boolean): Integer;
@@ -717,6 +1086,11 @@ end;
 function TVkCommentCreateParams.Attachments(Value: TAttachmentArray): Integer;
 begin
   Result := List.Add('attachments', Value.ToStrings);
+end;
+
+function TVkCommentCreateParams.Attachments(Value: TAttachment): Integer;
+begin
+  Result := List.Add('attachments', Value.ToString);
 end;
 
 function TVkCommentCreateParams.FromGroup(Value: Boolean): Integer;
@@ -932,6 +1306,11 @@ begin
   Result := List.Add('link_title', Value);
 end;
 
+function TVkParamsWallEditAdsStealth.LinkVideo(OwnerId, MediaId: Integer): Integer;
+begin
+  Result := List.Add('link_video', OwnerId.ToString + '_' + MediaId.ToString);
+end;
+
 function TVkParamsWallEditAdsStealth.LinkImage(Value: string): Integer;
 begin
   Result := List.Add('link_image', Value);
@@ -1106,6 +1485,11 @@ end;
 function TVkParamsWallPostAdsStealth.PlaceId(Value: Integer): Integer;
 begin
   Result := List.Add('place_id', Value);
+end;
+
+function TVkParamsWallPostAdsStealth.Attachments(Value: TAttachment): Integer;
+begin
+  Result := List.Add('attachments', Value.ToString);
 end;
 
 function TVkParamsWallPostAdsStealth.Guid(Value: string): Integer;

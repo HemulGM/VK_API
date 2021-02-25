@@ -217,10 +217,14 @@ type
 
   TOn2FA = reference to function(const ValidationType: TVkValidationType; var Code: string; var Remember: Boolean): Boolean;
 
+  TAttachmentKind = (Media, Link, Tel);
+
   TAttachment = record
     OwnerId, Id: Integer;
     AccessKey: string;
     &Type: string;
+    Kind: TAttachmentKind;
+    Value: string;
   public
     class function Photo(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Video(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
@@ -260,7 +264,7 @@ type
     function ToVkId: Integer; inline;
   end;
 
-  TVkAudioSort = (DateAdd, Duration, Popular);
+  TVkMediaSort = (DateAdd, Duration, Popular);
 
   TVkAudioPlaylistFilter = (All, Owned, Followed, Albums);
 
@@ -793,11 +797,23 @@ type
     class function Create(Value: string): TVkKeyboardButtonColor; static;
   end;
 
+  /// <summary>
+  /// “ипы записей
+  /// Suggests Ч предложенные записи на стене сообщества (доступно только при вызове с передачей access_token);
+  /// Postponed Ч отложенные записи (доступно только при вызове с передачей access_token);
+  /// Owner Ч записи владельца стены;
+  /// Others Ч записи не от владельца стены;
+  /// All Ч все записи на стене (owner + others).
+  /// </summary>
   TVkPostType = (Suggests, Postponed, Owner, Others, All);
 
   TVkPostTypeHelper = record helper for TVkPostType
     function ToString: string; inline;
   end;
+
+  TVkDonutPaidDuration = (DonutOnly = -1, Days1 = 86400, Days2 = 172800,      //
+    Days3 = 172800, Days4 = 345600, Days5 = 432000, Days6 = 518400,           //
+    Days7 = 604800);
 
   TVkPolitical = (None, Communist, Socialist, Moderate, Liberal,              //
     Conservative, Monarchical, UltraConservative, Indifferent, Libertarian);
@@ -1948,9 +1964,22 @@ end;
 
 function TAttachment.ToString: string;
 begin
-  Result := &Type + OwnerId.ToString + '_' + Id.ToString;
-  if not AccessKey.IsEmpty then
-    Result := Result + '_' + AccessKey;
+  case Kind of
+    TAttachmentKind.Media:
+      begin
+        Result := &Type + OwnerId.ToString + '_' + Id.ToString;
+        if not AccessKey.IsEmpty then
+          Result := Result + '_' + AccessKey;
+      end;
+    TAttachmentKind.Link:
+      begin
+        Result := Value;
+      end;
+    TAttachmentKind.Tel:
+      begin
+        Result := Value;
+      end;
+  end;
 end;
 
 class operator TAttachment.Implicit(const Value: TAttachment): string;
@@ -1963,13 +1992,34 @@ var
   i: Integer;
   tmp, tmpValue: string;
 begin
-  //video58553419_456239240_wefq76wegq7we
-  tmpValue := Value + '_';
-  tmp := '';
   Result.OwnerId := 0;
   Result.Id := 0;
   Result.AccessKey := '';
   Result.&Type := '';
+
+  tmp := Value.ToLower;
+
+  //http://habrahabr.ru
+  if tmp.StartsWith('http') then
+  begin
+    Result.Kind := TAttachmentKind.Link;
+    Result.Value := Value;
+    Exit;
+  end;
+
+  //tel:+71234567890
+  if tmp.StartsWith('tel:') then
+  begin
+    Result.Kind := TAttachmentKind.Tel;
+    Result.Value := Value;
+    Exit;
+  end;
+
+  //video58553419_456239240_wefq76wegq7we
+  Result.Kind := TAttachmentKind.Media;
+  Result.Value := '';
+  tmp := '';
+  tmpValue := Value + '_';
   for i := 0 to Pred(tmpValue.Length) do
   begin
     if Result.&Type.IsEmpty then

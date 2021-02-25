@@ -57,7 +57,7 @@ type
     function AutoComplete(Value: Boolean): TVkParamsAudioSearch;
     function PerformerOnly(Value: Boolean): TVkParamsAudioSearch;
     function Lyrics(Value: string): TVkParamsAudioSearch;
-    function Sort(Value: TVkAudioSort): TVkParamsAudioSearch;
+    function Sort(Value: TVkMediaSort): TVkParamsAudioSearch;
     function SearchOwn(Value: Boolean): TVkParamsAudioSearch;
     function Offset(Value: Integer): TVkParamsAudioSearch;
     function Count(Value: Integer): TVkParamsAudioSearch;
@@ -858,7 +858,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsAudioSearch.Sort(Value: TVkAudioSort): TVkParamsAudioSearch;
+function TVkParamsAudioSearch.Sort(Value: TVkMediaSort): TVkParamsAudioSearch;
 begin
   List.Add('sort', Ord(Value));
   Result := Self;

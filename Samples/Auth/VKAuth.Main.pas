@@ -3,11 +3,13 @@ unit VKAuth.Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler, Vcl.StdCtrls,
-  System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents, VK.Entity.Media, System.Net.URLClient,
-  System.Net.HttpClient, VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video,
-  VK.Entity.Photo, VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types,
+  System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
+  Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler,
+  Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents,
+  VK.GroupEvents, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video, VK.Entity.Photo,
+  VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
 
 type
   TFormMain = class(TForm)
@@ -83,6 +85,7 @@ type
     Button42: TButton;
     Button43: TButton;
     Button44: TButton;
+    Button45: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -197,6 +200,7 @@ type
     procedure Button42Click(Sender: TObject);
     procedure Button43Click(Sender: TObject);
     procedure Button44Click(Sender: TObject);
+    procedure Button45Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -211,14 +215,17 @@ var
 implementation
 
 uses
-  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save,
-  VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
-  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section,
-  VK.CommonUtils, VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
-  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories,
-  VK.Entity.Podcast.Episode, VK.Auth, VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
-  REST.Json;
+  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
+  VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
+  VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
+  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest,
+  VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
+  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
+  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
+  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
+  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
+  VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
+  VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json;
 
 {$R *.dfm}
 
@@ -318,7 +325,9 @@ var
   SaveParams: TVkParamsPhotosSaveWallPhoto;}
   Status: Boolean;
   Photos: TVkPhotos;
+  Attach: TAttachment;
 begin
+
   {Status := False;
   if VK1.Photos.GetWallUploadServer(UploadResp, 145962568) then
   begin
@@ -342,23 +351,21 @@ begin
 
   OR
   }
-
-  Status := VK1.Photos.UploadForGroupWall(Photos, 145962568,
+  {Status := VK1.Photos.UploadForGroupWall(Photos, 145962568,
     ['D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (100).jpg',
-    'D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (149).jpg'
-    ]);
-
+    'D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (149).jpg']);   }
   //VK1.Wall.Post('', -145962568, TAttachment.Video(58553419, 456239240));
 
-  if Status then
+  Attach := 'http://habrahabr.ru';
+  //if Status then
   begin
     Params.Message('Test Text');
     Params.OwnerId(-145962568);
     Params.FromGroup(True);
     Params.Signed(True);  //TAttachment.Doc(533494309, 58553419, '657138cd5d7842ae0a')
     //Params.Attachments('doc533494309_58553419');
-    Params.Attachments(Photos.ToAttachments);
-    Photos.Free;
+    Params.Attachments(Attach);
+    //Photos.Free;
     VK1.Wall.Post(Params);
   end;
 end;
@@ -729,6 +736,23 @@ begin
   except
     on E: Exception do
       ShowMessage(E.Message);
+  end;
+end;
+
+procedure TFormMain.Button45Click(Sender: TObject);
+var
+  Response: TResponse;
+  Items: TVkProfiles;
+begin
+  Response := VK1.Execute(Format({$INCLUDE GetFriendsWithAudio.js}, [20, 20]));
+  if Response.Success then
+  begin
+    if Response.GetObject(Items) then
+    begin
+      Memo1.Lines.Add(Items.Count.ToString);
+      //
+      Items.Free;
+    end;
   end;
 end;
 

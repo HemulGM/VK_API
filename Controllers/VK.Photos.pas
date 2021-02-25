@@ -536,11 +536,11 @@ type
     /// <summary>
     /// Загрузки фотографии для публикации на стену пользователя или сообщества
     /// </summary>
-    function UploadForWall(var Photos: TVkPhotos; const FileNames: array of string; Params: TVkParamsPhotosSaveWallPhoto; const GroupId: Integer = 0): Boolean;
+    function UploadForWall(var Photos: TVkPhotos; const FileNames: array of string; Params: TVkParamsPhotosSaveWallPhoto; const GroupId: Cardinal = 0): Boolean;
     /// <summary>
     /// Загрузки фотографии для публикации на стену сообщества
     /// </summary>
-    function UploadForGroupWall(var Photos: TVkPhotos; const GroupId: Integer; const FileNames: array of string): Boolean;
+    function UploadForGroupWall(var Photos: TVkPhotos; const GroupId: Cardinal; const FileNames: array of string): Boolean;
     /// <summary>
     /// Загрузки фотографии для публикации на стену пользователя
     /// </summary>
@@ -1184,7 +1184,7 @@ begin
   Result := Search(Items, Params.List);
 end;
 
-function TPhotosController.UploadForGroupWall(var Photos: TVkPhotos; const GroupId: Integer; const FileNames: array of string): Boolean;
+function TPhotosController.UploadForGroupWall(var Photos: TVkPhotos; const GroupId: Cardinal; const FileNames: array of string): Boolean;
 var
   SaveParams: TVkParamsPhotosSaveWallPhoto;
 begin
@@ -1219,7 +1219,7 @@ begin
   Result := UploadForWall(Photos, FileNames, SaveParams);
 end;
 
-function TPhotosController.UploadForWall(var Photos: TVkPhotos; const FileNames: array of string; Params: TVkParamsPhotosSaveWallPhoto; const GroupId: Integer): Boolean;
+function TPhotosController.UploadForWall(var Photos: TVkPhotos; const FileNames: array of string; Params: TVkParamsPhotosSaveWallPhoto; const GroupId: Cardinal): Boolean;
 var
   Response: TVkPhotoUploadResponse;
   PhotoUpload: TVkPhotoGetUploadResponse;
