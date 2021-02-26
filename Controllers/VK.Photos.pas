@@ -4,9 +4,8 @@ interface
 
 uses
   System.SysUtils, System.Types, System.Generics.Collections, System.Classes,
-  VK.Controller, VK.Types, VK.Entity.Album, System.JSON, REST.Json,
-  VK.Entity.Photo.Upload, VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group,
-  VK.Entity.Common;
+  VK.Controller, VK.Types, VK.Entity.Album, REST.Json, VK.Entity.Photo.Upload,
+  VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkParamsPhotosGetAll = record
@@ -1019,17 +1018,17 @@ end;
 
 function TPhotosController.Get(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.get', Params).GetObject<TVkPhotos>(Items);
+  Result := Handler.Execute('photos.get', Params).GetObject(Items);
 end;
 
 function TPhotosController.GetAll(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.getAll', Params).GetObject<TVkPhotos>(Items);
+  Result := Handler.Execute('photos.getAll', Params).GetObject(Items);
 end;
 
 function TPhotosController.GetAlbums(var Items: TVkPhotoAlbums; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.getAlbums', Params).GetObject<TVkPhotoAlbums>(Items);
+  Result := Handler.Execute('photos.getAlbums', Params).GetObject(Items);
 end;
 
 function TPhotosController.GetAlbums(var Items: TVkPhotoAlbums; Params: TVkParamsAlbumsGet): Boolean;
@@ -1039,20 +1038,21 @@ end;
 
 function TPhotosController.GetAlbumsCount(var Count: Integer; Params: TVkParamsPhotosGetAlbumsCount): Boolean;
 begin
-  with Handler.Execute('photos.getAlbumsCount', Params.List) do
-    Result := Success and TryStrToInt(Response, Count);
+  Result := Handler.Execute('photos.getAlbumsCount', Params.List).ResponseAsInt(Count);
 end;
 
 function TPhotosController.ConfirmTags(Tags: TIdList): Boolean;
 begin
-  with Handler.Execute('photos.confirmTag', ['tags', Tags.ToString]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.confirmTag', ['tags', Tags.ToString]).ResponseIsTrue;
 end;
 
 function TPhotosController.Copy(var Id: Integer; OwnerId, PhotoId: Integer; AccessKey: string): Boolean;
 begin
-  with Handler.Execute('photos.confirmTag', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString], ['access_key', AccessKey]]) do
-    Result := Success and TryStrToInt(Response, Id);
+  Result := Handler.Execute('photos.confirmTag', [
+    ['owner_id', OwnerId.ToString],
+    ['photo_id', PhotoId.ToString],
+    ['access_key', AccessKey]]).
+    ResponseAsInt(Id);
 end;
 
 function TPhotosController.CreateAlbum(var Item: TVkPhotoAlbum; Params: TVkParamsPhotosCreateAlbum): Boolean;
@@ -1067,14 +1067,12 @@ end;
 
 function TPhotosController.DeclineTags: Boolean;
 begin
-  with Handler.Execute('photos.declineTags') do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.declineTags').ResponseIsTrue;
 end;
 
 function TPhotosController.Delete(OwnerId, PhotoId: Integer): Boolean;
 begin
-  with Handler.Execute('photos.delete', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.delete', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString]]).ResponseIsTrue;
 end;
 
 function TPhotosController.DeleteAlbum(AlbumId, GroupId: Integer): Boolean;
@@ -1084,14 +1082,15 @@ begin
   Params.Add('album_id', AlbumId);
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
-  with Handler.Execute('photos.deleteAlbum', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.deleteAlbum', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.DeleteComment(OwnerId, CommentId: Integer): Boolean;
 begin
-  with Handler.Execute('photos.deleteComment', [['owner_id', OwnerId.ToString], ['comment_id', CommentId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.deleteComment', [
+    ['owner_id', OwnerId.ToString],
+    ['comment_id', CommentId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TPhotosController.Edit(Params: TVkParamsPhotosEdit): Boolean;
@@ -1111,31 +1110,27 @@ end;
 
 function TPhotosController.EditComment(Params: TParams): Boolean;
 begin
-  with Handler.Execute('photos.editComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.editComment', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.EditAlbum(Params: TParams): Boolean;
 begin
-  with Handler.Execute('photos.editAlbum', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.editAlbum', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.Edit(Params: TParams): Boolean;
 begin
-  with Handler.Execute('photos.edit', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.edit', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.CreateComment(var Id: Integer; Params: TParams): Boolean;
 begin
-  with Handler.Execute('photos.createComment', Params) do
-    Result := Success and TryStrToInt(Response, Id);
+  Result := Handler.Execute('photos.createComment', Params).ResponseAsInt(Id);
 end;
 
 function TPhotosController.CreateAlbum(var Item: TVkPhotoAlbum; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.createAlbum', Params).GetObject<TVkPhotoAlbum>(Item);
+  Result := Handler.Execute('photos.createAlbum', Params).GetObject(Item);
 end;
 
 function TPhotosController.Get(var Items: TVkPhotos; Params: TVkParamsPhotosGet): Boolean;
@@ -1150,7 +1145,7 @@ end;
 
 function TPhotosController.GetAllComments(var Items: TVkComments; Params: TVkParamsPhotosGetAllComments): Boolean;
 begin
-  Result := Handler.Execute('photos.getAllComments', Params.List).GetObject<TVkComments>(Items);
+  Result := Handler.Execute('photos.getAllComments', Params.List).GetObject(Items);
 end;
 
 function TPhotosController.GetById(var Items: TVkPhotos; Photos: TArrayOfString; Extended, PhotoSizes: Boolean): Boolean;
@@ -1162,7 +1157,7 @@ begin
     Params.Add('extended', Extended);
   if PhotoSizes then
     Params.Add('photo_sizes', PhotoSizes);
-  Result := Handler.Execute('photos.getById', Params).GetObject<TVkPhotos>(Items);
+  Result := Handler.Execute('photos.getById', Params).GetObject(Items);
 end;
 
 function TPhotosController.GetChatUploadServer(var UploadUrl: string; ChatId: Integer; Crop: TPoint; CropWidth: Integer): Boolean;
@@ -1205,7 +1200,7 @@ end;
 
 function TPhotosController.GetComments(var Items: TVkComments; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.getComments', Params).GetObject<TVkComments>(Items);
+  Result := Handler.Execute('photos.getComments', Params).GetObject(Items);
 end;
 
 function TPhotosController.GetMarketAlbumUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
@@ -1267,8 +1262,7 @@ var
 begin
   if PeerId <> 0 then
     Params.Add('peer_id', PeerId);
-
-  Result := Handler.Execute('photos.getMessagesUploadServer', Params).GetObject<TVkPhotoGetUploadResponse>(Upload);
+  Result := Handler.Execute('photos.getMessagesUploadServer', Params).GetObject(Upload);
 end;
 
 function TPhotosController.GetNewTags(var Items: TVkPhotos; Count, Offset: Integer): Boolean;
@@ -1277,7 +1271,7 @@ var
 begin
   Params.Add('count', Count);
   Params.Add('offset', Offset);
-  Result := Handler.Execute('photos.getNewTags', Params).GetObject<TVkPhotos>(Items);
+  Result := Handler.Execute('photos.getNewTags', Params).GetObject(Items);
 end;
 
 function TPhotosController.GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
@@ -1319,7 +1313,7 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   Params.Add('access_key', AccessKey);
-  Result := Handler.Execute('photos.getTags', Params).GetObject<TVkPhotoTags>(Items);
+  Result := Handler.Execute('photos.getTags', Params).GetObject(Items);
 end;
 
 function TPhotosController.GetUploadServer(var UploadData: TVkPhotoGetUploadResponse; AlbumId, GroupId: Integer): Boolean;
@@ -1330,7 +1324,7 @@ begin
     Params.Add('group_id', GroupId);
   if AlbumId <> 0 then
     Params.Add('album_id', AlbumId);
-  Result := Handler.Execute('photos.getUploadServer', Params).GetObject<TVkPhotoGetUploadResponse>(UploadData);
+  Result := Handler.Execute('photos.getUploadServer', Params).GetObject(UploadData);
 end;
 
 function TPhotosController.GetUserPhotos(var Items: TVkPhotos; Params: TVkParamsPhotosGetUserPhotos): Boolean;
@@ -1344,7 +1338,7 @@ var
 begin
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
-  Result := Handler.Execute('photos.getWallUploadServer', Params).GetObject<TVkPhotoGetUploadResponse>(UploadData);
+  Result := Handler.Execute('photos.getWallUploadServer', Params).GetObject(UploadData);
 end;
 
 function TPhotosController.MakeCover(PhotoId, AlbumId, OwnerId: Integer): Boolean;
@@ -1355,8 +1349,7 @@ begin
     Params.Add('owner_id', OwnerId);
   Params.Add('photo_id', PhotoId);
   Params.Add('album_id', AlbumId);
-  with Handler.Execute('photos.makeCover', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.makeCover', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.Move(PhotoId, TargetAlbumId, OwnerId: Integer): Boolean;
@@ -1367,8 +1360,7 @@ begin
     Params.Add('owner_id', OwnerId);
   Params.Add('photo_id', PhotoId);
   Params.Add('target_album_id', TargetAlbumId);
-  with Handler.Execute('photos.move', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.move', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.PutTag(var TagId: Integer; PhotoId, UserId: Integer; Left, Right: TPoint; OwnerId: Integer): Boolean;
@@ -1383,8 +1375,7 @@ begin
   Params.Add('y', Left.y);
   Params.Add('x2', Right.X);
   Params.Add('y2', Right.y);
-  with Handler.Execute('photos.putTag', Params) do
-    Result := Success and TryStrToInt(Response, TagId);
+  Result := Handler.Execute('photos.putTag', Params).ResponseAsInt(TagId);
 end;
 
 function TPhotosController.RemoveTag(PhotoId, TagId, OwnerId: Integer): Boolean;
@@ -1395,32 +1386,35 @@ begin
     Params.Add('owner_id', OwnerId);
   Params.Add('photo_id', PhotoId);
   Params.Add('tag_id', TagId);
-  with Handler.Execute('photos.removeTag', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.removeTag', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.ReorderAlbums(Params: TVkParamsPhotosReorderAlbums): Boolean;
 begin
-  with Handler.Execute('photos.reorderAlbums', Params.List) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.reorderAlbums', Params.List).ResponseIsTrue;
 end;
 
 function TPhotosController.ReorderPhotos(Params: TVkParamsPhotosReorderPhotos): Boolean;
 begin
-  with Handler.Execute('photos.reorderPhotos', Params.List) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.reorderPhotos', Params.List).ResponseIsTrue;
 end;
 
 function TPhotosController.Report(OwnerId, PhotoId: Integer; Reason: TVkMediaReportReason): Boolean;
 begin
-  with Handler.Execute('photos.report', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString], ['reason', Reason.ToConst.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.report', [
+    ['owner_id', OwnerId.ToString],
+    ['photo_id', PhotoId.ToString],
+    ['reason', Reason.ToConst.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TPhotosController.ReportComment(OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
 begin
-  with Handler.Execute('photos.reportComment', [['owner_id', OwnerId.ToString], ['comment_id', CommentId.ToString], ['reason', Reason.ToConst.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.reportComment', [
+    ['owner_id', OwnerId.ToString],
+    ['comment_id', CommentId.ToString],
+    ['reason', Reason.ToConst.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TPhotosController.Restore(PhotoId, OwnerId: Integer): Boolean;
@@ -1430,8 +1424,7 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   Params.Add('photo_id', PhotoId);
-  with Handler.Execute('photos.restore', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.restore', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.RestoreComment(CommentId, OwnerId: Integer): Boolean;
@@ -1441,13 +1434,12 @@ begin
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
   Params.Add('comment_id', CommentId);
-  with Handler.Execute('photos.restoreComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.restoreComment', Params).ResponseIsTrue;
 end;
 
 function TPhotosController.GetUserPhotos(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.getUserPhotos', Params).GetObject<TVkPhotos>(Items);
+  Result := Handler.Execute('photos.getUserPhotos', Params).GetObject(Items);
 end;
 
 function TPhotosController.GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer; CropLeft, CropRight: TPoint): Boolean;
@@ -1487,7 +1479,7 @@ end;
 
 function TPhotosController.Save(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.ExecutePost('photos.save', Params).GetObjects<TVkPhotos>(Items);
+  Result := Handler.ExecutePost('photos.save', Params).GetObjects(Items);
 end;
 
 function TPhotosController.SaveMarketAlbumPhoto(var Items: TVkPhotos; GroupId: Integer; Photo, Server, Hash: string): Boolean;
@@ -1498,7 +1490,7 @@ begin
   Params.Add('photo', Photo);
   Params.Add('server', Server);
   Params.Add('hash', Hash);
-  Result := Handler.ExecutePost('photos.saveMarketAlbumPhoto', Params).GetObjects<TVkPhotos>(Items);
+  Result := Handler.ExecutePost('photos.saveMarketAlbumPhoto', Params).GetObjects(Items);
 end;
 
 function TPhotosController.SaveMarketPhoto(var Items: TVkPhotos; Params: TVkParamsPhotosSaveMarketPhoto): Boolean;
@@ -1513,7 +1505,7 @@ begin
   Params.Add('photo', Photo);
   Params.Add('server', Server);
   Params.Add('hash', Hash);
-  Result := Handler.ExecutePost('photos.saveMessagesPhoto', Params).GetObjects<TVkPhotos>(Items);
+  Result := Handler.ExecutePost('photos.saveMessagesPhoto', Params).GetObjects(Items);
 end;
 
 function TPhotosController.SaveOwnerCoverPhoto(var Items: TVkCoverImages; Photo, Hash: string): Boolean;
@@ -1522,7 +1514,7 @@ var
 begin
   Params.Add('photo', Photo);
   Params.Add('hash', Hash);
-  Result := Handler.ExecutePost('photos.saveOwnerCoverPhoto', Params).GetObjects<TVkCoverImages>(Items);
+  Result := Handler.ExecutePost('photos.saveOwnerCoverPhoto', Params).GetObjects(Items);
 end;
 
 function TPhotosController.SaveOwnerPhoto(FileName: string): Boolean;
@@ -1564,7 +1556,7 @@ begin
   Params.Add('photo', Photo);
   Params.Add('server', Server);
   Params.Add('hash', Hash);
-  Result := Handler.Execute('photos.saveOwnerPhoto', Params).GetObject<TVkOwnerPhoto>(Info);
+  Result := Handler.Execute('photos.saveOwnerPhoto', Params).GetObject(Info);
 end;
 
 function TPhotosController.SaveWallPhoto(var Items: TVkPhotos; Params: TVkParamsPhotosSaveWallPhoto): Boolean;
@@ -1640,17 +1632,17 @@ end;
 
 function TPhotosController.Search(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.search', Params).GetObject<TVkPhotos>(Items);
+  Result := Handler.Execute('photos.search', Params).GetObject(Items);
 end;
 
 function TPhotosController.SaveWallPhoto(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.ExecutePost('photos.saveWallPhoto', Params).GetObjects<TVkPhotos>(Items);
+  Result := Handler.ExecutePost('photos.saveWallPhoto', Params).GetObjects(Items);
 end;
 
 function TPhotosController.SaveMarketPhoto(var Items: TVkPhotos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('photos.saveMarketPhoto', Params).GetObjects<TVkPhotos>(Items);
+  Result := Handler.Execute('photos.saveMarketPhoto', Params).GetObjects(Items);
 end;
 
 function TPhotosController.SaveMessagesPhoto(var Items: TVkPhotos; Data: TVkPhotoUploadResponse): Boolean;
@@ -1666,8 +1658,7 @@ begin
     Params.Add('owner_id', OwnerId);
   Params.Add('photo_id', PhotoId);
   Params.Add('tag_id', TagId);
-  with Handler.Execute('photos.confirmTag', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('photos.confirmTag', Params).ResponseIsTrue;
 end;
 
 { TVkGetAllParams }

@@ -3,42 +3,59 @@ unit VK.Notifications;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Notifications;
+  System.SysUtils, VK.Controller, VK.Types, VK.Entity.Notifications;
 
 type
   TVkParamsNotificationsGet = record
     List: TParams;
-    function Count(Value: Integer): Integer;
-    function StartFrom(Value: string): Integer;
-    function Filters(Value: TVkNotificationFilter): Integer;
-    function StartTime(Value: TDateTime): Integer;
-    function EndTime(Value: TDateTime): Integer;
+    /// <summary>
+    /// Указывает, какое максимальное число оповещений следует возвращать (максимальное значение 100)
+    /// </summary>
+    function Count(const Value: Integer = 30): Integer;
+    /// <summary>
+    /// Строковый идентификатор оповещения, полученного последним в предыдущем вызове (см. описание поля NextFrom в результате)
+    /// </summary>
+    function StartFrom(const Value: string): Integer;
+    /// <summary>
+    /// Перечисленные через запятую типы оповещений, которые необходимо получить.
+    /// Если параметр не задан, то будут получены все возможные типы оповещений
+    /// </summary>
+    function Filters(const Value: TVkNotificationFilter): Integer;
+    /// <summary>
+    /// Время, начиная с которого следует получить оповещения для текущего пользователя.
+    /// Если параметр не задан, то он считается равным значению времени, которое было сутки назад
+    /// </summary>
+    function StartTime(const Value: TDateTime): Integer;
+    /// <summary>
+    /// Время, до которого следует получить оповещения для текущего пользователя.
+    /// Если параметр не задан, то он считается равным текущему времени
+    /// </summary>
+    function EndTime(const Value: TDateTime): Integer;
   end;
 
   TVkParamsNotificationsSendMessage = record
     List: TParams;
     /// <summary>
-    /// Список идентификаторов пользователей, которым нужно отправить уведомление (максимум 100 идентификаторов).
+    /// Список идентификаторов пользователей, которым нужно отправить уведомление (максимум 100 идентификаторов)
     /// </summary>
-    function UserIds(Value: TIdList): Integer;
+    function UserIds(const Value: TIdList): Integer;
     /// <summary>
-    /// Текст уведомления. Максимальная длина 254
+    /// Текст уведомления (максимальная длина 254)
     /// </summary>
-    function Message(Value: string): Integer;
+    function Message(const Value: string): Integer;
     /// <summary>
-    /// Содержимое хэша (часть URL в ссылке на приложение вида https://vk.com/app123456#fragment).
+    /// Содержимое хэша (часть URL в ссылке на приложение вида https://vk.com/app123456#fragment)
     /// </summary>
-    function Fragment(Value: string): Integer;
+    function Fragment(const Value: string): Integer;
     /// <summary>
     /// Ид сообщества
     /// </summary>
-    function GroupId(Value: Integer): Integer;
+    function GroupId(const Value: Integer): Integer;
     /// <summary>
     /// Уникальный (в привязке к API_ID и ID отправителя) идентификатор, предназначенный для предотвращения повторной отправки одинакового сообщения.
-    /// Заданный random_id используется для проверки уникальности уведомления в течение часа после отправки.
+    /// Заданный RandomId используется для проверки уникальности уведомления в течение часа после отправки
     /// </summary>
-    function RandomId(Value: Integer): Integer;
+    function RandomId(const Value: Integer): Integer;
   end;
 
   TNotificationsController = class(TVkController)
@@ -68,13 +85,13 @@ type
 implementation
 
 uses
-  System.DateUtils, VK.API, VK.CommonUtils;
+  VK.API, VK.CommonUtils;
 
 { TNotificationsController }
 
 function TNotificationsController.Get(var Items: TVkNotifications; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('notifications.get', Params).GetObject<TVkNotifications>(Items);
+  Result := Handler.Execute('notifications.get', Params).GetObject(Items);
 end;
 
 function TNotificationsController.Get(var Items: TVkNotifications; Params: TVkParamsNotificationsGet): Boolean;
@@ -94,61 +111,61 @@ end;
 
 function TNotificationsController.SendMessage(var Status: TVkNotificationMessageStatuses; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('notifications.sendMessage', Params).GetObjects<TVkNotificationMessageStatuses>(Status);
+  Result := Handler.Execute('notifications.sendMessage', Params).GetObjects(Status);
   if Result then
     Status.Count := Length(Status.Items);
 end;
 
 { TVkParamsNotificationsGet }
 
-function TVkParamsNotificationsGet.Count(Value: Integer): Integer;
+function TVkParamsNotificationsGet.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsNotificationsGet.EndTime(Value: TDateTime): Integer;
+function TVkParamsNotificationsGet.EndTime(const Value: TDateTime): Integer;
 begin
   Result := List.Add('end_time', Value);
 end;
 
-function TVkParamsNotificationsGet.Filters(Value: TVkNotificationFilter): Integer;
+function TVkParamsNotificationsGet.Filters(const Value: TVkNotificationFilter): Integer;
 begin
   Result := List.Add('filters', Value.ToString);
 end;
 
-function TVkParamsNotificationsGet.StartFrom(Value: string): Integer;
+function TVkParamsNotificationsGet.StartFrom(const Value: string): Integer;
 begin
   Result := List.Add('start_from', Value);
 end;
 
-function TVkParamsNotificationsGet.StartTime(Value: TDateTime): Integer;
+function TVkParamsNotificationsGet.StartTime(const Value: TDateTime): Integer;
 begin
   Result := List.Add('start_time', Value);
 end;
 
 { TVkParamsNotificationsSendMessage }
 
-function TVkParamsNotificationsSendMessage.Fragment(Value: string): Integer;
+function TVkParamsNotificationsSendMessage.Fragment(const Value: string): Integer;
 begin
   Result := List.Add('fragment', Value);
 end;
 
-function TVkParamsNotificationsSendMessage.GroupId(Value: Integer): Integer;
+function TVkParamsNotificationsSendMessage.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsNotificationsSendMessage.Message(Value: string): Integer;
+function TVkParamsNotificationsSendMessage.Message(const Value: string): Integer;
 begin
   Result := List.Add('message', Value);
 end;
 
-function TVkParamsNotificationsSendMessage.RandomId(Value: Integer): Integer;
+function TVkParamsNotificationsSendMessage.RandomId(const Value: Integer): Integer;
 begin
   Result := List.Add('random_id', Value);
 end;
 
-function TVkParamsNotificationsSendMessage.UserIds(Value: TIdList): Integer;
+function TVkParamsNotificationsSendMessage.UserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
