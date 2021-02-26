@@ -3,56 +3,74 @@ unit VK.Utils;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Link,
-  VK.Entity.ScreenName;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Link, VK.Entity.ScreenName;
 
 type
   TVkParamsUtilsGetLinkStats = record
     List: TParams;
-    function Key(Value: string): Integer;
-    function Source(Value: string): Integer;
-    function AccessKey(Value: string): Integer;
-    function Interval(Value: string): Integer;
-    function IntervalsCount(Value: Integer): Integer;
-    function Extended(Value: Boolean): Integer;
+    /// <summary>
+    /// Сокращенная ссылка (часть URL после "vk.cc/")
+    /// </summary>
+    function Key(const Value: string): Integer;
+    /// <summary>
+    /// Строка, по умолчанию vk_cc
+    /// </summary>
+    function Source(const Value: string): Integer;
+    /// <summary>
+    /// Ключ доступа к приватной статистике ссылки
+    /// </summary>
+    function AccessKey(const Value: string): Integer;
+    /// <summary>
+    /// Единица времени для подсчета статистики
+    /// </summary>
+    function Interval(const Value: TVkStatInterval = TVkStatInterval.Day): Integer;
+    /// <summary>
+    /// Длительность периода для получения статистики в выбранных единицах (из параметра Interval)
+    /// </summary>
+    function IntervalsCount(const Value: Integer): Integer;
+    /// <summary>
+    /// True — возвращать расширенную статистику (пол/возраст/страна/город), False — возвращать только количество переходов
+    /// </summary>
+    function Extended(const Value: Boolean): Integer;
   end;
 
   TUtilsController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает информацию о том, является ли внешняя ссылка заблокированной на сайте ВКонтакте.
+    /// Возвращает информацию о том, является ли внешняя ссылка заблокированной на сайте ВКонтакте
     /// </summary>
     function CheckLink(var Info: TVkLinkStatus; Url: string): Boolean;
     /// <summary>
-    /// Удаляет сокращенную ссылку из списка пользователя.
+    /// Удаляет сокращенную ссылку из списка пользователя
     /// </summary>
     function DeleteFromLastShortened(Key: string): Boolean;
     /// <summary>
-    /// Получает список сокращенных ссылок для текущего пользователя.
+    /// Получает список сокращенных ссылок для текущего пользователя
     /// </summary>
     function GetLastShortenedLinks(var Items: TVkShortLinks; Offset: Integer = 0; Count: Integer = 10): Boolean;
     /// <summary>
-    /// Возвращает статистику переходов по сокращенной ссылке.
+    /// Возвращает статистику переходов по сокращенной ссылке
     /// </summary>
     function GetLinkStats(var Item: TVkLinkStats; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает статистику переходов по сокращенной ссылке.
+    /// Возвращает статистику переходов по сокращенной ссылке
     /// </summary>
     function GetLinkStats(var Item: TVkLinkStats; Params: TVkParamsUtilsGetLinkStats): Boolean; overload;
     /// <summary>
-    /// Возвращает текущее время на сервере ВКонтакте в TDateTime.
+    /// Возвращает текущее время на сервере ВКонтакте
     /// </summary>
     function GetServerTime(var ServerTime: TDateTime): Boolean; overload;
     /// <summary>
-    /// Возвращает текущее время на сервере ВКонтакте в unixtime.
+    /// Возвращает текущее время на сервере ВКонтакте в unixtime
     /// </summary>
     function GetServerTimeUnix(var ServerTime: Int64): Boolean; overload;
     /// <summary>
-    /// Позволяет получить URL, сокращенный с помощью vk.cc.
+    /// Позволяет получить URL, сокращенный с помощью vk.cc
     /// </summary>
     function GetShortLink(var Item: TVkShortLink; const Url: string; &Private: Boolean = False): Boolean; overload;
     /// <summary>
-    /// Определяет тип объекта (пользователь, сообщество, приложение) и его идентификатор по короткому имени screen_name.
+    /// Определяет тип объекта (пользователь, сообщество, приложение) и его идентификатор по короткому имени ScreenName
     /// </summary>
     function ResolveScreenName(var Item: TVkScreenNameType; const ScreenName: string): Boolean; overload;
   end;
@@ -80,10 +98,7 @@ end;
 
 function TUtilsController.DeleteFromLastShortened(Key: string): Boolean;
 begin
-  with Handler.Execute('utils.deleteFromLastShortened', ['key', Key]) do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('utils.deleteFromLastShortened', ['key', Key]).ResponseIsTrue;
 end;
 
 function TUtilsController.GetLastShortenedLinks(var Items: TVkShortLinks; Offset, Count: Integer): Boolean;
@@ -106,8 +121,7 @@ end;
 
 function TUtilsController.GetServerTimeUnix(var ServerTime: Int64): Boolean;
 begin
-  with Handler.Execute('utils.getServerTime') do
-    Result := Success and TryStrToInt64(Response, ServerTime);
+  Result := Handler.Execute('utils.getServerTime').ResponseAsInt64(ServerTime);
 end;
 
 function TUtilsController.GetShortLink(var Item: TVkShortLink; const Url: string; &Private: Boolean): Boolean;
@@ -125,32 +139,32 @@ end;
 
 { TVkParamsUtilsGetLinkStats }
 
-function TVkParamsUtilsGetLinkStats.Key(Value: string): Integer;
+function TVkParamsUtilsGetLinkStats.Key(const Value: string): Integer;
 begin
   Result := List.Add('key', Value);
 end;
 
-function TVkParamsUtilsGetLinkStats.Source(Value: string): Integer;
+function TVkParamsUtilsGetLinkStats.Source(const Value: string): Integer;
 begin
   Result := List.Add('source', Value);
 end;
 
-function TVkParamsUtilsGetLinkStats.AccessKey(Value: string): Integer;
+function TVkParamsUtilsGetLinkStats.AccessKey(const Value: string): Integer;
 begin
   Result := List.Add('access_key', Value);
 end;
 
-function TVkParamsUtilsGetLinkStats.Interval(Value: string): Integer;
+function TVkParamsUtilsGetLinkStats.Interval(const Value: TVkStatInterval): Integer;
 begin
-  Result := List.Add('interval', Value);
+  Result := List.Add('interval', Value.ToString);
 end;
 
-function TVkParamsUtilsGetLinkStats.IntervalsCount(Value: Integer): Integer;
+function TVkParamsUtilsGetLinkStats.IntervalsCount(const Value: Integer): Integer;
 begin
   Result := List.Add('intervals_count', Value);
 end;
 
-function TVkParamsUtilsGetLinkStats.Extended(Value: Boolean): Integer;
+function TVkParamsUtilsGetLinkStats.Extended(const Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;

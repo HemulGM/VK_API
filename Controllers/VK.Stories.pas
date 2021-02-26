@@ -3,66 +3,173 @@ unit VK.Stories;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Stories, VK.Entity.Stories.Sticker,
-  VK.Entity.Stories.Stats, VK.Entity.Stories.Viewed;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Stories, VK.Entity.Stories.Sticker, VK.Entity.Stories.Stats,
+  VK.Entity.Stories.Viewed;
 
 type
   TVkParamsStoriesGet = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя, истории которого необходимо получить
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
-    function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// True — возвращать в ответе дополнительную информацию о профилях пользователей
+    /// </summary>
+    function Extended(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Список дополнительных полей для объектов User и Group, которые необходимо вернуть
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsStoriesGetUploadServer = record
     List: TParams;
+    /// <summary>
+    /// True — разместить историю в новостях
+    /// </summary>
     function AddToNews(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификаторы пользователей, которые будут видеть историю (для отправки в личном сообщении)
+    /// </summary>
     function UserIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификатор истории, в ответ на которую создается новая
+    /// </summary>
     function ReplyToStory(const Value: string): Integer;
-    function LinkText(const Value: string): Integer;
+    /// <summary>
+    /// Текст ссылки для перехода из истории (только для историй сообществ)
+    /// </summary>
+    function LinkText(const Value: TVkLinkText): Integer;
+    /// <summary>
+    /// Адрес ссылки для перехода из истории
+    /// </summary>
     function LinkUrl(const Value: string): Integer;
+    /// <summary>
+    /// Идентификатор сообщества, в которое должна быть загружена история (при работе с ключом доступа пользователя)
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Объект кликабельного стикера (данные в формате JSON)
+    /// </summary>
     function ClickableStickers(const Value: string): Integer; overload;
+    /// <summary>
+    /// Объект кликабельного стикера
+    /// </summary>
     function ClickableStickers(Value: TVkStoriesStickersInfo): Integer; overload;
   end;
 
   TVkParamsStoriesGetReplies = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца истории
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор истории
+    /// </summary>
     function StoryId(const Value: Integer): Integer;
+    /// <summary>
+    /// Ключ доступа для приватного объекта
+    /// </summary>
     function AccessKey(const Value: string): Integer;
-    function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// True — возвращать дополнительную информацию о профилях и сообществах
+    /// </summary>
+    function Extended(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Дополнительные поля профилей и сообществ, которые необходимо вернуть в ответе
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsStoriesGetViewers = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца истории
+    /// </summary>
     function OwnerId(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор истории
+    /// </summary>
     function StoryId(Value: Integer): Integer;
-    function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): Integer;
-    function Extended(Value: Boolean): Integer;
+    /// <summary>
+    /// Максимальное число результатов в ответе
+    /// </summary>
+    function Count(Value: Integer = 100): Integer;
+    /// <summary>
+    /// Сдвиг для получения определённого подмножества результатов
+    /// </summary>
+    function Offset(Value: Integer = 0): Integer;
+    /// <summary>
+    /// True — возвращать в ответе расширенную информацию о пользователях
+    /// </summary>
+    function Extended(Value: Boolean = False): Integer;
   end;
 
   TVkParamsStoriesSearch = record
     List: TParams;
+    /// <summary>
+    /// Поисковый запрос
+    /// </summary>
     function Query(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор места
+    /// </summary>
     function PlaceId(Value: Integer): Integer;
+    /// <summary>
+    /// Географическая широта точки, в радиусе которой необходимо производить поиск, заданная в градусах (от -90 до 90)
+    /// </summary>
     function Latitude(Value: Extended): Integer;
+    /// <summary>
+    /// Географическая долгота точки, в радиусе которой необходимо производить поиск, заданная в градусах (от -180 до 180)
+    /// </summary>
     function Longitude(Value: Extended): Integer;
+    /// <summary>
+    /// Радиус зоны поиска в метрах
+    /// </summary>
     function Radius(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор упомянутого в истории пользователя или сообщества
+    /// </summary>
     function MentionedId(Value: Integer): Integer;
-    function Count(Value: Integer): Integer;
+    /// <summary>
+    /// Количество историй, информацию о которых необходимо вернуть
+    /// </summary>
+    function Count(Value: Integer = 20): Integer;
+    /// <summary>
+    /// Параметр, определяющий необходимость возвращать расширенную информацию о владельце истории
+    /// False - возвращаются только идентификаторы
+    /// True — будут дополнительно возвращены имя и фамили
+    /// </summary>
     function Extended(Value: Boolean): Integer;
+    /// <summary>
+    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsStoriesSendInteraction = record
     List: TParams;
+    /// <summary>
+    /// Ключ доступа пользователя, полученный при подписке. Возвращает событие VKWebAppSubscribeStoryApp
+    /// </summary>
     function AccessKey(Value: string): Integer;
+    /// <summary>
+    /// Текст фидбека
+    /// </summary>
     function Message(Value: string): Integer;
-    function IsBroadcast(Value: Boolean): Integer;
-    function IsAnonymous(Value: Boolean): Integer;
+    /// <summary>
+    /// False — фидбек виден только отправителю и автору истории;
+    /// True — фидбек виден всем зрителям истории и автору
+    /// </summary>
+    function IsBroadcast(Value: Boolean = False): Integer;
+    /// <summary>
+    /// False — автор фидбека не анонимный;
+    /// True — автор фидбека анонимный
+    /// </summary>
+    function IsAnonymous(Value: Boolean = False): Integer;
     function UnseenMarker(Value: Boolean): Integer;
   end;
 
@@ -159,14 +266,12 @@ uses
 
 function TStoriesController.BanOwner(const OwnersIds: TIdList): Boolean;
 begin
-  with Handler.Execute('stories.banOwner', ['owners_ids', OwnersIds.ToString]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('stories.banOwner', ['owners_ids', OwnersIds.ToString]).ResponseIsTrue;
 end;
 
 function TStoriesController.Delete(const OwnerId, StoryId: Integer): Boolean;
 begin
-  with Handler.Execute('stories.delete', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('stories.delete', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).ResponseIsTrue;
 end;
 
 function TStoriesController.Get(var Items: TVkStoriesBlock; const OwnerId: Integer): Boolean;
@@ -201,25 +306,22 @@ end;
 
 function TStoriesController.GetPhotoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer): Boolean;
 begin
-  with Handler.Execute('stories.getPhotoUploadServer', Params.List) do
-    Result := Success and GetValue('upload_result', UploadResult);
+  Result := Handler.Execute('stories.getPhotoUploadServer', Params.List).GetValue('upload_result', UploadResult);
 end;
 
 function TStoriesController.GetReplies(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesGetReplies): Boolean;
 begin
-  Result := Handler.Execute('stories.getReplies', Params.List).GetObject<TVkStoriesBlock>(Items);
+  Result := Handler.Execute('stories.getReplies', Params.List).GetObject(Items);
 end;
 
 function TStoriesController.GetStats(var Items: TVkStoryStat; const OwnerId, StoryId: Integer): Boolean;
 begin
-  Result := Handler.Execute('stories.getStats', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).GetObject
-    <TVkStoryStat>(Items);
+  Result := Handler.Execute('stories.getStats', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).GetObject(Items);
 end;
 
 function TStoriesController.GetVideoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer): Boolean;
 begin
-  with Handler.Execute('stories.getVideoUploadServer', Params.List) do
-    Result := Success and GetValue('upload_result', UploadResult);
+  Result := Handler.Execute('stories.getVideoUploadServer', Params.List).GetValue('upload_result', UploadResult);
 end;
 
 function TStoriesController.GetViewers(var Items: TVkStoryViews; const Params: TVkParamsStoriesGetViewers): Boolean;
@@ -229,19 +331,12 @@ end;
 
 function TStoriesController.HideAllReplies(const OwnerId, GroupId: Integer): Boolean;
 begin
-  with Handler.Execute('stories.hideAllReplies', [['owner_id', OwnerId.ToString], ['group_id', GroupId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('stories.hideAllReplies', [['owner_id', OwnerId.ToString], ['group_id', GroupId.ToString]]).ResponseIsTrue;
 end;
 
 function TStoriesController.HideReply(const OwnerId, StoryId: Integer): Boolean;
 begin
-  with Handler.Execute('stories.hideReply', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]) do
-    Result := Success and ResponseIsTrue;
-end;
-
-function TStoriesController.Save(var Items: TVkStoryItems; const UploadResults: TArrayOfString): Boolean;
-begin
-  Result := Handler.Execute('stories.save', ['upload_results', UploadResults.ToString]).GetObject<TVkStoryItems>(Items);
+  Result := Handler.Execute('stories.hideReply', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).ResponseIsTrue;
 end;
 
 function TStoriesController.Search(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesSearch): Boolean;
@@ -249,23 +344,24 @@ begin
   Result := Search(Items, Params.List);
 end;
 
+function TStoriesController.Search(var Items: TVkStoriesBlock; const Params: TParams): Boolean;
+begin
+  Result := Handler.Execute('stories.search', Params).GetObject<TVkStoriesBlock>(Items);
+end;
+
+function TStoriesController.Save(var Items: TVkStoryItems; const UploadResults: TArrayOfString): Boolean;
+begin
+  Result := Handler.Execute('stories.save', ['upload_results', UploadResults.ToString]).GetObject<TVkStoryItems>(Items);
+end;
+
 function TStoriesController.SendInteraction(const Params: TVkParamsStoriesSendInteraction): Boolean;
 begin
-  with Handler.Execute('stories.sendInteraction', Params.List) do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('stories.sendInteraction', Params.List).ResponseIsTrue;
 end;
 
 function TStoriesController.UnbanOwner(const OwnersIds: TIdList): Boolean;
 begin
-  with Handler.Execute('stories.unbanOwner', ['owners_ids', OwnersIds.ToString]) do
-    Result := Success and ResponseIsTrue;
-end;
-
-function TStoriesController.Search(var Items: TVkStoriesBlock; const Params: TParams): Boolean;
-begin
-  Result := Handler.Execute('stories.search', Params).GetObject<TVkStoriesBlock>(Items);
+  Result := Handler.Execute('stories.unbanOwner', ['owners_ids', OwnersIds.ToString]).ResponseIsTrue;
 end;
 
 function TStoriesController.Get(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesGet): Boolean;
@@ -312,9 +408,9 @@ begin
   Result := List.Add('reply_to_story', Value);
 end;
 
-function TVkParamsStoriesGetUploadServer.LinkText(const Value: string): Integer;
+function TVkParamsStoriesGetUploadServer.LinkText(const Value: TVkLinkText): Integer;
 begin
-  Result := List.Add('link_text', Value);
+  Result := List.Add('link_text', Value.ToString);
 end;
 
 function TVkParamsStoriesGetUploadServer.LinkUrl(const Value: string): Integer;

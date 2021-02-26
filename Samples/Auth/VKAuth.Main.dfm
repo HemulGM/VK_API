@@ -38,7 +38,7 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheet11
+      ActivePage = TabSheet6
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
@@ -409,6 +409,8 @@ object FormMain: TFormMain
       object TabSheet6: TTabSheet
         Caption = 'Wall'
         ImageIndex = 5
+        ExplicitLeft = 6
+        ExplicitTop = 21
         object Button19: TButton
           Left = 3
           Top = 3

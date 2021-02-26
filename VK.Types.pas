@@ -156,9 +156,12 @@ type
   TArrayOfStringHelper = record helper for TArrayOfString
     function ToString: string; overload; inline;
     function ToJson: string; overload; inline;
+    function Add(const Value: string): Integer; inline;
+    procedure Delete(const Value: string); inline;
     procedure Assign(Source: TStrings); overload;
     function IsEmpty: Boolean;
     function Length: Integer;
+    function IndexOf(const Value: string): Integer;
   end;
 
   {$IFDEF OLD_VERSION}
@@ -171,9 +174,11 @@ type
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
     function ToString: string; overload; inline;
     function ToJson: string; overload; inline;
-    function Add(Value: Integer): Integer;
+    function Add(Value: Integer): Integer; inline;
+    procedure Delete(const Value: Integer); inline;
     function IsEmpty: Boolean;
     function Length: Integer;
+    function IndexOf(const Value: Integer): Integer;
   end;
 
   TFields = TArrayOfString;
@@ -257,6 +262,11 @@ type
     function ToString: string; inline;
   end;
 
+  /// <summary>
+  /// Wall Ч фотографии со стены;
+  /// Profile Ч фотографии профил€;
+  /// Saved Ч сохраненные фотографии
+  /// </summary>
   TVkPhotoSystemAlbum = (Wall, Saved, Profile);
 
   TVkPhotoSystemAlbumHelper = record helper for TVkPhotoSystemAlbum
@@ -467,6 +477,10 @@ type
   TVkDocTypeFilter = (All, Text, Archives, GIF, Pictures, Audios, Videos,     //
     Books, Other);
 
+  TVkSortUser = (Popular, DateReg);
+
+  TVkPhotoSort = (DateAdd, Likes);
+
   TVkSort = (Asc, Desc);
 
   TVkSortHelper = record helper for TVkSort
@@ -519,6 +533,37 @@ type
     Participate, Play, Apply, GetAnOffer, ToWrite, Reply);
 
   TVkPostLinkButtonHelper = record helper for TVkPostLinkButton
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// to_store Ч Ђ¬ магазинї;
+  /// vote Ч Ђ√олосоватьї;
+  /// more Ч Ђ≈щЄї;
+  /// book Ч Ђ«абронироватьї;
+  /// order Ч Ђ«аказатьї;
+  /// enroll Ч Ђ«аписатьс€ї;
+  /// fill Ч Ђ«аполнитьї;
+  /// signup Ч Ђ«арегистрироватьс€ї;
+  /// buy Ч Ђ упитьї;
+  /// ticket Ч Ђ упить билетї;
+  /// write Ч ЂЌаписатьї;
+  /// open Ч Ђќткрытьї;
+  /// learn_more Ч Ђѕодробнееї (по умолчанию);
+  /// view Ч Ђѕосмотретьї;
+  /// go_to Ч Ђѕерейтиї;
+  /// contact Ч Ђ—в€затьс€ї;
+  /// watch Ч Ђ—мотретьї;
+  /// play Ч Ђ—лушатьї;
+  /// install Ч Ђ”становитьї;
+  /// read Ч Ђ„итатьї;
+  /// game Ч Ђ»гратьї.
+  /// </summary>
+  TVkLinkText = (ToStore, Vote, More, Book, Order, Enroll, Fill, Signup, Buy, //
+    Ticket, Write, Open, LearnMore, View, &GoTo, Contact, Watch, Play,        //
+    Install, Read, Game);
+
+  TVkLinkTextHelper = record helper for TVkLinkText
     function ToString: string; inline;
   end;
 
@@ -639,6 +684,16 @@ type
   /// </summary>
   TVkGroupTagColor = string;
 
+  /// <summary>
+  /// Friends Ц друзь€ пользовател€;
+  /// Idols Ц подписки пользовател€;
+  /// Publics Ц публичные страницы, на которые подписан пользователь;
+  /// Groups Ц группы пользовател€;
+  /// Events Ц встречи пользовател€;
+  /// Correspondents Ц люди, с которыми пользователь имеет переписку;
+  /// MutualFriends Ц люди, у которых есть общие друзь€ с текущим пользователем
+  /// (этот фильтр позвол€ет получить не всех пользователей, имеющих общих друзей)
+  /// </summary>
   TVkSearchFilter = (Friends, Idols, Publics, Groups, Events, Correspondents, MutualFriends);
 
   TVkSearchFilterHelper = record helper for TVkSearchFilter
@@ -730,6 +785,18 @@ type
   TVkStatInterval = (Day, Week, Month, Year, All);
 
   TVkStatIntervalHelper = record helper for TVkStatInterval
+    function ToString: string;
+  end;
+
+  TVkStatReachFilter = (Visitors, Reach, Activity);
+
+  TVkStatReachFilterHelper = record helper for TVkStatReachFilter
+    function ToString: string;
+  end;
+
+  TVkStatReachFilters = set of TVkStatReachFilter;
+
+  TVkStatReachFiltersHelper = record helper for TVkStatReachFilters
     function ToString: string;
   end;
 
@@ -846,11 +913,6 @@ type
   TVkSex = (None, Female, Male);
 
   /// <summary>
-  ///  ѕол - поиск
-  /// </summary>
-  TVkSexSearch = (Any, Male, Female);
-
-  /// <summary>
   ///  ¬идимость даты рождени€
   /// </summary>
   TVkBirthDateVisibility = (Hidden, Visible, DayMonOnly);
@@ -869,6 +931,18 @@ type
   /// </summary>
   TVkRelation = (None, NotMarried, HaveFriend, Affiance, Married, Complicated, //
     ActivelyLooking, InLove, CivilMarriage);
+
+  TVkSearchTarget = (Friends, Subscriptions);
+
+  TVkSearchTargetHelper = record helper for TVkSearchTarget
+    function ToString: string; overload; inline;
+  end;
+
+  TVkSearchTargets = set of TVkSearchTarget;
+
+  TVkSearchTargetsHelper = record helper for TVkSearchTargets
+    function ToString: string; overload; inline;
+  end;
 
   TVkLinkStatusType = (lsNotBanned, lsBanned, lsProcessing);
 
@@ -979,6 +1053,34 @@ type
   TVkPermissionsHelper = record helper for TVkPermissions
     function ToString: string; overload; inline;
     procedure Include(Value: TVkPermission); inline;
+  end;
+
+  TVkVoteAnswer = record
+    Id: Integer;
+    Text: string;
+    function ToString: string;
+    class function Create(Id: Integer; Text: string): TVkVoteAnswer; static;
+  end;
+
+  TVkVoteAnswers = TArray<TVkVoteAnswer>;
+
+  TVkVoteAnswersHelper = record helper for TVkVoteAnswers
+    function ToJson: string;
+    function Add(Value: TVkVoteAnswer): Integer; overload;
+    function Add(Id: Integer; Text: string): Integer; overload;
+  end;
+
+  TVkPrivacySettings = record
+  private
+    FInt: TArrayOfInteger;
+    FStr: TArrayOfString;
+  public
+    procedure Add(const Value: string); overload;
+    procedure Add(const Value: Integer); overload;
+    procedure Delete(const Value: string); overload;
+    procedure Delete(const Value: Integer); overload;
+    procedure Clear;
+    function ToString: string;
   end;
 
   TOnLogin = procedure(Sender: TObject) of object;
@@ -1114,7 +1216,11 @@ const
   VkSearchFilter: array[TVkSearchFilter] of string = ('friends', 'idols', 'publics', 'groups', 'events', 'correspondents',
     'mutual_friends');
   VkStatInterval: array[TVkStatInterval] of string = ('day', 'week', 'month', 'year', 'all');
+  VkStatReachFilter: array[TVkStatReachFilter] of string = ('visitors', 'reach', 'activity');
   VkVideosFilter: array[TVkVideosFilter] of string = ('mp4', 'youtube', 'vimeo', 'short', 'long');
+  VkSearchTarget: array[TVkSearchTarget] of string = ('friends', 'subscriptions');
+  VkLinkText: array[TVkLinkText] of string = ('to_store', 'vote', 'more', 'book', 'order', 'enroll', 'fill', 'signup',
+    'buy', 'ticket', 'write', 'open', 'learn_more', 'view', 'go_to', 'contact', 'watch', 'play', 'install', 'read', 'game');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -1259,6 +1365,25 @@ begin
   Self[Result - 1] := Value;
 end;
 
+procedure TArrayOfIntegerHelper.Delete(const Value: Integer);
+var
+  i: Integer;
+begin
+  i := IndexOf(Value);
+  if i >= 0 then
+    System.Delete(Self, i, 1);
+end;
+
+function TArrayOfIntegerHelper.IndexOf(const Value: Integer): Integer;
+var
+  i: Integer;
+begin
+  for i := Low(Self) to High(Self) do
+    if Self[i] = Value then
+      Exit(i);
+  Result := -1;
+end;
+
 function TArrayOfIntegerHelper.IsEmpty: Boolean;
 begin
   Result := System.Length(Self) = 0;
@@ -1297,6 +1422,16 @@ end;
 
 { TArrayOfStringHelper }
 
+function TArrayOfStringHelper.IndexOf(const Value: string): Integer;
+var
+  i: Integer;
+begin
+  for i := Low(Self) to High(Self) do
+    if Self[i] = Value then
+      Exit(i);
+  Result := -1;
+end;
+
 function TArrayOfStringHelper.IsEmpty: Boolean;
 begin
   Result := System.Length(Self) = 0;
@@ -1333,6 +1468,13 @@ begin
   end;
 end;
 
+function TArrayOfStringHelper.Add(const Value: string): Integer;
+begin
+  Result := System.Length(Self) + 1;
+  SetLength(Self, Result);
+  Self[Result - 1] := Value;
+end;
+
 procedure TArrayOfStringHelper.Assign(Source: TStrings);
 var
   i: Integer;
@@ -1340,6 +1482,15 @@ begin
   SetLength(Self, Source.Count);
   for i := 0 to Source.Count - 1 do
     Self[i] := Source[i];
+end;
+
+procedure TArrayOfStringHelper.Delete(const Value: string);
+var
+  i: Integer;
+begin
+  i := IndexOf(Value);
+  if i >= 0 then
+    System.Delete(Self, i, 1);
 end;
 
 { TParamsHelper }
@@ -2281,6 +2432,132 @@ end;
 function TVkBoardTopicPreviewHelper.ToConst: Integer;
 begin
   Result := Ord(Self);
+end;
+
+{ TVkSearchTargetHelper }
+
+function TVkSearchTargetHelper.ToString: string;
+begin
+  Result := VkSearchTarget[Self];
+end;
+
+{ TVkSearchTargetsHelper }
+
+function TVkSearchTargetsHelper.ToString: string;
+var
+  Item: TVkSearchTarget;
+begin
+  for Item in Self do
+    Result := Result + Item.ToString + ',';
+  Result.TrimRight([',']);
+end;
+
+{ TVkLinkTextHelper }
+
+function TVkLinkTextHelper.ToString: string;
+begin
+  Result := VkLinkText[Self];
+end;
+
+{ TVkStatReachFilterHelper }
+
+function TVkStatReachFilterHelper.ToString: string;
+begin
+  Result := VkStatReachFilter[Self];
+end;
+
+{ TVkStatReachFiltersHelper }
+
+function TVkStatReachFiltersHelper.ToString: string;
+var
+  Item: TVkStatReachFilter;
+begin
+  for Item in Self do
+    Result := Result + Item.ToString + ',';
+  Result.TrimRight([',']);
+end;
+
+{ TVkVoteAnswersHelper }
+
+function TVkVoteAnswersHelper.Add(Value: TVkVoteAnswer): Integer;
+begin
+  Result := System.Length(Self) + 1;
+  SetLength(Self, Result);
+  Self[Result - 1] := Value;
+end;
+
+function TVkVoteAnswersHelper.Add(Id: Integer; Text: string): Integer;
+begin
+  Result := Add(TVkVoteAnswer.Create(Id, Text));
+end;
+
+function TVkVoteAnswersHelper.ToJson: string;
+var
+  i: Integer;
+begin
+  Result := '{';
+  for i := Low(Self) to High(Self) do
+  begin
+    if i <> Low(Self) then
+      Result := Result + ',';
+    Result := Result + Self[i].ToString;
+  end;
+  Result := Result + '}';
+end;
+
+{ TVkVoteAnswer }
+
+class function TVkVoteAnswer.Create(Id: Integer; Text: string): TVkVoteAnswer;
+begin
+  Result.Id := Id;
+  Result.Text := Text;
+end;
+
+function TVkVoteAnswer.ToString: string;
+begin
+  Result := '"' + Id.ToString + '":"' + Text + '"';
+end;
+
+{ TVkPrivacySettings }
+
+procedure TVkPrivacySettings.Add(const Value: string);
+begin
+  if FStr.IndexOf(Value) < 0 then
+    FStr.Add(Value);
+end;
+
+procedure TVkPrivacySettings.Add(const Value: Integer);
+begin
+  if FInt.IndexOf(Value) < 0 then
+    FInt.Add(Value);
+end;
+
+procedure TVkPrivacySettings.Clear;
+begin
+  SetLength(FInt, 0);
+  SetLength(FStr, 0);
+end;
+
+procedure TVkPrivacySettings.Delete(const Value: string);
+begin
+  FStr.Delete(Value);
+end;
+
+procedure TVkPrivacySettings.Delete(const Value: Integer);
+begin
+  FInt.Delete(Value);
+end;
+
+function TVkPrivacySettings.ToString: string;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := Low(FInt) to High(FInt) do
+    Result := Result + FInt[i].ToString + ',';
+  for i := Low(FStr) to High(FStr) do
+    Result := Result + FStr[i] + ',';
+  Result.TrimRight([',']);
 end;
 
 end.

@@ -34,17 +34,17 @@ uses
 function TSecureController.AddAppEvent(const UserId: Integer; ActivityId: TAppActivity; Value: Integer): Boolean;
 begin
   with Handler.Execute('secure.addAppEvent', [['user_id', UserId.ToString], ['activity_id', Ord(ActivityId).ToString], ['value', Value.ToString]]) do
-    Result := Success and ResponseIsTrue;
+    Result := ResponseIsTrue;
 end;
 
 function TSecureController.CheckToken(var Value: TVkSecureCheckToken; const Token, IP: string): Boolean;
 begin
-  Result := Handler.Execute('secure.checkToken', [['token', Token], ['ip', IP]]).GetObject<TVkSecureCheckToken>(Value);
+  Result := Handler.Execute('secure.checkToken', [['token', Token], ['ip', IP]]).GetObject(Value);
 end;
 
 function TSecureController.GetAppBalance(var Value: Integer): Boolean;
 begin
-  { TODO -oМалинин Геннадий -c : Not owrk 15.01.2021 11:12:57 }
+  { TODO -oМалинин Геннадий -c : Not work 15.01.2021 11:12:57 }
   with Handler.Execute('secure.getAppBalance') do
     Result := Success; // and ResponseIsTrue;
 end;

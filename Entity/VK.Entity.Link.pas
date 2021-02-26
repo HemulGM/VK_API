@@ -162,7 +162,13 @@ type
     FCity_id: Integer;
     FViews: Integer;
   public
+    /// <summary>
+    /// Идентификатор города
+    /// </summary>
     property CityId: Integer read FCity_id write FCity_id;
+    /// <summary>
+    /// Число переходов из этой города
+    /// </summary>
     property Views: Integer read FViews write FViews;
   end;
 
@@ -171,7 +177,13 @@ type
     FCountry_id: Integer;
     FViews: Integer;
   public
+    /// <summary>
+    /// Идентификатор страны
+    /// </summary>
     property CountryId: Integer read FCountry_id write FCountry_id;
+    /// <summary>
+    /// Число переходов из этой страны
+    /// </summary>
     property Views: Integer read FViews write FViews;
   end;
 
@@ -181,8 +193,17 @@ type
     FFemale: Integer;
     FMale: Integer;
   public
+    /// <summary>
+    /// Обозначение возраста
+    /// </summary>
     property AgeRange: string read FAge_range write FAge_range;
+    /// <summary>
+    /// Число переходов пользователей женского пола
+    /// </summary>
     property Female: Integer read FFemale write FFemale;
+    /// <summary>
+    /// Число переходов пользователей мужского пола
+    /// </summary>
     property Male: Integer read FMale write FMale;
   end;
 
@@ -281,7 +302,7 @@ end;
 
 function TVkLink.ToAttachment: TAttachment;
 begin
-  { TODO -oМалинин Геннадий -c : Додеать вложение ссылки 26.01.2021 12:23:45 }
+  { TODO -oМалинин Геннадий -c : Доделать вложение ссылки 26.01.2021 12:23:45 }
   Result := TAttachment.Link(0, 0, AccessKey);
 end;
 

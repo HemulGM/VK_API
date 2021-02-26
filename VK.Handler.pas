@@ -28,6 +28,7 @@ type
     function ResponseIsFalse: Boolean;
     function ResponseAsBool(var Value: Boolean): Boolean;
     function ResponseAsInt(var Value: Integer): Boolean;
+    function ResponseAsInt64(var Value: Int64): Boolean;
     function ResponseAsStr(var Value: string): Boolean;
     function GetJSONValue: TJSONValue;
     function GetJSONResponse: TJSONValue;
@@ -599,6 +600,11 @@ end;
 function TResponse.ResponseAsInt(var Value: Integer): Boolean;
 begin
   Result := Success and TryStrToInt(Response, Value);
+end;
+
+function TResponse.ResponseAsInt64(var Value: Int64): Boolean;
+begin
+  Result := Success and TryStrToInt64(Response, Value);
 end;
 
 function TResponse.ResponseAsStr(var Value: string): Boolean;

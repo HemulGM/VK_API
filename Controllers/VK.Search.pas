@@ -3,17 +3,36 @@ unit VK.Search;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Search;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Search;
 
 type
   TVkParamsSearch = record
     List: TParams;
-    function Query(Value: string): Integer;
-    function Offset(Value: Integer): Integer;
-    function Limit(Value: Integer): Integer;
-    function Filters(Value: TVkSearchFilters): Integer;
+    /// <summary>
+    /// Текст запроса, результаты которого нужно получить
+    /// </summary>
+    function Query(const Value: string): Integer;
+    /// <summary>
+    /// Смещение для выборки определённого подмножества результатов
+    /// </summary>
+    function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Ограничение на количество возвращаемых результатов
+    /// </summary>
+    function Limit(const Value: Integer = 9): Integer;
+    /// <summary>
+    /// Перечисленные через запятую типы данных, которые необходимо вернуть (По умолчанию возвращаются все)
+    /// </summary>
+    function Filters(const Value: TVkSearchFilters = []): Integer;
+    /// <summary>
+    /// Дополнительные поля профилей и сообществ для получения
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
-    function SearchGlobal(Value: Boolean): Integer;
+    /// <summary>
+    /// True — к результатам поиска добавляются результаты глобального поиска по всем пользователям и группам
+    /// </summary>
+    function SearchGlobal(const Value: Boolean = True): Integer;
   end;
 
   /// <summary>
@@ -44,7 +63,7 @@ uses
 
 function TSearchController.GetHints(var Items: TVkSearchItems; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('search.getHints', Params).GetObject<TVkSearchItems>(Items);
+  Result := Handler.Execute('search.getHints', Params).GetObject(Items);
 end;
 
 function TSearchController.GetHints(var Items: TVkSearchItems; Params: TVkParamsSearch): Boolean;
@@ -62,22 +81,22 @@ end;
 
 { TVkParamsSearch }
 
-function TVkParamsSearch.Query(Value: string): Integer;
+function TVkParamsSearch.Query(const Value: string): Integer;
 begin
   Result := List.Add('q', Value);
 end;
 
-function TVkParamsSearch.Offset(Value: Integer): Integer;
+function TVkParamsSearch.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsSearch.Limit(Value: Integer): Integer;
+function TVkParamsSearch.Limit(const Value: Integer): Integer;
 begin
   Result := List.Add('limit', Value);
 end;
 
-function TVkParamsSearch.Filters(Value: TVkSearchFilters): Integer;
+function TVkParamsSearch.Filters(const Value: TVkSearchFilters): Integer;
 begin
   Result := List.Add('filters', Value.ToString);
 end;
@@ -87,7 +106,7 @@ begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
 
-function TVkParamsSearch.SearchGlobal(Value: Boolean): Integer;
+function TVkParamsSearch.SearchGlobal(const Value: Boolean): Integer;
 begin
   Result := List.Add('search_global', Value);
 end;
