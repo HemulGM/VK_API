@@ -1404,7 +1404,7 @@ begin
   Result := Handler.Execute('photos.report', [
     ['owner_id', OwnerId.ToString],
     ['photo_id', PhotoId.ToString],
-    ['reason', Reason.ToConst.ToString]]).
+    ['reason', Ord(Reason).ToString]]).
     ResponseIsTrue;
 end;
 
@@ -1413,7 +1413,7 @@ begin
   Result := Handler.Execute('photos.reportComment', [
     ['owner_id', OwnerId.ToString],
     ['comment_id', CommentId.ToString],
-    ['reason', Reason.ToConst.ToString]]).
+    ['reason', Ord(Reason).ToString]]).
     ResponseIsTrue;
 end;
 

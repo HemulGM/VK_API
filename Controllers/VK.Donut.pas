@@ -49,7 +49,7 @@ type
     /// <summary>
     /// Возвращает информацию о том, подписан ли пользователь на платный контент (является доном).
     /// </summary>
-    function IsDon(var Value: Boolean; OwnerId: Integer): Boolean;
+    function IsDon(OwnerId: Integer): Boolean;
   end;
 
 implementation
@@ -61,7 +61,7 @@ uses
 
 function TDonutController.GetFriends(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('donut.getFriends').GetObject<TVkProfiles>(Items);
+  Result := Handler.Execute('donut.getFriends').GetObject(Items);
 end;
 
 function TDonutController.GetFriends(var Items: TVkProfiles; Params: TVkParamsDonutGetFriends): Boolean;
@@ -71,7 +71,7 @@ end;
 
 function TDonutController.GetSubscription(var Item: TVkDonutSubscription; OwnerId: Integer): Boolean;
 begin
-  Result := Handler.Execute('donut.getSubscription').GetObject<TVkDonutSubscription>(Item);
+  Result := Handler.Execute('donut.getSubscription').GetObject(Item);
 end;
 
 function TDonutController.GetSubscriptions(var Items: TVkDonutSubscriptions; Params: TVkParamsDonutGetSubscriptions): Boolean;
@@ -79,19 +79,14 @@ begin
   Result := GetSubscriptions(Items, Params.List);
 end;
 
-function TDonutController.IsDon(var Value: Boolean; OwnerId: Integer): Boolean;
+function TDonutController.IsDon(OwnerId: Integer): Boolean;
 begin
-  with Handler.Execute('donut.isDon') do
-  begin
-    Result := Success;
-    if Result then
-      Value := ResponseIsTrue;
-  end;
+  Result := Handler.Execute('donut.isDon').ResponseIsTrue;
 end;
 
 function TDonutController.GetSubscriptions(var Items: TVkDonutSubscriptions; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('donut.getSubscriptions').GetObject<TVkDonutSubscriptions>(Items);
+  Result := Handler.Execute('donut.getSubscriptions').GetObject(Items);
 end;
 
 { TVkParamsDonutGetFriends }

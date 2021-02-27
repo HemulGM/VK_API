@@ -144,7 +144,7 @@ end;
 
 function TVkParamsSignup.Birthday(const Value: TDate): TVkParamsSignup;
 begin
-  List.Add('birthday', FormatDateTime('DD.MM.YYYY', Value));
+  List.Add('birthday', Value, 'DD.MM.YYYY');
   Result := Self;
 end;
 

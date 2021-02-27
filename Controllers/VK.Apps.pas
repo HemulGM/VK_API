@@ -8,13 +8,13 @@ uses
 type
   TVkParamsAppsGet = record
     List: TParams;
-    function AppId(Value: Integer): TVkParamsAppsGet;
-    function AppIds(Value: TIdList): TVkParamsAppsGet;
-    function &Platform(Value: TVkPlatform): TVkParamsAppsGet;
-    function Extended(Value: Boolean): TVkParamsAppsGet;
-    function ReturnFriends(Value: Boolean): TVkParamsAppsGet;
+    function AppId(const Value: Integer): TVkParamsAppsGet;
+    function AppIds(const Value: TIdList): TVkParamsAppsGet;
+    function &Platform(const Value: TVkPlatform): TVkParamsAppsGet;
+    function Extended(const Value: Boolean): TVkParamsAppsGet;
+    function ReturnFriends(const Value: Boolean): TVkParamsAppsGet;
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsAppsGet;
-    function NameCase(Value: TVkNameCase): TVkParamsAppsGet;
+    function NameCase(const Value: TVkNameCase): TVkParamsAppsGet;
   end;
 
   /// <summary>
@@ -39,7 +39,7 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils;
+  VK.API, VK.CommonUtils;
 
 { TAppsController }
 
@@ -50,7 +50,7 @@ end;
 
 function TAppsController.Get(var Items: TVkApps; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('apps.get').GetObject<TVkApps>(Items);
+  Result := Handler.Execute('apps.get').GetObject(Items);
 end;
 
 function TAppsController.Get(var Items: TVkApps; Params: TVkParamsAppsGet): Boolean;
@@ -60,31 +60,31 @@ end;
 
 { TVkParamsAppsGet }
 
-function TVkParamsAppsGet.AppId(Value: Integer): TVkParamsAppsGet;
+function TVkParamsAppsGet.AppId(const Value: Integer): TVkParamsAppsGet;
 begin
   List.Add('app_ids', Value);
   Result := Self;
 end;
 
-function TVkParamsAppsGet.AppIds(Value: TIdList): TVkParamsAppsGet;
+function TVkParamsAppsGet.AppIds(const Value: TIdList): TVkParamsAppsGet;
 begin
   List.Add('app_ids', Value);
   Result := Self;
 end;
 
-function TVkParamsAppsGet.&Platform(Value: TVkPlatform): TVkParamsAppsGet;
+function TVkParamsAppsGet.&Platform(const Value: TVkPlatform): TVkParamsAppsGet;
 begin
   List.Add('platform', Value.ToString);
   Result := Self;
 end;
 
-function TVkParamsAppsGet.Extended(Value: Boolean): TVkParamsAppsGet;
+function TVkParamsAppsGet.Extended(const Value: Boolean): TVkParamsAppsGet;
 begin
   List.Add('extended', Value);
   Result := Self;
 end;
 
-function TVkParamsAppsGet.ReturnFriends(Value: Boolean): TVkParamsAppsGet;
+function TVkParamsAppsGet.ReturnFriends(const Value: Boolean): TVkParamsAppsGet;
 begin
   List.Add('return_friends', Value);
   Result := Self;
@@ -96,7 +96,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsAppsGet.NameCase(Value: TVkNameCase): TVkParamsAppsGet;
+function TVkParamsAppsGet.NameCase(const Value: TVkNameCase): TVkParamsAppsGet;
 begin
   List.Add('name_case', Value.ToString);
   Result := Self;

@@ -12,23 +12,23 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежат документы.
     /// </summary>
-    function OwnerId(Value: Integer): TVkParamsDocsGet;
+    function OwnerId(const Value: Integer): TVkParamsDocsGet;
     /// <summary>
     /// Фильтр по типу документа.
     /// </summary>
-    function &Type(Value: TVkDocTypeFilter): TVkParamsDocsGet;
+    function &Type(const Value: TVkDocTypeFilter): TVkParamsDocsGet;
     /// <summary>
     /// Возвращать теги
     /// </summary>
-    function ReturnTags(Value: Boolean): TVkParamsDocsGet;
+    function ReturnTags(const Value: Boolean): TVkParamsDocsGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества документов.
     /// </summary>
-    function Offset(Value: Integer): TVkParamsDocsGet;
+    function Offset(const Value: Integer): TVkParamsDocsGet;
     /// <summary>
     /// Количество документов, информацию о которых нужно вернуть.
     /// </summary>
-    function Count(Value: Integer): TVkParamsDocsGet;
+    function Count(const Value: Integer): TVkParamsDocsGet;
   end;
 
   TVkParamsDocsSearch = record
@@ -36,23 +36,23 @@ type
     /// <summary>
     /// True — искать среди собственных документов пользователя.
     /// </summary>
-    function SearchOwn(Value: Boolean): TVkParamsDocsSearch;
+    function SearchOwn(const Value: Boolean): TVkParamsDocsSearch;
     /// <summary>
     /// Строка поискового запроса. Например, зеленые тапочки.
     /// </summary>
-    function Query(Value: string): TVkParamsDocsSearch;
+    function Query(const Value: string): TVkParamsDocsSearch;
     /// <summary>
     /// Количество документов, информацию о которых нужно вернуть.
     /// </summary>
-    function Count(Value: Integer): TVkParamsDocsSearch;
+    function Count(const Value: Integer): TVkParamsDocsSearch;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества документов.
     /// </summary>
-    function Offset(Value: Integer): TVkParamsDocsSearch;
+    function Offset(const Value: Integer): TVkParamsDocsSearch;
     /// <summary>
     /// Возвращать теги.
     /// </summary>
-    function ReturnTags(Value: Boolean): TVkParamsDocsSearch;
+    function ReturnTags(const Value: Boolean): TVkParamsDocsSearch;
   end;
 
   TDocController = class(TVkController)
@@ -139,7 +139,7 @@ end;
 
 function TDocController.Get(var Items: TVkDocuments; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('docs.get', Params).GetObject<TVkDocuments>(Items);
+  Result := Handler.Execute('docs.get', Params).GetObject(Items);
 end;
 
 function TDocController.Add(var Id: Integer; OwnerId, DocId: Integer; AccessKey: string): Boolean;
@@ -155,10 +155,7 @@ end;
 
 function TDocController.Delete(OwnerId, DocId: Integer): Boolean;
 begin
-  with Handler.Execute('docs.delete', [['doc_id', DocId.ToString], ['owner_id', OwnerId.ToString]]) do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('docs.delete', [['doc_id', DocId.ToString], ['owner_id', OwnerId.ToString]]).ResponseIsTrue;
 end;
 
 function TDocController.Edit(OwnerId, DocId: Integer; Title: string; Tags: TArrayOfString): Boolean;
@@ -169,10 +166,7 @@ begin
   Params.Add('owner_id', OwnerId);
   Params.Add('title', Title);
   Params.Add('tags', Tags);
-  with Handler.Execute('docs.edit', Params) do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('docs.edit', Params).ResponseIsTrue;
 end;
 
 function TDocController.Get(var Items: TVkDocuments; Params: TVkParamsDocsGet): Boolean;
@@ -185,7 +179,7 @@ begin
   Result := Handler.Execute('docs.getById', [
     ['docs', Docs.ToString],
     ['return_tags', BoolToString(ReturnTags)]]).
-    GetObject<TVkDocuments>(Items);
+    GetObject(Items);
 end;
 
 function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType): Boolean;
@@ -203,7 +197,7 @@ end;
 
 function TDocController.GetTypes(var Items: TVkDocTypes; OwnerId: Integer): Boolean;
 begin
-  Result := Handler.Execute('docs.getTypes', ['owner_id', OwnerId.ToString]).GetObject<TVkDocTypes>(Items);
+  Result := Handler.Execute('docs.getTypes', ['owner_id', OwnerId.ToString]).GetObject(Items);
 end;
 
 function TDocController.GetUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
@@ -225,7 +219,7 @@ begin
   Params.Add('tags', Tags);
   if ReturnTags then
     Params.Add('return_tags', BoolToString(ReturnTags));
-  Result := Handler.Execute('docs.save', Params).GetObject<TVkDocSaved>(Doc);
+  Result := Handler.Execute('docs.save', Params).GetObject(Doc);
 end;
 
 function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
@@ -248,36 +242,36 @@ end;
 
 function TDocController.Search(var Items: TVkDocuments; Params: TVkParamsDocsSearch): Boolean;
 begin
-  Result := Handler.Execute('docs.search', Params.List).GetObject<TVkDocuments>(Items);
+  Result := Handler.Execute('docs.search', Params.List).GetObject(Items);
 end;
 
 { TVkParamsDocsGet }
 
-function TVkParamsDocsGet.Count(Value: Integer): TVkParamsDocsGet;
+function TVkParamsDocsGet.Count(const Value: Integer): TVkParamsDocsGet;
 begin
   List.Add('count', Value);
   Result := Self;
 end;
 
-function TVkParamsDocsGet.Offset(Value: Integer): TVkParamsDocsGet;
+function TVkParamsDocsGet.Offset(const Value: Integer): TVkParamsDocsGet;
 begin
   List.Add('offset', Value);
   Result := Self;
 end;
 
-function TVkParamsDocsGet.OwnerId(Value: Integer): TVkParamsDocsGet;
+function TVkParamsDocsGet.OwnerId(const Value: Integer): TVkParamsDocsGet;
 begin
   List.Add('owner_id', Value);
   Result := Self;
 end;
 
-function TVkParamsDocsGet.ReturnTags(Value: Boolean): TVkParamsDocsGet;
+function TVkParamsDocsGet.ReturnTags(const Value: Boolean): TVkParamsDocsGet;
 begin
   List.Add('return_tags', Value);
   Result := Self;
 end;
 
-function TVkParamsDocsGet.&Type(Value: TVkDocTypeFilter): TVkParamsDocsGet;
+function TVkParamsDocsGet.&Type(const Value: TVkDocTypeFilter): TVkParamsDocsGet;
 begin
   List.Add('type', Ord(Value));
   Result := Self;
@@ -285,31 +279,31 @@ end;
 
 { TVkParamsDocsSearch }
 
-function TVkParamsDocsSearch.Count(Value: Integer): TVkParamsDocsSearch;
+function TVkParamsDocsSearch.Count(const Value: Integer): TVkParamsDocsSearch;
 begin
   List.Add('count', Value);
   Result := Self;
 end;
 
-function TVkParamsDocsSearch.Offset(Value: Integer): TVkParamsDocsSearch;
+function TVkParamsDocsSearch.Offset(const Value: Integer): TVkParamsDocsSearch;
 begin
   List.Add('offset', Value);
   Result := Self;
 end;
 
-function TVkParamsDocsSearch.Query(Value: string): TVkParamsDocsSearch;
+function TVkParamsDocsSearch.Query(const Value: string): TVkParamsDocsSearch;
 begin
   List.Add('q', Value);
   Result := Self;
 end;
 
-function TVkParamsDocsSearch.ReturnTags(Value: Boolean): TVkParamsDocsSearch;
+function TVkParamsDocsSearch.ReturnTags(const Value: Boolean): TVkParamsDocsSearch;
 begin
   List.Add('return_tags', Value);
   Result := Self;
 end;
 
-function TVkParamsDocsSearch.SearchOwn(Value: Boolean): TVkParamsDocsSearch;
+function TVkParamsDocsSearch.SearchOwn(const Value: Boolean): TVkParamsDocsSearch;
 begin
   List.Add('search_own', Value);
   Result := Self;

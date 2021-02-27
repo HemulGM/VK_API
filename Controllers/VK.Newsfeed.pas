@@ -24,44 +24,52 @@ type
   TVkParamsNewsfeedGet = record
     List: TParams;
     /// <summary>
-    /// перечисленные через запятую названия списков новостей, которые необходимо получить
+    /// Перечисленные через запятую названия списков новостей, которые необходимо получить
     /// Если параметр не задан, то будут получены все возможные списки новостей
     /// </summary>
     function Filters(const Value: TVkNewsfeedTypes = []): Integer;
     /// <summary>
-    /// 1 - включить в выдачу также скрытых из новостей пользователей. 0 - не возвращать скрытых пользователей
+    /// True - включить в выдачу также скрытых из новостей пользователей. False - не возвращать скрытых пользователей
     /// </summary>
     function ReturnBanned(const Value: Boolean): Integer;
     /// <summary>
-    /// время в формате unixtime, начиная с которого следует получить новости для текущего пользователя
+    /// Время, начиная с которого следует получить новости для текущего пользователя
     /// </summary>
     function StartTime(const Value: TDateTime): Integer;
     /// <summary>
-    /// время в формате unixtime, до которого следует получить новости для текущего пользователя. Если параметр не задан, то он считается равным текущему времени
+    /// Время, до которого следует получить новости для текущего пользователя.
+    /// Если параметр не задан, то он считается равным текущему времени
     /// </summary>
     function EndTime(const Value: TDateTime): Integer;
     /// <summary>
-    ///  Максимальное количество фотографий, информацию о которых необходимо вернуть. По умолчанию: 5, максимальное значение: 100
+    /// Максимальное количество фотографий, информацию о которых необходимо вернуть (максимальное значение: 100)
     /// </summary>
-    function MaxPhotos(const Value: Integer): Integer;
+    function MaxPhotos(const Value: Integer = 5): Integer;
     /// <summary>
-    /// перечисленные через запятую иcточники новостей, новости от которых необходимо получить
+    /// Перечисленные через запятую иcточники новостей, новости от которых необходимо получить
+    /// [uid] или u[uid], -[gid] или g[gid]
+    /// Помимо этого параметр может принимать строковые значения:
+    /// friends - список друзей пользователя
+    /// groups - список групп, на которые подписан текущий пользователь
+    /// pages - список публичных страниц, на который подписан тeкущий пользователь
+    /// following - список пользователей, на которых подписан текущий пользователь
+    /// list[идентификатор списка новостей] - список новостей. Вы можете найти все списки новостей пользователя используя метод newsfeed.getLists
     /// </summary>
     function SourceIds(const Value: TArrayOfString): Integer;
     /// <summary>
-    ///
+    /// Идентификатор, необходимый для получения следующей страницы результатов. Значение, необходимое для передачи в этом параметре, возвращается в поле ответа next_from
     /// </summary>
     function StartFrom(const Value: string): Integer;
     /// <summary>
-    ///
+    /// Указывает, какое максимальное число новостей следует возвращать, но не более 100
     /// </summary>
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer = 50): Integer;
     /// <summary>
-    ///
+    /// Список дополнительных полей для профилей и групп, которые необходимо вернуть
     /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     /// <summary>
-    ///
+    /// [Нет описания]
     /// </summary>
     function Section(const Value: string): Integer;
   end;
@@ -69,35 +77,41 @@ type
   TVkParamsNewsfeedGetComments = record
     List: TParams;
     /// <summary>
-    ///
+    /// Перечисленные через запятую типы объектов, изменения комментариев к которым нужно вернуть
     /// </summary>
     function Filters(const Value: TVkNewsfeedCommentsTypes = []): Integer;
     /// <summary>
-    ///
+    /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
     function Fields(const Value: TVkProfileFields = []): Integer;
     /// <summary>
-    ///
+    /// Указывает, какое максимальное число новостей следует возвращать, но не более 100.
+    /// Для автоподгрузки Вы можете использовать возвращаемый данным методом параметр NewOffset.
     /// </summary>
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer = 30): Integer;
     /// <summary>
-    ///
+    /// Количество комментариев к записям, которые нужно получить.
+    /// Положительное число, доступен начиная с версии 5.23, максимальное значение 10
     /// </summary>
-    function LastCommentsCount(const Value: Integer): Integer;
+    function LastCommentsCount(const Value: Integer = 0): Integer;
     /// <summary>
-    ///
+    /// Время, до которого следует получить новости для текущего пользователя.
+    /// Если параметр не задан, то он считается равным текущему времени
     /// </summary>
     function StartTime(const Value: TDateTime): Integer;
     /// <summary>
-    ///
+    /// Время, начиная с которого следует получить новости для текущего пользователя.
+    /// Если параметр не задан, то он считается равным значению времени, которое было сутки назад
     /// </summary>
     function EndTime(const Value: TDateTime): Integer;
     /// <summary>
-    ///
+    /// Идентификатор, необходимый для получения следующей страницы результатов.
+    /// Значение, необходимое для передачи в этом параметре, возвращается в поле ответа NextFrom
     /// </summary>
     function StartFrom(const Value: string): Integer;
     /// <summary>
-    ///
+    /// Идентификатор объекта, комментарии к репостам которого необходимо вернуть,
+    /// например wall1_45486. Если указан данный параметр, параметр Filters указывать необязательно
     /// </summary>
     function Reposts(const Value: string): Integer;
   end;
@@ -105,23 +119,27 @@ type
   TVkParamsNewsfeedGetMentions = record
     List: TParams;
     /// <summary>
-    ///
+    /// Идентификатор пользователя или сообщества
     /// </summary>
     function OwnerId(const Value: Integer): Integer;
     /// <summary>
-    ///
+    /// Количество возвращаемых записей. Максимальное значение параметра 50
     /// </summary>
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer = 20): Integer;
     /// <summary>
-    ///
+    /// Смещение, необходимое для выборки определенного подмножества новостей
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer = 0): Integer;
     /// <summary>
-    ///
+    /// Время, начиная с которого следует получать упоминания о пользователе.
+    /// Если параметр не задан, то будут возвращены все упоминания о пользователе,
+    /// если не задан параметр EndTime, в противном случае упоминания с учетом параметра EndTime
     /// </summary>
     function StartTime(const Value: TDateTime): Integer;
     /// <summary>
-    ///
+    /// Время, в формате unixtime, до которого следует получать упоминания о пользователе.
+    /// Если параметр не задан, то будут возвращены все упоминания о пользователе,
+    /// если не задан параметр StartTime, в противном случае упоминания с учетом параметра StartTime
     /// </summary>
     function EndTime(const Value: TDateTime): Integer;
   end;
@@ -129,69 +147,77 @@ type
   TVkParamsNewsfeedGetRecommended = record
     List: TParams;
     /// <summary>
-    ///
+    /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
     function Fields(const Value: TVkProfileFields = []): Integer;
     /// <summary>
-    ///
+    /// Указывает, какое максимальное число новостей следует возвращать, но не более 100
     /// </summary>
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer = 50): Integer;
     /// <summary>
-    ///
+    /// Время, начиная с которого следует получить новости для текущего пользователя.
+    /// Если параметр не задан, то он считается равным значению времени, которое было сутки назад
     /// </summary>
     function StartTime(const Value: TDateTime): Integer;
     /// <summary>
-    ///
+    /// Время, до которого следует получить новости для текущего пользователя.
+    /// Если параметр не задан, то он считается равным текущему времени
     /// </summary>
     function EndTime(const Value: TDateTime): Integer;
     /// <summary>
-    ///
+    /// Идентификатор, необходимый для получения следующей страницы результатов.
+    /// Значение, необходимое для передачи в этом параметре, возвращается в поле ответа NextFrom
     /// </summary>
     function StartFrom(const Value: string): Integer;
     /// <summary>
-    ///
+    /// Максимальное количество фотографий, информацию о которых необходимо вернуть
     /// </summary>
-    function MaxPhotos(const Value: Integer): Integer;
+    function MaxPhotos(const Value: Integer = 5): Integer;
   end;
 
   TVkParamsNewsfeedSearch = record
     List: TParams;
     /// <summary>
-    ///
+    /// Поисковой запрос
     /// </summary>
     function Query(const Value: string): Integer;
     /// <summary>
-    ///
+    /// Список дополнительных полей для профилей и групп, которые необходимо вернуть
     /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     /// <summary>
-    ///
+    /// Указывает, какое максимальное число записей следует возвращать.
+    /// Обратите внимание — даже при использовании параметра Offset для получения информации
+    /// доступны только первые 1000 результатов (максимальное значение 200)
     /// </summary>
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer = 30): Integer;
     /// <summary>
-    ///
+    /// Время, начиная с которого следует получить новости для текущего пользователя.
+    /// Если параметр не задан, то он считается равным значению времени, которое было сутки назад
     /// </summary>
     function StartTime(const Value: TDateTime): Integer;
     /// <summary>
-    ///
+    /// Время, до которого следует получить новости для текущего пользователя.
+    /// Если параметр не задан, то он считается равным текущему времени
     /// </summary>
     function EndTime(const Value: TDateTime): Integer;
     /// <summary>
-    ///
+    /// Идентификатор, необходимый для получения следующей страницы результатов.
+    /// Значение, необходимое для передачи в этом параметре, возвращается в поле ответа NextFrom
     /// </summary>
     function StartFrom(const Value: string): Integer;
     /// <summary>
-    ///
+    /// Географическая широта точки, в радиусе от которой необходимо производить поиск, заданная в градусах (от -90 до 90)
     /// </summary>
     function Latitude(const Value: Extended): Integer;
     /// <summary>
-    ///
+    /// Географическая долгота точки, в радиусе от которой необходимо производить поиск, заданная в градусах (от -180 до 180)
     /// </summary>
     function Longitude(const Value: Extended): Integer;
     /// <summary>
-    ///
+    /// True, если необходимо получить информацию о пользователе или сообществе, разместившем запись
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean = False): Integer;
   end;
 
   TNewsfeedController = class(TVkController)
@@ -285,7 +311,7 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils;
+  VK.API, VK.CommonUtils, System.DateUtils;
 
 { TNewsfeedController }
 

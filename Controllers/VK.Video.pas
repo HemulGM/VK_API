@@ -685,7 +685,7 @@ var
 begin
   Params.Add('owner_id', OwnerId);
   Params.Add('comment_id', CommentId);
-  Params.Add('reason', Reason.ToConst.ToString);
+  Params.Add('reason', Ord(Reason).ToString);
   Result := Handler.Execute('video.reportComment', Params).ResponseIsTrue;
 end;
 
@@ -1265,7 +1265,7 @@ end;
 
 function TVkParamsVideoReport.Reason(const Value: TVkMediaReportReason): Integer;
 begin
-  Result := List.Add('reason', Value.ToConst.ToString);
+  Result := List.Add('reason', Ord(Value).ToString);
 end;
 
 function TVkParamsVideoReport.Comment(const Value: string): Integer;

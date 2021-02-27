@@ -10,31 +10,31 @@ uses
 type
   TVkParamsRegisterDevice = record
     List: TParams;
-    function Token(Value: string): TVkParamsRegisterDevice;
-    function DeviceModel(Value: string): TVkParamsRegisterDevice;
-    function DeviceYear(Value: Integer): TVkParamsRegisterDevice;
-    function DeviceId(Value: string): TVkParamsRegisterDevice;
-    function SystemVersion(Value: string): TVkParamsRegisterDevice;
-    function Settings(Value: string): TVkParamsRegisterDevice;
-    function Sandbox(Value: string): TVkParamsRegisterDevice;
+    function Token(const Value: string): TVkParamsRegisterDevice;
+    function DeviceModel(const Value: string): TVkParamsRegisterDevice;
+    function DeviceYear(const Value: Integer): TVkParamsRegisterDevice;
+    function DeviceId(const Value: string): TVkParamsRegisterDevice;
+    function SystemVersion(const Value: string): TVkParamsRegisterDevice;
+    function Settings(const Value: string): TVkParamsRegisterDevice;
+    function Sandbox(const Value: string): TVkParamsRegisterDevice;
   end;
 
   TVkParamsProfileInfo = record
     List: TParams;
-    function FirstName(Value: string): TVkParamsProfileInfo;
-    function LastName(Value: string): TVkParamsProfileInfo;
-    function MaidenName(Value: string): TVkParamsProfileInfo;
-    function ScreenName(Value: string): TVkParamsProfileInfo;
-    function CancelRequestId(Value: Integer): TVkParamsProfileInfo;
-    function Sex(Value: TVkSex): TVkParamsProfileInfo;
-    function Relation(Value: TVkRelation): TVkParamsProfileInfo;
-    function RelationPartnerId(Value: Integer): TVkParamsProfileInfo;
-    function BirthDate(Value: TDateTime): TVkParamsProfileInfo;
-    function BirthDateVisibility(Value: TVkBirthDateVisibility): TVkParamsProfileInfo;
-    function HomeTown(Value: string): TVkParamsProfileInfo;
-    function CountryId(Value: Integer): TVkParamsProfileInfo;
-    function CityId(Value: Integer): TVkParamsProfileInfo;
-    function Status(Value: string): TVkParamsProfileInfo;
+    function FirstName(const Value: string): TVkParamsProfileInfo;
+    function LastName(const Value: string): TVkParamsProfileInfo;
+    function MaidenName(const Value: string): TVkParamsProfileInfo;
+    function ScreenName(const Value: string): TVkParamsProfileInfo;
+    function CancelRequestId(const Value: Integer): TVkParamsProfileInfo;
+    function Sex(const Value: TVkSex): TVkParamsProfileInfo;
+    function Relation(const Value: TVkRelation): TVkParamsProfileInfo;
+    function RelationPartnerId(const Value: Integer): TVkParamsProfileInfo;
+    function BirthDate(const Value: TDateTime): TVkParamsProfileInfo;
+    function BirthDateVisibility(const Value: TVkBirthDateVisibility): TVkParamsProfileInfo;
+    function HomeTown(const Value: string): TVkParamsProfileInfo;
+    function CountryId(const Value: Integer): TVkParamsProfileInfo;
+    function CityId(const Value: Integer): TVkParamsProfileInfo;
+    function Status(const Value: string): TVkParamsProfileInfo;
   end;
 
   TAccountController = class(TVkController)
@@ -128,7 +128,7 @@ begin
     ['restore_sid', RestoreSid],
     ['change_password_hash', ChangePasswordHash],
     ['old_password', OldPassword]]).
-    GetValue<string>('token', Token) and (not Token.IsEmpty);
+    GetValue('token', Token) and (not Token.IsEmpty);
 end;
 
 function TAccountController.GetActiveOffers(var Items: TVkActiveOffers; Count: Integer; Offset: Integer): Boolean;
@@ -136,7 +136,7 @@ begin
   Result := Handler.Execute('account.getActiveOffers', [
     ['offset', Offset.ToString],
     ['count', Count.ToString]]).
-    GetObject<TVkActiveOffers>(Items);
+    GetObject(Items);
 end;
 
 function TAccountController.GetAppPermissions(var Mask: Integer; UserId: Integer): Boolean;
@@ -149,27 +149,27 @@ begin
   Result := Handler.Execute('account.getBanned', [
     ['count', Count.ToString],
     ['offset', Offset.ToString]]).
-    GetObject<TVkBannedList>(Items);
+    GetObject(Items);
 end;
 
 function TAccountController.GetCounters(var Counters: TVkCounters; Filter: TVkCounterFilters): Boolean;
 begin
-  Result := Handler.Execute('account.getCounters', ['filter', Filter.ToString]).GetObject<TVkCounters>(Counters);
+  Result := Handler.Execute('account.getCounters', ['filter', Filter.ToString]).GetObject(Counters);
 end;
 
 function TAccountController.GetInfo(var Info: TVkAccountInfo; Fields: TVkInfoFilters = []): Boolean;
 begin
-  Result := Handler.Execute('account.getInfo', ['fields', Fields.ToString]).GetObject<TVkAccountInfo>(Info);
+  Result := Handler.Execute('account.getInfo', ['fields', Fields.ToString]).GetObject(Info);
 end;
 
 function TAccountController.GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
 begin
-  Result := Handler.Execute('account.getProfileInfo').GetObject<TVkProfileInfo>(ProfileInfo);
+  Result := Handler.Execute('account.getProfileInfo').GetObject(ProfileInfo);
 end;
 
 function TAccountController.GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
 begin
-  Result := Handler.Execute('account.getPushSettings', ['device_id', DeviceId]).GetObject<TVkPushSettings>(PushSettings);
+  Result := Handler.Execute('account.getPushSettings', ['device_id', DeviceId]).GetObject(PushSettings);
 end;
 
 function TAccountController.RegisterDevice(var Status: Boolean; const Data: TVkParamsRegisterDevice): Boolean;
@@ -179,7 +179,7 @@ end;
 
 function TAccountController.SaveProfileInfo(const Data: TVkParamsProfileInfo; var Request: TVkAccountInfoRequest): Boolean;
 begin
-  Result := Handler.Execute('account.saveProfileInfo', Data.List).GetObject<TVkAccountInfoRequest>(Request);
+  Result := Handler.Execute('account.saveProfileInfo', Data.List).GetObject(Request);
 end;
 
 function TAccountController.SetInfo(var Status: Boolean; const Name, Value: string): Boolean;
@@ -252,43 +252,43 @@ end;
 
 { TVkRegisterDeviceParams }
 
-function TVkParamsRegisterDevice.DeviceId(Value: string): TVkParamsRegisterDevice;
+function TVkParamsRegisterDevice.DeviceId(const Value: string): TVkParamsRegisterDevice;
 begin
   List.Add('device_id', Value);
   Result := Self;
 end;
 
-function TVkParamsRegisterDevice.DeviceModel(Value: string): TVkParamsRegisterDevice;
+function TVkParamsRegisterDevice.DeviceModel(const Value: string): TVkParamsRegisterDevice;
 begin
   List.Add('device_model', Value);
   Result := Self;
 end;
 
-function TVkParamsRegisterDevice.DeviceYear(Value: Integer): TVkParamsRegisterDevice;
+function TVkParamsRegisterDevice.DeviceYear(const Value: Integer): TVkParamsRegisterDevice;
 begin
   List.Add('device_year', Value);
   Result := Self;
 end;
 
-function TVkParamsRegisterDevice.Sandbox(Value: string): TVkParamsRegisterDevice;
+function TVkParamsRegisterDevice.Sandbox(const Value: string): TVkParamsRegisterDevice;
 begin
   List.Add('sandbox', Value);
   Result := Self;
 end;
 
-function TVkParamsRegisterDevice.Settings(Value: string): TVkParamsRegisterDevice;
+function TVkParamsRegisterDevice.Settings(const Value: string): TVkParamsRegisterDevice;
 begin
   List.Add('settings', Value);
   Result := Self;
 end;
 
-function TVkParamsRegisterDevice.SystemVersion(Value: string): TVkParamsRegisterDevice;
+function TVkParamsRegisterDevice.SystemVersion(const Value: string): TVkParamsRegisterDevice;
 begin
   List.Add('system_version', Value);
   Result := Self;
 end;
 
-function TVkParamsRegisterDevice.Token(Value: string): TVkParamsRegisterDevice;
+function TVkParamsRegisterDevice.Token(const Value: string): TVkParamsRegisterDevice;
 begin
   List.Add('token', Value);
   Result := Self;
@@ -296,85 +296,85 @@ end;
 
 { TVkProfileInfoParams }
 
-function TVkParamsProfileInfo.BirthDate(Value: TDateTime): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.BirthDate(const Value: TDateTime): TVkParamsProfileInfo;
 begin
-  List.Add('bdate', FormatDateTime('DD.MM.YYYY', Value));
+  List.Add('bdate', Value, 'DD.MM.YYYY');
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.BirthDateVisibility(Value: TVkBirthDateVisibility): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.BirthDateVisibility(const Value: TVkBirthDateVisibility): TVkParamsProfileInfo;
 begin
   List.Add('bdate_visibility', Ord(Value));
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.CancelRequestId(Value: Integer): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.CancelRequestId(const Value: Integer): TVkParamsProfileInfo;
 begin
   List.Add('cancel_request_id', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.CityId(Value: Integer): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.CityId(const Value: Integer): TVkParamsProfileInfo;
 begin
   List.Add('city_id', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.CountryId(Value: Integer): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.CountryId(const Value: Integer): TVkParamsProfileInfo;
 begin
   List.Add('country_id', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.FirstName(Value: string): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.FirstName(const Value: string): TVkParamsProfileInfo;
 begin
   List.Add('first_name', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.HomeTown(Value: string): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.HomeTown(const Value: string): TVkParamsProfileInfo;
 begin
   List.Add('home_town', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.LastName(Value: string): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.LastName(const Value: string): TVkParamsProfileInfo;
 begin
   List.Add('last_name', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.MaidenName(Value: string): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.MaidenName(const Value: string): TVkParamsProfileInfo;
 begin
   List.Add('maiden_name', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.Relation(Value: TVkRelation): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.Relation(const Value: TVkRelation): TVkParamsProfileInfo;
 begin
   List.Add('relation', Ord(Value));
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.RelationPartnerId(Value: Integer): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.RelationPartnerId(const Value: Integer): TVkParamsProfileInfo;
 begin
   List.Add('relation_partner_id', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.ScreenName(Value: string): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.ScreenName(const Value: string): TVkParamsProfileInfo;
 begin
   List.Add('screen_name', Value);
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.Sex(Value: TVkSex): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.Sex(const Value: TVkSex): TVkParamsProfileInfo;
 begin
   List.Add('sex', Ord(Value));
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.Status(Value: string): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.Status(const Value: string): TVkParamsProfileInfo;
 begin
   List.Add('status', Value);
   Result := Self;

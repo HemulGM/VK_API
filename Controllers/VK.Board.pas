@@ -3,9 +3,8 @@ unit VK.Board;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Board,
-  VK.Entity.Board.Comment;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
+  VK.Entity.Board, VK.Entity.Board.Comment;
 
 type
   TVkParamsBoardCommentCreate = record
@@ -13,31 +12,31 @@ type
     /// <summary>
     /// True — тема будет создана от имени группы, False — тема будет создана от имени пользователя (по умолчанию).
     /// </summary>
-    function FromGroup(Value: Boolean): TVkParamsBoardCommentCreate;
+    function FromGroup(const Value: Boolean): TVkParamsBoardCommentCreate;
     /// <summary>
     /// Идентификатор стикера.
     /// </summary>
-    function StickerId(Value: Integer): TVkParamsBoardCommentCreate;
+    function StickerId(const Value: Integer): TVkParamsBoardCommentCreate;
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): TVkParamsBoardCommentCreate;
+    function GroupId(const Value: Integer): TVkParamsBoardCommentCreate;
     /// <summary>
     /// Идентификатор обсуждения.
     /// </summary>
-    function TopicId(Value: Integer): TVkParamsBoardCommentCreate;
+    function TopicId(const Value: Integer): TVkParamsBoardCommentCreate;
     /// <summary>
     /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария.
     /// </summary>
-    function Guid(Value: string): TVkParamsBoardCommentCreate;
+    function Guid(const Value: string): TVkParamsBoardCommentCreate;
     /// <summary>
     /// Текст комментария. Обязательный параметр, если не передано значение
     /// </summary>
-    function Message(Value: string): TVkParamsBoardCommentCreate;
+    function Message(const Value: string): TVkParamsBoardCommentCreate;
     /// <summary>
     /// Cписок объектов, приложенных к записи
     /// </summary>
-    function Attachments(Value: TAttachmentArray): TVkParamsBoardCommentCreate;
+    function Attachments(const Value: TAttachmentArray): TVkParamsBoardCommentCreate;
   end;
 
   TVkParamsBoardCommentEdit = record
@@ -45,27 +44,27 @@ type
     /// <summary>
     /// True — тема будет создана от имени группы, False — тема будет создана от имени пользователя (по умолчанию).
     /// </summary>
-    function FromGroup(Value: Boolean): TVkParamsBoardCommentEdit;
+    function FromGroup(const Value: Boolean): TVkParamsBoardCommentEdit;
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): TVkParamsBoardCommentEdit;
+    function GroupId(const Value: Integer): TVkParamsBoardCommentEdit;
     /// <summary>
     /// Идентификатор комментария в обсуждении.
     /// </summary>
-    function CommentId(Value: Integer): TVkParamsBoardCommentEdit;
+    function CommentId(const Value: Integer): TVkParamsBoardCommentEdit;
     /// <summary>
     /// Идентификатор обсуждения.
     /// </summary>
-    function TopicId(Value: Integer): TVkParamsBoardCommentEdit;
+    function TopicId(const Value: Integer): TVkParamsBoardCommentEdit;
     /// <summary>
     /// Новый текст комментария (является обязательным, если не задан параметр attachments).
     /// </summary>
-    function Message(Value: string): TVkParamsBoardCommentEdit;
+    function Message(const Value: string): TVkParamsBoardCommentEdit;
     /// <summary>
     /// Cписок объектов, приложенных к записи
     /// </summary>
-    function Attachments(Value: TAttachmentArray): TVkParamsBoardCommentEdit;
+    function Attachments(const Value: TAttachmentArray): TVkParamsBoardCommentEdit;
   end;
 
   TVkParamsBoardGet = record
@@ -73,35 +72,35 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): TVkParamsBoardGet;
+    function GroupId(const Value: Integer): TVkParamsBoardGet;
     /// <summary>
     /// Список идентификаторов тем, которые необходимо получить (не более 100). По умолчанию возвращаются все темы. Если указан данный параметр, игнорируются параметры order, offset и count (возвращаются все запрошенные темы в указанном порядке).
     /// </summary>
-    function TopicIds(Value: TIdList): TVkParamsBoardGet;
+    function TopicIds(const Value: TIdList): TVkParamsBoardGet;
     /// <summary>
     /// Порядок, в котором необходимо вернуть список тем.
     /// </summary>
-    function Order(Value: TVkBoardTopicOrder): TVkParamsBoardGet;
+    function Order(const Value: TVkBoardTopicOrder): TVkParamsBoardGet;
     /// <summary>
     /// Количество тем, которое необходимо получить (но не более 100). По умолчанию — 40.
     /// </summary>
-    function Count(Value: Integer = 40): TVkParamsBoardGet;
+    function Count(const Value: Integer = 40): TVkParamsBoardGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества тем.
     /// </summary>
-    function Offset(Value: Integer = 0): TVkParamsBoardGet;
+    function Offset(const Value: Integer = 0): TVkParamsBoardGet;
     /// <summary>
     /// Если указать в качестве этого параметра True, то будет возвращена информация о пользователях, являющихся создателями тем или оставившими в них последнее сообщение. По умолчанию False.
     /// </summary>
-    function Extended(Value: Boolean = False): TVkParamsBoardGet;
+    function Extended(const Value: Boolean = False): TVkParamsBoardGet;
     /// <summary>
     /// Набор флагов, определяющий, необходимо ли вернуть вместе с информацией о темах текст первых и последних сообщений в них. Является суммой флагов
     /// </summary>
-    function Preview(Value: TVkBoardTopicPreview): TVkParamsBoardGet;
+    function Preview(const Value: TVkBoardTopicPreview): TVkParamsBoardGet;
     /// <summary>
     /// Количество символов, по которому нужно обрезать первое и последнее сообщение. Укажите 0, если Вы не хотите обрезать сообщение. (по умолчанию — 90).
     /// </summary>
-    function PreviewLength(Value: Integer = 90): TVkParamsBoardGet;
+    function PreviewLength(const Value: Integer = 90): TVkParamsBoardGet;
   end;
 
   TVkParamsBoardAdd = record
@@ -109,23 +108,23 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): TVkParamsBoardAdd;
+    function GroupId(const Value: Integer): TVkParamsBoardAdd;
     /// <summary>
     /// Название обсуждения.
     /// </summary>
-    function Title(Value: string): TVkParamsBoardAdd;
+    function Title(const Value: string): TVkParamsBoardAdd;
     /// <summary>
     /// Текст первого сообщения в обсуждении.
     /// </summary>
-    function Text(Value: string): TVkParamsBoardAdd;
+    function Text(const Value: string): TVkParamsBoardAdd;
     /// <summary>
     /// True — тема будет создана от имени группы, False — тема будет создана от имени пользователя (по умолчанию).
     /// </summary>
-    function FromGroup(Value: Boolean): TVkParamsBoardAdd;
+    function FromGroup(const Value: Boolean): TVkParamsBoardAdd;
     /// <summary>
     /// Cписок объектов, приложенных к записи
     /// </summary>
-    function Attachments(Value: TAttachmentArray): TVkParamsBoardAdd;
+    function Attachments(const Value: TAttachmentArray): TVkParamsBoardAdd;
   end;
 
   TVkParamsBoardCommentsGet = record
@@ -133,35 +132,35 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): TVkParamsBoardCommentsGet;
+    function GroupId(const Value: Integer): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Идентификатор обсуждения.
     /// </summary>
-    function TopicId(Value: Integer): TVkParamsBoardCommentsGet;
+    function TopicId(const Value: Integer): TVkParamsBoardCommentsGet;
     /// <summary>
     /// True — будет возвращено дополнительное поле likes. По умолчанию поле likes не возвращается.
     /// </summary>
-    function NeedLikes(Value: Boolean): TVkParamsBoardCommentsGet;
+    function NeedLikes(const Value: Boolean): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Идентификатор комментария, начиная с которого нужно вернуть список (подробности см. ниже).
     /// </summary>
-    function StartCommentId(Value: Integer): TVkParamsBoardCommentsGet;
+    function StartCommentId(const Value: Integer): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Количество тем, которое необходимо получить (но не более 100). По умолчанию — 20.
     /// </summary>
-    function Count(Value: Integer = 20): TVkParamsBoardCommentsGet;
+    function Count(const Value: Integer = 20): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества тем.
     /// </summary>
-    function Offset(Value: Integer = 0): TVkParamsBoardCommentsGet;
+    function Offset(const Value: Integer = 0): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Если указать в качестве этого параметра True, то будет возвращена информация о пользователях, являющихся авторами сообщений. По умолчанию False.
     /// </summary>
-    function Extended(Value: Boolean): TVkParamsBoardCommentsGet;
+    function Extended(const Value: Boolean): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Порядок сортировки комментариев: asc — хронологический, desc — антихронологический
     /// </summary>
-    function Sort(Value: Boolean): TVkParamsBoardCommentsGet;
+    function Sort(const Value: TVkSort): TVkParamsBoardCommentsGet;
   end;
 
   TBoardController = class(TVkController)
@@ -300,8 +299,7 @@ end;
 
 function TBoardController.AddTopic(var Id: Integer; Params: TParams): Boolean;
 begin
-  with Handler.Execute('board.addTopic', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.addTopic', Params).ResponseIsTrue;
 end;
 
 function TBoardController.AddTopic(var Id: Integer; Params: TVkParamsBoardAdd): Boolean;
@@ -318,8 +316,10 @@ end;
 
 function TBoardController.CloseTopic(GroupId, TopicId: Integer): Boolean;
 begin
-  with Handler.Execute('board.closeTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.closeTopic', [
+    ['group_id', GroupId.ToString],
+    ['topic_id', TopicId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TBoardController.DeleteComment(GroupId, TopicId, CommentId: Integer): Boolean;
@@ -329,14 +329,15 @@ begin
   Params.Add('group_id', GroupId);
   Params.Add('topic_id', TopicId);
   Params.Add('comment_id', CommentId);
-  with Handler.Execute('board.deleteComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.deleteComment', Params).ResponseIsTrue;
 end;
 
 function TBoardController.DeleteTopic(GroupId, TopicId: Integer): Boolean;
 begin
-  with Handler.Execute('board.deleteTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.deleteTopic', [
+    ['group_id', GroupId.ToString],
+    ['topic_id', TopicId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TBoardController.EditComment(Params: TVkParamsBoardCommentEdit): Boolean;
@@ -346,31 +347,36 @@ end;
 
 function TBoardController.EditTopic(GroupId, TopicId: Integer; Title: string): Boolean;
 begin
-  with Handler.Execute('board.editTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['title', Title]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.editTopic', [
+    ['group_id', GroupId.ToString],
+    ['topic_id', TopicId.ToString],
+    ['title', Title]]).ResponseIsTrue;
 end;
 
 function TBoardController.FixTopic(GroupId, TopicId: Integer): Boolean;
 begin
-  with Handler.Execute('board.fixTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.fixTopic', [
+    ['group_id', GroupId.ToString],
+    ['topic_id', TopicId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TBoardController.UnfixTopic(GroupId, TopicId: Integer): Boolean;
 begin
-  with Handler.Execute('board.unfixTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.unfixTopic', [
+    ['group_id', GroupId.ToString],
+    ['topic_id', TopicId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TBoardController.EditComment(Params: TParams): Boolean;
 begin
-  with Handler.Execute('board.editComment', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.editComment', Params).ResponseIsTrue;
 end;
 
 function TBoardController.GetComments(var Items: TVkBoardComments; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('board.getComments', Params).GetObject<TVkBoardComments>(Items);
+  Result := Handler.Execute('board.getComments', Params).GetObject(Items);
 end;
 
 function TBoardController.GetComments(var Items: TVkBoardComments; Params: TVkParamsBoardCommentsGet): Boolean;
@@ -385,54 +391,59 @@ end;
 
 function TBoardController.OpenTopic(GroupId, TopicId: Integer): Boolean;
 begin
-  with Handler.Execute('board.openTopic', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.openTopic', [
+    ['group_id', GroupId.ToString],
+    ['topic_id', TopicId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TBoardController.RestoreComment(GroupId, TopicId, CommentId: Integer): Boolean;
 begin
-  with Handler.Execute('board.restoreComment', [['group_id', GroupId.ToString], ['topic_id', TopicId.ToString], ['comment_id', CommentId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('board.restoreComment', [
+    ['group_id', GroupId.ToString],
+    ['topic_id', TopicId.ToString],
+    ['comment_id', CommentId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TBoardController.GetTopics(var Items: TVkBoardTopics; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('board.getTopics', Params).GetObject<TVkBoardTopics>(Items);
+  Result := Handler.Execute('board.getTopics', Params).GetObject(Items);
 end;
 
 { TVkParamsBoardCommentEdit }
 
-function TVkParamsBoardCommentEdit.Attachments(Value: TAttachmentArray): TVkParamsBoardCommentEdit;
+function TVkParamsBoardCommentEdit.Attachments(const Value: TAttachmentArray): TVkParamsBoardCommentEdit;
 begin
-  List.Add('attachments', Value.ToStrings);
+  List.Add('attachments', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentEdit.FromGroup(Value: Boolean): TVkParamsBoardCommentEdit;
+function TVkParamsBoardCommentEdit.FromGroup(const Value: Boolean): TVkParamsBoardCommentEdit;
 begin
   List.Add('from_group', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentEdit.GroupId(Value: Integer): TVkParamsBoardCommentEdit;
+function TVkParamsBoardCommentEdit.GroupId(const Value: Integer): TVkParamsBoardCommentEdit;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentEdit.Message(Value: string): TVkParamsBoardCommentEdit;
+function TVkParamsBoardCommentEdit.Message(const Value: string): TVkParamsBoardCommentEdit;
 begin
   List.Add('message', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentEdit.TopicId(Value: Integer): TVkParamsBoardCommentEdit;
+function TVkParamsBoardCommentEdit.TopicId(const Value: Integer): TVkParamsBoardCommentEdit;
 begin
   List.Add('topic_id', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentEdit.CommentId(Value: Integer): TVkParamsBoardCommentEdit;
+function TVkParamsBoardCommentEdit.CommentId(const Value: Integer): TVkParamsBoardCommentEdit;
 begin
   List.Add('comment_id', Value);
   Result := Self;
@@ -440,43 +451,43 @@ end;
 
 { TVkParamsBoardCommentCreate }
 
-function TVkParamsBoardCommentCreate.Attachments(Value: TAttachmentArray): TVkParamsBoardCommentCreate;
+function TVkParamsBoardCommentCreate.Attachments(const Value: TAttachmentArray): TVkParamsBoardCommentCreate;
 begin
-  List.Add('attachments', Value.ToStrings);
+  List.Add('attachments', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentCreate.FromGroup(Value: Boolean): TVkParamsBoardCommentCreate;
+function TVkParamsBoardCommentCreate.FromGroup(const Value: Boolean): TVkParamsBoardCommentCreate;
 begin
   List.Add('from_group', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentCreate.GroupId(Value: Integer): TVkParamsBoardCommentCreate;
+function TVkParamsBoardCommentCreate.GroupId(const Value: Integer): TVkParamsBoardCommentCreate;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentCreate.Guid(Value: string): TVkParamsBoardCommentCreate;
+function TVkParamsBoardCommentCreate.Guid(const Value: string): TVkParamsBoardCommentCreate;
 begin
   List.Add('guid', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentCreate.Message(Value: string): TVkParamsBoardCommentCreate;
+function TVkParamsBoardCommentCreate.Message(const Value: string): TVkParamsBoardCommentCreate;
 begin
   List.Add('message', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentCreate.StickerId(Value: Integer): TVkParamsBoardCommentCreate;
+function TVkParamsBoardCommentCreate.StickerId(const Value: Integer): TVkParamsBoardCommentCreate;
 begin
   List.Add('sticker_id', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentCreate.TopicId(Value: Integer): TVkParamsBoardCommentCreate;
+function TVkParamsBoardCommentCreate.TopicId(const Value: Integer): TVkParamsBoardCommentCreate;
 begin
   List.Add('topic_id', Value);
   Result := Self;
@@ -484,49 +495,49 @@ end;
 
 { TVkParamsBoardGet }
 
-function TVkParamsBoardGet.Count(Value: Integer): TVkParamsBoardGet;
+function TVkParamsBoardGet.Count(const Value: Integer): TVkParamsBoardGet;
 begin
   List.Add('count', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardGet.Extended(Value: Boolean): TVkParamsBoardGet;
+function TVkParamsBoardGet.Extended(const Value: Boolean): TVkParamsBoardGet;
 begin
   List.Add('extended', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardGet.GroupId(Value: Integer): TVkParamsBoardGet;
+function TVkParamsBoardGet.GroupId(const Value: Integer): TVkParamsBoardGet;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardGet.Offset(Value: Integer): TVkParamsBoardGet;
+function TVkParamsBoardGet.Offset(const Value: Integer): TVkParamsBoardGet;
 begin
   List.Add('offset', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardGet.Order(Value: TVkBoardTopicOrder): TVkParamsBoardGet;
+function TVkParamsBoardGet.Order(const Value: TVkBoardTopicOrder): TVkParamsBoardGet;
 begin
-  List.Add('order', Value.ToConst);
+  List.Add('order', Ord(Value));
   Result := Self;
 end;
 
-function TVkParamsBoardGet.Preview(Value: TVkBoardTopicPreview): TVkParamsBoardGet;
+function TVkParamsBoardGet.Preview(const Value: TVkBoardTopicPreview): TVkParamsBoardGet;
 begin
-  List.Add('preview', Value.ToConst);
+  List.Add('preview', Ord(Value));
   Result := Self;
 end;
 
-function TVkParamsBoardGet.PreviewLength(Value: Integer): TVkParamsBoardGet;
+function TVkParamsBoardGet.PreviewLength(const Value: Integer): TVkParamsBoardGet;
 begin
   List.Add('preview_length', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardGet.TopicIds(Value: TIdList): TVkParamsBoardGet;
+function TVkParamsBoardGet.TopicIds(const Value: TIdList): TVkParamsBoardGet;
 begin
   List.Add('topic_ids', Value);
   Result := Self;
@@ -534,31 +545,31 @@ end;
 
 { TVkParamsBoardAdd }
 
-function TVkParamsBoardAdd.Attachments(Value: TAttachmentArray): TVkParamsBoardAdd;
+function TVkParamsBoardAdd.Attachments(const Value: TAttachmentArray): TVkParamsBoardAdd;
 begin
-  List.Add('attachments', Value.ToStrings);
+  List.Add('attachments', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardAdd.FromGroup(Value: Boolean): TVkParamsBoardAdd;
+function TVkParamsBoardAdd.FromGroup(const Value: Boolean): TVkParamsBoardAdd;
 begin
   List.Add('from_group', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardAdd.GroupId(Value: Integer): TVkParamsBoardAdd;
+function TVkParamsBoardAdd.GroupId(const Value: Integer): TVkParamsBoardAdd;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardAdd.Text(Value: string): TVkParamsBoardAdd;
+function TVkParamsBoardAdd.Text(const Value: string): TVkParamsBoardAdd;
 begin
   List.Add('text', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardAdd.Title(Value: string): TVkParamsBoardAdd;
+function TVkParamsBoardAdd.Title(const Value: string): TVkParamsBoardAdd;
 begin
   List.Add('title', Value);
   Result := Self;
@@ -566,52 +577,49 @@ end;
 
 { TVkParamsBoardCommentsGet }
 
-function TVkParamsBoardCommentsGet.Count(Value: Integer): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.Count(const Value: Integer): TVkParamsBoardCommentsGet;
 begin
   List.Add('count', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentsGet.Extended(Value: Boolean): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.Extended(const Value: Boolean): TVkParamsBoardCommentsGet;
 begin
   List.Add('extended', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentsGet.GroupId(Value: Integer): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.GroupId(const Value: Integer): TVkParamsBoardCommentsGet;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentsGet.NeedLikes(Value: Boolean): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.NeedLikes(const Value: Boolean): TVkParamsBoardCommentsGet;
 begin
   List.Add('need_likes', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentsGet.Offset(Value: Integer): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.Offset(const Value: Integer): TVkParamsBoardCommentsGet;
 begin
   List.Add('offset', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentsGet.Sort(Value: Boolean): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.Sort(const Value: TVkSort): TVkParamsBoardCommentsGet;
 begin
-  if Value then
-    List.Add('sort', 'asc')
-  else
-    List.Add('sort', 'desc');
+  List.Add('sort', Value.ToString);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentsGet.StartCommentId(Value: Integer): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.StartCommentId(const Value: Integer): TVkParamsBoardCommentsGet;
 begin
   List.Add('start_comment_id', Value);
   Result := Self;
 end;
 
-function TVkParamsBoardCommentsGet.TopicId(Value: Integer): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.TopicId(const Value: Integer): TVkParamsBoardCommentsGet;
 begin
   List.Add('topic_id', Value);
   Result := Self;

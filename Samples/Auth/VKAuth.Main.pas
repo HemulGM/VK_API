@@ -327,7 +327,6 @@ var
   Photos: TVkPhotos;
   Attach: TAttachment;
 begin
-
   {Status := False;
   if VK1.Photos.GetWallUploadServer(UploadResp, 145962568) then
   begin

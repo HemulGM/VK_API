@@ -15,13 +15,13 @@ type
     /// <summary>
     /// »дентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer; overload;
-    function GroupId(Value: string): Integer; overload;
-    function Filter(Value: TVkGroupMembersFilter): Integer;
-    function Fields(Value: TVkProfileFields): Integer;
-    function Count(Value: Integer = 1000): Integer;
-    function Offset(Value: Integer = 0): Integer;
-    function Sort(Value: TVkSortIdTime): Integer;
+    function GroupId(const Value: Integer): Integer; overload;
+    function GroupId(const Value: string): Integer; overload;
+    function Filter(const Value: TVkGroupMembersFilter): Integer;
+    function Fields(const Value: TVkProfileFields): Integer;
+    function Count(const Value: Integer = 1000): Integer;
+    function Offset(const Value: Integer = 0): Integer;
+    function Sort(const Value: TVkSortIdTime): Integer;
   end;
 
   TVkParamsGroupsGet = record
@@ -29,11 +29,11 @@ type
     /// <summary>
     /// »дентификатор пользовател€.
     /// </summary>
-    function UserId(Value: Integer): Integer;
-    function Filter(Value: TVkGroupFilters): Integer; overload;
-    function Fields(Value: TVkGroupFields): Integer; overload;
-    function Count(Value: Integer = 1000): Integer;
-    function Offset(Value: Integer = 0): Integer;
+    function UserId(const Value: Integer): Integer;
+    function Filter(const Value: TVkGroupFilters): Integer; overload;
+    function Fields(const Value: TVkGroupFields): Integer; overload;
+    function Count(const Value: Integer = 1000): Integer;
+    function Offset(const Value: Integer = 0): Integer;
   end;
 
   TVkParamsGroupsIsMember = record
@@ -41,23 +41,23 @@ type
     /// <summary>
     /// »дентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer; overload;
+    function GroupId(const Value: Integer): Integer; overload;
     /// <summary>
     ///  ороткое им€ сообщества.
     /// </summary>
-    function GroupId(Value: string): Integer; overload;
+    function GroupId(const Value: string): Integer; overload;
     /// <summary>
     /// True Ч вернуть ответ в расширенной форме. ѕо умолчанию Ч False.
     /// </summary>
-    function Extended(Value: Boolean = False): Integer;
+    function Extended(const Value: Boolean = False): Integer;
     /// <summary>
     /// »дентификатор пользовател€.
     /// </summary>
-    function UserId(Value: Integer): Integer;
+    function UserId(const Value: Integer): Integer;
     /// <summary>
     /// »дентификаторы пользователей, не более 500.
     /// </summary>
-    function UserIds(Value: TIdList): Integer;
+    function UserIds(const Value: TIdList): Integer;
   end;
 
   TVkParamsGroupsAddAddress = record
@@ -65,19 +65,19 @@ type
     /// <summary>
     /// »дентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
-    function Title(Value: string): Integer;
-    function Address(Value: string): Integer;
-    function AdditionalAddress(Value: string): Integer;
-    function CountryId(Value: Integer): Integer;
-    function CityId(Value: Integer): Integer;
-    function MetroId(Value: Integer): Integer;
-    function Latitude(Value: Extended): Integer;
-    function Longitude(Value: Extended): Integer;
-    function Phone(Value: string): Integer;
-    function WorkInfoStatus(Value: TVkWorkInfoStatus): Integer;
-    function Timetable(Value: TVkTimeTable; FreeObject: Boolean = True): Integer;
-    function IsMainAddress(Value: Boolean): Integer;
+    function GroupId(const Value: Integer): Integer;
+    function Title(const Value: string): Integer;
+    function Address(const Value: string): Integer;
+    function AdditionalAddress(const Value: string): Integer;
+    function CountryId(const Value: Integer): Integer;
+    function CityId(const Value: Integer): Integer;
+    function MetroId(const Value: Integer): Integer;
+    function Latitude(const Value: Extended): Integer;
+    function Longitude(const Value: Extended): Integer;
+    function Phone(const Value: string): Integer;
+    function WorkInfoStatus(const Value: TVkWorkInfoStatus): Integer;
+    function Timetable(const Value: TVkTimeTable; FreeObject: Boolean = True): Integer;
+    function IsMainAddress(const Value: Boolean): Integer;
   end;
 
   TVkParamsGroupsEditAddress = TVkParamsGroupsAddAddress;
@@ -87,12 +87,12 @@ type
     /// <summary>
     /// »дентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
-    function OwnerId(Value: Integer): Integer;
-    function EndDate(Value: TDateTime): Integer;
-    function Reason(Value: TVkUserBlockReason = TVkUserBlockReason.Other): Integer;
-    function Comment(Value: string): Integer;
-    function CommentVisible(Value: Boolean = False): Integer;
+    function GroupId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): Integer;
+    function EndDate(const Value: TDateTime): Integer;
+    function Reason(const Value: TVkUserBlockReason = TVkUserBlockReason.Other): Integer;
+    function Comment(const Value: string): Integer;
+    function CommentVisible(const Value: Boolean = False): Integer;
   end;
 
   TVkParamsGroupsCreate = record
@@ -100,23 +100,23 @@ type
     /// <summary>
     /// Ќазвание сообщества
     /// </summary>
-    function Title(Value: string): Integer;
+    function Title(const Value: string): Integer;
     /// <summary>
     /// ќписание сообщества, (не учитываетс€ при Type = gtPublic)
     /// </summary>
-    function Description(Value: string): Integer;
+    function Description(const Value: string): Integer;
     /// <summary>
     /// “ип создаваемого сообщества
     /// </summary>
-    function &Type(Value: TVkGroupTypeCreate): Integer;
+    function &Type(const Value: TVkGroupTypeCreate): Integer;
     /// <summary>
     ///  атегори€ публичной страницы (только дл€ Type = gtPublic).
     /// </summary>
-    function PublicCategory(Value: Integer): Integer;
+    function PublicCategory(const Value: Integer): Integer;
     /// <summary>
     /// ¬ид публичной страницы (только при Type = gtPublic)
     /// </summary>
-    function Subtype(Value: Integer): Integer;
+    function Subtype(const Value: Integer): Integer;
   end;
 
   TVkParamsGroupsEdit = record
@@ -144,12 +144,12 @@ type
     /// <summary>
     /// »дентификатор сообщества.
     /// </summary>
-    function GroupId(Value: Integer): Integer;
-    function Title(Value: string): Integer;
-    function Description(Value: string): Integer;
-    function ScreenName(Value: string): Integer;
-    function Access(Value: TVkGroupAccess): Integer;
-    function Website(Value: string): Integer;
+    function GroupId(const Value: Integer): Integer;
+    function Title(const Value: string): Integer;
+    function Description(const Value: string): Integer;
+    function ScreenName(const Value: string): Integer;
+    function Access(const Value: TVkGroupAccess): Integer;
+    function Website(const Value: string): Integer;
     /// <summary>
     /// 1 Ч авто/мото;  2 Ч активный отдых;  3 Ч бизнес;  4 Ч домашние животные;  5 Ч здоровье;
     /// 6 Ч знакомство и общение;  7 Ч игры;  8 Ч »“ (компьютеры и софт);  9 Ч кино;  10 Ч красота и мода;
@@ -161,205 +161,205 @@ type
     /// 34 Ч увлечени€ и хобби;  35 Ч финансы;  36 Ч фото;  37 Ч эзотерика;  38 Ч электроника и бытова€ техника;
     /// 39 Ч эротика;  40 Ч юмор;  41 Ч общество, гуманитарные науки;  42 Ч дизайн и графика.
     /// </summary>
-    function Subject(Value: Integer): Integer;
-    function Email(Value: string): Integer;
-    function Phone(Value: string): Integer;
-    function Rss(Value: string): Integer;
-    function EventStartDate(Value: TDateTime): Integer;
-    function EventFinishDate(Value: TDateTime): Integer;
-    function EventGroupId(Value: Integer): Integer;
-    function PublicCategory(Value: Integer): Integer;
-    function PublicSubcategory(Value: Integer): Integer;
-    function PublicDate(Value: TDateTime): Integer;
-    function Wall(Value: TGroupSectionWall): Integer;
-    function Topics(Value: TGroupSectionTopics): Integer;
-    function Photos(Value: TGroupSectionPhotos): Integer;
-    function Video(Value: TGroupSectionVideo): Integer;
-    function Audio(Value: TGroupSectionAudio): Integer;
-    function Links(Value: Boolean): Integer;
-    function Events(Value: Boolean): Integer;
-    function Places(Value: Boolean): Integer;
-    function Contacts(Value: Boolean): Integer;
-    function Docs(Value: TGroupSectionDocs): Integer;
-    function Wiki(Value: TGroupSectionWiki): Integer;
-    function Messages(Value: Boolean): Integer;
-    function Articles(Value: Boolean): Integer;
-    function Addresses(Value: Boolean): Integer;
-    function AgeLimits(Value: TVkAgeLimits): Integer;
-    function Market(Value: Boolean): Integer;
-    function MarketComments(Value: Boolean): Integer;
-    function MarketCountry(Value: TIdList): Integer;
-    function MarketCity(Value: TIdList): Integer;
-    function MarketCurrency(Value: TVkCurrency): Integer;
-    function MarketContact(Value: Integer): Integer;
-    function MarketWiki(Value: Integer): Integer;
-    function ObsceneFilter(Value: Boolean): Integer;
-    function ObsceneStopwords(Value: Boolean): Integer;
-    function ObsceneWords(Value: TArrayOfString): Integer;
-    function MainSection(Value: Integer): Integer;
-    function SecondarySection(Value: Integer): Integer;
-    function Country(Value: Integer): Integer;
-    function City(Value: Integer): Integer;
+    function Subject(const Value: Integer): Integer;
+    function Email(const Value: string): Integer;
+    function Phone(const Value: string): Integer;
+    function Rss(const Value: string): Integer;
+    function EventStartDate(const Value: TDateTime): Integer;
+    function EventFinishDate(const Value: TDateTime): Integer;
+    function EventGroupId(const Value: Integer): Integer;
+    function PublicCategory(const Value: Integer): Integer;
+    function PublicSubcategory(const Value: Integer): Integer;
+    function PublicDate(const Value: TDateTime): Integer;
+    function Wall(const Value: TGroupSectionWall): Integer;
+    function Topics(const Value: TGroupSectionTopics): Integer;
+    function Photos(const Value: TGroupSectionPhotos): Integer;
+    function Video(const Value: TGroupSectionVideo): Integer;
+    function Audio(const Value: TGroupSectionAudio): Integer;
+    function Links(const Value: Boolean): Integer;
+    function Events(const Value: Boolean): Integer;
+    function Places(const Value: Boolean): Integer;
+    function Contacts(const Value: Boolean): Integer;
+    function Docs(const Value: TGroupSectionDocs): Integer;
+    function Wiki(const Value: TGroupSectionWiki): Integer;
+    function Messages(const Value: Boolean): Integer;
+    function Articles(const Value: Boolean): Integer;
+    function Addresses(const Value: Boolean): Integer;
+    function AgeLimits(const Value: TVkAgeLimits): Integer;
+    function Market(const Value: Boolean): Integer;
+    function MarketComments(const Value: Boolean): Integer;
+    function MarketCountry(const Value: TIdList): Integer;
+    function MarketCity(const Value: TIdList): Integer;
+    function MarketCurrency(const Value: TVkCurrency): Integer;
+    function MarketContact(const Value: Integer): Integer;
+    function MarketWiki(const Value: Integer): Integer;
+    function ObsceneFilter(const Value: Boolean): Integer;
+    function ObsceneStopwords(const Value: Boolean): Integer;
+    function ObsceneWords(const Value: TArrayOfString): Integer;
+    function MainSection(const Value: Integer): Integer;
+    function SecondarySection(const Value: Integer): Integer;
+    function Country(const Value: Integer): Integer;
+    function City(const Value: Integer): Integer;
   end;
 
   TVkParamsGroupsEditManager = record
     List: TParams;
-    function GroupId(Value: Integer): Integer;
-    function UserId(Value: Integer): Integer;
-    function Role(Value: TVkGroupRole): Integer;
-    function IsContact(Value: Boolean): Integer;
-    function ContactPosition(Value: string): Integer;
-    function ContactPhone(Value: string): Integer;
-    function ContactEmail(Value: string): Integer;
+    function GroupId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): Integer;
+    function Role(const Value: TVkGroupRole): Integer;
+    function IsContact(const Value: Boolean): Integer;
+    function ContactPosition(const Value: string): Integer;
+    function ContactPhone(const Value: string): Integer;
+    function ContactEmail(const Value: string): Integer;
   end;
 
   TVkParamsGroupsGetAddresses = record
     List: TParams;
-    function GroupId(Value: Integer): Integer;
-    function AddressIds(Value: TIdList): Integer; overload;
-    function AddressIds(Value: Integer): Integer; overload;
-    function Latitude(Value: Extended): Integer;
-    function Longitude(Value: Extended): Integer;
-    function Fields(Value: TVkGroupAddressFields): Integer; overload;
-    function Count(Value: Integer = 10): Integer;
-    function Offset(Value: Integer = 0): Integer;
+    function GroupId(const Value: Integer): Integer;
+    function AddressIds(const Value: TIdList): Integer; overload;
+    function AddressIds(const Value: Integer): Integer; overload;
+    function Latitude(const Value: Extended): Integer;
+    function Longitude(const Value: Extended): Integer;
+    function Fields(const Value: TVkGroupAddressFields): Integer; overload;
+    function Count(const Value: Integer = 10): Integer;
+    function Offset(const Value: Integer = 0): Integer;
   end;
 
   TVkParamsGroupsGetBanned = record
     List: TParams;
-    function GroupId(Value: Integer): Integer;
-    function Offset(Value: Integer = 0): Integer;
-    function Count(Value: Integer = 20): Integer;
+    function GroupId(const Value: Integer): Integer;
+    function Offset(const Value: Integer = 0): Integer;
+    function Count(const Value: Integer = 20): Integer;
     function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer; overload;
-    function OwnerId(Value: Integer): Integer;
+    function OwnerId(const Value: Integer): Integer;
   end;
 
   TVkParamsGroupsGetInvitedUsers = record
     List: TParams;
-    function GroupId(Value: Integer): Integer;
-    function Offset(Value: Integer = 0): Integer;
-    function Count(Value: Integer = 20): Integer;
-    function Fields(Value: TVkProfileFields = []): Integer;
-    function NameCase(Value: TVkNameCase): Integer;
+    function GroupId(const Value: Integer): Integer;
+    function Offset(const Value: Integer = 0): Integer;
+    function Count(const Value: Integer = 20): Integer;
+    function Fields(const Value: TVkProfileFields = []): Integer;
+    function NameCase(const Value: TVkNameCase): Integer;
   end;
 
   TVkParamsGroupsSearch = record
     List: TParams;
-    function Query(Value: string): Integer;
-    function &Type(Value: TVkGroupTypeCreate): Integer;
-    function CountryId(Value: Integer): Integer;
-    function CityId(Value: Integer): Integer;
-    function Future(Value: Boolean): Integer;
-    function Market(Value: Boolean): Integer;
-    function Sort(Value: TVkGroupSearchSort): Integer;
-    function Offset(Value: Integer = 0): Integer;
-    function Count(Value: Integer = 20): Integer;
+    function Query(const Value: string): Integer;
+    function &Type(const Value: TVkGroupTypeCreate): Integer;
+    function CountryId(const Value: Integer): Integer;
+    function CityId(const Value: Integer): Integer;
+    function Future(const Value: Boolean): Integer;
+    function Market(const Value: Boolean): Integer;
+    function Sort(const Value: TVkGroupSearchSort): Integer;
+    function Offset(const Value: Integer = 0): Integer;
+    function Count(const Value: Integer = 20): Integer;
   end;
 
   TVkParamsGroupsSetCallbackSettings = record
     List: TParams;
-    function GroupId(Value: Integer): integer;
-    function ApiVersion(Value: string): integer;
-    function ServerId(Value: Integer): integer;
-    function AudioNew(Value: Boolean): integer;
-    function BoardPostDelete(Value: Boolean): integer;
-    function BoardPostEdit(Value: Boolean): integer;
-    function BoardPostNew(Value: Boolean): integer;
-    function BoardPostRestore(Value: Boolean): integer;
-    function GroupChangePhoto(Value: Boolean): integer;
-    function GroupChangeSettings(Value: Boolean): integer;
-    function GroupJoin(Value: Boolean): integer;
-    function GroupLeave(Value: Boolean): integer;
-    function GroupOfficersEdit(Value: Boolean): integer;
-    function LeadFormsNew(Value: Boolean): integer;
-    function LikeAdd(Value: Boolean): integer;
-    function LikeRemove(Value: Boolean): integer;
-    function MarketCommentDelete(Value: Boolean): integer;
-    function MarketCommentEdit(Value: Boolean): integer;
-    function MarketCommentNew(Value: Boolean): integer;
-    function MarketCommentRestore(Value: Boolean): integer;
-    function MessageAllow(Value: Boolean): integer;
-    function MessageDeny(Value: Boolean): integer;
-    function MessageEdit(Value: Boolean): integer;
-    function MessageNew(Value: Boolean): integer;
-    function MessageReply(Value: Boolean): integer;
-    function MessageTypingState(Value: Boolean): integer;
-    function PhotoCommentDelete(Value: Boolean): integer;
-    function PhotoCommentEdit(Value: Boolean): integer;
-    function PhotoCommentNew(Value: Boolean): integer;
-    function PhotoCommentRestore(Value: Boolean): integer;
-    function PhotoNew(Value: Boolean): integer;
-    function PollVoteNew(Value: Boolean): integer;
-    function UserBlock(Value: Boolean): integer;
-    function UserUnblock(Value: Boolean): integer;
-    function VideoCommentDelete(Value: Boolean): integer;
-    function VideoCommentEdit(Value: Boolean): integer;
-    function VideoCommentNew(Value: Boolean): integer;
-    function VideoCommentRestore(Value: Boolean): integer;
-    function VideoNew(Value: Boolean): integer;
-    function WallPostNew(Value: Boolean): integer;
-    function WallReplyDelete(Value: Boolean): integer;
-    function WallReplyEdit(Value: Boolean): integer;
-    function WallReplyNew(Value: Boolean): integer;
-    function WallReplyRestore(Value: Boolean): integer;
-    function WallRepost(Value: Boolean): integer;
+    function GroupId(const Value: Integer): integer;
+    function ApiVersion(const Value: string): integer;
+    function ServerId(const Value: Integer): integer;
+    function AudioNew(const Value: Boolean): integer;
+    function BoardPostDelete(const Value: Boolean): integer;
+    function BoardPostEdit(const Value: Boolean): integer;
+    function BoardPostNew(const Value: Boolean): integer;
+    function BoardPostRestore(const Value: Boolean): integer;
+    function GroupChangePhoto(const Value: Boolean): integer;
+    function GroupChangeSettings(const Value: Boolean): integer;
+    function GroupJoin(const Value: Boolean): integer;
+    function GroupLeave(const Value: Boolean): integer;
+    function GroupOfficersEdit(const Value: Boolean): integer;
+    function LeadFormsNew(const Value: Boolean): integer;
+    function LikeAdd(const Value: Boolean): integer;
+    function LikeRemove(const Value: Boolean): integer;
+    function MarketCommentDelete(const Value: Boolean): integer;
+    function MarketCommentEdit(const Value: Boolean): integer;
+    function MarketCommentNew(const Value: Boolean): integer;
+    function MarketCommentRestore(const Value: Boolean): integer;
+    function MessageAllow(const Value: Boolean): integer;
+    function MessageDeny(const Value: Boolean): integer;
+    function MessageEdit(const Value: Boolean): integer;
+    function MessageNew(const Value: Boolean): integer;
+    function MessageReply(const Value: Boolean): integer;
+    function MessageTypingState(const Value: Boolean): integer;
+    function PhotoCommentDelete(const Value: Boolean): integer;
+    function PhotoCommentEdit(const Value: Boolean): integer;
+    function PhotoCommentNew(const Value: Boolean): integer;
+    function PhotoCommentRestore(const Value: Boolean): integer;
+    function PhotoNew(const Value: Boolean): integer;
+    function PollVoteNew(const Value: Boolean): integer;
+    function UserBlock(const Value: Boolean): integer;
+    function UserUnblock(const Value: Boolean): integer;
+    function VideoCommentDelete(const Value: Boolean): integer;
+    function VideoCommentEdit(const Value: Boolean): integer;
+    function VideoCommentNew(const Value: Boolean): integer;
+    function VideoCommentRestore(const Value: Boolean): integer;
+    function VideoNew(const Value: Boolean): integer;
+    function WallPostNew(const Value: Boolean): integer;
+    function WallReplyDelete(const Value: Boolean): integer;
+    function WallReplyEdit(const Value: Boolean): integer;
+    function WallReplyNew(const Value: Boolean): integer;
+    function WallReplyRestore(const Value: Boolean): integer;
+    function WallRepost(const Value: Boolean): integer;
   end;
 
   TVkParamsGroupsSetLongpollSettings = record
     List: TParams;
-    function GroupId(Value: Integer): integer;
-    function ApiVersion(Value: string): integer;
-    function AudioNew(Value: Boolean): integer;
-    function BoardPostDelete(Value: Boolean): integer;
-    function BoardPostEdit(Value: Boolean): integer;
-    function BoardPostNew(Value: Boolean): integer;
-    function BoardPostRestore(Value: Boolean): integer;
-    function GroupChangePhoto(Value: Boolean): integer;
-    function GroupChangeSettings(Value: Boolean): integer;
-    function GroupJoin(Value: Boolean): integer;
-    function GroupLeave(Value: Boolean): integer;
-    function GroupOfficersEdit(Value: Boolean): integer;
-    function LeadFormsNew(Value: Boolean): integer;
-    function LikeAdd(Value: Boolean): integer;
-    function LikeRemove(Value: Boolean): integer;
-    function MarketCommentDelete(Value: Boolean): integer;
-    function MarketCommentEdit(Value: Boolean): integer;
-    function MarketCommentNew(Value: Boolean): integer;
-    function MarketCommentRestore(Value: Boolean): integer;
-    function MessageAllow(Value: Boolean): integer;
-    function MessageDeny(Value: Boolean): integer;
-    function MessageEdit(Value: Boolean): integer;
-    function MessageNew(Value: Boolean): integer;
-    function MessageReply(Value: Boolean): integer;
-    function MessageTypingState(Value: Boolean): integer;
-    function PhotoCommentDelete(Value: Boolean): integer;
-    function PhotoCommentEdit(Value: Boolean): integer;
-    function PhotoCommentNew(Value: Boolean): integer;
-    function PhotoCommentRestore(Value: Boolean): integer;
-    function PhotoNew(Value: Boolean): integer;
-    function PollVoteNew(Value: Boolean): integer;
-    function UserBlock(Value: Boolean): integer;
-    function UserUnblock(Value: Boolean): integer;
-    function VideoCommentDelete(Value: Boolean): integer;
-    function VideoCommentEdit(Value: Boolean): integer;
-    function VideoCommentNew(Value: Boolean): integer;
-    function VideoCommentRestore(Value: Boolean): integer;
-    function VideoNew(Value: Boolean): integer;
-    function WallPostNew(Value: Boolean): integer;
-    function WallReplyDelete(Value: Boolean): integer;
-    function WallReplyEdit(Value: Boolean): integer;
-    function WallReplyNew(Value: Boolean): integer;
-    function WallReplyRestore(Value: Boolean): integer;
-    function WallRepost(Value: Boolean): integer;
+    function GroupId(const Value: Integer): integer;
+    function ApiVersion(const Value: string): integer;
+    function AudioNew(const Value: Boolean): integer;
+    function BoardPostDelete(const Value: Boolean): integer;
+    function BoardPostEdit(const Value: Boolean): integer;
+    function BoardPostNew(const Value: Boolean): integer;
+    function BoardPostRestore(const Value: Boolean): integer;
+    function GroupChangePhoto(const Value: Boolean): integer;
+    function GroupChangeSettings(const Value: Boolean): integer;
+    function GroupJoin(const Value: Boolean): integer;
+    function GroupLeave(const Value: Boolean): integer;
+    function GroupOfficersEdit(const Value: Boolean): integer;
+    function LeadFormsNew(const Value: Boolean): integer;
+    function LikeAdd(const Value: Boolean): integer;
+    function LikeRemove(const Value: Boolean): integer;
+    function MarketCommentDelete(const Value: Boolean): integer;
+    function MarketCommentEdit(const Value: Boolean): integer;
+    function MarketCommentNew(const Value: Boolean): integer;
+    function MarketCommentRestore(const Value: Boolean): integer;
+    function MessageAllow(const Value: Boolean): integer;
+    function MessageDeny(const Value: Boolean): integer;
+    function MessageEdit(const Value: Boolean): integer;
+    function MessageNew(const Value: Boolean): integer;
+    function MessageReply(const Value: Boolean): integer;
+    function MessageTypingState(const Value: Boolean): integer;
+    function PhotoCommentDelete(const Value: Boolean): integer;
+    function PhotoCommentEdit(const Value: Boolean): integer;
+    function PhotoCommentNew(const Value: Boolean): integer;
+    function PhotoCommentRestore(const Value: Boolean): integer;
+    function PhotoNew(const Value: Boolean): integer;
+    function PollVoteNew(const Value: Boolean): integer;
+    function UserBlock(const Value: Boolean): integer;
+    function UserUnblock(const Value: Boolean): integer;
+    function VideoCommentDelete(const Value: Boolean): integer;
+    function VideoCommentEdit(const Value: Boolean): integer;
+    function VideoCommentNew(const Value: Boolean): integer;
+    function VideoCommentRestore(const Value: Boolean): integer;
+    function VideoNew(const Value: Boolean): integer;
+    function WallPostNew(const Value: Boolean): integer;
+    function WallReplyDelete(const Value: Boolean): integer;
+    function WallReplyEdit(const Value: Boolean): integer;
+    function WallReplyNew(const Value: Boolean): integer;
+    function WallReplyRestore(const Value: Boolean): integer;
+    function WallRepost(const Value: Boolean): integer;
   end;
 
   TVkParamsGroupsSetSettings = record
     List: TParams;
-    function GroupId(Value: Integer): integer;
-    function Messages(Value: Boolean): integer;
-    function BotsCapabilities(Value: Boolean): integer;
-    function BotsStartButton(Value: Boolean): integer;
-    function BotsAddToChat(Value: Boolean): integer;
+    function GroupId(const Value: Integer): integer;
+    function Messages(const Value: Boolean): integer;
+    function BotsCapabilities(const Value: Boolean): integer;
+    function BotsStartButton(const Value: Boolean): integer;
+    function BotsAddToChat(const Value: Boolean): integer;
   end;
 
   TGroupsController = class(TVkController)
@@ -399,7 +399,7 @@ type
     /// <summary>
     /// ¬озвращает список id сообществ указанного пользовател€.
     /// </summary>
-    function GetIds(var Items: TVkIdList; Params: TVkParamsGroupsGet): Boolean;
+    function Get(var Items: TVkIdList; Params: TVkParamsGroupsGet): Boolean; overload;
     /// <summary>
     /// ¬озвращает информацию о том, €вл€етс€ ли пользователь участником сообщества.
     /// </summary>
@@ -655,7 +655,7 @@ uses
 
 function TGroupsController.AddAddress(var Item: TVkGroupAddress; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('groups.addAddress', Params).GetObject<TVkGroupAddress>(Item);
+  Result := Handler.Execute('groups.addAddress', Params).GetObject(Item);
 end;
 
 function TGroupsController.AddAddress(var Item: TVkGroupAddress; Params: TVkParamsGroupsAddAddress): Boolean;
@@ -679,13 +679,15 @@ begin
     ['GroupId', GroupId.ToString],
     ['link', Link],
     ['text', Text]]).
-    GetObject<TVkGroupLink>(Item);
+    GetObject(Item);
 end;
 
 function TGroupsController.ApproveRequest(GroupId, UserId: integer): Boolean;
 begin
-  with Handler.Execute('groups.approveRequest', [['group_id', GroupId.ToString], ['user_id', UserId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.approveRequest', [
+    ['group_id', GroupId.ToString],
+    ['user_id', UserId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.Ban(Params: TVkParamsGroupsBan): Boolean;
@@ -700,43 +702,46 @@ end;
 
 function TGroupsController.Create(var Item: TVkGroup; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('groups.create', Params).GetObject<TVkGroup>(Item);
+  Result := Handler.Execute('groups.create', Params).GetObject(Item);
 end;
 
 function TGroupsController.Ban(Params: TParams): Boolean;
 begin
-  with Handler.Execute('groups.ban', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.ban', Params).ResponseIsTrue;
 end;
 
 function TGroupsController.DeleteAddress(GroupId, AddressId: integer): Boolean;
 begin
-  with Handler.Execute('groups.deleteAddress', [['group_id', GroupId.ToString], ['address_id', AddressId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.deleteAddress', [
+    ['group_id', GroupId.ToString],
+    ['address_id', AddressId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.DeleteCallbackServer(GroupId, ServerId: integer): Boolean;
 begin
-  with Handler.Execute('groups.deleteCallbackServer', [['group_id', GroupId.ToString], ['server_id', ServerId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.deleteCallbackServer', [
+    ['group_id', GroupId.ToString],
+    ['server_id', ServerId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.DeleteLink(GroupId, LinkId: integer): Boolean;
 begin
-  with Handler.Execute('groups.deleteLink', [['group_id', GroupId.ToString], ['link_id', LinkId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.deleteLink', [
+    ['group_id', GroupId.ToString],
+    ['link_id', LinkId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.DisableOnline(GroupId: Cardinal): Boolean;
 begin
-  with Handler.Execute('groups.disableOnline', ['group_id', GroupId.ToString]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.disableOnline', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
 
 function TGroupsController.Edit(Params: TParams): Boolean;
 begin
-  with Handler.Execute('groups.edit', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.edit', Params).ResponseIsTrue;
 end;
 
 function TGroupsController.Edit(Params: TVkParamsGroupsEdit): Boolean;
@@ -752,14 +757,22 @@ end;
 
 function TGroupsController.EditCallbackServer(GroupId, ServerId: integer; Url, Title, SecretKey: string): Boolean;
 begin
-  with Handler.Execute('groups.editCallbackServer', [['group_id', GroupId.ToString], ['server_id', ServerId.ToString], ['url', Url], ['title', Title], ['secret_key', SecretKey]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.editCallbackServer', [
+    ['group_id', GroupId.ToString],
+    ['server_id', ServerId.ToString],
+    ['url', Url],
+    ['title', Title],
+    ['secret_key', SecretKey]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.EditLink(GroupId: integer; Link, Text: string): Boolean;
 begin
-  with Handler.Execute('groups.editLink', [['GroupId', GroupId.ToString], ['link', Link], ['text', Text]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.editLink', [
+    ['GroupId', GroupId.ToString],
+    ['link', Link],
+    ['text', Text]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.EditManager(Params: TVkParamsGroupsEditManager): Boolean;
@@ -769,20 +782,17 @@ end;
 
 function TGroupsController.EditManager(Params: TParams): Boolean;
 begin
-  with Handler.Execute('groups.editManager', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.editManager', Params).ResponseIsTrue;
 end;
 
 function TGroupsController.EditAddress(var Item: TVkGroupAddress; Params: TParams): Boolean;
 begin
-  with Handler.Execute('groups.editAddress', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.editAddress', Params).ResponseIsTrue;
 end;
 
 function TGroupsController.EnableOnline(GroupId: Cardinal): Boolean;
 begin
-  with Handler.Execute('groups.enableOnline', ['group_id', GroupId.ToString]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.enableOnline', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
 
 function TGroupsController.Get(var Items: TVkGroups; Params: TVkParamsGroupsGet): Boolean;
@@ -797,7 +807,7 @@ end;
 
 function TGroupsController.GetBanned(var Items: TVkGroupBans; Params: TVkParamsGroupsGetBanned): Boolean;
 begin
-  Result := Handler.Execute('groups.getBanned', Params.List).GetObject<TVkGroupBans>(Items);
+  Result := Handler.Execute('groups.getBanned', Params.List).GetObject(Items);
 end;
 
 function TGroupsController.GetById(var Items: TVkGroups; GroupId: Integer; Fields: TVkGroupFields): Boolean;
@@ -815,7 +825,7 @@ begin
   Result := Handler.Execute('groups.getCallbackServers', [
     ['group_id', GroupId.ToString],
     ['server_ids', ServerIds.ToString]]).
-    GetObject<TVkGroupCallbackServers>(Items);
+    GetObject(Items);
 end;
 
 function TGroupsController.GetCallbackSettings(var Items: TVkCallbackSettings; GroupId, ServerId: Integer): Boolean;
@@ -823,7 +833,7 @@ begin
   Result := Handler.Execute('groups.getCallbackSettings', [
     ['group_id', GroupId.ToString],
     ['server_id', ServerId.ToString]]).
-    GetObject<TVkCallbackSettings>(Items);
+    GetObject(Items);
 end;
 
 function TGroupsController.GetCatalog(var Items: TVkGroups; CategoryId, SubcategoryId: Integer): Boolean;
@@ -831,7 +841,7 @@ begin
   Result := Handler.Execute('groups.getById', [
     ['category_id', CategoryId.ToString],
     ['subcategory_id', SubcategoryId.ToString]]).
-    GetObject<TVkGroups>(Items);
+    GetObject(Items);
 end;
 
 function TGroupsController.GetCatalogInfo(var Items: TVkGroupCategories; Subcategories, Extended: Boolean): Boolean;
@@ -839,7 +849,7 @@ begin
   Result := Handler.Execute('groups.getCatalogInfo', [
     ['subcategories', BoolToString(Subcategories)],
     ['extended', BoolToString(Extended)]]).
-    GetObject<TVkGroupCategories>(Items);
+    GetObject(Items);
 end;
 
 function TGroupsController.GetById(var Items: TVkGroups; GroupId: string; Fields: TVkGroupFields): Boolean;
@@ -847,7 +857,7 @@ begin
   Result := Handler.Execute('groups.getById', [
     ['group_ids', GroupId],
     ['fields', Fields.ToString]]).
-    GetObjects<TVkGroups>(Items);
+    GetObjects(Items);
 end;
 
 function TGroupsController.GetById(var Items: TVkGroups; GroupIds: TIdList; Fields: TVkGroupFields): Boolean;
@@ -855,29 +865,29 @@ begin
   Result := Handler.Execute('groups.getById', [
     ['group_ids', GroupIds.ToString],
     ['fields', Fields.ToString]]).
-    GetObjects<TVkGroups>(Items);
+    GetObjects(Items);
 end;
 
 function TGroupsController.GetAddresses(var Item: TVkGroupAddresses; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('groups.getAddresses', Params).GetObject<TVkGroupAddresses>(Item);
+  Result := Handler.Execute('groups.getAddresses', Params).GetObject(Item);
 end;
 
 function TGroupsController.Get(var Items: TVkGroups; Params: TParams): Boolean;
 begin
   Params.Add('extended', True);
-  Result := Handler.Execute('groups.get', Params).GetObject<TVkGroups>(Items);
+  Result := Handler.Execute('groups.get', Params).GetObject(Items);
 end;
 
-function TGroupsController.GetIds(var Items: TVkIdList; Params: TVkParamsGroupsGet): Boolean;
+function TGroupsController.Get(var Items: TVkIdList; Params: TVkParamsGroupsGet): Boolean;
 begin
   Params.List.Add('extended', False);
-  Result := Handler.Execute('groups.get', Params.List).GetObject<TVkIdList>(Items);
+  Result := Handler.Execute('groups.get', Params.List).GetObject(Items);
 end;
 
 function TGroupsController.GetInvitedUsers(var Items: TVkProfiles; Params: TVkParamsGroupsGetInvitedUsers): Boolean;
 begin
-  Result := Handler.Execute('groups.getInvitedUsers', Params.List).GetObject<TVkProfiles>(Items);
+  Result := Handler.Execute('groups.getInvitedUsers', Params.List).GetObject(Items);
 end;
 
 function TGroupsController.GetInvites(var Items: TVkInvitesGroups; Extended: Boolean; Count, Offset: Integer): Boolean;
@@ -886,17 +896,17 @@ begin
     ['extended', BoolToString(Extended)],
     ['count', Count.ToString],
     ['offset', Offset.ToString]]).
-    GetObject<TVkInvitesGroups>(Items);
+    GetObject(Items);
 end;
 
 function TGroupsController.GetLongPollServer(var Item: TVkLongpollData; GroupId: Integer): Boolean;
 begin
-  Result := Handler.Execute('groups.getLongPollServer', ['group_id', GroupId.ToString]).GetObject<TVkLongpollData>(Item);
+  Result := Handler.Execute('groups.getLongPollServer', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
 
 function TGroupsController.GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Integer): Boolean;
 begin
-  Result := Handler.Execute('groups.getLongPollSettings', ['group_id', GroupId.ToString]).GetObject<TVkLongpollSettings>(Item);
+  Result := Handler.Execute('groups.getLongPollSettings', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
 
 function TGroupsController.GetMembers(var Items: TVkProfiles; Params: TVkParamsGroupsGetMembers): Boolean;
@@ -908,18 +918,18 @@ end;
 
 function TGroupsController.GetMembers(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('groups.getMembers', Params).GetObject<TVkProfiles>(Items);
+  Result := Handler.Execute('groups.getMembers', Params).GetObject(Items);
 end;
 
 function TGroupsController.GetMembersIds(var Items: TVkIdList; Params: TVkParamsGroupsGetMembers): Boolean;
 begin
   Params.Fields([]);
-  Result := Handler.Execute('groups.getMembers', Params.List).GetObject<TVkIdList>(Items);
+  Result := Handler.Execute('groups.getMembers', Params.List).GetObject(Items);
 end;
 
 function TGroupsController.GetOnlineStatus(var Value: TVkGroupStatus; GroupId: Cardinal): Boolean;
 begin
-  Result := Handler.Execute('groups.getOnlineStatus', ['group_id', GroupId.ToString]).GetObject<TVkGroupStatus>(Value);
+  Result := Handler.Execute('groups.getOnlineStatus', ['group_id', GroupId.ToString]).GetObject(Value);
 end;
 
 function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields; Count, Offset: Integer): Boolean;
@@ -932,7 +942,7 @@ begin
   if Fields = [] then
     Fields := [TVkProfileField.Domain];
   Params.Add('fields', Fields.ToString);
-  Result := Handler.Execute('groups.getRequests', Params).GetObject<TVkProfiles>(Items);
+  Result := Handler.Execute('groups.getRequests', Params).GetObject(Items);
 end;
 
 function TGroupsController.GetRequestsIds(var Items: TVkIdList; GroupId, Count, Offset: Integer): Boolean;
@@ -942,12 +952,12 @@ begin
   Params.Add('group_id', GroupId);
   Params.Add('count', Count);
   Params.Add('offset', Offset);
-  Result := Handler.Execute('groups.getRequests', Params).GetObject<TVkIdList>(Items);
+  Result := Handler.Execute('groups.getRequests', Params).GetObject(Items);
 end;
 
 function TGroupsController.GetSettings(var Item: TVkGroupSettings; GroupId: Integer): Boolean;
 begin
-  Result := Handler.Execute('groups.getSettings', ['group_id', GroupId.ToString]).GetObject<TVkGroupSettings>(Item);
+  Result := Handler.Execute('groups.getSettings', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
 
 function TGroupsController.GetTagList(var Items: TVkGroupTags; GroupId: Integer): Boolean;
@@ -969,13 +979,15 @@ end;
 
 function TGroupsController.GetTokenPermissions(var Items: TVkTokenPermissions): Boolean;
 begin
-  Result := Handler.Execute('groups.getTokenPermissions').GetObject<TVkTokenPermissions>(Items);
+  Result := Handler.Execute('groups.getTokenPermissions').GetObject(Items);
 end;
 
 function TGroupsController.Invite(GroupId, UserId: integer): Boolean;
 begin
-  with Handler.Execute('groups.invite', [['group_id', GroupId.ToString], ['user_id', UserId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.invite', [
+    ['group_id', GroupId.ToString],
+    ['user_id', UserId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.IsMember(var Items: TVkGroupMemberStates; Params: TVkParamsGroupsIsMember): Boolean;
@@ -990,26 +1002,29 @@ begin
   Params.Add('group_id', GroupId);
   if NotSure then
     Params.Add('not_sure', NotSure);
-  with Handler.Execute('groups.join', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.join', Params).ResponseIsTrue;
 end;
 
 function TGroupsController.Leave(GroupId: integer): Boolean;
 begin
-  with Handler.Execute('groups.leave', ['group_id', GroupId.ToString]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.leave', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
 
 function TGroupsController.RemoveUser(GroupId, UserId: integer): Boolean;
 begin
-  with Handler.Execute('groups.removeUser', [['group_id', GroupId.ToString], ['user_id', UserId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.removeUser', [
+    ['group_id', GroupId.ToString],
+    ['user_id', UserId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.ReorderLink(GroupId, LinkId, After: Integer): Boolean;
 begin
-  with Handler.Execute('groups.reorderLink', [['group_id', GroupId.ToString], ['link_id', LinkId.ToString], ['after', After.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.reorderLink', [
+    ['group_id', GroupId.ToString],
+    ['link_id', LinkId.ToString],
+    ['after', After.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.Search(var Items: TVkGroups; Params: TVkParamsGroupsSearch): Boolean;
@@ -1024,8 +1039,7 @@ end;
 
 function TGroupsController.SetCallbackSettings(Params: TParams): Boolean;
 begin
-  with Handler.Execute('groups.setCallbackSettings', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.setCallbackSettings', Params).ResponseIsTrue;
 end;
 
 function TGroupsController.SetLongPollSettings(Params: TVkParamsGroupsSetLongpollSettings): Boolean;
@@ -1035,590 +1049,605 @@ end;
 
 function TGroupsController.SetSettings(Params: TVkParamsGroupsSetSettings): Boolean;
 begin
-  with Handler.Execute('groups.setSettings', Params.List) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.setSettings', Params.List).ResponseIsTrue;
 end;
 
 function TGroupsController.SetUserNote(GroupId, UserId: Integer; Note: TVkNoteText): Boolean;
 begin
-  with Handler.Execute('groups.setLongPollSettings', [['group_id', GroupId.ToString], ['user_id', UserId.ToString], ['note', string(Note)]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.setLongPollSettings', [
+    ['group_id', GroupId.ToString],
+    ['user_id', UserId.ToString],
+    ['note', string(Note)]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.TagAdd(GroupId: Integer; TagName: string; TagColor: TVkGroupTagColor): Boolean;
 begin
-  with Handler.Execute('groups.tagAdd', [['group_id', GroupId.ToString], ['tag_name', TagName], ['tag_color', TagColor]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.tagAdd', [
+    ['group_id', GroupId.ToString],
+    ['tag_name', TagName],
+    ['tag_color', TagColor]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.TagBind(GroupId, TagId, UserId: Integer; Act: TVkGroupTagAct): Boolean;
 begin
-  with Handler.Execute('groups.tagBind', [['group_id', GroupId.ToString], ['tag_id', TagId.ToString], ['user_id', UserId.ToString], ['act', Act.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.tagBind', [
+    ['group_id', GroupId.ToString],
+    ['tag_id', TagId.ToString],
+    ['user_id', UserId.ToString],
+    ['act', Act.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.TagDelete(GroupId, TagId: Integer): Boolean;
 begin
-  with Handler.Execute('groups.tagDelete', [['group_id', GroupId.ToString], ['tag_id', TagId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.tagDelete', [
+    ['group_id', GroupId.ToString],
+    ['tag_id', TagId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.TagUpdate(GroupId, TagId: Integer; TagName: string): Boolean;
 begin
-  with Handler.Execute('groups.tagUpdate', [['group_id', GroupId.ToString], ['tag_name', TagName], ['tag_id', TagId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.tagUpdate', [
+    ['group_id', GroupId.ToString],
+    ['tag_name', TagName],
+    ['tag_id', TagId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.Unban(GroupId, OwnerId: Integer): Boolean;
 begin
-  with Handler.Execute('groups.unban', [['group_id', GroupId.ToString], ['owner_id', OwnerId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.unban', [
+    ['group_id', GroupId.ToString],
+    ['owner_id', OwnerId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TGroupsController.SetLongPollSettings(Params: TParams): Boolean;
 begin
-  with Handler.Execute('groups.setLongPollSettings', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('groups.setLongPollSettings', Params).ResponseIsTrue;
 end;
 
 function TGroupsController.Search(var Items: TVkGroups; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('groups.search', Params).GetObject<TVkGroups>(Items);
+  Result := Handler.Execute('groups.search', Params).GetObject(Items);
 end;
 
 function TGroupsController.IsMember(var Items: TVkGroupMemberStates; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('groups.isMember', Params).GetObjects<TVkGroupMemberStates>(Items);
+  Result := Handler.Execute('groups.isMember', Params).GetObjects(Items);
 end;
 
 { TVkGetMembersParams }
 
-function TVkParamsGroupsGetMembers.Count(Value: Integer): Integer;
+function TVkParamsGroupsGetMembers.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGroupsGetMembers.Fields(Value: TVkProfileFields): Integer;
+function TVkParamsGroupsGetMembers.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsGroupsGetMembers.Filter(Value: TVkGroupMembersFilter): Integer;
+function TVkParamsGroupsGetMembers.Filter(const Value: TVkGroupMembersFilter): Integer;
 begin
   Result := List.Add('filter', Value.ToString);
 end;
 
-function TVkParamsGroupsGetMembers.GroupId(Value: string): Integer;
+function TVkParamsGroupsGetMembers.GroupId(const Value: string): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsGetMembers.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsGetMembers.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsGetMembers.Offset(Value: Integer): Integer;
+function TVkParamsGroupsGetMembers.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsGroupsGetMembers.Sort(Value: TVkSortIdTime): Integer;
+function TVkParamsGroupsGetMembers.Sort(const Value: TVkSortIdTime): Integer;
 begin
   Result := List.Add('sort', Value.ToString);
 end;
 
 { TVkGroupsGetParams }
 
-function TVkParamsGroupsGet.Count(Value: Integer): Integer;
+function TVkParamsGroupsGet.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGroupsGet.Fields(Value: TVkGroupFields): Integer;
+function TVkParamsGroupsGet.Fields(const Value: TVkGroupFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsGroupsGet.Filter(Value: TVkGroupFilters): Integer;
+function TVkParamsGroupsGet.Filter(const Value: TVkGroupFilters): Integer;
 begin
   Result := List.Add('filter', Value.ToString);
 end;
 
-function TVkParamsGroupsGet.Offset(Value: Integer): Integer;
+function TVkParamsGroupsGet.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsGroupsGet.UserId(Value: Integer): Integer;
+function TVkParamsGroupsGet.UserId(const Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
 end;
 
 { TVkParamsGroupsIsMember }
 
-function TVkParamsGroupsIsMember.Extended(Value: Boolean): Integer;
+function TVkParamsGroupsIsMember.Extended(const Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsGroupsIsMember.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsIsMember.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsIsMember.GroupId(Value: string): Integer;
+function TVkParamsGroupsIsMember.GroupId(const Value: string): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsIsMember.UserId(Value: Integer): Integer;
+function TVkParamsGroupsIsMember.UserId(const Value: Integer): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
 
-function TVkParamsGroupsIsMember.UserIds(Value: TIdList): Integer;
+function TVkParamsGroupsIsMember.UserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
 
 { TVkParamsGroupsAddAddress }
 
-function TVkParamsGroupsAddAddress.AdditionalAddress(Value: string): Integer;
+function TVkParamsGroupsAddAddress.AdditionalAddress(const Value: string): Integer;
 begin
   Result := List.Add('additional_address', Value);
 end;
 
-function TVkParamsGroupsAddAddress.Address(Value: string): Integer;
+function TVkParamsGroupsAddAddress.Address(const Value: string): Integer;
 begin
   Result := List.Add('address', Value);
 end;
 
-function TVkParamsGroupsAddAddress.CityId(Value: Integer): Integer;
+function TVkParamsGroupsAddAddress.CityId(const Value: Integer): Integer;
 begin
   Result := List.Add('city_id', Value);
 end;
 
-function TVkParamsGroupsAddAddress.CountryId(Value: Integer): Integer;
+function TVkParamsGroupsAddAddress.CountryId(const Value: Integer): Integer;
 begin
   Result := List.Add('country_id', Value);
 end;
 
-function TVkParamsGroupsAddAddress.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsAddAddress.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsAddAddress.IsMainAddress(Value: Boolean): Integer;
+function TVkParamsGroupsAddAddress.IsMainAddress(const Value: Boolean): Integer;
 begin
   Result := List.Add('is_main_address', Value);
 end;
 
-function TVkParamsGroupsAddAddress.Latitude(Value: Extended): Integer;
+function TVkParamsGroupsAddAddress.Latitude(const Value: Extended): Integer;
 begin
   Result := List.Add('latitude', Value);
 end;
 
-function TVkParamsGroupsAddAddress.Longitude(Value: Extended): Integer;
+function TVkParamsGroupsAddAddress.Longitude(const Value: Extended): Integer;
 begin
   Result := List.Add('longitude', Value);
 end;
 
-function TVkParamsGroupsAddAddress.MetroId(Value: Integer): Integer;
+function TVkParamsGroupsAddAddress.MetroId(const Value: Integer): Integer;
 begin
   Result := List.Add('metro_id', Value);
 end;
 
-function TVkParamsGroupsAddAddress.Phone(Value: string): Integer;
+function TVkParamsGroupsAddAddress.Phone(const Value: string): Integer;
 begin
   Result := List.Add('phone', Value);
 end;
 
-function TVkParamsGroupsAddAddress.Timetable(Value: TVkTimeTable; FreeObject: Boolean): Integer;
+function TVkParamsGroupsAddAddress.Timetable(const Value: TVkTimeTable; FreeObject: Boolean): Integer;
 begin
   Result := List.Add('timetable', Value.ToJsonString);
   if FreeObject then
     Value.Free;
 end;
 
-function TVkParamsGroupsAddAddress.Title(Value: string): Integer;
+function TVkParamsGroupsAddAddress.Title(const Value: string): Integer;
 begin
   Result := List.Add('title', Value);
 end;
 
-function TVkParamsGroupsAddAddress.WorkInfoStatus(Value: TVkWorkInfoStatus): Integer;
+function TVkParamsGroupsAddAddress.WorkInfoStatus(const Value: TVkWorkInfoStatus): Integer;
 begin
   Result := List.Add('work_info_status', Value.ToString);
 end;
 
 { TVkParamsGroupsBan }
 
-function TVkParamsGroupsBan.Comment(Value: string): Integer;
+function TVkParamsGroupsBan.Comment(const Value: string): Integer;
 begin
   Result := List.Add('comment', Value);
 end;
 
-function TVkParamsGroupsBan.CommentVisible(Value: Boolean): Integer;
+function TVkParamsGroupsBan.CommentVisible(const Value: Boolean): Integer;
 begin
   Result := List.Add('comment_visible', Value);
 end;
 
-function TVkParamsGroupsBan.EndDate(Value: TDateTime): Integer;
+function TVkParamsGroupsBan.EndDate(const Value: TDateTime): Integer;
 begin
   Result := List.Add('end_date', Value);
 end;
 
-function TVkParamsGroupsBan.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsBan.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsBan.OwnerId(Value: Integer): Integer;
+function TVkParamsGroupsBan.OwnerId(const Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
 
-function TVkParamsGroupsBan.Reason(Value: TVkUserBlockReason): Integer;
+function TVkParamsGroupsBan.Reason(const Value: TVkUserBlockReason): Integer;
 begin
-  Result := List.Add('reason', Value.ToConst);
+  Result := List.Add('reason', Ord(Value));
 end;
 
 { TVkParamsGroupsCreate }
 
-function TVkParamsGroupsCreate.Description(Value: string): Integer;
+function TVkParamsGroupsCreate.Description(const Value: string): Integer;
 begin
   Result := List.Add('description', Value);
 end;
 
-function TVkParamsGroupsCreate.PublicCategory(Value: Integer): Integer;
+function TVkParamsGroupsCreate.PublicCategory(const Value: Integer): Integer;
 begin
   Result := List.Add('public_category', Value);
 end;
 
-function TVkParamsGroupsCreate.Subtype(Value: Integer): Integer;
+function TVkParamsGroupsCreate.Subtype(const Value: Integer): Integer;
 begin
   Result := List.Add('subtype', Value);
 end;
 
-function TVkParamsGroupsCreate.Title(Value: string): Integer;
+function TVkParamsGroupsCreate.Title(const Value: string): Integer;
 begin
   Result := List.Add('title', Value);
 end;
 
-function TVkParamsGroupsCreate.&Type(Value: TVkGroupTypeCreate): Integer;
+function TVkParamsGroupsCreate.&Type(const Value: TVkGroupTypeCreate): Integer;
 begin
   Result := List.Add('type', Value.ToString);
 end;
 
 { TVkParamsGroupsEdit }
 
-function TVkParamsGroupsEdit.Access(Value: TVkGroupAccess): Integer;
+function TVkParamsGroupsEdit.Access(const Value: TVkGroupAccess): Integer;
 begin
   Result := List.Add('access', Ord(Value));
 end;
 
-function TVkParamsGroupsEdit.Addresses(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.Addresses(const Value: Boolean): Integer;
 begin
   Result := List.Add('addresses', Value);
 end;
 
-function TVkParamsGroupsEdit.AgeLimits(Value: TVkAgeLimits): Integer;
+function TVkParamsGroupsEdit.AgeLimits(const Value: TVkAgeLimits): Integer;
 begin
   Result := List.Add('age_limits', Ord(Value));
 end;
 
-function TVkParamsGroupsEdit.Articles(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.Articles(const Value: Boolean): Integer;
 begin
   Result := List.Add('articles', Value);
 end;
 
-function TVkParamsGroupsEdit.Audio(Value: TGroupSectionAudio): Integer;
+function TVkParamsGroupsEdit.Audio(const Value: TGroupSectionAudio): Integer;
 begin
   Result := List.Add('audio', Value);
 end;
 
-function TVkParamsGroupsEdit.City(Value: Integer): Integer;
+function TVkParamsGroupsEdit.City(const Value: Integer): Integer;
 begin
   Result := List.Add('city', Value);
 end;
 
-function TVkParamsGroupsEdit.Contacts(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.Contacts(const Value: Boolean): Integer;
 begin
   Result := List.Add('contacts', Value);
 end;
 
-function TVkParamsGroupsEdit.Country(Value: Integer): Integer;
+function TVkParamsGroupsEdit.Country(const Value: Integer): Integer;
 begin
   Result := List.Add('country', Value);
 end;
 
-function TVkParamsGroupsEdit.Description(Value: string): Integer;
+function TVkParamsGroupsEdit.Description(const Value: string): Integer;
 begin
   Result := List.Add('description', Value);
 end;
 
-function TVkParamsGroupsEdit.Docs(Value: TGroupSectionDocs): Integer;
+function TVkParamsGroupsEdit.Docs(const Value: TGroupSectionDocs): Integer;
 begin
   Result := List.Add('docs', Value);
 end;
 
-function TVkParamsGroupsEdit.Email(Value: string): Integer;
+function TVkParamsGroupsEdit.Email(const Value: string): Integer;
 begin
   Result := List.Add('email', Value);
 end;
 
-function TVkParamsGroupsEdit.EventFinishDate(Value: TDateTime): Integer;
+function TVkParamsGroupsEdit.EventFinishDate(const Value: TDateTime): Integer;
 begin
   Result := List.Add('event_finish_date', Value);
 end;
 
-function TVkParamsGroupsEdit.EventGroupId(Value: Integer): Integer;
+function TVkParamsGroupsEdit.EventGroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('event_group_id', Value);
 end;
 
-function TVkParamsGroupsEdit.Events(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.Events(const Value: Boolean): Integer;
 begin
   Result := List.Add('events', Value);
 end;
 
-function TVkParamsGroupsEdit.EventStartDate(Value: TDateTime): Integer;
+function TVkParamsGroupsEdit.EventStartDate(const Value: TDateTime): Integer;
 begin
   Result := List.Add('event_start_date', Value);
 end;
 
-function TVkParamsGroupsEdit.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsEdit.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsEdit.Links(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.Links(const Value: Boolean): Integer;
 begin
   Result := List.Add('links', Value);
 end;
 
-function TVkParamsGroupsEdit.MainSection(Value: Integer): Integer;
+function TVkParamsGroupsEdit.MainSection(const Value: Integer): Integer;
 begin
   Result := List.Add('main_section', Value);
 end;
 
-function TVkParamsGroupsEdit.Market(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.Market(const Value: Boolean): Integer;
 begin
   Result := List.Add('market', Value);
 end;
 
-function TVkParamsGroupsEdit.MarketCity(Value: TIdList): Integer;
+function TVkParamsGroupsEdit.MarketCity(const Value: TIdList): Integer;
 begin
   Result := List.Add('market_city', Value);
 end;
 
-function TVkParamsGroupsEdit.MarketComments(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.MarketComments(const Value: Boolean): Integer;
 begin
   Result := List.Add('market_comments', Value);
 end;
 
-function TVkParamsGroupsEdit.MarketContact(Value: Integer): Integer;
+function TVkParamsGroupsEdit.MarketContact(const Value: Integer): Integer;
 begin
   Result := List.Add('market_contact', Value);
 end;
 
-function TVkParamsGroupsEdit.MarketCountry(Value: TIdList): Integer;
+function TVkParamsGroupsEdit.MarketCountry(const Value: TIdList): Integer;
 begin
   Result := List.Add('market_country', Value);
 end;
 
-function TVkParamsGroupsEdit.MarketCurrency(Value: TVkCurrency): Integer;
+function TVkParamsGroupsEdit.MarketCurrency(const Value: TVkCurrency): Integer;
 begin
   Result := List.Add('market_currency', Value.ToConst);
 end;
 
-function TVkParamsGroupsEdit.MarketWiki(Value: Integer): Integer;
+function TVkParamsGroupsEdit.MarketWiki(const Value: Integer): Integer;
 begin
   Result := List.Add('market_wiki', Value);
 end;
 
-function TVkParamsGroupsEdit.Messages(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.Messages(const Value: Boolean): Integer;
 begin
   Result := List.Add('messages', Value);
 end;
 
-function TVkParamsGroupsEdit.ObsceneFilter(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.ObsceneFilter(const Value: Boolean): Integer;
 begin
   Result := List.Add('obscene_filter', Value);
 end;
 
-function TVkParamsGroupsEdit.ObsceneStopwords(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.ObsceneStopwords(const Value: Boolean): Integer;
 begin
   Result := List.Add('obscene_stopwords', Value);
 end;
 
-function TVkParamsGroupsEdit.ObsceneWords(Value: TArrayOfString): Integer;
+function TVkParamsGroupsEdit.ObsceneWords(const Value: TArrayOfString): Integer;
 begin
   Result := List.Add('obscene_words', Value);
 end;
 
-function TVkParamsGroupsEdit.Phone(Value: string): Integer;
+function TVkParamsGroupsEdit.Phone(const Value: string): Integer;
 begin
   Result := List.Add('phone', Value);
 end;
 
-function TVkParamsGroupsEdit.Photos(Value: TGroupSectionPhotos): Integer;
+function TVkParamsGroupsEdit.Photos(const Value: TGroupSectionPhotos): Integer;
 begin
   Result := List.Add('photos', Value);
 end;
 
-function TVkParamsGroupsEdit.Places(Value: Boolean): Integer;
+function TVkParamsGroupsEdit.Places(const Value: Boolean): Integer;
 begin
   Result := List.Add('places', Value);
 end;
 
-function TVkParamsGroupsEdit.PublicCategory(Value: Integer): Integer;
+function TVkParamsGroupsEdit.PublicCategory(const Value: Integer): Integer;
 begin
   Result := List.Add('public_category', Value);
 end;
 
-function TVkParamsGroupsEdit.PublicDate(Value: TDateTime): Integer;
+function TVkParamsGroupsEdit.PublicDate(const Value: TDateTime): Integer;
 begin
   Result := List.Add('public_date', FormatDateTime('dd.mm.YYYY', Value));
 end;
 
-function TVkParamsGroupsEdit.PublicSubcategory(Value: Integer): Integer;
+function TVkParamsGroupsEdit.PublicSubcategory(const Value: Integer): Integer;
 begin
   Result := List.Add('public_subcategory', Value);
 end;
 
-function TVkParamsGroupsEdit.Rss(Value: string): Integer;
+function TVkParamsGroupsEdit.Rss(const Value: string): Integer;
 begin
   Result := List.Add('rss', Value);
 end;
 
-function TVkParamsGroupsEdit.ScreenName(Value: string): Integer;
+function TVkParamsGroupsEdit.ScreenName(const Value: string): Integer;
 begin
   Result := List.Add('screen_name', Value);
 end;
 
-function TVkParamsGroupsEdit.SecondarySection(Value: Integer): Integer;
+function TVkParamsGroupsEdit.SecondarySection(const Value: Integer): Integer;
 begin
   Result := List.Add('secondary_section', Value);
 end;
 
-function TVkParamsGroupsEdit.Subject(Value: Integer): Integer;
+function TVkParamsGroupsEdit.Subject(const Value: Integer): Integer;
 begin
   Result := List.Add('subject', Value);
 end;
 
-function TVkParamsGroupsEdit.Title(Value: string): Integer;
+function TVkParamsGroupsEdit.Title(const Value: string): Integer;
 begin
   Result := List.Add('title', Value);
 end;
 
-function TVkParamsGroupsEdit.Topics(Value: TGroupSectionTopics): Integer;
+function TVkParamsGroupsEdit.Topics(const Value: TGroupSectionTopics): Integer;
 begin
   Result := List.Add('topics', Value);
 end;
 
-function TVkParamsGroupsEdit.Video(Value: TGroupSectionVideo): Integer;
+function TVkParamsGroupsEdit.Video(const Value: TGroupSectionVideo): Integer;
 begin
   Result := List.Add('video', Value);
 end;
 
-function TVkParamsGroupsEdit.Wall(Value: TGroupSectionWall): Integer;
+function TVkParamsGroupsEdit.Wall(const Value: TGroupSectionWall): Integer;
 begin
   Result := List.Add('wall', Value);
 end;
 
-function TVkParamsGroupsEdit.Website(Value: string): Integer;
+function TVkParamsGroupsEdit.Website(const Value: string): Integer;
 begin
   Result := List.Add('website', Value);
 end;
 
-function TVkParamsGroupsEdit.Wiki(Value: TGroupSectionWiki): Integer;
+function TVkParamsGroupsEdit.Wiki(const Value: TGroupSectionWiki): Integer;
 begin
   Result := List.Add('wiki', Value);
 end;
 
 { TVkParamsGroupsEditManager }
 
-function TVkParamsGroupsEditManager.ContactEmail(Value: string): Integer;
+function TVkParamsGroupsEditManager.ContactEmail(const Value: string): Integer;
 begin
   Result := List.Add('contact_email', Value);
 end;
 
-function TVkParamsGroupsEditManager.ContactPhone(Value: string): Integer;
+function TVkParamsGroupsEditManager.ContactPhone(const Value: string): Integer;
 begin
   Result := List.Add('contact_phone', Value);
 end;
 
-function TVkParamsGroupsEditManager.ContactPosition(Value: string): Integer;
+function TVkParamsGroupsEditManager.ContactPosition(const Value: string): Integer;
 begin
   Result := List.Add('contact_position', Value);
 end;
 
-function TVkParamsGroupsEditManager.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsEditManager.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsEditManager.IsContact(Value: Boolean): Integer;
+function TVkParamsGroupsEditManager.IsContact(const Value: Boolean): Integer;
 begin
   Result := List.Add('is_contact', Value);
 end;
 
-function TVkParamsGroupsEditManager.Role(Value: TVkGroupRole): Integer;
+function TVkParamsGroupsEditManager.Role(const Value: TVkGroupRole): Integer;
 begin
   Result := List.Add('role', Value.ToString);
 end;
 
-function TVkParamsGroupsEditManager.UserId(Value: Integer): Integer;
+function TVkParamsGroupsEditManager.UserId(const Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
 end;
 
 { TVkParamsGroupsGetAddresses }
 
-function TVkParamsGroupsGetAddresses.AddressIds(Value: TIdList): Integer;
+function TVkParamsGroupsGetAddresses.AddressIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('address_ids', Value);
 end;
 
-function TVkParamsGroupsGetAddresses.AddressIds(Value: Integer): Integer;
+function TVkParamsGroupsGetAddresses.AddressIds(const Value: Integer): Integer;
 begin
   Result := List.Add('address_ids', Value);
 end;
 
-function TVkParamsGroupsGetAddresses.Count(Value: Integer): Integer;
+function TVkParamsGroupsGetAddresses.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGroupsGetAddresses.Fields(Value: TVkGroupAddressFields): Integer;
+function TVkParamsGroupsGetAddresses.Fields(const Value: TVkGroupAddressFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsGroupsGetAddresses.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsGetAddresses.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsGetAddresses.Latitude(Value: Extended): Integer;
+function TVkParamsGroupsGetAddresses.Latitude(const Value: Extended): Integer;
 begin
   Result := List.Add('latitude', Value);
 end;
 
-function TVkParamsGroupsGetAddresses.Longitude(Value: Extended): Integer;
+function TVkParamsGroupsGetAddresses.Longitude(const Value: Extended): Integer;
 begin
   Result := List.Add('longitude', Value);
 end;
 
-function TVkParamsGroupsGetAddresses.Offset(Value: Integer): Integer;
+function TVkParamsGroupsGetAddresses.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
 { TVkParamsGroupsGetBanned }
 
-function TVkParamsGroupsGetBanned.Count(Value: Integer): Integer;
+function TVkParamsGroupsGetBanned.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
@@ -1628,318 +1657,318 @@ begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
 
-function TVkParamsGroupsGetBanned.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsGetBanned.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsGetBanned.Offset(Value: Integer): Integer;
+function TVkParamsGroupsGetBanned.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsGroupsGetBanned.OwnerId(Value: Integer): Integer;
+function TVkParamsGroupsGetBanned.OwnerId(const Value: Integer): Integer;
 begin
   Result := List.Add('owner_id', Value);
 end;
 
 { TVkParamsGroupsGetInvitedUsers }
 
-function TVkParamsGroupsGetInvitedUsers.Count(Value: Integer): Integer;
+function TVkParamsGroupsGetInvitedUsers.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGroupsGetInvitedUsers.Fields(Value: TVkProfileFields): Integer;
+function TVkParamsGroupsGetInvitedUsers.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsGroupsGetInvitedUsers.GroupId(Value: Integer): Integer;
+function TVkParamsGroupsGetInvitedUsers.GroupId(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsGetInvitedUsers.NameCase(Value: TVkNameCase): Integer;
+function TVkParamsGroupsGetInvitedUsers.NameCase(const Value: TVkNameCase): Integer;
 begin
   Result := List.Add('name_case', Value.ToString);
 end;
 
-function TVkParamsGroupsGetInvitedUsers.Offset(Value: Integer): Integer;
+function TVkParamsGroupsGetInvitedUsers.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
 { TVkParamsGroupsSearch }
 
-function TVkParamsGroupsSearch.CityId(Value: Integer): Integer;
+function TVkParamsGroupsSearch.CityId(const Value: Integer): Integer;
 begin
   Result := List.Add('city_id', Value);
 end;
 
-function TVkParamsGroupsSearch.Count(Value: Integer): Integer;
+function TVkParamsGroupsSearch.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsGroupsSearch.CountryId(Value: Integer): Integer;
+function TVkParamsGroupsSearch.CountryId(const Value: Integer): Integer;
 begin
   Result := List.Add('country_id', Value);
 end;
 
-function TVkParamsGroupsSearch.Future(Value: Boolean): Integer;
+function TVkParamsGroupsSearch.Future(const Value: Boolean): Integer;
 begin
   Result := List.Add('future', Value);
 end;
 
-function TVkParamsGroupsSearch.Market(Value: Boolean): Integer;
+function TVkParamsGroupsSearch.Market(const Value: Boolean): Integer;
 begin
   Result := List.Add('matket', Value);
 end;
 
-function TVkParamsGroupsSearch.Offset(Value: Integer): Integer;
+function TVkParamsGroupsSearch.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsGroupsSearch.Query(Value: string): Integer;
+function TVkParamsGroupsSearch.Query(const Value: string): Integer;
 begin
   Result := List.Add('q', Value);
 end;
 
-function TVkParamsGroupsSearch.Sort(Value: TVkGroupSearchSort): Integer;
+function TVkParamsGroupsSearch.Sort(const Value: TVkGroupSearchSort): Integer;
 begin
-  Result := List.Add('sort', Value.ToConst);
+  Result := List.Add('sort', Ord(Value));
 end;
 
-function TVkParamsGroupsSearch.&Type(Value: TVkGroupTypeCreate): Integer;
+function TVkParamsGroupsSearch.&Type(const Value: TVkGroupTypeCreate): Integer;
 begin
   Result := List.Add('type', Value.ToString);
 end;
 
 { TVkParamsGroupsSetCallbackSettings }
 
-function TVkParamsGroupsSetCallbackSettings.ApiVersion(Value: string): integer;
+function TVkParamsGroupsSetCallbackSettings.ApiVersion(const Value: string): integer;
 begin
   Result := List.Add('api_version', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.AudioNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.AudioNew(const Value: Boolean): integer;
 begin
   Result := List.Add('audio_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.BoardPostDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.BoardPostDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_delete', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.BoardPostEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.BoardPostEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_edit', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.BoardPostNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.BoardPostNew(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.BoardPostRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.BoardPostRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_restore', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.GroupChangePhoto(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.GroupChangePhoto(const Value: Boolean): integer;
 begin
   Result := List.Add('group_change_photo', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.GroupChangeSettings(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.GroupChangeSettings(const Value: Boolean): integer;
 begin
   Result := List.Add('group_change_settings', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.GroupId(Value: Integer): integer;
+function TVkParamsGroupsSetCallbackSettings.GroupId(const Value: Integer): integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.GroupJoin(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.GroupJoin(const Value: Boolean): integer;
 begin
   Result := List.Add('group_join', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.GroupLeave(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.GroupLeave(const Value: Boolean): integer;
 begin
   Result := List.Add('group_leave', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.GroupOfficersEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.GroupOfficersEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('group_officers_edit', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.LeadFormsNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.LeadFormsNew(const Value: Boolean): integer;
 begin
   Result := List.Add('lead_forms_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.LikeAdd(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.LikeAdd(const Value: Boolean): integer;
 begin
   Result := List.Add('like_add', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.LikeRemove(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.LikeRemove(const Value: Boolean): integer;
 begin
   Result := List.Add('like_remove', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MarketCommentDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MarketCommentDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('market_comment_delete', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MarketCommentEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MarketCommentEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('market_comment_edit', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MarketCommentNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MarketCommentNew(const Value: Boolean): integer;
 begin
   Result := List.Add('market_comment_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MarketCommentRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MarketCommentRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('market_comment_restore', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MessageAllow(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MessageAllow(const Value: Boolean): integer;
 begin
   Result := List.Add('message_allow', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MessageDeny(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MessageDeny(const Value: Boolean): integer;
 begin
   Result := List.Add('message_deny', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MessageEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MessageEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('message_edit', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MessageNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MessageNew(const Value: Boolean): integer;
 begin
   Result := List.Add('message_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MessageReply(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MessageReply(const Value: Boolean): integer;
 begin
   Result := List.Add('message_reply', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.MessageTypingState(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.MessageTypingState(const Value: Boolean): integer;
 begin
   Result := List.Add('message_typing_state', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.PhotoCommentDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.PhotoCommentDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('photo_comment_delete', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.PhotoCommentEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.PhotoCommentEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('photo_comment_edit', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.PhotoCommentNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.PhotoCommentNew(const Value: Boolean): integer;
 begin
   Result := List.Add('photo_comment_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.PhotoCommentRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.PhotoCommentRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('photo_comment_restore', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.PhotoNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.PhotoNew(const Value: Boolean): integer;
 begin
   Result := List.Add('post_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.PollVoteNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.PollVoteNew(const Value: Boolean): integer;
 begin
   Result := List.Add('post_vote_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.ServerId(Value: Integer): integer;
+function TVkParamsGroupsSetCallbackSettings.ServerId(const Value: Integer): integer;
 begin
   Result := List.Add('server_id', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.UserBlock(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.UserBlock(const Value: Boolean): integer;
 begin
   Result := List.Add('user_block', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.UserUnblock(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.UserUnblock(const Value: Boolean): integer;
 begin
   Result := List.Add('user_unblock', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.VideoCommentDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.VideoCommentDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('video_comment_delete', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.VideoCommentEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.VideoCommentEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('video_comment_edit', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.VideoCommentNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.VideoCommentNew(const Value: Boolean): integer;
 begin
   Result := List.Add('video_comment_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.VideoCommentRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.VideoCommentRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('video_comment_restore', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.VideoNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.VideoNew(const Value: Boolean): integer;
 begin
   Result := List.Add('video_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.WallPostNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.WallPostNew(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_post_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.WallReplyDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.WallReplyDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_reply_delete', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.WallReplyEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.WallReplyEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_reply_edit', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.WallReplyNew(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.WallReplyNew(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_reply_new', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.WallReplyRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.WallReplyRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_reply_restore', Value);
 end;
 
-function TVkParamsGroupsSetCallbackSettings.WallRepost(Value: Boolean): integer;
+function TVkParamsGroupsSetCallbackSettings.WallRepost(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_repost', Value);
 end;
@@ -1947,249 +1976,249 @@ end;
 
 { TVkParamsGroupsSetLongpollSettings }
 
-function TVkParamsGroupsSetLongpollSettings.ApiVersion(Value: string): integer;
+function TVkParamsGroupsSetLongpollSettings.ApiVersion(const Value: string): integer;
 begin
   Result := List.Add('api_version', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.AudioNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.AudioNew(const Value: Boolean): integer;
 begin
   Result := List.Add('audio_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.BoardPostDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.BoardPostDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_delete', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.BoardPostEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.BoardPostEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_edit', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.BoardPostNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.BoardPostNew(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.BoardPostRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.BoardPostRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_restore', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.GroupChangePhoto(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.GroupChangePhoto(const Value: Boolean): integer;
 begin
   Result := List.Add('group_change_photo', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.GroupChangeSettings(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.GroupChangeSettings(const Value: Boolean): integer;
 begin
   Result := List.Add('group_change_settings', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.GroupId(Value: Integer): integer;
+function TVkParamsGroupsSetLongpollSettings.GroupId(const Value: Integer): integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.GroupJoin(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.GroupJoin(const Value: Boolean): integer;
 begin
   Result := List.Add('group_join', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.GroupLeave(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.GroupLeave(const Value: Boolean): integer;
 begin
   Result := List.Add('group_leave', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.GroupOfficersEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.GroupOfficersEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('group_officers_edit', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.LeadFormsNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.LeadFormsNew(const Value: Boolean): integer;
 begin
   Result := List.Add('lead_forms_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.LikeAdd(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.LikeAdd(const Value: Boolean): integer;
 begin
   Result := List.Add('like_add', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.LikeRemove(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.LikeRemove(const Value: Boolean): integer;
 begin
   Result := List.Add('like_remove', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MarketCommentDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MarketCommentDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('market_comment_delete', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MarketCommentEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MarketCommentEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('market_comment_edit', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MarketCommentNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MarketCommentNew(const Value: Boolean): integer;
 begin
   Result := List.Add('market_comment_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MarketCommentRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MarketCommentRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('market_comment_restore', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MessageAllow(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MessageAllow(const Value: Boolean): integer;
 begin
   Result := List.Add('message_allow', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MessageDeny(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MessageDeny(const Value: Boolean): integer;
 begin
   Result := List.Add('message_deny', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MessageEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MessageEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('message_edit', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MessageNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MessageNew(const Value: Boolean): integer;
 begin
   Result := List.Add('message_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MessageReply(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MessageReply(const Value: Boolean): integer;
 begin
   Result := List.Add('message_reply', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.MessageTypingState(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.MessageTypingState(const Value: Boolean): integer;
 begin
   Result := List.Add('message_typing_state', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.PhotoCommentDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.PhotoCommentDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('photo_comment_delete', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.PhotoCommentEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.PhotoCommentEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('photo_comment_edit', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.PhotoCommentNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.PhotoCommentNew(const Value: Boolean): integer;
 begin
   Result := List.Add('photo_comment_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.PhotoCommentRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.PhotoCommentRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('photo_comment_restore', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.PhotoNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.PhotoNew(const Value: Boolean): integer;
 begin
   Result := List.Add('post_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.PollVoteNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.PollVoteNew(const Value: Boolean): integer;
 begin
   Result := List.Add('post_vote_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.UserBlock(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.UserBlock(const Value: Boolean): integer;
 begin
   Result := List.Add('user_block', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.UserUnblock(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.UserUnblock(const Value: Boolean): integer;
 begin
   Result := List.Add('user_unblock', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.VideoCommentDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.VideoCommentDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('video_comment_delete', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.VideoCommentEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.VideoCommentEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('video_comment_edit', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.VideoCommentNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.VideoCommentNew(const Value: Boolean): integer;
 begin
   Result := List.Add('video_comment_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.VideoCommentRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.VideoCommentRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('video_comment_restore', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.VideoNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.VideoNew(const Value: Boolean): integer;
 begin
   Result := List.Add('video_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.WallPostNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.WallPostNew(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_post_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.WallReplyDelete(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.WallReplyDelete(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_reply_delete', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.WallReplyEdit(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.WallReplyEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_reply_edit', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.WallReplyNew(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.WallReplyNew(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_reply_new', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.WallReplyRestore(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.WallReplyRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_reply_restore', Value);
 end;
 
-function TVkParamsGroupsSetLongpollSettings.WallRepost(Value: Boolean): integer;
+function TVkParamsGroupsSetLongpollSettings.WallRepost(const Value: Boolean): integer;
 begin
   Result := List.Add('wall_repost', Value);
 end;
 
 { TVkParamsGroupsSetSettings }
 
-function TVkParamsGroupsSetSettings.BotsAddToChat(Value: Boolean): integer;
+function TVkParamsGroupsSetSettings.BotsAddToChat(const Value: Boolean): integer;
 begin
   Result := List.Add('bots_add_to_chat', Value);
 end;
 
-function TVkParamsGroupsSetSettings.BotsCapabilities(Value: Boolean): integer;
+function TVkParamsGroupsSetSettings.BotsCapabilities(const Value: Boolean): integer;
 begin
   Result := List.Add('bots_capabilities', Value);
 end;
 
-function TVkParamsGroupsSetSettings.BotsStartButton(Value: Boolean): integer;
+function TVkParamsGroupsSetSettings.BotsStartButton(const Value: Boolean): integer;
 begin
   Result := List.Add('bots_start_button', Value);
 end;
 
-function TVkParamsGroupsSetSettings.GroupId(Value: Integer): integer;
+function TVkParamsGroupsSetSettings.GroupId(const Value: Integer): integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsGroupsSetSettings.Messages(Value: Boolean): integer;
+function TVkParamsGroupsSetSettings.Messages(const Value: Boolean): integer;
 begin
   Result := List.Add('messages', Value);
 end;

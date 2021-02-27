@@ -29,7 +29,7 @@ begin
   Params.Add('user_id', UserId);
   Params.Add('count', Count);
   Params.Add('offset', Offset);
-  Result := Handler.Execute('gifts.get', Params).GetObject<TVkGiftItems>(Items);
+  Result := Handler.Execute('gifts.get', Params).GetObject(Items);
 end;
 
 end.

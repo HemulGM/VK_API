@@ -32,7 +32,7 @@ begin
   if NeedBlocks then
     Params.Add('need_blocks', True);
   Params.Add('https', True);
-  Result := Handler.Execute('catalog.getAudio', Params).GetObject<TVkCatalog>(Catalog);
+  Result := Handler.Execute('catalog.getAudio', Params).GetObject(Catalog);
 end;
 
 function TCatalogController.GetChart(var Items: TVkSectionData): Boolean;
@@ -68,7 +68,7 @@ begin
     Params.Add('need_blocks', True);
   Params.Add('https', True);
   Params.Add('section_id', SectionId);
-  Result := Handler.Execute('catalog.getSection', Params).GetObject<TVkSectionData>(Section);
+  Result := Handler.Execute('catalog.getSection', Params).GetObject(Section);
 end;
 
 end.

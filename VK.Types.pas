@@ -7,8 +7,8 @@ interface
 {$SCOPEDENUMS ON}
 
 uses
-  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types,
-  System.Generics.Collections, System.JSON, VK.Entity.Common;
+  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types, System.Generics.Collections, System.JSON,
+  VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -194,23 +194,6 @@ type
   TParams = TArray<TParam>;
   {$ENDIF}
 
-  TParamsHelper = record helper for TParams
-  private
-    function AddParam(var Dest: TParams; Param: TParam): Integer; inline;
-  public
-    function Add(Param: TParam): Integer; overload; inline;
-    function Add(Key: string; Value: string): Integer; overload; inline;
-    function Add(Key: string; Value: Integer): Integer; overload; inline;
-    function Add(Key: string; Value: Extended): Integer; overload; inline;
-    function Add(Key: string; Value: TDateTime): Integer; overload; inline;
-    function Add(Key: string; Value: Boolean): Integer; overload; inline;
-    function Add(Key: string; Value: TArrayOfString): Integer; overload; inline;
-    function Add(Key: string; Value: TArrayOfInteger): Integer; overload; inline;
-    function KeyExists(Key: string): Boolean; inline;
-    function GetValue(Key: string): string; inline;
-    function Remove(Key: string): string; inline;
-  end;
-
 type
   TWalkMethod = reference to function(Offset: Integer; var Cancel: Boolean): Integer;
 
@@ -256,6 +239,25 @@ type
     function IsEmpty: Boolean; inline;
   end;
 
+  TParamsHelper = record helper for TParams
+  private
+    function AddParam(var Dest: TParams; Param: TParam): Integer; inline;
+  public
+    function Add(Param: TParam): Integer; overload; inline;
+    function Add(Key: string; Value: string): Integer; overload; inline;
+    function Add(Key: string; Value: Integer): Integer; overload; inline;
+    function Add(Key: string; Value: Extended): Integer; overload; inline;
+    function Add(Key: string; Value: TDateTime; Format: string = ''): Integer; overload; inline;
+    function Add(Key: string; Value: Boolean): Integer; overload; inline;
+    function Add(Key: string; Value: TArrayOfString): Integer; overload; inline;
+    function Add(Key: string; Value: TArrayOfInteger): Integer; overload; inline;
+    function Add(Key: string; Value: TAttachmentArray): Integer; overload; inline;
+    function Add(Key: string; Value: TVkEntity): Integer; overload; inline;
+    function KeyExists(Key: string): Boolean; inline;
+    function GetValue(Key: string): string; inline;
+    function Remove(Key: string): string; inline;
+  end;
+
   TVkPhotoFeedType = (Photo, PhotoTag);
 
   TVkPhotoFeedTypeHelper = record helper for TVkPhotoFeedType
@@ -293,15 +295,7 @@ type
 
   TVkBoardTopicOrder = (DateUpCreate = -2, DateUpUpdate = -1, DateDownCreate = 2, DateDownUpdate = 1);
 
-  TVkBoardTopicOrderHelper = record helper for TVkBoardTopicOrder
-    function ToConst: Integer; inline;
-  end;
-
   TVkBoardTopicPreview = (OnlyFirst = 1, OnlyLast = 2, Both = 3);
-
-  TVkBoardTopicPreviewHelper = record helper for TVkBoardTopicPreview
-    function ToConst: Integer; inline;
-  end;
 
   /// <summary>
   ///  Флаги сообщений
@@ -674,10 +668,6 @@ type
 
   TVkGroupSearchSort = (Default, GrowthRate, DailyTraffic, NumberOfLikes, NumberOfComments, NumberOfPosts);
 
-  TVkGroupSearchSortHelper = record helper for TVkGroupSearchSort
-    function ToConst: Integer; inline;
-  end;
-
   /// <summary>
   /// GroupTagColor
   /// Тут список цветов -> VkGroupTagColors
@@ -969,7 +959,6 @@ type
 
   TUserBlockReasonHelper = record helper for TVkUserBlockReason
     function ToString: string; overload; inline;
-    function ToConst: Integer; overload; inline;
   end;
 
   TVkMediaReportReason = (Spam, ChildPorn, Extremism, Violence, Drug, Adults, //
@@ -977,7 +966,6 @@ type
 
   TVkMediaReportReasonHelper = record helper for TVkMediaReportReason
     function ToString: string; overload; inline;
-    function ToConst: Integer; overload; inline;
   end;
 
   /// <summary>
@@ -1542,9 +1530,12 @@ begin
   Result := AddParam(Self, [Key, Value.ToString]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: TDateTime): Integer;
+function TParamsHelper.Add(Key: string; Value: TDateTime; Format: string): Integer;
 begin
-  Result := AddParam(Self, [Key, DateTimeToUnix(Value, False).ToString]);
+  if Format.IsEmpty then
+    Result := AddParam(Self, [Key, DateTimeToUnix(Value, False).ToString])
+  else
+    Result := AddParam(Self, [Key, FormatDateTime(Format, Value)]);
 end;
 
 function TParamsHelper.Add(Key: string; Value: Extended): Integer;
@@ -1565,6 +1556,16 @@ end;
 function TParamsHelper.Add(Key: string; Value: TArrayOfString): Integer;
 begin
   Result := AddParam(Self, [Key, Value.ToString]);
+end;
+
+function TParamsHelper.Add(Key: string; Value: TAttachmentArray): Integer;
+begin
+  Result := AddParam(Self, [Key, Value.ToStrings.ToString]);
+end;
+
+function TParamsHelper.Add(Key: string; Value: TVkEntity): Integer;
+begin
+  Result := AddParam(Self, [Key, Value.ToJsonString]);
 end;
 
 function TParamsHelper.KeyExists(Key: string): Boolean;
@@ -1617,13 +1618,6 @@ end;
 function TVkGroupJoinTypeHelper.ToString: string;
 begin
   Result := VkGroupJoinType[Self];
-end;
-
-{ TUserBlockReasonHelper }
-
-function TUserBlockReasonHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
 end;
 
 function TUserBlockReasonHelper.ToString: string;
@@ -1923,13 +1917,6 @@ end;
 function TVkSortHelper.ToString: string;
 begin
   Result := VkSort[Self];
-end;
-
-{ TVkPhotoReportReasonHelper }
-
-function TVkMediaReportReasonHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
 end;
 
 function TVkMediaReportReasonHelper.ToString: string;
@@ -2275,13 +2262,6 @@ begin
   Result := VkWorkInfoStatus[Self];
 end;
 
-{ TVkGroupSearchSortHelper }
-
-function TVkGroupSearchSortHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
-end;
-
 { TVkGroupTagActHelper }
 
 function TVkGroupTagActHelper.ToString: string;
@@ -2425,20 +2405,6 @@ begin
   for Item in Self do
     Result := Result + Item.ToString + ',';
   Result.TrimRight([',']);
-end;
-
-{ TVkBoardTopicOrderHelper }
-
-function TVkBoardTopicOrderHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
-end;
-
-{ TVkBoardTopicPreviewHelper }
-
-function TVkBoardTopicPreviewHelper.ToConst: Integer;
-begin
-  Result := Ord(Self);
 end;
 
 { TVkSearchTargetHelper }
