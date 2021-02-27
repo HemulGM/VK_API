@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Privacy,
-  VK.Entity.Attachment, VK.Entity.Common.List, VK.Entity.Info, VK.Types, VK.Wrap.Interceptors;
+  VK.Entity.Common.List, VK.Entity.Info, VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkVideoFiles = class(TVkEntity)

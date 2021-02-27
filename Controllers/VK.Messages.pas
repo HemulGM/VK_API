@@ -76,7 +76,7 @@ type
 
   TVkParamsMessageHistory = record
     List: TParams;
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer = 20): Integer;
     function Extended(const Value: Boolean): Integer;
     function Fields(const Value: string): Integer;
     function GroupId(const Value: Integer): Integer;
@@ -364,7 +364,7 @@ type
     /// <summary>
     /// ¬озвращает историю сообщений дл€ указанного диалога.
     /// </summary>
-    function GetHistory(var Items: TVkMessageHistory; Params: TVkParamsMessageHistory): Boolean;
+    function GetHistory(var Items: TVkMessages; Params: TVkParamsMessageHistory): Boolean;
     /// <summary>
     /// ѕозвол€ет разрешить отправку сообщений от сообщества текущему пользователю.
     /// </summary>
@@ -772,7 +772,7 @@ begin
   Result := Handler.Execute('messages.getConversationsById', Params).GetObject(Items);
 end;
 
-function TMessagesController.GetHistory(var Items: TVkMessageHistory; Params: TVkParamsMessageHistory): Boolean;
+function TMessagesController.GetHistory(var Items: TVkMessages; Params: TVkParamsMessageHistory): Boolean;
 begin
   Result := Handler.Execute('messages.getHistory', Params.List).GetObject(Items);
 end;

@@ -3,7 +3,7 @@ unit VK.Entity.Sticker;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common;
+  VK.Entity.Photo, VK.Entity.Common;
 
 type
   TVkSticker = class
@@ -18,7 +18,7 @@ type
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// URL анимации стикера.
+    /// URL анимации стикера
     /// </summary>
     property AnimationUrl: string read FAnimation_url write FAnimation_url;
     /// <summary>
@@ -30,15 +30,15 @@ type
     /// </summary>
     property ImagesWithBackground: TArray<TVkImage> read FImages_with_background write FImages_with_background;
     /// <summary>
-    /// Идентификатор набора.
+    /// Идентификатор набора
     /// </summary>
     property ProductId: Integer read FProduct_id write FProduct_id;
     /// <summary>
-    /// Идентификатор стикера.
+    /// Идентификатор стикера
     /// </summary>
     property StickerId: Integer read FSticker_id write FSticker_id;
     /// <summary>
-    /// Информация о том, доступен ли стикер.
+    /// Информация о том, доступен ли стикер
     /// </summary>
     property IsAllowed: Boolean read FIs_allowed write FIs_allowed;
     destructor Destroy; override;

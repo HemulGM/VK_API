@@ -3,9 +3,8 @@ unit VK.Entity.Link;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo, VK.Entity.Market,
-  VK.Entity.App, VK.Types, VK.Entity.Attachment;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
+  VK.Entity.Photo, VK.Entity.Market, VK.Entity.App, VK.Types;
 
 type
   TVkLinkStatus = class(TVkEntity)

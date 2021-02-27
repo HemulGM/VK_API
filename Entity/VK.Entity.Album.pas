@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Attachment, VK.Entity.Privacy, VK.Entity.Common.List, VK.Types, VK.Wrap.Interceptors;
+  VK.Entity.Privacy, VK.Entity.Common.List, VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkPhotoAlbum = class(TVkObject, IAttachment)

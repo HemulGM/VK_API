@@ -3,10 +3,8 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors,
-  System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types,
-  VK.Entity.Attachment, VK.Entity.Common.List, VK.Wrap.Interceptors,
-  VK.Entity.Group;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, System.SysUtils, Rest.Json, System.Json,
+  VK.Entity.Common, VK.Types, VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.Group;
 
 type
   TVkAudioArtistPhoto = class(TVkEntity)

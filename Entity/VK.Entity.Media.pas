@@ -3,15 +3,12 @@ unit VK.Entity.Media;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
-  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note,
-  VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Info,
-  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
-  VK.Entity.Attachment, VK.Wrap.Interceptors;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
+  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
+  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page,
+  VK.Entity.Album, VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
+  VK.Entity.Market.Album, VK.Entity.Info, VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
+  VK.Wrap.Interceptors, VK.Entity.MoneyTransfer;
 
 type
   TVkAttachment = class;
@@ -48,6 +45,7 @@ type
     FPretty_cards: TVkPrettyCards;
     FEvent: TVkEvent;
     FCall: TVkCall;
+    FMoney_transfer: TVkMoneyTransfer;
   public
     property&Type: TVkAttachmentType read FType write FType;
     /// <summary>
@@ -126,6 +124,10 @@ type
     /// Вики-страница
     /// </summary>
     property Page: TVkPage read FPage write FPage;
+    /// <summary>
+    /// Денежный перевод
+    /// </summary>
+    property MoneyTransfer: TVkMoneyTransfer read FMoney_transfer write FMoney_transfer;
     /// <summary>
     /// Альбом с фотографиями
     /// </summary>
@@ -473,7 +475,7 @@ type
     /// <summary>
     /// Тип записи, может принимать следующие значения: post, copy, reply, postpone, suggest.
     /// </summary>
-    property &Type: string read FType write FType;
+    property&Type: string read FType write FType;
     /// <summary>
     /// Информация о просмотрах записи
     /// </summary>
@@ -545,6 +547,8 @@ begin
     FPoll.Free;
   if Assigned(FPage) then
     FPage.Free;
+  if Assigned(FMoney_transfer) then
+    FMoney_transfer.Free;
   if Assigned(FAlbum) then
     FAlbum.Free;
   if Assigned(FPretty_cards) then

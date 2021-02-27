@@ -3,8 +3,7 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Info, VK.Types,
-  VK.Entity.Attachment;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Info, VK.Types;
 
 type
   TVkOwnerPhoto = class(TVkEntity)

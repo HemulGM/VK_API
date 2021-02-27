@@ -265,7 +265,6 @@
         <DCCReference Include="Controllers\VK.Apps.pas"/>
         <DCCReference Include="Entity\VK.Entity.Login.pas"/>
         <DCCReference Include="VK.Clients.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Attachment.pas"/>
         <DCCReference Include="Controllers\VK.Donut.pas"/>
         <DCCReference Include="Entity\VK.Entity.Donut.pas"/>
         <DCCReference Include="Entity\VK.Entity.Auth.pas"/>
@@ -275,6 +274,7 @@
         <DCCReference Include="Entity\VK.Entity.Group.Invites.pas"/>
         <DCCReference Include="VK.Errors.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.Status.pas"/>
+        <DCCReference Include="Entity\VK.Entity.MoneyTransfer.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
@@ -292,6 +292,7 @@
             <ResourceId>TVK</ResourceId>
         </RcItem>
         <None Include="Utils\GetFriendsWithAudio.js"/>
+        <None Include="README.md"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -333,7 +334,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\..\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKComponents.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

@@ -181,7 +181,6 @@ contains
   VK.Apps in 'Controllers\VK.Apps.pas',
   VK.Entity.Login in 'Entity\VK.Entity.Login.pas',
   VK.Clients in 'VK.Clients.pas',
-  VK.Entity.Attachment in 'Entity\VK.Entity.Attachment.pas',
   VK.Donut in 'Controllers\VK.Donut.pas',
   VK.Entity.Donut in 'Entity\VK.Entity.Donut.pas',
   VK.Entity.Auth in 'Entity\VK.Entity.Auth.pas',
@@ -190,7 +189,8 @@ contains
   VK.Entity.Common.ExtendedList in 'Entity\VK.Entity.Common.ExtendedList.pas',
   VK.Entity.Group.Invites in 'Entity\VK.Entity.Group.Invites.pas',
   VK.Errors in 'VK.Errors.pas',
-  VK.Entity.Group.Status in 'Entity\VK.Entity.Group.Status.pas';
+  VK.Entity.Group.Status in 'Entity\VK.Entity.Group.Status.pas',
+  VK.Entity.MoneyTransfer in 'Entity\VK.Entity.MoneyTransfer.pas';
 
 end.
 

@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, Vk.Types, VK.Entity.Common,
-  VK.Entity.Attachment, VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.AudioMessage;
+  VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.AudioMessage;
 
 type
   TVkPreviewPhoto = class

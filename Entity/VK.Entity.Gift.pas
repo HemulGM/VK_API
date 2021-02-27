@@ -3,8 +3,7 @@ unit VK.Entity.Gift;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   /// <summary>
@@ -61,9 +60,6 @@ type
   TVkGiftItems = TVkEntityList<TVkGiftItem>;
 
 implementation
-
-uses
-  VK.CommonUtils;
 
 { TVkGiftItem }
 

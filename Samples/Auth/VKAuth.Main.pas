@@ -84,6 +84,7 @@ type
     Button43: TButton;
     Button44: TButton;
     Button45: TButton;
+    Button46: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -199,6 +200,7 @@ type
     procedure Button43Click(Sender: TObject);
     procedure Button44Click(Sender: TObject);
     procedure Button45Click(Sender: TObject);
+    procedure Button46Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -741,6 +743,26 @@ begin
       //
       Items.Free;
     end;
+  end;
+end;
+
+procedure TFormMain.Button46Click(Sender: TObject);
+var
+  Items: TVkMessages;
+  Params: TVkParamsMessageHistory;
+  i: Integer;
+  m: Integer;
+begin
+  Params.PeerId(101802632);
+  if VK1.Messages.GetHistory(Items, Params) then
+  begin
+    for m := 0 to High(Items.Items) do
+      for i := 0 to High(Items.Items[m].Attachments) do
+      begin
+        Memo1.Lines.Add(Items.Items[m].Attachments[i].&Type.ToString);
+        Memo1.Lines.Add(Items.Items[m].Attachments[i].ToJsonString);
+      end;
+    Items.Free;
   end;
 end;
 
