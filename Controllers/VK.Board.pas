@@ -350,7 +350,8 @@ begin
   Result := Handler.Execute('board.editTopic', [
     ['group_id', GroupId.ToString],
     ['topic_id', TopicId.ToString],
-    ['title', Title]]).ResponseIsTrue;
+    ['title', Title]]).
+    ResponseIsTrue;
 end;
 
 function TBoardController.FixTopic(GroupId, TopicId: Integer): Boolean;

@@ -78,7 +78,7 @@ type
     /// <summary>
     /// Подписывает устройство на базе iOS, Android, Windows Phone или Mac на получение Push-уведомлений.
     /// </summary>
-    function RegisterDevice(var Status: Boolean; const Data: TVkParamsRegisterDevice): Boolean;
+    function RegisterDevice(const Data: TVkParamsRegisterDevice): Boolean;
     /// <summary>
     /// Редактирует информацию текущего профиля.
     /// </summary>
@@ -86,38 +86,41 @@ type
     /// <summary>
     /// Позволяет редактировать информацию о текущем аккаунте.
     /// </summary>
-    function SetInfo(var Status: Boolean; const Name, Value: string): Boolean;
+    function SetInfo(const Name, Value: string): Boolean;
     /// <summary>
     /// Устанавливает короткое название приложения (до 17 символов), которое выводится пользователю в левом меню.
     /// </summary>
-    function SetNameInMenu(var Status: Boolean; const UserId: Integer; Name: string): Boolean;
+    function SetNameInMenu(const UserId: Integer; Name: string): Boolean;
     /// <summary>
     /// Помечает текущего пользователя как offline (только в текущем приложении).
     /// </summary>
-    function SetOffline(var Status: Boolean): Boolean;
+    function SetOffline: Boolean;
     /// <summary>
     /// Помечает текущего пользователя как online на 5 минут.
     /// </summary>
-    function SetOnline(var Status: Boolean; Voip: Boolean = False): Boolean;
+    function SetOnline(const Voip: Boolean = False): Boolean;
     /// <summary>
     /// Изменяет настройку Push-уведомлений.
     /// </summary>
-    function SetPushSettings(var Status: Boolean; const DeviceId, Settings, Key, Value: string): Boolean;
+    function SetPushSettings(const DeviceId, Settings, Key, Value: string): Boolean;
     /// <summary>
     /// Отключает push-уведомления на заданный промежуток времени.
     /// </summary>
-    function SetSilenceMode(var Status: Boolean; const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
+    function SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
     /// <summary>
     /// Удаляет пользователя или группу из черного списка.
     /// </summary>
-    function UnBan(var Status: Boolean; const OwnerID: Integer): Boolean;
+    function UnBan(const OwnerID: Integer): Boolean;
     /// <summary>
     /// Отписывает устройство от Push уведомлений.
     /// </summary>
-    function UnRegisterDevice(var Status: Boolean; const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
+    function UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
   end;
 
 implementation
+
+uses
+  System.DateUtils;
 
 { TAccountController }
 
@@ -172,9 +175,9 @@ begin
   Result := Handler.Execute('account.getPushSettings', ['device_id', DeviceId]).GetObject(PushSettings);
 end;
 
-function TAccountController.RegisterDevice(var Status: Boolean; const Data: TVkParamsRegisterDevice): Boolean;
+function TAccountController.RegisterDevice(const Data: TVkParamsRegisterDevice): Boolean;
 begin
-  Result := Handler.Execute('account.registerDevice', Data.List).ResponseAsBool(Status);
+  Result := Handler.Execute('account.registerDevice', Data.List).ResponseIsTrue;
 end;
 
 function TAccountController.SaveProfileInfo(const Data: TVkParamsProfileInfo; var Request: TVkAccountInfoRequest): Boolean;
@@ -182,27 +185,27 @@ begin
   Result := Handler.Execute('account.saveProfileInfo', Data.List).GetObject(Request);
 end;
 
-function TAccountController.SetInfo(var Status: Boolean; const Name, Value: string): Boolean;
+function TAccountController.SetInfo(const Name, Value: string): Boolean;
 begin
-  Result := Handler.Execute('account.setInfo', [['name', Name], ['value', Value]]).ResponseAsBool(Status);
+  Result := Handler.Execute('account.setInfo', [['name', Name], ['value', Value]]).ResponseIsTrue;
 end;
 
-function TAccountController.SetNameInMenu(var Status: Boolean; const UserId: Integer; Name: string): Boolean;
+function TAccountController.SetNameInMenu(const UserId: Integer; Name: string): Boolean;
 begin
-  Result := Handler.Execute('account.setNameInMenu', [['user_id', UserId.ToString], ['name', Name]]).ResponseAsBool(Status);
+  Result := Handler.Execute('account.setNameInMenu', [['user_id', UserId.ToString], ['name', Name]]).ResponseIsTrue;
 end;
 
-function TAccountController.SetOffline(var Status: Boolean): Boolean;
+function TAccountController.SetOffline: Boolean;
 begin
-  Result := Handler.Execute('account.setOffline').ResponseAsBool(Status);
+  Result := Handler.Execute('account.setOffline').ResponseIsTrue;
 end;
 
-function TAccountController.SetOnline(var Status: Boolean; Voip: Boolean): Boolean;
+function TAccountController.SetOnline(const Voip: Boolean): Boolean;
 begin
-  Result := Handler.Execute('account.setOnline', ['voip', BoolToString(Voip)]).ResponseAsBool(Status);
+  Result := Handler.Execute('account.setOnline', ['voip', BoolToString(Voip)]).ResponseIsTrue;
 end;
 
-function TAccountController.SetPushSettings(var Status: Boolean; const DeviceId, Settings, Key, Value: string): Boolean;
+function TAccountController.SetPushSettings(const DeviceId, Settings, Key, Value: string): Boolean;
 var
   Params: TParams;
 begin
@@ -214,10 +217,10 @@ begin
     Params.Add(['key', Key]);
     Params.Add(['value', Value]);
   end;
-  Result := Handler.Execute('account.setPushSettings', Params).ResponseAsBool(Status);
+  Result := Handler.Execute('account.setPushSettings', Params).ResponseIsTrue;
 end;
 
-function TAccountController.SetSilenceMode(var Status: Boolean; const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
+function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -225,7 +228,7 @@ begin
   Params.Add('time', Time);
   Params.Add('peer_id', PeerId);
   Params.Add('sound', Sound);
-  Result := Handler.Execute('account.setSilenceMode', Params).ResponseAsBool(Status);
+  Result := Handler.Execute('account.setSilenceMode', Params).ResponseIsTrue;
 end;
 
 function TAccountController.Ban(var Status: Boolean; const OwnerID: Integer): Boolean;
@@ -233,12 +236,12 @@ begin
   Result := Handler.Execute('account.ban', ['owner_id', OwnerID.ToString]).ResponseAsBool(Status);
 end;
 
-function TAccountController.UnBan(var Status: Boolean; const OwnerID: Integer): Boolean;
+function TAccountController.UnBan(const OwnerID: Integer): Boolean;
 begin
-  Result := Handler.Execute('account.unban', ['owner_id', OwnerID.ToString]).ResponseAsBool(Status);
+  Result := Handler.Execute('account.unban', ['owner_id', OwnerID.ToString]).ResponseIsTrue;
 end;
 
-function TAccountController.UnRegisterDevice(var Status: Boolean; const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
+function TAccountController.UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -247,7 +250,7 @@ begin
   if not Token.IsEmpty then
     Params.Add('token', Token);
   Params.Add('sandbox', Sandbox);
-  Result := Handler.Execute('account.unregisterDevice', Params).ResponseAsBool(Status);
+  Result := Handler.Execute('account.unregisterDevice', Params).ResponseIsTrue;
 end;
 
 { TVkRegisterDeviceParams }

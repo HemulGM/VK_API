@@ -161,7 +161,7 @@ type
     /// 34 Ч увлечени€ и хобби;  35 Ч финансы;  36 Ч фото;  37 Ч эзотерика;  38 Ч электроника и бытова€ техника;
     /// 39 Ч эротика;  40 Ч юмор;  41 Ч общество, гуманитарные науки;  42 Ч дизайн и графика.
     /// </summary>
-    function Subject(const Value: Integer): Integer;
+    function Subject(const Value: TVkGroupSubjectType): Integer;
     function Email(const Value: string): Integer;
     function Phone(const Value: string): Integer;
     function Rss(const Value: string): Integer;
@@ -1265,7 +1265,7 @@ end;
 
 function TVkParamsGroupsAddAddress.Timetable(const Value: TVkTimeTable; FreeObject: Boolean): Integer;
 begin
-  Result := List.Add('timetable', Value.ToJsonString);
+  Result := List.Add('timetable', Value);
   if FreeObject then
     Value.Free;
 end;
@@ -1508,7 +1508,7 @@ end;
 
 function TVkParamsGroupsEdit.PublicDate(const Value: TDateTime): Integer;
 begin
-  Result := List.Add('public_date', FormatDateTime('dd.mm.YYYY', Value));
+  Result := List.Add('public_date', Value, 'DD.MM.YYYY');
 end;
 
 function TVkParamsGroupsEdit.PublicSubcategory(const Value: Integer): Integer;
@@ -1531,9 +1531,9 @@ begin
   Result := List.Add('secondary_section', Value);
 end;
 
-function TVkParamsGroupsEdit.Subject(const Value: Integer): Integer;
+function TVkParamsGroupsEdit.Subject(const Value: TVkGroupSubjectType): Integer;
 begin
-  Result := List.Add('subject', Value);
+  Result := List.Add('subject', Ord(Value));
 end;
 
 function TVkParamsGroupsEdit.Title(const Value: string): Integer;

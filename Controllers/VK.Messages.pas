@@ -49,8 +49,8 @@ type
     function Count(const Value: Integer): Integer;
     function GroupId(const Value: Integer): Integer;
     function MajorSortId(const Value: Integer): Integer;
-    function Filter(const Value: string): Integer;
-    function Fields(const Value: string): Integer;
+    function Filter(const Value: TVkConversationFilter = TVkConversationFilter.All): Integer;
+    function Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
     function Extended(const Value: Boolean): Integer;
     function StartMessageId(const Value: Integer): Integer;
   end;
@@ -98,7 +98,7 @@ type
     function Lat(const Value: Extended): Integer;
     function Long(const Value: Extended): Integer;
     function Attachment(const Value: TAttachmentArray): Integer; overload;
-    function Attachment(const Value: string): Integer; overload;
+    function Attachment(const Value: TAttachment): Integer; overload;
     function ReplyTo(const Value: Integer): Integer;
     function ForwardMessages(const Value: TIdList): Integer;
     function StickerId(const Value: Integer): Integer;
@@ -120,7 +120,7 @@ type
     function Lat(const Value: Extended): Integer;
     function Long(const Value: Extended): Integer;
     function Attachment(const Value: TAttachmentArray): Integer; overload;
-    function Attachment(const Value: string): Integer; overload;
+    function Attachment(const Value: TAttachment): Integer; overload;
     function ReplyTo(const Value: Integer): Integer;
     function ForwardMessages(const Value: TIdList): Integer;
     function StickerId(const Value: Integer): Integer;
@@ -150,7 +150,7 @@ type
     function Long(const Value: Extended): Integer;
     function LatLong(const Lat, Long: Extended): Integer;
     function Attachment(const Value: TAttachmentArray): Integer; overload;
-    function Attachment(const Value: string): Integer; overload;
+    function Attachment(const Value: TAttachment): Integer; overload;
     function KeepForwardMessages(const Value: Boolean): Integer;
     function KeepSnippets(const Value: Boolean): Integer;
     function GroupId(const Value: Integer): Integer;
@@ -1215,14 +1215,14 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsConversationsGet.Fields(const Value: string): Integer;
+function TVkParamsConversationsGet.Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
 begin
-  Result := List.Add('fields', Value);
+  Result := List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
 end;
 
-function TVkParamsConversationsGet.Filter(const Value: string): Integer;
+function TVkParamsConversationsGet.Filter(const Value: TVkConversationFilter): Integer;
 begin
-  Result := List.Add('filter', Value);
+  Result := List.Add('filter', Value.ToString);
 end;
 
 function TVkParamsConversationsGet.GroupID(const Value: Integer): Integer;
@@ -1358,7 +1358,7 @@ begin
   Result := List.Add('attachment', Value);
 end;
 
-function TVkParamsMessageSend.Attachment(const Value: string): Integer;
+function TVkParamsMessageSend.Attachment(const Value: TAttachment): Integer;
 begin
   Result := List.Add('attachment', Value);
 end;
@@ -1460,7 +1460,7 @@ begin
   Result := List.Add('attachment', Value);
 end;
 
-function TVkParamsMessageSendIds.Attachment(const Value: string): Integer;
+function TVkParamsMessageSendIds.Attachment(const Value: TAttachment): Integer;
 begin
   Result := List.Add('attachment', Value);
 end;
@@ -1564,7 +1564,7 @@ end;
 
 { TVkParamsMessageEdit }
 
-function TVkParamsMessageEdit.Attachment(const Value: string): Integer;
+function TVkParamsMessageEdit.Attachment(const Value: TAttachment): Integer;
 begin
   Result := List.Add('attachment', Value);
 end;

@@ -3,9 +3,8 @@ unit VK.Video;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Video, System.JSON, VK.Entity.Status, VK.Entity.Media,
-  VK.Entity.Video.Save;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Video, System.JSON,
+  VK.Entity.Status, VK.Entity.Media, VK.Entity.Video.Save;
 
 type
   TVkParamsVideoGet = record
@@ -439,7 +438,7 @@ type
     /// </summary>
     function Filters(const Value: TVkVideosFilters): Integer;
     /// <summary>
-    /// True — искать по видеозаписям пользователя, False — не искать по видеозаписям пользователя. По умолчанию: False
+    /// True — искать по видеозаписям пользователя, False — не искать по видеозаписям пользователя
     /// </summary>
     function SearchOwn(const Value: Boolean = False): Integer;
     /// <summary>
@@ -468,19 +467,23 @@ type
   TVideoController = class(TVkController)
   public
     /// <summary>
-    /// Добавляет видеозапись в список пользователя.
+    /// Добавляет видеозапись в список пользователя
     /// </summary>
     function Add(const VideoId, OwnerId: Integer; TargetId: Integer = 0): Boolean;
     /// <summary>
-    /// Создает пустой альбом видеозаписей.
+    /// Создает пустой альбом видеозаписей
     /// </summary>
-    function AddAlbum(var AlbumId: Integer; Title: string; Privacy: TArrayOfString = []; GroupId: Integer = 0): Boolean;
+    function AddAlbum(var AlbumId: Integer; Title: string; Privacy: TVkPrivacySettings; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
-    /// Позволяет добавить видеозапись в альбом.
+    /// Создает пустой альбом видеозаписей
+    /// </summary>
+    function AddAlbum(var AlbumId: Integer; Title: string; GroupId: Integer = 0): Boolean; overload;
+    /// <summary>
+    /// Позволяет добавить видеозапись в альбом
     /// </summary>
     function AddToAlbum(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет добавить видеозапись в альбом.
+    /// Позволяет добавить видеозапись в альбом
     /// </summary>
     function AddToAlbum(Params: TVkParamsVideoAddToAlbum): Boolean; overload;
     /// <summary>
@@ -492,15 +495,15 @@ type
     /// </summary>
     function CreateComment(var CommentId: Integer; Params: TVkParamsVideoCreateComment): Boolean; overload;
     /// <summary>
-    /// Удаляет видеозапись со страницы пользователя.
+    /// Удаляет видеозапись со страницы пользователя
     /// </summary>
     function Delete(const VideoId, OwnerId: Integer; TargetId: Integer = 0): Boolean;
     /// <summary>
-    /// Удаляет альбом видеозаписей.
+    /// Удаляет альбом видеозаписей
     /// </summary>
     function DeleteAlbum(const AlbumId: Integer; GroupId: Integer = 0): Boolean;
     /// <summary>
-    /// Удаляет комментарий к видеозаписи.
+    /// Удаляет комментарий к видеозаписи
     /// </summary>
     function DeleteComment(const CommentId: Integer; OwnerId: Integer = 0): Boolean;
     /// <summary>
@@ -512,115 +515,115 @@ type
     /// </summary>
     function Edit(Params: TVkParamsVideoEdit): Boolean; overload;
     /// <summary>
-    /// Редактирует альбом с видео.
+    /// Редактирует альбом с видео
     /// </summary>
     function EditAlbum(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Редактирует альбом с видео.
+    /// Редактирует альбом с видео
     /// </summary>
     function EditAlbum(Params: TVkParamsVideoEditAlbum): Boolean; overload;
     /// <summary>
-    /// Изменяет текст комментария к видеозаписи.
+    /// Изменяет текст комментария к видеозаписи
     /// </summary>
     function EditComment(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Изменяет текст комментария к видеозаписи.
+    /// Изменяет текст комментария к видеозаписи
     /// </summary>
     function EditComment(Params: TVkParamsVideoEditComment): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о видеозаписях.
+    /// Возвращает информацию о видеозаписях
     /// </summary>
     function Get(var Items: TVkVideos; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о видеозаписях.
+    /// Возвращает информацию о видеозаписях
     /// </summary>
     function Get(var Items: TVkVideos; Params: TVkParamsVideoGet): Boolean; overload;
     /// <summary>
-    /// Позволяет получить информацию об альбоме с видео.
+    /// Позволяет получить информацию об альбоме с видео
     /// </summary>
     function GetAlbumById(var Item: TVkVideoAlbum; AlbumId: Integer; OwnerId: Integer = 0): Boolean; overload;
     /// <summary>
-    /// Позволяет получить информацию об альбоме с видео.
+    /// Позволяет получить информацию об альбоме с видео
     /// </summary>
     function GetAlbums(var Items: TVkVideoAlbums; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет получить информацию об альбоме с видео.
+    /// Позволяет получить информацию об альбоме с видео
     /// </summary>
     function GetAlbums(var Items: TVkVideoAlbums; Params: TVkParamsVideoGetAlbums): Boolean; overload;
     /// <summary>
-    /// Возвращает список альбомов, в которых находится видеозапись.
+    /// Возвращает список альбомов, в которых находится видеозапись
     /// </summary>
     function GetAlbumsByVideo(var Items: TVkVideoAlbums; const VideoId, OwnerId: Integer; TargetId: Integer = 0): Boolean; overload;
     /// <summary>
-    /// Возвращает список комментариев к видеозаписи.
+    /// Возвращает список комментариев к видеозаписи
     /// </summary>
     function GetComments(var Items: TVkComments; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список комментариев к видеозаписи.
+    /// Возвращает список комментариев к видеозаписи
     /// </summary>
     function GetComments(var Items: TVkComments; Params: TVkParamsVideoGetComments): Boolean; overload;
     /// <summary>
-    /// Позволяет убрать видеозапись из альбома.
+    /// Позволяет убрать видеозапись из альбома
     /// </summary>
     function RemoveFromAlbum(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет убрать видеозапись из альбома.
+    /// Позволяет убрать видеозапись из альбома
     /// </summary>
     function RemoveFromAlbum(Params: TVkParamsVideoRemoveFromAlbum): Boolean; overload;
     /// <summary>
-    /// Позволяет изменить порядок альбомов с видео.
+    /// Позволяет изменить порядок альбомов с видео
     /// </summary>
     function ReorderAlbums(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет изменить порядок альбомов с видео.
+    /// Позволяет изменить порядок альбомов с видео
     /// </summary>
     function ReorderAlbums(Params: TVkParamsVideoReorderAlbums): Boolean; overload;
     /// <summary>
-    /// Позволяет переместить видеозапись в альбоме.
+    /// Позволяет переместить видеозапись в альбоме
     /// </summary>
     function ReorderVideos(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет переместить видеозапись в альбоме.
+    /// Позволяет переместить видеозапись в альбоме
     /// </summary>
     function ReorderVideos(Params: TVkParamsVideoReorderVideos): Boolean; overload;
     /// <summary>
-    /// Позволяет пожаловаться на видеозапись.
+    /// Позволяет пожаловаться на видеозапись
     /// </summary>
     function Report(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет пожаловаться на видеозапись.
+    /// Позволяет пожаловаться на видеозапись
     /// </summary>
     function Report(Params: TVkParamsVideoReport): Boolean; overload;
     /// <summary>
-    /// Позволяет пожаловаться на комментарий к видеозаписи.
+    /// Позволяет пожаловаться на комментарий к видеозаписи
     /// </summary>
     function ReportComment(OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean; overload;
     /// <summary>
-    /// Восстанавливает удаленную видеозапись.
+    /// Восстанавливает удаленную видеозапись
     /// </summary>
     function Restore(VideoId: Integer; OwnerId: Integer = 0): Boolean;
     /// <summary>
-    /// Восстанавливает удаленный комментарий к видеозаписи.
+    /// Восстанавливает удаленный комментарий к видеозаписи
     /// </summary>
     function RestoreComment(CommentId: Integer; OwnerId: Integer = 0): Boolean;
     /// <summary>
-    /// Возвращает адрес сервера, необходимый для загрузки, и данные видеозаписи.
+    /// Возвращает адрес сервера, необходимый для загрузки, и данные видеозаписи
     /// </summary>
     function Save(var VideoSaved: TVkVideoSaved; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает адрес сервера, необходимый для загрузки, и данные видеозаписи.
+    /// Возвращает адрес сервера, необходимый для загрузки, и данные видеозаписи
     /// </summary>
     function Save(var VideoSaved: TVkVideoSaved; Params: TVkParamsVideoSave): Boolean; overload;
     /// <summary>
-    /// Возвращает адрес сервера, необходимый для загрузки, и данные видеозаписи.
+    /// Возвращает адрес сервера, необходимый для загрузки, и данные видеозаписи
     /// </summary>
     function Save(var VideoSaved: TVkVideoSaved; Link: string): Boolean; overload;
     /// <summary>
-    /// Возвращает список видеозаписей в соответствии с заданным критерием поиска.
+    /// Возвращает список видеозаписей в соответствии с заданным критерием поиска
     /// </summary>
     function Search(var Items: TVkVideos; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список видеозаписей в соответствии с заданным критерием поиска.
+    /// Возвращает список видеозаписей в соответствии с заданным критерием поиска
     /// </summary>
     function Search(var Items: TVkVideos; Params: TVkParamsVideoSearch): Boolean; overload;
   end;
@@ -634,7 +637,7 @@ uses
 
 function TVideoController.GetAlbums(var Items: TVkVideoAlbums; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('video.getAlbums', Params).GetObject<TVkVideoAlbums>(Items);
+  Result := Handler.Execute('video.getAlbums', Params).GetObject(Items);
 end;
 
 function TVideoController.GetAlbums(var Items: TVkVideoAlbums; Params: TVkParamsVideoGetAlbums): Boolean;
@@ -651,7 +654,7 @@ begin
   if TargetId <> 0 then
     Params.Add('target_id', TargetId);
   Params.Add('extended', True);
-  Result := Handler.Execute('video.getAlbumsByVideo', Params).GetObject<TVkVideoAlbums>(Items);
+  Result := Handler.Execute('video.getAlbumsByVideo', Params).GetObject(Items);
 end;
 
 function TVideoController.GetComments(var Items: TVkComments; Params: TVkParamsVideoGetComments): Boolean;
@@ -716,7 +719,7 @@ end;
 
 function TVideoController.Save(var VideoSaved: TVkVideoSaved; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('video.save', Params).GetObject<TVkVideoSaved>(VideoSaved);
+  Result := Handler.Execute('video.save', Params).GetObject(VideoSaved);
 end;
 
 function TVideoController.Report(Params: TParams): Boolean;
@@ -741,7 +744,7 @@ end;
 
 function TVideoController.GetComments(var Items: TVkComments; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('video.getComments', Params).GetObject<TVkComments>(Items);
+  Result := Handler.Execute('video.getComments', Params).GetObject(Items);
 end;
 
 function TVideoController.GetAlbumById(var Item: TVkVideoAlbum; AlbumId: Integer; OwnerId: Integer): Boolean;
@@ -750,12 +753,12 @@ var
 begin
   Params.Add('album_id', AlbumId);
   Params.Add('owner_id', OwnerId);
-  Result := Handler.Execute('video.getAlbumById', Params).GetObject<TVkVideoAlbum>(Item);
+  Result := Handler.Execute('video.getAlbumById', Params).GetObject(Item);
 end;
 
 function TVideoController.Get(var Items: TVkVideos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('video.get', Params).GetObject<TVkVideos>(Items);
+  Result := Handler.Execute('video.get', Params).GetObject(Items);
 end;
 
 function TVideoController.Get(var Items: TVkVideos; Params: TVkParamsVideoGet): Boolean;
@@ -774,16 +777,23 @@ begin
   Result := Handler.Execute('video.add', Params).ResponseIsTrue;
 end;
 
-function TVideoController.AddAlbum(var AlbumId: Integer; Title: string; Privacy: TArrayOfString; GroupId: Integer): Boolean;
+function TVideoController.AddAlbum(var AlbumId: Integer; Title: string; Privacy: TVkPrivacySettings; GroupId: Integer): Boolean;
 var
   Params: TParams;
 begin
   Params.Add('title', Title);
-  if Length(Privacy) > 0 then
-    Params.Add('privacy', Privacy);
+  if not Privacy.IsEmpty then
+    Params.Add('privacy', Privacy.ToString);
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
   Result := Handler.Execute('video.addAlbum', Params).ResponseAsInt(AlbumId);
+end;
+
+function TVideoController.AddAlbum(var AlbumId: Integer; Title: string; GroupId: Integer): Boolean;
+var
+  Privacy: TVkPrivacySettings;
+begin
+  Result := AddAlbum(AlbumId, Title, Privacy, GroupId);
 end;
 
 function TVideoController.AddToAlbum(Params: TVkParamsVideoAddToAlbum): Boolean;
@@ -891,7 +901,7 @@ end;
 
 function TVideoController.Search(var Items: TVkVideos; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('video.search', Params).GetObject<TVkVideos>(Items);
+  Result := Handler.Execute('video.search', Params).GetObject(Items);
 end;
 
 { TVkVideosGetParams }
@@ -928,7 +938,7 @@ end;
 
 function TVkParamsVideoGet.Videos(const Value: TArrayOfString): Integer;
 begin
-  Result := List.Add('videos', Value.ToString);
+  Result := List.Add('videos', Value);
 end;
 
 { TVkParamsVideoAlbumsGet }
@@ -1004,7 +1014,7 @@ end;
 
 function TVkParamsVideoCreateComment.Attachments(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value.ToStrings);
+  Result := List.Add('attachments', Value);
 end;
 
 function TVkParamsVideoCreateComment.FromGroup(const Value: Integer): Integer;
@@ -1110,7 +1120,7 @@ end;
 
 function TVkParamsVideoEditComment.Attachments(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value.ToStrings);
+  Result := List.Add('attachments', Value);
 end;
 
 { TVkParamsVideoGetComments }

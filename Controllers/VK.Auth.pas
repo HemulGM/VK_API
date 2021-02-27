@@ -60,13 +60,13 @@ type
     /// <b>Данный метод устарел и может быть отключён через некоторое время, пожалуйста, избегайте его использования.</b>
     /// Проверяет правильность введённого номера (возможность его использования для регистрации или авторизации).
     /// </summary>
-    function CheckPhone(var Status: Boolean; Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean = False): Boolean; overload; deprecated 'Метод отключен на уровне API v5.124+';
+    function CheckPhone(const Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean = False): Boolean; overload; deprecated 'Метод отключен на уровне API v5.124+';
     /// <summary>
     /// <b>Данный метод устарел и может быть отключён через некоторое время, пожалуйста, избегайте его использования.</b>
     /// Проверяет правильность введённого номера (возможность его использования для регистрации или авторизации).
     /// С указанием текущих данных приложения ClientId и ClientSecret
     /// </summary>
-    function CheckPhone(var Status: Boolean; Phone: string; AuthByPhone: Boolean = False): Boolean; overload; deprecated 'Метод отключен на уровне API v5.124+';
+    function CheckPhone(const Phone: string; AuthByPhone: Boolean = False): Boolean; overload; deprecated 'Метод отключен на уровне API v5.124+';
     /// <summary>
     /// Позволяет восстановить доступ к аккаунту, используя код, полученный через SMS.
     /// Для завершения восстановления доступа необходимо обратиться по адресу: https://oauth.vk.com/token
@@ -99,7 +99,7 @@ uses
 
 { TAuthController }
 
-function TAuthController.CheckPhone(var Status: Boolean; Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean): Boolean;
+function TAuthController.CheckPhone(const Phone: string; ClientId, ClientSecret: string; AuthByPhone: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -107,17 +107,17 @@ begin
   Params.Add('client_id', ClientId);
   Params.Add('client_secret', ClientSecret);
   Params.Add('auth_by_phone', Ord(AuthByPhone));
-  Result := Handler.Execute('auth.checkPhone', Params).ResponseAsBool(Status);
+  Result := Handler.Execute('auth.checkPhone', Params).ResponseIsTrue;
 end;
 
-function TAuthController.CheckPhone(var Status: Boolean; Phone: string; AuthByPhone: Boolean): Boolean;
+function TAuthController.CheckPhone(const Phone: string; AuthByPhone: Boolean): Boolean;
 var
   ClientId, ClientSecret: string;
 begin
   ClientId := TCustomVK(VK).AppID;
   ClientSecret := TCustomVK(VK).AppKey;
   {$WARNINGS OFF}
-  Result := CheckPhone(Status, Phone, ClientId, ClientSecret, AuthByPhone);
+  Result := CheckPhone(Phone, ClientId, ClientSecret, AuthByPhone);
   {$WARNINGS ON}
 end;
 
@@ -127,7 +127,7 @@ var
 begin
   Params.Add('phone', Phone);
   Params.Add('last_name', LastName);
-  Result := Handler.Execute('auth.checkPhone', Params).GetObject(Status);
+  Result := Handler.Execute('auth.restore', Params).GetObject(Status);
 end;
 
 function TAuthController.Signup(var Status: TVkAuthSignup; Params: TVkParamsSignup): Boolean;

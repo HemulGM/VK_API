@@ -214,11 +214,11 @@ type
     /// <summary>
     /// Удаляет аудиозапись со страницы пользователя или сообщества.
     /// </summary>
-    function Delete(AudioId, OwnerId: Integer): Boolean;
+    function Delete(const AudioId, OwnerId: Integer): Boolean;
     /// <summary>
     /// Редактирует данные аудиозаписи на странице пользователя или сообщества.
     /// </summary>
-    function Edit(Params: TVkParamsAudioEdit): Boolean;
+    function Edit(const Params: TVkParamsAudioEdit): Boolean;
     /// <summary>
     /// Создать плейлист
     /// </summary>
@@ -466,7 +466,7 @@ begin
   Result := Handler.Execute('audio.createPlaylist', Params).GetObject(Item);
 end;
 
-function TAudioController.Delete(AudioId, OwnerId: Integer): Boolean;
+function TAudioController.Delete(const AudioId, OwnerId: Integer): Boolean;
 begin
   Result := Handler.Execute('audio.delete', [
     ['audio_id', AudioId.ToString],
@@ -484,7 +484,7 @@ begin
   Result := Handler.Execute('audio.deletePlaylist', Params).ResponseIsTrue;
 end;
 
-function TAudioController.Edit(Params: TVkParamsAudioEdit): Boolean;
+function TAudioController.Edit(const Params: TVkParamsAudioEdit): Boolean;
 begin
   Result := not Handler.Execute('audio.edit', Params.List).ResponseIsFalse;
 end;

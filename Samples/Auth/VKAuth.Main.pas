@@ -3,13 +3,11 @@ unit VKAuth.Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types,
-  System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
-  Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler,
-  Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents,
-  VK.GroupEvents, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video, VK.Entity.Photo,
-  VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler, Vcl.StdCtrls,
+  System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents, VK.Entity.Media, System.Net.URLClient,
+  System.Net.HttpClient, VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video, VK.Entity.Photo, VK.Entity.Audio,
+  System.JSON, VK.Entity.GroupSettings;
 
 type
   TFormMain = class(TForm)
@@ -215,38 +213,31 @@ var
 implementation
 
 uses
-  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
-  VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
-  VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
-  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest,
-  VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
-  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
-  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
-  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
-  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
-  VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
-  VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json;
+  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
+  VK.Entity.PushSettings, VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save,
+  VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
+  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section,
+  VK.CommonUtils, VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
+  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories,
+  VK.Entity.Podcast.Episode, VK.Auth, VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
+  REST.Json;
 
 {$R *.dfm}
 
 procedure TFormMain.Button10Click(Sender: TObject);
-var
-  Status: Boolean;
 begin
-  if VK1.Account.SetOffline(Status) and Status then
+  if VK1.Account.SetOffline then
     Memo1.Lines.Add('offline')
   else
     Memo1.Lines.Add('Error offline');
 end;
 
 procedure TFormMain.Button11Click(Sender: TObject);
-var
-  Status: Boolean;
 begin
-  if VK1.Auth.CheckPhone(Status, '+79512202849', True) then
-    Memo1.Lines.Add('CheckPhone' + Status.ToString)
+  if VK1.Auth.CheckPhone('+79512202849', True) then
+    Memo1.Lines.Add('CheckPhone is ok')
   else
-    Memo1.Lines.Add('Error CheckPhone');
+    Memo1.Lines.Add('CheckPhone not is ok');
 end;
 
 procedure TFormMain.Button12Click(Sender: TObject);
@@ -596,10 +587,8 @@ begin
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
-var
-  Status: Boolean;
 begin
-  if VK1.Account.UnBan(Status, -1) and Status then
+  if VK1.Account.UnBan(-1) then
     Memo1.Lines.Add('Unbanned')
   else
     Memo1.Lines.Add('Error unbanned');
@@ -811,10 +800,8 @@ begin
 end;
 
 procedure TFormMain.Button9Click(Sender: TObject);
-var
-  Status: Boolean;
 begin
-  if VK1.Account.SetOnline(Status) and Status then
+  if VK1.Account.SetOnline then
     Memo1.Lines.Add('online')
   else
     Memo1.Lines.Add('Error online');

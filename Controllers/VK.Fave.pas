@@ -13,7 +13,7 @@ type
     function ItemType(const Value: TVkFaveType): Integer;
     function Offset(const Value: Integer): Integer;
     function Count(const Value: Integer): Integer;
-    function Fields(const Value: TArrayOfString): Integer;
+    function Fields(const Value: TVkProfileFields): Integer;
     function IsFromSnackbar(const Value: Boolean): Integer;
     function Extended(const Value: Boolean): Integer;
   end;
@@ -350,7 +350,7 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsFaveGet.Fields(const Value: TArrayOfString): Integer;
+function TVkParamsFaveGet.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;

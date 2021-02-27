@@ -12,7 +12,7 @@ type
     function OwnerId(const Value: Integer): Integer;
     function Name(const Value: string): Integer;
     function Description(const Value: string): Integer;
-    function CategoryId(const Value: Integer): Integer;
+    function CategoryId(const Value: Integer): Integer; //market.getCategories
     function Price(const Value: Extended): Integer;
     function OldPrice(const Value: Extended): Integer;
     function Deleted(const Value: Boolean): Integer;
@@ -135,7 +135,7 @@ type
     function PriceFrom(const Value: Integer): Integer;
     function PriceTo(const Value: Integer): Integer;
     function Tags(const Value: TIdList): Integer;
-    function Sort(const Value: Integer): Integer;
+    function Sort(const Value: TVkMarketSort): Integer;
     function Rev(const Value: Boolean): Integer;
     function Offset(const Value: Integer): Integer;
     function Count(const Value: Integer): Integer;
@@ -1027,9 +1027,9 @@ begin
   Result := List.Add('tags', Value);
 end;
 
-function TVkParamsMarketSearch.Sort(const Value: Integer): Integer;
+function TVkParamsMarketSearch.Sort(const Value: TVkMarketSort): Integer;
 begin
-  Result := List.Add('sort', Value);
+  Result := List.Add('sort', Ord(Value));
 end;
 
 function TVkParamsMarketSearch.Rev(const Value: Boolean): Integer;

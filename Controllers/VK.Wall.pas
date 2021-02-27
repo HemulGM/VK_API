@@ -3,8 +3,8 @@ unit VK.Wall;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Info;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
+  VK.Entity.Info;
 
 type
   TVkParamsWallPost = record
@@ -37,11 +37,13 @@ type
     function FriendsOnly(const Value: Boolean = False): Integer;
     /// <summary>
     /// Данный параметр учитывается, если OwnerId меньше 0 (запись публикуется на стене группы).
-    /// True — запись будет опубликована от имени группы, False — запись будет опубликована от имени пользователя (по умолчанию)
+    /// True — запись будет опубликована от имени группы,
+    /// False — запись будет опубликована от имени пользователя (по умолчанию)
     /// </summary>
     function FromGroup(const Value: Boolean = False): Integer;
     /// <summary>
-    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи. Действует в течение одного часа
+    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи.
+    /// Действует в течение одного часа
     /// </summary>
     function Guid(const Value: string): Integer;
     /// <summary>
@@ -51,11 +53,13 @@ type
     /// </summary>
     function LatLong(Lat, Long: Extended): Integer;
     /// <summary>
-    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама",
+    /// False — метки добавлено не будет.
+    /// В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
     /// </summary>
     function MarkAsAds(const Value: Boolean): Integer;
     /// <summary>
-    /// Текст сообщения (является обязательным, если не задан параметр attachments)
+    /// Текст сообщения (является обязательным, если не задан параметр Attachments)
     /// </summary>
     function Message(const Value: string): Integer;
     /// <summary>
@@ -72,7 +76,8 @@ type
     /// </summary>
     function PlaceId(const Value: Integer): Integer;
     /// <summary>
-    /// Идентификатор записи, которую необходимо опубликовать. Данный параметр используется для публикации отложенных записей и предложенных новостей
+    /// Идентификатор записи, которую необходимо опубликовать.
+    /// Данный параметр используется для публикации отложенных записей и предложенных новостей
     /// </summary>
     function PostId(const Value: Integer): Integer;
     /// <summary>
@@ -80,7 +85,8 @@ type
     /// </summary>
     function PublishDate(const Value: TDateTime): Integer;
     /// <summary>
-    /// Список сервисов или сайтов, на которые необходимо экспортировать запись, в случае если пользователь настроил соответствующую опцию. Например, twitter, facebook
+    /// Список сервисов или сайтов, на которые необходимо экспортировать запись,
+    /// в случае если пользователь настроил соответствующую опцию. Например, twitter, facebook
     /// </summary>
     function Services(const Value: TArrayOfString): Integer;
     /// <summary>
@@ -123,7 +129,8 @@ type
     /// </summary>
     function LatLong(Lat, Long: Extended): Integer;
     /// <summary>
-    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама",
+    /// False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
     /// </summary>
     function MarkAsAds(const Value: Boolean): Integer;
     /// <summary>
@@ -142,7 +149,8 @@ type
     function PosterBkgId(const Value: Integer): Integer;
     function PosterBkgOwnerId(const Value: Integer): Integer;
     /// <summary>
-    /// Идентификатор записи, которую необходимо опубликовать. Данный параметр используется для публикации отложенных записей и предложенных новостей
+    /// Идентификатор записи, которую необходимо опубликовать.
+    /// Данный параметр используется для публикации отложенных записей и предложенных новостей
     /// </summary>
     function PostId(const Value: Integer): Integer;
     /// <summary>
@@ -150,7 +158,8 @@ type
     /// </summary>
     function PublishDate(const Value: TDateTime): Integer;
     /// <summary>
-    /// Список сервисов или сайтов, на которые необходимо экспортировать запись, в случае если пользователь настроил соответствующую опцию. Например, twitter, facebook
+    /// Список сервисов или сайтов, на которые необходимо экспортировать запись,
+    /// в случае если пользователь настроил соответствующую опцию. Например, twitter, facebook
     /// </summary>
     function Services(const Value: TArrayOfString): Integer;
     /// <summary>
@@ -192,7 +201,9 @@ type
     /// </summary>
     function Signed(const Value: Boolean): Integer;
     /// <summary>
-    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама",
+    /// False — метки добавлено не будет.
+    /// В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
     /// </summary>
     function LatLong(Lat, Long: Extended): Integer;
     /// <summary>
@@ -204,19 +215,27 @@ type
     /// </summary>
     function LinkButton(const Value: string): Integer;
     /// <summary>
-    /// Заголовок, который должен быть использован для сниппета. Если не указан, будет автоматически получен с целевой ссылки. Обязательно указывать в случае, если ссылка является номером телефона
+    /// Заголовок, который должен быть использован для сниппета.
+    /// Если не указан, будет автоматически получен с целевой ссылки.
+    /// Обязательно указывать в случае, если ссылка является номером телефона
     /// </summary>
     function LinkTitle(const Value: string): Integer;
     /// <summary>
-    /// Ссылка на изображение, которое должно быть использовано для сниппета. Минимальное разрешение: 537x240. Если не указана, будет автоматически загружена с целевой ссылки. Обязательно указывать в случае, если ссылка является номером телефона. Одновременно может быть указан либо параметр LinkImage, либо параметр LinkVideo
+    /// Ссылка на изображение, которое должно быть использовано для сниппета.
+    /// Минимальное разрешение: 537x240. Если не указана, будет автоматически загружена с целевой ссылки.
+    /// Обязательно указывать в случае, если ссылка является номером телефона.
+    /// Одновременно может быть указан либо параметр LinkImage, либо параметр LinkVideo
     /// </summary>
     function LinkImage(const Value: string): Integer;
     /// <summary>
-    /// Идентификатор видео в формате "OwnerId_MediaId". Одновременно может быть указан либо параметр LinkImage, либо параметр LinkVideo. Кроме того, параметр LinkVideo может быть указан только вместе с параметрами LinkButton, LinkTitle
+    /// Идентификатор видео в формате "OwnerId_MediaId".
+    /// Одновременно может быть указан либо параметр LinkImage, либо параметр LinkVideo.
+    /// Кроме того, параметр LinkVideo может быть указан только вместе с параметрами LinkButton, LinkTitle
     /// </summary>
     function LinkVideo(const Value: string): Integer; overload;
     /// <summary>
-    /// Идентификатор видео. Одновременно может быть указан либо параметр LinkImage, либо параметр . Кроме того, параметр LinkVideo может быть указан только вместе с параметрами LinkButton, LinkTitle
+    /// Идентификатор видео. Одновременно может быть указан либо параметр LinkImage, либо параметр .
+    /// Кроме того, параметр LinkVideo может быть указан только вместе с параметрами LinkButton, LinkTitle
     /// </summary>
     function LinkVideo(OwnerId, MediaId: Integer): Integer; overload;
   end;
@@ -270,7 +289,7 @@ type
     function Filter(const Value: TVkPostType = TVkPostType.All): Integer;
     /// <summary>
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
-    /// содержащие информацию о пользователях и сообществах. По умолчанию: False
+    /// содержащие информацию о пользователях и сообществах
     /// </summary>
     function Extended(const Value: Boolean = False): Integer;
     /// <summary>
@@ -292,7 +311,7 @@ type
     function Posts(const Value: TArrayOfString): Integer;
     /// <summary>
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
-    /// содержащие информацию о пользователях и сообществах. По умолчанию: False
+    /// содержащие информацию о пользователях и сообществах
     /// </summary>
     function Extended(const Value: Boolean = False): Integer;
     /// <summary>
@@ -319,7 +338,7 @@ type
     function CommentId(const Value: Integer): Integer;
     /// <summary>
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
-    /// содержащие информацию о пользователях и сообществах. По умолчанию: False
+    /// содержащие информацию о пользователях и сообществах
     /// </summary>
     function Extended(const Value: Boolean = False): Integer;
     /// <summary>
@@ -344,11 +363,13 @@ type
     function Message(const Value: string): Integer;
     /// <summary>
     /// Данный параметр учитывается, если OwnerId меньше 0 (запись публикуется на стене группы).
-    /// True — запись будет опубликована от имени группы, False — запись будет опубликована от имени пользователя (по умолчанию)
+    /// True — запись будет опубликована от имени группы,
+    /// False — запись будет опубликована от имени пользователя (по умолчанию)
     /// </summary>
-    function FromGroup(const Value: Boolean): Integer;
+    function FromGroup(const Value: Boolean = False): Integer;
     /// <summary>
-    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи. Действует в течение одного часа
+    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи.
+    ///  Действует в течение одного часа
     /// </summary>
     function Guid(const Value: string): Integer;
     /// <summary>
@@ -366,7 +387,7 @@ type
     /// <summary>
     /// Идентификатор стикера
     /// </summary>
-    function StickerID(const Value: Integer): Integer;
+    function StickerId(const Value: Integer): Integer;
   end;
 
   TVkParamsWallGetComments = record
@@ -392,7 +413,7 @@ type
     /// </summary>
     function Offset(const Value: Integer): Integer;
     /// <summary>
-    /// Число комментариев, которые необходимо получить. По умолчанию: 10, максимальное значение: 100
+    /// Число комментариев, которые необходимо получить (максимальное значение: 100)
     /// </summary>
     function Count(const Value: Integer = 10): Integer;
     /// <summary>
@@ -448,7 +469,9 @@ type
     /// </summary>
     function Signed(const Value: Boolean): Integer;
     /// <summary>
-    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
+    /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама",
+    /// False — метки добавлено не будет.
+    /// В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
     /// </summary>
     function LatLong(Lat, Long: Extended): Integer;
     /// <summary>
@@ -456,7 +479,8 @@ type
     /// </summary>
     function PlaceId(const Value: Integer): Integer;
     /// <summary>
-    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи. Действует в течение одного часа
+    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи.
+    /// Действует в течение одного часа
     /// </summary>
     function Guid(const Value: string): Integer;
     /// <summary>
@@ -468,15 +492,22 @@ type
     /// </summary>
     function LinkButton(const Value: TVkPostLinkButton): Integer; overload;
     /// <summary>
-    /// Заголовок, который должен быть использован для сниппета. Если не указан, будет автоматически получен с целевой ссылки. Обязательно указывать в случае, если ссылка является номером телефона
+    /// Заголовок, который должен быть использован для сниппета.
+    /// Если не указан, будет автоматически получен с целевой ссылки.
+    /// Обязательно указывать в случае, если ссылка является номером телефона
     /// </summary>
     function LinkTitle(const Value: string): Integer;
     /// <summary>
-    /// Ссылка на изображение, которое должно быть использовано для сниппета. Минимальное разрешение: 537x240. Если не указана, будет автоматически загружена с целевой ссылки. Обязательно указывать в случае, если ссылка является номером телефона. Одновременно может быть указан либо параметр link_image, либо параметр link_video
+    /// Ссылка на изображение, которое должно быть использовано для сниппета.
+    /// Минимальное разрешение: 537x240. Если не указана, будет автоматически загружена с целевой ссылки.
+    /// Обязательно указывать в случае, если ссылка является номером телефона.
+    /// Одновременно может быть указан либо параметр LinkImage, либо параметр LinkVideo
     /// </summary>
     function LinkImage(const Value: string): Integer;
     /// <summary>
-    /// Идентификатор видео в формате "owner_id_media_id". Одновременно может быть указан либо параметр link_image, либо параметр link_video. Кроме того, параметр link_video может быть указан только вместе с параметрами link_button, link_title
+    /// Идентификатор видео в формате "[owner_id]_[media_id]".
+    /// Одновременно может быть указан либо параметр LinkImage, либо параметр LinkVideo.
+    /// Кроме того, параметр LinkVideo может быть указан только вместе с параметрами LinkButton, LinkTitle
     /// </summary>
     function LinkVideo(const Value: string): Integer;
   end;
@@ -484,7 +515,7 @@ type
   TVkParamsWallRepost = record
     List: TParams;
     /// <summary>
-    /// строковый идентификатор объекта, который необходимо разместить на стене, например, wall66748_3675 или wall-1_340364.
+    /// Строковый идентификатор объекта, который необходимо разместить на стене, например, wall66748_3675 или wall-1_340364.
     /// Формируется из типа объекта (wall, photo, video и т.п.), идентификатора владельца объекта и идентификатора самого объекта
     /// </summary>
     function &Object(const Value: string): Integer;
@@ -493,7 +524,8 @@ type
     /// </summary>
     function Message(const Value: string): Integer;
     /// <summary>
-    /// Идентификатор сообщества, на стене которого будет размещена запись с объектом. Если не указан, запись будет размещена на стене текущего пользователя
+    /// Идентификатор сообщества, на стене которого будет размещена запись с объектом.
+    /// Если не указан, запись будет размещена на стене текущего пользователя
     /// </summary>
     function GroupId(const Value: Integer): Integer;
     /// <summary>
@@ -816,12 +848,12 @@ end;
 
 function TWallController.Search(var Items: TVkPosts; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('wall.search', Params).GetObject<TVkPosts>(Items);
+  Result := Handler.Execute('wall.search', Params).GetObject(Items);
 end;
 
 function TWallController.Repost(var Info: TVkRepostInfo; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('wall.repost', Params).GetObject<TVkRepostInfo>(Info);
+  Result := Handler.Execute('wall.repost', Params).GetObject(Info);
 end;
 
 function TWallController.Post(var PostId: Integer; Params: TVkParamsWallPost): Boolean;
@@ -843,7 +875,7 @@ end;
 
 function TWallController.CreateComment(var CommentInfo: TVkCommentInfo; Params: TVkCommentCreateParams): Boolean;
 begin
-  Result := Handler.Execute('wall.createComment', Params.List).GetObject<TVkCommentInfo>(CommentInfo);
+  Result := Handler.Execute('wall.createComment', Params.List).GetObject(CommentInfo);
 end;
 
 function TWallController.CreateComment(Params: TVkCommentCreateParams): Boolean;
@@ -857,8 +889,10 @@ end;
 
 function TWallController.CloseComments(const OwnerId, PostId: Integer): Boolean;
 begin
-  with Handler.Execute('wall.closeComments', [['owner_id', OwnerId.ToString], ['post_id', PostId.ToString]]) do
-    Result := ResponseIsTrue;
+  Result := Handler.Execute('wall.closeComments', [
+    ['owner_id', OwnerId.ToString],
+    ['post_id', PostId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TWallController.CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
@@ -925,7 +959,7 @@ end;
 
 function TWallController.GetById(var Items: TVkPosts; Params: TVkParamsWallGetById): Boolean;
 begin
-  Result := Handler.Execute('wall.getById', Params.List).GetObjects<TVkPosts>(Items);
+  Result := Handler.Execute('wall.getById', Params.List).GetObjects(Items);
 end;
 
 function TWallController.GetComment(var Items: TVkComments; Params: TVkParamsWallGetComment): Boolean;
@@ -949,28 +983,30 @@ begin
     Params.Add('count', Count);
   if OwnerId <> 0 then
     Params.Add('owner_id', OwnerId);
-  Result := Handler.Execute('wall.getReposts', Params).GetObject<TVkPosts>(Items);
+  Result := Handler.Execute('wall.getReposts', Params).GetObject(Items);
 end;
 
 function TWallController.OpenComments(const OwnerId, PostId: Integer): Boolean;
 begin
-  with Handler.Execute('wall.openComments', [['owner_id', OwnerId.ToString], ['post_id', PostId.ToString]]) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('wall.openComments', [
+    ['owner_id', OwnerId.ToString],
+    ['post_id', PostId.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TWallController.GetComments(var Items: TVkComments; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('wall.getComments', Params).GetObject<TVkComments>(Items);
+  Result := Handler.Execute('wall.getComments', Params).GetObject(Items);
 end;
 
 function TWallController.GetComment(var Items: TVkComments; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('wall.getComment', Params).GetObject<TVkComments>(Items);
+  Result := Handler.Execute('wall.getComment', Params).GetObject(Items);
 end;
 
 function TWallController.Get(var Items: TVkPosts; Params: TVkParamsWallGet): Boolean;
 begin
-  Result := Handler.Execute('wall.get', Params.List).GetObject<TVkPosts>(Items);
+  Result := Handler.Execute('wall.get', Params.List).GetObject(Items);
 end;
 
 function TWallController.Pin(const PostId, OwnerId: Integer): Boolean;
@@ -992,7 +1028,7 @@ end;
 
 function TVkParamsWallPost.Attachments(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value.ToStrings);
+  Result := List.Add('attachments', Value);
 end;
 
 function TVkParamsWallPost.Attachments(const Value: TAttachment): Integer;
@@ -1085,12 +1121,12 @@ end;
 
 function TVkCommentCreateParams.Attachments(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value.ToStrings);
+  Result := List.Add('attachments', Value);
 end;
 
 function TVkCommentCreateParams.Attachments(const Value: TAttachment): Integer;
 begin
-  Result := List.Add('attachments', Value.ToString);
+  Result := List.Add('attachments', Value);
 end;
 
 function TVkCommentCreateParams.FromGroup(const Value: Boolean): Integer;
@@ -1110,12 +1146,12 @@ end;
 
 function TVkCommentCreateParams.OwnerId(const Value: Integer): Integer;
 begin
-  Result := List.Add('owner_id', Value.ToString);
+  Result := List.Add('owner_id', Value);
 end;
 
 function TVkCommentCreateParams.PostId(const Value: Integer): Integer;
 begin
-  Result := List.Add('post_id', Value.ToString);
+  Result := List.Add('post_id', Value);
 end;
 
 function TVkCommentCreateParams.ReplyToComment(const Value: Integer): Integer;
@@ -1123,9 +1159,9 @@ begin
   Result := List.Add('reply_to_comment', Value);
 end;
 
-function TVkCommentCreateParams.StickerID(const Value: Integer): Integer;
+function TVkCommentCreateParams.StickerId(const Value: Integer): Integer;
 begin
-  Result := List.Add('sticker_id', Value.ToString);
+  Result := List.Add('sticker_id', Value);
 end;
 
 { TVkWallGetParams }
@@ -1225,7 +1261,7 @@ end;
 
 function TVkParamsWallEdit.Attachments(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value.ToStrings);
+  Result := List.Add('attachments', Value);
 end;
 
 function TVkParamsWallEdit.CloseComments(const Value: Boolean): Integer;
@@ -1282,7 +1318,7 @@ end;
 
 function TVkParamsWallEditAdsStealth.Attachments(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value.ToStrings);
+  Result := List.Add('attachments', Value);
 end;
 
 function TVkParamsWallEditAdsStealth.LatLong(Lat, Long: Extended): Integer;
@@ -1345,7 +1381,7 @@ end;
 
 function TVkParamsWallEditComment.Attachments(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value.ToStrings);
+  Result := List.Add('attachments', Value);
 end;
 
 { TVkParamsWallGetById }
@@ -1468,7 +1504,7 @@ end;
 
 function TVkParamsWallPostAdsStealth.Attachments(const Value: TAttachmentArray): Integer;
 begin
-  Result := List.Add('attachments', Value.ToStrings);
+  Result := List.Add('attachments', Value);
 end;
 
 function TVkParamsWallPostAdsStealth.Signed(const Value: Boolean): Integer;
@@ -1489,7 +1525,7 @@ end;
 
 function TVkParamsWallPostAdsStealth.Attachments(const Value: TAttachment): Integer;
 begin
-  Result := List.Add('attachments', Value.ToString);
+  Result := List.Add('attachments', Value);
 end;
 
 function TVkParamsWallPostAdsStealth.Guid(const Value: string): Integer;

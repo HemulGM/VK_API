@@ -157,8 +157,7 @@ end;
 
 function TDatabaseController.GetMetroStationsById(var Items: TVkMetroStations; const StationIds: TIdList): Boolean;
 begin
-  Result := Handler.Execute('database.getMetroStationsById', ['station_ids', StationIds.ToString]).
-    GetObject(Items);
+  Result := Handler.Execute('database.getMetroStationsById', ['station_ids', StationIds.ToString]).GetObject(Items);
 end;
 
 function TDatabaseController.GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string; Offset, Count: Integer): Boolean;
@@ -182,7 +181,8 @@ begin
     ['city_id', CityId.ToString],
     ['q', Query],
     ['offset', Offset.ToString],
-    ['count', Count.ToString]]).GetObject(Items);
+    ['count', Count.ToString]]).
+    GetObject(Items);
 end;
 
 function TDatabaseController.GetUniversities(var Items: TVkUniversities; const Params: TVkParamsGetUniversities): Boolean;

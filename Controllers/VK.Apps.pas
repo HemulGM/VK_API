@@ -25,7 +25,7 @@ type
     /// <summary>
     /// ”дал€ет все уведомлени€ о запросах, отправленных из текущего приложени€.
     /// </summary>
-    function DeleteAppRequests(var Status: Boolean): Boolean;
+    function DeleteAppRequests: Boolean;
     /// <summary>
     /// ¬озвращает данные о запрошенном приложении.
     /// </summary>
@@ -43,9 +43,9 @@ uses
 
 { TAppsController }
 
-function TAppsController.DeleteAppRequests(var Status: Boolean): Boolean;
+function TAppsController.DeleteAppRequests: Boolean;
 begin
-  Result := Handler.Execute('apps.deleteAppRequests').ResponseAsBool(Status);
+  Result := Handler.Execute('apps.deleteAppRequests').ResponseIsTrue;
 end;
 
 function TAppsController.Get(var Items: TVkApps; Params: TParams): Boolean;

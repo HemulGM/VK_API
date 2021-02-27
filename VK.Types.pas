@@ -253,6 +253,7 @@ type
     function Add(Key: string; Value: TArrayOfInteger): Integer; overload; inline;
     function Add(Key: string; Value: TAttachmentArray): Integer; overload; inline;
     function Add(Key: string; Value: TVkEntity): Integer; overload; inline;
+    function Add(Key: string; Value: TAttachment): Integer; overload; inline;
     function KeyExists(Key: string): Boolean; inline;
     function GetValue(Key: string): string; inline;
     function Remove(Key: string): string; inline;
@@ -371,6 +372,19 @@ type
   TVkMessageIntent = (Default, PromoNewsletter, BotAdInvite, BotAdPromo);
 
   TVkMessageIntentHelper = record helper for TVkMessageIntent
+    function ToString: string; inline;
+  end;
+
+  /// <summary>
+  /// ‘ильтр бесед
+  /// All Ч все беседы;
+  /// Unread Ч беседы с непрочитанными сообщени€ми;
+  /// Important Ч беседы, помеченные как важные (только дл€ сообщений сообществ);
+  /// Unanswered Ч беседы, помеченные как неотвеченные (только дл€ сообщений сообществ).
+  /// </summary>
+  TVkConversationFilter = (All, Unread, Important, Unanswered);
+
+  TVkConversationFilterHelper = record helper for TVkConversationFilter
     function ToString: string; inline;
   end;
 
@@ -713,6 +727,15 @@ type
     function ToConst: Integer; inline;
   end;
 
+  /// <summary>
+  /// ¬ид сортировки товаров.
+  /// User Ч пользовательска€ расстановка,
+  /// DateAdd Ч по дате добавлени€ товара,
+  /// Cost Ч по цене,
+  /// Popular Ч по попул€рности.
+  /// </summary>
+  TVkMarketSort = (User, DateAdd, Cost, Popular);
+
   TVkGroupTypeCreate = (Group, Event, &Public);
 
   TVkGroupTypeCreateHelper = record helper for TVkGroupTypeCreate
@@ -726,6 +749,21 @@ type
     function ToString: string; inline;
     class function Create(const Value: string): TVkGroupType; static;
   end;
+
+  TVkGroupSubjectType = (                                                     //
+    Unknown = 0, AutoMotorcycle = 1, ActiveRest = 2, Business = 3,            //
+    Pets = 4, Health = 5, AcquaintanceAndCommunication = 6, Games = 7,        //
+    ITComputersAndSoftware = 8, Cinema = 9, BeautyAndFashion = 10,            //
+    Cooking = 11, CultureAndArt = 12, Literature = 13,                        //
+    MobileCommunicationsAndInternet = 14, Music = 15,                         //
+    ScienceAndTechnology = 16, RealEstate = 17, NewsAndMedia = 18,            //
+    Security = 19, Education = 20, ArrangementAndRepair = 21, Politics = 22,  //
+    FoodProducts = 23, Industry = 24, Travel = 25, Work = 26,                 //
+    Entertainment = 27, Religion = 28, HomeAndFamily = 29, Sports = 30,       //
+    Insurance = 31, Television = 32, GoodsAndServices = 33, Hobbies = 34,     //
+    Finance = 35, Photo = 36, Esotericism = 37,                               //
+    ElectronicsAndHouseholdAppliances = 38, Erotic = 39, Humor = 40,          //
+    SocietyHumanities = 41, DesignAndGraphics = 42);
 
   TVkGroupFilter = (Admin, Editor, Moder, Advertiser, Groups, Publics,        //
     Events, HasAddress);
@@ -1076,6 +1114,8 @@ type
     procedure Delete(const Value: Integer); overload;
     procedure Clear;
     function ToString: string;
+    function IsEmpty: Boolean;
+    class function Empty: TVkPrivacySettings; static;
   end;
 
   TOnLogin = procedure(Sender: TObject) of object;
@@ -1216,6 +1256,7 @@ const
   VkSearchTarget: array[TVkSearchTarget] of string = ('friends', 'subscriptions');
   VkLinkText: array[TVkLinkText] of string = ('to_store', 'vote', 'more', 'book', 'order', 'enroll', 'fill', 'signup',
     'buy', 'ticket', 'write', 'open', 'learn_more', 'view', 'go_to', 'contact', 'watch', 'play', 'install', 'read', 'game');
+  VkConversationFilter: array[TVkConversationFilter] of string = ('all', 'unread', 'important', 'unanswered');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -1566,6 +1607,11 @@ end;
 function TParamsHelper.Add(Key: string; Value: TVkEntity): Integer;
 begin
   Result := AddParam(Self, [Key, Value.ToJsonString]);
+end;
+
+function TParamsHelper.Add(Key: string; Value: TAttachment): Integer;
+begin
+  Result := AddParam(Self, [Key, Value.ToString]);
 end;
 
 function TParamsHelper.KeyExists(Key: string): Boolean;
@@ -2521,6 +2567,16 @@ begin
   FInt.Delete(Value);
 end;
 
+class function TVkPrivacySettings.Empty: TVkPrivacySettings;
+begin
+  //empty
+end;
+
+function TVkPrivacySettings.IsEmpty: Boolean;
+begin
+  Result := Length(FInt) + Length(FStr) > 0;
+end;
+
 function TVkPrivacySettings.ToString: string;
 var
   i: Integer;
@@ -2531,6 +2587,13 @@ begin
   for i := Low(FStr) to High(FStr) do
     Result := Result + FStr[i] + ',';
   Result.TrimRight([',']);
+end;
+
+{ TVkConversationFilterHelper }
+
+function TVkConversationFilterHelper.ToString: string;
+begin
+  Result := VkConversationFilter[Self];
 end;
 
 end.
