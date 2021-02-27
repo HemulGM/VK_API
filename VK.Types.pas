@@ -234,6 +234,7 @@ type
 
   IAttachment = interface(IInterface)
     function ToAttachment: TAttachment;
+  end;
 
   TAttachmentArray = TArray<TAttachment>;
 
