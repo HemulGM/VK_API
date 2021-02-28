@@ -14,6 +14,8 @@ type
     FLink_ogg: string;
     FOwner_id: Integer;
     FWaveform: TArray<Integer>;
+    FTranscript: string;
+    FTranscript_state: string;
   public
     property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
@@ -34,6 +36,8 @@ type
     /// Массив значений (integer) для визуального отображения звука
     /// </summary>
     property WaveForm: TArray<Integer> read FWaveform write FWaveform;
+    property Transcript: string read FTranscript write FTranscript;
+    property TranscriptState: string read FTranscript_state write FTranscript_state;
     function ToAttachment: TAttachment;
   end;
 

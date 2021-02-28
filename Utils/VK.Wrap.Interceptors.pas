@@ -145,6 +145,12 @@ type
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
+  TKeyboardActionTypeInterceptor = class(TEnumInterceptor<TVkKeyboardActionType>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
 implementation
 
 uses
@@ -339,6 +345,18 @@ end;
 procedure TGroupTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkGroupType.Create(Arg)));
+end;
+
+{ TKeyboardActionTypeInterceptor }
+
+function TKeyboardActionTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkKeyboardActionType>.ToString;
+end;
+
+procedure TKeyboardActionTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkKeyboardActionType.Create(Arg)));
 end;
 
 end.

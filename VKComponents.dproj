@@ -275,6 +275,7 @@
         <DCCReference Include="VK.Errors.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.Status.pas"/>
         <DCCReference Include="Entity\VK.Entity.MoneyTransfer.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Geo.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

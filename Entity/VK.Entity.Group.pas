@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Types, VK.Entity.Photo, REST.JsonReflect,
   REST.Json.Interceptors, VK.Entity.Market, VK.Entity.Group.Counters, VK.Wrap.Interceptors, VK.Entity.Database.Cities,
-  VK.Entity.Database.Countries, VK.Entity.Common.List;
+  VK.Entity.Database.Countries, VK.Entity.Common.List, VK.Entity.Geo;
 
 type
   TVkGroupSubject = TVkBasicObject;

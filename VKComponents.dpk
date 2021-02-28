@@ -190,7 +190,8 @@ contains
   VK.Entity.Group.Invites in 'Entity\VK.Entity.Group.Invites.pas',
   VK.Errors in 'VK.Errors.pas',
   VK.Entity.Group.Status in 'Entity\VK.Entity.Group.Status.pas',
-  VK.Entity.MoneyTransfer in 'Entity\VK.Entity.MoneyTransfer.pas';
+  VK.Entity.MoneyTransfer in 'Entity\VK.Entity.MoneyTransfer.pas',
+  VK.Entity.Geo in 'Entity\VK.Entity.Geo.pas';
 
 end.
 

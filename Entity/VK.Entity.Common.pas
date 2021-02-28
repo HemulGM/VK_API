@@ -211,96 +211,6 @@ type
     function GetSizeMax(Value: string = 'w'; Circular: Boolean = False): TVkSize;
   end;
 
-  /// <summary>
-  /// Объект, описывающий место
-  /// </summary>
-  TVkPlace = class(TVkObject)
-  private
-    FCity: string;
-    FCountry: string;
-    FTitle: string;
-    FLatitude: Extended;
-    FLongitude: Extended;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
-    FCreated: TDateTime;
-    FIcon: string;
-    FType: Integer;
-    FAddress: string;
-    FCheckins: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
-    FUpdated: TDateTime;
-  public
-    /// <summary>
-    /// Идентификатор места
-    /// </summary>
-    property Id;
-    /// <summary>
-    /// Число отметок в этом месте
-    /// </summary>
-    property Checkins: Integer read FCheckins write FCheckins;
-    /// <summary>
-    /// Название места
-    /// </summary>
-    property Title: string read FTitle write FTitle;
-    /// <summary>
-    /// Географическая широта, заданная в градусах (от -90 до 90)
-    /// </summary>
-    property Latitude: Extended read FLatitude write FLatitude;
-    /// <summary>
-    /// Географическая широта, заданная в градусах (от -90 до 90)
-    /// </summary>
-    property Longitude: Extended read FLongitude write FLongitude;
-    /// <summary>
-    /// Тип места
-    /// </summary>
-    property&Type: Integer read FType write FType;
-    /// <summary>
-    /// Идентификатор страны
-    /// </summary>
-    property Country: string read FCountry write FCountry;
-    /// <summary>
-    /// Идентификатор города
-    /// </summary>
-    property City: string read FCity write FCity;
-    /// <summary>
-    /// Дата создания места
-    /// </summary>
-    property Created: TDateTime read FCreated write FCreated;
-    /// <summary>
-    /// дата обновления места в Unixtime.
-    /// </summary>
-    property Updated: TDateTime read FUpdated write FUpdated;
-    /// <summary>
-    /// Иконка места, URL изображения
-    /// </summary>
-    property Icon: string read FIcon write FIcon;
-    /// <summary>
-    /// Адрес места
-    /// </summary>
-    property Address: string read FAddress write FAddress;
-  end;
-
-  TVkGeo = class(TVkEntity)
-  private
-    FCoordinates: string;
-    FPlace: TVkPlace;
-    FType: string;
-  public
-    /// <summary>
-    /// Координаты места
-    /// </summary>
-    property Coordinates: string read FCoordinates write FCoordinates;
-    /// <summary>
-    /// Описание места (если оно добавлено)
-    /// </summary>
-    property Place: TVkPlace read FPlace write FPlace;
-    /// <summary>
-    /// Тип места
-    /// </summary>
-    property&Type: string read FType write FType;
-    destructor Destroy; override;
-  end;
-
   TVkChatPhoto = class(TVkEntity)
   private
     FPhoto_50: string;
@@ -358,15 +268,6 @@ implementation
 
 uses
   System.SysUtils, VK.CommonUtils;
-
-{TVkGeo}
-
-destructor TVkGeo.Destroy;
-begin
-  if Assigned(FPlace) then
-    FPlace.Free;
-  inherited;
-end;
 
 { TVkSizesHelper }
 

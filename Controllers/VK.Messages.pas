@@ -634,10 +634,8 @@ begin
         try
           RespJSON := TJSONObject.ParseJSONValue(Response);
           try
-            for i := 0 to Ids.Count - 1 do
-            begin
-              Items.Items.Add(Ids[i], RespJSON.GetValue<Integer>(Ids[i], 0) = 1);
-            end;
+            for i := 0 to Pred(Ids.Count) do
+              Items.Items.Add(Ids[i], RespJSON.GetValue(Ids[i], 0) = 1);
           finally
             RespJSON.Free;
           end;

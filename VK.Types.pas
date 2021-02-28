@@ -878,6 +878,16 @@ type
     class function Create(Value: string): TVkAttachmentType; static;
   end;
 
+  /// <summary>
+  /// Text Ч текстовые документы;
+  /// Archive Ч архивы;
+  /// GIF Ч gif;
+  /// Picture Ч изображени€;
+  /// Audio Ч аудио;
+  /// Video Ч видео;
+  /// Book Ч электронные книги;
+  /// Unknown Ч неизвестно.
+  /// </summary>
   TVkDocumentType = (None, Text, Archive, GIF, Picture, Audio, Video,         //
     Book, Unknown);
 
@@ -888,7 +898,14 @@ type
     class function Create(Value: string): TVkPeerType; static;
   end;
 
-  TVkKeyboardButtonColor = (Positive, Negative, Primary, Secondary);
+  TVkKeyboardActionType = (Text, OpenLink, Location, VKPay, OpenApp, Callback);
+
+  TVkKeyboardActionTypeHelper = record helper for TVkKeyboardActionType
+    function ToString: string; inline;
+    class function Create(Value: string): TVkKeyboardActionType; static;
+  end;
+
+  TVkKeyboardButtonColor = (Default, Positive, Negative, Primary, Secondary);
 
   TVkKeyboardButtonColorHelper = record helper for TVkKeyboardButtonColor
     function ToString: string; inline;
@@ -947,12 +964,12 @@ type
   end;
 
   /// <summary>
-  ///  ѕол
+  /// ѕол
   /// </summary>
   TVkSex = (None, Female, Male);
 
   /// <summary>
-  ///  ¬идимость даты рождени€
+  /// ¬идимость даты рождени€
   /// </summary>
   TVkBirthDateVisibility = (Hidden, Visible, DayMonOnly);
 
@@ -1011,11 +1028,11 @@ type
   end;
 
   /// <summary>
-  /// join Ч пользователь вступил в группу или меропри€тие (подписалс€ на публичную страницу).
-  /// unsure Ч дл€ меропри€тий: пользователь выбрал вариант Ђ¬озможно, пойдуї.
-  /// accepted Ч пользователь прин€л приглашение в группу или на меропри€тие.
-  /// approved Ч за€вка на вступление в группу/меропри€тие была одобрена руководителем сообщества.
-  /// request Ч пользователь подал за€вку на вступление в сообщество.
+  /// Join Ч пользователь вступил в группу или меропри€тие (подписалс€ на публичную страницу).
+  /// Unsure Ч дл€ меропри€тий: пользователь выбрал вариант Ђ¬озможно, пойдуї.
+  /// Accepted Ч пользователь прин€л приглашение в группу или на меропри€тие.
+  /// Approved Ч за€вка на вступление в группу/меропри€тие была одобрена руководителем сообщества.
+  /// Request Ч пользователь подал за€вку на вступление в сообщество.
   /// </summary>
   TVkGroupJoinType = (Unknown, Join, Unsure, Accepted, Approved, Request);
 
@@ -1058,9 +1075,9 @@ type
 
   /// <summary>
   /// —татус доступности товара
-  /// 0 Ч товар доступен;
-  /// 1 Ч товар удален;
-  /// 2 Ч товар недоступен.
+  /// Available Ч товар доступен;
+  /// Removed Ч товар удален;
+  /// NotAvailable Ч товар недоступен.
   /// </summary>
   TVkProductAvailability = (Available, Removed, NotAvailable);
 
@@ -1122,6 +1139,15 @@ type
     class function Empty: TVkPrivacySettings; static;
   end;
 
+  TVkMessageDelete = class
+  private
+    FItems: TDictionary<string, Boolean>;
+  public
+    property Items: TDictionary<string, Boolean> read FItems write FItems;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
   TOnLogin = procedure(Sender: TObject) of object;
 
   TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string) of object;
@@ -1133,6 +1159,13 @@ type
   TOnLog = procedure(Sender: TObject; const Value: string) of object;
 
   TOnVKError = procedure(Sender: TObject; E: Exception; Code: Integer; Text: string) of object;
+
+const
+  VkColorDefault = TAlphaColorRec.Null;
+  VkColorPositive = $FF4BB34B;
+  VkColorNegative = $FFE64646;
+  VkColorPrimary = $FF5181B8;
+  VkColorSecondary = $FFFFFFFF;
 
 const
   //¬спомогательное текстовое представление
@@ -1213,14 +1246,17 @@ const
   VkCurrencyId: array[TVkCurrency] of Integer = (643, 980, 398, 978, 840);
   VkGroupAddressField: array[TVkGroupAddressField] of string = ('title', 'address', 'additional_address', 'country_id',
     'city_id', 'metro_station_id', 'latitude', 'longitude', 'work_info_status', 'time_offset');
-  VkGroupTagColors: array of TVkGroupTagColor = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a', '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
+  VkGroupTagColors: array of TVkGroupTagColor = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107',
+    '76787a', '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf',
+    'aaaeb3', 'bbaa84'];
   VkDeactivated: array[TVkDeactivated] of string = ('', 'deleted', 'banned');
   VkNameRequestStatus: array[TVkNameRequestStatus] of string = ('processing', 'declined', 'response', 'response_with_link');
   VkMessageActionType: array[TVkMessageActionType] of string = ('', 'chat_photo_update', 'chat_photo_remove',
     'chat_create', 'chat_title_update', 'chat_invite_user', 'chat_kick_user', 'chat_pin_message', 'chat_unpin_message',
     'chat_invite_user_by_link');
-  VkKeyboardButtonColor: array[TVkKeyboardButtonColor] of string = ('positive', 'negative', 'primary', 'secondary');
-  VkKeyboardButtonColorValue: array[TVkKeyboardButtonColor] of TAlphaColor = ($FF4BB34B, $FFE64646, $FF5181B8, $FFFFFFFF);
+  VkKeyboardButtonColor: array[TVkKeyboardButtonColor] of string = ('default', 'positive', 'negative', 'primary', 'secondary');
+  VkKeyboardButtonColorValue: array[TVkKeyboardButtonColor] of TAlphaColor = (VkColorDefault, VkColorPositive,
+    VkColorNegative, VkColorPrimary, VkColorSecondary);
   VkGroupStatusType: array[TVkGroupStatusType] of string = ('none', 'online', 'answer_mark');
   VkGroupTypeCreate: array[TVkGroupTypeCreate] of string = ('group', 'event', 'public');
   VkGroupType: array[TVkGroupType] of string = ('group', 'event', 'page');
@@ -1261,6 +1297,7 @@ const
   VkLinkText: array[TVkLinkText] of string = ('to_store', 'vote', 'more', 'book', 'order', 'enroll', 'fill', 'signup',
     'buy', 'ticket', 'write', 'open', 'learn_more', 'view', 'go_to', 'contact', 'watch', 'play', 'install', 'read', 'game');
   VkConversationFilter: array[TVkConversationFilter] of string = ('all', 'unread', 'important', 'unanswered');
+  VkKeyboardActionType: array[TVkKeyboardActionType] of string = ('text', 'open_link', 'location', 'vkpay', 'open_app', 'callback');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -2598,6 +2635,32 @@ end;
 function TVkConversationFilterHelper.ToString: string;
 begin
   Result := VkConversationFilter[Self];
+end;
+
+{ TVkKeyboardActionTypeHelper }
+
+class function TVkKeyboardActionTypeHelper.Create(Value: string): TVkKeyboardActionType;
+begin
+  Result := TVkKeyboardActionType(IndexStr(Value, VkKeyboardActionType));
+end;
+
+function TVkKeyboardActionTypeHelper.ToString: string;
+begin
+  Result := VkKeyboardActionType[Self];
+end;
+
+{ TVkMessageDelete }
+
+constructor TVkMessageDelete.Create;
+begin
+  inherited;
+  FItems := TDictionary<string, Boolean>.Create;
+end;
+
+destructor TVkMessageDelete.Destroy;
+begin
+  FItems.Free;
+  inherited;
 end;
 
 end.

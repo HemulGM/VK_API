@@ -753,7 +753,7 @@ var
   i: Integer;
   m: Integer;
 begin
-  Params.PeerId(101802632);
+  Params.PeerId(-30666517);
   if VK1.Messages.GetHistory(Items, Params) then
   begin
     for m := 0 to High(Items.Items) do

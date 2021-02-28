@@ -6,13 +6,6 @@ uses
   Generics.Collections, Rest.Json, System.Json, VK.Types, VK.Entity.Common, VK.Wrap.Interceptors, REST.JsonReflect;
 
 type
-  TVkPayloadButton = class(TVkEntity)
-  private
-    FButton: string;
-  public
-    property Button: string read FButton write FButton;
-  end;
-
   TVkKeyboardAction = class
   private
     FApp_id: Integer;
@@ -20,7 +13,8 @@ type
     FLabel: string;
     FPayload: string;
     FOwner_id: Integer;
-    FType: string;  //text, open_link, location, vkpay, open_app
+    [JsonReflectAttribute(ctString, rtString, TKeyboardActionTypeInterceptor)]
+    FType: TVkKeyboardActionType;
     FLink: string;
   public
     property AppId: Integer read FApp_id write FApp_id;
@@ -29,7 +23,7 @@ type
     property Payload: string read FPayload write FPayload;
     property&Label: string read FLabel write FLabel;
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property&Type: string read FType write FType;
+    property&Type: TVkKeyboardActionType read FType write FType;
   end;
 
   TVkKeyboardButton = class(TVkEntity)
@@ -105,7 +99,7 @@ end;
 class function TVkKeyboardButton.CreateVKPay;
 begin
   Result := TVkKeyboardButton.Create;
-  Result.Action.&Type := 'vkpay';
+  Result.Action.&Type := TVkKeyboardActionType.VKPay;
   Result.Action.Payload := Payload;
   Result.Action.Hash := Hash;
 end;
@@ -113,7 +107,7 @@ end;
 class function TVkKeyboardButton.CreateCallback;
 begin
   Result := TVkKeyboardButton.Create;
-  Result.Action.&Type := 'callback';
+  Result.Action.&Type := TVkKeyboardActionType.Callback;
   Result.Action.&Label := Text;
   Result.Action.Payload := Payload;
 end;
@@ -121,7 +115,7 @@ end;
 class function TVkKeyboardButton.CreateText;
 begin
   Result := TVkKeyboardButton.Create;
-  Result.Action.&Type := 'text';
+  Result.Action.&Type := TVkKeyboardActionType.Text;
   Result.Action.&Label := Text;
   Result.Action.Payload := Payload;
 end;
@@ -129,14 +123,14 @@ end;
 class function TVkKeyboardButton.CreateLocation;
 begin
   Result := TVkKeyboardButton.Create;
-  Result.Action.&Type := 'location';
+  Result.Action.&Type := TVkKeyboardActionType.Location;
   Result.Action.Payload := Payload;
 end;
 
 class function TVkKeyboardButton.CreateOpenLink;
 begin
   Result := TVkKeyboardButton.Create;
-  Result.Action.&Type := 'open_link';
+  Result.Action.&Type := TVkKeyboardActionType.OpenLink;
   Result.Action.&Label := Text;
   Result.Action.Payload := Payload;
   Result.Action.Link := Link;
@@ -145,7 +139,7 @@ end;
 class function TVkKeyboardButton.CreateVKApps;
 begin
   Result := TVkKeyboardButton.Create;
-  Result.Action.&Type := 'open_app';
+  Result.Action.&Type := TVkKeyboardActionType.OpenApp;
   Result.Action.&Label := Text;
   Result.Action.Payload := Payload;
   Result.Action.Hash := Hash;

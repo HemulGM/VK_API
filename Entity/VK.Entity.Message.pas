@@ -5,7 +5,7 @@ interface
 uses
   Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Media, VK.Types,
   VK.Entity.Keyboard, VK.Entity.ClientInfo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common.List,
-  VK.Entity.Common.ExtendedList, VK.Wrap.Interceptors;
+  VK.Entity.Common.ExtendedList, VK.Wrap.Interceptors, VK.Entity.Geo;
 
 type
   TVkLastActivity = class(TVkEntity)
@@ -52,6 +52,13 @@ type
     class function FromJsonString(AJsonString: string): TVkMessageSendResponses; static;
   end;
 
+  TVkPayloadButton = class(TVkEntity)
+  private
+    FButton: string;
+  public
+    property Button: string read FButton write FButton;
+  end;
+
   TVkMessageAction = class(TVkEntity)
   private
     FText: string;
@@ -84,14 +91,6 @@ type
     /// </summary>
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
     destructor Destroy; override;
-  end;
-
-  TVkMessageDelete = class
-  private
-    FItems: TDictionary<string, Boolean>;
-    procedure SetItems(const Value: TDictionary<string, Boolean>);
-  public
-    property Items: TDictionary<string, Boolean> read FItems write SetItems;
   end;
 
   TVkMessage = class(TVkObject)
@@ -141,6 +140,9 @@ type
     function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
+    /// <summary>
+    /// Исходящее сообщение
+    /// </summary>
     property&Out: Boolean read FOut write FOut;
     constructor Create; override;
     destructor Destroy; override;
@@ -270,13 +272,6 @@ end;
 procedure TVkMessageSendResponses.SetSuccess(const Value: Boolean);
 begin
   FSuccess := Value;
-end;
-
-{ TVkMessageDelete }
-
-procedure TVkMessageDelete.SetItems(const Value: TDictionary<string, Boolean>);
-begin
-  FItems := Value;
 end;
 
 { TVkLongPollHistory }

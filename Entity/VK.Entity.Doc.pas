@@ -45,21 +45,12 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FExt: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_licensed: Boolean;
     FOwner_id: Integer;
     FPreview: TVkPreview;
     FSize: Integer;
     FTitle: string;
-    {
-    1 Ч текстовые документы;
-    2 Ч архивы;
-    3 Ч gif;
-    4 Ч изображени€;
-    5 Ч аудио;
-    6 Ч видео;
-    7 Ч электронные книги;
-    8 Ч неизвестно.
-    }
     [JsonReflectAttribute(ctString, rtString, TDocumentTypeInterceptor)]
     FType: TVkDocumentType;
     FUrl: string;
@@ -94,6 +85,9 @@ type
     /// –азмер документа в байтах
     /// </summary>
     property Size: Integer read FSize write FSize;
+    /// <summary>
+    /// –азмер документа в строковом представлении
+    /// </summary>
     property SizeStr: string read GetSizeStr;
     /// <summary>
     /// Ќазвание документа
