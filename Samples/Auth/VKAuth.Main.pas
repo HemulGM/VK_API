@@ -748,12 +748,13 @@ end;
 
 procedure TFormMain.Button46Click(Sender: TObject);
 var
-  Items: TVkMessages;
+  Items: TVkMessageHistory;
   Params: TVkParamsMessageHistory;
   i: Integer;
   m: Integer;
 begin
   Params.PeerId(-30666517);
+  Params.Extended(True);
   if VK1.Messages.GetHistory(Items, Params) then
   begin
     for m := 0 to High(Items.Items) do

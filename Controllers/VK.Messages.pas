@@ -364,7 +364,7 @@ type
     /// <summary>
     /// ¬озвращает историю сообщений дл€ указанного диалога.
     /// </summary>
-    function GetHistory(var Items: TVkMessages; Params: TVkParamsMessageHistory): Boolean;
+    function GetHistory(var Items: TVkMessageHistory; Params: TVkParamsMessageHistory): Boolean;
     /// <summary>
     /// ѕозвол€ет разрешить отправку сообщений от сообщества текущему пользователю.
     /// </summary>
@@ -770,7 +770,7 @@ begin
   Result := Handler.Execute('messages.getConversationsById', Params).GetObject(Items);
 end;
 
-function TMessagesController.GetHistory(var Items: TVkMessages; Params: TVkParamsMessageHistory): Boolean;
+function TMessagesController.GetHistory(var Items: TVkMessageHistory; Params: TVkParamsMessageHistory): Boolean;
 begin
   Result := Handler.Execute('messages.getHistory', Params.List).GetObject(Items);
 end;

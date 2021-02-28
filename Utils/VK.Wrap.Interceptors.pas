@@ -97,6 +97,9 @@ type
   TGroupMainSectionInterceptor = class(TEnumInterceptor<TVkGroupMainSection>)
   end;
 
+  TConversationDisableReasonInterceptor = class(TEnumInterceptor<TVkConversationDisableReason>)
+  end;
+
   TPeerTypeInterceptor = class(TJSONInterceptorStringToString)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
@@ -146,6 +149,12 @@ type
   end;
 
   TKeyboardActionTypeInterceptor = class(TEnumInterceptor<TVkKeyboardActionType>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TChatStateInterceptor = class(TEnumInterceptor<TVkChatState>)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
@@ -357,6 +366,18 @@ end;
 procedure TKeyboardActionTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkKeyboardActionType.Create(Arg)));
+end;
+
+{ TChatStateInterceptor }
+
+function TChatStateInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkChatState>.ToString;
+end;
+
+procedure TChatStateInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkChatState.Create(Arg)));
 end;
 
 end.

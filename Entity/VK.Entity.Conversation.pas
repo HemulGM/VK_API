@@ -3,10 +3,9 @@ unit VK.Entity.Conversation;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common,
-  VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group, VK.Types,
-  VK.Entity.Common.ExtendedList, REST.JsonReflect, REST.Json.Interceptors,
-  VK.Wrap.Interceptors;
+  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile,
+  VK.Entity.Group, VK.Types, VK.Entity.Common.ExtendedList, REST.JsonReflect, REST.Json.Interceptors,
+  VK.Wrap.Interceptors, VK.Entity.Keyboard;
 
 type
   TVkChatAccess = class(TVkEntity)
@@ -64,7 +63,8 @@ type
     FOwner_id: Integer;
     FPhoto: TVkChatPhoto;
     FPinned_message: TVkMessage;
-    FState: string;
+    [JsonReflectAttribute(ctString, rtString, TChatStateInterceptor)]
+    FState: TVkChatState;
     FTitle: string;
     FIs_group_channel: Boolean;
     FPermissions: TVkChatPermissions;
@@ -98,12 +98,9 @@ type
     /// </summary>
     property PinnedMessage: TVkMessage read FPinned_message write FPinned_message;
     /// <summary>
-    ///  —татус текущего пользовател€. ¬озможные значени€:
-    ///  in Ч состоит в чате;
-    ///  kicked Ч исключЄн из чата;
-    ///  left Ч покинул чат.
+    ///  —татус текущего пользовател€
     /// </summary>
-    property State: string read FState write FState;
+    property State: TVkChatState read FState write FState;
     /// <summary>
     /// Ќазвание
     /// </summary>
@@ -115,21 +112,11 @@ type
   TVkCanWrite = class(TVkEntity)
   private
     FAllowed: Boolean;
-    FReason: Integer;
+    [JsonReflectAttribute(ctString, rtString, TConversationDisableReasonInterceptor)]
+    FReason: TVkConversationDisableReason;
   public
     property Allowed: Boolean read FAllowed write FAllowed;
-    property Reason: Integer read FReason write FReason;
-    {
-    18 Ч пользователь заблокирован или удален;
-    900 Ч нельз€ отправить сообщение пользователю, который в чЄрном списке;
-    901 Ч пользователь запретил сообщени€ от сообщества;
-    902 Ч пользователь запретил присылать ему сообщени€ с помощью настроек приватности;
-    915 Ч в сообществе отключены сообщени€;
-    916 Ч в сообществе заблокированы сообщени€;
-    917 Ч нет доступа к чату;
-    918 Ч нет доступа к e-mail;
-    203 Ч нет доступа к сообществу.
-    }
+    property Reason: TVkConversationDisableReason read FReason write FReason;
   end;
 
   TVkPeer = class(TVkObject)
@@ -199,6 +186,7 @@ type
     FSort_id: TVkConversationSort;
     FIs_marked_unread: Boolean;
     FPush_settings: TVkChatPushSettings;
+    FCurrent_keyboard: TVkKeyboard;
     function GetIsChat: Boolean;
     function GetIsUser: Boolean;
   public  //[JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -248,6 +236,7 @@ type
     /// Ќастройки Push-уведомлений
     /// </summary>
     property PushSettings: TVkChatPushSettings read FPush_settings write FPush_settings;
+    property CurrcurrentKeyboard: TVkKeyboard read FCurrent_keyboard write FCurrent_keyboard;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -361,6 +350,8 @@ begin
     FChat_settings.Free;
   if Assigned(FPush_settings) then
     FPush_settings.Free;
+  if Assigned(FCurrent_keyboard) then
+    FCurrent_keyboard.Free;
   inherited;
 end;
 
@@ -416,7 +407,7 @@ end;
 procedure TVkMessageHistory.SetSaveMessages(const Value: Boolean);
 begin
   FSaveMessages := Value;
-end;
+end;    
 
 { TVkImportantMessages }
 

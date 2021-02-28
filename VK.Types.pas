@@ -393,6 +393,18 @@ type
   end;
 
   /// <summary>
+  /// In Ч состоит в чате;
+  /// Kicked Ч исключЄн из чата;
+  /// Left Ч покинул чат.
+  /// </summary>
+  TVkChatState = (None, &In, Kicked, Left);
+
+  TVkChatStateHelper = record Helper for TVkChatState
+    function ToString: string; inline;
+    class function Create(Value: string): TVkChatState; static;
+  end;
+
+  /// <summary>
   /// Post Ч новые записи со стен;
   /// Photo Ч новые фотографии;
   /// PhotoTag Ч новые отметки на фотографи€х;
@@ -898,6 +910,22 @@ type
     class function Create(Value: string): TVkPeerType; static;
   end;
 
+  /// <summary>
+  /// UserBannedOrDeleted Ч пользователь заблокирован или удален;
+  /// UserBlacklisted Ч нельз€ отправить сообщение пользователю, который в чЄрном списке;
+  /// UserDisableGroupsMessages Ч пользователь запретил сообщени€ от сообщества;
+  /// UserPrivacy Ч пользователь запретил присылать ему сообщени€ с помощью настроек приватности;
+  /// GroupDisableMessages Ч в сообществе отключены сообщени€;
+  /// GroupBannedMessages Ч в сообществе заблокированы сообщени€;
+  /// NoAccessChat Ч нет доступа к чату;
+  /// NoAccessEMail Ч нет доступа к e-mail;
+  /// NoAccessGroup Ч нет доступа к сообществу.
+  /// </summary>
+  TVkConversationDisableReason = (UserBannedOrDeleted = 18,                   //
+    UserBlacklisted = 900, UserDisableGroupsMessages = 901, UserPrivacy = 902, //
+    GroupDisableMessages = 915, GroupBannedMessages = 916, NoAccessChat = 917, //
+    NoAccessEMail = 918, NoAccessGroup = 203);
+
   TVkKeyboardActionType = (Text, OpenLink, Location, VKPay, OpenApp, Callback);
 
   TVkKeyboardActionTypeHelper = record helper for TVkKeyboardActionType
@@ -1285,6 +1313,7 @@ const
     'note');
   VkNewsfeedType: array[TVkNewsfeedType] of string = ('post', 'photo', 'photo_tag', 'wall_photo', 'friend', 'note',
     'audio', 'video');
+  VkChatState: array[TVkChatState] of string = ('', 'in', 'kicked', 'left');
   VkNotificationType: array[TVkNotificationType] of string = ('wall', 'mentions', 'comments', 'likes', 'reposts',
     'followers', 'friends');
   VkOrderStateAction: array[TVkOrderStateAction] of string = ('cancel', 'charge', 'refund');
@@ -2661,6 +2690,18 @@ destructor TVkMessageDelete.Destroy;
 begin
   FItems.Free;
   inherited;
+end;
+
+{ TVkChatStateHelper }
+
+class function TVkChatStateHelper.Create(Value: string): TVkChatState;
+begin
+  Result := TVkChatState(IndexStr(Value, VkChatState));
+end;
+
+function TVkChatStateHelper.ToString: string;
+begin
+  Result := VkChatState[Self];
 end;
 
 end.
