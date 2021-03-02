@@ -7,8 +7,8 @@ interface
 {$SCOPEDENUMS ON}
 
 uses
-  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types, System.Generics.Collections, System.JSON,
-  VK.Entity.Common;
+  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types,
+  System.Generics.Collections, System.JSON, VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -296,6 +296,13 @@ type
   TVkVideosFiltersHelper = record helper for TVkVideosFilters
     function ToString: string; inline;
     class function All: TVkVideosFilters; static; inline;
+  end;
+
+  TVkVideoType = (Video, MusicVideo, Movie);
+
+  TVkVideoTypeHelper = record helper for TVkVideoType
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkVideoType; static;
   end;
 
   TVkBoardTopicOrder = (DateUpCreate = -2, DateUpUpdate = -1, DateDownCreate = 2, DateDownUpdate = 1);
@@ -1298,9 +1305,7 @@ const
   VkCurrencyId: array[TVkCurrency] of Integer = (643, 980, 398, 978, 840);
   VkGroupAddressField: array[TVkGroupAddressField] of string = ('title', 'address', 'additional_address', 'country_id',
     'city_id', 'metro_station_id', 'latitude', 'longitude', 'work_info_status', 'time_offset');
-  VkGroupTagColors: array of TVkGroupTagColor = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107',
-    '76787a', '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf',
-    'aaaeb3', 'bbaa84'];
+  VkGroupTagColors: array of TVkGroupTagColor = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a', '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
   VkDeactivated: array[TVkDeactivated] of string = ('', 'deleted', 'banned');
   VkNameRequestStatus: array[TVkNameRequestStatus] of string = ('processing', 'declined', 'response', 'response_with_link');
   VkMessageActionType: array[TVkMessageActionType] of string = ('', 'chat_photo_update', 'chat_photo_remove',
@@ -1340,6 +1345,7 @@ const
   VkChatState: array[TVkChatState] of string = ('', 'in', 'kicked', 'left');
   VkStreamStatType: array[TVkStreamStatType] of string = ('received', 'prepared');
   VkStreamStatInterval: array[TVkStreamStatInterval] of string = ('5m', '1h', '24h');
+  VkVideoType: array[TVkVideoType] of string = ('video', 'music_video', 'movie');
   VkNotificationType: array[TVkNotificationType] of string = ('wall', 'mentions', 'comments', 'likes', 'reposts',
     'followers', 'friends');
   VkOrderStateAction: array[TVkOrderStateAction] of string = ('cancel', 'charge', 'refund');
@@ -2753,6 +2759,18 @@ end;
 function TVkStreamStatIntervalHelper.ToString: string;
 begin
   Result := VkStreamStatInterval[Self];
+end;
+
+{ TVkVideoTypeHelper }
+
+class function TVkVideoTypeHelper.Create(const Value: string): TVkVideoType;
+begin
+  Result := TVkVideoType(IndexStr(Value, VkVideoType));
+end;
+
+function TVkVideoTypeHelper.ToString: string;
+begin
+  Result := VkVideoType[Self];
 end;
 
 end.

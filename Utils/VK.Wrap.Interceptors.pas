@@ -3,7 +3,8 @@ unit VK.Wrap.Interceptors;
 interface
 
 uses
-  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect, REST.Json.Interceptors, VK.Types;
+  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect,
+  REST.Json.Interceptors, VK.Types;
 
 type
   TEnumHelp = record
@@ -161,6 +162,12 @@ type
   end;
 
   TStreamStatIntervalInterceptor = class(TEnumInterceptor<TVkStreamStatInterval>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TVideoTypeInterceptor = class(TEnumInterceptor<TVkVideoType>)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
@@ -396,6 +403,18 @@ end;
 procedure TStreamStatIntervalInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkStreamStatInterval.Create(Arg)));
+end;
+
+{ TVideoTypeInterceptor }
+
+function TVideoTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkVideoType>.ToString;
+end;
+
+procedure TVideoTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkVideoType.Create(Arg)));
 end;
 
 end.

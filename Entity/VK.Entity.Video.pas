@@ -3,8 +3,9 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Privacy,
-  VK.Entity.Common.List, VK.Entity.Info, VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Common.List, VK.Entity.Info,
+  VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkVideoFiles = class(TVkEntity)
@@ -12,10 +13,14 @@ type
     FExternal: string;
     FMp4_720: string;
     FMp4_360: string;
+    FMp4_480: string;
+    FMp4_240: string;
   public
     property&External: string read FExternal write FExternal;
-    property Mp4720: string read FMp4_720 write FMp4_720;
-    property Mp4360: string read FMp4_360 write FMp4_360;
+    property Mp4_720: string read FMp4_720 write FMp4_720;
+    property Mp4_360: string read FMp4_360 write FMp4_360;
+    property Mp4_240: string read FMp4_240 write FMp4_240;
+    property Mp4_480: string read FMp4_480 write FMp4_480;
   end;
 
   TVkVideoImage = class(TVkImage)
@@ -60,7 +65,8 @@ type
     FPlayer: string;
     FReposts: TVkRepostsInfo;
     FTitle: string;
-    FType: string;
+    [JsonReflectAttribute(ctString, rtString, TVideoTypeInterceptor)]
+    FType: TVkVideoType; //video
     FViews: Integer;
     Ffirst_frame_800: string;
     Fphoto_640: string;
@@ -267,9 +273,9 @@ type
     /// </summary>
     property&Platform: string read FPlatform write FPlatform;
     /// <summary>
-    /// Тип видеозаписи. Может принимать значения: "video", "music_video", "movie"
+    /// Тип видеозаписи
     /// </summary>
-    property&Type: string read FType write FType;
+    property&Type: TVkVideoType read FType write FType;
     ///Методы
     function ToAttachment: TAttachment;
     constructor Create; override;
