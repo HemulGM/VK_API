@@ -147,6 +147,9 @@ type
     function GroupId(const Value: Integer): Integer;
     function Title(const Value: string): Integer;
     function Description(const Value: string): Integer;
+    /// <summary>
+    /// Короткое имя сообщества
+    /// </summary>
     function ScreenName(const Value: string): Integer;
     function Access(const Value: TVkGroupAccess): Integer;
     function Website(const Value: string): Integer;

@@ -632,7 +632,7 @@ type
   TVkGroupField = (City, Country, Place, Description, WikiPage, MembersCount, //
     Counters, StartDate, FinishDate, CanPost, CanSeeAllPosts, Activity,       //
     Status, Contacts, Links, FixedPost, Verified, Site, CanCreateTopic,       //
-    Photo50);
+    Photo50, Photo100, Photo200, Cover);
 
   TVkGroupFieldHelper = record helper for TVkGroupField
     function ToString: string; inline;
@@ -1152,6 +1152,29 @@ type
     function Add(Id: Integer; Text: string): Integer; overload;
   end;
 
+  /// <summary>
+  /// Received Ч событи€, полученные приложением;
+  /// Prepared Ч событи€, сгенерированные со стороны ¬ онтакте
+  /// </summary>
+  TVkStreamStatType = (Received, Prepared);
+
+  TVkStreamStatTypeHelper = record helper for TVkStreamStatType
+    function ToString: string; overload; inline;
+    class function Create(Value: string): TVkStreamStatType; static;
+  end;
+
+  /// <summary>
+  /// i5m Ч п€ть минут. ћаксимальный период Ч 3 дн€ между StartTime и EndTime;
+  /// i1h Ч один час. ћаксимальный период Ч 7 дней между StartTime и EndTime;
+  /// i24h Ч сутки. ћаксимальный период Ч 31 день между StartTime и EndTime.
+  /// </summary>
+  TVkStreamStatInterval = (i5m, i1h, i24h);
+
+  TVkStreamStatIntervalHelper = record helper for TVkStreamStatInterval
+    function ToString: string; overload; inline;
+    class function Create(Value: string): TVkStreamStatInterval; static;
+  end;
+
   TVkPrivacySettings = record
   private
     FInt: TArrayOfInteger;
@@ -1262,7 +1285,8 @@ const
     'im2', 'begin', 'get', 'watch', 'download', 'participate', 'play', 'apply', 'get_an_offer', 'to_write', 'reply');
   VkGroupField: array[TVkGroupField] of string = ('city', 'country', 'place', 'description', 'wiki_page', 'members_count',
     'counters', 'start_date', 'finish_date', 'can_post', 'can_see_all_posts', 'activity', 'status',
-    'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50');
+    'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50', 'photo_100', 'photo_200',
+    'cover');
   VkGroupFilter: array[TVkGroupFilter] of string = ('admin', 'editor', 'moder', 'advertiser', 'groups', 'publics',
     'events', 'hasAddress');
   VkGroupRole: array[TVkGroupRole] of string = ('moderator', 'editor', 'administrator');
@@ -1314,6 +1338,8 @@ const
   VkNewsfeedType: array[TVkNewsfeedType] of string = ('post', 'photo', 'photo_tag', 'wall_photo', 'friend', 'note',
     'audio', 'video');
   VkChatState: array[TVkChatState] of string = ('', 'in', 'kicked', 'left');
+  VkStreamStatType: array[TVkStreamStatType] of string = ('received', 'prepared');
+  VkStreamStatInterval: array[TVkStreamStatInterval] of string = ('5m', '1h', '24h');
   VkNotificationType: array[TVkNotificationType] of string = ('wall', 'mentions', 'comments', 'likes', 'reposts',
     'followers', 'friends');
   VkOrderStateAction: array[TVkOrderStateAction] of string = ('cancel', 'charge', 'refund');
@@ -1833,7 +1859,8 @@ begin
     TVkGroupField.CanPost, TVkGroupField.CanSeeAllPosts, TVkGroupField.Activity,
     TVkGroupField.Status, TVkGroupField.Contacts, TVkGroupField.Links,
     TVkGroupField.FixedPost, TVkGroupField.Verified, TVkGroupField.Site,
-    TVkGroupField.CanCreateTopic, TVkGroupField.Photo50];
+    TVkGroupField.CanCreateTopic, TVkGroupField.Photo50, TVkGroupField.Photo100,
+    TVkGroupField.Photo200, TVkGroupField.Cover];
 end;
 
 function TVkGroupFieldsHelper.ToString: string;
@@ -2702,6 +2729,30 @@ end;
 function TVkChatStateHelper.ToString: string;
 begin
   Result := VkChatState[Self];
+end;
+
+{ TVkStreamStatTypeHelper }
+
+class function TVkStreamStatTypeHelper.Create(Value: string): TVkStreamStatType;
+begin
+  Result := TVkStreamStatType(IndexStr(Value, VkStreamStatType));
+end;
+
+function TVkStreamStatTypeHelper.ToString: string;
+begin
+  Result := VkStreamStatType[Self];
+end;
+
+{ TVkStreamStatIntervalHelper }
+
+class function TVkStreamStatIntervalHelper.Create(Value: string): TVkStreamStatInterval;
+begin
+  Result := TVkStreamStatInterval(IndexStr(Value, VkStreamStatInterval));
+end;
+
+function TVkStreamStatIntervalHelper.ToString: string;
+begin
+  Result := VkStreamStatInterval[Self];
 end;
 
 end.

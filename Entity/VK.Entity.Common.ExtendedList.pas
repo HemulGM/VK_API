@@ -3,10 +3,13 @@ unit VK.Entity.Common.ExtendedList;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common,
-  VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group;
+  Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile,
+  VK.Entity.Group;
 
 type
+  /// <summary>
+  /// Базовый класс список со списком профилей и групп (с освобождением элементов списка)
+  /// </summary>
   TVkEntityExtendedList<T: TVkEntity> = class(TVkEntityList<T>)
   protected
     FProfiles: TArray<TVkProfile>;
@@ -17,6 +20,9 @@ type
     destructor Destroy; override;
   end;
 
+  /// <summary>
+  /// Базовый класс список со списком профилей и групп (без освобождения элементов списка)
+  /// </summary>
   TVkEntityExtendedSimpleList<T> = class(TVkEntityListSimple<T>)
   protected
     FProfiles: TArray<TVkProfile>;
@@ -26,10 +32,6 @@ type
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     destructor Destroy; override;
   end;
-
-  TVkIdList = TVkEntityListSimple<Integer>;
-
-  TVkBasicIndexItems = TVkEntityListSimple<Integer>;
 
 implementation
 

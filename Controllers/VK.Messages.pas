@@ -848,7 +848,7 @@ end;
 
 function TMessagesController.MarkAsImportant(var Items: TIdList; MessageIds: TIdList; Important: Boolean): Boolean;
 var
-  Resp: TVkBasicIndexItems;
+  Resp: TVkIdList;
 begin
   with Handler.Execute('messages.markAsImportant', [['message_ids', MessageIds.ToString], ['important', BoolToString(Important)]]) do
   begin
@@ -856,7 +856,7 @@ begin
     if Result then
     begin
       try
-        Resp := TVkBasicIndexItems.FromJsonString<TVkBasicIndexItems>(ResponseAsItems);
+        Resp := TVkIdList.FromJsonString<TVkIdList>(ResponseAsItems);
         try
           Items := Resp.Items;
         finally

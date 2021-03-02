@@ -6,6 +6,9 @@ uses
   Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common;
 
 type
+  /// <summary>
+  /// Базовый класс списка без освобождения элементов списка
+  /// </summary>
   TVkEntityListSimple<T> = class(TVkEntity)
   protected
     FCount: Integer;
@@ -16,18 +19,26 @@ type
     procedure Append(Items: TVkEntityListSimple<T>);
   end;
 
+  /// <summary>
+  /// Базовый класс списка с освобождением элементов списка
+  /// </summary>
   TVkEntityList<T: TVkEntity> = class(TVkEntityListSimple<T>)
   protected
     [JSONMarshalledAttribute(False)]
     FSaveObjects: Boolean;
     procedure SetSaveObjects(const Value: Boolean);
   public
+    property Count;
+    property Items;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Items: TVkEntityList<T>);
     constructor Create; override;
     destructor Destroy; override;
   end;
 
+  /// <summary>
+  /// Базовый класс списка для сущностей с Id
+  /// </summary>
   TVkObjectList<T: TVkObject> = class(TVkObject)
   private
     FCount: Integer;
@@ -45,8 +56,6 @@ type
   end;
 
   TVkIdList = TVkEntityListSimple<Integer>;
-
-  TVkBasicIndexItems = TVkEntityListSimple<Integer>;
 
 implementation
 

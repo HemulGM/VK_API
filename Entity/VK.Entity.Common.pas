@@ -36,6 +36,8 @@ type
     property Name: string read FName write FName;
   end;
 
+  //////////////////////////////////////////////////////////////////////////////
+
   TVkCopyright = class(TVkEntity)
   private
     FLink: string;

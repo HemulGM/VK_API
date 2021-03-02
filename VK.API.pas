@@ -11,7 +11,7 @@ uses
   VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders,
   Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
   VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
-  VK.Donut,
+  VK.Donut, VK.Streaming,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -103,6 +103,7 @@ type
     FUtils: TUtilsController;
     FVideo: TVideoController;
     FWall: TWallController;
+    FStreaming: TStreamingController;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -325,6 +326,10 @@ type
     /// Методы для работы со историями.
     /// </summary>
     property Stories: TStoriesController read FStories;
+    /// <summary>
+    /// Методы для работы со стриамами.
+    /// </summary>
+    property Streaming: TStreamingController read FStreaming;
     /// <summary>
     /// Методы для работы с данными пользователей.
     /// </summary>
@@ -571,6 +576,7 @@ begin
   FStats := TStatsController.Create(FHandler);
   FStorage := TStorageController.Create(FHandler);
   FStories := TStoriesController.Create(FHandler);
+  FStreaming := TStreamingController.Create(FHandler);
   FSearch := TSearchController.Create(FHandler);
   FSecure := TSecureController.Create(FHandler);
   FWall := TWallController.Create(FHandler);
@@ -627,6 +633,7 @@ begin
   FStorage.Free;
   FStats.Free;
   FStories.Free;
+  FStreaming.Free;
   FUsers.Free;
   FAccount.Free;
   FApps.Free;

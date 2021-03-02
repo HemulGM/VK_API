@@ -276,6 +276,9 @@
         <DCCReference Include="Entity\VK.Entity.Group.Status.pas"/>
         <DCCReference Include="Entity\VK.Entity.MoneyTransfer.pas"/>
         <DCCReference Include="Entity\VK.Entity.Geo.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Youla.pas"/>
+        <DCCReference Include="Controllers\VK.Streaming.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Streaming.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
