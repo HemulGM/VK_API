@@ -224,6 +224,7 @@ type
     class function Wall(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function WallReply(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Sticker(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
+    class function Poll(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Gift(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Album(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Create(&Type: string; OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
@@ -303,6 +304,13 @@ type
   TVkVideoTypeHelper = record helper for TVkVideoType
     function ToString: string; inline;
     class function Create(const Value: string): TVkVideoType; static;
+  end;
+
+  TVkLiveStatus = (Waiting, Started, Finished, Failed, Upcoming);
+
+  TVkLiveStatusHelper = record helper for TVkLiveStatus
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkLiveStatus; static;
   end;
 
   TVkBoardTopicOrder = (DateUpCreate = -2, DateUpUpdate = -1, DateDownCreate = 2, DateDownUpdate = 1);
@@ -1359,6 +1367,7 @@ const
     'buy', 'ticket', 'write', 'open', 'learn_more', 'view', 'go_to', 'contact', 'watch', 'play', 'install', 'read', 'game');
   VkConversationFilter: array[TVkConversationFilter] of string = ('all', 'unread', 'important', 'unanswered');
   VkKeyboardActionType: array[TVkKeyboardActionType] of string = ('text', 'open_link', 'location', 'vkpay', 'open_app', 'callback');
+  VkLiveStatus: array[TVkLiveStatus] of string = ('waiting', 'started', 'finished', 'failed', 'upcoming');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -2231,6 +2240,11 @@ begin
   Result := Create('photo', OwnerId, Id, AccessKey);
 end;
 
+class function TAttachment.Poll(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
+begin
+  Result := Create('poll', OwnerId, Id, AccessKey);
+end;
+
 class function TAttachment.Sticker(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
   Result := Create('sticker', OwnerId, Id, AccessKey);
@@ -2771,6 +2785,18 @@ end;
 function TVkVideoTypeHelper.ToString: string;
 begin
   Result := VkVideoType[Self];
+end;
+
+{ TVkLiveStatusHelper }
+
+class function TVkLiveStatusHelper.Create(const Value: string): TVkLiveStatus;
+begin
+  Result := TVkLiveStatus(IndexStr(Value, VkLiveStatus));
+end;
+
+function TVkLiveStatusHelper.ToString: string;
+begin
+  Result := VkLiveStatus[Self];
 end;
 
 end.

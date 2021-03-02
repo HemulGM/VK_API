@@ -194,7 +194,8 @@ contains
   VK.Entity.Geo in 'Entity\VK.Entity.Geo.pas',
   VK.Entity.Group.Youla in 'Entity\VK.Entity.Group.Youla.pas',
   VK.Streaming in 'Controllers\VK.Streaming.pas',
-  VK.Entity.Streaming in 'Entity\VK.Entity.Streaming.pas';
+  VK.Entity.Streaming in 'Entity\VK.Entity.Streaming.pas',
+  VK.Entity.Message.Templates in 'Entity\VK.Entity.Message.Templates.pas';
 
 end.
 

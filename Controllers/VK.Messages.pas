@@ -3,9 +3,11 @@ unit VK.Messages;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
-  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.LongPoll, VK.Entity.Common.List;
+  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client,
+  System.Json, VK.Controller, VK.Types, VK.Handler, VK.Entity.Keyboard,
+  VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.LongPoll,
+  VK.Entity.Common.List, VK.Entity.Message.Templates;
 
 type
   TMessagesController = class;
@@ -16,161 +18,544 @@ type
     FParams: TParams;
     procedure SetParams(const Value: TParams);
   public
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
     function PeerId(const Value: Integer): TVkMessageNew;
+    /// <summary>
+    /// Идентификатор пользователя, которому отправляется сообщение.
+    /// </summary>
     function UserId(const Value: Integer): TVkMessageNew;
+    /// <summary>
+    /// Идентификатор беседы, к которой будет относиться сообщение
+    /// </summary>
     function ChatId(const Value: Integer): TVkMessageNew;
-    function UserIds(const Value: TIdList): TVkMessageNew;
-    function UserDomian(const Value: string): TVkMessageNew;
+    /// <summary>
+    /// Идентификаторы получателей сообщения (при необходимости отправить сообщение сразу нескольким пользователям).
+    /// Доступно только для ключа доступа сообщества. Максимальное количество идентификаторов: 100
+    /// </summary>
+    function PeerIds(const Value: TIdList): TVkMessageNew;
+    /// <summary>
+    /// Текст личного сообщения. Обязательный параметр, если не задан параметр attachment
+    /// </summary>
     function Message(const Value: string): TVkMessageNew;
+    /// <summary>
+    /// Полезная нагрузка
+    /// </summary>
     function Payload(const Value: string): TVkMessageNew;
     /// <summary>
-    /// Интент — это метка, которая обозначает приблизительное содержание сообщения от сообщества. Передаётся в необязательном параметре messages.send — Intent.
+    /// Интент — это метка, которая обозначает приблизительное содержание сообщения от сообщества.
+    /// Передаётся в необязательном параметре messages.send — Intent.
     /// </summary>
     function Intent(const Value: TVkMessageIntent): TVkMessageNew;
+    /// <summary>
+    /// Объект, описывающий клавиатуру бота
+    /// </summary>
     function Keyboard(const Value: TVkKeyboard): TVkMessageNew;
-    function DontParseLinks(const Value: Boolean): TVkMessageNew;
+    /// <summary>
+    /// Географические координаты
+    /// </summary>
+    function LatLong(const Lat, Long: Extended): TVkMessageNew;
+    /// <summary>
+    /// Короткий адрес пользователя (например, illarionov)
+    /// </summary>
+    function Domain(const Value: string): TVkMessageNew;
+    /// <summary>
+    /// Не создавать сниппет ссылки из сообщения
+    /// </summary>
+    function DontParseLinks(const Value: Boolean = False): TVkMessageNew;
+    /// <summary>
+    /// Объект, описывающий источник пользовательского контента для чат-ботов
+    /// </summary>
+    function ContentSource(const Value: TVkMessageContentSource): TVkMessageNew;
+    /// <summary>
+    /// Отключить уведомление об упоминании в сообщении
+    /// </summary>
     function DisableMentions(const Value: Boolean): TVkMessageNew;
+    /// <summary>
+    /// Идентификатор стикера
+    /// </summary>
     function StickerId(const Value: Integer): TVkMessageNew;
+    /// <summary>
+    /// Число, которое в будущем будет предназначено для работы с интентами
+    /// </summary>
     function SubscribeId(const Value: Integer): TVkMessageNew;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
     function GroupId(const Value: Integer): TVkMessageNew;
+    /// <summary>
+    /// идентификатор сообщения, на которое требуется ответить
+    /// </summary>
     function ReplyTo(const Value: Integer): TVkMessageNew;
+    /// <summary>
+    /// [Вероятно список сообщений для пересылки]
+    /// </summary>
+    function &Forward(const Value: TVkMessageForward): TVkMessageNew;
+    /// <summary>
+    /// Идентификаторы пересылаемых сообщений, перечисленные через запятую.
+    /// Перечисленные сообщения отправителя будут отображаться в теле письма у получателя.
+    /// Не более 100 значений на верхнем уровне, максимальный уровень вложенности: 45,
+    /// максимальное количество пересылаемых сообщений 500
+    /// </summary>
     function ForwardMessages(const Value: TIdList): TVkMessageNew;
+    /// <summary>
+    /// Медиавложения к личному сообщению
+    /// </summary>
     function Attachment(const Value: TAttachmentArray): TVkMessageNew; overload;
+    /// <summary>
+    /// Медиавложения к личному сообщению
+    /// </summary>
     function Attachment(const Value: TAttachment): TVkMessageNew; overload;
+    /// <summary>
+    /// Боты могут отправлять специальные сообщения, используя шаблоны.
+    /// Такие сообщения отличаются от обычных как по внешнему виду, так и по функциональности.
+    /// На данный момент поддерживается один шаблон — карусель.
+    /// Обратите внимание, что в одном сообщении можно передать либо Template, либо Keyboard. Если после отправки карусели, вам нужно обновить клавиатуру — отправьте еще одно сообщение с параметром keyboard
+    /// </summary>
+    function Template(const Value: TVkMessageTemplate): TVkMessageNew;
     function Send: TVkMessageSendResponses;
     constructor Create(Controller: TMessagesController);
     property Handler: TVkHandler read FHandler;
     property Params: TParams read FParams write SetParams;
   end;
 
+  TVkParamsMessageSend = record
+    List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя, которому отправляется сообщение
+    /// </summary>
+    function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор беседы, к которой будет относиться сообщение
+    /// </summary>
+    function ChatId(const Value: Integer): Integer;
+    /// <summary>
+    /// Короткий адрес пользователя (например, illarionov)
+    /// </summary>
+    function Domain(const Value: string): Integer;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
+    function PeerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Число в пределах int32 - уникальный (в привязке к API_ID и ID отправителя) идентификатор, предназначенный для предотвращения повторной отправки одинакового сообщения. Сохраняется вместе с сообщением и доступен в истории сообщений.
+    /// Переданный в запросе random_id используется для проверки уникальности, проверяя в заданном диалоге сообщения за последний час (но не более 100 последних сообщений).
+    /// Если не передать значение, будет сгенерирован через GetRandomId
+    /// </summary>
+    function RandomId(const Value: Integer = -1): Integer;
+    /// <summary>
+    /// Текст личного сообщения. Обязательный параметр, если не задан параметр Attachment
+    /// </summary>
+    function Message(const Value: string): Integer;
+    /// <summary>
+    /// Географические координаты
+    /// </summary>
+    function LatLong(const Lat, Long: Extended): Integer;
+    /// <summary>
+    /// Медиавложения к личному сообщению
+    /// </summary>
+    function Attachment(const Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Медиавложения к личному сообщению
+    /// </summary>
+    function Attachment(const Value: TAttachment): Integer; overload;
+    /// <summary>
+    /// идентификатор сообщения, на которое требуется ответить
+    /// </summary>
+    function ReplyTo(const Value: Integer): Integer;
+    /// <summary>
+    /// [Вероятно список сообщений для пересылки]
+    /// </summary>
+    function &Forward(const Value: TVkMessageForward): Integer;
+    /// <summary>
+    /// Идентификаторы пересылаемых сообщений, перечисленные через запятую.
+    /// Перечисленные сообщения отправителя будут отображаться в теле письма у получателя.
+    /// Не более 100 значений на верхнем уровне, максимальный уровень вложенности: 45,
+    /// максимальное количество пересылаемых сообщений 500
+    /// </summary>
+    function ForwardMessages(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификатор стикера
+    /// </summary>
+    function StickerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
+    function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Объект, описывающий клавиатуру бота
+    /// </summary>
+    function Keyboard(const Value: TVkKeyboard): Integer;
+    /// <summary>
+    /// Полезная нагрузка
+    /// </summary>
+    function Payload(const Value: string): Integer;
+    /// <summary>
+    /// Интент — это метка, которая обозначает приблизительное содержание сообщения от сообщества.
+    /// Передаётся в необязательном параметре messages.send — Intent.
+    /// </summary>
+    function Intent(const Value: TVkMessageIntent): Integer;
+    /// <summary>
+    /// Не создавать сниппет ссылки из сообщения
+    /// </summary>
+    function DontParseLinks(const Value: Boolean): Integer;
+    /// <summary>
+    /// Отключить уведомление об упоминании в сообщении
+    /// </summary>
+    function DisableMentions(const Value: Boolean): Integer;
+    /// <summary>
+    /// Объект, описывающий источник пользовательского контента для чат-ботов
+    /// </summary>
+    function ContentSource(const Value: TVkMessageContentSource): Integer;
+    /// <summary>
+    /// Число, которое в будущем будет предназначено для работы с интентами
+    /// </summary>
+    function SubscribeId(const Value: Integer): Integer;
+    /// <summary>
+    /// Боты могут отправлять специальные сообщения, используя шаблоны.
+    /// Такие сообщения отличаются от обычных как по внешнему виду, так и по функциональности.
+    /// На данный момент поддерживается один шаблон — карусель
+    /// Обратите внимание, что в одном сообщении можно передать либо Template, либо Keyboard. Если после отправки карусели, вам нужно обновить клавиатуру — отправьте еще одно сообщение с параметром keyboard
+    /// </summary>
+    function Template(const Value: TVkMessageTemplate): Integer;
+  end;
+
   TVkParamsConversationsGet = record
     List: TParams;
-    function Offset(const Value: Integer): Integer;
-    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества результатов
+    /// </summary>
+    function Offset(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Максимальное число результатов, которые нужно получить
+    /// </summary>
+    function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
-    function MajorSortId(const Value: Integer): Integer;
+    /// <summary>
+    /// Фильтр
+    /// </summary>
     function Filter(const Value: TVkConversationFilter = TVkConversationFilter.All): Integer;
+    /// <summary>
+    /// Список дополнительных полей для пользователей и сообществ
+    /// </summary>
     function Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    /// <summary>
+    /// Возвращать дополнительные поля для пользователей и сообществ
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор сообщения, начиная с которого нужно возвращать беседы
+    /// </summary>
     function StartMessageId(const Value: Integer): Integer;
   end;
 
   TVkParamsMessageDelete = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Список идентификаторов сообщений, разделённых через запятую
+    /// </summary>
     function MessageIds(const Value: TIdList): Integer; overload;
+    /// <summary>
+    /// Идентификатор сообщения
+    /// </summary>
     function MessageId(const Value: Integer): Integer; overload;
+    /// <summary>
+    /// Пометить сообщения как спам
+    /// </summary>
     function Spam(const Value: Boolean): Integer;
+    /// <summary>
+    /// True — если сообщение нужно удалить для получателей (если с момента отправки сообщения прошло не более 24 часов)
+    /// </summary>
     function DeleteForAll(const Value: Boolean): Integer;
   end;
 
   TVkParamsMessageGet = record
     List: TParams;
-    function MessageIds(const Value: TIdList): Integer; overload;
-    function MessageId(const Value: Integer): Integer; overload;
-    function PreviewLength(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификаторы сообщений. Максимум 100 идентификаторов
+    /// </summary>
+    function MessageIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификатор сообщения
+    /// </summary>
+    function MessageId(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество символов, по которому нужно обрезать сообщение.
+    /// Укажите 0, если Вы не хотите обрезать сообщение. (По умолчанию сообщения не обрезаются)
+    /// </summary>
+    function PreviewLength(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// True — возвращать дополнительные поля
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Список дополнительных полей для пользователей и сообществ
+    /// </summary>
     function Fields(const Value: string): Integer;
-    function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
+    function GroupId(const Value: Cardinal): Integer;
   end;
 
   TVkParamsMessageHistory = record
     List: TParams;
+    /// <summary>
+    /// Количество сообщений, которое необходимо получить (но не более 200)
+    /// </summary>
     function Count(const Value: Integer = 20): Integer;
-    function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Если указать в качестве этого параметра True, то будет возвращена
+    /// информация о пользователях, являющихся авторами сообщений
+    /// </summary>
+    function Extended(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: string): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества сообщений,
+    /// должен быть >= 0, если не передан параметр start_message_id, и должен быть <= 0, если передан
+    /// </summary>
     function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
     function PeerId(const Value: Integer): Integer;
-    function Rev(const Value: Boolean): Integer;
+    /// <summary>
+    /// True – возвращать сообщения в хронологическом порядке.
+    /// False – возвращать сообщения в обратном хронологическом порядке (по умолчанию)
+    /// </summary>
+    function Rev(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Eсли значение > 0, то это идентификатор сообщения, начиная с которого
+    /// нужно вернуть историю переписки, если передано значение 0 то вернутся
+    /// сообщения с самого начала переписки, если же передано значение -1, то
+    /// к значению параметра offset прибавляется количество входящих
+    /// непрочитанных сообщений в конце диалога (подробности см. ниже)
+    /// </summary>
     function StartMessageId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, историю переписки с которым необходимо вернуть
+    /// </summary>
     function UserId(const Value: Integer): Integer;
-  end;
-
-  TVkParamsMessageSend = record
-    List: TParams;
-    function UserId(const Value: Integer): Integer;
-    function ChatId(const Value: Integer): Integer;
-    function Domain(const Value: string): Integer;
-    function PeerId(const Value: Integer): Integer;
-    function RandomId(const Value: Integer): Integer;
-    function Message(const Value: string): Integer;
-    function Lat(const Value: Extended): Integer;
-    function Long(const Value: Extended): Integer;
-    function Attachment(const Value: TAttachmentArray): Integer; overload;
-    function Attachment(const Value: TAttachment): Integer; overload;
-    function ReplyTo(const Value: Integer): Integer;
-    function ForwardMessages(const Value: TIdList): Integer;
-    function StickerId(const Value: Integer): Integer;
-    function GroupId(const Value: Integer): Integer;
-    function Keyboard(const Value: TVkKeyboard): Integer;
-    function Payload(const Value: string): Integer;
-    function Intent(const Value: TVkMessageIntent): Integer;
-    function DontParseLinks(const Value: Boolean): Integer;
-    function DisableMentions(const Value: Boolean): Integer;
-    function SubscribeId(const Value: Integer): Integer;
   end;
 
   TVkParamsMessageSendIds = record
     List: TParams;
-    function Domain(const Value: string): Integer;
+    function PeerIds(const Value: TIdList): Integer;
     function UserIds(const Value: TIdList): Integer;
-    function RandomId(const Value: Integer): Integer;
+    /// <summary>
+    /// Число в пределах int32 - уникальный (в привязке к API_ID и ID отправителя) идентификатор, предназначенный для предотвращения повторной отправки одинакового сообщения. Сохраняется вместе с сообщением и доступен в истории сообщений.
+    /// Переданный в запросе random_id используется для проверки уникальности, проверяя в заданном диалоге сообщения за последний час (но не более 100 последних сообщений).
+    /// Если не передать значение, будет сгенерирован через GetRandomId
+    /// </summary>
+    function RandomId(const Value: Integer = -1): Integer;
+    /// <summary>
+    /// Текст личного сообщения. Обязательный параметр, если не задан параметр Attachment
+    /// </summary>
     function Message(const Value: string): Integer;
-    function Lat(const Value: Extended): Integer;
-    function Long(const Value: Extended): Integer;
+    /// <summary>
+    /// Географические координаты
+    /// </summary>
+    function LatLong(const Lat, Long: Extended): Integer;
+    /// <summary>
+    /// Медиавложения к личному сообщению
+    /// </summary>
     function Attachment(const Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Медиавложения к личному сообщению
+    /// </summary>
     function Attachment(const Value: TAttachment): Integer; overload;
+    /// <summary>
+    /// идентификатор сообщения, на которое требуется ответить
+    /// </summary>
     function ReplyTo(const Value: Integer): Integer;
+    /// <summary>
+    /// [Вероятно список сообщений для пересылки]
+    /// </summary>
+    function &Forward(const Value: TVkMessageForward): Integer;
+    /// <summary>
+    /// Идентификаторы пересылаемых сообщений, перечисленные через запятую.
+    /// Перечисленные сообщения отправителя будут отображаться в теле письма у получателя.
+    /// Не более 100 значений на верхнем уровне, максимальный уровень вложенности: 45,
+    /// максимальное количество пересылаемых сообщений 500
+    /// </summary>
     function ForwardMessages(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификатор стикера
+    /// </summary>
     function StickerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Объект, описывающий клавиатуру бота
+    /// </summary>
     function Keyboard(const Value: TVkKeyboard): Integer;
+    /// <summary>
+    /// Полезная нагрузка
+    /// </summary>
     function Payload(const Value: string): Integer;
+    /// <summary>
+    /// Интент — это метка, которая обозначает приблизительное содержание сообщения от сообщества.
+    /// Передаётся в необязательном параметре messages.send — Intent.
+    /// </summary>
     function Intent(const Value: TVkMessageIntent): Integer;
+    /// <summary>
+    /// Не создавать сниппет ссылки из сообщения
+    /// </summary>
     function DontParseLinks(const Value: Boolean): Integer;
+    /// <summary>
+    /// Отключить уведомление об упоминании в сообщении
+    /// </summary>
     function DisableMentions(const Value: Boolean): Integer;
+    /// <summary>
+    /// Объект, описывающий источник пользовательского контента для чат-ботов
+    /// </summary>
+    function ContentSource(const Value: TVkMessageContentSource): Integer;
+    /// <summary>
+    /// Число, которое в будущем будет предназначено для работы с интентами
+    /// </summary>
     function SubscribeId(const Value: Integer): Integer;
+    /// <summary>
+    /// Боты могут отправлять специальные сообщения, используя шаблоны.
+    /// Такие сообщения отличаются от обычных как по внешнему виду, так и по функциональности.
+    /// На данный момент поддерживается один шаблон — карусель
+    /// Обратите внимание, что в одном сообщении можно передать либо Template, либо Keyboard. Если после отправки карусели, вам нужно обновить клавиатуру — отправьте еще одно сообщение с параметром keyboard
+    /// </summary>
+    function Template(const Value: TVkMessageTemplate): Integer;
   end;
 
   TVkParamsMessageDeleteConversation = record
     List: TParams;
-    function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
+    function GroupId(const Value: Cardinal): Integer;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
     function PeerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя. Если требуется очистить историю беседы, используйте PeerId
+    /// </summary>
     function UserId(const Value: Integer): Integer;
   end;
 
   TVkParamsMessageEdit = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор сообщения
+    /// </summary>
     function MessageId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщения в беседе
+    /// </summary>
     function ConversationMessageId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
     function PeerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Текст сообщения. Обязательный параметр, если не задан параметр Attachment
+    /// </summary>
     function Message(const Value: string): Integer;
+    /// <summary>
+    /// Географические координаты
+    /// </summary>
     function Lat(const Value: Extended): Integer;
+    /// <summary>
+    /// Географические координаты
+    /// </summary>
     function Long(const Value: Extended): Integer;
+    /// <summary>
+    /// Географические координаты
+    /// </summary>
     function LatLong(const Lat, Long: Extended): Integer;
+    /// <summary>
+    /// Медиавложения
+    /// </summary>
     function Attachment(const Value: TAttachmentArray): Integer; overload;
+    /// <summary>
+    /// Медиавложения
+    /// </summary>
     function Attachment(const Value: TAttachment): Integer; overload;
+    /// <summary>
+    /// True, чтобы сохранить прикреплённые пересланные сообщения
+    /// </summary>
     function KeepForwardMessages(const Value: Boolean): Integer;
+    /// <summary>
+    /// True, чтобы сохранить прикреплённые внешние ссылки (сниппеты)
+    /// </summary>
     function KeepSnippets(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Не создавать сниппет ссылки из сообщения
+    /// </summary>
     function DontParseLinks(const Value: Boolean): Integer;
-    function Template(const Value: string): Integer;
+    /// <summary>
+    /// Боты могут отправлять специальные сообщения, используя шаблоны.
+    /// Такие сообщения отличаются от обычных как по внешнему виду, так и по функциональности.
+    /// На данный момент поддерживается один шаблон — карусель.
+    /// Обратите внимание, что в одном сообщении можно передать либо Template, либо Keyboard. Если после отправки карусели, вам нужно обновить клавиатуру — отправьте еще одно сообщение с параметром keyboard
+    /// </summary>
+    function Template(const Value: TVkMessageTemplate): Integer;
+    /// <summary>
+    /// Объект, описывающий клавиатуру бота
+    /// </summary>
     function Keyboard(const Value: TVkKeyboard): Integer;
   end;
 
   TVkParamsMessageGetByConvMesId = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
     function PeerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификаторы сообщений. Максимум 100 идентификаторов
+    /// </summary>
     function ConversationMessageIds(const Value: TIdList): Integer; overload;
+    /// <summary>
+    /// Идентификаторы сообщений. Максимум 100 идентификаторов
+    /// </summary>
     function ConversationMessageIds(const Value: Integer): Integer; overload;
+    /// <summary>
+    /// True — возвращать дополнительные поля
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Дополнительные поля пользователей и сообществ, которые необходимо вернуть
+    /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
-    function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
+    function GroupId(const Value: Cardinal): Integer;
   end;
 
   TVkParamsMessageGetChat = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор беседы
+    /// </summary>
     function ChatId(const Value: Integer): Integer;
     function ChatIds(const Value: TIdList): Integer;
     function Fields(const Value: TVkProfileFields = []): Integer;
@@ -179,9 +564,16 @@ type
 
   TVkParamsConversationsGetById = record
     List: TParams;
+    /// <summary>
+    /// Идентификаторы получателей сообщения (при необходимости отправить сообщение сразу нескольким пользователям).
+    /// Доступно только для ключа доступа сообщества. Максимальное количество идентификаторов: 100
+    /// </summary>
     function PeerIds(const Value: TIdList): Integer;
     function Extended(const Value: Boolean): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
   end;
 
@@ -193,6 +585,9 @@ type
     function Count(const Value: Integer = 30): Integer; //200
     function PhotoSizes(const Value: Integer): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
     function PreserveOrder(const Value: Boolean): Integer;
     function MaxForwardsLevel(const Value: Integer = 45): Integer;
@@ -206,6 +601,9 @@ type
     function PreviewLength(const Value: Integer): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
   end;
 
@@ -219,6 +617,9 @@ type
     function EventsLimit(const Value: Integer = 1000): Integer;
     function MsgsLimit(const Value: Integer = 200): Integer;
     function MaxMsgId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
     function LpVersion(const Value: Integer): Integer;
     function LastN(const Value: Integer = 0): Integer;
@@ -228,6 +629,9 @@ type
   TVkParamsGetLongPollServer = record
     List: TParams;
     function NeedPts(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
     function LpVersion(const Value: Integer = 0): Integer;
   end;
@@ -236,6 +640,9 @@ type
     List: TParams;
     function MessageIds(const Value: TIdList): Integer;
     function PeerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
     function StartMessageId(const Value: Integer): Integer;
     function MarkConversationAsRead(const Value: Boolean): Integer;
@@ -265,6 +672,9 @@ type
     function Offset(const Value: Integer): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
   end;
 
@@ -274,6 +684,9 @@ type
     function Count(const Value: Integer = 20): Integer;
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
   end;
 
@@ -1117,6 +1530,18 @@ begin
   Result := Self;
 end;
 
+function TVkMessageNew.Template(const Value: TVkMessageTemplate): TVkMessageNew;
+begin
+  Params.Add('template', Value);
+  Result := Self;
+end;
+
+function TVkMessageNew.&Forward(const Value: TVkMessageForward): TVkMessageNew;
+begin
+  Params.Add('forward', Value.ToJSON);
+  Result := Self;
+end;
+
 function TVkMessageNew.ForwardMessages(const Value: TIdList): TVkMessageNew;
 begin
   Params.Add('forward_messages', Value);
@@ -1141,6 +1566,13 @@ begin
   Result := Self;
 end;
 
+function TVkMessageNew.LatLong(const Lat, Long: Extended): TVkMessageNew;
+begin
+  Params.Add('lat', Lat);
+  Params.Add('long', Long);
+  Result := Self;
+end;
+
 function TVkMessageNew.Attachment(const Value: TAttachmentArray): TVkMessageNew;
 begin
   Params.Add('attachment', Value);
@@ -1156,6 +1588,12 @@ end;
 function TVkMessageNew.ChatId(const Value: Integer): TVkMessageNew;
 begin
   Params.Add('chat_id', Value);
+  Result := Self;
+end;
+
+function TVkMessageNew.ContentSource(const Value: TVkMessageContentSource): TVkMessageNew;
+begin
+  Params.Add('content_source', Value.ToJSON);
   Result := Self;
 end;
 
@@ -1183,9 +1621,9 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.UserDomian(const Value: string): TVkMessageNew;
+function TVkMessageNew.Domain(const Value: string): TVkMessageNew;
 begin
-  Params.Add('domian', Value);
+  Params.Add('domain', Value);
   Result := Self;
 end;
 
@@ -1195,9 +1633,9 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.UserIds(const Value: TIdList): TVkMessageNew;
+function TVkMessageNew.PeerIds(const Value: TIdList): TVkMessageNew;
 begin
-  Params.Add('user_ids', Value);
+  Params.Add('peer_ids', Value);
   Result := Self;
 end;
 
@@ -1226,11 +1664,6 @@ end;
 function TVkParamsConversationsGet.GroupID(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
-end;
-
-function TVkParamsConversationsGet.MajorSortId(const Value: Integer): Integer;
-begin
-  Result := List.Add('major_sort_id', Value);
 end;
 
 function TVkParamsConversationsGet.Offset(const Value: Integer): Integer;
@@ -1302,7 +1735,7 @@ begin
   Result := List.Add('fields', Value);
 end;
 
-function TVkParamsMessageGet.GroupID(const Value: Integer): Integer;
+function TVkParamsMessageGet.GroupID(const Value: Cardinal): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
@@ -1366,6 +1799,11 @@ begin
   Result := List.Add('chat_id', Value);
 end;
 
+function TVkParamsMessageSend.ContentSource(const Value: TVkMessageContentSource): Integer;
+begin
+  Result := List.Add('content_source', Value.ToJSON);
+end;
+
 function TVkParamsMessageSend.DisableMentions(const Value: Boolean): Integer;
 begin
   Result := List.Add('disable_mentions', Value);
@@ -1379,6 +1817,11 @@ end;
 function TVkParamsMessageSend.DontParseLinks(const Value: Boolean): Integer;
 begin
   Result := List.Add('dont_parse_links', Value);
+end;
+
+function TVkParamsMessageSend.&Forward(const Value: TVkMessageForward): Integer;
+begin
+  Result := List.Add('forward_messages', Value.ToJSON);
 end;
 
 function TVkParamsMessageSend.ForwardMessages(const Value: TIdList): Integer;
@@ -1401,14 +1844,10 @@ begin
   Result := List.Add('keyboard', Value);
 end;
 
-function TVkParamsMessageSend.Lat(const Value: Extended): Integer;
+function TVkParamsMessageSend.LatLong(const Lat, Long: Extended): Integer;
 begin
-  Result := List.Add('lat', Value);
-end;
-
-function TVkParamsMessageSend.Long(const Value: Extended): Integer;
-begin
-  Result := List.Add('long', Value);
+  List.Add('lat', Lat);
+  Result := List.Add('long', Long);
 end;
 
 function TVkParamsMessageSend.Message(const Value: string): Integer;
@@ -1428,7 +1867,10 @@ end;
 
 function TVkParamsMessageSend.RandomId(const Value: Integer): Integer;
 begin
-  Result := List.Add('random_id', Value);
+  if Value = -1 then
+    Result := List.Add('random_id', GetRandomId)
+  else
+    Result := List.Add('random_id', Value);
 end;
 
 function TVkParamsMessageSend.ReplyTo(const Value: Integer): Integer;
@@ -1444,6 +1886,11 @@ end;
 function TVkParamsMessageSend.SubscribeId(const Value: Integer): Integer;
 begin
   Result := List.Add('subscribe_id', Value);
+end;
+
+function TVkParamsMessageSend.Template(const Value: TVkMessageTemplate): Integer;
+begin
+  Result := List.Add('template', Value);
 end;
 
 function TVkParamsMessageSend.UserId(const Value: Integer): Integer;
@@ -1463,19 +1910,24 @@ begin
   Result := List.Add('attachment', Value);
 end;
 
+function TVkParamsMessageSendIds.ContentSource(const Value: TVkMessageContentSource): Integer;
+begin
+  Result := List.Add('content_source', Value.ToJSON);
+end;
+
 function TVkParamsMessageSendIds.DisableMentions(const Value: Boolean): Integer;
 begin
   Result := List.Add('disable_mentions', Value);
 end;
 
-function TVkParamsMessageSendIds.Domain(const Value: string): Integer;
-begin
-  Result := List.Add('domain', Value);
-end;
-
 function TVkParamsMessageSendIds.DontParseLinks(const Value: Boolean): Integer;
 begin
   Result := List.Add('dont_parse_links', Value);
+end;
+
+function TVkParamsMessageSendIds.&Forward(const Value: TVkMessageForward): Integer;
+begin
+  Result := List.Add('forward', Value.ToJSON);
 end;
 
 function TVkParamsMessageSendIds.ForwardMessages(const Value: TIdList): Integer;
@@ -1498,14 +1950,10 @@ begin
   Result := List.Add('keyboard', Value);
 end;
 
-function TVkParamsMessageSendIds.Lat(const Value: Extended): Integer;
+function TVkParamsMessageSendIds.LatLong(const Lat, Long: Extended): Integer;
 begin
-  Result := List.Add('lat', Value);
-end;
-
-function TVkParamsMessageSendIds.Long(const Value: Extended): Integer;
-begin
-  Result := List.Add('long', Value);
+  List.Add('lat', Lat);
+  Result := List.Add('long', Long);
 end;
 
 function TVkParamsMessageSendIds.Message(const Value: string): Integer;
@@ -1516,6 +1964,11 @@ end;
 function TVkParamsMessageSendIds.Payload(const Value: string): Integer;
 begin
   Result := List.Add('payload', Value);
+end;
+
+function TVkParamsMessageSendIds.PeerIds(const Value: TIdList): Integer;
+begin
+  Result := List.Add('peer_ids', Value);
 end;
 
 function TVkParamsMessageSendIds.RandomId(const Value: Integer): Integer;
@@ -1538,6 +1991,11 @@ begin
   Result := List.Add('subscribe_id', Value);
 end;
 
+function TVkParamsMessageSendIds.Template(const Value: TVkMessageTemplate): Integer;
+begin
+
+end;
+
 function TVkParamsMessageSendIds.UserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
@@ -1545,7 +2003,7 @@ end;
 
 { TVkParamsMessageDeleteConversation }
 
-function TVkParamsMessageDeleteConversation.GroupID(const Value: Integer): Integer;
+function TVkParamsMessageDeleteConversation.GroupID(const Value: Cardinal): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
@@ -1633,7 +2091,7 @@ begin
   Result := List.Add('peer_id', Value);
 end;
 
-function TVkParamsMessageEdit.Template(const Value: string): Integer;
+function TVkParamsMessageEdit.Template(const Value: TVkMessageTemplate): Integer;
 begin
   Result := List.Add('template', Value);
 end;
@@ -1660,7 +2118,7 @@ begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
 
-function TVkParamsMessageGetByConvMesId.GroupID(const Value: Integer): Integer;
+function TVkParamsMessageGetByConvMesId.GroupID(const Value: Cardinal): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;

@@ -98,7 +98,8 @@ type
     FConverting: Boolean;
     FIs_subscribed: Boolean;
     FBalance: Integer;
-    FLive_status: string;
+    [JsonReflectAttribute(ctString, rtString, TLiveStatusInterceptor)]
+    FLive_status: TVkLiveStatus;
     FSpectators: Integer;
   public
     /// <summary>
@@ -212,9 +213,9 @@ type
     /// </summary>
     property Live: Boolean read FLive write FLive;
     /// <summary>
-    /// Статус прямой трансляции. Может принимать значения: "waiting", "started", "finished", "failed", "upcoming"
+    /// Статус прямой трансляции
     /// </summary>
-    property LiveStatus: string read FLive_status write FLive_status;
+    property LiveStatus: TVkLiveStatus read FLive_status write FLive_status;
     /// <summary>
     /// Если видео внешнее, количество просмотров в ВК
     /// </summary>

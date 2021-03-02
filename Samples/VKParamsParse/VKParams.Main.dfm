@@ -23,14 +23,8 @@ object Form14: TForm14
     ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 40
-    ExplicitTop = 40
-    ExplicitWidth = 289
-    ExplicitHeight = 193
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
-      ExplicitWidth = 281
-      ExplicitHeight = 162
       DesignSize = (
         881
         569)
@@ -147,15 +141,52 @@ object Form14: TForm14
     object TabSheet2: TTabSheet
       Caption = 'TabSheet2'
       ImageIndex = 1
-      ExplicitWidth = 281
-      ExplicitHeight = 162
+      DesignSize = (
+        881
+        569)
       object MemoTypes: TMemo
         Left = 11
-        Top = 16
-        Width = 867
-        Height = 89
+        Top = 40
+        Width = 854
+        Height = 65
+        Anchors = [akLeft, akTop, akRight]
+        Lines.Strings = (
+          '"waiting", "started", "finished", "failed", "upcoming"')
         ScrollBars = ssVertical
         TabOrder = 0
+      end
+      object Button1: TButton
+        Left = 11
+        Top = 111
+        Width = 75
+        Height = 25
+        Caption = 'Generate'
+        TabOrder = 1
+        OnClick = Button1Click
+      end
+      object MemoTypesOut: TMemo
+        Left = 11
+        Top = 142
+        Width = 854
+        Height = 411
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Courier New'
+        Font.Style = []
+        ParentFont = False
+        ScrollBars = ssBoth
+        TabOrder = 2
+      end
+      object EditType: TEdit
+        Left = 11
+        Top = 10
+        Width = 230
+        Height = 24
+        TabOrder = 3
+        Text = 'TVkLiveStatus'
+        TextHint = 'TVkLivestatus'
       end
     end
   end
