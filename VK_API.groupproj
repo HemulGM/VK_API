@@ -18,6 +18,9 @@
         <Projects Include="..\SQLite\SampleFMX\SQLiteFMX.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Samples\VKParamsParse\VKParams.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -71,14 +74,23 @@
     <Target Name="SQLiteFMX:Make">
         <MSBuild Projects="..\SQLite\SampleFMX\SQLiteFMX.dproj" Targets="Make"/>
     </Target>
+    <Target Name="VKParams">
+        <MSBuild Projects="Samples\VKParamsParse\VKParams.dproj"/>
+    </Target>
+    <Target Name="VKParams:Clean">
+        <MSBuild Projects="Samples\VKParamsParse\VKParams.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VKParams:Make">
+        <MSBuild Projects="Samples\VKParamsParse\VKParams.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="VKAuth;VKComponents;VKBotTemplate;SQLiteWork;SQLiteFMX"/>
+        <CallTarget Targets="VKAuth;VKComponents;VKBotTemplate;SQLiteWork;SQLiteFMX;VKParams"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="VKAuth:Clean;VKComponents:Clean;VKBotTemplate:Clean;SQLiteWork:Clean;SQLiteFMX:Clean"/>
+        <CallTarget Targets="VKAuth:Clean;VKComponents:Clean;VKBotTemplate:Clean;SQLiteWork:Clean;SQLiteFMX:Clean;VKParams:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="VKAuth:Make;VKComponents:Make;VKBotTemplate:Make;SQLiteWork:Make;SQLiteFMX:Make"/>
+        <CallTarget Targets="VKAuth:Make;VKComponents:Make;VKBotTemplate:Make;SQLiteWork:Make;SQLiteFMX:Make;VKParams:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
