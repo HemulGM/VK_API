@@ -7,8 +7,8 @@ interface
 {$SCOPEDENUMS ON}
 
 uses
-  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types,
-  System.Generics.Collections, System.JSON, VK.Entity.Common;
+  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types, System.Generics.Collections, System.JSON,
+  VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -311,6 +311,13 @@ type
   TVkLiveStatusHelper = record helper for TVkLiveStatus
     function ToString: string; inline;
     class function Create(const Value: string): TVkLiveStatus; static;
+  end;
+
+  TVkMonthlyTier = (Tier1, Tier2, Tier3, Tier4, Tier5, Tier6, Unlimited);
+
+  TVkMonthlyTierHelper = record helper for TVkMonthlyTier
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkMonthlyTier; static;
   end;
 
   TVkBoardTopicOrder = (DateUpCreate = -2, DateUpUpdate = -1, DateDownCreate = 2, DateDownUpdate = 1);
@@ -1411,6 +1418,7 @@ const
   VkLiveStatus: array[TVkLiveStatus] of string = ('waiting', 'started', 'finished', 'failed', 'upcoming');
   VkPaymentStatus: array[TVkPaymentStatus] of string = ('not_paid', 'paid', 'returned');
   VkFaveType: array[TVkFaveType] of string = ('post', 'video', 'product', 'article', 'link');
+  VkMonthlyTier: array[TVkMonthlyTier] of string = ('tier_1', 'tier_2', 'tier_3', 'tier_4', 'tier_5', 'tier_6', 'unlimited');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -2864,6 +2872,18 @@ end;
 function TVkFaveTypeHelper.ToString: string;
 begin
   Result := VkFaveType[Self];
+end;
+
+{ TVkMonthlyTierHelper }
+
+class function TVkMonthlyTierHelper.Create(const Value: string): TVkMonthlyTier;
+begin
+  Result := TVkMonthlyTier(IndexStr(Value, VkMonthlyTier));
+end;
+
+function TVkMonthlyTierHelper.ToString: string;
+begin
+  Result := VkMonthlyTier[Self];
 end;
 
 end.

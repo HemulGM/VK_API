@@ -4,6 +4,48 @@ API для Вконтакте
 
 Покрытие методов - **82%**
 
+Группа | %
+--- | ---
+Account | 100
+Ads | 0
+AppWidgets | 0
+Apps | 20
+Audio | 79
+Auth | 100
+Board | 100
+Database | 100
+Docs | 100
+DownloadedGames | 100
+Fave | 100
+Friends | 100
+Gifts | 100
+Groups | 100
+LeadForms | 0
+Leads | 0
+Likes | 100
+Market | 100
+Messages | 100
+Newsfeed | 100
+Notes | 100
+Notifications | 100
+Orders | 25
+Pages | 100
+Photos | 100
+Podcasts | 100
+Polls | 100
+PrettyCards | 0
+Search | 100
+Secure | 100
+Stats | 100
+Status | 100
+Storage | 100
+Stories | 100
+Streaming | 100
+Users | 100
+Utils | 100
+Video | 100
+Wall | 100
+Widgets | 0
 
 **Заметки**
 

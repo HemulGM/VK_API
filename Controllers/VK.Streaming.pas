@@ -51,6 +51,10 @@ type
     /// на стороне Вашего сервера — если значения prepared и received расходятся, значит, что-то пошло не так.
     /// </summary>
     function GetStats(var Items: TVkStreamStats; Params: TVkParamsStreamGetStats): Boolean; overload;
+    /// <summary>
+    /// Позволяет задать значение порога для Streaming API
+    /// </summary>
+    function SetSettings(const MonthlyTier: TVkMonthlyTier): Boolean;
   end;
 
 implementation
@@ -73,6 +77,11 @@ end;
 function TStreamingController.GetStats(var Items: TVkStreamStats; Params: TVkParamsStreamGetStats): Boolean;
 begin
   Result := GetStats(Items, Params.List);
+end;
+
+function TStreamingController.SetSettings(const MonthlyTier: TVkMonthlyTier): Boolean;
+begin
+  Result := Handler.Execute('streaming.setSettings', ['monthly_tier', MonthlyTier.ToString]).ResponseIsTrue;
 end;
 
 function TStreamingController.GetStats(var Items: TVkStreamStats; Params: TParams): Boolean;
