@@ -3,37 +3,70 @@ unit VK.Groups;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json, System.Json, VK.Controller, VK.Types,
-  VK.Entity.Profile, System.Classes, VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
-  VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer, VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
-  VK.Entity.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings, VK.Entity.Group.TokenPermissions,
-  VK.Entity.Common.List, VK.Entity.Group.Invites, VK.Entity.Group.Status;
+  System.SysUtils, System.Generics.Collections, REST.Client, REST.Json,
+  System.Json, VK.Controller, VK.Types, VK.Entity.Profile, System.Classes,
+  VK.Entity.Group, VK.CommonUtils, VK.Entity.Common, VK.Entity.Group.TimeTable,
+  VK.Entity.Group.Ban, VK.Entity.Group.CallBackServer,
+  VK.Entity.Group.CallbackSettings, VK.Entity.Group.Categories,
+  VK.Entity.Longpoll, VK.Entity.Group.LongpollSettings, VK.Entity.GroupSettings,
+  VK.Entity.Group.TokenPermissions, VK.Entity.Common.List,
+  VK.Entity.Group.Invites, VK.Entity.Group.Status;
 
 type
   TVkParamsGroupsGetMembers = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// Идентификатор сообщества
     /// </summary>
     function GroupId(const Value: Integer): Integer; overload;
+    /// <summary>
+    /// Короткое имя сообщества
+    /// </summary>
     function GroupId(const Value: string): Integer; overload;
+    /// <summary>
+    /// Фильтр
+    /// </summary>
     function Filter(const Value: TVkGroupMembersFilter): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Количество участников сообщества, информацию о которых необходимо получить (максимальное значение 1000)
+    /// </summary>
     function Count(const Value: Integer = 1000): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества участников
+    /// </summary>
     function Offset(const Value: Integer = 0): Integer;
-    function Sort(const Value: TVkSortIdTime): Integer;
+    /// <summary>
+    /// Сортировка, с которой необходимо вернуть список участников
+    /// </summary>
+    function Sort(const Value: TVkSortIdTime = TVkSortIdTime.IdAsc): Integer;
   end;
 
   TVkParamsGroupsGet = record
     List: TParams;
     /// <summary>
-    /// Идентификатор пользователя.
+    /// Идентификатор пользователя
     /// </summary>
     function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Список фильтров сообществ, которые необходимо вернуть
+    /// </summary>
     function Filter(const Value: TVkGroupFilters): Integer; overload;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkGroupFields): Integer; overload;
-    function Count(const Value: Integer = 1000): Integer;
-    function Offset(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Количество сообществ, информацию о которых нужно вернуть (максимальное значение 1000)
+    /// </summary>
+    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определённого подмножества сообществ
+    /// </summary>
+    function Offset(const Value: Integer): Integer;
   end;
 
   TVkParamsGroupsIsMember = record
@@ -63,20 +96,59 @@ type
   TVkParamsGroupsAddAddress = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// идентификатор сообщества, в которое добавляется адрес
     /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// заголовок адреса (максимальная длина 255)
+    /// </summary>
     function Title(const Value: string): Integer;
+    /// <summary>
+    /// строка адреса (максимальная длина 255)
+    /// </summary>
     function Address(const Value: string): Integer;
+    /// <summary>
+    /// дополнительное описание адреса (максимальная длина 400)
+    /// </summary>
     function AdditionalAddress(const Value: string): Integer;
+    /// <summary>
+    /// идентификатор страны. Для получения можно использовать database.getCountries
+    /// </summary>
     function CountryId(const Value: Integer): Integer;
+    /// <summary>
+    /// идентификатор города. Для получения можно использовать database.getCities
+    /// </summary>
     function CityId(const Value: Integer): Integer;
+    /// <summary>
+    /// идентификатор станции метро. Для получения можно использовать database.getMetroStations
+    /// </summary>
     function MetroId(const Value: Integer): Integer;
+    /// <summary>
+    /// географическая широта отметки, заданная в градусах (от -90 до 90)
+    /// </summary>
     function Latitude(const Value: Extended): Integer;
+    /// <summary>
+    /// географическая долгота отметки, заданная в градусах (от -180 до 180)
+    /// </summary>
     function Longitude(const Value: Extended): Integer;
+    /// <summary>
+    /// номер телефона
+    /// </summary>
     function Phone(const Value: string): Integer;
-    function WorkInfoStatus(const Value: TVkWorkInfoStatus): Integer;
-    function Timetable(const Value: TVkTimeTable; FreeObject: Boolean = True): Integer;
+    /// <summary>
+    /// тип расписания
+    /// </summary>
+    function WorkInfoStatus(const Value: TVkWorkInfoStatus = TVkWorkInfoStatus.NoInformation): Integer;
+    /// <summary>
+    /// Время передается в минутах от 0 часов. Ключ по дню означает, что день рабочий.
+    /// OpenTime, CloseTime - начало и конец рабочего дня.
+    /// BreakOpenTime, BreakCloseTime — время перерыва
+    /// </summary>
+    function Timetable(const Value: TVkTimeTable): Integer;
+    /// <summary>
+    /// Установить адрес основным. Информация об основном адресе сразу показывается в сообществе.
+    /// Для получения информации об остальных адресах нужно перейти к списку адресов
+    /// </summary>
     function IsMainAddress(const Value: Boolean): Integer;
   end;
 
@@ -85,13 +157,31 @@ type
   TVkParamsGroupsBan = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// Идентификатор сообщества
     /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя или сообщества, которое будет добавлено в черный список
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Дата завершения срока действия бана.
+    /// Максимальный возможный срок окончания бана, который можно указать, — один год с его начала.
+    /// Если параметр не указан, пользователь будет заблокирован навсегда
+    /// </summary>
     function EndDate(const Value: TDateTime): Integer;
+    /// <summary>
+    /// Причина бана
+    /// </summary>
     function Reason(const Value: TVkUserBlockReason = TVkUserBlockReason.Other): Integer;
+    /// <summary>
+    /// Текст комментария к бану
+    /// </summary>
     function Comment(const Value: string): Integer;
+    /// <summary>
+    /// True – текст комментария будет отображаться пользователю.
+    /// False – текст комментария не доступен пользователю
+    /// </summary>
     function CommentVisible(const Value: Boolean = False): Integer;
   end;
 
@@ -102,7 +192,7 @@ type
     /// </summary>
     function Title(const Value: string): Integer;
     /// <summary>
-    /// Описание сообщества, (не учитывается при Type = gtPublic)
+    /// Описание сообщества, (не учитывается при Type = TVkGroupTypeCreate.Public)
     /// </summary>
     function Description(const Value: string): Integer;
     /// <summary>
@@ -110,20 +200,32 @@ type
     /// </summary>
     function &Type(const Value: TVkGroupTypeCreate): Integer;
     /// <summary>
-    /// Категория публичной страницы (только для Type = gtPublic).
+    /// Категория публичной страницы (только для Type = TVkGroupTypeCreate.Public)
     /// </summary>
     function PublicCategory(const Value: Integer): Integer;
     /// <summary>
-    /// Вид публичной страницы (только при Type = gtPublic)
+    /// Вид публичной страницы (только при Type = TVkGroupTypeCreate.Public)
     /// </summary>
-    function Subtype(const Value: Integer): Integer;
+    function Subtype(const Value: TVkGroupSubType): Integer;
   end;
 
   TVkParamsGroupsEdit = record
     const
+      /// <summary>
+      /// Выключено
+      /// </summary>
       GroupSectionOff = 0;
+      /// <summary>
+      /// Открыто
+      /// </summary>
       GroupSectionOpen = 1;
+      /// <summary>
+      /// Ограниченно (доступно только для групп и событий)
+      /// </summary>
       GroupSectionPrivate = 2;
+      /// <summary>
+      /// Закрыто (доступно только для групп и событий)
+      /// </summary>
       GroupSectionClosed = 3;
     type
       TGroupSectionWall = GroupSectionOff..GroupSectionClosed;
@@ -142,445 +244,1042 @@ type
   public
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// Идентификатор сообщества
     /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Название сообщества
+    /// </summary>
     function Title(const Value: string): Integer;
+    /// <summary>
+    /// Описание сообщества
+    /// </summary>
     function Description(const Value: string): Integer;
     /// <summary>
     /// Короткое имя сообщества
     /// </summary>
     function ScreenName(const Value: string): Integer;
+    /// <summary>
+    /// Тип группы (доступ)
+    /// </summary>
     function Access(const Value: TVkGroupAccess): Integer;
+    /// <summary>
+    /// Адрес сайта, который будет указан в информации о группе
+    /// </summary>
     function Website(const Value: string): Integer;
     /// <summary>
-    /// 1 — авто/мото;  2 — активный отдых;  3 — бизнес;  4 — домашние животные;  5 — здоровье;
-    /// 6 — знакомство и общение;  7 — игры;  8 — ИТ (компьютеры и софт);  9 — кино;  10 — красота и мода;
-    /// 11 — кулинария;  12 — культура и искусство;  13 — литература;  14 — мобильная связь и интернет;
-    /// 15 — музыка;  16 — наука и техника;  17 — недвижимость;  18 — новости и СМИ;  19 — безопасность;
-    /// 20 — образование;  21 — обустройство и ремонт;  22 — политика;  23 — продукты питания;
-    /// 24 — промышленность;  25 — путешествия;  26 — работа;  27 — развлечения;  28 — религия;
-    /// 29 — дом и семья;  30 — спорт;  31 — страхование;  32 — телевидение;  33 — товары и услуги;
-    /// 34 — увлечения и хобби;  35 — финансы;  36 — фото;  37 — эзотерика;  38 — электроника и бытовая техника;
-    /// 39 — эротика;  40 — юмор;  41 — общество, гуманитарные науки;  42 — дизайн и графика.
+    /// Тематика сообщества
     /// </summary>
     function Subject(const Value: TVkGroupSubjectType): Integer;
+    /// <summary>
+    /// Электронный адрес организатора (для мероприятий)
+    /// </summary>
     function Email(const Value: string): Integer;
+    /// <summary>
+    /// Номер телефона организатора (для мероприятий)
+    /// </summary>
     function Phone(const Value: string): Integer;
+    /// <summary>
+    /// Адрес rss для импорта новостей (доступен только группам,
+    /// получившим соответствующее разрешение, обратитесь в http://vk.com/support для получения разрешения)
+    /// </summary>
     function Rss(const Value: string): Integer;
+    /// <summary>
+    /// Дата начала события
+    /// </summary>
     function EventStartDate(const Value: TDateTime): Integer;
+    /// <summary>
+    /// Дата окончания события
+    /// </summary>
     function EventFinishDate(const Value: TDateTime): Integer;
+    /// <summary>
+    /// Идентификатор группы, которая является организатором события (только для событий)
+    /// </summary>
     function EventGroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Категория публичной страницы
+    /// </summary>
     function PublicCategory(const Value: Integer): Integer;
+    /// <summary>
+    /// Подкатегория публичной станицы. Список подкатегорий можно получить методом groups.getSettings
+    /// </summary>
     function PublicSubcategory(const Value: Integer): Integer;
+    /// <summary>
+    /// Дата основания компании, организации, которой посвящена публичная страница
+    /// </summary>
     function PublicDate(const Value: TDateTime): Integer;
+    /// <summary>
+    /// Стена
+    /// </summary>
     function Wall(const Value: TGroupSectionWall): Integer;
+    /// <summary>
+    /// Обсуждения
+    /// </summary>
     function Topics(const Value: TGroupSectionTopics): Integer;
+    /// <summary>
+    /// Фотографии
+    /// </summary>
     function Photos(const Value: TGroupSectionPhotos): Integer;
+    /// <summary>
+    /// Видеозаписи
+    /// </summary>
     function Video(const Value: TGroupSectionVideo): Integer;
+    /// <summary>
+    /// Аудиозаписи
+    /// </summary>
     function Audio(const Value: TGroupSectionAudio): Integer;
+    /// <summary>
+    /// Ссылки (доступно только для публичных страниц)
+    /// </summary>
     function Links(const Value: Boolean): Integer;
+    /// <summary>
+    /// События (доступно только для публичных страниц)
+    /// </summary>
     function Events(const Value: Boolean): Integer;
+    /// <summary>
+    /// Места (доступно только для публичных страниц)
+    /// </summary>
     function Places(const Value: Boolean): Integer;
+    /// <summary>
+    /// Контакты (доступно только для публичных страниц)
+    /// </summary>
     function Contacts(const Value: Boolean): Integer;
+    /// <summary>
+    /// Документы сообщества
+    /// </summary>
     function Docs(const Value: TGroupSectionDocs): Integer;
+    /// <summary>
+    /// Wiki-материалы сообщества
+    /// </summary>
     function Wiki(const Value: TGroupSectionWiki): Integer;
+    /// <summary>
+    /// Сообщения сообщества
+    /// </summary>
     function Messages(const Value: Boolean): Integer;
+    /// <summary>
+    /// Статьи
+    /// </summary>
     function Articles(const Value: Boolean): Integer;
+    /// <summary>
+    /// Адреса
+    /// </summary>
     function Addresses(const Value: Boolean): Integer;
+    /// <summary>
+    /// Возрастное ограничение для сообщества
+    /// </summary>
     function AgeLimits(const Value: TVkAgeLimits): Integer;
+    /// <summary>
+    /// Товары
+    /// </summary>
     function Market(const Value: Boolean): Integer;
+    /// <summary>
+    /// Комментарии к товарам
+    /// </summary>
     function MarketComments(const Value: Boolean): Integer;
+    /// <summary>
+    /// Регионы доставки товаров
+    /// </summary>
     function MarketCountry(const Value: TIdList): Integer;
+    /// <summary>
+    /// Города доставки товаров (в случае если указана одна страна)
+    /// </summary>
     function MarketCity(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификатор валюты магазина
+    /// </summary>
     function MarketCurrency(const Value: TVkCurrency): Integer;
+    /// <summary>
+    /// Контакт для связи для продавцом.
+    /// Для использования сообщений сообщества следует включить их и передать значение 0
+    /// </summary>
     function MarketContact(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор wiki-страницы с описанием магазина
+    /// </summary>
     function MarketWiki(const Value: Integer): Integer;
+    /// <summary>
+    /// Фильтр нецензурных выражений в комментариях
+    /// </summary>
     function ObsceneFilter(const Value: Boolean): Integer;
+    /// <summary>
+    /// Фильтр по ключевым словам в комментариях
+    /// </summary>
     function ObsceneStopwords(const Value: Boolean): Integer;
+    /// <summary>
+    /// Ключевые слова для фильтра комментариев
+    /// </summary>
     function ObsceneWords(const Value: TArrayOfString): Integer;
+    /// <summary>
+    /// MainSection
+    /// </summary>
     function MainSection(const Value: Integer): Integer;
+    /// <summary>
+    /// SecondarySection
+    /// </summary>
     function SecondarySection(const Value: Integer): Integer;
+    /// <summary>
+    /// Страна
+    /// </summary>
     function Country(const Value: Integer): Integer;
+    /// <summary>
+    /// Город
+    /// </summary>
     function City(const Value: Integer): Integer;
   end;
 
   TVkParamsGroupsEditManager = record
     List: TParams;
-    function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (указывается без знака «минус»).
+    /// </summary>
+    function GroupId(const Value: Cardinal): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, чьи полномочия в сообществе нужно изменить
+    /// </summary>
     function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Уровень полномочий
+    /// Если параметр не задан, с пользователя user_id снимаются полномочия руководителя
+    /// </summary>
     function Role(const Value: TVkGroupRole): Integer;
+    /// <summary>
+    /// Отображать ли пользователя в блоке контактов сообщества
+    /// </summary>
     function IsContact(const Value: Boolean): Integer;
+    /// <summary>
+    /// Должность пользователя, отображаемая в блоке контактов
+    /// </summary>
     function ContactPosition(const Value: string): Integer;
+    /// <summary>
+    /// Телефон пользователя, отображаемый в блоке контактов
+    /// </summary>
     function ContactPhone(const Value: string): Integer;
+    /// <summary>
+    /// Email пользователя, отображаемый в блоке контактов
+    /// </summary>
     function ContactEmail(const Value: string): Integer;
   end;
 
   TVkParamsGroupsGetAddresses = record
     List: TParams;
-    function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
+    function GroupId(const Value: Cardinal): Integer;
+    /// <summary>
+    /// Перечисленные через запятую идентификаторы адресов, информацию о которых необходимо вернуть
+    /// </summary>
     function AddressIds(const Value: TIdList): Integer; overload;
+    /// <summary>
+    /// Перечисленные через запятую идентификаторы адресов, информацию о которых необходимо вернуть
+    /// </summary>
     function AddressIds(const Value: Integer): Integer; overload;
+    /// <summary>
+    /// Географическая широта отметки, заданная в градусах (от -90 до 90)
+    /// </summary>
     function Latitude(const Value: Extended): Integer;
+    /// <summary>
+    /// Географическая долгота отметки, заданная в градусах (от -180 до 180)
+    /// </summary>
     function Longitude(const Value: Extended): Integer;
+    /// <summary>
+    /// Список дополнительных полей адресов, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkGroupAddressFields): Integer; overload;
+    /// <summary>
+    /// Количество адресов, которое необходимо вернуть
+    /// </summary>
     function Count(const Value: Integer = 10): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества черного списка
+    /// </summary>
     function Offset(const Value: Integer = 0): Integer;
   end;
 
   TVkParamsGroupsGetBanned = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества черного списка
+    /// </summary>
     function Offset(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Количество пользователей, которое необходимо вернуть (максимальное значение 200)
+    /// </summary>
     function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Список дополнительных полей профилей и сообществ, которые необходимо вернуть
+    /// </summary>
     function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer; overload;
+    /// <summary>
+    /// Идентификатор пользователя или сообщества из чёрного списка, информацию о котором нужно получить
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
   end;
 
   TVkParamsGroupsGetInvitedUsers = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор группы, список приглашенных в которую пользователей нужно вернуть
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определённого подмножества пользователей
+    /// </summary>
     function Offset(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Количество пользователей, информацию о которых нужно вернуть
+    /// </summary>
     function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields = []): Integer;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователя
+    /// </summary>
     function NameCase(const Value: TVkNameCase): Integer;
   end;
 
   TVkParamsGroupsSearch = record
     List: TParams;
+    /// <summary>
+    /// Текст поискового запроса
+    /// </summary>
     function Query(const Value: string): Integer;
-    function &Type(const Value: TVkGroupTypeCreate): Integer;
+    /// <summary>
+    /// Тип сообщества
+    /// </summary>
+    function &Type(const Value: TVkGroupType): Integer;
+    /// <summary>
+    /// Идентификатор страны
+    /// </summary>
     function CountryId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор города. При передаче этого параметра поле CountryId игнорируется
+    /// </summary>
     function CityId(const Value: Integer): Integer;
+    /// <summary>
+    /// При передаче значения True будут выведены предстоящие события.
+    /// Учитывается только при передаче в качестве Type значения Event
+    /// </summary>
     function Future(const Value: Boolean): Integer;
+    /// <summary>
+    /// При передаче значения 1 будут выведены сообщества с включенными товарами
+    /// </summary>
     function Market(const Value: Boolean): Integer;
+    /// <summary>
+    /// Сортировка
+    /// </summary>
     function Sort(const Value: TVkGroupSearchSort): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определённого подмножества результатов поиска
+    /// </summary>
     function Offset(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Количество результатов поиска, которое необходимо вернуть (1000)
+    /// Обратите внимание — даже при использовании параметра offset для получения информации доступны только первые 1000 результатов
+    /// </summary>
     function Count(const Value: Integer = 20): Integer;
   end;
 
   TVkParamsGroupsSetCallbackSettings = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): integer;
+    /// <summary>
+    /// Версия Callback API
+    /// </summary>
     function ApiVersion(const Value: string): integer;
+    /// <summary>
+    /// Идентификатор сервера
+    /// </summary>
     function ServerId(const Value: Integer): integer;
+    /// <summary>
+    /// Уведомления о добавлении новой аудиозаписи
+    /// </summary>
     function AudioNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария в обсуждении
+    /// </summary>
     function BoardPostDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария в обсуждении
+    /// </summary>
     function BoardPostEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о создании комментария в обсуждении
+    /// </summary>
     function BoardPostNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о восстановлении комментария в обсуждении
+    /// </summary>
     function BoardPostRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о создании подписки
+    /// </summary>
+    function DonutSubscriptionCreate(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о продлении подписки
+    /// </summary>
+    function DonutSubscriptionProlonged(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление об отмене подписки
+    /// </summary>
+    function DonutSubscriptionCancelled(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление об изменении стоимости подписки
+    /// </summary>
+    function DonutSubscriptionPriceChanged(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о том, что подписка истекла
+    /// </summary>
+    function DonutSubscriptionExpired(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о выводе денег
+    /// </summary>
+    function DonutMoneyWithdraw(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление об ошибке при выводе денег
+    /// </summary>
+    function DonutMoneyWithdrawError(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об изменении главной фотографии
+    /// </summary>
     function GroupChangePhoto(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об изменении настроек
+    /// </summary>
     function GroupChangeSettings(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о вступлении в сообщество
+    /// </summary>
     function GroupJoin(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о выходе из сообщества
+    /// </summary>
     function GroupLeave(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об изменении руководства
+    /// </summary>
     function GroupOfficersEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о заполнении формы
+    /// </summary>
     function LeadFormsNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о новой отметке "Мне нравится"
+    /// </summary>
     function LikeAdd(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о снятии отметки "Мне нравится"
+    /// </summary>
     function LikeRemove(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария к товару
+    /// </summary>
     function MarketCommentDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария к товару
+    /// </summary>
     function MarketCommentEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении нового комментария к товару
+    /// </summary>
     function MarketCommentNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о восстановлении комментария к товару
+    /// </summary>
     function MarketCommentRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о новом заказе
+    /// </summary>
+    function MarketOrderNew(const Value: Boolean): Integer;
+    /// <summary>
+    /// Уведомление о редактировании заказа
+    /// </summary>
+    function MarketOrderEdit(const Value: Boolean): Integer;
+    /// <summary>
+    /// Уведомления о подписке на сообщения
+    /// </summary>
     function MessageAllow(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о запрете на сообщения
+    /// </summary>
     function MessageDeny(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании сообщения
+    /// </summary>
     function MessageEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// message_event
+    /// </summary>
+    function MessageEvent(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о новых сообщениях
+    /// </summary>
     function MessageNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об исходящем сообщении
+    /// </summary>
     function MessageReply(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о наборе текста сообщения
+    /// </summary>
     function MessageTypingState(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария к фото
+    /// </summary>
     function PhotoCommentDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария к фото
+    /// </summary>
     function PhotoCommentEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении нового комментария к фото
+    /// </summary>
     function PhotoCommentNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о восстановлении комментария к фото
+    /// </summary>
     function PhotoCommentRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении новой фотографии
+    /// </summary>
     function PhotoNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о новом голосе в публичных опросах
+    /// </summary>
     function PollVoteNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об внесении пользователя в чёрный список
+    /// </summary>
     function UserBlock(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об исключении пользователя из чёрного списка
+    /// </summary>
     function UserUnblock(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария к видео
+    /// </summary>
     function VideoCommentDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария к видео
+    /// </summary>
     function VideoCommentEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении нового комментария к видео
+    /// </summary>
     function VideoCommentNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о восстановлении комментария к видео
+    /// </summary>
     function VideoCommentRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении новой видеозаписи
+    /// </summary>
     function VideoNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о новой записи на стене
+    /// </summary>
     function WallPostNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария на стене
+    /// </summary>
     function WallReplyDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария на стене
+    /// </summary>
     function WallReplyEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении нового комментария на стене
+    /// </summary>
     function WallReplyNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о восстановлении комментария на стене
+    /// </summary>
     function WallReplyRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о репосте записи
+    /// </summary>
     function WallRepost(const Value: Boolean): integer;
   end;
 
   TVkParamsGroupsSetLongpollSettings = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): integer;
+    /// <summary>
+    /// True — включить Bots Long Poll, False — отключить
+    /// </summary>
+    function Enabled(const Value: Boolean): Integer;
+    /// <summary>
+    /// Версия API
+    /// </summary>
     function ApiVersion(const Value: string): integer;
+    /// <summary>
+    /// Уведомления о добавлении новой аудиозаписи
+    /// </summary>
     function AudioNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария в обсуждении
+    /// </summary>
     function BoardPostDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария в обсуждении
+    /// </summary>
     function BoardPostEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о создании комментария в обсуждении
+    /// </summary>
     function BoardPostNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о восстановлении комментария в обсуждении
+    /// </summary>
     function BoardPostRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о создании подписки
+    /// </summary>
+    function DonutSubscriptionCreate(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о продлении подписки
+    /// </summary>
+    function DonutSubscriptionProlonged(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление об отмене подписки
+    /// </summary>
+    function DonutSubscriptionCancelled(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление об изменении стоимости подписки
+    /// </summary>
+    function DonutSubscriptionPriceChanged(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о том, что подписка истекла
+    /// </summary>
+    function DonutSubscriptionExpired(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о выводе денег
+    /// </summary>
+    function DonutMoneyWithdraw(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление об ошибке при выводе денег
+    /// </summary>
+    function DonutMoneyWithdrawError(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об изменении главной фотографии
+    /// </summary>
     function GroupChangePhoto(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об изменении настроек
+    /// </summary>
     function GroupChangeSettings(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о вступлении в сообщество
+    /// </summary>
     function GroupJoin(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о выходе из сообщества
+    /// </summary>
     function GroupLeave(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об изменении руководства
+    /// </summary>
     function GroupOfficersEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о заполнении формы
+    /// </summary>
     function LeadFormsNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о новой отметке "Мне нравится"
+    /// </summary>
     function LikeAdd(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о снятии отметки "Мне нравится"
+    /// </summary>
     function LikeRemove(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария к товару
+    /// </summary>
     function MarketCommentDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария к товару
+    /// </summary>
     function MarketCommentEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении нового комментария к товару
+    /// </summary>
     function MarketCommentNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о восстановлении комментария к товару
+    /// </summary>
     function MarketCommentRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомление о новом заказе
+    /// </summary>
+    function MarketOrderNew(const Value: Boolean): Integer;
+    /// <summary>
+    /// Уведомление о редактировании заказа
+    /// </summary>
+    function MarketOrderEdit(const Value: Boolean): Integer;
+    /// <summary>
+    /// Уведомления о подписке на сообщения
+    /// </summary>
     function MessageAllow(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о запрете на сообщения
+    /// </summary>
     function MessageDeny(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании сообщения
+    /// </summary>
     function MessageEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// message_event
+    /// </summary>
+    function MessageEvent(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о новых сообщениях
+    /// </summary>
     function MessageNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об исходящем сообщении
+    /// </summary>
     function MessageReply(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о наборе текста сообщения
+    /// </summary>
     function MessageTypingState(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария к фото
+    /// </summary>
     function PhotoCommentDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария к фото
+    /// </summary>
     function PhotoCommentEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении нового комментария к фото
+    /// </summary>
     function PhotoCommentNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о восстановлении комментария к фото
+    /// </summary>
     function PhotoCommentRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении новой фотографии
+    /// </summary>
     function PhotoNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о новом голосе в публичных опросах
+    /// </summary>
     function PollVoteNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об внесении пользователя в чёрный список
+    /// </summary>
     function UserBlock(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об исключении пользователя из чёрного списка
+    /// </summary>
     function UserUnblock(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария к видео
+    /// </summary>
     function VideoCommentDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария к видео
+    /// </summary>
     function VideoCommentEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении нового комментария к видео
+    /// </summary>
     function VideoCommentNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о восстановлении комментария к видео
+    /// </summary>
     function VideoCommentRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении новой видеозаписи
+    /// </summary>
     function VideoNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о новой записи на стене
+    /// </summary>
     function WallPostNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления об удалении комментария на стене
+    /// </summary>
     function WallReplyDelete(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о редактировании комментария на стене
+    /// </summary>
     function WallReplyEdit(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о добавлении нового комментария на стене
+    /// </summary>
     function WallReplyNew(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о восстановлении комментария на стене
+    /// </summary>
     function WallReplyRestore(const Value: Boolean): integer;
+    /// <summary>
+    /// Уведомления о репосте записи
+    /// </summary>
     function WallRepost(const Value: Boolean): integer;
   end;
 
   TVkParamsGroupsSetSettings = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function GroupId(const Value: Integer): integer;
+    /// <summary>
+    /// Сообщения сообщества
+    /// </summary>
     function Messages(const Value: Boolean): integer;
+    /// <summary>
+    /// Возможности ботов (использование клавиатуры, добавление в беседу)
+    /// </summary>
     function BotsCapabilities(const Value: Boolean): integer;
+    /// <summary>
+    /// Кнопка «Начать» в диалоге с сообществом.
+    /// Работает, в случае если BotsCapabilities = True.
+    /// Если эта настройка включена, то при заходе в беседу с Вашим сообществом
+    /// в первый раз пользователь увидит кнопку с командой «Начать»,
+    /// которая отправляет команду start. Payload этого сообщения будет выглядеть так:
+    /// { "command": "start" }
+    /// </summary>
     function BotsStartButton(const Value: Boolean): integer;
+    /// <summary>
+    /// Добавление бота в беседы.
+    /// Работает, в случае если bots_capabilities=1
+    /// </summary>
     function BotsAddToChat(const Value: Boolean): integer;
   end;
 
   TGroupsController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает список участников сообщества.
+    /// Возвращает список участников сообщества
     /// </summary>
     function GetMembers(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список участников сообщества.
+    /// Возвращает список участников сообщества
     /// </summary>
     function GetMembers(var Items: TVkProfiles; Params: TVkParamsGroupsGetMembers): Boolean; overload;
     /// <summary>
-    /// Возвращает список id участников сообщества.
+    /// Возвращает список id участников сообщества
     /// </summary>
     function GetMembersIds(var Items: TVkIdList; Params: TVkParamsGroupsGetMembers): Boolean; overload;
     /// <summary>
-    /// Включает статус «онлайн» в сообществе.
+    /// Включает статус «онлайн» в сообществе
     /// </summary>
     function EnableOnline(GroupId: Cardinal): Boolean;
     /// <summary>
-    /// Выключает статус «онлайн» в сообществе.
+    /// Выключает статус «онлайн» в сообществе
     /// </summary>
     function DisableOnline(GroupId: Cardinal): Boolean;
     /// <summary>
-    /// Получает информацию о статусе «онлайн» в сообществе.
+    /// Получает информацию о статусе «онлайн» в сообществе
     /// </summary>
     function GetOnlineStatus(var Value: TVkGroupStatus; GroupId: Cardinal): Boolean;
     /// <summary>
-    /// Возвращает список сообществ указанного пользователя.
+    /// Возвращает список сообществ указанного пользователя
     /// </summary>
     function Get(var Items: TVkGroups; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список сообществ указанного пользователя.
+    /// Возвращает список сообществ указанного пользователя
     /// </summary>
     function Get(var Items: TVkGroups; Params: TVkParamsGroupsGet): Boolean; overload;
     /// <summary>
-    /// Возвращает список id сообществ указанного пользователя.
+    /// Возвращает список id сообществ указанного пользователя
     /// </summary>
     function Get(var Items: TVkIdList; Params: TVkParamsGroupsGet): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о том, является ли пользователь участником сообщества.
+    /// Возвращает информацию о том, является ли пользователь участником сообщества
     /// </summary>
     function IsMember(var Items: TVkGroupMemberStates; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о том, является ли пользователь участником сообщества.
+    /// Возвращает информацию о том, является ли пользователь участником сообщества
     /// </summary>
     function IsMember(var Items: TVkGroupMemberStates; Params: TVkParamsGroupsIsMember): Boolean; overload;
     /// <summary>
-    ///  Позволяет покинуть сообщество или отклонить приглашение в сообщество.
+    ///  Позволяет покинуть сообщество или отклонить приглашение в сообщество
     /// </summary>
     function Leave(GroupId: integer): Boolean;
     /// <summary>
     ///  Данный метод позволяет вступить в группу, публичную страницу, а также подтвердить участие во встрече.
     ///  NotSure - опциональный параметр, учитываемый, если GroupId принадлежит встрече.
-    ///  True — Возможно пойду. False — Точно пойду. По умолчанию False.
+    ///  True — Возможно пойду. False — Точно пойду
     /// </summary>
     function Join(GroupId: integer; NotSure: Boolean = False): Boolean;
     /// <summary>
-    ///  Позволяет приглашать друзей в группу.
+    ///  Позволяет приглашать друзей в группу
     /// </summary>
     function Invite(GroupId, UserId: integer): Boolean;
     /// <summary>
-    ///  Позволяет исключить пользователя из группы или отклонить заявку на вступление.
+    ///  Позволяет исключить пользователя из группы или отклонить заявку на вступление
     /// </summary>
     function RemoveUser(GroupId, UserId: integer): Boolean;
     /// <summary>
-    ///  Позволяет одобрить заявку в группу от пользователя.
+    ///  Позволяет одобрить заявку в группу от пользователя
     /// </summary>
     function ApproveRequest(GroupId, UserId: integer): Boolean;
     /// <summary>
     ///  Позволяет добавить адрес в сообщество.
-    ///  Список адресов может быть получен методом groups.getAddresses.
+    ///  Список адресов может быть получен методом groups.getAddresses
     /// </summary>
     function AddAddress(var Item: TVkGroupAddress; Params: TParams): Boolean; overload;
     /// <summary>
     ///  Позволяет добавить адрес в сообщество.
-    ///  Список адресов может быть получен методом groups.getAddresses.
+    ///  Список адресов может быть получен методом groups.getAddresses
     /// </summary>
     function AddAddress(var Item: TVkGroupAddress; Params: TVkParamsGroupsAddAddress): Boolean; overload;
     /// <summary>
-    ///  Добавляет сервер для Callback API в сообщество.
+    ///  Добавляет сервер для Callback API в сообщество
     /// </summary>
     function AddCallbackServer(var ServerId: Integer; GroupId: integer; Url, Title: string; SecretKey: string): Boolean;
     /// <summary>
-    ///  Позволяет добавлять ссылки в сообщество.
+    ///  Позволяет добавлять ссылки в сообщество
     /// </summary>
     function AddLink(var Item: TVkGroupLink; GroupId: integer; Link: string; Text: string = ''): Boolean;
     /// <summary>
-    ///  Добавляет пользователя или группу в черный список сообщества.
+    ///  Добавляет пользователя или группу в черный список сообщества
     /// </summary>
     function Ban(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Добавляет пользователя или группу в черный список сообщества.
+    ///  Добавляет пользователя или группу в черный список сообщества
     /// </summary>
     function Ban(Params: TVkParamsGroupsBan): Boolean; overload;
     /// <summary>
-    ///  Создает новое сообщество.
+    ///  Создает новое сообщество
     /// </summary>
     function Create(var Item: TVkGroup; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Создает новое сообщество.
+    ///  Создает новое сообщество
     /// </summary>
     function Create(var Item: TVkGroup; Params: TVkParamsGroupsCreate): Boolean; overload;
     /// <summary>
-    ///  Удаляет адрес сообщества.
+    ///  Удаляет адрес сообщества
     /// </summary>
     function DeleteAddress(GroupId, AddressId: integer): Boolean;
     /// <summary>
-    ///  Удаляет сервер для Callback API из сообщества.
+    ///  Удаляет сервер для Callback API из сообщества
     /// </summary>
     function DeleteCallbackServer(GroupId, ServerId: integer): Boolean;
     /// <summary>
-    ///  Позволяет удалить ссылки из сообщества.
+    ///  Позволяет удалить ссылки из сообщества
     /// </summary>
     function DeleteLink(GroupId, LinkId: integer): Boolean;
     /// <summary>
-    ///  Редактирует сообщество.
+    ///  Редактирует сообщество
     /// </summary>
     function Edit(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Редактирует сообщество.
+    ///  Редактирует сообщество
     /// </summary>
     function Edit(Params: TVkParamsGroupsEdit): Boolean; overload;
     /// <summary>
-    ///  Позволяет отредактировать адрес в сообществе.
+    ///  Позволяет отредактировать адрес в сообществе
     /// </summary>
     function EditAddress(var Item: TVkGroupAddress; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Позволяет отредактировать адрес в сообществе.
+    ///  Позволяет отредактировать адрес в сообществе
     /// </summary>
     function EditAddress(var Item: TVkGroupAddress; AddressId: Integer; Params: TVkParamsGroupsEditAddress): Boolean; overload;
     /// <summary>
-    ///  Редактирует данные сервера для Callback API в сообществе.
+    ///  Редактирует данные сервера для Callback API в сообществе
     /// </summary>
     function EditCallbackServer(GroupId: Integer; ServerId: integer; Url, Title: string; SecretKey: string): Boolean;
     /// <summary>
-    ///  Позволяет редактировать ссылки в сообществе.
+    ///  Позволяет редактировать ссылки в сообществе
     /// </summary>
     function EditLink(GroupId: integer; Link: string; Text: string = ''): Boolean;
     /// <summary>
-    ///  Позволяет назначить/разжаловать руководителя в сообществе или изменить уровень его полномочий.
+    ///  Позволяет назначить/разжаловать руководителя в сообществе или изменить уровень его полномочий
     /// </summary>
     function EditManager(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Позволяет назначить/разжаловать руководителя в сообществе или изменить уровень его полномочий.
+    ///  Позволяет назначить/разжаловать руководителя в сообществе или изменить уровень его полномочий
     /// </summary>
     function EditManager(Params: TVkParamsGroupsEditManager): Boolean; overload;
     /// <summary>
-    ///  Возвращает адрес указанного сообщества.
+    ///  Возвращает адрес указанного сообщества
     /// </summary>
     function GetAddresses(var Item: TVkGroupAddresses; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Возвращает адрес указанного сообщества.
+    ///  Возвращает адрес указанного сообщества
     /// </summary>
     function GetAddresses(var Item: TVkGroupAddresses; Params: TVkParamsGroupsGetAddresses): Boolean; overload;
     /// <summary>
-    ///  Возвращает список забаненных пользователей и сообществ в сообществе.
+    ///  Возвращает список забаненных пользователей и сообществ в сообществе
     /// </summary>
     function GetBanned(var Items: TVkGroupBans; Params: TVkParamsGroupsGetBanned): Boolean; overload;
     /// <summary>
-    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах.
+    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
     function GetById(var Items: TVkGroups; GroupIds: TIdList; Fields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
-    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах.
+    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
     function GetById(var Items: TVkGroups; GroupId: Integer; Fields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
-    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах.
+    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
     function GetById(var Items: TVkGroups; GroupId: string; Fields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
-    ///  Позволяет получить строку, необходимую для подтверждения адреса сервера в Callback API.
+    ///  Позволяет получить строку, необходимую для подтверждения адреса сервера в Callback API
     /// </summary>
     function GetCallbackConfirmationCode(var Code: string; GroupId: Integer): Boolean;
     /// <summary>
-    ///  Получает информацию о серверах для Callback API в сообществе.
+    ///  Получает информацию о серверах для Callback API в сообществе
     /// </summary>
     function GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Integer; ServerIds: TIdList = []): Boolean;
     /// <summary>
-    ///  Позволяет получить настройки уведомлений Callback API для сообщества.
+    ///  Позволяет получить настройки уведомлений Callback API для сообщества
     /// </summary>
     function GetCallbackSettings(var Items: TVkCallbackSettings; GroupId: Integer; ServerId: Integer): Boolean;
     /// <summary>
-    ///  Возвращает список сообществ выбранной категории каталога.
+    ///  Возвращает список сообществ выбранной категории каталога
     /// </summary>
     function GetCatalog(var Items: TVkGroups; CategoryId: Integer = 0; SubcategoryId: Integer = 0): Boolean;
     /// <summary>
-    ///  Возвращает список категорий для каталога сообществ.
+    ///  Возвращает список категорий для каталога сообществ
     /// </summary>
     function GetCatalogInfo(var Items: TVkGroupCategories; Subcategories: Boolean = False; Extended: Boolean = False): Boolean;
     /// <summary>
-    ///  Возвращает список пользователей, которые были приглашены в группу.
+    ///  Возвращает список пользователей, которые были приглашены в группу
     /// </summary>
     function GetInvitedUsers(var Items: TVkProfiles; Params: TVkParamsGroupsGetInvitedUsers): Boolean;
     /// <summary>
-    ///  Данный метод возвращает список приглашений в сообщества и встречи текущего пользователя.
+    ///  Данный метод возвращает список приглашений в сообщества и встречи текущего пользователя
     /// </summary>
     function GetInvites(var Items: TVkInvitesGroups; Extended: Boolean = False; Count: Integer = 20; Offset: Integer = 0): Boolean;
     /// <summary>
-    ///  Возвращает данные для подключения к Bots Longpoll API.
+    ///  Возвращает данные для подключения к Bots Longpoll API
     /// </summary>
     function GetLongPollServer(var Item: TVkLongpollData; GroupId: Integer): Boolean;
     /// <summary>
-    ///  Получает настройки Bots Longpoll API для сообщества.
+    ///  Получает настройки Bots Longpoll API для сообщества
     /// </summary>
     function GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Integer): Boolean;
     /// <summary>
-    ///  Возвращает список заявок на вступление в сообщество.
+    ///  Возвращает список заявок на вступление в сообщество
     /// </summary>
     function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [TVkProfileField.Domain]; Count: Integer = 20; Offset: Integer = 0): Boolean; overload;
     /// <summary>
-    ///  Возвращает список заявок на вступление в сообщество.
+    ///  Возвращает список заявок на вступление в сообщество
     /// </summary>
     function GetRequestsIds(var Items: TVkIdList; GroupId: Integer; Count: Integer = 20; Offset: Integer = 0): Boolean; overload;
     /// <summary>
-    ///  Позволяет получать данные, необходимые для отображения страницы редактирования данных сообщества.
+    ///  Позволяет получать данные, необходимые для отображения страницы редактирования данных сообщества
     /// </summary>
     function GetSettings(var Item: TVkGroupSettings; GroupId: Integer): Boolean;
     /// <summary>
@@ -588,35 +1287,35 @@ type
     /// </summary>
     function GetTagList(var Items: TVkGroupTags; GroupId: Integer): Boolean;
     /// <summary>
-    ///  Возвращает настройки прав для ключа доступа сообщества.
+    ///  Возвращает настройки прав для ключа доступа сообщества
     /// </summary>
     function GetTokenPermissions(var Items: TVkTokenPermissions): Boolean;
     /// <summary>
-    ///  Позволяет менять местоположение ссылки в списке.
+    ///  Позволяет менять местоположение ссылки в списке
     /// </summary>
     function ReorderLink(GroupId, LinkId: Integer; After: Integer): Boolean;
     /// <summary>
-    ///  Осуществляет поиск сообществ по заданной подстроке.
+    ///  Осуществляет поиск сообществ по заданной подстроке
     /// </summary>
     function Search(var Items: TVkGroups; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Осуществляет поиск сообществ по заданной подстроке.
+    ///  Осуществляет поиск сообществ по заданной подстроке
     /// </summary>
     function Search(var Items: TVkGroups; Params: TVkParamsGroupsSearch): Boolean; overload;
     /// <summary>
-    ///  Позволяет задать настройки уведомлений о событиях в Callback API.
+    ///  Позволяет задать настройки уведомлений о событиях в Callback API
     /// </summary>
     function SetCallbackSettings(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Позволяет задать настройки уведомлений о событиях в Callback API.
+    ///  Позволяет задать настройки уведомлений о событиях в Callback API
     /// </summary>
     function SetCallbackSettings(Params: TVkParamsGroupsSetCallbackSettings): Boolean; overload;
     /// <summary>
-    ///  Задаёт настройки для Bots Long Poll API в сообществе.
+    ///  Задаёт настройки для Bots Long Poll API в сообществе
     /// </summary>
     function SetLongPollSettings(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Задаёт настройки для Bots Long Poll API в сообществе.
+    ///  Задаёт настройки для Bots Long Poll API в сообществе
     /// </summary>
     function SetLongPollSettings(Params: TVkParamsGroupsSetLongpollSettings): Boolean; overload;
     /// <summary>
@@ -632,7 +1331,7 @@ type
     /// </summary>
     function TagAdd(GroupId: Integer; TagName: string; TagColor: TVkGroupTagColor): Boolean;
     /// <summary>
-    ///  Позволяет "привязывать" и "отвязывать" теги сообщества к беседам.
+    ///  Позволяет "привязывать" и "отвязывать" теги сообщества к беседам
     /// </summary>
     function TagBind(GroupId: Integer; TagId, UserId: Integer; Act: TVkGroupTagAct): Boolean;
     /// <summary>
@@ -644,7 +1343,7 @@ type
     /// </summary>
     function TagUpdate(GroupId, TagId: Integer; TagName: string): Boolean;
     /// <summary>
-    ///  Убирает пользователя или группу из черного списка сообщества.
+    ///  Убирает пользователя или группу из черного списка сообщества
     /// </summary>
     function Unban(GroupId, OwnerId: Integer): Boolean;
   end;
@@ -1266,11 +1965,9 @@ begin
   Result := List.Add('phone', Value);
 end;
 
-function TVkParamsGroupsAddAddress.Timetable(const Value: TVkTimeTable; FreeObject: Boolean): Integer;
+function TVkParamsGroupsAddAddress.Timetable(const Value: TVkTimeTable): Integer;
 begin
-  Result := List.Add('timetable', Value);
-  if FreeObject then
-    Value.Free;
+  Result := List.Add('timetable', Value.ToJSON);
 end;
 
 function TVkParamsGroupsAddAddress.Title(const Value: string): Integer;
@@ -1327,9 +2024,9 @@ begin
   Result := List.Add('public_category', Value);
 end;
 
-function TVkParamsGroupsCreate.Subtype(const Value: Integer): Integer;
+function TVkParamsGroupsCreate.Subtype(const Value: TVkGroupSubType): Integer;
 begin
-  Result := List.Add('subtype', Value);
+  Result := List.Add('subtype', Ord(Value));
 end;
 
 function TVkParamsGroupsCreate.Title(const Value: string): Integer;
@@ -1586,7 +2283,7 @@ begin
   Result := List.Add('contact_position', Value);
 end;
 
-function TVkParamsGroupsEditManager.GroupId(const Value: Integer): Integer;
+function TVkParamsGroupsEditManager.GroupId(const Value: Cardinal): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
@@ -1628,7 +2325,7 @@ begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsGroupsGetAddresses.GroupId(const Value: Integer): Integer;
+function TVkParamsGroupsGetAddresses.GroupId(const Value: Cardinal): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
@@ -1744,7 +2441,7 @@ begin
   Result := List.Add('sort', Ord(Value));
 end;
 
-function TVkParamsGroupsSearch.&Type(const Value: TVkGroupTypeCreate): Integer;
+function TVkParamsGroupsSearch.&Type(const Value: TVkGroupType): Integer;
 begin
   Result := List.Add('type', Value.ToString);
 end;
@@ -1779,6 +2476,41 @@ end;
 function TVkParamsGroupsSetCallbackSettings.BoardPostRestore(const Value: Boolean): integer;
 begin
   Result := List.Add('board_post_restore', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.DonutMoneyWithdraw(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_money_withdraw', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.DonutMoneyWithdrawError(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_money_withdraw_error', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.DonutSubscriptionCancelled(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_cancelled', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.DonutSubscriptionCreate(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_create', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.DonutSubscriptionExpired(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_expired', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.DonutSubscriptionPriceChanged(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_price_changed', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.DonutSubscriptionProlonged(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_prolonged', Value);
 end;
 
 function TVkParamsGroupsSetCallbackSettings.GroupChangePhoto(const Value: Boolean): integer;
@@ -1846,6 +2578,16 @@ begin
   Result := List.Add('market_comment_restore', Value);
 end;
 
+function TVkParamsGroupsSetCallbackSettings.MarketOrderEdit(const Value: Boolean): Integer;
+begin
+  Result := List.Add('market_order_edit', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.MarketOrderNew(const Value: Boolean): Integer;
+begin
+  Result := List.Add('market_order_new', Value);
+end;
+
 function TVkParamsGroupsSetCallbackSettings.MessageAllow(const Value: Boolean): integer;
 begin
   Result := List.Add('message_allow', Value);
@@ -1859,6 +2601,11 @@ end;
 function TVkParamsGroupsSetCallbackSettings.MessageEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('message_edit', Value);
+end;
+
+function TVkParamsGroupsSetCallbackSettings.MessageEvent(const Value: Boolean): integer;
+begin
+  Result := List.Add('message_event', Value);
 end;
 
 function TVkParamsGroupsSetCallbackSettings.MessageNew(const Value: Boolean): integer;
@@ -2009,6 +2756,46 @@ begin
   Result := List.Add('board_post_restore', Value);
 end;
 
+function TVkParamsGroupsSetLongpollSettings.DonutMoneyWithdraw(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_money_withdraw', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.DonutMoneyWithdrawError(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_money_withdraw_error', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.DonutSubscriptionCancelled(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_cancelled', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.DonutSubscriptionCreate(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_create', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.DonutSubscriptionExpired(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_expired', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.DonutSubscriptionPriceChanged(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_price_changed', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.DonutSubscriptionProlonged(const Value: Boolean): integer;
+begin
+  Result := List.Add('donut_subscription_prolonged', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.Enabled(const Value: Boolean): Integer;
+begin
+  Result := List.Add('enabled', Value);
+end;
+
 function TVkParamsGroupsSetLongpollSettings.GroupChangePhoto(const Value: Boolean): integer;
 begin
   Result := List.Add('group_change_photo', Value);
@@ -2074,6 +2861,16 @@ begin
   Result := List.Add('market_comment_restore', Value);
 end;
 
+function TVkParamsGroupsSetLongpollSettings.MarketOrderEdit(const Value: Boolean): Integer;
+begin
+  Result := List.Add('market_order_edit', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.MarketOrderNew(const Value: Boolean): Integer;
+begin
+  Result := List.Add('market_order_new', Value);
+end;
+
 function TVkParamsGroupsSetLongpollSettings.MessageAllow(const Value: Boolean): integer;
 begin
   Result := List.Add('message_allow', Value);
@@ -2087,6 +2884,11 @@ end;
 function TVkParamsGroupsSetLongpollSettings.MessageEdit(const Value: Boolean): integer;
 begin
   Result := List.Add('message_edit', Value);
+end;
+
+function TVkParamsGroupsSetLongpollSettings.MessageEvent(const Value: Boolean): integer;
+begin
+  Result := List.Add('message_event', Value);
 end;
 
 function TVkParamsGroupsSetLongpollSettings.MessageNew(const Value: Boolean): integer;

@@ -550,8 +550,9 @@ type
   ///  пойдуї (если сообщество относитс€ к меропри€ти€м).
   ///  <b>Managers</b> Ч будут возвращены только руководители сообщества
   ///  (доступно при запросе с передачей access_token от имени администратора сообщества).
+  ///  <b>donut</b> Ч будут возвращены только доны (пользователи, у которых есть платна€ подписка VK Donut
   /// </summary>
-  TVkGroupMembersFilter = (Friends, Unsure, Managers);
+  TVkGroupMembersFilter = (Friends, Unsure, Managers, Donut);
 
   TVkGroupMembersFilterHelper = record helper for TVkGroupMembersFilter
     function ToString: string; inline;
@@ -647,7 +648,9 @@ type
   TVkGroupField = (City, Country, Place, Description, WikiPage, MembersCount, //
     Counters, StartDate, FinishDate, CanPost, CanSeeAllPosts, Activity,       //
     Status, Contacts, Links, FixedPost, Verified, Site, CanCreateTopic,       //
-    Photo50, Photo100, Photo200, Cover);
+    Photo50, Photo100, Photo200, Cover, Addresses, AgeLimits, BanInfo,        //
+    CanMessage, CanUploadDoc, CanUploadVideo, CropPhoto, HasPhoto,            //
+    IsFavorite, IsHiddenFromFeed, IsMessagesBlocked);
 
   TVkGroupFieldHelper = record helper for TVkGroupField
     function ToString: string; inline;
@@ -676,7 +679,7 @@ type
 
   TVkGroupAccess = (Open, Close, &Private);
 
-  TVkGroupRole = (Moderator, Editor, Admin);
+  TVkGroupRole = (Moderator, Editor, Admin, Advertiser);
 
   TVkGroupRoleHelper = record helper for TVkGroupRole
     function ToString: string; inline;
@@ -774,6 +777,10 @@ type
     class function Create(const Value: string): TVkGroupTypeCreate; static;
   end;
 
+  TVkGroupSubType = (PlaceOrSmallCompany = 1,                                 //
+    CompanyOrOrganizationOrWebsite = 2, FamousPersonOrTeam = 3,               //
+    CreationOrProduct = 4);
+
   TVkGroupType = (Group, Event, Page);
 
   TVkGroupTypeHelper = record helper for TVkGroupType
@@ -781,6 +788,17 @@ type
     class function Create(const Value: string): TVkGroupType; static;
   end;
 
+  /// <summary>
+  /// 1 Ч авто/мото;  2 Ч активный отдых;  3 Ч бизнес;  4 Ч домашние животные;  5 Ч здоровье;
+  /// 6 Ч знакомство и общение;  7 Ч игры;  8 Ч »“ (компьютеры и софт);  9 Ч кино;  10 Ч красота и мода;
+  /// 11 Ч кулинари€;  12 Ч культура и искусство;  13 Ч литература;  14 Ч мобильна€ св€зь и интернет;
+  /// 15 Ч музыка;  16 Ч наука и техника;  17 Ч недвижимость;  18 Ч новости и —ћ»;  19 Ч безопасность;
+  /// 20 Ч образование;  21 Ч обустройство и ремонт;  22 Ч политика;  23 Ч продукты питани€;
+  /// 24 Ч промышленность;  25 Ч путешестви€;  26 Ч работа;  27 Ч развлечени€;  28 Ч религи€;
+  /// 29 Ч дом и семь€;  30 Ч спорт;  31 Ч страхование;  32 Ч телевидение;  33 Ч товары и услуги;
+  /// 34 Ч увлечени€ и хобби;  35 Ч финансы;  36 Ч фото;  37 Ч эзотерика;  38 Ч электроника и бытова€ техника;
+  /// 39 Ч эротика;  40 Ч юмор;  41 Ч общество, гуманитарные науки;  42 Ч дизайн и графика.
+  /// </summary>
   TVkGroupSubjectType = (                                                     //
     Unknown = 0, AutoMotorcycle = 1, ActiveRest = 2, Business = 3,            //
     Pets = 4, Health = 5, AcquaintanceAndCommunication = 6, Games = 7,        //
@@ -1116,6 +1134,13 @@ type
   TVkOrderStatus = (New, Approved, Assembled, Delivered, Completed, Canceled, //
     Returned);
 
+  TVkPaymentStatus = (NotPaid, Paid, Returned);
+
+  TVkPaymentStatusHelper = record helper for TVkPaymentStatus
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkPaymentStatus; static;
+  end;
+
   /// <summary>
   /// —татус доступности товара
   /// Available Ч товар доступен;
@@ -1302,11 +1327,12 @@ const
   VkGroupField: array[TVkGroupField] of string = ('city', 'country', 'place', 'description', 'wiki_page', 'members_count',
     'counters', 'start_date', 'finish_date', 'can_post', 'can_see_all_posts', 'activity', 'status',
     'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50', 'photo_100', 'photo_200',
-    'cover');
+    'cover', 'addresses', 'age_limits', 'ban_info', 'can_message', 'can_upload_doc', 'can_upload_video',
+    'crop_photo', 'has_photo', 'is_favorite', 'is_hidden_from_feed', 'is_messages_blocked');
   VkGroupFilter: array[TVkGroupFilter] of string = ('admin', 'editor', 'moder', 'advertiser', 'groups', 'publics',
     'events', 'hasAddress');
-  VkGroupRole: array[TVkGroupRole] of string = ('moderator', 'editor', 'administrator');
-  VkGroupMembersFilter: array[TVkGroupMembersFilter] of string = ('friends', 'unsure', 'managers');
+  VkGroupRole: array[TVkGroupRole] of string = ('moderator', 'editor', 'administrator', 'advertiser');
+  VkGroupMembersFilter: array[TVkGroupMembersFilter] of string = ('friends', 'unsure', 'managers', 'donut');
   VkCounterFilter: array[TVkCounterFilter] of string = ('friends', 'messages', 'photos', 'videos', 'notes',
     'gifts', 'events', 'groups', 'notifications', 'sdk', 'app_requests', 'friends_recommendations');
   VkInfoFilter: array[TVkInfoFilter] of string = ('country', 'https_required', 'own_posts_default', 'no_wall_replies',
@@ -1369,6 +1395,7 @@ const
   VkConversationFilter: array[TVkConversationFilter] of string = ('all', 'unread', 'important', 'unanswered');
   VkKeyboardActionType: array[TVkKeyboardActionType] of string = ('text', 'open_link', 'location', 'vkpay', 'open_app', 'callback');
   VkLiveStatus: array[TVkLiveStatus] of string = ('waiting', 'started', 'finished', 'failed', 'upcoming');
+  VkPaymentStatus: array[TVkPaymentStatus] of string = ('not_paid', 'paid', 'returned');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -2798,6 +2825,18 @@ end;
 function TVkLiveStatusHelper.ToString: string;
 begin
   Result := VkLiveStatus[Self];
+end;
+
+{ TVkPaymentStatusHelper }
+
+class function TVkPaymentStatusHelper.Create(const Value: string): TVkPaymentStatus;
+begin
+  Result := TVkPaymentStatus(IndexStr(Value, VkPaymentStatus));
+end;
+
+function TVkPaymentStatusHelper.ToString: string;
+begin
+  Result := VkPaymentStatus[Self];
 end;
 
 end.

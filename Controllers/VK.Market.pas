@@ -3,144 +3,442 @@ unit VK.Market;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Media, VK.Entity.Market,
-  VK.Entity.Market.Album, VK.Entity.Market.Order;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Media, VK.Entity.Market, VK.Entity.Market.Album,
+  VK.Entity.Market.Order;
 
 type
   TVkParamsMarketAdd = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца товара
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Название товара. Ограничение по длине считается в кодировке cp1251 (минимальная длина 4, максимальная длина 100)
+    /// </summary>
     function Name(const Value: string): Integer;
+    /// <summary>
+    /// Описание товара (минимальная длина 10)
+    /// </summary>
     function Description(const Value: string): Integer;
-    function CategoryId(const Value: Integer): Integer; //market.getCategories
+    /// <summary>
+    /// Идентификатор категории товара (market.getCategories)
+    /// </summary>
+    function CategoryId(const Value: Integer): Integer;
+    /// <summary>
+    /// Цена товара
+    /// </summary>
     function Price(const Value: Extended): Integer;
+    /// <summary>
+    /// Старая цена товара
+    /// </summary>
     function OldPrice(const Value: Extended): Integer;
+    /// <summary>
+    /// Статус товара (True — товар удален, False — товар не удален)
+    /// </summary>
     function Deleted(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор фотографии обложки товара.
+    /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer, передав параметр MainPhoto
+    /// </summary>
     function MainPhotoId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификаторы дополнительных фотографий товара.
+    /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer
+    /// </summary>
     function PhotoIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Ссылка на сайт товара (максимальная длина 320)
+    /// </summary>
     function Url(const Value: string): Integer;
+    /// <summary>
+    /// Ширина в миллиметрах (максимальное значение 100000)
+    /// </summary>
     function DimensionWidth(const Value: Integer): Integer;
+    /// <summary>
+    /// Высота в миллиметрах (максимальное значение 100000)
+    /// </summary>
     function DimensionHeight(const Value: Integer): Integer;
+    /// <summary>
+    /// Толщина в миллиметрах (максимальное значение 100000)
+    /// </summary>
     function DimensionLength(const Value: Integer): Integer;
+    /// <summary>
+    /// Вес в граммах (максимальное значение 100000000)
+    /// </summary>
     function Weight(const Value: Integer): Integer;
+    /// <summary>
+    /// Артикул товара, произвольная строка (максимальная длина 50)
+    /// </summary>
+    function Sku(const Value: string): Integer;
   end;
 
   TVkParamsMarketCreateComment = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца товара
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор товара
+    /// </summary>
     function ItemId(const Value: Integer): Integer;
+    /// <summary>
+    /// Текст комментария (является обязательным, если не задан параметр Attachments)
+    /// Максимальное количество символов: 2048
+    /// </summary>
     function Message(const Value: string): Integer;
+    /// <summary>
+    /// Список объектов, приложенных к комментарию
+    /// </summary>
     function Attachments(const Value: TAttachmentArray): Integer;
-    function FromGroup(const Value: Boolean): Integer;
+    /// <summary>
+    /// True — комментарий будет опубликован от имени группы,
+    /// False — комментарий будет опубликован от имени пользователя (по умолчанию)
+    /// </summary>
+    function FromGroup(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Идентификатор комментария, в ответ на который должен быть добавлен новый комментарий
+    /// </summary>
     function ReplyToComment(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор стикера
+    /// </summary>
     function StickerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария
+    /// </summary>
     function Guid(const Value: string): Integer;
   end;
 
   TVkParamsMarketEdit = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца товара
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор товара
+    /// </summary>
     function ItemId(const Value: Integer): Integer;
+    /// <summary>
+    /// Название товара. Ограничение по длине считается в кодировке cp1251 (минимальная длина 4, максимальная длина 100)
+    /// </summary>
     function Name(const Value: string): Integer;
+    /// <summary>
+    /// Описание товара (минимальная длина 10)
+    /// </summary>
     function Description(const Value: string): Integer;
+    /// <summary>
+    /// Идентификатор категории товара (market.getCategories)
+    /// </summary>
     function CategoryId(const Value: Integer): Integer;
+    /// <summary>
+    /// Цена товара
+    /// </summary>
     function Price(const Value: Extended): Integer;
+    /// <summary>
+    /// Старая цена товара
+    /// </summary>
     function OldPrice(const Value: Extended): Integer;
+    /// <summary>
+    /// Статус товара (True — товар недоступен, False — товар доступен)
+    /// </summary>
     function Deleted(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор фотографии обложки товара.
+    /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer, передав параметр MainPhoto
+    /// </summary>
     function MainPhotoId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификаторы дополнительных фотографий товара.
+    /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer
+    /// </summary>
     function PhotoIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Ссылка на сайт товара (максимальная длина 320)
+    /// </summary>
     function Url(const Value: string): Integer;
+    /// <summary>
+    /// Ширина в миллиметрах (максимальное значение 100000)
+    /// </summary>
     function DimensionWidth(const Value: Integer): Integer;
+    /// <summary>
+    /// Высота в миллиметрах (максимальное значение 100000)
+    /// </summary>
     function DimensionHeight(const Value: Integer): Integer;
+    /// <summary>
+    /// Толщина в миллиметрах (максимальное значение 100000)
+    /// </summary>
     function DimensionLength(const Value: Integer): Integer;
+    /// <summary>
+    /// Вес в граммах (максимальное значение 100000000)
+    /// </summary>
     function Weight(const Value: Integer): Integer;
+    /// <summary>
+    /// Артикул товара, произвольная строка (максимальная длина 50)
+    /// </summary>
+    function Sku(const Value: string): Integer;
   end;
 
   TVkParamsMarketEditAlbum = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца подборки
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор подборки
+    /// </summary>
     function AlbumId(const Value: Integer): Integer;
+    /// <summary>
+    /// Название подборки (максимальная длина 128)
+    /// </summary>
     function Title(const Value: string): Integer;
+    /// <summary>
+    /// Идентификатор фотографии-обложки подборки.
+    /// Фотография должна быть загружена с помощью метода photos.getMarkeAlbumUploadServer
+    /// </summary>
     function PhotoId(const Value: Integer): Integer;
+    /// <summary>
+    /// Назначить подборку основной (True — назначить, False — нет)
+    /// </summary>
     function MainAlbum(const Value: Boolean): Integer;
   end;
 
   TVkParamsMarketEditComment = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца товара
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор комментария
+    /// </summary>
     function CommentId(const Value: Integer): Integer;
+    /// <summary>
+    /// Текст комментария (является обязательным, если не задан параметр Attachments)
+    /// Максимальное количество символов: 2048
+    /// </summary>
     function Message(const Value: string): Integer;
+    /// <summary>
+    /// Список объектов, приложенных к комментарию
+    /// </summary>
     function Attachments(const Value: TAttachmentArray): Integer;
   end;
 
   TVkParamsMarketEditOrder = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя
+    /// </summary>
     function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор заказа
+    /// </summary>
     function OrderId(const Value: Integer): Integer;
+    /// <summary>
+    /// Комментарий продавца (максимальная длина 400)
+    /// </summary>
     function MerchantComment(const Value: string): Integer;
+    /// <summary>
+    /// Статус заказа
+    /// </summary>
     function Status(const Value: TVkOrderStatus): Integer;
+    /// <summary>
+    /// Трек-номер
+    /// </summary>
     function TrackNumber(const Value: string): Integer;
-    function PaymentStatus(const Value: string): Integer;
+    /// <summary>
+    /// Статус платежа
+    /// </summary>
+    function PaymentStatus(const Value: TVkPaymentStatus): Integer;
+    /// <summary>
+    /// Стоимость доставки
+    /// </summary>
     function DeliveryPrice(const Value: Integer): Integer;
+    /// <summary>
+    /// Ширина
+    /// </summary>
     function Width(const Value: Integer): Integer;
+    /// <summary>
+    /// Длина
+    /// </summary>
     function Length(const Value: Integer): Integer;
+    /// <summary>
+    /// Высота
+    /// </summary>
     function Height(const Value: Integer): Integer;
+    /// <summary>
+    /// Вес
+    /// </summary>
     function Weight(const Value: Integer): Integer;
+    /// <summary>
+    /// Комментарий для пользователя
+    /// </summary>
+    function CommentForUser(const Value: string): Integer;
   end;
 
   TVkParamsMarketGet = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца товаров
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
-    function AlbumId(const Value: Integer): Integer;
-    function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор подборки, товары из которой нужно вернуть
+    /// </summary>
+    function AlbumId(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// True — будут возвращены дополнительные поля Likes, CanComment, CanRepost, Photos, ViewsCount
+    /// </summary>
+    function Extended(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Смещение относительно первого найденного товара для выборки определенного подмножества
+    /// </summary>
     function Offset(const Value: Integer): Integer;
-    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество возвращаемых товаров (максимальное значение 200)
+    /// </summary>
+    function Count(const Value: Integer = 100): Integer;
   end;
 
   TVkParamsMarketGetComments = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца товара
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор товара
+    /// </summary>
     function ItemId(const Value: Integer): Integer;
+    /// <summary>
+    /// True — возвращать информацию о лайках
+    /// </summary>
     function NeedLikes(const Value: Boolean): Integer;
+    /// <summary>
+    /// Идентификатор комментария, начиная с которого нужно вернуть список
+    /// </summary>
     function StartCommentId(const Value: Integer): Integer;
-    function Offset(const Value: Integer): Integer;
-    function Count(const Value: Integer): Integer;
-    function Sort(const Value: TVkSort): Integer;
+    /// <summary>
+    /// Сдвиг, необходимый для получения конкретной выборки результатов
+    /// </summary>
+    function Offset(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Число комментариев, которые необходимо получить (максимальное значение 100)
+    /// </summary>
+    function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Порядок сортировки комментариев (asc — от старых к новым, desc - от новых к старым)
+    /// </summary>
+    function Sort(const Value: TVkSort = TVkSort.Asc): Integer;
+    /// <summary>
+    /// True — комментарии в ответе будут возвращены в виде пронумерованных объектов,
+    /// дополнительно будут возвращены списки объектов Profiles, Groups
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
-    function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// </summary>
+    function Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
   end;
 
   TVkParamsMarketReorderAlbums = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца альбомаы
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор подборки
+    /// </summary>
     function AlbumId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор подборки, перед которой следует поместить текущую
+    /// </summary>
     function Before(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор подборки, после которой следует поместить текущую
+    /// </summary>
     function After(const Value: Integer): Integer;
   end;
 
   TVkParamsMarketReorderItems = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор владельца товара
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор подборки, в которой находится товар. 0 — для сортировки общего списка товаров
+    /// </summary>
     function AlbumId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор товара
+    /// </summary>
     function ItemId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор товара, перед которым следует поместить текущий
+    /// </summary>
     function Before(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор товара, после которого следует поместить текущий
+    /// </summary>
     function After(const Value: Integer): Integer;
   end;
 
   TVkParamsMarketSearch = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор сообщества, которому принадлежат товары
+    /// </summary>
     function OwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор подборки, товары из которой нужно вернуть
+    /// </summary>
     function AlbumId(const Value: Integer): Integer;
+    /// <summary>
+    /// Строка поискового запроса
+    /// </summary>
     function Query(const Value: string): Integer;
+    /// <summary>
+    /// Минимальное значение цены товаров в сотых долях единицы валюты. Например, 100000
+    /// </summary>
     function PriceFrom(const Value: Integer): Integer;
+    /// <summary>
+    /// Максимальное значение цены товаров в сотых долях единицы валюты. Например, 1410000
+    /// </summary>
     function PriceTo(const Value: Integer): Integer;
-    function Tags(const Value: TIdList): Integer;
-    function Sort(const Value: TVkMarketSort): Integer;
-    function Rev(const Value: Boolean): Integer;
+    /// <summary>
+    /// Вид сортировки
+    /// </summary>
+    function Sort(const Value: TVkMarketSort = TVkMarketSort.User): Integer;
+    /// <summary>
+    /// False — не использовать обратный порядок, True — использовать обратный порядок
+    /// </summary>
+    function Rev(const Value: Boolean = True): Integer;
+    /// <summary>
+    /// Смещение относительно первого найденного товара для выборки определенного подмножества
+    /// </summary>
     function Offset(const Value: Integer): Integer;
-    function Count(const Value: Integer): Integer;
-    function Extended(const Value: Boolean): Integer;
-    function Status(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество возвращаемых товаров (максимальное значение 200)
+    /// </summary>
+    function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// True — будут возвращены дополнительные поля Likes, CanComment, CanRepost, Photos, ViewsCount
+    /// </summary>
+    function Extended(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// [Не известный параметр]
+    /// </summary>
+    function Status(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// [Не известный параметр, возможно вообще не используется]
+    /// </summary>
+    function Tags(const Value: TIdList): Integer;
   end;
 
   TMarketController = class(TVkController)
@@ -629,6 +927,11 @@ begin
   Result := List.Add('price', Value);
 end;
 
+function TVkParamsMarketAdd.Sku(const Value: string): Integer;
+begin
+  Result := List.Add('sku', Value);
+end;
+
 function TVkParamsMarketAdd.OldPrice(const Value: Extended): Integer;
 begin
   Result := List.Add('old_price', Value);
@@ -746,6 +1049,11 @@ end;
 function TVkParamsMarketEdit.Price(const Value: Extended): Integer;
 begin
   Result := List.Add('price', Value);
+end;
+
+function TVkParamsMarketEdit.Sku(const Value: string): Integer;
+begin
+  Result := List.Add('sku', Value);
 end;
 
 function TVkParamsMarketEdit.OldPrice(const Value: Extended): Integer;
@@ -869,9 +1177,14 @@ begin
   Result := List.Add('track_number', Value);
 end;
 
-function TVkParamsMarketEditOrder.PaymentStatus(const Value: string): Integer;
+function TVkParamsMarketEditOrder.PaymentStatus(const Value: TVkPaymentStatus): Integer;
 begin
-  Result := List.Add('payment_status', Value);
+  Result := List.Add('payment_status', Value.ToString);
+end;
+
+function TVkParamsMarketEditOrder.CommentForUser(const Value: string): Integer;
+begin
+  Result := List.Add('comment_for_user', Value);
 end;
 
 function TVkParamsMarketEditOrder.DeliveryPrice(const Value: Integer): Integer;
@@ -941,9 +1254,9 @@ begin
   Result := List.Add('extended', Value);
 end;
 
-function TVkParamsMarketGetComments.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsMarketGetComments.Fields(const UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
 begin
-  Result := List.Add('fields', Value.ToString);
+  Result := List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
 end;
 
 { TVkParamsMarketReorderAlbums }
