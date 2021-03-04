@@ -355,7 +355,15 @@ type
 
   TVkParamsMessageSendIds = record
     List: TParams;
+    /// <summary>
+    /// Идентификаторы получателей сообщения (при необходимости отправить сообщение сразу нескольким пользователям).
+    /// Доступно только для ключа доступа сообщества. Максимальное количество идентификаторов: 100
+    /// </summary>
     function PeerIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификаторы получателей сообщения (при необходимости отправить сообщение сразу нескольким пользователям).
+    /// Доступно только для ключа доступа сообщества. Максимальное количество идентификаторов: 100
+    /// </summary>
     function UserIds(const Value: TIdList): Integer;
     /// <summary>
     /// Число в пределах int32 - уникальный (в привязке к API_ID и ID отправителя) идентификатор, предназначенный для предотвращения повторной отправки одинакового сообщения. Сохраняется вместе с сообщением и доступен в истории сообщений.
@@ -557,9 +565,18 @@ type
     /// Идентификатор беседы
     /// </summary>
     function ChatId(const Value: Integer): Integer;
+    /// <summary>
+    /// Список идентификаторов бесед
+    /// </summary>
     function ChatIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields = []): Integer;
-    function NameCase(const Value: TVkNameCase): Integer;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователя
+    /// </summary>
+    function NameCase(const Value: TVkNameCase = TVkNameCase.Nom): Integer;
   end;
 
   TVkParamsConversationsGetById = record
@@ -569,37 +586,86 @@ type
     /// Доступно только для ключа доступа сообщества. Максимальное количество идентификаторов: 100
     /// </summary>
     function PeerIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// True — возвращать дополнительные поля
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
+    /// <summary>
+    /// Дополнительные поля пользователей и сообществ, которые необходимо вернуть
+    /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     /// <summary>
-    /// Идентификатор сообщества
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Cardinal): Integer;
   end;
 
   TVkParamsGetHistoryAttachments = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
     function PeerId(const Value: Integer): Integer;
-    function MediaType(const Value: TVkHistoryAttachment): Integer;
+    /// <summary>
+    /// Тип материалов, который необходимо вернуть
+    /// </summary>
+    function MediaType(const Value: TVkHistoryAttachment = TVkHistoryAttachment.Photo): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества объектов
+    /// </summary>
     function StartFrom(const Value: string): Integer;
-    function Count(const Value: Integer = 30): Integer; //200
-    function PhotoSizes(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество объектов, которое необходимо получить (но не более 200)
+    /// </summary>
+    function Count(const Value: Integer = 30): Integer;
+    /// <summary>
+    /// Параметр, указывающий нужно ли возвращать ли доступные размеры фотографии в специальном формате
+    /// </summary>
+    function PhotoSizes(const Value: Boolean): Integer;
+    /// <summary>
+    /// Дополнительные поля профилей пользователей и сообществ, которые необходимо вернуть в ответе
+    /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
     /// <summary>
-    /// Идентификатор сообщества
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Параметр, указывающий нужно ли возвращать вложения в оригинальном порядке
+    /// </summary>
     function PreserveOrder(const Value: Boolean): Integer;
+    /// <summary>
+    /// Максимальная глубина вложенности пересланных сообщений (макс 45)
+    /// </summary>
     function MaxForwardsLevel(const Value: Integer = 45): Integer;
   end;
 
   TVkParamsGetImportantMessages = record
     List: TParams;
-    function Count(const Value: Integer = 20): Integer; //200
+    /// <summary>
+    /// Максимальное число результатов, которые нужно получить (максимальное значение 200)
+    /// </summary>
+    function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества результатов
+    /// </summary>
     function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщения, начиная с которого нужно возвращать список
+    /// </summary>
     function StartMessageId(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество символов, по которому нужно обрезать сообщение.
+    /// Укажите 0, если Вы не хотите обрезать сообщение. (По умолчанию сообщения не обрезаются)
+    /// </summary>
     function PreviewLength(const Value: Integer): Integer;
+    /// <summary>
+    /// Список дополнительных полей для пользователей и сообществ
+    /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    /// <summary>
+    /// True — возвращать дополнительные поля для пользователей и сообществ
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
     /// <summary>
     /// Идентификатор сообщества
@@ -609,83 +675,180 @@ type
 
   TVkParamsLongPollHistory = record
     List: TParams;
+    /// <summary>
+    /// Последнее значение параметра ts, полученное от Long Poll сервера или с помощью метода messages.getLongPollServer
+    /// </summary>
     function Ts(const Value: Integer): Integer;
+    /// <summary>
+    /// Последнее значение параметра new_pts, полученное от Long Poll сервера, используется для получения действий, которые хранятся всегда
+    /// </summary>
     function Pts(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество символов, по которому нужно обрезать сообщение.
+    /// Укажите 0, если Вы не хотите обрезать сообщение. (По умолчанию сообщения не обрезаются)
+    /// </summary>
     function PreviewLength(const Value: Integer): Integer;
+    /// <summary>
+    /// True — возвращать в числе прочих события 8 и 9 (пользователь стал онлайн/оффлайн). Учитывается только при использовании ts
+    /// </summary>
     function Onlines(const Value: Boolean): Integer;
-    function Fields(const Value: TVkProfileFields = []): Integer;
+    /// <summary>
+    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// </summary>
+    function Fields(const Value: TVkProfileFields = [TVkProfileField.PhotoId, TVkProfileField.PhotoMedium, TVkProfileField.Sex, TVkProfileField.Online, TVkProfileField.ScreenName]): Integer;
+    /// <summary>
+    /// Лимит по количеству всех событий в истории. Обратите внимание, параметры EventsLimit и MsgsLimit применяются совместно.
+    /// Число результатов в ответе ограничивается первым достигнутым лимитом
+    /// </summary>
     function EventsLimit(const Value: Integer = 1000): Integer;
+    /// <summary>
+    /// Лимит по количеству событий с сообщениями в истории. Обратите внимание, параметры EventsLimit и MsgsLimit применяются совместно.
+    /// Число результатов в ответе ограничивается первым достигнутым лимитом
+    /// </summary>
     function MsgsLimit(const Value: Integer = 200): Integer;
+    /// <summary>
+    /// Максимальный идентификатор сообщения среди уже имеющихся в локальной копии.
+    /// Необходимо учитывать как сообщения, полученные через методы API (например messages.getDialogs, messages.getHistory),
+    /// так и данные, полученные из Long Poll сервера (события с кодом 4)
+    /// </summary>
     function MaxMsgId(const Value: Integer): Integer;
     /// <summary>
-    /// Идентификатор сообщества
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Версия Long Poll
+    /// </summary>
     function LpVersion(const Value: Integer): Integer;
+    /// <summary>
+    /// Положительное число, по умолчанию 0, максимальное значение 2000
+    /// </summary>
     function LastN(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Credentials
+    /// </summary>
     function Credentials(const Value: Boolean): Integer;
   end;
 
   TVkParamsGetLongPollServer = record
     List: TParams;
+    /// <summary>
+    /// True — возвращать поле pts, необходимое для работы метода messages.getLongPollHistory
+    /// </summary>
     function NeedPts(const Value: Boolean): Integer;
     /// <summary>
-    /// Идентификатор сообщества
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Версия для подключения к Long Poll. Актуальная версия: 3 (04.03.2021)
+    /// </summary>
     function LpVersion(const Value: Integer = 0): Integer;
   end;
 
-  TVkParamsMessageMark = record
+  TVkParamsMessageMarkAsRead = record
     List: TParams;
+    /// <summary>
+    /// Идентификаторы сообщений
+    /// </summary>
     function MessageIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
     function PeerId(const Value: Integer): Integer;
     /// <summary>
-    /// Идентификатор сообщества
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// При передаче этого параметра будут помечены как прочитанные все сообщения, начиная с данного
+    /// </summary>
     function StartMessageId(const Value: Integer): Integer;
+    /// <summary>
+    /// Отметить всю беседу как прочитанную
+    /// </summary>
     function MarkConversationAsRead(const Value: Boolean): Integer;
   end;
 
   TVkParamsMessageRemoveChatUser = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор беседы
+    /// </summary>
     function ChatId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, которого необходимо исключить из беседы
+    /// </summary>
     function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор участника, которого необходимо исключить из беседы.
+    /// Для сообществ — идентификатор сообщества со знаком «минус»
+    /// </summary>
     function MemberId(const Value: Integer): Integer;
   end;
 
   TVkParamsMessageSearch = record
     List: TParams;
+    /// <summary>
+    /// Подстрока, по которой будет производиться поиск
+    /// </summary>
     function Query(const Value: string): Integer;
+    /// <summary>
+    /// Фильтр по идентификатору назначения для поиска по отдельному диалогу
+    /// </summary>
     function PeerId(const Value: Integer): Integer;
     /// <summary>
     /// Если параметр задан, в ответе будут только сообщения, отправленные до указанной даты.
     /// </summary>
     function Date(const Value: TDateTime): Integer;
+    /// <summary>
+    /// Количество символов, по которому нужно обрезать сообщение.
+    /// Укажите 0, если Вы не хотите обрезать сообщение. (по умолчанию сообщения не обрезаются)
+    /// </summary>
     function PreviewLength(const Value: Integer): Integer;
     /// <summary>
     /// Количество сообщений, которое необходимо получить.
     /// По умолчанию 20, максимальное значение 100
     /// </summary>
-    function Count(const Value: Integer = 20): Integer; //100
-    function Offset(const Value: Integer): Integer;
+    function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества сообщений из списка найденных
+    /// </summary>
+    function Offset(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Список дополнительных полей для пользователей и сообществ
+    /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    /// <summary>
+    /// True — возвращать дополнительные поля для пользователей и сообществ. В ответе будет содержаться массив объектов бесед
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
     /// <summary>
-    /// Идентификатор сообщества
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
     function GroupId(const Value: Integer): Integer;
   end;
 
   TVkParamsMessageSearchConversations = record
     List: TParams;
+    /// <summary>
+    /// Поисковой запрос
+    /// </summary>
     function Query(const Value: string): Integer;
+    /// <summary>
+    /// Максимальное число результатов для получения (макс 255)
+    /// </summary>
     function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Дополнительные поля пользователей и сообществ, которые необходимо вернуть
+    /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    /// <summary>
+    /// True — возвращать дополнительные поля
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
     /// <summary>
-    /// Идентификатор сообщества
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
     function GroupId(const Value: Integer): Integer;
   end;
@@ -872,6 +1035,7 @@ type
     function GetLongPollHistory(var Item: TVkLongPollHistory; Params: TVkParamsLongPollHistory): Boolean; overload;
     /// <summary>
     /// Возвращает данные, необходимые для подключения к Long Poll серверу.
+    /// <seealso>https://vk.com/dev/using_longpoll</seealso>
     /// </summary>
     function GetLongPollServer(var Item: TVkLongpollData; Params: TVkParamsGetLongPollServer): Boolean;
     /// <summary>
@@ -901,7 +1065,7 @@ type
     /// <summary>
     /// Помечает сообщения как прочитанные.
     /// </summary>
-    function MarkAsRead(const Params: TVkParamsMessageMark): Boolean; overload;
+    function MarkAsRead(const Params: TVkParamsMessageMarkAsRead): Boolean; overload;
     /// <summary>
     /// Помечает сообщения как непрочитанные.
     /// </summary>
@@ -984,7 +1148,6 @@ begin
     Params.Add('user_id', UserId);
   if VisibleMessagesCount > 0 then
     Params.Add('visible_messages_count', VisibleMessagesCount);
-
   Result := Handler.Execute('messages.addChatUser', Params).ResponseIsTrue;
 end;
 
@@ -1085,7 +1248,7 @@ end;
 
 function TMessagesController.EditChat(const ChatId: Integer; Title: string): Boolean;
 begin
-  Result := Handler.Execute('messages.editChat', [['', ChatId.ToString], ['title', Title]]).ResponseIsTrue;
+  Result := Handler.Execute('messages.editChat', [['chat_id', ChatId.ToString], ['title', Title]]).ResponseIsTrue;
 end;
 
 function TMessagesController.Edit(const Params: TVkParamsMessageEdit): Boolean;
@@ -1293,7 +1456,7 @@ begin
   Result := Handler.Execute('messages.markAsImportantConversation', Params).ResponseIsTrue;
 end;
 
-function TMessagesController.MarkAsRead(const Params: TVkParamsMessageMark): Boolean;
+function TMessagesController.MarkAsRead(const Params: TVkParamsMessageMarkAsRead): Boolean;
 begin
   Result := MarkAsRead(Params.List);
 end;
@@ -1821,7 +1984,7 @@ end;
 
 function TVkParamsMessageSend.&Forward(const Value: TVkMessageForward): Integer;
 begin
-  Result := List.Add('forward_messages', Value.ToJSON);
+  Result := List.Add('forward', Value.ToJSON);
 end;
 
 function TVkParamsMessageSend.ForwardMessages(const Value: TIdList): Integer;
@@ -1993,7 +2156,7 @@ end;
 
 function TVkParamsMessageSendIds.Template(const Value: TVkMessageTemplate): Integer;
 begin
-
+  Result := List.Add('template', Value);
 end;
 
 function TVkParamsMessageSendIds.UserIds(const Value: TIdList): Integer;
@@ -2162,7 +2325,7 @@ begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
 
-function TVkParamsConversationsGetById.GroupID(const Value: Integer): Integer;
+function TVkParamsConversationsGetById.GroupID(const Value: Cardinal): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
@@ -2204,7 +2367,7 @@ begin
   Result := List.Add('peer_id', Value);
 end;
 
-function TVkParamsGetHistoryAttachments.PhotoSizes(const Value: Integer): Integer;
+function TVkParamsGetHistoryAttachments.PhotoSizes(const Value: Boolean): Integer;
 begin
   Result := List.Add('photo_sizes', Value);
 end;
@@ -2337,27 +2500,27 @@ end;
 
 { TVkParamsMessageMark }
 
-function TVkParamsMessageMark.GroupID(const Value: Integer): Integer;
+function TVkParamsMessageMarkAsRead.GroupID(const Value: Integer): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsMessageMark.MarkConversationAsRead(const Value: Boolean): Integer;
+function TVkParamsMessageMarkAsRead.MarkConversationAsRead(const Value: Boolean): Integer;
 begin
   Result := List.Add('mark_conversation_as_read', Value);
 end;
 
-function TVkParamsMessageMark.MessageIds(const Value: TIdList): Integer;
+function TVkParamsMessageMarkAsRead.MessageIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('message_ids', Value);
 end;
 
-function TVkParamsMessageMark.PeerId(const Value: Integer): Integer;
+function TVkParamsMessageMarkAsRead.PeerId(const Value: Integer): Integer;
 begin
   Result := List.Add('peer_id', Value);
 end;
 
-function TVkParamsMessageMark.StartMessageId(const Value: Integer): Integer;
+function TVkParamsMessageMarkAsRead.StartMessageId(const Value: Integer): Integer;
 begin
   Result := List.Add('start_message_id', Value);
 end;

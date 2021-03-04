@@ -136,7 +136,6 @@ type
     FType: string;
     FOwner_id: Integer;
     FPeer_id: Integer;
-    FToJSON: string;
     FUrl: string;
   public
     property&Type: string read FType write FType; // 'message', 'url'

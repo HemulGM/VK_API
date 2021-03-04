@@ -616,7 +616,7 @@ type
     CanSeeAllPosts, CanSeeAudio, CanWritePrivateMessage, CanSendFriendRequest,   //
     IsFavorite, IsHiddenFromFeed, TimeZone, ScreenName, MaidenName, CropPhoto,   //
     IsFriend, FriendStatus, Career, Military, Blacklisted, BlacklistedByMe,      //
-    CanBeInvitedGroup);
+    CanBeInvitedGroup, OnlineMobile, Counters);
 
   TVkProfileFieldHelper = record helper for TVkProfileField
     function ToString: string; inline;
@@ -1293,7 +1293,8 @@ const
     'music', 'movies', 'tv', 'books', 'games', 'about', 'quotes', 'can_post', 'can_see_all_posts',
     'can_see_audio', 'can_write_private_message', 'can_send_friend_request', 'is_favorite',
     'is_hidden_from_feed', 'timezone', 'screen_name', 'maiden_name', 'crop_photo', 'is_friend',
-    'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me', 'can_be_invited_group');
+    'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me', 'can_be_invited_group',
+    'online_mobile', 'counters');
   VKPostLinkButton: array[TVkPostLinkButton] of string = (
     'auto', 'app_join', 'app_game_join', 'open_url', 'open', 'more', 'call', 'book', 'enroll', 'register', 'buy',
     'buy_ticket', 'order', 'create', 'install', 'contact', 'fill', 'join_public', 'join_event', 'join', 'im',
@@ -1911,7 +1912,7 @@ begin
     TVkProfileField.ScreenName, TVkProfileField.MaidenName, TVkProfileField.CropPhoto,
     TVkProfileField.IsFriend, TVkProfileField.FriendStatus, TVkProfileField.Career,
     TVkProfileField.Military, TVkProfileField.Blacklisted, TVkProfileField.BlacklistedByMe,
-    TVkProfileField.CanBeInvitedGroup];
+    TVkProfileField.CanBeInvitedGroup, TVkProfileField.OnlineMobile, TVkProfileField.Counters];
 end;
 
 function TVkProfileFieldsHelper.ToString: string;

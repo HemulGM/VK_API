@@ -68,7 +68,7 @@ type
     /// Содержит список элементов карусели
     /// </summary>
     property Elements: TArray<TVkMessageTemplateCarouselElement> read FElements write FElements;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
   end;
 
