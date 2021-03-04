@@ -3,25 +3,57 @@ unit VK.Fave;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Audio, System.JSON,
-  VK.Entity.Fave, VK.Entity.Fave.Pages;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Audio, System.JSON, VK.Entity.Fave, VK.Entity.Fave.Pages;
 
 type
   TVkParamsFaveGet = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор метки, закладки отмеченные которой требуется вернуть
+    /// </summary>
     function TagId(const Value: Integer): Integer;
+    /// <summary>
+    /// Типы объектов, которые необходимо вернуть
+    /// </summary>
     function ItemType(const Value: TVkFaveType): Integer;
+    /// <summary>
+    /// Смещение относительно первого объекта в закладках пользователя для выборки определенного подмножества
+    /// </summary>
     function Offset(const Value: Integer): Integer;
-    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество возвращаемых закладок (максимальное значение 100)
+    /// </summary>
+    function Count(const Value: Integer = 50): Integer;
+    /// <summary>
+    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// IsFromSnackbar
+    /// </summary>
     function IsFromSnackbar(const Value: Boolean): Integer;
+    /// <summary>
+    /// True, если необходимо получить информацию о пользователе
+    /// </summary>
     function Extended(const Value: Boolean): Integer;
   end;
 
   TVkParamsFavePageTagsSet = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя, которому требуется проставить метку в закладках.
+    /// Обязательный параметр, если не задан параметр GroupId
+    /// </summary>
     function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор сообщества, которому требуется проставить метку в закладках.
+    /// Обязательный параметр, если не задан параметр UserId
+    /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Перечисленные через запятую идентификаторы тегов, которые требуется присвоить странице
+    /// </summary>
     function TagIds(const Value: TArrayOfInteger): Integer;
   end;
 
@@ -34,20 +66,55 @@ type
 
   TVkParamsFaveTagsSet = record
     List: TParams;
+    /// <summary>
+    /// Тип объекта, которому необходимо присвоить метку
+    /// </summary>
     function ItemType(const Value: TVkFaveType): Integer;
+    /// <summary>
+    /// Идентификатор владельца объекта, которому требуется присвоить метку
+    /// </summary>
     function ItemOwnerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор объекта
+    /// </summary>
     function ItemId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор метки, которую требуется присвоить объекту
+    /// </summary>
     function TagIds(const Value: TArrayOfInteger): Integer;
+    /// <summary>
+    /// Идентификатор ссылки, которой требуется присвоить метку
+    /// </summary>
     function LinkId(const Value: string): Integer;
+    /// <summary>
+    /// LinkUrl
+    /// </summary>
     function LinkUrl(const Value: string): Integer;
   end;
 
   TVkParamsFavePagesGet = record
     List: TParams;
+    /// <summary>
+    /// Смещение относительно первого объекта в закладках пользователя для выборки определенного подмножества
+    /// (максимальное значение 10000)
+    /// </summary>
     function Offset(const Value: Integer): Integer;
-    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество возвращаемых закладок (максимальное значение 500)
+    /// </summary>
+    function Count(const Value: Integer = 50): Integer;
+    /// <summary>
+    /// Типы объектов, которые необходимо вернуть
+    /// Если параметр не указан — вернутся объекты пользователей и сообществ, добавленных в закладки, в порядке добавления
+    /// </summary>
     function &Type(const Value: TVkFavePageType): Integer;
+    /// <summary>
+    /// Список дополнительных полей для объектов user и group, которые необходимо вернуть
+    /// </summary>
     function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    /// <summary>
+    /// Идентификатор метки, закладки отмеченные которой требуется вернуть
+    /// </summary>
     function TagId(const Value: Integer): Integer;
   end;
 

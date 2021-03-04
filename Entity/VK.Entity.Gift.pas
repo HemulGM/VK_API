@@ -3,7 +3,8 @@ unit VK.Entity.Gift;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
+  REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common,
+  VK.Types, VK.Wrap.Interceptors, VK.Entity.Common.List;
 
 type
   /// <summary>
@@ -32,6 +33,9 @@ type
     /// URL изображения 48x48px
     /// </summary>
     property Thumb48: string read FThumb_48 write FThumb_48;
+    /// <summary>
+    /// StickersProductId
+    /// </summary>
     property StickersProductId: Integer read FStickers_product_id write FStickers_product_id;
   end;
 
@@ -43,16 +47,42 @@ type
     FGift: TVkGift;
     FGift_hash: string;
     FMessage: string;
-    FPrivacy: Integer;
+    [JsonReflectAttribute(ctString, rtString, TGiftPrivacyInterceptor)]
+    FPrivacy: TVkGiftPrivacy;
     FAccess_key: string;
   public
+    /// <summary>
+    /// Идентификатор полученного подарка
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// AccessKey
+    /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
+    /// <summary>
+    /// Время отправки подарка
+    /// </summary>
     property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Идентификатор пользователя, который отправил подарок, или 0, если отправитель скрыт
+    /// </summary>
     property FromId: Integer read FFrom_id write FFrom_id;
+    /// <summary>
+    /// Объект подарка
+    /// </summary>
     property Gift: TVkGift read FGift write FGift;
+    /// <summary>
+    /// GiftHash
+    /// </summary>
     property GiftHash: string read FGift_hash write FGift_hash;
+    /// <summary>
+    /// Текст сообщения, приложенного к подарку
+    /// </summary>
     property Message: string read FMessage write FMessage;
-    property Privacy: Integer read FPrivacy write FPrivacy;
+    /// <summary>
+    /// Значение приватности подарка (только для текущего пользователя)
+    /// </summary>
+    property Privacy: TVkGiftPrivacy read FPrivacy write FPrivacy;
     constructor Create; override;
     destructor Destroy; override;
   end;

@@ -3,22 +3,44 @@ unit VK.Donut;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Profile, VK.Entity.Donut;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Profile, VK.Entity.Donut;
 
 type
   TVkParamsDonutGetFriends = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор сообщества
+    /// </summary>
     function OwnerId(const Value: Integer): TVkParamsDonutGetFriends;
+    /// <summary>
+    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields = []): TVkParamsDonutGetFriends;
-    function Offset(const Value: Integer): TVkParamsDonutGetFriends;
-    function Count(const Value: Integer): TVkParamsDonutGetFriends;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества друзей
+    /// </summary>
+    function Offset(const Value: Integer = 0): TVkParamsDonutGetFriends;
+    /// <summary>
+    /// Количество друзей, информацию о которых необходимо вернуть (максимальное значение 100)
+    /// </summary>
+    function Count(const Value: Integer = 10): TVkParamsDonutGetFriends;
   end;
 
   TVkParamsDonutGetSubscriptions = record
     List: TParams;
+    /// <summary>
+    /// Список дополнительных полей профилей и групп, которые необходимо вернуть
+    /// </summary>
     function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsDonutGetSubscriptions;
-    function Offset(const Value: Integer): TVkParamsDonutGetSubscriptions;
-    function Count(const Value: Integer): TVkParamsDonutGetSubscriptions;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества подписок
+    /// </summary>
+    function Offset(const Value: Integer = 0): TVkParamsDonutGetSubscriptions;
+    /// <summary>
+    /// Количество подписок, информацию о которых необходимо вернуть (максимальное значение 100)
+    /// </summary>
+    function Count(const Value: Integer = 10): TVkParamsDonutGetSubscriptions;
   end;
 
   /// <summary>

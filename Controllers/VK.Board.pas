@@ -3,8 +3,9 @@ unit VK.Board;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
-  VK.Entity.Board, VK.Entity.Board.Comment;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Board,
+  VK.Entity.Board.Comment;
 
 type
   TVkParamsBoardCommentCreate = record

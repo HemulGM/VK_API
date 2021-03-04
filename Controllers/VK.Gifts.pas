@@ -3,8 +3,8 @@ unit VK.Gifts;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Gift,
-  VK.CommonUtils;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Gift, VK.CommonUtils;
 
 type
   TGiftsController = class(TVkController)

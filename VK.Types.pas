@@ -859,6 +859,13 @@ type
     class function Create(const Value: string): TVkPlatform; static;
   end;
 
+  /// <summary>
+  /// All Ч им€ отправител€ и сообщение видно всем;
+  /// NameOnly Ч им€ отправител€ видно всем, сообщение видно только получателю;
+  /// Anonymous Ч им€ отправител€ скрыто, сообщение видно только получателю.
+  /// </summary>
+  TVkGiftPrivacy = (All, NameOnly, Anonymous);
+
   TVkStatInterval = (Day, Week, Month, Year, All);
 
   TVkStatIntervalHelper = record helper for TVkStatInterval
@@ -1005,6 +1012,13 @@ type
 
   TVkFavePageTypeHelper = record helper for TVkFavePageType
     function ToString: string; inline;
+  end;
+
+  TVkFaveType = (Post, Video, Product, Article, Link);
+
+  TVkFaveTypeHelper = record helper for TVkFaveType
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkFaveType; static; inline;
   end;
 
   /// <summary>
@@ -1396,6 +1410,7 @@ const
   VkKeyboardActionType: array[TVkKeyboardActionType] of string = ('text', 'open_link', 'location', 'vkpay', 'open_app', 'callback');
   VkLiveStatus: array[TVkLiveStatus] of string = ('waiting', 'started', 'finished', 'failed', 'upcoming');
   VkPaymentStatus: array[TVkPaymentStatus] of string = ('not_paid', 'paid', 'returned');
+  VkFaveType: array[TVkFaveType] of string = ('post', 'video', 'product', 'article', 'link');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -2837,6 +2852,18 @@ end;
 function TVkPaymentStatusHelper.ToString: string;
 begin
   Result := VkPaymentStatus[Self];
+end;
+
+{ TVkFaveTypeHelper }
+
+class function TVkFaveTypeHelper.Create(const Value: string): TVkFaveType;
+begin
+  Result := TVkFaveType(IndexStr(Value, VkFaveType));
+end;
+
+function TVkFaveTypeHelper.ToString: string;
+begin
+  Result := VkFaveType[Self];
 end;
 
 end.

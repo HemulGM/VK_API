@@ -3,194 +3,344 @@ unit VK.Friends;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
-  VK.Entity.Common, VK.Entity.Common.List;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Profile, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkParamsFriendsGet = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя, для которого необходимо получить список друзей.
+    /// Если параметр не задан, то считается, что он равен идентификатору текущего
+    /// пользователя (справедливо для вызова с передачей AccessToken)
+    /// </summary>
     function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор списка друзей, полученный методом GetLists,
+    /// друзей из которого необходимо получить. Данный параметр учитывается,
+    /// только когда параметр UserId равен идентификатору текущего пользователя.
+    /// Этот параметр доступен только для Standalone-приложений с ключом доступа,
+    /// полученным по схеме Implicit Flow
+    /// </summary>
     function ListId(const Value: Integer): Integer;
+    /// <summary>
+    /// Порядок, в котором нужно вернуть список друзей.
+    /// По умолчанию список сортируется в порядке возрастания идентификаторов пользователей
+    /// </summary>
     function Order(const Value: TVkFriendsOrder): Integer;
-    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество друзей, которое нужно вернуть
+    /// </summary>
+    function Count(const Value: Integer = 5000): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества друзей
+    /// </summary>
     function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователя
+    /// </summary>
     function NameCase(const Value: TVkNameCase): Integer;
+    /// <summary>
+    /// Ref
+    /// </summary>
     function Ref(const Value: string): Integer;
   end;
 
   TVkParamsFriendsListEdit = record
     List: TParams;
+    /// <summary>
+    /// Название списка друзей
+    /// </summary>
     function Name(const Value: string): Integer;
+    /// <summary>
+    /// Идентификатор списка друзей
+    /// </summary>
     function ListId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификаторы пользователей, включенных в список
+    /// </summary>
     function UserIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификаторы пользователей, которых необходимо добавить в список. (в случае если не передан UserIds)
+    /// </summary>
     function AddUserIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификаторы пользователей, которых необходимо изъять из списка. (в случае если не передан UserIds)
+    /// </summary>
     function DeleteUserIds(const Value: TIdList): Integer;
   end;
 
   TVkParamsFriendsGetMutual = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя, чьи друзья пересекаются с друзьями пользователя с идентификатором TargetUid.
+    /// Если параметр не задан, то считается, что SourceUid равен идентификатору текущего пользователя
+    /// </summary>
     function SourceUid(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, с которым необходимо искать общих друзей
+    /// </summary>
     function TargetUid(const Value: Integer): Integer;
+    /// <summary>
+    /// Список идентификаторов пользователей, с которыми необходимо искать общих друзей (не более 100)
+    /// </summary>
     function TargetUids(const Value: TIdList): Integer;
-    function OrderRandom(const Value: Boolean): Integer;
+    /// <summary>
+    /// Возвращает друзей в случайном порядке
+    /// </summary>
+    function OrderRandom(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Количество общих друзей, которое нужно вернуть. (по умолчанию – все общие друзья)
+    /// </summary>
     function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества общих друзей
+    /// </summary>
     function Offset(const Value: Integer): Integer;
   end;
 
   TVkParamsFriendsGetOnline = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор пользователя, для которого необходимо получить список друзей онлайн.
+    /// Если параметр не задан, то считается, что он равен идентификатору текущего пользователя
+    /// </summary>
     function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор списка друзей. Если параметр не задан,
+    /// возвращается информация обо всех друзьях, находящихся на сайте
+    /// </summary>
     function ListId(const Value: Integer): Integer;
-    function OnlineMobile(const Value: Boolean): Integer;
+    /// <summary>
+    /// True — будет возвращено дополнительное поле OnlineMobile
+    /// </summary>
+    function OnlineMobile(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Порядок, в котором нужно вернуть список друзей, находящихся на сайте.
+    /// По умолчанию список сортируется в порядке возрастания идентификаторов пользователей.
+    /// </summary>
     function Order(const Value: TVkFriendsOrder): Integer;
+    /// <summary>
+    /// Количество друзей онлайн, которое нужно вернуть. (по умолчанию – все друзья онлайн)
+    /// </summary>
     function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества друзей онлайн
+    /// </summary>
     function Offset(const Value: Integer): Integer;
   end;
 
   TVkParamsFriendsGetRequests = record
     List: TParams;
-    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Максимальное количество заявок на добавление в друзья, которые необходимо получить (не более 1000)
+    /// </summary>
+    function Count(const Value: Integer = 100): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества заявок на добавление в друзья
+    /// </summary>
     function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Определяет, требуется ли возвращать в ответе список общих друзей, если они есть.
+    /// Обратите внимание, что при использовании NeedMutual будет возвращено не более 2 заявок
+    /// </summary>
     function NeedMutual(const Value: Boolean): Integer;
+    /// <summary>
+    /// False — возвращать полученные заявки в друзья, True — возвращать отправленные пользователем заявки
+    /// </summary>
     function &Out(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// False — сортировать по дате добавления, True — сортировать по количеству общих друзей.
+    /// (Если Out = True, этот параметр не учитывается)
+    /// </summary>
     function Sort(const Value: Boolean): Integer;
-    function NeedViewed(const Value: Boolean): Integer;
-    function Suggested(const Value: Boolean): Integer;
+    /// <summary>
+    /// False - не возвращать просмотренные заявки, True — возвращать просмотренные заявки.
+    /// (Если Out = True, данный параметр не учитывается)
+    /// </summary>
+    function NeedViewed(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// True — возвращать рекомендованных другими пользователями друзей, False — возвращать заявки в друзья
+    /// </summary>
+    function Suggested(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Ref
+    /// </summary>
+    function Ref(const Value: string): Integer;
   end;
 
   TVkParamsFriendsGetSuggestions = record
     List: TParams;
-    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество рекомендаций, которое необходимо вернуть (максимальное значение 500)
+    /// </summary>
+    function Count(const Value: Integer = 500): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выбора определённого подмножества списка
+    /// </summary>
     function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Пользователи, с которыми много общих друзей
+    /// </summary>
     function FilterMutual(const Value: Boolean): Integer;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователя
+    /// </summary>
     function NameCase(const Value: TVkNameCase): Integer;
   end;
 
   TVkParamsFriendsSearch = record
     List: TParams;
-    function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, по списку друзей которого необходимо произвести поиск
+    /// </summary>
+    function UserId(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Строка запроса
+    /// </summary>
     function Query(const Value: string): Integer;
-    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Количество друзей, которое нужно вернуть (максимальное значение 1000)
+    /// </summary>
+    function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества друзей
+    /// </summary>
     function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
     function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователя
+    /// </summary>
     function NameCase(const Value: TVkNameCase): Integer;
   end;
 
   TFriendsController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
     function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsOrder = TVkFriendsOrder.None): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
     function Get(var Items: TVkProfiles; Fields: TVkProfileFields = []; Order: TVkFriendsOrder = TVkFriendsOrder.None): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
     function Get(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
     function Get(var Items: TVkProfiles; Params: TVkParamsFriendsGet): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
     function GetIds(var Items: TVkIdList; Params: TVkParamsFriendsGet): Boolean; overload;
     /// <summary>
-    /// Одобряет или создает заявку на добавление в друзья.
+    /// Одобряет или создает заявку на добавление в друзья
     /// </summary>
     function Add(var Info: TVkFriendAddInfo; UserId: Integer; Text: string; Follow: Boolean = False): Boolean;
     /// <summary>
-    /// Создает новый список друзей у текущего пользователя.
+    /// Создает новый список друзей у текущего пользователя
     /// </summary>
     function AddList(var ListId: Integer; Name: string; UserIds: TIdList): Boolean;
     /// <summary>
-    /// Возвращает информацию о том, добавлен ли текущий пользователь в друзья у указанных пользователей.
+    /// Возвращает информацию о том, добавлен ли текущий пользователь в друзья у указанных пользователей
     /// </summary>
     function AreFriends(var Items: TVkFriendInfo; UserIds: TIdList; NeedSign: Boolean; Extended: Boolean): Boolean;
     /// <summary>
-    /// Удаляет пользователя из списка друзей или отклоняет заявку в друзья.
+    /// Удаляет пользователя из списка друзей или отклоняет заявку в друзья
     /// </summary>
     function Delete(var Info: TVkFriendDeleteInfo; UserId: Integer): Boolean; overload;
     /// <summary>
-    /// Удаляет пользователя из списка друзей или отклоняет заявку в друзья.
+    /// Удаляет пользователя из списка друзей или отклоняет заявку в друзья
     /// </summary>
     function Delete(UserId: Integer): Boolean; overload;
     /// <summary>
-    /// Отмечает все входящие заявки на добавление в друзья как просмотренные.
+    /// Отмечает все входящие заявки на добавление в друзья как просмотренные
     /// </summary>
     function DeleteAllRequests: Boolean;
     /// <summary>
-    /// Удаляет существующий список друзей текущего пользователя.
+    /// Удаляет существующий список друзей текущего пользователя
     /// </summary>
     function DeleteList(ListId: Integer): Boolean;
     /// <summary>
-    /// Редактирует списки друзей для выбранного друга.
+    /// Редактирует списки друзей для выбранного друга
     /// </summary>
     function Edit(UserId: Integer; ListIds: TIdList): Boolean;
     /// <summary>
-    /// Редактирует списки друзей для выбранного друга.
+    /// Редактирует списки друзей для выбранного друга
     /// </summary>
     function EditList(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Редактирует списки друзей для выбранного друга.
+    /// Редактирует списки друзей для выбранного друга
     /// </summary>
     function EditList(Params: TVkParamsFriendsListEdit): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей текущего пользователя, которые установили данное приложение.
+    /// Возвращает список идентификаторов друзей текущего пользователя, которые установили данное приложение
     /// </summary>
     function GetAppUsers(var Items: TVkIdList): Boolean;
     /// <summary>
-    /// Возвращает список друзей пользователя, у которых завалидированные или указанные в профиле телефонные номера входят в заданный список.
+    /// Возвращает список друзей пользователя, у которых завалидированные или указанные в профиле телефонные номера входят в заданный список
     /// </summary>
     function GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkProfileFields): Boolean;
     /// <summary>
-    /// Возвращает список меток друзей пользователя.
+    /// Возвращает список меток друзей пользователя
     /// </summary>
     function GetLists(var Items: TVkFriendsList; UserId: Integer; ReturnSystem: Boolean = False): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов общих друзей между парой пользователей.
+    /// Возвращает список идентификаторов общих друзей между парой пользователей
     /// </summary>
     function GetMutual(var Items: TVkIdList; Params: TVkParamsFriendsGetMutual): Boolean;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя, находящихся на сайте.
+    /// Возвращает список идентификаторов друзей пользователя, находящихся на сайте
     /// </summary>
     function GetOnline(var Items: TVkFriendsOnline; Params: TVkParamsFriendsGetOnline): Boolean;
     /// <summary>
-    /// Возвращает список идентификаторов недавно добавленных друзей текущего пользователя.
+    /// Возвращает список идентификаторов недавно добавленных друзей текущего пользователя
     /// </summary>
     function GetRecent(var Items: TVkIdList; Count: Integer = 100): Boolean;
     /// <summary>
-    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя
     /// </summary>
     function GetRequests(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя
     /// </summary>
     function GetRequests(var Items: TVkProfiles; Params: TVkParamsFriendsGetRequests): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя
     /// </summary>
     function GetRequestsIds(var Items: TVkIdList; Params: TVkParamsFriendsGetRequests): Boolean; overload;
     /// <summary>
-    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя.
+    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя
     /// </summary>
     function GetSuggestions(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя.
+    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя
     /// </summary>
     function GetSuggestions(var Items: TVkProfiles; Params: TVkParamsFriendsGetSuggestions): Boolean; overload;
     /// <summary>
-    /// Позволяет искать по списку друзей пользователей.
+    /// Позволяет искать по списку друзей пользователей
     /// </summary>
     function Search(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет искать по списку друзей пользователей.
+    /// Позволяет искать по списку друзей пользователей
     /// </summary>
     function Search(var Items: TVkProfiles; Params: TVkParamsFriendsSearch): Boolean; overload;
   end;
@@ -576,6 +726,11 @@ end;
 function TVkParamsFriendsGetRequests.out(const Value: Boolean): Integer;
 begin
   Result := List.Add('out', Value);
+end;
+
+function TVkParamsFriendsGetRequests.Ref(const Value: string): Integer;
+begin
+  Result := List.Add('ref', Value);
 end;
 
 function TVkParamsFriendsGetRequests.Sort(const Value: Boolean): Integer;

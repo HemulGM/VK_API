@@ -101,6 +101,9 @@ type
   TConversationDisableReasonInterceptor = class(TEnumInterceptor<TVkConversationDisableReason>)
   end;
 
+  TGiftPrivacyInterceptor = class(TEnumInterceptor<TVkGiftPrivacy>)
+  end;
+
   TPeerTypeInterceptor = class(TJSONInterceptorStringToString)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
@@ -174,6 +177,12 @@ type
   end;
 
   TLiveStatusInterceptor = class(TEnumInterceptor<TVkLiveStatus>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TFaveTypeInterceptor = class(TEnumInterceptor<TVkFaveType>)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
@@ -433,6 +442,18 @@ end;
 procedure TLiveStatusInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkLiveStatus.Create(Arg)));
+end;
+
+{ TFaveTypeInterceptor }
+
+function TFaveTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkFaveType>.ToString;
+end;
+
+procedure TFaveTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkFaveType.Create(Arg)));
 end;
 
 end.

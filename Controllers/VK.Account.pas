@@ -3,37 +3,104 @@ unit VK.Account;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.AccountInfo,
-  VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers,
+  VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Common,
   VK.Entity.AccountInfoRequest, VK.Entity.Account.Banned, VK.CommonUtils;
 
 type
   TVkParamsRegisterDevice = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор устройства, используемый для отправки уведомлений.
+    /// (для mpns идентификатор должен представлять из себя URL для отправки уведомлений)
+    /// </summary>
     function Token(const Value: string): TVkParamsRegisterDevice;
+    /// <summary>
+    /// Строковое название модели устройства
+    /// </summary>
     function DeviceModel(const Value: string): TVkParamsRegisterDevice;
+    /// <summary>
+    /// Год устройства
+    /// </summary>
     function DeviceYear(const Value: Integer): TVkParamsRegisterDevice;
+    /// <summary>
+    /// Уникальный идентификатор устройства
+    /// </summary>
     function DeviceId(const Value: string): TVkParamsRegisterDevice;
+    /// <summary>
+    /// Строковая версия операционной системы устройства
+    /// </summary>
     function SystemVersion(const Value: string): TVkParamsRegisterDevice;
+    /// <summary>
+    /// Настройки уведомлений (https://vk.com/dev/push_settings)
+    /// </summary>
     function Settings(const Value: string): TVkParamsRegisterDevice;
+    /// <summary>
+    /// Флаг предназначен для iOS устройств.
+    /// True — использовать Sandbox сервер для отправки push-уведомлений, False — не использовать
+    /// </summary>
     function Sandbox(const Value: string): TVkParamsRegisterDevice;
   end;
 
   TVkParamsProfileInfo = record
     List: TParams;
+    /// <summary>
+    /// Имя пользователя. Обязательно с большой буквы
+    /// </summary>
     function FirstName(const Value: string): TVkParamsProfileInfo;
+    /// <summary>
+    /// Фамилия пользователя. Обязательно с большой буквы
+    /// </summary>
     function LastName(const Value: string): TVkParamsProfileInfo;
+    /// <summary>
+    /// Девичья фамилия пользователя (только для женского пола)
+    /// </summary>
     function MaidenName(const Value: string): TVkParamsProfileInfo;
+    /// <summary>
+    /// Короткое имя страницы
+    /// </summary>
     function ScreenName(const Value: string): TVkParamsProfileInfo;
+    /// <summary>
+    /// Идентификатор заявки на смену имени, которую необходимо отменить.
+    /// Если передан этот параметр, все остальные параметры игнорируются
+    /// </summary>
     function CancelRequestId(const Value: Integer): TVkParamsProfileInfo;
+    /// <summary>
+    /// Пол пользователя
+    /// </summary>
     function Sex(const Value: TVkSex): TVkParamsProfileInfo;
+    /// <summary>
+    /// Семейное положение пользователя
+    /// </summary>
     function Relation(const Value: TVkRelation): TVkParamsProfileInfo;
+    /// <summary>
+    /// Идентификатор пользователя, с которым связано семейное положение
+    /// </summary>
     function RelationPartnerId(const Value: Integer): TVkParamsProfileInfo;
+    /// <summary>
+    /// Дата рождения пользователя
+    /// </summary>
     function BirthDate(const Value: TDateTime): TVkParamsProfileInfo;
+    /// <summary>
+    /// Видимость даты рождения
+    /// </summary>
     function BirthDateVisibility(const Value: TVkBirthDateVisibility): TVkParamsProfileInfo;
+    /// <summary>
+    /// Родной город пользователя
+    /// </summary>
     function HomeTown(const Value: string): TVkParamsProfileInfo;
+    /// <summary>
+    /// Идентификатор страны пользователя
+    /// </summary>
     function CountryId(const Value: Integer): TVkParamsProfileInfo;
+    /// <summary>
+    /// Идентификатор города пользователя
+    /// </summary>
     function CityId(const Value: Integer): TVkParamsProfileInfo;
+    /// <summary>
+    /// Статус пользователя, который также может быть изменен методом status.set
+    /// </summary>
     function Status(const Value: string): TVkParamsProfileInfo;
   end;
 
@@ -77,6 +144,8 @@ type
     function GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
     /// <summary>
     /// Подписывает устройство на базе iOS, Android, Windows Phone или Mac на получение Push-уведомлений.
+    /// При отсутствии поля settings в запросе будут применены текущие настройки.
+    /// Для нового идентификатора устройства token будут применены последние настройки для данного DeviceId
     /// </summary>
     function RegisterDevice(const Data: TVkParamsRegisterDevice): Boolean;
     /// <summary>
@@ -131,7 +200,7 @@ begin
     ['restore_sid', RestoreSid],
     ['change_password_hash', ChangePasswordHash],
     ['old_password', OldPassword]]).
-    GetValue('token', Token) and (not Token.IsEmpty);
+    GetValue('token', Token);
 end;
 
 function TAccountController.GetActiveOffers(var Items: TVkActiveOffers; Count: Integer; Offset: Integer): Boolean;

@@ -3,17 +3,42 @@ unit VK.Apps;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.App;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.App;
 
 type
   TVkParamsAppsGet = record
     List: TParams;
+    /// <summary>
+    /// Идентификатор приложения, данные которого необходимо получить.
+    /// Если этот параметр и параметр app_ids не указан,
+    /// возвращается идентификатор приложения, через которое выдан ключ доступа (access_token)
+    /// </summary>
     function AppId(const Value: Integer): TVkParamsAppsGet;
+    /// <summary>
+    /// Список идентификаторов приложений, данные которых необходимо получить (не более 100)
+    /// </summary>
     function AppIds(const Value: TIdList): TVkParamsAppsGet;
-    function &Platform(const Value: TVkPlatform): TVkParamsAppsGet;
+    /// <summary>
+    /// Платформа, для которой необходимо вернуть данные
+    /// </summary>
+    function &Platform(const Value: TVkPlatform = TVkPlatform.Web): TVkParamsAppsGet;
+    /// <summary>
+    /// True — возвращать дополнительные поля. По умолчанию возвращает только основные поля приложений
+    /// </summary>
     function Extended(const Value: Boolean): TVkParamsAppsGet;
-    function ReturnFriends(const Value: Boolean): TVkParamsAppsGet;
+    /// <summary>
+    /// True – возвращать список друзей, установивших это приложение. По умолчанию: False
+    /// Параметр учитывается только при передаче AccessToken
+    /// </summary>
+    function ReturnFriends(const Value: Boolean = False): TVkParamsAppsGet;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть для профилей пользователей и групп
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsAppsGet;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователей
+    /// </summary>
     function NameCase(const Value: TVkNameCase): TVkParamsAppsGet;
   end;
 
