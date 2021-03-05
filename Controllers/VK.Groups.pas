@@ -1325,7 +1325,7 @@ type
     /// <summary>
     ///  Позволяет создать или отредактировать заметку о пользователе в рамках переписки пользователя с сообществом
     /// </summary>
-    function SetUserNote(GroupId, UserId: Integer; Note: TVkNoteText): Boolean;
+    function SetUserNote(GroupId, UserId: Integer; Note: string): Boolean;
     /// <summary>
     ///  Позволяет добавить новый тег в сообщество
     /// </summary>
@@ -1754,7 +1754,7 @@ begin
   Result := Handler.Execute('groups.setSettings', Params.List).ResponseIsTrue;
 end;
 
-function TGroupsController.SetUserNote(GroupId, UserId: Integer; Note: TVkNoteText): Boolean;
+function TGroupsController.SetUserNote(GroupId, UserId: Integer; Note: string): Boolean;
 begin
   Result := Handler.Execute('groups.setLongPollSettings', [
     ['group_id', GroupId.ToString],

@@ -19,6 +19,41 @@ type
 
   TVkCommentThread = class;
 
+  /// <summary>
+  /// ќбъект PostSource, описывающий способ размещени€ записи на стене
+  /// </summary>
+  TVkPostSource = class(TVkEntity)
+  private
+    FData: string;
+    FPlatform: string;
+    [JsonReflectAttribute(ctString, rtString, TPostSourceTypeInterceptor)]
+    FType: TVkPostSourceType;
+    FUrl: string;
+  public
+    /// <summary>
+    /// “ип действи€ (только дл€ Type = VK или Widget)
+    /// ¬озможные значени€:
+    /// profile_activity Ч изменение статуса под именем пользовател€ (дл€ Type = VK);
+    /// profile_photo Ч изменение профильной фотографии пользовател€ (дл€ Type = VK);
+    /// comments Ч виджет комментариев (дл€ Type = Widget);
+    /// like Ч виджет Ђћне нравитс€ї (дл€ Type = Widget);
+    /// poll Ч виджет опросов (дл€ Type = Widget);
+    /// </summary>
+    property Data: string read FData write FData;
+    /// <summary>
+    /// Ќазвание платформы, если оно доступно (android; iphone; wphone)
+    /// </summary>
+    property&Platform: string read FPlatform write FPlatform;
+    /// <summary>
+    /// “ип источника
+    /// </summary>
+    property&Type: TVkPostSourceType read FType write FType;
+    /// <summary>
+    /// URL ресурса, с которого была опубликована запись
+    /// </summary>
+    property Url: string read FUrl write FUrl;
+  end;
+
   TVkAttachment = class(TVkEntity)
   private
     [JsonReflectAttribute(ctString, rtString, TAttachmentTypeInterceptor)]
@@ -339,7 +374,8 @@ type
     FAccess_key: string;
     FCopyright: TVkCopyright;
     FDonut: TVkDonut;
-    FType: string;
+    [JsonReflectAttribute(ctString, rtString, TPostTypeInterceptor)]
+    FType: TVkPostType;
     FCan_archive: Boolean;
     FIs_archived: Boolean;
     FShort_text_rate: Extended;
@@ -475,7 +511,7 @@ type
     /// <summary>
     /// “ип записи, может принимать следующие значени€: post, copy, reply, postpone, suggest.
     /// </summary>
-    property&Type: string read FType write FType;
+    property&Type: TVkPostType read FType write FType;
     /// <summary>
     /// »нформаци€ о просмотрах записи
     /// </summary>

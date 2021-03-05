@@ -31,19 +31,25 @@ object FormMain: TFormMain
       Height = 13
       Align = alTop
       Caption = 'Logining...'
-      ExplicitWidth = 51
+      ExplicitLeft = 6
+      ExplicitTop = 14
     end
     object PageControl1: TPageControl
-      Left = 0
-      Top = 19
-      Width = 788
-      Height = 540
-      ActivePage = TabSheet9
+      AlignWithMargins = True
+      Left = 3
+      Top = 39
+      Width = 782
+      Height = 517
+      Margins.Top = 20
+      ActivePage = TabSheetNewsfeed
       Align = alClient
+      MultiLine = True
       TabOrder = 0
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button20: TButton
           Left = 3
           Top = 3
@@ -164,6 +170,8 @@ object FormMain: TFormMain
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button1: TButton
           Left = 3
           Top = 3
@@ -258,6 +266,8 @@ object FormMain: TFormMain
       object TabSheet2: TTabSheet
         Caption = 'Auth'
         ImageIndex = 1
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button11: TButton
           Left = 3
           Top = 3
@@ -280,6 +290,8 @@ object FormMain: TFormMain
       object TabSheet3: TTabSheet
         Caption = 'Audio'
         ImageIndex = 2
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button21: TButton
           Left = 3
           Top = 3
@@ -374,6 +386,8 @@ object FormMain: TFormMain
       object TabSheet4: TTabSheet
         Caption = 'Board'
         ImageIndex = 3
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button22: TButton
           Left = 3
           Top = 3
@@ -387,6 +401,8 @@ object FormMain: TFormMain
       object TabSheet5: TTabSheet
         Caption = 'Status'
         ImageIndex = 4
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button17: TButton
           Left = 3
           Top = 3
@@ -409,6 +425,8 @@ object FormMain: TFormMain
       object TabSheet6: TTabSheet
         Caption = 'Wall'
         ImageIndex = 5
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button19: TButton
           Left = 3
           Top = 3
@@ -431,6 +449,8 @@ object FormMain: TFormMain
       object TabSheet7: TTabSheet
         Caption = 'Users'
         ImageIndex = 6
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button12: TButton
           Left = 3
           Top = 3
@@ -444,6 +464,8 @@ object FormMain: TFormMain
       object TabSheet8: TTabSheet
         Caption = 'Groups'
         ImageIndex = 7
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button25: TButton
           Left = 3
           Top = 3
@@ -475,6 +497,8 @@ object FormMain: TFormMain
       object TabSheet10: TTabSheet
         Caption = 'Messages'
         ImageIndex = 9
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button27: TButton
           Left = 3
           Top = 3
@@ -497,6 +521,8 @@ object FormMain: TFormMain
       object TabSheet11: TTabSheet
         Caption = 'Friends'
         ImageIndex = 10
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button28: TButton
           Left = 3
           Top = 3
@@ -519,6 +545,8 @@ object FormMain: TFormMain
       object TabSheetPolls: TTabSheet
         Caption = 'Polls'
         ImageIndex = 11
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button32: TButton
           Left = 3
           Top = 3
@@ -532,6 +560,8 @@ object FormMain: TFormMain
       object TabSheetPodcasts: TTabSheet
         Caption = 'Podcasts'
         ImageIndex = 12
+        ExplicitWidth = 780
+        ExplicitHeight = 512
         object Button33: TButton
           Left = 3
           Top = 3
@@ -540,6 +570,21 @@ object FormMain: TFormMain
           Caption = 'Search'
           TabOrder = 0
           OnClick = Button33Click
+        end
+      end
+      object TabSheetNewsfeed: TTabSheet
+        Caption = 'Newsfeed'
+        ImageIndex = 13
+        ExplicitWidth = 780
+        ExplicitHeight = 512
+        object Button48: TButton
+          Left = 3
+          Top = 3
+          Width = 75
+          Height = 25
+          Caption = 'Button48'
+          TabOrder = 0
+          OnClick = Button48Click
         end
       end
     end

@@ -7,7 +7,8 @@ uses
   VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
   VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page,
   VK.Entity.Album, VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
-  VK.Entity.Media, VK.Entity.Info, VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Geo;
+  VK.Entity.Media, VK.Entity.Info, VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Geo,
+  VK.Wrap.Interceptors, VK.Entity.Donut;
 
 type
   TVkNewsItem = class(TVkObject)
@@ -41,11 +42,13 @@ type
     FTo_id: Integer;
     FPost_id: Integer;
     FCan_set_category: Boolean;
-    FType: string;
+    [JsonReflectAttribute(ctString, rtString, TNewsfeedTypeInterceptor)]
+    FType: TVkNewsfeedType;
     FSource_id: Integer;
     FCan_doubt_category: Boolean;
     FPhotos: TVkPhotos;
     FCopyright: TVkCopyright;
+    FDonut: TVkDonut;
   public
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
     property CanDelete: Boolean read FCan_delete write FCan_delete;
@@ -58,6 +61,7 @@ type
     property Copyright: TVkCopyright read FCopyright write FCopyright;
     property CreatedBy: Integer read FCreated_by write FCreated_by;
     property Date: TDateTime read FDate write FDate;
+    property Donut: TVkDonut read FDonut write FDonut;
     property FriendsOnly: Boolean read FFriends_only write FFriends_only;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Geo: TVkGeo read FGeo write FGeo;
@@ -79,8 +83,7 @@ type
     property Text: string read FText write FText;
     property ToId: Integer read FTo_id write FTo_id;
     property Views: TVkViewsInfo read FViews write FViews;
-    property&Type: string read FType write FType;
-    constructor Create; override;
+    property&Type: TVkNewsfeedType read FType write FType;
     destructor Destroy; override;
   end;
 
@@ -170,28 +173,25 @@ uses
 
 { TVkNewsItem }
 
-constructor TVkNewsItem.Create;
-begin
-  inherited;
-  FPost_source := TVkPostSource.Create();
-  FComments := TVkCommentsInfo.Create();
-  FLikes := TVkLikesInfo.Create();
-  FReposts := TVkRepostsInfo.Create();
-  FGeo := TVkGeo.Create;
-  FPhotos := TVkPhotos.Create;
-end;
-
 destructor TVkNewsItem.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPost>(FCopy_history);
   TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
-  FGeo.Free;
-  FPhotos.Free;
-  FPost_source.Free;
-  FComments.Free;
-  FLikes.Free;
-  FReposts.Free;
+  if Assigned(FGeo) then
+    FGeo.Free;
+  if Assigned(FPhotos) then
+    FPhotos.Free;
+  if Assigned(FPost_source) then
+    FPost_source.Free;
+  if Assigned(FComments) then
+    FComments.Free;
+  if Assigned(FLikes) then
+    FLikes.Free;
+  if Assigned(FReposts) then
+    FReposts.Free;
   FViews.Free;
+  if Assigned(FDonut) then
+    FDonut.Free;
   inherited;
 end;
 
