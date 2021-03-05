@@ -3,26 +3,50 @@ unit VK.Entity.GroupSettings;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Group, VK.Entity.Market;
+  Generics.Collections, Rest.Json, REST.Json.Interceptors, VK.Entity.Common, VK.Entity.Group, VK.Entity.Market,
+  VK.Entity.Geo, VK.Types, REST.JsonReflect, VK.Entity.Group.Categories, VK.Wrap.Interceptors, VK.Entity.Group.Youla;
 
 type
-  TVkGroupSettingStr = class(TVkEntity)
+  TVkActionButtonTarget = class
   private
-    FNew_value: string;
-    FOld_value: string;
+    FIs_Internal: Boolean;
+    FUrl: string;
+    FGoogle_store_url: string;
+    FItunes_url: string;
   public
-    property NewValue: string read FNew_value write FNew_value;
-    property OldValue: string read FOld_value write FOld_value;
+    property IsInternal: Boolean read FIs_Internal write FIs_Internal;
+    property Url: string read FUrl write FUrl;
+    property GoogleStoreUrl: string read FGoogle_store_url write FGoogle_store_url;
+    property ItunesUrl: string read FItunes_url write FItunes_url;
   end;
 
-  TVkGroupSettingInt = class(TVkEntity)
+  TVkActionButton = class(TVkEntity)
   private
-    FNew_value: Integer;
-    FOld_value: Integer;
+    FAction_Type: string; //open_app
+    FIs_Enabled: Boolean;
+    FTarget: TVkActionButtonTarget;
+    FTitle: string;
   public
-    property NewValue: Integer read FNew_value write FNew_value;
-    property OldValue: Integer read FOld_value write FOld_value;
+    property ActionType: string read FAction_Type write FAction_Type;
+    property IsEnabled: Boolean read FIs_Enabled write FIs_Enabled;
+    property Target: TVkActionButtonTarget read FTarget write FTarget;
+    property Title: string read FTitle write FTitle;
+    constructor Create; override;
+    destructor Destroy; override;
   end;
+
+  TVkGroupSetting<T> = record
+  private
+    FNew_value: T;
+    FOld_value: T;
+  public
+    property NewValue: T read FNew_value write FNew_value;
+    property OldValue: T read FOld_value write FOld_value;
+  end;
+
+  TVkGroupSettingStr = TVkGroupSetting<string>;
+
+  TVkGroupSettingInt = TVkGroupSetting<Integer>;
 
   TVkGroupChangeList = class(TVkEntity)
   private
@@ -59,8 +83,6 @@ type
     property Title: TVkGroupSettingStr read FTitle write FTitle;
     property ScreenName: TVkGroupSettingStr read FScreen_name write FScreen_name;
     property Website: TVkGroupSettingStr read FWebsite write FWebsite;
-    constructor Create; override;
-    destructor Destroy; override;
   end;
 
   TVkGroupSettingsChange = class(TVkEntity)
@@ -77,67 +99,150 @@ type
   TVkGroupMarket = class(TVkEntity)
   private
     FCity_ids: TArray<Integer>;
-    FComments_enabled: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FComments_enabled: Boolean;
     FContact_id: Integer;
     FCountry_ids: TArray<Integer>;
     FCurrency: TVkProductCurrency;
-    FEnabled: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FEnabled: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_message: Boolean;
+    FType: string; //advanced,
   public
     property CityIds: TArray<Integer> read FCity_ids write FCity_ids;
-    property CommentsEnabled: Integer read FComments_enabled write FComments_enabled;
+    property CommentsEnabled: Boolean read FComments_enabled write FComments_enabled;
     property ContactId: Integer read FContact_id write FContact_id;
     property CountryIds: TArray<Integer> read FCountry_ids write FCountry_ids;
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
-    property Enabled: Integer read FEnabled write FEnabled;
+    property CanMessage: Boolean read FCan_message write FCan_message;
+    property Enabled: Boolean read FEnabled write FEnabled;
+    property&Type: string read FType write FType;
     constructor Create; override;
     destructor Destroy; override;
   end;
 
+  TVkLiveCover = class
+  private
+    FIs_Enabled: Boolean;
+    FIs_scalable: Boolean;
+    FStory_ids: TArray<string>;
+  public
+    property StoryIds: TArray<string> read FStory_ids write FStory_ids;
+    property IsEnabled: Boolean read FIs_Enabled write FIs_Enabled;
+    property IsScalable: Boolean read FIs_scalable write FIs_scalable;
+  end;
+
   TVkGroupSettings = class(TVkEntity)
   private
-    FAccess: Integer;
+    [JsonReflectAttribute(ctString, rtString, TGroupAccessInterceptor)]
+    FAccess: TVkGroupAccess;
     FAddress: string;
-    FAge_limits: Integer;
-    FAudio: Integer;
+    [JsonReflectAttribute(ctString, rtString, TAgeLimitsInterceptor)]
+    FAge_limits: TVkAgeLimits;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FAudio: Boolean;
     FDescription: string;
-    FDocs: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FDocs: Boolean;
     FMarket: TVkGroupMarket;
-    FObscene_filter: Integer;
-    FObscene_stopwords: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FObscene_filter: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FObscene_stopwords: Boolean;
     FObscene_words: TArray<string>;
-    FPhotos: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FPhotos: Boolean;
     FPlace: TVkPlace;
     FRss: string;
     FSubject: Integer;
     FSubject_list: TArray<TVkGroupSubject>;
     FTitle: string;
-    FTopics: Integer;
-    FVideo: Integer;
-    FWall: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FTopics: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FVideo: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FWall: Boolean;
     FWebsite: string;
-    FWiki: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FWiki: Boolean;
+    FAction_button: TVkActionButton;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FRecognize_photo: Boolean;
+    FLive_covers: TVkLiveCover;
+    FPublic_category: Integer;
+    FPublic_category_list: TArray<TVkGroupCategory>;
+    FPublic_subcategory: Integer;
+    FMain_section: Integer;
+    FSecondary_section: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FEvents: Boolean;
+    FPhone: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FMessages: Boolean;
+    FCountry_id: Integer;
+    FCity_id: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FArticles: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TStringDateTimeInterceptor)]
+    FPublic_date: TDateTime;
+    FPublic_date_label: string;
+    FSuggested_privacy: Integer;
+    FYoula: TVkGroupYoula;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FContacts: Boolean;
+    FLinks: Boolean;
+    FEvent_group_id: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FStart_date: TDateTime;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FFinish_date: TDateTime;
   public
-    property Access: Integer read FAccess write FAccess;
+    property Access: TVkGroupAccess read FAccess write FAccess;
+    property ActionButton: TVkActionButton read FAction_button write FAction_button;
     property Address: string read FAddress write FAddress;
-    property AgeLimits: Integer read FAge_limits write FAge_limits;
-    property Audio: Integer read FAudio write FAudio;
+    property AgeLimits: TVkAgeLimits read FAge_limits write FAge_limits;
+    property Articles: Boolean read FArticles write FArticles;
+    property Audio: Boolean read FAudio write FAudio;
+    property CityId: Integer read FCity_id write FCity_id;
+    property Contacts: Boolean read FContacts write FContacts;
+    property CountryId: Integer read FCountry_id write FCountry_id;
     property Description: string read FDescription write FDescription;
-    property Docs: Integer read FDocs write FDocs;
+    property Docs: Boolean read FDocs write FDocs;
+    property Events: Boolean read FEvents write FEvents;
+    property EventGroupId: Integer read FEvent_group_id write FEvent_group_id;
+    property FinishDate: TDateTime read FFinish_date write FFinish_date;
+    property Links: Boolean read FLinks write FLinks;
+    property LiveCovers: TVkLiveCover read FLive_covers write FLive_covers;
+    property MainSection: Integer read FMain_section write FMain_section;
     property Market: TVkGroupMarket read FMarket write FMarket;
-    property ObsceneFilter: Integer read FObscene_filter write FObscene_filter;
-    property ObsceneStopwords: Integer read FObscene_stopwords write FObscene_stopwords;
+    property Messages: Boolean read FMessages write FMessages;
+    property ObsceneFilter: Boolean read FObscene_filter write FObscene_filter;
+    property ObsceneStopwords: Boolean read FObscene_stopwords write FObscene_stopwords;
     property ObsceneWords: TArray<string> read FObscene_words write FObscene_words;
-    property Photos: Integer read FPhotos write FPhotos;
+    property Phone: string read FPhone write FPhone;
+    property Photos: Boolean read FPhotos write FPhotos;
     property Place: TVkPlace read FPlace write FPlace;
+    property PublicCategory: Integer read FPublic_category write FPublic_category;
+    property PublicCategoryList: TArray<TVkGroupCategory> read FPublic_category_list write FPublic_category_list;
+    property PublicDate: TDateTime read FPublic_date write FPublic_date;
+    property PublicDateLabel: string read FPublic_date_label write FPublic_date_label;
+    property PublicSubcategory: Integer read FPublic_subcategory write FPublic_subcategory;
+    property RecognizePhoto: Boolean read FRecognize_photo write FRecognize_photo;
     property RSS: string read FRss write FRss;
+    property SecondarySection: Integer read FSecondary_section write FSecondary_section;
+    property StartDate: TDateTime read FStart_date write FStart_date;
     property Subject: Integer read FSubject write FSubject;
     property SubjectList: TArray<TVkGroupSubject> read FSubject_list write FSubject_list;
+    property SuggestedPrivacy: Integer read FSuggested_privacy write FSuggested_privacy;
     property Title: string read FTitle write FTitle;
-    property Topics: Integer read FTopics write FTopics;
-    property Video: Integer read FVideo write FVideo;
-    property Wall: Integer read FWall write FWall;
+    property Topics: Boolean read FTopics write FTopics;
+    property Video: Boolean read FVideo write FVideo;
+    property Wall: Boolean read FWall write FWall;
     property Website: string read FWebsite write FWebsite;
-    property Wiki: Integer read FWiki write FWiki;
+    property Wiki: Boolean read FWiki write FWiki;
+    property Youla: TVkGroupYoula read FYoula write FYoula;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -146,50 +251,6 @@ implementation
 
 uses
   VK.CommonUtils;
-
-{TVkGroupChangeList}
-
-constructor TVkGroupChangeList.Create;
-begin
-  inherited;
-  FCity_id := TVkGroupSettingInt.Create;
-  FDescription := TVkGroupSettingStr.Create;
-  FAudio := TVkGroupSettingInt.Create;
-  FTitle := TVkGroupSettingStr.Create;
-  FScreen_name := TVkGroupSettingStr.Create;
-  FWebsite := TVkGroupSettingStr.Create;
-  FAccess := TVkGroupSettingInt.Create;
-  FPublic_category := TVkGroupSettingInt.Create;
-  FPublic_subcategory := TVkGroupSettingInt.Create;
-  FAge_limits := TVkGroupSettingInt.Create;
-  FDocs := TVkGroupSettingInt.Create;
-  FPhotos := TVkGroupSettingInt.Create;
-  FVideo := TVkGroupSettingInt.Create;
-  FMarket := TVkGroupSettingInt.Create;
-  FTopics := TVkGroupSettingInt.Create;
-  FStatus_default := TVkGroupSettingInt.Create;
-end;
-
-destructor TVkGroupChangeList.Destroy;
-begin
-  FCity_id.Free;
-  FDescription.Free;
-  FAudio.Free;
-  FTitle.Free;
-  FScreen_name.Free;
-  FWebsite.Free;
-  FAccess.Free;
-  FPublic_category.Free;
-  FPublic_subcategory.Free;
-  FAge_limits.Free;
-  FDocs.Free;
-  FPhotos.Free;
-  FVideo.Free;
-  FMarket.Free;
-  FTopics.Free;
-  FStatus_default.Free;
-  inherited;
-end;
 
 {TVkGroupSettingsChange}
 
@@ -209,15 +270,21 @@ end;
 
 constructor TVkGroupSettings.Create;
 begin
-  FPlace := TVkPlace.Create;
+  inherited;
   FMarket := TVkGroupMarket.Create;
 end;
 
 destructor TVkGroupSettings.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkGroupSubject>(FSubject_list);
-  FPlace.Free;
+  TArrayHelp.FreeArrayOfObject<TVkGroupCategory>(FPublic_category_list);
+  if Assigned(FPlace) then
+    FPlace.Free;
   FMarket.Free;
+  if Assigned(FYoula) then
+    FYoula.Free;
+  if Assigned(FAction_button) then
+    FAction_button.Free;
   inherited;
 end;
 
@@ -225,12 +292,27 @@ end;
 
 constructor TVkGroupMarket.Create;
 begin
+  inherited;
   FCurrency := TVkProductCurrency.Create;
 end;
 
 destructor TVkGroupMarket.Destroy;
 begin
   FCurrency.Free;
+  inherited;
+end;
+
+{ TVkActionButton }
+
+constructor TVkActionButton.Create;
+begin
+  inherited;
+  FTarget := TVkActionButtonTarget.Create;
+end;
+
+destructor TVkActionButton.Destroy;
+begin
+  FTarget.Free;
   inherited;
 end;
 

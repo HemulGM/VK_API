@@ -4,8 +4,8 @@ interface
 
 uses
   Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Attachment,
-  VK.Entity.Common.List, VK.Entity.Info, VK.Wrap.Interceptors;
+  VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Common.List, VK.Entity.Info,
+  VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkVideoFiles = class(TVkEntity)
@@ -13,10 +13,14 @@ type
     FExternal: string;
     FMp4_720: string;
     FMp4_360: string;
+    FMp4_480: string;
+    FMp4_240: string;
   public
     property&External: string read FExternal write FExternal;
-    property Mp4720: string read FMp4_720 write FMp4_720;
-    property Mp4360: string read FMp4_360 write FMp4_360;
+    property Mp4_720: string read FMp4_720 write FMp4_720;
+    property Mp4_360: string read FMp4_360 write FMp4_360;
+    property Mp4_240: string read FMp4_240 write FMp4_240;
+    property Mp4_480: string read FMp4_480 write FMp4_480;
   end;
 
   TVkVideoImage = class(TVkImage)
@@ -61,7 +65,8 @@ type
     FPlayer: string;
     FReposts: TVkRepostsInfo;
     FTitle: string;
-    FType: string;
+    [JsonReflectAttribute(ctString, rtString, TVideoTypeInterceptor)]
+    FType: TVkVideoType; //video
     FViews: Integer;
     Ffirst_frame_800: string;
     Fphoto_640: string;
@@ -93,7 +98,8 @@ type
     FConverting: Boolean;
     FIs_subscribed: Boolean;
     FBalance: Integer;
-    FLive_status: string;
+    [JsonReflectAttribute(ctString, rtString, TLiveStatusInterceptor)]
+    FLive_status: TVkLiveStatus;
     FSpectators: Integer;
   public
     /// <summary>
@@ -207,9 +213,9 @@ type
     /// </summary>
     property Live: Boolean read FLive write FLive;
     /// <summary>
-    /// Статус прямой трансляции. Может принимать значения: "waiting", "started", "finished", "failed", "upcoming"
+    /// Статус прямой трансляции
     /// </summary>
-    property LiveStatus: string read FLive_status write FLive_status;
+    property LiveStatus: TVkLiveStatus read FLive_status write FLive_status;
     /// <summary>
     /// Если видео внешнее, количество просмотров в ВК
     /// </summary>
@@ -268,11 +274,11 @@ type
     /// </summary>
     property&Platform: string read FPlatform write FPlatform;
     /// <summary>
-    /// Тип видеозаписи. Может принимать значения: "video", "music_video", "movie"
+    /// Тип видеозаписи
     /// </summary>
-    property&Type: string read FType write FType;
+    property&Type: TVkVideoType read FType write FType;
     ///Методы
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -304,7 +310,7 @@ type
 implementation
 
 uses
-  VK.Types, VK.CommonUtils;
+  VK.CommonUtils;
 
 {TVkVideo}
 
@@ -326,9 +332,9 @@ begin
   inherited;
 end;
 
-function TVkVideo.ToAttachment: string;
+function TVkVideo.ToAttachment: TAttachment;
 begin
-  Result := Attachment.Video(Id, OwnerId, AccessKey);
+  Result := TAttachment.Video(OwnerId, Id, AccessKey);
 end;
 
 {TVkVideoAlbum}

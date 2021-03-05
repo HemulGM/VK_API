@@ -3,24 +3,17 @@ unit VK.Orders;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Market;
+  System.SysUtils, VK.Controller, VK.Types;
 
 type
-  TVkOrderStateAction = (saCancel, saCharge, saRefund);
-
-  TVkOrderStateActionHelper = record helper for TVkOrderStateAction
-    function ToString: string; inline;
-  end;
-
   TOrdersController = class(TVkController)
   public
     /// <summary>
-    /// Отменяет подписку.
+    /// Отменяет подписку
     /// </summary>
     function CancelSubscription(var Status: Boolean; const UserId, SubscriptionId: Integer; PendingCancel: Boolean = False): Boolean;
     /// <summary>
-    /// Изменяет состояние заказа.
+    /// Изменяет состояние заказа
     /// </summary>
     function ChangeState(var OrderState: string; OrderId: Integer; Action: TVkOrderStateAction; AppOrderId: Integer = 0): Boolean;
   end;
@@ -28,7 +21,7 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils;
+  VK.API, VK.CommonUtils;
 
 { TOrdersController }
 
@@ -49,20 +42,6 @@ begin
   Params.Add('action', Action.ToString);
   Params.Add('app_order_id', AppOrderId);
   Result := Handler.Execute('orders.changeState', Params).ResponseAsStr(OrderState);
-end;
-
-{ TVkOrderStateActionHelper }
-
-function TVkOrderStateActionHelper.ToString: string;
-begin
-  case Self of
-    saCancel:
-      Exit('cancel');
-    saCharge:
-      Exit('charge');
-    saRefund:
-      Exit('refund');
-  end;
 end;
 
 end.

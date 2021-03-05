@@ -3,15 +3,12 @@ unit VK.Entity.Media;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
-  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note,
-  VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Info,
-  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
-  VK.Entity.Attachment, VK.Wrap.Interceptors;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
+  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
+  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page,
+  VK.Entity.Album, VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
+  VK.Entity.Market.Album, VK.Entity.Info, VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
+  VK.Wrap.Interceptors, VK.Entity.MoneyTransfer, VK.Entity.Geo;
 
 type
   TVkAttachment = class;
@@ -48,6 +45,7 @@ type
     FPretty_cards: TVkPrettyCards;
     FEvent: TVkEvent;
     FCall: TVkCall;
+    FMoney_transfer: TVkMoneyTransfer;
   public
     property&Type: TVkAttachmentType read FType write FType;
     /// <summary>
@@ -126,6 +124,10 @@ type
     /// Вики-страница
     /// </summary>
     property Page: TVkPage read FPage write FPage;
+    /// <summary>
+    /// Денежный перевод
+    /// </summary>
+    property MoneyTransfer: TVkMoneyTransfer read FMoney_transfer write FMoney_transfer;
     /// <summary>
     /// Альбом с фотографиями
     /// </summary>
@@ -252,7 +254,7 @@ type
     property Thread: TVkCommentThread read FThread write FThread;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkCommentThread = class(TVkEntityList<TVkComment>)
@@ -337,6 +339,10 @@ type
     FAccess_key: string;
     FCopyright: TVkCopyright;
     FDonut: TVkDonut;
+    FType: string;
+    FCan_archive: Boolean;
+    FIs_archived: Boolean;
+    FShort_text_rate: Extended;
   public
     /// <summary>
     /// Идентификатор записи
@@ -350,6 +356,10 @@ type
     /// Медиавложения записи (фотографии, ссылки и т.п.)
     /// </summary>
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
+    /// <summary>
+    /// Информация о том, может ли запись помещена в арихв
+    /// </summary>
+    property CanArchive: Boolean read FCan_archive write FCan_archive;
     /// <summary>
     /// Информация о том, может ли текущий пользователь удалить запись
     /// </summary>
@@ -399,6 +409,10 @@ type
     /// </summary>
     property Geo: TVkGeo read FGeo write FGeo;
     /// <summary>
+    /// Архивная запись
+    /// </summary>
+    property IsArchived: Boolean read FIs_archived write FIs_archived;
+    /// <summary>
     /// True, если объект добавлен в закладки у текущего пользователя.
     /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
@@ -447,6 +461,10 @@ type
     /// </summary>
     property SignerId: Integer read FSigner_id write FSigner_id;
     /// <summary>
+    /// [Получено экспериментальным путём]
+    /// </summary>
+    property ShortTextRate: Extended read FShort_text_rate write FShort_text_rate;
+    /// <summary>
     /// Текст записи
     /// </summary>
     property Text: string read FText write FText;
@@ -455,12 +473,16 @@ type
     /// </summary>
     property ToId: Integer read FTo_id write FTo_id;
     /// <summary>
+    /// Тип записи, может принимать следующие значения: post, copy, reply, postpone, suggest.
+    /// </summary>
+    property&Type: string read FType write FType;
+    /// <summary>
     /// Информация о просмотрах записи
     /// </summary>
     property Views: TVkViewsInfo read FViews write FViews;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkPosts = TVkEntityExtendedList<TVkPost>;
@@ -525,6 +547,8 @@ begin
     FPoll.Free;
   if Assigned(FPage) then
     FPage.Free;
+  if Assigned(FMoney_transfer) then
+    FMoney_transfer.Free;
   if Assigned(FAlbum) then
     FAlbum.Free;
   if Assigned(FPretty_cards) then
@@ -538,27 +562,27 @@ end;
 function TVkAttachment.GetPreviewUrl: string;
 begin
   case&Type of
-    atPhoto:
+    TVkAttachmentType.Photo:
       Exit(Self.FPhoto.Sizes[4].Url);
-    atVideo:
+    TVkAttachmentType.Video:
       Exit(Self.FVideo.Image[4].Url);
-    atAudio:
+    TVkAttachmentType.Audio:
       Exit('');
-    atDoc:
+    TVkAttachmentType.Doc:
       Exit('');
-    atLink:
+    TVkAttachmentType.Link:
       Exit('');
-    atMarket:
+    TVkAttachmentType.Market:
       Exit('');
-    atMarketAlbum:
+    TVkAttachmentType.MarketAlbum:
       Exit('');
-    atWall:
+    TVkAttachmentType.Wall:
       Exit('');
-    atWallReply:
+    TVkAttachmentType.WallReply:
       Exit('');
-    atSticker:
+    TVkAttachmentType.Sticker:
       Exit(Self.FSticker.Images[1].Url);
-    atGift:
+    TVkAttachmentType.Gift:
       Exit('');
   else
     Result := '';
@@ -582,9 +606,9 @@ begin
   inherited;
 end;
 
-function TVkComment.ToAttachment: string;
+function TVkComment.ToAttachment: TAttachment;
 begin
-  Result := Attachment.WallReply(OwnerId, Id, AccessKey);
+  Result := TAttachment.WallReply(OwnerId, Id, AccessKey);
 end;
 
 {TVkPost}
@@ -617,9 +641,9 @@ begin
   inherited;
 end;
 
-function TVkPost.ToAttachment: string;
+function TVkPost.ToAttachment: TAttachment;
 begin
-  Result := Attachment.Wall(Id, OwnerId, AccessKey);
+  Result := TAttachment.Wall(OwnerId, Id, AccessKey);
 end;
 
 { TVkAttachmentHistoryItem }

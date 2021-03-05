@@ -1,15 +1,51 @@
-# VKAPI
+﻿# VKAPI
 
 API для Вконтакте
 
-Покрытие методов - **80%**
- 
-**Внимание**
-Если вы уже использовали обертку (до 08.07.2020) и недавно затянули изменения, то вы вероятно получите ошибку при открытии формы. Для её решения нужно закарыть форму с ошибкой без сохранения и исправать файл формы dfm/fmx. Заменить значение свойства Permissions компонента TVK с "'friends,messages..'" на "[Friends,Messages]". Т.е. изменить тип со строки к множеству.
+Покрытие методов - **82%**
 
-**Warning**
-If you have already used a wrapper (before 07/08/2020) and recently tightened the changes, then you will probably get an error when opening the form. To solve it, you need to close the form with an error without saving and fix the dfm/fmx form file. Replace the value of the Permissions property of the TVK component from "'friends,messages..'" to "[Friends,Messages]". Those. change type from string to set.
-
+Группа | %
+--- | ---
+Account | 100
+Ads | 0
+AppWidgets | 0
+Apps | 20
+Audio | 79
+Auth | 100
+Board | 100
+Database | 100
+Docs | 100
+DownloadedGames | 100
+Fave | 100
+Friends | 100
+Gifts | 100
+Groups | 100
+LeadForms | 0
+Leads | 0
+Likes | 100
+Market | 100
+Messages | 100
+Newsfeed | 100
+Notes | 100
+Notifications | 100
+Orders | 25
+Pages | 100
+Photos | 100
+Podcasts | 100
+Polls | 100
+PrettyCards | 0
+Search | 100
+Secure | 100
+Stats | 100
+Status | 100
+Storage | 100
+Stories | 100
+Streaming | 100
+Users | 100
+Utils | 100
+Video | 100
+Wall | 100
+Widgets | 0
 
 **Заметки**
 

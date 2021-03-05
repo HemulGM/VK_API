@@ -7,6 +7,168 @@ uses
   System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
+
+
+  TVkMessageInfo = class
+  private
+    FTitle: string;
+    FFrom: string;
+    FMentions: TArray<integer>;
+  public
+    property Title: string read FTitle write FTitle;
+    property From: string read FFrom write FFrom;
+    property Mentions: TArray<integer> read FMentions write FMentions;
+
+    //property MarkedUsers: TArray<integer> read FMarked_users write FMarked_users;
+    function ToJsonString: string;
+    class function FromJsonString(AJsonString: string): TVkMessageInfo;
+  end;
+
+  TVkMessageAttachmentInfo = class
+    type
+      TAttachInfoType = record
+        Attach: string;
+        AttachType: string;
+        class function Create(AAttach, AAttachType: string): TAttachInfoType; static;
+      end;
+  private
+    FFwd: string;
+    FReply: string;
+    FAttach1: string;
+    FAttach1_type: string;
+    FAttach2: string;
+    FAttach2_type: string;
+    FAttach3: string;
+    FAttach3_type: string;
+    FAttach4: string;
+    FAttach4_type: string;
+    FAttach5: string;
+    FAttach5_type: string;
+    FAttach6: string;
+    FAttach6_type: string;
+    FAttach7: string;
+    FAttach7_type: string;
+    FAttach8: string;
+    FAttach8_type: string;
+    FAttach9: string;
+    FAttach9_type: string;
+    FAttach10: string;
+    FAttach10_type: string;
+    function GetCount: Integer;
+    function GetAttachments(Index: Integer): TAttachInfoType;
+  public
+    property Fwd: string read FFwd write FFwd;
+    property Reply: string read FReply write FReply;
+    property Attach1: string read FAttach1 write FAttach1;
+    property Attach1Type: string read FAttach1_type write FAttach1_type;
+    property Attach2: string read FAttach2 write FAttach2;
+    property Attach2Type: string read FAttach2_type write FAttach2_type;
+    property Attach3: string read FAttach3 write FAttach3;
+    property Attach3Type: string read FAttach3_type write FAttach3_type;
+    property Attach4: string read FAttach4 write FAttach4;
+    property Attach4Type: string read FAttach4_type write FAttach4_type;
+    property Attach5: string read FAttach5 write FAttach5;
+    property Attach5Type: string read FAttach5_type write FAttach5_type;
+    property Attach6: string read FAttach6 write FAttach6;
+    property Attach6Type: string read FAttach6_type write FAttach6_type;
+    property Attach7: string read FAttach7 write FAttach7;
+    property Attach7Type: string read FAttach7_type write FAttach7_type;
+    property Attach8: string read FAttach8 write FAttach8;
+    property Attach8Type: string read FAttach8_type write FAttach8_type;
+    property Attach9: string read FAttach9 write FAttach9;
+    property Attach9Type: string read FAttach9_type write FAttach9_type;
+    property Attach10: string read FAttach10 write FAttach10;
+    property Attach10Type: string read FAttach10_type write FAttach10_type;
+    property Count: Integer read GetCount;
+    property Attachments[Index: Integer]: TAttachInfoType read GetAttachments;
+    function ToArray: TArray<TAttachInfoType>;
+    function ToArrayOfString: TArrayOfString;
+    class function FromJsonString(AJsonString: string): TVkMessageAttachmentInfo;
+  end;
+
+  /// <summary>
+  /// Структура события входящего сообщения
+  /// </summary>
+  TMessageData = record
+    MessageId: Integer;
+    Flags: TVkMessageFlags;
+    PeerId: Integer;
+    TimeStamp: TDateTime;
+    Text: string;
+    Info: TVkMessageInfo;
+    RandomId: Integer;
+    MinorId: Integer;
+    Attachments: TVkMessageAttachmentInfo;
+  end;
+
+  TMessageChangeData = record
+    MessageId: Integer;
+    Flags: TVkMessageFlags;
+    PeerId: Integer;
+    ChangeType: TVkFlagsChangeType;
+  end;
+
+  TDialogChangeData = record
+    PeerId: Integer;
+    Flags: TVkDialogFlags;
+    ChangeType: TVkFlagsChangeType;
+  end;
+
+  TEventExtraFields = record
+    PeerId: integer; // идентификатор назначения. Для пользователя: id пользователя. Для групповой беседы: 2000000000 + id беседы. Для сообщества: -id сообщества либо id сообщества + 1000000000 (для version = 0).
+    TimeStamp: integer; // время отправки сообщения в Unixtime;
+    Text: string; // текст сообщения;
+    Info: TVkMessageInfo;
+    Attachments: TVkMessageAttachmentInfo;
+    RandomId: Integer;
+  end;
+
+  TChatTypingData = record
+    UserIds: TIdList;
+    PeerId, TotalCount: Integer;
+    TimeStamp: TDateTime;
+  end;
+
+  TChatRecordingData = record
+    UserIds: TIdList;
+    PeerId, TotalCount: Integer;
+    TimeStamp: TDateTime;
+  end;
+
+  TOnNewMessage = procedure(Sender: TObject; MessageData: TMessageData) of object;
+
+  TOnEditMessage = procedure(Sender: TObject; MessageData: TMessageData) of object;
+
+  TOnChangeMessageFlags = procedure(Sender: TObject; MessageChangeData: TMessageChangeData) of object;
+
+  TOnChangeDialogFlags = procedure(Sender: TObject; DialogChangeData: TDialogChangeData) of object;
+
+  TOnUserOnline = procedure(Sender: TObject; UserId: Integer; VkPlatform: TVkPlatform; TimeStamp: TDateTime) of object;
+
+  TOnUserOffline = procedure(Sender: TObject; UserId: Integer; InactiveUser: Boolean; TimeStamp: TDateTime) of object;
+
+  TOnReadMessages = procedure(Sender: TObject; Incoming: Boolean; PeerId, LocalId: Integer) of object;
+
+  TOnRecoverOrDeleteMessages = procedure(Sender: TObject; PeerId, LocalId: Integer) of object;
+
+  TOnChatChanged = procedure(Sender: TObject; const ChatId: Integer; IsSelf: Boolean) of object;
+
+  TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: Integer; TypeId: TVkChatChangeInfoType; Info: Integer) of object;
+
+  TOnUserTyping = procedure(Sender: TObject; UserId, ChatId: Integer) of object;
+
+  TOnUserCall = procedure(Sender: TObject; UserId, CallId: Integer) of object;
+
+  TOnCountChange = procedure(Sender: TObject; Count: Integer) of object;
+
+  TOnNotifyChange = procedure(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer) of object;
+
+  TOnUsersTyping = procedure(Sender: TObject; Data: TChatTypingData) of object;
+
+  TOnUsersRecording = procedure(Sender: TObject; Data: TChatRecordingData) of object;
+
+  TOnUnhandledEvents = procedure(Sender: TObject; const JSON: TJSONValue) of object;
+
   TCustomUserEvents = class(TComponent)
   private
     FLongPollServer: TVkLongPollServer;
@@ -32,8 +194,8 @@ type
     FVersion: string;
     FLogging: Boolean;
     function GetIsWork: Boolean;
-    procedure DoChangeDialogFlags(const PeerId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer);
-    procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
+    procedure DoChangeDialogFlags(const PeerId: Integer; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer);
+    procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoChatChanged(const ChatId: Integer; IsSelf: Boolean);
     procedure DoChatChangeInfo(const PeerId, TypeId, Info: Integer);
     procedure DoCountChange(const Count: Integer);
@@ -87,7 +249,7 @@ type
 implementation
 
 uses
-  System.DateUtils;
+  REST.Json, System.DateUtils;
 
 { TUserEvents }
 
@@ -105,7 +267,7 @@ begin
         Break;
       end;
   end;
-  FVersion := '3';
+  FVersion := VK_LP_VERSION;
   FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
@@ -124,9 +286,18 @@ var
   ExtraFields: TEventExtraFields;
   UserIds: TIdList;
   Arr: TJSONArray;
+
+  procedure DoRaiseProcessing;
+  begin
+    raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+  end;
+
 begin
   try
     EventType := TJSONArray(Update).Items[0].GetValue<Integer>;
+    A1 := 0;
+    A2 := 0;
+    A3 := 0;
   except
     Exit;
     //raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
@@ -144,24 +315,22 @@ begin
             if TJSONArray(Update).Count > 5 then
               ExtraFields.Text := TJSONArray(Update).Items[5].GetValue<string>;
             if TJSONArray(Update).Count > 6 then
-              ExtraFields.Info := TVkMessageInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[6].GetValue<
-                TJSONValue>).ToJSON);
+              ExtraFields.Info := TVkMessageInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[6].GetValue<TJSONValue>).ToJSON);
             if TJSONArray(Update).Count > 7 then
-              ExtraFields.Attachments := TVkMessageAttachmentInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[7].GetValue
-                <TJSONValue>).ToJSON);
+              ExtraFields.Attachments := TVkMessageAttachmentInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[7].GetValue<TJSONValue>).ToJSON);
             if TJSONArray(Update).Count > 8 then
               ExtraFields.RandomId := TJSONArray(Update).Items[8].GetValue<Integer>;
           end;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         case EventType of
           1: //1	$message_id (integer) $flags (integer) extra_fields*	Замена флагов сообщения (FLAGS:=$flags).
-            DoChangeMessageFlags(A1, fcFlagsReplace, A2, ExtraFields);
+            DoChangeMessageFlags(A1, TVkFlagsChangeType.Replace, A2, ExtraFields);
           2: //2	$message_id (integer) $mask (integer) extra_fields*	Установка флагов сообщения (FLAGS|=$mask).
-            DoChangeMessageFlags(A1, fcFlagsSet, A2, ExtraFields);
+            DoChangeMessageFlags(A1, TVkFlagsChangeType.&Set, A2, ExtraFields);
           3: //3	$message_id (integer) $mask (integer) extra_fields*	Сброс флагов сообщения (FLAGS&=~$mask).
-            DoChangeMessageFlags(A1, fcFlagsReset, A2, ExtraFields);
+            DoChangeMessageFlags(A1, TVkFlagsChangeType.Reset, A2, ExtraFields);
           4: //4	$message_id (integer) $flags (integer) extra_fields*	Добавление нового сообщения.
             DoNewMessage(A1, A2, ExtraFields);
         end;
@@ -175,7 +344,7 @@ begin
           ExtraFields.TimeStamp := TJSONArray(Update).Items[4].GetValue<Integer>;
           ExtraFields.Text := TJSONArray(Update).Items[5].GetValue<string>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoEditMessage(A1, A2, ExtraFields);
       end;
@@ -185,7 +354,7 @@ begin
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoReadMessages(EventType = 6, A1, A2);
       end;
@@ -196,7 +365,7 @@ begin
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
           A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoUserStateChange(EventType = 8, A1, A2, A3);
       end;
@@ -206,15 +375,15 @@ begin
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         case EventType of
           10: //$peer_id (integer) $mask (integer)	Сброс флагов диалога $peer_id. Соответствует операции (PEER_FLAGS &= ~$flags). Только для диалогов сообществ.
-            DoChangeDialogFlags(A1, fcFlagsReset, A2);
+            DoChangeDialogFlags(A1, TVkFlagsChangeType.Reset, A2);
           11: //$peer_id (integer) $flags (integer)	Замена флагов диалога $peer_id. Соответствует операции (PEER_FLAGS:= $flags). Только для диалогов сообществ.
-            DoChangeDialogFlags(A1, fcFlagsReplace, A2);
+            DoChangeDialogFlags(A1, TVkFlagsChangeType.Replace, A2);
           12: //$peer_id (integer) $mask (integer)	Установка флагов диалога $peer_id. Соответствует операции (PEER_FLAGS|= $flags). Только для диалогов сообществ.
-            DoChangeDialogFlags(A1, fcFlagsSet, A2);
+            DoChangeDialogFlags(A1, TVkFlagsChangeType.&Set, A2);
         end;
       end;
     13, 14: //Удаление/восставноление сообщений
@@ -223,7 +392,7 @@ begin
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         case EventType of
           13: //Удаление всех сообщений в диалоге $peer_id с идентификаторами вплоть до $local_id.
@@ -241,7 +410,7 @@ begin
           else
             A2 := 0;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoChatChanged(A1, A2 = 1);
       end;
@@ -252,7 +421,7 @@ begin
           A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
           A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoChatChangeInfo(A2, A1, A3);
       end;
@@ -265,7 +434,7 @@ begin
           else
             A2 := A1;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoUserTyping(A1, A2);
       end;
@@ -282,7 +451,7 @@ begin
           A2 := TJSONArray(Update).Items[3].GetValue<Integer>;
           A3 := TJSONArray(Update).Items[4].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         case EventType of
           63:
@@ -297,7 +466,7 @@ begin
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoUserCall(A1, A2);
       end;
@@ -306,7 +475,7 @@ begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoCountChange(A1);
       end;
@@ -322,7 +491,7 @@ begin
           else
             A3 := 0;
         except
-          raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+          DoRaiseProcessing;
         end;
         DoNotifyChange(A1, A2, A3);
       end;
@@ -368,7 +537,7 @@ begin
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
   FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'messages.getLongPollServer';
-  FLongPollServer.Params.Add('lp_version', FVersion);
+  FLongPollServer.Params.Add(VK_LP_FIELD_VERSION, FVersion);
   FLongPollServer.OnError := FOnError;
   Result := FLongPollServer.Start;
   if Result then
@@ -382,7 +551,7 @@ begin
   FLongPollServer.Stop;
 end;
 
-procedure TCustomUserEvents.DoChangeMessageFlags(const MessageId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
+procedure TCustomUserEvents.DoChangeMessageFlags(const MessageId: Integer; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
 var
   MessageChangeData: TMessageChangeData;
 begin
@@ -390,7 +559,7 @@ begin
   begin
     MessageChangeData.MessageId := MessageId;
     MessageChangeData.ChangeType := ChangeType;
-    MessageChangeData.Flags := TMessageFlags.Create(FlagsMasksData);
+    MessageChangeData.Flags := TVkMessageFlags.Create(FlagsMasksData);
     MessageChangeData.PeerId := ExtraFields.PeerId;
     FOnChangeMessageFlags(Self, MessageChangeData);
   end;
@@ -399,17 +568,13 @@ end;
 procedure TCustomUserEvents.DoChatChanged(const ChatId: Integer; IsSelf: Boolean);
 begin
   if Assigned(FOnChatChanged) then
-  begin
     FOnChatChanged(Self, ChatId, IsSelf);
-  end;
 end;
 
 procedure TCustomUserEvents.DoChatChangeInfo(const PeerId, TypeId, Info: Integer);
 begin
   if Assigned(FOnChatChangeInfo) then
-  begin
-    FOnChatChangeInfo(Self, PeerId, TChatChangeInfoType(TypeId), Info);
-  end;
+    FOnChatChangeInfo(Self, PeerId, TVkChatChangeInfoType(TypeId), Info);
 end;
 
 procedure TCustomUserEvents.DoNewMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
@@ -419,7 +584,7 @@ begin
   if Assigned(FOnNewMessage) then
   begin
     MessageData.MessageId := MessageId;
-    MessageData.Flags := TMessageFlags.Create(FlagsMasksData);
+    MessageData.Flags := TVkMessageFlags.Create(FlagsMasksData);
     MessageData.PeerId := ExtraFields.PeerId;
     MessageData.TimeStamp := UnixToDateTime(ExtraFields.TimeStamp, False);
     MessageData.RandomId := ExtraFields.RandomId;
@@ -439,25 +604,19 @@ end;
 procedure TCustomUserEvents.DoReadMessages(const Incoming: Boolean; PeerId, LocalId: Integer);
 begin
   if Assigned(FOnReadMessages) then
-  begin
     FOnReadMessages(Self, Incoming, PeerId, LocalId);
-  end;
 end;
 
 procedure TCustomUserEvents.DoRecoverMessages(const PeerId, LocalId: Integer);
 begin
   if Assigned(FOnRecoverMessages) then
-  begin
     FOnRecoverMessages(Self, PeerId, LocalId);
-  end;
 end;
 
 procedure TCustomUserEvents.DoDeleteMessages(const PeerId, LocalId: Integer);
 begin
   if Assigned(FOnDeleteMessages) then
-  begin
     FOnDeleteMessages(Self, PeerId, LocalId);
-  end;
 end;
 
 procedure TCustomUserEvents.DoEditMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
@@ -467,7 +626,7 @@ begin
   if Assigned(FOnEditMessage) then
   begin
     MessageData.MessageId := MessageId;
-    MessageData.Flags := TMessageFlags.Create(FlagsMasksData);
+    MessageData.Flags := TVkMessageFlags.Create(FlagsMasksData);
     MessageData.PeerId := ExtraFields.PeerId;
     MessageData.TimeStamp := UnixToDateTime(ExtraFields.TimeStamp, False);
     MessageData.Text := ExtraFields.Text;
@@ -478,33 +637,25 @@ end;
 procedure TCustomUserEvents.DoUnhandledEvents(const JSON: TJSONValue);
 begin
   if Assigned(FOnUnhandledEvents) then
-  begin
     FOnUnhandledEvents(Self, JSON);
-  end;
 end;
 
 procedure TCustomUserEvents.DoUserCall(const UserId, CallId: Integer);
 begin
   if Assigned(FOnUserCall) then
-  begin
     FOnUserCall(Self, UserId, CallId);
-  end;
 end;
 
 procedure TCustomUserEvents.DoCountChange(const Count: Integer);
 begin
   if Assigned(FOnCountChange) then
-  begin
     FOnCountChange(Self, Count);
-  end;
 end;
 
 procedure TCustomUserEvents.DoNotifyChange(const PeerId, Sound, DisabledUntil: Integer);
 begin
   if Assigned(FOnNotifyChange) then
-  begin
     FOnNotifyChange(Self, PeerId, Sound = 1, DisabledUntil);
-  end;
 end;
 
 procedure TCustomUserEvents.DoUsersRecording(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
@@ -535,7 +686,7 @@ begin
       if Extra <> 0 then
         VkPlatform := TVkPlatform(Extra and 255)
       else
-        VkPlatform := pfUnknown;
+        VkPlatform := TVkPlatform.Unknown;
       FOnUserOnline(Self, UserId, VkPlatform, Dt);
     end;
   end
@@ -571,7 +722,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoChangeDialogFlags(const PeerId: Integer; ChangeType: TFlagsChangeType; FlagsMasksData: Integer);
+procedure TCustomUserEvents.DoChangeDialogFlags(const PeerId: Integer; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer);
 var
   DialogChangeData: TDialogChangeData;
 begin
@@ -579,9 +730,106 @@ begin
   begin
     DialogChangeData.PeerId := PeerId;
     DialogChangeData.ChangeType := ChangeType;
-    DialogChangeData.Flags := TDialogFlags.Create(FlagsMasksData);
+    DialogChangeData.Flags := TVkDialogFlags.Create(FlagsMasksData);
     FOnChangeDialogFlags(Self, DialogChangeData);
   end;
+end;
+
+
+{TVkMessageInfo}
+
+function TVkMessageInfo.ToJsonString: string;
+begin
+  result := TJson.ObjectToJsonString(self);
+end;
+
+class function TVkMessageInfo.FromJsonString(AJsonString: string): TVkMessageInfo;
+begin
+  result := TJson.JsonToObject<TVkMessageInfo>(AJsonString)
+end;
+
+{ TVkMessageAttachmentInfo }
+
+function TVkMessageAttachmentInfo.GetCount: Integer;
+begin
+  if FAttach1_type.IsEmpty then
+    Exit(0);
+  if FAttach2_type.IsEmpty then
+    Exit(1);
+  if FAttach3_type.IsEmpty then
+    Exit(2);
+  if FAttach4_type.IsEmpty then
+    Exit(3);
+  if FAttach5_type.IsEmpty then
+    Exit(4);
+  if FAttach6_type.IsEmpty then
+    Exit(5);
+  if FAttach7_type.IsEmpty then
+    Exit(6);
+  if FAttach8_type.IsEmpty then
+    Exit(7);
+  if FAttach9_type.IsEmpty then
+    Exit(8);
+  if FAttach10_type.IsEmpty then
+    Exit(9);
+  Result := 10;
+end;
+
+function TVkMessageAttachmentInfo.GetAttachments(Index: Integer): TAttachInfoType;
+begin
+  case Index of
+    1:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach1, FAttach1_type);
+    2:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach2, FAttach2_type);
+    3:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach3, FAttach3_type);
+    4:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach4, FAttach4_type);
+    5:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach5, FAttach5_type);
+    6:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach6, FAttach6_type);
+    7:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach7, FAttach7_type);
+    8:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach8, FAttach8_type);
+    9:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach9, FAttach9_type);
+    10:
+      Result := TVkMessageAttachmentInfo.TAttachInfoType.Create(FAttach10, FAttach10_type);
+  end;
+end;
+
+function TVkMessageAttachmentInfo.ToArray: TArray<TAttachInfoType>;
+var
+  i: Integer;
+begin
+  SetLength(Result, Count);
+  for i := 0 to Count - 1 do
+    Result[i] := Attachments[i];
+end;
+
+function TVkMessageAttachmentInfo.ToArrayOfString: TArrayOfString;
+var
+  i: Integer;
+begin
+  SetLength(Result, Self.Count);
+  for i := 0 to Self.Count - 1 do
+    Result[i] := Self.Attachments[i].Attach;
+end;
+
+class function TVkMessageAttachmentInfo.FromJsonString(AJsonString: string): TVkMessageAttachmentInfo;
+begin
+  Result := TJson.JsonToObject<TVkMessageAttachmentInfo>(AJsonString)
+end;
+
+{ TVkMessageAttachmentInfo.TAttachInfoType }
+
+class function TVkMessageAttachmentInfo.TAttachInfoType.Create(AAttach, AAttachType: string): TAttachInfoType;
+begin
+  Result.Attach := AAttach;
+  Result.AttachType := AAttachType;
 end;
 
 end.

@@ -3,9 +3,8 @@ unit VK.Entity.Market;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Photo, VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Info,
+  VK.Entity.Common, VK.Entity.Common.List, VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkMarketSection = class(TVkBasicObject)
@@ -95,14 +94,10 @@ type
     property Length: Integer read FLength write FLength;
   end;
 
-  TVkProduct = class(TVkObject)
+  TVkProduct = class(TVkObject, IAttachment)
   private
-    {
-        0 — товар доступен;
-        1 — товар удален;
-        2 — товар недоступен.
-    }
-    FAvailability: Integer;
+    [JsonReflectAttribute(ctString, rtString, TProductAvailabilityInterceptor)]
+    FAvailability: TVkProductAvailability;
     FCategory: TVkProductCategory;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
@@ -144,7 +139,7 @@ type
     /// <summary>
     /// Статус доступности товара
     /// </summary>
-    property Availability: Integer read FAvailability write FAvailability;
+    property Availability: TVkProductAvailability read FAvailability write FAvailability;
     /// <summary>
     /// Текст на кнопке товара. Возможные значения:
     /// Купить
@@ -220,6 +215,7 @@ type
     /// </summary>
     property Url: string read FUrl write FUrl;
     destructor Destroy; override;
+    function ToAttachment: TAttachment;
   end;
 
   TVkProducts = TVkEntityList<TVkProduct>;
@@ -273,6 +269,11 @@ begin
   if Assigned(FDimensions) then
     FDimensions.Free;
   inherited;
+end;
+
+function TVkProduct.ToAttachment: TAttachment;
+begin
+  Result := TAttachment.Market(OwnerId, Id);
 end;
 
 end.

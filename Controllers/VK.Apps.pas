@@ -3,18 +3,43 @@ unit VK.Apps;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.App;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.App;
 
 type
   TVkParamsAppsGet = record
     List: TParams;
-    function AppId(Value: Integer): TVkParamsAppsGet;
-    function AppIds(Value: TIdList): TVkParamsAppsGet;
-    function &Platform(Value: TVkPlatform): TVkParamsAppsGet;
-    function Extended(Value: Boolean): TVkParamsAppsGet;
-    function ReturnFriends(Value: Boolean): TVkParamsAppsGet;
+    /// <summary>
+    /// Идентификатор приложения, данные которого необходимо получить.
+    /// Если этот параметр и параметр app_ids не указан,
+    /// возвращается идентификатор приложения, через которое выдан ключ доступа (access_token)
+    /// </summary>
+    function AppId(const Value: Integer): TVkParamsAppsGet;
+    /// <summary>
+    /// Список идентификаторов приложений, данные которых необходимо получить (не более 100)
+    /// </summary>
+    function AppIds(const Value: TIdList): TVkParamsAppsGet;
+    /// <summary>
+    /// Платформа, для которой необходимо вернуть данные
+    /// </summary>
+    function &Platform(const Value: TVkPlatform = TVkPlatform.Web): TVkParamsAppsGet;
+    /// <summary>
+    /// True — возвращать дополнительные поля. По умолчанию возвращает только основные поля приложений
+    /// </summary>
+    function Extended(const Value: Boolean): TVkParamsAppsGet;
+    /// <summary>
+    /// True – возвращать список друзей, установивших это приложение. По умолчанию: False
+    /// Параметр учитывается только при передаче AccessToken
+    /// </summary>
+    function ReturnFriends(const Value: Boolean = False): TVkParamsAppsGet;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть для профилей пользователей и групп
+    /// </summary>
     function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsAppsGet;
-    function NameCase(Value: TVkNameCase): TVkParamsAppsGet;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователей
+    /// </summary>
+    function NameCase(const Value: TVkNameCase): TVkParamsAppsGet;
   end;
 
   /// <summary>
@@ -25,7 +50,7 @@ type
     /// <summary>
     /// Удаляет все уведомления о запросах, отправленных из текущего приложения.
     /// </summary>
-    function DeleteAppRequests(var Status: Boolean): Boolean;
+    function DeleteAppRequests: Boolean;
     /// <summary>
     /// Возвращает данные о запрошенном приложении.
     /// </summary>
@@ -39,18 +64,18 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils;
+  VK.API, VK.CommonUtils;
 
 { TAppsController }
 
-function TAppsController.DeleteAppRequests(var Status: Boolean): Boolean;
+function TAppsController.DeleteAppRequests: Boolean;
 begin
-  Result := Handler.Execute('apps.deleteAppRequests').ResponseAsBool(Status);
+  Result := Handler.Execute('apps.deleteAppRequests').ResponseIsTrue;
 end;
 
 function TAppsController.Get(var Items: TVkApps; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('apps.get').GetObject<TVkApps>(Items);
+  Result := Handler.Execute('apps.get').GetObject(Items);
 end;
 
 function TAppsController.Get(var Items: TVkApps; Params: TVkParamsAppsGet): Boolean;
@@ -60,46 +85,46 @@ end;
 
 { TVkParamsAppsGet }
 
-function TVkParamsAppsGet.AppId(Value: Integer): TVkParamsAppsGet;
+function TVkParamsAppsGet.AppId(const Value: Integer): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('app_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsAppsGet.AppIds(Value: TIdList): TVkParamsAppsGet;
+function TVkParamsAppsGet.AppIds(const Value: TIdList): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('app_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsAppsGet.&Platform(Value: TVkPlatform): TVkParamsAppsGet;
+function TVkParamsAppsGet.&Platform(const Value: TVkPlatform): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('platform', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsAppsGet.Extended(Value: Boolean): TVkParamsAppsGet;
+function TVkParamsAppsGet.Extended(const Value: Boolean): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsAppsGet.ReturnFriends(Value: Boolean): TVkParamsAppsGet;
+function TVkParamsAppsGet.ReturnFriends(const Value: Boolean): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('return_friends', Value);
+  Result := Self;
 end;
 
 function TVkParamsAppsGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsAppsGet.NameCase(Value: TVkNameCase): TVkParamsAppsGet;
+function TVkParamsAppsGet.NameCase(const Value: TVkNameCase): TVkParamsAppsGet;
 begin
-  Result := Self;
   List.Add('name_case', Value.ToString);
+  Result := Self;
 end;
 
 end.

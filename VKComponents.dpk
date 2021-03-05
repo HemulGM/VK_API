@@ -181,14 +181,21 @@ contains
   VK.Apps in 'Controllers\VK.Apps.pas',
   VK.Entity.Login in 'Entity\VK.Entity.Login.pas',
   VK.Clients in 'VK.Clients.pas',
-  VK.Entity.Attachment in 'Entity\VK.Entity.Attachment.pas',
   VK.Donut in 'Controllers\VK.Donut.pas',
   VK.Entity.Donut in 'Entity\VK.Entity.Donut.pas',
   VK.Entity.Auth in 'Entity\VK.Entity.Auth.pas',
   VK.Entity.Common.List in 'Entity\VK.Entity.Common.List.pas',
   VK.Wrap.Interceptors in 'Utils\VK.Wrap.Interceptors.pas',
   VK.Entity.Common.ExtendedList in 'Entity\VK.Entity.Common.ExtendedList.pas',
-  VK.Entity.Group.Invites in 'Entity\VK.Entity.Group.Invites.pas';
+  VK.Entity.Group.Invites in 'Entity\VK.Entity.Group.Invites.pas',
+  VK.Errors in 'VK.Errors.pas',
+  VK.Entity.Group.Status in 'Entity\VK.Entity.Group.Status.pas',
+  VK.Entity.MoneyTransfer in 'Entity\VK.Entity.MoneyTransfer.pas',
+  VK.Entity.Geo in 'Entity\VK.Entity.Geo.pas',
+  VK.Entity.Group.Youla in 'Entity\VK.Entity.Group.Youla.pas',
+  VK.Streaming in 'Controllers\VK.Streaming.pas',
+  VK.Entity.Streaming in 'Entity\VK.Entity.Streaming.pas',
+  VK.Entity.Message.Templates in 'Entity\VK.Entity.Message.Templates.pas';
 
 end.
 

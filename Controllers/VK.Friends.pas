@@ -3,218 +3,344 @@ unit VK.Friends;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
-  VK.Entity.Common, VK.Entity.Common.List;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Profile, VK.Entity.Common, VK.Entity.Common.List;
 
 type
-  /// <summary>
-  /// <b>hints</b> — сортировать по рейтингу, аналогично тому, как друзья сортируются в разделе Мои друзья (Это значение доступно только для Standalone-приложений с ключом доступа, полученным по схеме Implicit Flow.).
-  /// <b>random</b> — возвращает друзей в случайном порядке.
-  /// <b>mobile</b> — возвращает выше тех друзей, у которых установлены мобильные приложения.
-  /// <b>name</b> — сортировать по имени. Данный тип сортировки работает медленно, так как сервер будет получать всех друзей а не только указанное количество count. (работает только при переданном параметре fields).
-  /// </summary>
-  TVkFriendsSort = (fsNone, fsHints, fsRandom, fsMobile, fsName);
-
-  TVkFriendsSortHelper = record helper for TVkFriendsSort
-    function ToString: string; inline;
-  end;
-
-  TVkFriendAddInfo = (faiSuccess = 1, faiApproved = 2, faiResended = 4);
-
-  /// <summary>
-  /// <b>random</b> - возвращает друзей в случайном порядке, <b>hints</b> - сортировать по рейтингу, аналогично тому, как друзья сортируются в разделе Мои друзья (данный параметр доступен только для Desktop-приложений).
-  /// </summary>
-  TVkFriendsOnlineOrder = (fooRandom, fooHints);
-
-  TVkFriendsOnlineOrderHelper = record helper for TVkFriendsOnlineOrder
-    function ToString: string; inline;
-  end;
-
   TVkParamsFriendsGet = record
     List: TParams;
-    function UserId(Value: Integer): Integer;
-    function ListId(Value: Integer): Integer;
-    function Order(Value: TVkFriendsSort): Integer;
-    function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): Integer;
-    function Fields(Value: TVkProfileFields): Integer;
-    function NameCase(Value: TVkNameCase): Integer;
-    function Ref(Value: string): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, для которого необходимо получить список друзей.
+    /// Если параметр не задан, то считается, что он равен идентификатору текущего
+    /// пользователя (справедливо для вызова с передачей AccessToken)
+    /// </summary>
+    function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор списка друзей, полученный методом GetLists,
+    /// друзей из которого необходимо получить. Данный параметр учитывается,
+    /// только когда параметр UserId равен идентификатору текущего пользователя.
+    /// Этот параметр доступен только для Standalone-приложений с ключом доступа,
+    /// полученным по схеме Implicit Flow
+    /// </summary>
+    function ListId(const Value: Integer): Integer;
+    /// <summary>
+    /// Порядок, в котором нужно вернуть список друзей.
+    /// По умолчанию список сортируется в порядке возрастания идентификаторов пользователей
+    /// </summary>
+    function Order(const Value: TVkFriendsOrder): Integer;
+    /// <summary>
+    /// Количество друзей, которое нужно вернуть
+    /// </summary>
+    function Count(const Value: Integer = 5000): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества друзей
+    /// </summary>
+    function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
+    function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователя
+    /// </summary>
+    function NameCase(const Value: TVkNameCase): Integer;
+    /// <summary>
+    /// Ref
+    /// </summary>
+    function Ref(const Value: string): Integer;
   end;
 
   TVkParamsFriendsListEdit = record
     List: TParams;
-    function Name(Value: string): Integer;
-    function ListId(Value: Integer): Integer;
-    function UserIds(Value: TIdList): Integer;
-    function AddUserIds(Value: TIdList): Integer;
-    function DeleteUserIds(Value: TIdList): Integer;
+    /// <summary>
+    /// Название списка друзей
+    /// </summary>
+    function Name(const Value: string): Integer;
+    /// <summary>
+    /// Идентификатор списка друзей
+    /// </summary>
+    function ListId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификаторы пользователей, включенных в список
+    /// </summary>
+    function UserIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификаторы пользователей, которых необходимо добавить в список. (в случае если не передан UserIds)
+    /// </summary>
+    function AddUserIds(const Value: TIdList): Integer;
+    /// <summary>
+    /// Идентификаторы пользователей, которых необходимо изъять из списка. (в случае если не передан UserIds)
+    /// </summary>
+    function DeleteUserIds(const Value: TIdList): Integer;
   end;
 
   TVkParamsFriendsGetMutual = record
     List: TParams;
-    function SourceUid(Value: Integer): Integer;
-    function TargetUid(Value: Integer): Integer;
-    function TargetUids(Value: TIdList): Integer;
-    function OrderRandom(Value: Boolean): Integer;
-    function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, чьи друзья пересекаются с друзьями пользователя с идентификатором TargetUid.
+    /// Если параметр не задан, то считается, что SourceUid равен идентификатору текущего пользователя
+    /// </summary>
+    function SourceUid(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, с которым необходимо искать общих друзей
+    /// </summary>
+    function TargetUid(const Value: Integer): Integer;
+    /// <summary>
+    /// Список идентификаторов пользователей, с которыми необходимо искать общих друзей (не более 100)
+    /// </summary>
+    function TargetUids(const Value: TIdList): Integer;
+    /// <summary>
+    /// Возвращает друзей в случайном порядке
+    /// </summary>
+    function OrderRandom(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Количество общих друзей, которое нужно вернуть. (по умолчанию – все общие друзья)
+    /// </summary>
+    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества общих друзей
+    /// </summary>
+    function Offset(const Value: Integer): Integer;
   end;
 
   TVkParamsFriendsGetOnline = record
     List: TParams;
-    function UserId(Value: Integer): Integer;
-    function ListId(Value: Integer): Integer;
-    function OnlineMobile(Value: Boolean): Integer;
-    function Order(Value: TVkFriendsOnlineOrder): Integer;
-    function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, для которого необходимо получить список друзей онлайн.
+    /// Если параметр не задан, то считается, что он равен идентификатору текущего пользователя
+    /// </summary>
+    function UserId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор списка друзей. Если параметр не задан,
+    /// возвращается информация обо всех друзьях, находящихся на сайте
+    /// </summary>
+    function ListId(const Value: Integer): Integer;
+    /// <summary>
+    /// True — будет возвращено дополнительное поле OnlineMobile
+    /// </summary>
+    function OnlineMobile(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Порядок, в котором нужно вернуть список друзей, находящихся на сайте.
+    /// По умолчанию список сортируется в порядке возрастания идентификаторов пользователей.
+    /// </summary>
+    function Order(const Value: TVkFriendsOrder): Integer;
+    /// <summary>
+    /// Количество друзей онлайн, которое нужно вернуть. (по умолчанию – все друзья онлайн)
+    /// </summary>
+    function Count(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества друзей онлайн
+    /// </summary>
+    function Offset(const Value: Integer): Integer;
   end;
 
   TVkParamsFriendsGetRequests = record
     List: TParams;
-    function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): Integer;
-    function NeedMutual(Value: Boolean): Integer;
-    function &Out(Value: Boolean = False): Integer;
-    function Sort(Value: Boolean): Integer;
-    function NeedViewed(Value: Boolean): Integer;
-    function Suggested(Value: Boolean): Integer;
-    function Fields(Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Максимальное количество заявок на добавление в друзья, которые необходимо получить (не более 1000)
+    /// </summary>
+    function Count(const Value: Integer = 100): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества заявок на добавление в друзья
+    /// </summary>
+    function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Определяет, требуется ли возвращать в ответе список общих друзей, если они есть.
+    /// Обратите внимание, что при использовании NeedMutual будет возвращено не более 2 заявок
+    /// </summary>
+    function NeedMutual(const Value: Boolean): Integer;
+    /// <summary>
+    /// False — возвращать полученные заявки в друзья, True — возвращать отправленные пользователем заявки
+    /// </summary>
+    function &Out(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// False — сортировать по дате добавления, True — сортировать по количеству общих друзей.
+    /// (Если Out = True, этот параметр не учитывается)
+    /// </summary>
+    function Sort(const Value: Boolean): Integer;
+    /// <summary>
+    /// False - не возвращать просмотренные заявки, True — возвращать просмотренные заявки.
+    /// (Если Out = True, данный параметр не учитывается)
+    /// </summary>
+    function NeedViewed(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// True — возвращать рекомендованных другими пользователями друзей, False — возвращать заявки в друзья
+    /// </summary>
+    function Suggested(const Value: Boolean = False): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
+    function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Ref
+    /// </summary>
+    function Ref(const Value: string): Integer;
   end;
 
   TVkParamsFriendsGetSuggestions = record
     List: TParams;
-    function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): Integer;
-    function Fields(Value: TVkProfileFields): Integer;
-    function FilterMutual(Value: Boolean): Integer;
-    function NameCase(Value: TVkNameCase): Integer;
+    /// <summary>
+    /// Количество рекомендаций, которое необходимо вернуть (максимальное значение 500)
+    /// </summary>
+    function Count(const Value: Integer = 500): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выбора определённого подмножества списка
+    /// </summary>
+    function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
+    function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Пользователи, с которыми много общих друзей
+    /// </summary>
+    function FilterMutual(const Value: Boolean): Integer;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователя
+    /// </summary>
+    function NameCase(const Value: TVkNameCase): Integer;
   end;
 
   TVkParamsFriendsSearch = record
     List: TParams;
-    function UserId(Value: Integer): Integer;
-    function Query(Value: string): Integer;
-    function Count(Value: Integer): Integer;
-    function Offset(Value: Integer): Integer;
-    function Fields(Value: TVkProfileFields): Integer;
-    function NameCase(Value: TVkNameCase): Integer;
+    /// <summary>
+    /// Идентификатор пользователя, по списку друзей которого необходимо произвести поиск
+    /// </summary>
+    function UserId(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Строка запроса
+    /// </summary>
+    function Query(const Value: string): Integer;
+    /// <summary>
+    /// Количество друзей, которое нужно вернуть (максимальное значение 1000)
+    /// </summary>
+    function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества друзей
+    /// </summary>
+    function Offset(const Value: Integer): Integer;
+    /// <summary>
+    /// Список дополнительных полей, которые необходимо вернуть
+    /// </summary>
+    function Fields(const Value: TVkProfileFields): Integer;
+    /// <summary>
+    /// Падеж для склонения имени и фамилии пользователя
+    /// </summary>
+    function NameCase(const Value: TVkNameCase): Integer;
   end;
 
   TFriendsController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
-    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone):
-      Boolean; overload;
+    function Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields = []; Order: TVkFriendsOrder = TVkFriendsOrder.None): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
-    function Get(var Items: TVkProfiles; Fields: TVkProfileFields = []; Order: TVkFriendsSort = fsNone): Boolean; overload;
+    function Get(var Items: TVkProfiles; Fields: TVkProfileFields = []; Order: TVkFriendsOrder = TVkFriendsOrder.None): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
     function Get(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
     function Get(var Items: TVkProfiles; Params: TVkParamsFriendsGet): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields).
+    /// Возвращает список идентификаторов друзей пользователя или расширенную информацию о друзьях пользователя (при использовании параметра fields)
     /// </summary>
     function GetIds(var Items: TVkIdList; Params: TVkParamsFriendsGet): Boolean; overload;
     /// <summary>
-    /// Одобряет или создает заявку на добавление в друзья.
+    /// Одобряет или создает заявку на добавление в друзья
     /// </summary>
     function Add(var Info: TVkFriendAddInfo; UserId: Integer; Text: string; Follow: Boolean = False): Boolean;
     /// <summary>
-    /// Создает новый список друзей у текущего пользователя.
+    /// Создает новый список друзей у текущего пользователя
     /// </summary>
     function AddList(var ListId: Integer; Name: string; UserIds: TIdList): Boolean;
     /// <summary>
-    /// Возвращает информацию о том, добавлен ли текущий пользователь в друзья у указанных пользователей.
+    /// Возвращает информацию о том, добавлен ли текущий пользователь в друзья у указанных пользователей
     /// </summary>
     function AreFriends(var Items: TVkFriendInfo; UserIds: TIdList; NeedSign: Boolean; Extended: Boolean): Boolean;
     /// <summary>
-    /// Удаляет пользователя из списка друзей или отклоняет заявку в друзья.
+    /// Удаляет пользователя из списка друзей или отклоняет заявку в друзья
     /// </summary>
     function Delete(var Info: TVkFriendDeleteInfo; UserId: Integer): Boolean; overload;
     /// <summary>
-    /// Удаляет пользователя из списка друзей или отклоняет заявку в друзья.
+    /// Удаляет пользователя из списка друзей или отклоняет заявку в друзья
     /// </summary>
     function Delete(UserId: Integer): Boolean; overload;
     /// <summary>
-    /// Отмечает все входящие заявки на добавление в друзья как просмотренные.
+    /// Отмечает все входящие заявки на добавление в друзья как просмотренные
     /// </summary>
     function DeleteAllRequests: Boolean;
     /// <summary>
-    /// Удаляет существующий список друзей текущего пользователя.
+    /// Удаляет существующий список друзей текущего пользователя
     /// </summary>
     function DeleteList(ListId: Integer): Boolean;
     /// <summary>
-    /// Редактирует списки друзей для выбранного друга.
+    /// Редактирует списки друзей для выбранного друга
     /// </summary>
     function Edit(UserId: Integer; ListIds: TIdList): Boolean;
     /// <summary>
-    /// Редактирует списки друзей для выбранного друга.
+    /// Редактирует списки друзей для выбранного друга
     /// </summary>
     function EditList(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Редактирует списки друзей для выбранного друга.
+    /// Редактирует списки друзей для выбранного друга
     /// </summary>
     function EditList(Params: TVkParamsFriendsListEdit): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов друзей текущего пользователя, которые установили данное приложение.
+    /// Возвращает список идентификаторов друзей текущего пользователя, которые установили данное приложение
     /// </summary>
     function GetAppUsers(var Items: TVkIdList): Boolean;
     /// <summary>
-    /// Возвращает список друзей пользователя, у которых завалидированные или указанные в профиле телефонные номера входят в заданный список.
+    /// Возвращает список друзей пользователя, у которых завалидированные или указанные в профиле телефонные номера входят в заданный список
     /// </summary>
     function GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkProfileFields): Boolean;
     /// <summary>
-    /// Возвращает список меток друзей пользователя.
+    /// Возвращает список меток друзей пользователя
     /// </summary>
     function GetLists(var Items: TVkFriendsList; UserId: Integer; ReturnSystem: Boolean = False): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов общих друзей между парой пользователей.
+    /// Возвращает список идентификаторов общих друзей между парой пользователей
     /// </summary>
     function GetMutual(var Items: TVkIdList; Params: TVkParamsFriendsGetMutual): Boolean;
     /// <summary>
-    /// Возвращает список идентификаторов друзей пользователя, находящихся на сайте.
+    /// Возвращает список идентификаторов друзей пользователя, находящихся на сайте
     /// </summary>
     function GetOnline(var Items: TVkFriendsOnline; Params: TVkParamsFriendsGetOnline): Boolean;
     /// <summary>
-    /// Возвращает список идентификаторов недавно добавленных друзей текущего пользователя.
+    /// Возвращает список идентификаторов недавно добавленных друзей текущего пользователя
     /// </summary>
     function GetRecent(var Items: TVkIdList; Count: Integer = 100): Boolean;
     /// <summary>
-    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя
     /// </summary>
     function GetRequests(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя
     /// </summary>
     function GetRequests(var Items: TVkProfiles; Params: TVkParamsFriendsGetRequests): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя.
+    /// Возвращает информацию о полученных или отправленных заявках на добавление в друзья для текущего пользователя
     /// </summary>
     function GetRequestsIds(var Items: TVkIdList; Params: TVkParamsFriendsGetRequests): Boolean; overload;
     /// <summary>
-    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя.
+    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя
     /// </summary>
     function GetSuggestions(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя.
+    /// Возвращает список профилей пользователей, которые могут быть друзьями текущего пользователя
     /// </summary>
     function GetSuggestions(var Items: TVkProfiles; Params: TVkParamsFriendsGetSuggestions): Boolean; overload;
     /// <summary>
-    /// Позволяет искать по списку друзей пользователей.
+    /// Позволяет искать по списку друзей пользователей
     /// </summary>
     function Search(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет искать по списку друзей пользователей.
+    /// Позволяет искать по списку друзей пользователей
     /// </summary>
     function Search(var Items: TVkProfiles; Params: TVkParamsFriendsSearch): Boolean; overload;
   end;
@@ -222,30 +348,29 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.Json;
+  VK.API, VK.CommonUtils;
 
 { TFriendsController }
 
-function TFriendsController.Get(var Items: TVkProfiles; Fields: TVkProfileFields; Order: TVkFriendsSort): Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; Fields: TVkProfileFields; Order: TVkFriendsOrder): Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
   if Fields <> [] then
     Params.Fields(Fields);
-  if Order <> fsNone then
+  if Order <> TVkFriendsOrder.None then
     Params.Order(Order);
   Result := Get(Items, Params);
 end;
 
-function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields; Order: TVkFriendsSort):
-  Boolean;
+function TFriendsController.Get(var Items: TVkProfiles; UserId: Integer; Fields: TVkProfileFields; Order: TVkFriendsOrder): Boolean;
 var
   Params: TVkParamsFriendsGet;
 begin
   Params.UserId(UserId);
   if Fields <> [] then
     Params.Fields(Fields);
-  if Order <> fsNone then
+  if Order <> TVkFriendsOrder.None then
     Params.Order(Order);
   Result := Get(Items, Params);
 end;
@@ -260,7 +385,7 @@ begin
   if not Params.KeyExists('fields') then
     Params.Add('fields', 'domian');
 
-  Result := Handler.Execute('friends.get', Params).GetObject<TVkProfiles>(Items);
+  Result := Handler.Execute('friends.get', Params).GetObject(Items);
 end;
 
 function TFriendsController.Add(var Info: TVkFriendAddInfo; UserId: Integer; Text: string; Follow: Boolean): Boolean;
@@ -281,10 +406,7 @@ end;
 
 function TFriendsController.AddList(var ListId: Integer; Name: string; UserIds: TIdList): Boolean;
 begin
-  with Handler.Execute('friends.add', [['name', Name], ['user_ids', UserIds.ToString]]) do
-  begin
-    Result := Success and TryStrToInt(Response, ListId);
-  end;
+  Result := Handler.Execute('friends.add', [['name', Name], ['user_ids', UserIds.ToString]]).ResponseAsInt(ListId);
 end;
 
 function TFriendsController.AreFriends(var Items: TVkFriendInfo; UserIds: TIdList; NeedSign, Extended: Boolean): Boolean;
@@ -293,7 +415,7 @@ begin
     ['user_ids', UserIds.ToString],
     ['need_sign', BoolToString(NeedSign)],
     ['extended', BoolToString(Extended)]]).
-    GetObjects<TVkFriendInfo>(Items);
+    GetObjects(Items);
 end;
 
 function TFriendsController.Delete(UserId: Integer): Boolean;
@@ -307,8 +429,11 @@ begin
     begin
       try
         Info := TVkFriendDeleteInfo.FromJsonString<TVkFriendDeleteInfo>(Response);
-        Result := Info.Success;
-        Info.Free;
+        try
+          Result := Info.Success;
+        finally
+          Info.Free;
+        end;
       except
         Result := False;
       end;
@@ -318,26 +443,20 @@ end;
 
 function TFriendsController.DeleteAllRequests: Boolean;
 begin
-  with Handler.Execute('friends.deleteAllRequests') do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('friends.deleteAllRequests').ResponseIsTrue;
 end;
 
 function TFriendsController.DeleteList(ListId: Integer): Boolean;
 begin
-  with Handler.Execute('friends.deleteList', ['list_id', ListId.ToString]) do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('friends.deleteList', ['list_id', ListId.ToString]).ResponseIsTrue;
 end;
 
 function TFriendsController.Edit(UserId: Integer; ListIds: TIdList): Boolean;
 begin
-  with Handler.Execute('friends.edit', [['user_id', UserId.ToString], ['list_ids', ListIds.ToString]]) do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('friends.edit', [
+    ['user_id', UserId.ToString],
+    ['list_ids', ListIds.ToString]]).
+    ResponseIsTrue;
 end;
 
 function TFriendsController.EditList(Params: TVkParamsFriendsListEdit): Boolean;
@@ -347,20 +466,17 @@ end;
 
 function TFriendsController.EditList(Params: TParams): Boolean;
 begin
-  with Handler.Execute('friends.editList', Params) do
-  begin
-    Result := Success and ResponseIsTrue;
-  end;
+  Result := Handler.Execute('friends.editList', Params).ResponseIsTrue;
 end;
 
 function TFriendsController.Delete(var Info: TVkFriendDeleteInfo; UserId: Integer): Boolean;
 begin
-  Result := Handler.Execute('friends.delete', ['user_id', UserId.ToString]).GetObject<TVkFriendDeleteInfo>(Info);
+  Result := Handler.Execute('friends.delete', ['user_id', UserId.ToString]).GetObject(Info);
 end;
 
 function TFriendsController.GetAppUsers(var Items: TVkIdList): Boolean;
 begin
-  Result := Handler.Execute('friends.getAppUsers').GetObject<TVkIdList>(Items);
+  Result := Handler.Execute('friends.getAppUsers').GetObject(Items);
 end;
 
 function TFriendsController.GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkProfileFields): Boolean;
@@ -382,7 +498,7 @@ end;
 
 function TFriendsController.GetIds(var Items: TVkIdList; Params: TVkParamsFriendsGet): Boolean;
 begin
-  Result := Handler.Execute('friends.get', Params.List).GetObject<TVkIdList>(Items);
+  Result := Handler.Execute('friends.get', Params.List).GetObject(Items);
 end;
 
 function TFriendsController.GetLists(var Items: TVkFriendsList; UserId: Integer; ReturnSystem: Boolean): Boolean;
@@ -390,22 +506,22 @@ begin
   Result := Handler.Execute('friends.getLists', [
     ['user_id', UserId.ToString],
     ['return_system', BoolToString(ReturnSystem)]]).
-    GetObject<TVkFriendsList>(Items);
+    GetObject(Items);
 end;
 
 function TFriendsController.GetMutual(var Items: TVkIdList; Params: TVkParamsFriendsGetMutual): Boolean;
 begin
-  Result := Handler.Execute('friends.getMutual').GetObject<TVkIdList>(Items);
+  Result := Handler.Execute('friends.getMutual').GetObject(Items);
 end;
 
 function TFriendsController.GetOnline(var Items: TVkFriendsOnline; Params: TVkParamsFriendsGetOnline): Boolean;
 begin
-  Result := Handler.Execute('friends.getOnline', Params.List).GetObject<TVkFriendsOnline>(Items);
+  Result := Handler.Execute('friends.getOnline', Params.List).GetObject(Items);
 end;
 
 function TFriendsController.GetRecent(var Items: TVkIdList; Count: Integer): Boolean;
 begin
-  Result := Handler.Execute('friends.getRecent', ['count', Count.ToString]).GetObject<TVkIdList>(Items);
+  Result := Handler.Execute('friends.getRecent', ['count', Count.ToString]).GetObject(Items);
 end;
 
 function TFriendsController.GetRequests(var Items: TVkProfiles; Params: TVkParamsFriendsGetRequests): Boolean;
@@ -415,7 +531,7 @@ end;
 
 function TFriendsController.GetRequestsIds(var Items: TVkIdList; Params: TVkParamsFriendsGetRequests): Boolean;
 begin
-  Result := Handler.Execute('friends.getRequests', Params.List).GetObject<TVkIdList>(Items);
+  Result := Handler.Execute('friends.getRequests', Params.List).GetObject(Items);
 end;
 
 function TFriendsController.GetSuggestions(var Items: TVkProfiles; Params: TVkParamsFriendsGetSuggestions): Boolean;
@@ -430,120 +546,102 @@ end;
 
 function TFriendsController.Search(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('friends.search', Params).GetObject<TVkProfiles>(Items);
+  Result := Handler.Execute('friends.search', Params).GetObject(Items);
 end;
 
 function TFriendsController.GetSuggestions(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
-  Result := Handler.Execute('friends.getSuggestions', Params).GetObject<TVkProfiles>(Items);
+  Result := Handler.Execute('friends.getSuggestions', Params).GetObject(Items);
 end;
 
 function TFriendsController.GetRequests(var Items: TVkProfiles; Params: TParams): Boolean;
 begin
   Params.Add('extended', True);
-  Result := Handler.Execute('friends.getRequests', Params).GetObject<TVkProfiles>(Items);
+  Result := Handler.Execute('friends.getRequests', Params).GetObject(Items);
 end;
 
 { TVkFriendsGetParams }
 
-function TVkParamsFriendsGet.Count(Value: Integer): Integer;
+function TVkParamsFriendsGet.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGet.Fields(Value: TVkProfileFields): Integer;
+function TVkParamsFriendsGet.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsFriendsGet.ListId(Value: Integer): Integer;
+function TVkParamsFriendsGet.ListId(const Value: Integer): Integer;
 begin
   Result := List.Add('list_id', Value);
 end;
 
-function TVkParamsFriendsGet.NameCase(Value: TVkNameCase): Integer;
+function TVkParamsFriendsGet.NameCase(const Value: TVkNameCase): Integer;
 begin
   Result := List.Add('name_case', Value.ToString);
 end;
 
-function TVkParamsFriendsGet.Offset(Value: Integer): Integer;
+function TVkParamsFriendsGet.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsFriendsGet.Order(Value: TVkFriendsSort): Integer;
+function TVkParamsFriendsGet.Order(const Value: TVkFriendsOrder): Integer;
 begin
   Result := List.Add('order', Value.ToString);
 end;
 
-function TVkParamsFriendsGet.Ref(Value: string): Integer;
+function TVkParamsFriendsGet.Ref(const Value: string): Integer;
 begin
   Result := List.Add('ref', Value);
 end;
 
-function TVkParamsFriendsGet.UserId(Value: Integer): Integer;
+function TVkParamsFriendsGet.UserId(const Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
 end;
 
-{ TVkFriendsSortHelper }
-
-function TVkFriendsSortHelper.ToString: string;
-begin
-  case Self of
-    fsHints:
-      Exit('hints');
-    fsRandom:
-      Exit('random');
-    fsMobile:
-      Exit('mobile');
-    fsName:
-      Exit('name');
-  else
-    Exit('');
-  end;
-end;
-
 { TVkParamsFriendsListEdit }
 
-function TVkParamsFriendsListEdit.AddUserIds(Value: TIdList): Integer;
+function TVkParamsFriendsListEdit.AddUserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('add_user_ids', Value);
 end;
 
-function TVkParamsFriendsListEdit.DeleteUserIds(Value: TIdList): Integer;
+function TVkParamsFriendsListEdit.DeleteUserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('delete_user_ids', Value);
 end;
 
-function TVkParamsFriendsListEdit.ListId(Value: Integer): Integer;
+function TVkParamsFriendsListEdit.ListId(const Value: Integer): Integer;
 begin
   Result := List.Add('list_id', Value);
 end;
 
-function TVkParamsFriendsListEdit.Name(Value: string): Integer;
+function TVkParamsFriendsListEdit.Name(const Value: string): Integer;
 begin
   Result := List.Add('name', Value);
 end;
 
-function TVkParamsFriendsListEdit.UserIds(Value: TIdList): Integer;
+function TVkParamsFriendsListEdit.UserIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('user_ids', Value);
 end;
 
 { TVkParamsFriendsGetMutual }
 
-function TVkParamsFriendsGetMutual.Count(Value: Integer): Integer;
+function TVkParamsFriendsGetMutual.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGetMutual.Offset(Value: Integer): Integer;
+function TVkParamsFriendsGetMutual.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsFriendsGetMutual.OrderRandom(Value: Boolean): Integer;
+function TVkParamsFriendsGetMutual.OrderRandom(const Value: Boolean): Integer;
 begin
   if Value then
     Result := List.Add('order', 'random')
@@ -551,122 +649,113 @@ begin
     Result := List.Add('order', '');
 end;
 
-function TVkParamsFriendsGetMutual.SourceUid(Value: Integer): Integer;
+function TVkParamsFriendsGetMutual.SourceUid(const Value: Integer): Integer;
 begin
   Result := List.Add('source_uid', Value);
 end;
 
-function TVkParamsFriendsGetMutual.TargetUid(Value: Integer): Integer;
+function TVkParamsFriendsGetMutual.TargetUid(const Value: Integer): Integer;
 begin
   Result := List.Add('target_uids', Value);
 end;
 
-function TVkParamsFriendsGetMutual.TargetUids(Value: TIdList): Integer;
+function TVkParamsFriendsGetMutual.TargetUids(const Value: TIdList): Integer;
 begin
   Result := List.Add('target_uids', Value);
-end;
-
-{ TVkFriendsOnlineOrderHelper }
-
-function TVkFriendsOnlineOrderHelper.ToString: string;
-begin
-  case Self of
-    fooRandom:
-      Result := 'random';
-    fooHints:
-      Result := 'hints';
-  else
-    Result := '';
-  end;
 end;
 
 { TVkParamsFriendsGetOnline }
 
-function TVkParamsFriendsGetOnline.Count(Value: Integer): Integer;
+function TVkParamsFriendsGetOnline.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGetOnline.ListId(Value: Integer): Integer;
+function TVkParamsFriendsGetOnline.ListId(const Value: Integer): Integer;
 begin
   Result := List.Add('list_id', Value);
 end;
 
-function TVkParamsFriendsGetOnline.Offset(Value: Integer): Integer;
+function TVkParamsFriendsGetOnline.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsFriendsGetOnline.OnlineMobile(Value: Boolean): Integer;
+function TVkParamsFriendsGetOnline.OnlineMobile(const Value: Boolean): Integer;
 begin
   Result := List.Add('online_mobile', Value);
 end;
 
-function TVkParamsFriendsGetOnline.Order(Value: TVkFriendsOnlineOrder): Integer;
+function TVkParamsFriendsGetOnline.Order(const Value: TVkFriendsOrder): Integer;
 begin
   Result := List.Add('order', Value.ToString);
 end;
 
-function TVkParamsFriendsGetOnline.UserId(Value: Integer): Integer;
+function TVkParamsFriendsGetOnline.UserId(const Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
 end;
 
 { TVkParamsFriendsGetRequests }
 
-function TVkParamsFriendsGetRequests.Count(Value: Integer): Integer;
+function TVkParamsFriendsGetRequests.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGetRequests.Fields(Value: TVkProfileFields): Integer;
+function TVkParamsFriendsGetRequests.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsFriendsGetRequests.NeedMutual(Value: Boolean): Integer;
+function TVkParamsFriendsGetRequests.NeedMutual(const Value: Boolean): Integer;
 begin
   Result := List.Add('need_mutual', Value);
 end;
 
-function TVkParamsFriendsGetRequests.NeedViewed(Value: Boolean): Integer;
+function TVkParamsFriendsGetRequests.NeedViewed(const Value: Boolean): Integer;
 begin
   Result := List.Add('need_viewed', Value);
 end;
 
-function TVkParamsFriendsGetRequests.Offset(Value: Integer): Integer;
+function TVkParamsFriendsGetRequests.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsFriendsGetRequests.out(Value: Boolean): Integer;
+function TVkParamsFriendsGetRequests.out(const Value: Boolean): Integer;
 begin
   Result := List.Add('out', Value);
 end;
 
-function TVkParamsFriendsGetRequests.Sort(Value: Boolean): Integer;
+function TVkParamsFriendsGetRequests.Ref(const Value: string): Integer;
+begin
+  Result := List.Add('ref', Value);
+end;
+
+function TVkParamsFriendsGetRequests.Sort(const Value: Boolean): Integer;
 begin
   Result := List.Add('sort', Value);
 end;
 
-function TVkParamsFriendsGetRequests.Suggested(Value: Boolean): Integer;
+function TVkParamsFriendsGetRequests.Suggested(const Value: Boolean): Integer;
 begin
   Result := List.Add('suggested', Value);
 end;
 
 { TVkParamsFriendsGetSuggestions }
 
-function TVkParamsFriendsGetSuggestions.Count(Value: Integer): Integer;
+function TVkParamsFriendsGetSuggestions.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsGetSuggestions.Fields(Value: TVkProfileFields): Integer;
+function TVkParamsFriendsGetSuggestions.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsFriendsGetSuggestions.FilterMutual(Value: Boolean): Integer;
+function TVkParamsFriendsGetSuggestions.FilterMutual(const Value: Boolean): Integer;
 begin
   if Value then
     Result := List.Add('filter', 'mutual')
@@ -674,44 +763,44 @@ begin
     Result := List.Add('filter', '');
 end;
 
-function TVkParamsFriendsGetSuggestions.NameCase(Value: TVkNameCase): Integer;
+function TVkParamsFriendsGetSuggestions.NameCase(const Value: TVkNameCase): Integer;
 begin
   Result := List.Add('name_case', Value.ToString);
 end;
 
-function TVkParamsFriendsGetSuggestions.Offset(Value: Integer): Integer;
+function TVkParamsFriendsGetSuggestions.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
 { TVkParamsFriendsSearch }
 
-function TVkParamsFriendsSearch.Count(Value: Integer): Integer;
+function TVkParamsFriendsSearch.Count(const Value: Integer): Integer;
 begin
   Result := List.Add('count', Value);
 end;
 
-function TVkParamsFriendsSearch.Fields(Value: TVkProfileFields): Integer;
+function TVkParamsFriendsSearch.Fields(const Value: TVkProfileFields): Integer;
 begin
   Result := List.Add('fields', Value.ToString);
 end;
 
-function TVkParamsFriendsSearch.NameCase(Value: TVkNameCase): Integer;
+function TVkParamsFriendsSearch.NameCase(const Value: TVkNameCase): Integer;
 begin
   Result := List.Add('name_case', Value.ToString);
 end;
 
-function TVkParamsFriendsSearch.Offset(Value: Integer): Integer;
+function TVkParamsFriendsSearch.Offset(const Value: Integer): Integer;
 begin
   Result := List.Add('offset', Value);
 end;
 
-function TVkParamsFriendsSearch.Query(Value: string): Integer;
+function TVkParamsFriendsSearch.Query(const Value: string): Integer;
 begin
   Result := List.Add('q', Value);
 end;
 
-function TVkParamsFriendsSearch.UserId(Value: Integer): Integer;
+function TVkParamsFriendsSearch.UserId(const Value: Integer): Integer;
 begin
   Result := List.Add('user_id', Value);
 end;

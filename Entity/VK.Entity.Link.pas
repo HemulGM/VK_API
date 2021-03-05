@@ -3,9 +3,8 @@ unit VK.Entity.Link;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo, VK.Entity.Market,
-  VK.Entity.App, VK.Types, VK.Entity.Attachment;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
+  VK.Entity.Photo, VK.Entity.Market, VK.Entity.App, VK.Types;
 
 type
   TVkLinkStatus = class(TVkEntity)
@@ -71,6 +70,8 @@ type
     FApplication: TVkStoreApplication;
     FIs_external: Boolean;
     FRating: TVkRating;
+    FTarget: string;
+    FIs_favorite: Boolean;
   public
     /// <summary>
     /// Ключ доступа
@@ -100,6 +101,7 @@ type
     /// Является ли ссылкой на внешний ресурс (если имеется)
     /// </summary>
     property IsExternal: Boolean read FIs_external write FIs_external;
+    property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     /// <summary>
     /// Изображение превью, объект фотографии (если имеется)
     /// </summary>
@@ -120,6 +122,7 @@ type
     /// Информацию о рейтинге продукта
     /// </summary>
     property Rating: TVkRating read FRating write FRating;
+    property Target: string read FTarget write FTarget;
     /// <summary>
     /// Заголовок ссылки
     /// </summary>
@@ -130,7 +133,7 @@ type
     /// </summary>
     property Url: string read FUrl write FUrl;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkShortLink = class(TVkEntity)
@@ -158,7 +161,13 @@ type
     FCity_id: Integer;
     FViews: Integer;
   public
+    /// <summary>
+    /// Идентификатор города
+    /// </summary>
     property CityId: Integer read FCity_id write FCity_id;
+    /// <summary>
+    /// Число переходов из этой города
+    /// </summary>
     property Views: Integer read FViews write FViews;
   end;
 
@@ -167,7 +176,13 @@ type
     FCountry_id: Integer;
     FViews: Integer;
   public
+    /// <summary>
+    /// Идентификатор страны
+    /// </summary>
     property CountryId: Integer read FCountry_id write FCountry_id;
+    /// <summary>
+    /// Число переходов из этой страны
+    /// </summary>
     property Views: Integer read FViews write FViews;
   end;
 
@@ -177,8 +192,17 @@ type
     FFemale: Integer;
     FMale: Integer;
   public
+    /// <summary>
+    /// Обозначение возраста
+    /// </summary>
     property AgeRange: string read FAge_range write FAge_range;
+    /// <summary>
+    /// Число переходов пользователей женского пола
+    /// </summary>
     property Female: Integer read FFemale write FFemale;
+    /// <summary>
+    /// Число переходов пользователей мужского пола
+    /// </summary>
     property Male: Integer read FMale write FMale;
   end;
 
@@ -275,10 +299,10 @@ begin
   inherited;
 end;
 
-function TVkLink.ToAttachment: string;
+function TVkLink.ToAttachment: TAttachment;
 begin
-  { TODO -oМалинин Геннадий -c : Додеать вложение ссылки 26.01.2021 12:23:45 }
-  Result := Attachment.Link(0, 0, AccessKey);
+  { TODO -oМалинин Геннадий -c : Доделать вложение ссылки 26.01.2021 12:23:45 }
+  Result := TAttachment.Link(0, 0, AccessKey);
 end;
 
 end.

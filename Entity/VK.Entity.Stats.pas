@@ -107,15 +107,45 @@ type
     FReach_ads: Integer;
     FReach_viral: Integer;
   public
-    property Hide: Integer read FHide write FHide;
-    property JoinGroup: Integer read FJoin_group write FJoin_group;
-    property Links: Integer read FLinks write FLinks;
+    /// <summary>
+    /// Охват подписчиков
+    /// </summary>
     property ReachSubscribers: Integer read FReach_subscribers write FReach_subscribers;
+    /// <summary>
+    /// Количество скрывших запись
+    /// </summary>
+    property Hide: Integer read FHide write FHide;
+    /// <summary>
+    /// Вступления в сообщество
+    /// </summary>
+    property JoinGroup: Integer read FJoin_group write FJoin_group;
+    /// <summary>
+    /// Переходы по ссылке
+    /// </summary>
+    property Links: Integer read FLinks write FLinks;
+    /// <summary>
+    /// Суммарный охват
+    /// </summary>
     property ReachTotal: Integer read FReach_total write FReach_total;
+    /// <summary>
+    /// Рекламный охват (если запись продвигалась с помощью таргетированной рекламы)
+    /// </summary>
     property ReachAds: Integer read FReach_ads write FReach_ads;
+    /// <summary>
+    /// Виральный охват (если запись продвигалась с помощью таргетированной рекламы)
+    /// </summary>
     property ReachViral: Integer read FReach_viral write FReach_viral;
+    /// <summary>
+    /// Количество жалоб на запись
+    /// </summary>
     property Report: Integer read FReport write FReport;
+    /// <summary>
+    /// Переходы в сообщество
+    /// </summary>
     property ToGroup: Integer read FTo_group write FTo_group;
+    /// <summary>
+    /// Количество отписавшихся участников
+    /// </summary>
     property Unsubscribe: Integer read FUnsubscribe write FUnsubscribe;
   end;
 

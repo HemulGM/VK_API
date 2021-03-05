@@ -3,8 +3,7 @@ unit VK.Storage;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
-  VK.Entity.Storage;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Storage;
 
 type
   /// <summary>
@@ -45,7 +44,7 @@ begin
   Params.Add('keys', Keys);
   if UserId <> 0 then
     Params.Add('user_id', UserId);
-  Result := Handler.Execute('storage.get', Params).GetObjects<TVkStorageItems>(Items);
+  Result := Handler.Execute('storage.get', Params).GetObjects(Items);
 end;
 
 function TStorageController.&Set(const Key, Value: string; UserId: Integer): Boolean;
@@ -56,8 +55,7 @@ begin
   Params.Add('value', Value);
   if UserId <> 0 then
     Params.Add('user_id', UserId);
-  with Handler.Execute('storage.set', Params) do
-    Result := Success and ResponseIsTrue
+  Result := Handler.Execute('storage.set', Params).ResponseIsTrue
 end;
 
 function TStorageController.Get(var Value: string; Key: string; UserId: Integer): Boolean;
@@ -97,7 +95,7 @@ begin
   Params.Add('count', Count);
   if UserId <> 0 then
     Params.Add('user_id', UserId);
-  Result := Handler.Execute('storage.getKeys', Params).GetObjects<TVkStorageKeys>(Items);
+  Result := Handler.Execute('storage.getKeys', Params).GetObjects(Items);
 end;
 
 end.

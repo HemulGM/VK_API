@@ -15,6 +15,15 @@ type
     property Success: Boolean read FSuccess write FSuccess;
   end;
 
+  TVkAuthSignup = class(TVkEntity)
+  private
+    FSid: string;
+    FSuccess: Boolean;
+  public
+    property Sid: string read FSid write FSid;
+    property Success: Boolean read FSuccess write FSuccess;
+  end;
+
 implementation
 
 end.

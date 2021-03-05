@@ -8,6 +8,8 @@ uses
   System.Generics.Collections;
 
 type
+  TOnLongPollServerUpdate = procedure(Sender: TObject; GroupID: string; Update: TJSONValue) of object;
+
   TVkLongPollData = record
     Key: string;
     Wait: string;
@@ -47,6 +49,7 @@ type
     procedure SetHandler(const Value: TVkHandler);
     procedure SetLogging(const Value: Boolean);
     procedure SetDoSync(const Value: Boolean);
+    procedure ParseResponse(Stream: TStringStream);
   public
     function Start: Boolean;
     procedure Stop;
@@ -68,6 +71,17 @@ type
 
 const
   DefaultLongPollServerInterval = 1000;
+  // Настройки лонгпул сервера
+  VK_LP_VERSION = '3';
+  VK_LP_WAIT = '25';
+  VK_LP_MODE = '10';
+  // Поля
+  VK_LP_FIELD_GROUP_ID = 'group_id';
+  VK_LP_FIELD_VERSION = 'lp_version';
+  VK_LP_FIELD_TS = 'ts';
+  VK_LP_FIELD_SERVER = 'server';
+  VK_LP_FIELD_KEY = 'key';
+  VK_LP_FIELD_ACTION_CHECK = 'a_check';
 
 implementation
 
@@ -106,7 +120,16 @@ end;
 procedure TVkLongPollServer.DoError(E: Exception);
 begin
   if Assigned(FOnError) then
-    FOnError(Self, E, -10000, E.Message);
+  begin
+    if FDoSync or (TThread.CurrentThread.ThreadID <> MainThreadID) then
+      TThread.Synchronize(nil,
+        procedure
+        begin
+          FOnError(Self, E, ERROR_VK_LONGPOLL, E.Message);
+        end)
+    else
+      FOnError(Self, E, ERROR_VK_LONGPOLL, E.Message);
+  end;
 end;
 
 function TVkLongPollServer.GetIsWork: Boolean;
@@ -139,13 +162,13 @@ begin
   if Result and Assigned(ResponseJSON) then
   begin
     try
-      FLongPollData.Action := 'a_check';
-      FLongPollData.Mode := '10';
-      FLongPollData.Key := ResponseJSON.GetValue('key', '');
-      FLongPollData.Server := ResponseJSON.GetValue('server', '');
-      FLongPollData.TS := ResponseJSON.GetValue('ts', '');
-      FLongPollData.Wait := '25';
-      FLongPollData.Version := '3';
+      FLongPollData.Action := VK_LP_FIELD_ACTION_CHECK;
+      FLongPollData.Mode := VK_LP_MODE;
+      FLongPollData.Key := ResponseJSON.GetValue(VK_LP_FIELD_KEY, '');
+      FLongPollData.Server := ResponseJSON.GetValue(VK_LP_FIELD_SERVER, '');
+      FLongPollData.TS := ResponseJSON.GetValue(VK_LP_FIELD_TS, '');
+      FLongPollData.Wait := VK_LP_WAIT;
+      FLongPollData.Version := VK_LP_VERSION;
       Result := not FLongPollData.Server.IsEmpty;
     finally
       ResponseJSON.Free;
@@ -155,9 +178,7 @@ begin
     Result := False;
 
   if not Result then
-  begin
     DoError(TVkLongPollServerException.Create('QueryLongPollServer error '#13#10 + JSText));
-  end;
 end;
 
 procedure TVkLongPollServer.OnLongPollRecieve(Updates: TJSONArray);
@@ -173,7 +194,7 @@ begin
       FOnUpdate(Self, FGroupID, Updates.Items[i]);
     except
       on E: Exception do
-        DoError(E);
+        DoError(TVkLongPollServerException.Create(E.Message));
     end;
   end;
 end;
@@ -225,8 +246,52 @@ begin
   FParams := Value;
   //Сохраним id группы, если его передали
   for Param in FParams do
-    if Param[0] = 'group_id' then
+    if Param[0] = VK_LP_FIELD_GROUP_ID then
       FGroupID := Param[1];
+end;
+
+procedure TVkLongPollServer.ParseResponse(Stream: TStringStream);
+var
+  JSON: TJSONValue;
+  Updates: TJSONArray;
+begin
+  try
+    Stream.Position := 0;
+    JSON := TJSONObject.ParseJSONValue(Stream.DataString);
+  except
+    Exit;
+  end;
+  try
+    //Обновляем данные лонгпул сервера
+    FLongPollData.TS := JSON.GetValue(VK_LP_FIELD_TS, '');
+    //Пробуем получить список обновлений
+    if JSON.TryGetValue<TJSONArray>('updates', Updates) then
+    begin
+      //Отдаем обработку обновлений в основной поток
+      if not FLongPollNeedStop then
+      begin
+        if FDoSync then
+          TThread.Synchronize(nil,
+            procedure
+            begin
+              OnLongPollRecieve(Updates);
+            end)
+        else
+          OnLongPollRecieve(Updates);
+      end;
+    end
+    else //Ошибка при парсинге
+    begin
+      if not FLongPollNeedStop then
+      begin
+        //Если ошибка, то пробуем переподключиться к лонгпул серверу
+        if not QueryLongPollServer then
+          DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: ' + Stream.DataString));
+      end;
+    end;
+  finally
+    JSON.Free;
+  end;
 end;
 
 function TVkLongPollServer.Start: Boolean;
@@ -246,8 +311,6 @@ begin
       HTTP: THTTPClient;
       ReqCode: Integer;
       Stream: TStringStream;
-      JSON: TJSONValue;
-      Updates: TJSONArray;
     begin
       FLongPollStopped := False;
       HTTP := THTTPClient.Create;
@@ -263,113 +326,29 @@ begin
             ReqCode := HTTP.Get(FLongPollData.Request, Stream).StatusCode;
           except
             on E: Exception do
-            begin
-              TThread.ForceQueue(nil,
-                procedure
-                begin
-                  DoError(TVkLongPollServerHTTPException.Create(E.Message));
-                end);
-            end;
+              DoError(TVkLongPollServerHTTPException.Create(E.Message));
           end;
           //Если пора останавливаться - выходим из цикла
           if FLongPollNeedStop then
             Break;
           //Если запрос выполнен успешно
           if ReqCode = 200 then
-          begin
-            //Парсим данные
-            try
-              Stream.Position := 0;
-              JSON := TJSONObject.ParseJSONValue(Stream.DataString);
-            except
-              JSON := nil;
-            end;
-            //Если данные были получены
-            if Assigned(JSON) then
-            begin
-              //Обновляем данные лонгпул сервера
-              FLongPollData.TS := JSON.GetValue('ts', '');
-              //Если пора останавливаться - выходим из цикла
-              if FLongPollNeedStop then
-                Break;
-              //Пробуем получить список обновлений
-              if JSON.TryGetValue<TJSONArray>('updates', Updates) then
-              begin
-                //Отдаем обработку обновлений в основной поток
-                if FDoSync then
-                begin
-                  TThread.Synchronize(nil,
-                    procedure
-                    begin
-                      if not FLongPollNeedStop then
-                      begin
-                        OnLongPollRecieve(Updates);
-                      end;
-                    end);
-                end
-                else
-                begin
-                  if not FLongPollNeedStop then
-                  begin
-                    OnLongPollRecieve(Updates);
-                  end;
-                end;
-              end
-              else //Ошибка при парсинге
-              begin
-                //Если ошибка, то пробуем переподключиться к лонгпул серверу
-                if FDoSync then
-                begin
-                  TThread.Synchronize(nil,
-                    procedure
-                    begin
-                      if not FLongPollNeedStop then
-                      begin
-                        if not QueryLongPollServer then
-                        begin
-                          DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: '
-                            + Stream.DataString));
-                        end;
-                      end;
-                    end);
-                end
-                else
-                begin
-                  if not FLongPollNeedStop then
-                  begin
-                    if not QueryLongPollServer then
-                    begin
-                      DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: '
-                        + Stream.DataString));
-                    end;
-                  end;
-                end;
-              end;
-              JSON.Free;
-            end;
-          end
+            ParseResponse(Stream)
           else
           begin
             //Если ошибка, то пробуем переподключиться к лонгпул серверу
-            TThread.Synchronize(nil,
-              procedure
-              begin
-                if not FLongPollNeedStop then
-                begin
-                  if not QueryLongPollServer then
-                  begin
-                    DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: '
-                      + Stream.DataString));
-                  end;
-                end;
-              end);
+            if not QueryLongPollServer then
+              DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: ' + Stream.DataString));
           end;
           //Интервал между запросами
           Sleep(FInterval);
+          //Если пора останавливаться - выходим из цикла
+          if FLongPollNeedStop then
+            Break;
         end;
       except
         on E: Exception do
-          DoError(E);
+          DoError(TVkLongPollServerParseException.Create(E.Message));
       end;
       HTTP.Free;
       Stream.Free;

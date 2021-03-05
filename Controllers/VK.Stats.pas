@@ -7,26 +7,44 @@ uses
   VK.Types, VK.Entity.Stats;
 
 type
-  TVkStatInterval = (siDay, siWeek, siMonth, siYear, siAll);
-
-  TVkStatIntervalHelper = record helper for TVkStatInterval
-    function ToString: string;
-  end;
-
   TVkParamsStatsGet = record
     List: TParams;
-    function GroupId(Value: Integer): Integer;
-    function AppId(Value: Integer): Integer;
-    function TimestampFrom(Value: Integer): Integer;
-    function TimestampTo(Value: Integer): Integer;
-    function Interval(Value: TVkStatInterval): Integer;
-    function IntervalsCount(Value: Integer): Integer;
-    function Filters(Value: TArrayOfString): Integer;
     /// <summary>
-    /// visitors, reach, activity
+    /// Идентификатор сообщества
     /// </summary>
-    function StatsGroups(Value: TArrayOfString): Integer;
-    function Extended(Value: Boolean): Integer;
+    function GroupId(const Value: Cardinal): Integer;
+    /// <summary>
+    /// Идентификатор приложения
+    /// </summary>
+    function AppId(const Value: Cardinal): Integer;
+    /// <summary>
+    /// Начало периода статистики
+    /// </summary>
+    function TimestampFrom(const Value: TDateTime): Integer;
+    /// <summary>
+    /// Окончание периода статистики
+    /// </summary>
+    function TimestampTo(const Value: TDateTime): Integer;
+    /// <summary>
+    /// Временные интервалы
+    /// </summary>
+    function Interval(const Value: TVkStatInterval = TVkStatInterval.Day): Integer;
+    /// <summary>
+    /// Количество интервалов времени
+    /// </summary>
+    function IntervalsCount(const Value: Integer): Integer;
+    /// <summary>
+    /// [Нет описания]
+    /// </summary>
+    function Filters(const Value: TArrayOfString): Integer;
+    /// <summary>
+    /// Фильтр для получения данных по конкретному блоку статистики сообщества
+    /// </summary>
+    function StatsGroups(const Value: TVkStatReachFilters): Integer;
+    /// <summary>
+    /// True — возвращать дополнительно агрегированные данные в результатах
+    /// </summary>
+    function Extended(const Value: Boolean = True): Integer;
   end;
 
   /// <summary>
@@ -65,91 +83,69 @@ uses
 
 { TStatsController }
 
-function TStatsController.Get(var Items: TVkStatItems; const Params: TParams): Boolean;
-begin
-  Result := Handler.Execute('stats.get', Params).GetObjects<TVkStatItems>(Items);
-end;
-
 function TStatsController.Get(var Items: TVkStatItems; const Params: TVkParamsStatsGet): Boolean;
 begin
   Result := Get(Items, Params.List);
 end;
 
+function TStatsController.Get(var Items: TVkStatItems; const Params: TParams): Boolean;
+begin
+  Result := Handler.Execute('stats.get', Params).GetObjects(Items);
+end;
+
 function TStatsController.GetPostReach(var Items: TVkStatPostReachItems; const OwnerId: Integer; PostIds: TIdList): Boolean;
 begin
-  Result := Handler.Execute('stats.getPostReach', [
-    ['owner_id', OwnerId.ToString],
-    ['post_ids', PostIds.ToString]]).
-    GetObjects<TVkStatPostReachItems>(Items);
+  Result := Handler.Execute('stats.getPostReach', [['owner_id', OwnerId.ToString], ['post_ids', PostIds.ToString]]).GetObjects(Items);
 end;
 
 function TStatsController.TrackVisitor: Boolean;
 begin
-  with Handler.Execute('stats.trackVisitor') do
-    Result := Success and ResponseIsTrue;
-end;
-
-{ TVkStatIntervalHelper }
-
-function TVkStatIntervalHelper.ToString: string;
-begin
-  case Self of
-    siDay:
-      Result := 'day';
-    siWeek:
-      Result := 'week';
-    siMonth:
-      Result := 'month';
-    siYear:
-      Result := 'year';
-    siAll:
-      Result := 'all';
-  end;
+  Result := Handler.Execute('stats.trackVisitor').ResponseIsTrue;
 end;
 
 { TVkParamsStatsGet }
 
-function TVkParamsStatsGet.GroupId(Value: Integer): Integer;
+function TVkParamsStatsGet.GroupId(const Value: Cardinal): Integer;
 begin
   Result := List.Add('group_id', Value);
 end;
 
-function TVkParamsStatsGet.AppId(Value: Integer): Integer;
+function TVkParamsStatsGet.AppId(const Value: Cardinal): Integer;
 begin
   Result := List.Add('app_id', Value);
 end;
 
-function TVkParamsStatsGet.TimestampFrom(Value: Integer): Integer;
+function TVkParamsStatsGet.TimestampFrom(const Value: TDateTime): Integer;
 begin
   Result := List.Add('timestamp_from', Value);
 end;
 
-function TVkParamsStatsGet.TimestampTo(Value: Integer): Integer;
+function TVkParamsStatsGet.TimestampTo(const Value: TDateTime): Integer;
 begin
   Result := List.Add('timestamp_to', Value);
 end;
 
-function TVkParamsStatsGet.Interval(Value: TVkStatInterval): Integer;
+function TVkParamsStatsGet.Interval(const Value: TVkStatInterval): Integer;
 begin
   Result := List.Add('interval', Value.ToString);
 end;
 
-function TVkParamsStatsGet.IntervalsCount(Value: Integer): Integer;
+function TVkParamsStatsGet.IntervalsCount(const Value: Integer): Integer;
 begin
   Result := List.Add('intervals_count', Value);
 end;
 
-function TVkParamsStatsGet.Filters(Value: TArrayOfString): Integer;
+function TVkParamsStatsGet.Filters(const Value: TArrayOfString): Integer;
 begin
   Result := List.Add('filters', Value);
 end;
 
-function TVkParamsStatsGet.StatsGroups(Value: TArrayOfString): Integer;
+function TVkParamsStatsGet.StatsGroups(const Value: TVkStatReachFilters): Integer;
 begin
-  Result := List.Add('stats_groups', Value);
+  Result := List.Add('stats_groups', Value.ToString);
 end;
 
-function TVkParamsStatsGet.Extended(Value: Boolean): Integer;
+function TVkParamsStatsGet.Extended(const Value: Boolean): Integer;
 begin
   Result := List.Add('extended', Value);
 end;

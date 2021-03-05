@@ -10,7 +10,7 @@ uses
   VK.Entity.GroupSettings;
 
 type
-  TLongPollEventProc = procedure(GroupId: Integer; EventObject: TJSONValue; EventId: string) of object;
+  TLongPollEventProc = procedure(GroupId: Integer; EventObject: TJSONValue; const EventId: string) of object;
 
   TLongPollEvents = TDictionary<string, TLongPollEventProc>;
 
@@ -74,47 +74,47 @@ type
     GroupId: Integer;
   end;
 
-  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; EventId: string) of object;
+  TOnCommentAction = procedure(Sender: TObject; GroupId: Integer; Comment: TVkComment; Info: TVkObjectInfo; const EventId: string) of object;
 
-  TOnCommentDelete = procedure(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; EventId: string) of object;
+  TOnCommentDelete = procedure(Sender: TObject; GroupId: Integer; Info: TVkCommentInfo; const EventId: string) of object;
 
-  TOnGroupPollVoteNew = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupPollVoteNew; EventId: string) of object;
+  TOnGroupPollVoteNew = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupPollVoteNew; const EventId: string) of object;
 
-  TOnGroupLeave = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; IsSelf: Boolean; EventId: string) of object;
+  TOnGroupLeave = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; IsSelf: Boolean; const EventId: string) of object;
 
-  TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; EventId: string) of object;
+  TOnGroupOfficersEdit = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupOfficersEdit; const EventId: string) of object;
 
-  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; EventId: string) of object;
+  TOnGroupJoin = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; JoinType: TVkGroupJoinType; const EventId: string) of object;
 
-  TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; EventId: string) of object;
+  TOnGroupUserBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserBlock; const EventId: string) of object;
 
-  TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; EventId: string) of object;
+  TOnGroupUserUnBlock = procedure(Sender: TObject; GroupId: Integer; Info: TVkGroupUserUnBlock; const EventId: string) of object;
 
-  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; EventId: string) of object;
+  TOnGroupChangeSettings = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupSettingsChange; const EventId: string) of object;
 
-  TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction; EventId: string) of object;
+  TOnGroupPayTransaction = procedure(Sender: TObject; GroupId: Integer; Info: TVkPayTransaction; const EventId: string) of object;
 
-  TOnGroupAppPayload = procedure(Sender: TObject; GroupId: Integer; Info: TVkAppPayload; EventId: string) of object;
+  TOnGroupAppPayload = procedure(Sender: TObject; GroupId: Integer; Info: TVkAppPayload; const EventId: string) of object;
 
-  TOnGroupChangePhoto = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupChangePhoto; EventId: string) of object;
+  TOnGroupChangePhoto = procedure(Sender: TObject; GroupId: Integer; Changes: TVkGroupChangePhoto; const EventId: string) of object;
 
-  TOnVideoNew = procedure(Sender: TObject; GroupId: Integer; Video: TVkVideo; EventId: string) of object;
+  TOnVideoNew = procedure(Sender: TObject; GroupId: Integer; Video: TVkVideo; const EventId: string) of object;
 
-  TOnPhotoNew = procedure(Sender: TObject; GroupId: Integer; Photo: TVkPhoto; EventId: string) of object;
+  TOnPhotoNew = procedure(Sender: TObject; GroupId: Integer; Photo: TVkPhoto; const EventId: string) of object;
 
-  TOnWallPostAction = procedure(Sender: TObject; GroupId: Integer; Post: TVkPost; EventId: string) of object;
+  TOnWallPostAction = procedure(Sender: TObject; GroupId: Integer; Post: TVkPost; const EventId: string) of object;
 
-  TOnAudioNew = procedure(Sender: TObject; GroupId: Integer; Audio: TVkAudio; EventId: string) of object;
+  TOnAudioNew = procedure(Sender: TObject; GroupId: Integer; Audio: TVkAudio; const EventId: string) of object;
 
-  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string) of object;
+  TOnGroupMessageNew = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string) of object;
 
-  TOnGroupMessageAction = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; EventId: string) of object;
+  TOnGroupMessageAction = procedure(Sender: TObject; GroupId: Integer; Message: TVkMessage; const EventId: string) of object;
 
-  TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string; EventId: string) of object;
+  TOnGroupMessageAccess = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; Key: string; const EventId: string) of object;
 
-  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; EventId: string) of object;
+  TOnGroupMessageTypingState = procedure(Sender: TObject; GroupId: Integer; UserId: Integer; State: string; const EventId: string) of object;
 
-  TOnGroupUnhandledEvents = procedure(Sender: TObject; GroupId: Integer; const JSON: TJSONValue) of object;
+  TOnGroupUnhandledEvents = procedure(Sender: TObject; GroupId: Integer; JSON: TJSONValue) of object;
 
   TCustomGroupEvents = class(TComponent)
   private
@@ -172,48 +172,48 @@ type
     procedure SetVK(const Value: TCustomVK);
     procedure SetGroupID(const Value: Integer);
     //
-    procedure DoAudioNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoBoardPostDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoBoardPostEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoBoardPostNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoBoardPostRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoGroupJoin(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoGroupLeave(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoGroupOfficersEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMarketCommentDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMarketCommentEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMarketCommentNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMarketCommentRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMessageAllow(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMessageDeny(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMessageTypingState(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMessageEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMessageNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoMessageReply(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoPhotoCommentDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoPhotoCommentEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoPhotoCommentNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoPhotoCommentRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoPhotoNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoPollVoteNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoUserBlock(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoUserUnblock(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoVideoCommentEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoVideoCommentNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoVideoCommentRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoVideoCommentDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoVideoNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoWallPostNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoWallReplyDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoWallReplyEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoWallReplyNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoWallReplyRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoWallRepost(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoGroupChangeSettings(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoGroupChangePhoto(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoVkPayTransaction(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoAppPayload(GroupId: Integer; EventObject: TJSONValue; EventId: string);
-    procedure DoGroupUnhandledEvents(GroupId: Integer; const JSON: TJSONValue);
+    procedure DoAudioNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoBoardPostDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoBoardPostEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoBoardPostNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoBoardPostRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoGroupJoin(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoGroupLeave(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoGroupOfficersEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMarketCommentDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMarketCommentEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMarketCommentNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMarketCommentRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMessageAllow(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMessageDeny(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMessageTypingState(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMessageEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMessageNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoMessageReply(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoPhotoCommentDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoPhotoCommentEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoPhotoCommentNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoPhotoCommentRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoPhotoNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoPollVoteNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoUserBlock(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoUserUnblock(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoVideoCommentEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoVideoCommentNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoVideoCommentRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoVideoCommentDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoVideoNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoWallPostNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoWallReplyDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoWallReplyEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoWallReplyNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoWallReplyRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoWallRepost(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoGroupChangeSettings(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoGroupChangePhoto(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoVkPayTransaction(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoAppPayload(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
+    procedure DoGroupUnhandledEvents(GroupId: Integer; JSON: TJSONValue);
     //
     procedure SetOnWallReplyNew(const Value: TOnCommentAction);
     procedure SetOnWallReplyEdit(const Value: TOnCommentAction);
@@ -453,7 +453,7 @@ begin
       end;
   end;
   FLongPollEvents := TLongPollEvents.Create;
-  FVersion := '3';
+  FVersion := VK_LP_VERSION;
   FLongPollServer := TVkLongPollServer.Create;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
@@ -493,7 +493,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoAudioNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoAudioNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Audio: TVkAudio;
 begin
@@ -508,7 +508,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoAppPayload(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoAppPayload(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkAppPayload;
 begin
@@ -522,7 +522,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoBoardPostDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoBoardPostDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkCommentInfo;
 begin
@@ -537,7 +537,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoBoardPostEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoBoardPostEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -555,7 +555,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoBoardPostNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoBoardPostNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -573,7 +573,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoBoardPostRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoBoardPostRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -591,7 +591,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoGroupChangePhoto(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoGroupChangePhoto(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Changes: TVkGroupChangePhoto;
 begin
@@ -607,7 +607,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoGroupChangeSettings(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoGroupChangeSettings(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Changes: TVkGroupSettingsChange;
 begin
@@ -622,7 +622,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoGroupJoin(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoGroupJoin(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   UserId: Integer;
   JoinType: TVkGroupJoinType;
@@ -635,7 +635,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoGroupLeave(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoGroupLeave(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   UserId: Integer;
   IsSelf: Boolean;
@@ -648,7 +648,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoGroupOfficersEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoGroupOfficersEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkGroupOfficersEdit;
 begin
@@ -662,7 +662,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoGroupUnhandledEvents(GroupId: Integer; const JSON: TJSONValue);
+procedure TCustomGroupEvents.DoGroupUnhandledEvents(GroupId: Integer; JSON: TJSONValue);
 begin
   if Assigned(FOnGroupUnhandledEvents) then
   begin
@@ -670,7 +670,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMarketCommentDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMarketCommentDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkCommentInfo;
 begin
@@ -685,7 +685,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMarketCommentEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMarketCommentEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -703,7 +703,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMarketCommentNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMarketCommentNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -721,7 +721,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMarketCommentRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMarketCommentRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -739,7 +739,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMessageAllow(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMessageAllow(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   UserId: Integer;
   Key: string;
@@ -752,7 +752,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMessageDeny(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMessageDeny(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   UserId: Integer;
 begin
@@ -763,7 +763,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMessageEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMessageEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Message: TVkMessage;
 begin
@@ -778,7 +778,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMessageNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMessageNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Message: TVkMessage;
   ClientInfo: TVkClientInfo;
@@ -796,7 +796,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMessageReply(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMessageReply(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Message: TVkMessage;
 begin
@@ -811,7 +811,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoMessageTypingState(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoMessageTypingState(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   UserId: Integer;
   State: string;
@@ -824,7 +824,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoPhotoCommentDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoPhotoCommentDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkCommentInfo;
 begin
@@ -839,7 +839,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoPhotoCommentEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoPhotoCommentEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -857,7 +857,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoPhotoCommentNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoPhotoCommentNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -875,7 +875,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoPhotoCommentRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoPhotoCommentRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -893,7 +893,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoPhotoNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoPhotoNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Photo: TVkPhoto;
 begin
@@ -908,7 +908,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoPollVoteNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoPollVoteNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkGroupPollVoteNew;
 begin
@@ -922,7 +922,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoUserBlock(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoUserBlock(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkGroupUserBlock;
 begin
@@ -937,7 +937,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoUserUnblock(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoUserUnblock(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkGroupUserUnBlock;
 begin
@@ -950,7 +950,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoVideoCommentDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoVideoCommentDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkCommentInfo;
 begin
@@ -965,7 +965,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoVideoCommentEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoVideoCommentEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -983,7 +983,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoVideoCommentNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoVideoCommentNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -1001,7 +1001,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoVideoCommentRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoVideoCommentRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -1019,7 +1019,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoVideoNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoVideoNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Video: TVkVideo;
 begin
@@ -1034,7 +1034,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoVkPayTransaction(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoVkPayTransaction(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkPayTransaction;
 begin
@@ -1048,7 +1048,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoWallPostNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoWallPostNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Post: TVkPost;
 begin
@@ -1063,7 +1063,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoWallReplyDelete(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoWallReplyDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Info: TVkCommentInfo;
 begin
@@ -1078,7 +1078,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoWallReplyEdit(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoWallReplyEdit(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -1096,7 +1096,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoWallReplyNew(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoWallReplyNew(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -1114,7 +1114,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoWallReplyRestore(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoWallReplyRestore(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Comment: TVkComment;
   Info: TVkObjectInfo;
@@ -1132,7 +1132,7 @@ begin
   end;
 end;
 
-procedure TCustomGroupEvents.DoWallRepost(GroupId: Integer; EventObject: TJSONValue; EventId: string);
+procedure TCustomGroupEvents.DoWallRepost(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
 var
   Post: TVkPost;
 begin
@@ -1444,8 +1444,8 @@ begin
     raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
   FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'groups.getLongPollServer';
-  FLongPollServer.Params.Add('lp_version', FVersion);
-  FLongPollServer.Params.Add('group_id', FGroupID);
+  FLongPollServer.Params.Add(VK_LP_FIELD_VERSION, FVersion);
+  FLongPollServer.Params.Add(VK_LP_FIELD_GROUP_ID, FGroupID);
   Result := FLongPollServer.Start;
   if Result then
     FVK.DoLog(FLongPollServer, FGroupID.ToString + ' started')
@@ -1525,7 +1525,7 @@ begin
       end;
     end;
   end;
-  FVersion := '3';
+  FVersion := VK_LP_VERSION;
   FReaded := False;
   FItems := TGroupEventsItems.Create;
   FGroups := TStringList.Create;
@@ -1542,10 +1542,10 @@ begin
 end;
 
 destructor TCustomGroupEventControl.Destroy;
-  {$IFNDEF AUTOREFCOUNT}
+{$IFNDEF AUTOREFCOUNT}
 var
   i: Integer;
-  {$ENDIF}
+{$ENDIF}
 begin
   {$IFNDEF AUTOREFCOUNT}
   for i := 0 to FItems.Count - 1 do

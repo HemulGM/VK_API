@@ -3,13 +3,14 @@ unit VK.Entity.Common;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  REST.Json.Types;
+  Generics.Collections, System.Json, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, REST.Json.Types;
 
 type
   TVkEntity = class(TInterfacedObject)
+  public
     function ToJsonString: string;
     class function FromJsonString<T: class, constructor>(AJsonString: string): T;
+    procedure FromJson(AJson: TJSONObject);
     constructor Create; virtual;
   end;
 
@@ -34,6 +35,8 @@ type
     property Id;
     property Name: string read FName write FName;
   end;
+
+  //////////////////////////////////////////////////////////////////////////////
 
   TVkCopyright = class(TVkEntity)
   private
@@ -65,9 +68,21 @@ type
     FY: Integer;
     FY2: Integer;
   public
+    /// <summary>
+    /// Координата X левого верхнего угла в процентах
+    /// </summary>
     property X: Integer read FX write FX;
+    /// <summary>
+    /// Координата Y левого верхнего угла в процентах
+    /// </summary>
     property X2: Integer read FX2 write FX2;
+    /// <summary>
+    /// Координата X правого нижнего угла в процентах
+    /// </summary>
     property Y: Integer read FY write FY;
+    /// <summary>
+    /// Координата Y правого нижнего угла в процентах
+    /// </summary>
     property Y2: Integer read FY2 write FY2;
   end;
 
@@ -125,14 +140,22 @@ type
     FUrl: string;
     FWidth: Integer;
   public
-    property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// URL копии
+    /// </summary>
     property Url: string read FUrl write FUrl;
+    /// <summary>
+    /// Высота
+    /// </summary>
+    property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// Ширина
+    /// </summary>
     property Width: Integer read FWidth write FWidth;
   end;
 
-  {$REGION 'Fields Desc'}
+  {$REGION 'Возможные значения поля Type'}
   {
-    Возможные значения поля type
     s — пропорциональная копия изображения с максимальной стороной 75px;
     m — пропорциональная копия изображения с максимальной стороной 130px;
     x — пропорциональная копия изображения с максимальной стороной 604px;
@@ -188,96 +211,6 @@ type
     function GetSize(Value: string; Circular: Boolean = True): TVkSize;
     function GetSizeMin(Value: string = 's'; Circular: Boolean = False): TVkSize;
     function GetSizeMax(Value: string = 'w'; Circular: Boolean = False): TVkSize;
-  end;
-
-  /// <summary>
-  /// Объект, описывающий место
-  /// </summary>
-  TVkPlace = class(TVkObject)
-  private
-    FCity: string;
-    FCountry: string;
-    FTitle: string;
-    FLatitude: Extended;
-    FLongitude: Extended;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
-    FCreated: TDateTime;
-    FIcon: string;
-    FType: Integer;
-    FAddress: string;
-    FCheckins: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
-    FUpdated: TDateTime;
-  public
-    /// <summary>
-    /// Идентификатор места
-    /// </summary>
-    property Id;
-    /// <summary>
-    /// Число отметок в этом месте
-    /// </summary>
-    property Checkins: Integer read FCheckins write FCheckins;
-    /// <summary>
-    /// Название места
-    /// </summary>
-    property Title: string read FTitle write FTitle;
-    /// <summary>
-    /// Географическая широта, заданная в градусах (от -90 до 90)
-    /// </summary>
-    property Latitude: Extended read FLatitude write FLatitude;
-    /// <summary>
-    /// Географическая широта, заданная в градусах (от -90 до 90)
-    /// </summary>
-    property Longitude: Extended read FLongitude write FLongitude;
-    /// <summary>
-    /// Тип места
-    /// </summary>
-    property&Type: Integer read FType write FType;
-    /// <summary>
-    /// Идентификатор страны
-    /// </summary>
-    property Country: string read FCountry write FCountry;
-    /// <summary>
-    /// Идентификатор города
-    /// </summary>
-    property City: string read FCity write FCity;
-    /// <summary>
-    /// Дата создания места
-    /// </summary>
-    property Created: TDateTime read FCreated write FCreated;
-    /// <summary>
-    /// дата обновления места в Unixtime.
-    /// </summary>
-    property Updated: TDateTime read FUpdated write FUpdated;
-    /// <summary>
-    /// Иконка места, URL изображения
-    /// </summary>
-    property Icon: string read FIcon write FIcon;
-    /// <summary>
-    /// Адрес места
-    /// </summary>
-    property Address: string read FAddress write FAddress;
-  end;
-
-  TVkGeo = class(TVkEntity)
-  private
-    FCoordinates: string;
-    FPlace: TVkPlace;
-    FType: string;
-  public
-    /// <summary>
-    /// Координаты места
-    /// </summary>
-    property Coordinates: string read FCoordinates write FCoordinates;
-    /// <summary>
-    /// Описание места (если оно добавлено)
-    /// </summary>
-    property Place: TVkPlace read FPlace write FPlace;
-    /// <summary>
-    /// Тип места
-    /// </summary>
-    property&Type: string read FType write FType;
-    destructor Destroy; override;
   end;
 
   TVkChatPhoto = class(TVkEntity)
@@ -336,16 +269,7 @@ var
 implementation
 
 uses
-  System.SysUtils, System.Json, VK.CommonUtils;
-
-{TVkGeo}
-
-destructor TVkGeo.Destroy;
-begin
-  if Assigned(FPlace) then
-    FPlace.Free;
-  inherited;
-end;
+  System.SysUtils, VK.CommonUtils;
 
 { TVkSizesHelper }
 
@@ -425,9 +349,14 @@ begin
   //
 end;
 
+procedure TVkEntity.FromJson(AJson: TJSONObject);
+begin
+  TJson.JsonToObject(Self, AJson);
+end;
+
 class function TVkEntity.FromJsonString<T>(AJsonString: string): T;
 begin
-  Result := TJson.JsonToObject<T>(AJsonString);
+  Result := TJson.JsonToObject<T>(AJsonString, [joIgnoreEmptyArrays]);
 end;
 
 function TVkEntity.ToJsonString: string;

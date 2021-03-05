@@ -3,10 +3,8 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors,
-  System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types,
-  VK.Entity.Attachment, VK.Entity.Common.List, VK.Wrap.Interceptors,
-  VK.Entity.Group;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, System.SysUtils, Rest.Json, System.Json,
+  VK.Entity.Common, VK.Types, VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.Group;
 
 type
   TVkAudioArtistPhoto = class(TVkEntity)
@@ -234,7 +232,7 @@ type
     property Url: string read FUrl write FUrl;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
     function DurationText(const AFormat: string): string;
   end;
 
@@ -291,9 +289,9 @@ begin
   Result := Format(AFormat, [M, S]);
 end;
 
-function TVkAudio.ToAttachment: string;
+function TVkAudio.ToAttachment: TAttachment;
 begin
-  Result := Attachment.Audio(Id, OwnerId, AccessKey);
+  Result := TAttachment.Audio(OwnerId, Id, AccessKey);
 end;
 
 {TAlbumClass}

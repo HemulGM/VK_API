@@ -3,8 +3,7 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Info, VK.Entity.Attachment;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Info, VK.Types;
 
 type
   TVkOwnerPhoto = class(TVkEntity)
@@ -173,7 +172,7 @@ type
     //
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkCropPhoto = class(TVkEntity)
@@ -182,8 +181,17 @@ type
     FPhoto: TVkPhoto;
     FRect: TVkRect;
   public
+    /// <summary>
+    /// Объект photo фотографии пользователя, из которой вырезается главное фото сообщества
+    /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
+    /// <summary>
+    /// Вырезанная фотография сообщества
+    /// </summary>
     property Crop: TVkRect read FCrop write FCrop;
+    /// <summary>
+    /// Миниатюрная квадратная фотография, вырезанная из фотографии Crop
+    /// </summary>
     property Rect: TVkRect read FRect write FRect;
     destructor Destroy; override;
   end;
@@ -228,6 +236,7 @@ type
     property Count: Integer read FCount write FCount;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Users: TVkPhotos);
+    function ToAttachments: TAttachmentArray;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -235,7 +244,7 @@ type
 implementation
 
 uses
-  VK.Types, VK.CommonUtils;
+  VK.CommonUtils;
 
 {TVkPhoto}
 
@@ -258,9 +267,9 @@ begin
   inherited;
 end;
 
-function TVkPhoto.ToAttachment: string;
+function TVkPhoto.ToAttachment: TAttachment;
 begin
-  Attachment.Photo(Id, OwnerId, AccessKey);
+  Result := TAttachment.Photo(OwnerId, Id, AccessKey);
 end;
 
 {TVkPhotos}
@@ -294,6 +303,15 @@ end;
 procedure TVkPhotos.SetSaveObjects(const Value: Boolean);
 begin
   FSaveObjects := Value;
+end;
+
+function TVkPhotos.ToAttachments: TAttachmentArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(FItems));
+  for i := Low(FItems) to High(FItems) do
+    Result[i] := FItems[i].ToAttachment;
 end;
 
 { TVkPhotoTags }

@@ -3,40 +3,26 @@ unit VK.Entity.Database.Countries;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkCountry = class(TVkObject)
   private
     FTitle: string;
   public
+    /// <summary>
+    /// Идентификатор страны
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Название страны
+    /// </summary>
     property Title: string read FTitle write FTitle;
   end;
 
-  TVkCountries = class(TVkEntity)
-  private
-    FCount: Integer;
-    FItems: TArray<TVkCountry>;
-  public
-    property Count: Integer read FCount write FCount;
-    property Items: TArray<TVkCountry> read FItems write FItems;
-    destructor Destroy; override;
-  end;
+  TVkCountries = TVkEntityList<TVkCountry>;
 
 implementation
-
-uses
-  VK.CommonUtils;
-
-{TVkCountries}
-
-destructor TVkCountries.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  TArrayHelp.FreeArrayOfObject<TVkCountry>(FItems);
-  {$ENDIF}
-  inherited;
-end;
 
 end.
 

@@ -3,45 +3,28 @@ unit VK.Entity.Group;
 interface
 
 uses
-  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common,
-  VK.Entity.Photo, REST.JsonReflect, REST.Json.Interceptors, VK.Entity.Market,
-  VK.Entity.Group.Counters, VK.Wrap.Interceptors, VK.Entity.Database.Cities,
-  VK.Entity.Database.Countries, VK.Entity.Common.List;
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Types, VK.Entity.Photo, REST.JsonReflect,
+  REST.Json.Interceptors, VK.Entity.Market, VK.Entity.Group.Counters, VK.Wrap.Interceptors, VK.Entity.Database.Cities,
+  VK.Entity.Database.Countries, VK.Entity.Common.List, VK.Entity.Geo;
 
 type
-  TVkGroupStatusType = (gsNone, gsOnline, gsAnswerMark);
-
   TVkGroupSubject = TVkBasicObject;
-
-  TVkGroupStatus = class(TVkEntity)
-  private
-    FMinutes: Integer;
-    FStatus: string;
-    function GetStatus: TVkGroupStatusType;
-  public
-    /// <summary>
-    /// Оценка времени ответа в минутах (для status = answer_mark)
-    /// </summary>
-    property Minutes: Integer read FMinutes write FMinutes;
-    /// <summary>
-    /// Cтатус сообщества
-    /// </summary>
-    /// <returns>none — сообщество не онлайн; online — сообщество онлайн (отвечает мгновенно); answer_mark — сообщество отвечает быстро.</returns>
-    property StatusStr: string read FStatus write FStatus;
-    /// <summary>
-    /// Cтатус сообщества
-    /// </summary>
-    property Status: TVkGroupStatusType read GetStatus;
-  end;
 
   TVkCoverImages = TVkEntityList<TVkImage>;
 
   TVkCover = class
   private
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FEnabled: Boolean;
     FImages: TArray<TVkImage>;
   public
+    /// <summary>
+    /// Информация о том, включена ли обложка
+    /// </summary>
     property Enabled: Boolean read FEnabled write FEnabled;
+    /// <summary>
+    /// Копии изображений обложки
+    /// </summary>
     property Images: TArray<TVkImage> read FImages write FImages;
     destructor Destroy; override;
   end;
@@ -52,25 +35,51 @@ type
     FUrl: string;
     FDesc: string;
     FPhoto_100: string;
-    FEdit_title: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FEdit_title: Boolean;
     FImage_processing: Integer;
   public
+    /// <summary>
+    /// Идентификатор ссылки
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// URL
+    /// </summary>
     property Url: string read FUrl write FUrl;
+    /// <summary>
+    /// Название ссылки
+    /// </summary>
+    property Name;
+    /// <summary>
+    /// Описание ссылки
+    /// </summary>
     property Desc: string read FDesc write FDesc;
+    /// <summary>
+    /// URL изображения-превью шириной 50px
+    /// </summary>
     property Photo_50: string read FPhoto_50 write FPhoto_50;
+    /// <summary>
+    /// URL изображения-превью шириной 100px
+    /// </summary>
     property Photo_100: string read FPhoto_100 write FPhoto_100;
-    property EditTitle: Integer read FEdit_title write FEdit_title;
+    property EditTitle: Boolean read FEdit_title write FEdit_title;
     property ImageProcessing: Integer read FImage_processing write FImage_processing;
   end;
 
   TVkGroupMemberState = class(TVkEntity)
   private
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FMember: Boolean;
-    FUser_id: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_invite: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FRequest: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FInvitation: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_recall: Boolean;
+    FUser_id: Integer;
   public
     /// <summary>
     /// Является ли пользователь участником сообщества
@@ -103,22 +112,49 @@ type
   TVkGroupMarket = class(TVkObject)
   private
     FName: string;
-    FEnabled: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FEnabled: Boolean;
     FMain_album_id: Integer;
     FPrice_min: Integer;
     FCurrency_text: string;
     FPrice_max: Integer;
     FContact_id: Integer;
     FCurrency: TVkProductCurrency;
+    FType: string;
   public
-    property Enabled: Integer read FEnabled write FEnabled;
+    /// <summary>
+    /// Информация о том, включен ли блок товаров в сообществе
+    /// </summary>
+    property Enabled: Boolean read FEnabled write FEnabled;
+    /// <summary>
+    /// Минимальная цена товаров
+    /// </summary>
     property PriceMin: Integer read FPrice_min write FPrice_min;
+    /// <summary>
+    /// Максимальная цена товаров
+    /// </summary>
     property PriceMax: Integer read FPrice_max write FPrice_max;
+    /// <summary>
+    /// Идентификатор главной подборки товаров
+    /// </summary>
     property MainAlbumId: Integer read FMain_album_id write FMain_album_id;
+    /// <summary>
+    /// Идентификатор контактного лица для связи с продавцом. Возвращается отрицательное значение, если для связи с продавцом используются сообщения сообщества
+    /// </summary>
     property ContactId: Integer read FContact_id write FContact_id;
+    /// <summary>
+    /// Информация о валюте
+    /// </summary>
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Name: string read FName write FName;
-    property Currency_text: string read FCurrency_text write FCurrency_text;
+    /// <summary>
+    /// Информация о типе магазина
+    /// </summary>
+    property&Type: string read FType write FType;
+    /// <summary>
+    /// Строковое обозначение
+    /// </summary>
+    property CurrencyText: string read FCurrency_text write FCurrency_text;
     destructor Destroy; override;
   end;
 
@@ -149,15 +185,19 @@ type
 
   TVkGroupAddresses = TVkEntityList<TVkGroupAddress>;
 
-  TVkGroupState = (gsOpen = 0, gsClose = 1, gsPrivate = 2);
-
   TVkBanInfo = class
   private
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FEnd_date: TDateTime;
     FComment: string;
   public
+    /// <summary>
+    /// Срок окончания блокировки
+    /// </summary>
     property EndDate: TDateTime read FEnd_date write FEnd_date;
+    /// <summary>
+    /// Комментарий к блокировке
+    /// </summary>
     property Comment: string read FComment write FComment;
   end;
 
@@ -168,9 +208,21 @@ type
     FDesc: string;
     FUser_id: Integer;
   public
+    /// <summary>
+    /// Идентификатор пользователя
+    /// </summary>
     property UserId: Integer read FUser_id write FUser_id;
+    /// <summary>
+    /// Должность
+    /// </summary>
     property Desc: string read FDesc write FDesc;
+    /// <summary>
+    /// Номер телефона
+    /// </summary>
     property Phone: string read FPhone write FPhone;
+    /// <summary>
+    /// Адрес e-mail
+    /// </summary>
     property Email: string read FEmail write FEmail;
   end;
 
@@ -179,53 +231,80 @@ type
     FIs_enabled: Boolean;
     FMain_address_id: Integer;
   public
+    /// <summary>
+    /// Включен ли блок адресов в сообществе
+    /// </summary>
     property IsEnabled: Boolean read FIs_enabled write FIs_enabled;
+    /// <summary>
+    /// Идентификатор основного адреса
+    /// </summary>
     property MainAddressId: Integer read FMain_address_id write FMain_address_id;
   end;
 
   TVkGroup = class(TVkObject)
   private
-    FAdmin_level: Integer;
+    [JsonReflectAttribute(ctString, rtString, TGroupAdminLevelInterceptor)]
+    FAdmin_level: TVkGroupAdminLevel;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_admin: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_advertiser: Boolean;
-    FIs_closed: Integer;
+    [JsonReflectAttribute(ctString, rtString, TGroupAccessInterceptor)]
+    FIs_closed: TVkGroupAccess;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_member: Boolean;
     FName: string;
     FPhoto_100: string;
     FPhoto_200: string;
     FPhoto_50: string;
     FScreen_name: string;
-    FType: string;
+    [JsonReflectAttribute(ctString, rtString, TGroupTypeInterceptor)]
+    FType: TVkGroupType;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FTrending: Boolean;
     FMembers_count: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FVerified: Boolean;
     FCountry: TVkCountry;
     FMember_status: Integer;
     FCity: TVkCity;
     FActivity: string;
-    FDeactivated: string;
+    [JsonReflectAttribute(ctString, rtString, TDeactivatedInterceptor)]
+    FDeactivated: TVkDeactivated;
     FInvited_by: Integer;
     FAddresses: TVkAddresses;
-    FAge_limits: Integer;
+    [JsonReflectAttribute(ctString, rtString, TAgeLimitsInterceptor)]
+    FAge_limits: TVkAgeLimits;
     FBan_info: TVkBanInfo;
-    Fcan_create_topic: Boolean;
-    Fcan_message: Boolean;
-    Fcan_post: Boolean;
-    Fcan_see_all_posts: Boolean;
-    Fcan_upload_doc: Boolean;
-    Fcan_upload_video: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_create_topic: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_message: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_post: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_see_all_posts: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_upload_doc: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_upload_video: Boolean;
     FContacts: TArray<TVkContact>;
     FCover: TVkCover;
     FCrop_photo: TVkCropPhoto;
     FDescription: string;
     FFixed_post: Integer;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FHas_photo: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_favorite: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_hidden_from_feed: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_messages_blocked: Boolean;
     FLinks: TArray<TVkGroupLink>;
     FMain_album_id: Integer;
-    FMain_section: Integer;
+    [JsonReflectAttribute(ctString, rtString, TGroupMainSectionInterceptor)]
+    FMain_section: TVkGroupMainSection;
     FMarket: TVkGroupMarket;
     FPlace: TVkPlace;
     FPublic_date_label: string;
@@ -235,65 +314,60 @@ type
     FWiki_page: string;
     FCounters: TVkGroupCounters;
     FTrack_code: string;
-    function GetIsBanned: Boolean;
-    function GetIsDeleted: Boolean;
-    function GetIsDeactivated: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntDateTimeInterceptor)]
+    FStart_date: TDateTime;
     function GetFixedPostId: string;
   public
     /// <summary>
-    /// Строка тематики паблика. У групп возвращается строковое значение, открыта ли группа или нет, а у событий дата начала.
+    /// Строка тематики паблика. У групп возвращается строковое значение, открыта ли группа или нет, а у событий дата начала
     /// </summary>
     property Activity: string read FActivity write FActivity;
     /// <summary>
-    /// Уровень полномочий текущего пользователя (если is_admin = 1):
-    /// 1 — модератор;
-    /// 2 — редактор;
-    /// 3 — администратор.
+    /// Уровень полномочий текущего пользователя (если IsAdmin = True)
     /// </summary>
-    property AdminLevel: Integer read FAdmin_level write FAdmin_level;
+    property AdminLevel: TVkGroupAdminLevel read FAdmin_level write FAdmin_level;
     /// <summary>
-    /// Информация об адресах сообщества.
+    /// Информация об адресах сообщества
     /// </summary>
     property Addresses: TVkAddresses read FAddresses write FAddresses;
     /// <summary>
-    /// Возрастное ограничение.
-    /// 1 — нет; 2 — 16+; 3 — 18+.
+    /// Возрастное ограничение
     /// </summary>
-    property AgeLimits: Integer read FAge_limits write FAge_limits;
+    property AgeLimits: TVkAgeLimits read FAge_limits write FAge_limits;
     /// <summary>
     /// Информация о занесении в черный список сообщества (поле возвращается только при запросе информации об одном сообществе)
     /// </summary>
     property BanInfo: TVkBanInfo read FBan_info write FBan_info;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь создать новое обсуждение в группе.
+    /// Информация о том, может ли текущий пользователь создать новое обсуждение в группе
     /// </summary>
-    property CanCreateTopic: Boolean read Fcan_create_topic write Fcan_create_topic;
+    property CanCreateTopic: Boolean read FCan_create_topic write FCan_create_topic;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь написать сообщение сообществу.
+    /// Информация о том, может ли текущий пользователь написать сообщение сообществу
     /// </summary>
-    property CanMessage: Boolean read Fcan_message write Fcan_message;
+    property CanMessage: Boolean read FCan_message write FCan_message;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь оставлять записи на стене сообщества.
+    /// Информация о том, может ли текущий пользователь оставлять записи на стене сообщества
     /// </summary>
-    property CanPost: Boolean read Fcan_post write Fcan_post;
+    property CanPost: Boolean read FCan_post write FCan_message;
     /// <summary>
-    /// Информация о том, разрешено ли видеть чужие записи на стене группы.
+    /// Информация о том, разрешено ли видеть чужие записи на стене группы
     /// </summary>
-    property CanSeeAllPosts: Boolean read Fcan_see_all_posts write Fcan_see_all_posts;
+    property CanSeeAllPosts: Boolean read FCan_see_all_posts write FCan_see_all_posts;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь загружать документы в группу.
+    /// Информация о том, может ли текущий пользователь загружать документы в группу
     /// </summary>
-    property CanUploadDoc: Boolean read Fcan_upload_doc write Fcan_upload_doc;
+    property CanUploadDoc: Boolean read FCan_upload_doc write FCan_upload_doc;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь загружать видеозаписи в группу.
+    /// Информация о том, может ли текущий пользователь загружать видеозаписи в группу
     /// </summary>
-    property CanUploadVideo: Boolean read Fcan_upload_video write Fcan_upload_video;
+    property CanUploadVideo: Boolean read FCan_upload_video write FCan_upload_video;
     /// <summary>
-    /// Город, указанный в информации о сообществе.
+    /// Город, указанный в информации о сообществе
     /// </summary>
     property City: TVkCity read FCity write FCity;
     /// <summary>
-    /// Информация из блока контактов публичной страницы.
+    /// Информация из блока контактов публичной страницы
     /// </summary>
     property Contacts: TArray<TVkContact> read FContacts write FContacts;
     /// <summary>
@@ -313,23 +387,9 @@ type
     /// </summary>
     property CropPhoto: TVkCropPhoto read FCrop_photo write FCrop_photo;
     /// <summary>
-    /// Возвращается в случае, если сообщество удалено или заблокировано. Возможные значения:
-    /// deleted — сообщество удалено;
-    /// banned — сообщество заблокировано;
+    /// Возвращается в случае, если сообщество удалено или заблокировано
     /// </summary>
-    property Deactivated: string read FDeactivated write FDeactivated;
-    /// <summary>
-    /// Сообщество удалено
-    /// </summary>
-    property IsDeleted: Boolean read GetIsDeleted;
-    /// <summary>
-    /// Сообщество заблокировано
-    /// </summary>
-    property IsBanned: Boolean read GetIsBanned;
-    /// <summary>
-    /// Сообщество не активно
-    /// </summary>
-    property IsDeactivated: Boolean read GetIsDeactivated;
+    property Deactivated: TVkDeactivated read FDeactivated write FDeactivated;
     /// <summary>
     /// Текст описания сообщества.
     /// </summary>
@@ -364,33 +424,53 @@ type
     /// </summary>
     property IsAdvertiser: Boolean read FIs_advertiser write FIs_advertiser;
     /// <summary>
-    /// Является ли сообщество закрытым. Возможные значения:
-    /// 0 — открытое;
-    /// 1 — закрытое;
-    /// 2 — частное.
+    /// Является ли сообщество закрытым
     /// </summary>
-    property IsClosed: Integer read FIs_closed write FIs_closed;
+    property IsClosed: TVkGroupAccess read FIs_closed write FIs_closed;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property IsHiddenFromFeed: Boolean read FIs_hidden_from_feed write FIs_hidden_from_feed;
     property IsMessagesBlocked: Boolean read FIs_messages_blocked write FIs_messages_blocked;
     property IsMember: Boolean read FIs_member write FIs_member;
+    /// <summary>
+    /// Информация из блока ссылок сообщества
+    /// </summary>
     property Links: TArray<TVkGroupLink> read FLinks write FLinks;
+    /// <summary>
+    /// Идентификатор основного фотоальбома
+    /// </summary>
     property MainAlbumId: Integer read FMain_album_id write FMain_album_id;
-    property MainSection: Integer read FMain_section write FMain_section;
+    /// <summary>
+    /// Информация о главной секции
+    /// </summary>
+    property MainSection: TVkGroupMainSection read FMain_section write FMain_section;
+    /// <summary>
+    /// Информация о магазине
+    /// </summary>
     property Market: TVkGroupMarket read FMarket write FMarket;
+    /// <summary>
+    /// Количество участников в сообществе
+    /// </summary>
     property MembersCount: Integer read FMembers_count write FMembers_count;
+    { TODO -oHemulGM -c : Сделать тип 16.02.2021 13:57:27 }
+    /// <summary>
+    /// Статус участника текущего пользователя
+    /// </summary>
     property MemberStatus: Integer read FMember_status write FMember_status;
     property Name: string read FName write FName;
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property Photo50: string read FPhoto_50 write FPhoto_50;
     property TrackCode: string read FTrack_code write FTrack_code;
+    /// <summary>
+    /// Место, указанное в информации о сообществе
+    /// </summary>
     property Place: TVkPlace read FPlace write FPlace;
     property PublicDateLabel: string read FPublic_date_label write FPublic_date_label;
     property ScreenName: string read FScreen_name write FScreen_name;
     property Site: string read FSite write FSite;
+    property StartDate: TDateTime read FStart_date write FStart_date;
     property Status: string read FStatus write FStatus;
-    property&Type: string read FType write FType;
+    property&Type: TVkGroupType read FType write FType;
     property Trending: Boolean read FTrending write FTrending;
     property Verified: Boolean read FVerified write FVerified;
     property Wall: Integer read FWall write FWall;
@@ -460,34 +540,6 @@ function TVkGroup.GetFixedPostId: string;
 begin
   //{group_id}_{post_id}
   Result := FId.ToString + '_' + FFixed_post.ToString;
-end;
-
-function TVkGroup.GetIsBanned: Boolean;
-begin
-  Result := FDeactivated = 'banned';
-end;
-
-function TVkGroup.GetIsDeactivated: Boolean;
-begin
-  Result := not FDeactivated.IsEmpty;
-end;
-
-function TVkGroup.GetIsDeleted: Boolean;
-begin
-  Result := FDeactivated = 'deleted';
-end;
-
-{ TVkGroupStatus }
-
-function TVkGroupStatus.GetStatus: TVkGroupStatusType;
-begin
-  if FStatus = 'none' then
-    Exit(gsNone);
-  if FStatus = 'online' then
-    Exit(gsOnline);
-  if FStatus = 'answer_mark' then
-    Exit(gsAnswermark);
-  Result := gsNone;
 end;
 
 { TVkGroupMarket }

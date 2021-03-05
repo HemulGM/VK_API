@@ -3,12 +3,15 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
-  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
-  VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market,
-  VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages, VK.Polls,
-  VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps,
-  VK.Clients, VK.Donut,
+  System.SysUtils, System.Variants, System.Classes, REST.Client,
+  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
+  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
+  VK.Status, VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types,
+  VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave, VK.Notes,
+  VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders,
+  Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
+  VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
+  VK.Donut, VK.Streaming,
   {$IFDEF NEEDFMX}
   VK.FMX.Captcha,
   {$ELSE}
@@ -100,6 +103,7 @@ type
     FUtils: TUtilsController;
     FVideo: TVideoController;
     FWall: TWallController;
+    FStreaming: TStreamingController;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -323,6 +327,10 @@ type
     /// </summary>
     property Stories: TStoriesController read FStories;
     /// <summary>
+    /// Методы для работы со стриамами.
+    /// </summary>
+    property Streaming: TStreamingController read FStreaming;
+    /// <summary>
     /// Методы для работы с данными пользователей.
     /// </summary>
     property Users: TUsersController read FUsers;
@@ -459,8 +467,8 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.Mime, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile,
-  VK.Entity.Login;
+  System.DateUtils, System.Net.Mime, System.Net.HttpClient,
+  VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
 
 { TCustomVK }
 
@@ -533,7 +541,7 @@ begin
   FIsLogin := False;
   FLogging := False;
   FUserId := -1;
-  FLang := vlAuto;
+  FLang := TVkLang.Auto;
   FUseServiceKeyOnly := False;
   FProxy := TVkProxy.Create(Self);
   FOAuth2Authenticator := TOAuth2Authenticator.Create(Self);
@@ -568,6 +576,7 @@ begin
   FStats := TStatsController.Create(FHandler);
   FStorage := TStorageController.Create(FHandler);
   FStories := TStoriesController.Create(FHandler);
+  FStreaming := TStreamingController.Create(FHandler);
   FSearch := TSearchController.Create(FHandler);
   FSecure := TSecureController.Create(FHandler);
   FWall := TWallController.Create(FHandler);
@@ -624,6 +633,7 @@ begin
   FStorage.Free;
   FStats.Free;
   FStories.Free;
+  FStreaming.Free;
   FUsers.Free;
   FAccount.Free;
   FApps.Free;
@@ -659,7 +669,12 @@ begin
   if Result then
   begin
     try
-      FOnError(Sender, E, Code, Text);
+      try
+        FOnError(Sender, E, Code, Text);
+      finally
+        if Assigned(E) then
+          E.Free;
+      end;
     except
       //Ну зачем так?
     end;
@@ -752,15 +767,15 @@ begin
       401:
         begin
           try
-            {$WARNINGS OFF}
+              {$WARNINGS OFF}
             Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
-            {$WARNINGS ON}
+              {$WARNINGS ON}
             try
               if not Info.Error.IsEmpty then
               begin
                 if Info.Error = 'need_validation' then
                 begin
-                  if TVkValidationType.FromString(Info.ValidationType) <> vtUnknown then
+                  if TVkValidationType.FromString(Info.ValidationType) <> TVkValidationType.Unknown then
                   begin
                     if HTTP.Get(Info.RedirectUri, Response).StatusCode = 200 then
                     begin
@@ -804,7 +819,7 @@ begin
                             end;
                           except
                             on E: Exception do
-                              DoOnError(Self, E, ERROR_VK_PARSE, Response.DataString);
+                              DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, Response.DataString);
                           end;
                           FormData.Free;
                         end;
@@ -820,9 +835,9 @@ begin
                   begin
                     EndResponse := HTTP.Get(Url + '&captcha_sid=' + Info.CaptchaSid + '&captcha_key=' + Code, Response);
                     Info.Free;
-                    {$WARNINGS OFF}
+                      {$WARNINGS OFF}
                     Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
-                    {$WARNINGS ON}
+                      {$WARNINGS ON}
                     Token := Info.AccessToken;
                   end
                   else
@@ -838,7 +853,7 @@ begin
             end;
           except
             on E: Exception do
-              DoOnError(Self, E, ERROR_VK_PARSE, Response.DataString);
+              DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, Response.DataString);
           end;
         end;
       200:
@@ -850,7 +865,7 @@ begin
     end;
   except
     on E: Exception do
-      DoOnError(Self, E, ERROR_VK_PARSE, 'Login request error');
+      DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, 'Login request error');
   end;
   Response.Free;
   HTTP.Free;
@@ -859,7 +874,6 @@ begin
     if Result and CheckAuth then
     begin
       DoLogin;
-      Exit(True);
     end
     else
     begin
@@ -868,7 +882,7 @@ begin
     end;
   except
     on E: Exception do
-      DoOnError(Self, E, ERROR_VK_AUTH, E.Message);
+      DoOnError(Self, E.Create(E.Message), ERROR_VK_AUTH, E.Message);
   end;
 end;
 
@@ -979,7 +993,7 @@ end;
 procedure TCustomVK.SetLang(const Value: TVkLang);
 begin
   FLang := Value;
-  if FLang <> vlAuto then
+  if FLang <> TVkLang.Auto then
     FHandler.Client.AddParameter('lang', Ord(Value).ToString)
   else
     FHandler.Client.Params.Delete('lang');
@@ -1124,7 +1138,7 @@ begin
     until (Cnt < Count) or Cancel;
   except
     on E: Exception do
-      DoError(Self, E, ERROR_INTERNAL);
+      DoError(Self, E.Create(E.Message), ERROR_INTERNAL);
   end;
 end;
 

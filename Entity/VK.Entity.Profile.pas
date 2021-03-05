@@ -11,12 +11,17 @@ uses
 type
   TVkProfile = class;
 
-  TVkExport = class
+  TVkExport = class(TVkEntity)
+  private
+    FInstagram: Boolean;
+    FLivejournal: Boolean;
+    FFacebook: Boolean;
+    FTwitter: Boolean;
   public
-   { property Twitter: Boolean;
-    property Facebook: Boolean;
-    property Livejournal: Boolean;
-    property Instagram : Boolean; }
+    property Twitter: Boolean read FTwitter write FTwitter;
+    property Facebook: Boolean read FFacebook write FTwitter;
+    property Livejournal: Boolean read FLivejournal write FTwitter;
+    property Instagram: Boolean read FInstagram write FTwitter;
   end;
 
   TVkFriendsMutual = class(TVkCounterEntity)
@@ -465,6 +470,7 @@ type
     FOccupation: TVkOccupation;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FOnline: Boolean;
+    //[JsonReflectAttribute(ctObject, rtObject, TIntBooleanInterceptor)]
     FPersonal: TVkPersonal;
     FPhoto_100: string;
     FPhoto_200: string;

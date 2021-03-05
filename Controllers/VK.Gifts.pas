@@ -3,8 +3,8 @@ unit VK.Gifts;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Gift,
-  VK.CommonUtils;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Gift, VK.CommonUtils;
 
 type
   TGiftsController = class(TVkController)
@@ -29,7 +29,7 @@ begin
   Params.Add('user_id', UserId);
   Params.Add('count', Count);
   Params.Add('offset', Offset);
-  Result := Handler.Execute('gifts.get', Params).GetObject<TVkGiftItems>(Items);
+  Result := Handler.Execute('gifts.get', Params).GetObject(Items);
 end;
 
 end.

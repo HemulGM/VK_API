@@ -265,7 +265,6 @@
         <DCCReference Include="Controllers\VK.Apps.pas"/>
         <DCCReference Include="Entity\VK.Entity.Login.pas"/>
         <DCCReference Include="VK.Clients.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Attachment.pas"/>
         <DCCReference Include="Controllers\VK.Donut.pas"/>
         <DCCReference Include="Entity\VK.Entity.Donut.pas"/>
         <DCCReference Include="Entity\VK.Entity.Auth.pas"/>
@@ -273,6 +272,14 @@
         <DCCReference Include="Utils\VK.Wrap.Interceptors.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.ExtendedList.pas"/>
         <DCCReference Include="Entity\VK.Entity.Group.Invites.pas"/>
+        <DCCReference Include="VK.Errors.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Status.pas"/>
+        <DCCReference Include="Entity\VK.Entity.MoneyTransfer.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Geo.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Group.Youla.pas"/>
+        <DCCReference Include="Controllers\VK.Streaming.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Streaming.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Message.Templates.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
@@ -289,6 +296,8 @@
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVK</ResourceId>
         </RcItem>
+        <None Include="Utils\GetFriendsWithAudio.js"/>
+        <None Include="README.md"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

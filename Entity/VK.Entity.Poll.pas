@@ -5,7 +5,7 @@ interface
 uses
   Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
   VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common,
-  VK.Entity.Common.List;
+  VK.Entity.Common.List, VK.Types;
 
 type
   TVkPollFriends = class(TVkObject)
@@ -92,7 +92,7 @@ type
     property Votes: Integer read FVotes write FVotes;
   end;
 
-  TVkPoll = class(TVkObject)
+  TVkPoll = class(TVkObject, IAttachment)
   private
     FAnonymous: Boolean;
     FAnswer_ids: TArray<Integer>;
@@ -211,6 +211,7 @@ type
     //
     constructor Create; override;
     destructor Destroy; override;
+    function ToAttachment: TAttachment;
   end;
 
   TVkPollVoters = class(TVkEntity)
@@ -254,6 +255,11 @@ begin
     FPhoto.Free;
   FBackground.Free;
   inherited;
+end;
+
+function TVkPoll.ToAttachment: TAttachment;
+begin
+  Result := TAttachment.Poll(OwnerId, Id, AccessKey);
 end;
 
 end.

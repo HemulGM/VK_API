@@ -38,7 +38,7 @@ begin
     Params.Add('group_id', Id)
   else if Id >= 0 then
     Params.Add('user_id', Id);
-  Result := Handler.Execute('status.get', Params).GetObject<TVkStatus>(Status);
+  Result := Handler.Execute('status.get', Params).GetObject(Status);
 end;
 
 function TStatusController.&Set(Text: string; GroupId: Integer = -1): Boolean;
@@ -48,8 +48,7 @@ begin
   Params.Add('text', Text);
   if GroupId >= 0 then
     Params.Add('group_id', GroupId);
-  with Handler.Execute('status.set', Params) do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('status.set', Params).ResponseIsTrue;
 end;
 
 end.

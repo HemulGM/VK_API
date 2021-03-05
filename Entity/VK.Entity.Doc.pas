@@ -3,9 +3,8 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  Vk.Types, VK.Entity.Common, VK.Entity.Attachment, VK.Entity.Common.List,
-  VK.Wrap.Interceptors, VK.Entity.AudioMessage;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, Vk.Types, VK.Entity.Common,
+  VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.AudioMessage;
 
 type
   TVkPreviewPhoto = class
@@ -46,21 +45,12 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FExt: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_licensed: Boolean;
     FOwner_id: Integer;
     FPreview: TVkPreview;
     FSize: Integer;
     FTitle: string;
-    {
-    1 Ч текстовые документы;
-    2 Ч архивы;
-    3 Ч gif;
-    4 Ч изображени€;
-    5 Ч аудио;
-    6 Ч видео;
-    7 Ч электронные книги;
-    8 Ч неизвестно.
-    }
     [JsonReflectAttribute(ctString, rtString, TDocumentTypeInterceptor)]
     FType: TVkDocumentType;
     FUrl: string;
@@ -95,6 +85,9 @@ type
     /// –азмер документа в байтах
     /// </summary>
     property Size: Integer read FSize write FSize;
+    /// <summary>
+    /// –азмер документа в строковом представлении
+    /// </summary>
     property SizeStr: string read GetSizeStr;
     /// <summary>
     /// Ќазвание документа
@@ -110,7 +103,7 @@ type
     property Url: string read FUrl write FUrl;
     constructor Create; override;
     destructor Destroy; override;
-    function ToAttachment: string;
+    function ToAttachment: TAttachment;
   end;
 
   TVkDocuments = TVkEntityList<TVkDocument>;
@@ -161,9 +154,9 @@ begin
   inherited;
 end;
 
-function TVkDocument.ToAttachment: string;
+function TVkDocument.ToAttachment: TAttachment;
 begin
-  Result := Attachment.Doc(FId, FOwner_id, FAccess_key);
+  Result := TAttachment.Doc(OwnerId, Id, FAccess_key);
 end;
 
 function TVkDocument.GetSizeStr: string;

@@ -9,14 +9,42 @@ uses
   {$ELSE}
   Vcl.Forms,
   {$ENDIF}
-  REST.Client, REST.Json, JSON, VK.Types;
+  REST.Client, REST.Json, REST.Types, JSON, VK.Types, VK.Entity.Common;
 
 type
+  TResponse = record
+  private
+    function AppendItemsTag(JSON: string): string; inline;
+  public
+    Success: Boolean;
+    Response: string;
+    JSON: string;
+    Error: record
+      Code: Integer;
+      Text: string;
+    end;
+    function ResponseAsItems: string;
+    function ResponseIsTrue: Boolean;
+    function ResponseIsFalse: Boolean;
+    function ResponseAsBool(var Value: Boolean): Boolean;
+    function ResponseAsInt(var Value: Integer): Boolean;
+    function ResponseAsInt64(var Value: Int64): Boolean;
+    function ResponseAsStr(var Value: string): Boolean;
+    function GetJSONValue: TJSONValue;
+    function GetJSONResponse: TJSONValue;
+    function GetValue<T>(const Field: string; var Value: T): Boolean;
+    function GetObject<T: TVkEntity, constructor>(var Value: T): Boolean;
+    function GetObjects<T: TVkEntity, constructor>(var Value: T): Boolean;
+    function IsError: Boolean;
+  end;
+
+  TCallMethodCallback = reference to procedure(Respone: TResponse);
+
   TRequestConstruct = class
     class var
       Client: TRESTClient;
   public
-    class function Request(Resource: string; Params: TParams): TRESTRequest;
+    class function Request(Resource: string; Params: TParams; Method: TRESTRequestMethod = rmGET): TRESTRequest;
   end;
 
   TVkHandler = class
@@ -63,6 +91,7 @@ type
     destructor Destroy; override;
     procedure Log(Sender: TObject; const Text: string);
     function AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
+    function ExecutePost(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Param: TParam): TResponse; overload;
     function Execute(Request: string): TResponse; overload;
@@ -85,6 +114,9 @@ var
 
 implementation
 
+uses
+  VK.Errors;
+
 procedure TVkHandler.WaitTime(MS: Int64);
 var
   TS: Cardinal;
@@ -102,13 +134,14 @@ end;
 
 { TRequsetConstruct }
 
-class function TRequestConstruct.Request(Resource: string; Params: TParams): TRESTRequest;
+class function TRequestConstruct.Request(Resource: string; Params: TParams; Method: TRESTRequestMethod): TRESTRequest;
 var
   Param: TParam;
 begin
   Result := TRESTRequest.Create(nil);
   Result.Client := Client;
   Result.Resource := Resource;
+  Result.Method := Method;
   for Param in Params do
   begin
     if not Param[0].IsEmpty then
@@ -219,6 +252,11 @@ begin
   Result := Execute(TRequestConstruct.Request(Request, Params), True);
 end;
 
+function TVkHandler.ExecutePost(Request: string; Params: TParams): TResponse;
+begin
+  Result := Execute(TRequestConstruct.Request(Request, Params, rmPOST), True);
+end;
+
 function TVkHandler.Execute(Request: string): TResponse;
 begin
   Result := Execute(TRequestConstruct.Request(Request, []), True);
@@ -306,7 +344,7 @@ begin
     on E: Exception do
     begin
       IsError := True;
-      DoProcError(Self, E, ERROR_VK_NETWORK, E.Message);
+      DoProcError(Self, E.Create(E.Message), ERROR_VK_NETWORK, E.Message);
     end;
   end;
 
@@ -333,7 +371,7 @@ begin
     end;
   except
     on E: TVkMethodException do
-      DoProcError(Self, E, E.Code, E.Message);
+      DoProcError(Self, TVkMethodException.Create(E.Message, E.Code), E.Code, E.Message);
   end;
 end;
 
@@ -349,7 +387,7 @@ begin
   begin
     Result.Success := False;
     Result.Error.Code := JS.GetValue<Integer>('error_code', -1);
-    Result.Error.Text := JS.GetValue<string>('error_msg', VKErrorString(Result.Error.Code));
+    Result.Error.Text := JS.GetValue<string>('error_msg', VKErrors.Get(Result.Error.Code));
     if TestCaptcha then
     begin
       Result.Error.Code := VK_ERROR_CAPTCHA;
@@ -491,6 +529,121 @@ procedure TVkHandler.SetOnConfirm(const Value: TOnConfirm);
 begin
   FOnConfirm := Value;
 end;
+
+{ TResponse }
+
+{$WARNINGS OFF}
+function TResponse.GetJSONValue: TJSONValue;
+begin
+  if not JSON.IsEmpty then
+    Result := TJSONObject.ParseJSONValue(UTF8ToString(JSON))
+  else
+    Result := nil;
+end;
+
+function TResponse.GetObject<T>(var Value: T): Boolean;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      Value := T.FromJsonString<T>(Response);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TResponse.GetObjects<T>(var Value: T): Boolean;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      Value := T.FromJsonString<T>(ResponseAsItems);
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TResponse.GetValue<T>(const Field: string; var Value: T): Boolean;
+var
+  JSONItem: TJSONValue;
+begin
+  Result := Success;
+  if Result then
+  begin
+    try
+      JSONItem := TJSONObject.ParseJSONValue(Response);
+      try
+        Result := JSONItem.TryGetValue<T>(Field, Value);
+      finally
+        JSONItem.Free;
+      end;
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+function TResponse.IsError: Boolean;
+begin
+  Result := (not Success) or (Error.Code <> -1);
+end;
+
+function TResponse.ResponseIsFalse: Boolean;
+begin
+  Result := Success and (Response = '0');
+end;
+
+function TResponse.ResponseAsInt(var Value: Integer): Boolean;
+begin
+  Result := Success and TryStrToInt(Response, Value);
+end;
+
+function TResponse.ResponseAsInt64(var Value: Int64): Boolean;
+begin
+  Result := Success and TryStrToInt64(Response, Value);
+end;
+
+function TResponse.ResponseAsStr(var Value: string): Boolean;
+begin
+  Result := Success;
+  if Result then
+    Value := Response;
+end;
+
+function TResponse.ResponseAsBool(var Value: Boolean): Boolean;
+begin
+  Result := Success;
+  if Result then
+    Value := ResponseIsTrue;
+end;
+
+function TResponse.ResponseIsTrue: Boolean;
+begin
+  Result := Success and (Response = '1');
+end;
+
+function TResponse.AppendItemsTag(JSON: string): string;
+begin
+  Result := '{"Items": ' + JSON + '}';
+end;
+
+function TResponse.ResponseAsItems: string;
+begin
+  Result := AppendItemsTag(Response);
+end;
+
+function TResponse.GetJSONResponse: TJSONValue;
+begin
+  if not Response.IsEmpty then
+    Result := TJSONObject.ParseJSONValue(UTF8ToString(Response))
+  else
+    Result := nil;
+end;
+{$WARNINGS ON}
 
 end.
 

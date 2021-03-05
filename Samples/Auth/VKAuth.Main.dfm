@@ -38,12 +38,16 @@ object FormMain: TFormMain
       Top = 19
       Width = 788
       Height = 540
-      ActivePage = TabSheet7
+      ActivePage = TabSheet10
       Align = alClient
       TabOrder = 0
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button20: TButton
           Left = 3
           Top = 3
@@ -100,7 +104,7 @@ object FormMain: TFormMain
         end
         object Button8: TButton
           Left = 145
-          Top = 96
+          Top = 83
           Width = 137
           Height = 25
           Caption = 'CallMethod'
@@ -108,8 +112,8 @@ object FormMain: TFormMain
           OnClick = Button8Click
         end
         object Button34: TButton
-          Left = 3
-          Top = 147
+          Left = 2
+          Top = 83
           Width = 137
           Height = 25
           Caption = 'Search.GetHints'
@@ -117,8 +121,8 @@ object FormMain: TFormMain
           OnClick = Button34Click
         end
         object Button35: TButton
-          Left = 2
-          Top = 178
+          Left = 1
+          Top = 114
           Width = 137
           Height = 25
           Caption = 'Database.GetRegions'
@@ -126,8 +130,8 @@ object FormMain: TFormMain
           OnClick = Button35Click
         end
         object Button36: TButton
-          Left = 3
-          Top = 209
+          Left = 2
+          Top = 145
           Width = 137
           Height = 25
           Caption = 'Database.GetSchoolClasses'
@@ -135,8 +139,8 @@ object FormMain: TFormMain
           OnClick = Button36Click
         end
         object Button37: TButton
-          Left = 2
-          Top = 240
+          Left = 1
+          Top = 176
           Width = 137
           Height = 25
           Caption = 'Storage.Get'
@@ -144,8 +148,8 @@ object FormMain: TFormMain
           OnClick = Button37Click
         end
         object Button38: TButton
-          Left = 2
-          Top = 271
+          Left = 1
+          Top = 207
           Width = 137
           Height = 25
           Caption = 'Secure.GetBalance'
@@ -153,8 +157,8 @@ object FormMain: TFormMain
           OnClick = Button38Click
         end
         object Button39: TButton
-          Left = 2
-          Top = 302
+          Left = 1
+          Top = 238
           Width = 137
           Height = 25
           Caption = 'Stories.Get'
@@ -164,12 +168,16 @@ object FormMain: TFormMain
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button1: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Account.Ban -1'
+          Caption = 'Ban -1'
           TabOrder = 0
           OnClick = Button1Click
         end
@@ -178,7 +186,7 @@ object FormMain: TFormMain
           Top = 34
           Width = 137
           Height = 25
-          Caption = 'Account.Unban -1'
+          Caption = 'Unban -1'
           TabOrder = 1
           OnClick = Button2Click
         end
@@ -187,7 +195,7 @@ object FormMain: TFormMain
           Top = 65
           Width = 137
           Height = 25
-          Caption = 'Account.ActiveOffers'
+          Caption = 'ActiveOffers'
           TabOrder = 2
           OnClick = Button3Click
         end
@@ -196,7 +204,7 @@ object FormMain: TFormMain
           Top = 96
           Width = 137
           Height = 25
-          Caption = 'Account.AppPermissions'
+          Caption = 'AppPermissions'
           TabOrder = 3
           OnClick = Button4Click
         end
@@ -205,7 +213,7 @@ object FormMain: TFormMain
           Top = 127
           Width = 137
           Height = 25
-          Caption = 'Account.Counters'
+          Caption = 'Counters'
           TabOrder = 4
           OnClick = Button5Click
         end
@@ -214,7 +222,7 @@ object FormMain: TFormMain
           Top = 158
           Width = 137
           Height = 25
-          Caption = 'Account.PushSettings'
+          Caption = 'PushSettings'
           TabOrder = 5
           OnClick = Button6Click
         end
@@ -223,7 +231,7 @@ object FormMain: TFormMain
           Top = 189
           Width = 137
           Height = 25
-          Caption = 'Account.SaveProfileInfo'
+          Caption = 'SaveProfileInfo'
           TabOrder = 6
           OnClick = Button7Click
         end
@@ -232,7 +240,7 @@ object FormMain: TFormMain
           Top = 220
           Width = 137
           Height = 25
-          Caption = 'Account.Online'
+          Caption = 'Online'
           TabOrder = 7
           OnClick = Button9Click
         end
@@ -241,7 +249,7 @@ object FormMain: TFormMain
           Top = 251
           Width = 137
           Height = 25
-          Caption = 'Account.Offline'
+          Caption = 'Offline'
           TabOrder = 8
           OnClick = Button10Click
         end
@@ -250,7 +258,7 @@ object FormMain: TFormMain
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Account.GetProfileInfo'
+          Caption = 'GetProfileInfo'
           TabOrder = 9
           OnClick = Button40Click
         end
@@ -258,25 +266,42 @@ object FormMain: TFormMain
       object TabSheet2: TTabSheet
         Caption = 'Auth'
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button11: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Auth.CheckPhone'
+          Caption = 'CheckPhone'
           TabOrder = 0
           OnClick = Button11Click
+        end
+        object Button41: TButton
+          Left = 3
+          Top = 34
+          Width = 137
+          Height = 25
+          Caption = 'Signup'
+          TabOrder = 1
+          OnClick = Button41Click
         end
       end
       object TabSheet3: TTabSheet
         Caption = 'Audio'
         ImageIndex = 2
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button21: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Audio.Get'
+          Caption = 'Get'
           TabOrder = 0
           OnClick = Button21Click
         end
@@ -285,7 +310,7 @@ object FormMain: TFormMain
           Top = 34
           Width = 137
           Height = 25
-          Caption = 'Audio.GetAlbums'
+          Caption = 'GetAlbums'
           TabOrder = 1
           OnClick = Button23Click
         end
@@ -294,7 +319,7 @@ object FormMain: TFormMain
           Top = 65
           Width = 137
           Height = 25
-          Caption = 'Audio.GetRecoms'
+          Caption = 'GetRecoms'
           TabOrder = 2
           OnClick = Button24Click
         end
@@ -303,7 +328,7 @@ object FormMain: TFormMain
           Top = 96
           Width = 137
           Height = 25
-          Caption = 'Audio.GetPop'
+          Caption = 'GetPop'
           TabOrder = 3
           OnClick = Button29Click
         end
@@ -348,20 +373,33 @@ object FormMain: TFormMain
           Top = 96
           Width = 119
           Height = 25
-          Caption = 'Button31'
+          Caption = 'AddToPlaylist'
           TabOrder = 8
           OnClick = Button31Click
+        end
+        object Button44: TButton
+          Left = 3
+          Top = 158
+          Width = 137
+          Height = 25
+          Caption = 'GetCount'
+          TabOrder = 9
+          OnClick = Button44Click
         end
       end
       object TabSheet4: TTabSheet
         Caption = 'Board'
         ImageIndex = 3
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button22: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Board.CreateComment'
+          Caption = 'CreateComment'
           TabOrder = 0
           OnClick = Button22Click
         end
@@ -369,12 +407,16 @@ object FormMain: TFormMain
       object TabSheet5: TTabSheet
         Caption = 'Status'
         ImageIndex = 4
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button17: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Status.Get'
+          Caption = 'Get'
           TabOrder = 0
           OnClick = Button17Click
         end
@@ -383,7 +425,7 @@ object FormMain: TFormMain
           Top = 34
           Width = 137
           Height = 25
-          Caption = 'Status.Set'
+          Caption = 'Set'
           TabOrder = 1
           OnClick = Button18Click
         end
@@ -391,25 +433,42 @@ object FormMain: TFormMain
       object TabSheet6: TTabSheet
         Caption = 'Wall'
         ImageIndex = 5
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button19: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Wall.Post'
+          Caption = 'Post'
           TabOrder = 0
           OnClick = Button19Click
+        end
+        object ButtonWallGet: TButton
+          Left = 3
+          Top = 34
+          Width = 137
+          Height = 25
+          Caption = 'Get'
+          TabOrder = 1
+          OnClick = ButtonWallGetClick
         end
       end
       object TabSheet7: TTabSheet
         Caption = 'Users'
         ImageIndex = 6
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button12: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Users.get'
+          Caption = 'Get'
           TabOrder = 0
           OnClick = Button12Click
         end
@@ -417,14 +476,36 @@ object FormMain: TFormMain
       object TabSheet8: TTabSheet
         Caption = 'Groups'
         ImageIndex = 7
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button25: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Groups.getMembers'
+          Caption = 'GetMembers'
           TabOrder = 0
           OnClick = Button25Click
+        end
+        object Button42: TButton
+          Left = 3
+          Top = 34
+          Width = 137
+          Height = 25
+          Caption = 'GetById'
+          TabOrder = 1
+          OnClick = Button42Click
+        end
+        object Button43: TButton
+          Left = 3
+          Top = 65
+          Width = 137
+          Height = 25
+          Caption = 'Get'
+          TabOrder = 2
+          OnClick = Button43Click
         end
       end
       object TabSheet10: TTabSheet
@@ -435,33 +516,59 @@ object FormMain: TFormMain
           Top = 3
           Width = 166
           Height = 25
-          Caption = 'Messages.GetConversations'
+          Caption = 'GetConversations'
           TabOrder = 0
           OnClick = Button27Click
+        end
+        object Button46: TButton
+          Left = 3
+          Top = 34
+          Width = 166
+          Height = 25
+          Caption = 'Get'
+          TabOrder = 1
+          OnClick = Button46Click
         end
       end
       object TabSheet11: TTabSheet
         Caption = 'Friends'
         ImageIndex = 10
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button28: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Friends.get'
+          Caption = 'Get'
           TabOrder = 0
           OnClick = Button28Click
+        end
+        object Button45: TButton
+          Left = 3
+          Top = 34
+          Width = 137
+          Height = 25
+          Caption = 'GetFriendsWithAudio'
+          TabOrder = 1
+          OnClick = Button45Click
         end
       end
       object TabSheetPolls: TTabSheet
         Caption = 'Polls'
         ImageIndex = 11
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button32: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Polls.GetBackgrounds'
+          Caption = 'GetBackgrounds'
           TabOrder = 0
           OnClick = Button32Click
         end
@@ -469,12 +576,16 @@ object FormMain: TFormMain
       object TabSheetPodcasts: TTabSheet
         Caption = 'Podcasts'
         ImageIndex = 12
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Button33: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
-          Caption = 'Podcasts.Search'
+          Caption = 'Search'
           TabOrder = 0
           OnClick = Button33Click
         end
@@ -550,7 +661,6 @@ object FormMain: TFormMain
     OnChangeDialogFlags = VkUserEvents1ChangeDialogFlags
     OnChangeMessageFlags = VkUserEvents1ChangeMessageFlags
     OnChatChanged = VkUserEvents1ChatChanged
-    OnChatChangeInfo = VkUserEvents1ChatChangeInfo
     OnCountChange = VkUserEvents1CountChange
     OnDeleteMessages = VkUserEvents1DeleteMessages
     OnEditMessage = VkUserEvents1EditMessage

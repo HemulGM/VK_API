@@ -3,7 +3,8 @@ unit VK.Podcasts;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Podcast;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Podcast;
 
 type
   TPodcastsController = class(TVkController)
@@ -24,6 +25,10 @@ type
     /// Search
     /// </summary>
     function Search(var Items: TVkPodcastSearch; SearchString: string; Offset: Integer = 0; Count: Integer = 10): Boolean;
+    /// <summary>
+    /// SearchPodcast
+    /// </summary>
+    function SearchPodcast(var Items: TVkPodcastSearch; SearchString: string; Offset: Integer = 0; Count: Integer = 10): Boolean;
   end;
 
 implementation
@@ -35,18 +40,17 @@ uses
 
 function TPodcastsController.ClearRecentSearches: Boolean;
 begin
-  with Handler.Execute('podcasts.clearRecentSearches') do
-    Result := Success and ResponseIsTrue;
+  Result := Handler.Execute('podcasts.clearRecentSearches').ResponseIsTrue;
 end;
 
 function TPodcastsController.GetPopular(var Items: TVkPodcasts): Boolean;
 begin
-  Result := Handler.Execute('podcasts.getPopular').GetObject<TVkPodcasts>(Items);
+  Result := Handler.Execute('podcasts.getPopular').GetObject(Items);
 end;
 
 function TPodcastsController.GetRecentSearchRequests(var Items: TVkPodcasts): Boolean;
 begin
-  Result := Handler.Execute('podcasts.getRecentSearchRequests').GetObjects<TVkPodcasts>(Items);
+  Result := Handler.Execute('podcasts.getRecentSearchRequests').GetObjects(Items);
 end;
 
 function TPodcastsController.Search(var Items: TVkPodcastSearch; SearchString: string; Offset, Count: Integer): Boolean;
@@ -58,7 +62,19 @@ begin
     Params.Add('offset', Offset);
   if Count <> 0 then
     Params.Add('count', Count);
-  Result := Handler.Execute('podcasts.search', Params).GetObject<TVkPodcastSearch>(Items);
+  Result := Handler.Execute('podcasts.search', Params).GetObject(Items);
+end;
+
+function TPodcastsController.SearchPodcast(var Items: TVkPodcastSearch; SearchString: string; Offset, Count: Integer): Boolean;
+var
+  Params: TParams;
+begin
+  Params.Add('search_string', SearchString);
+  if Offset <> 0 then
+    Params.Add('offset', Offset);
+  if Count <> 0 then
+    Params.Add('count', Count);
+  Result := Handler.Execute('podcasts.searchPodcast', Params).GetObject(Items);
 end;
 
 end.
