@@ -3,8 +3,7 @@ unit VK.Wrap.Interceptors;
 interface
 
 uses
-  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect,
-  REST.Json.Interceptors, VK.Types;
+  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect, REST.Json.Interceptors, VK.Types;
 
 type
   TEnumHelp = record
@@ -98,9 +97,6 @@ type
   TGroupMainSectionInterceptor = class(TEnumInterceptor<TVkGroupMainSection>)
   end;
 
-  TConversationDisableReasonInterceptor = class(TEnumInterceptor<TVkConversationDisableReason>)
-  end;
-
   TGiftPrivacyInterceptor = class(TEnumInterceptor<TVkGiftPrivacy>)
   end;
 
@@ -183,6 +179,12 @@ type
   end;
 
   TFaveTypeInterceptor = class(TEnumInterceptor<TVkFaveType>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TConversationDisableReasonInterceptor = class(TEnumInterceptor<TVkConversationDisableReason>)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
@@ -454,6 +456,18 @@ end;
 procedure TFaveTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkFaveType.Create(Arg)));
+end;
+
+{ TConversationDisableReasonInterceptor }
+
+function TConversationDisableReasonInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkConversationDisableReason>.ToString;
+end;
+
+procedure TConversationDisableReasonInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkConversationDisableReason.Create(Arg)));
 end;
 
 end.

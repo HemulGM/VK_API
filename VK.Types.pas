@@ -968,10 +968,14 @@ type
   /// NoAccessEMail Ч нет доступа к e-mail;
   /// NoAccessGroup Ч нет доступа к сообществу.
   /// </summary>
-  TVkConversationDisableReason = (UserBannedOrDeleted = 18,                   //
-    UserBlacklisted = 900, UserDisableGroupsMessages = 901, UserPrivacy = 902, //
-    GroupDisableMessages = 915, GroupBannedMessages = 916, NoAccessChat = 917, //
-    NoAccessEMail = 918, NoAccessGroup = 203);
+  TVkConversationDisableReason = (UserBannedOrDeleted, UserBlacklisted,       //
+    UserDisableGroupsMessages, UserPrivacy, GroupDisableMessages,             //
+    GroupBannedMessages, NoAccessChat, NoAccessEMail, NoAccessGroup);
+
+  TVkConversationDisableReasonHelper = record helper for TVkConversationDisableReason
+    function ToString: string; inline;
+    class function Create(Value: string): TVkConversationDisableReason; static;
+  end;
 
   TVkKeyboardActionType = (Text, OpenLink, Location, VKPay, OpenApp, Callback);
 
@@ -1419,6 +1423,7 @@ const
   VkPaymentStatus: array[TVkPaymentStatus] of string = ('not_paid', 'paid', 'returned');
   VkFaveType: array[TVkFaveType] of string = ('post', 'video', 'product', 'article', 'link');
   VkMonthlyTier: array[TVkMonthlyTier] of string = ('tier_1', 'tier_2', 'tier_3', 'tier_4', 'tier_5', 'tier_6', 'unlimited');
+  VkConversationDisableReason: array[TVkConversationDisableReason] of Integer = (18, 900, 901, 902, 915, 916, 917, 918, 203);
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -2884,6 +2889,18 @@ end;
 function TVkMonthlyTierHelper.ToString: string;
 begin
   Result := VkMonthlyTier[Self];
+end;
+
+{ TVkConversationDisableReasonHelper }
+
+class function TVkConversationDisableReasonHelper.Create(Value: string): TVkConversationDisableReason;
+begin
+  Result := TVkConversationDisableReason(IndexInt(StrToIntDef(Value, 18), VkConversationDisableReason));
+end;
+
+function TVkConversationDisableReasonHelper.ToString: string;
+begin
+  Result := VkConversationDisableReason[Self].ToString;
 end;
 
 end.

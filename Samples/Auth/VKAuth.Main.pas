@@ -87,6 +87,7 @@ type
     Button44: TButton;
     Button45: TButton;
     Button46: TButton;
+    Button47: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -203,6 +204,7 @@ type
     procedure Button44Click(Sender: TObject);
     procedure Button45Click(Sender: TObject);
     procedure Button46Click(Sender: TObject);
+    procedure Button47Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -770,6 +772,13 @@ begin
       end;
     Items.Free;
   end;
+end;
+
+procedure TFormMain.Button47Click(Sender: TObject);
+begin
+  TFile.Delete('token.tmp');
+  VK1.Token := '';
+  DeleteCache('vk.com');
 end;
 
 procedure TFormMain.Button4Click(Sender: TObject);
