@@ -9,7 +9,8 @@ type
   TVkEntity = class(TInterfacedObject)
   public
     function ToJsonString: string;
-    class function FromJsonString<T: class, constructor>(AJsonString: string): T;
+    class function FromJsonString<T: class, constructor>(AJsonString: string): T; overload;
+    class function FromJsonString<T: class, constructor>(AJson: TJSONObject): T; overload;
     procedure FromJson(AJson: TJSONObject);
     constructor Create; virtual;
   end;
@@ -313,6 +314,11 @@ end;
 procedure TVkEntity.FromJson(AJson: TJSONObject);
 begin
   TJson.JsonToObject(Self, AJson);
+end;
+
+class function TVkEntity.FromJsonString<T>(AJson: TJSONObject): T;
+begin
+  Result := TJson.JsonToObject<T>(AJson, [joIgnoreEmptyArrays]);
 end;
 
 class function TVkEntity.FromJsonString<T>(AJsonString: string): T;

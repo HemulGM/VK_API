@@ -196,7 +196,6 @@ begin
   begin
     if FSkipOtherBotMessages and (Message.FromId < 0) then
       Exit;
-    Message := TVkMessage.FromJsonString<TVkMessage>(Message.ToJsonString);
     TTask.Run(
       procedure
       begin
@@ -229,8 +228,6 @@ begin
   begin
     if FSkipOtherBotMessages and (Message.FromId < 0) then
       Exit;
-    Message := TVkMessage.FromJsonString<TVkMessage>(Message.ToJsonString);
-    ClientInfo := TVkClientInfo.FromJsonString<TVkClientInfo>(ClientInfo.ToJsonString);
     TTask.Run(
       procedure
       begin

@@ -31,8 +31,7 @@ object FormMain: TFormMain
       Height = 13
       Align = alTop
       Caption = 'Logining...'
-      ExplicitLeft = 6
-      ExplicitTop = 14
+      ExplicitWidth = 51
     end
     object PageControl1: TPageControl
       AlignWithMargins = True
@@ -41,15 +40,13 @@ object FormMain: TFormMain
       Width = 782
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheetNewsfeed
+      ActivePage = TabSheet9
       Align = alClient
       MultiLine = True
       TabOrder = 0
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button20: TButton
           Left = 3
           Top = 3
@@ -170,8 +167,6 @@ object FormMain: TFormMain
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button1: TButton
           Left = 3
           Top = 3
@@ -266,8 +261,6 @@ object FormMain: TFormMain
       object TabSheet2: TTabSheet
         Caption = 'Auth'
         ImageIndex = 1
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button11: TButton
           Left = 3
           Top = 3
@@ -290,8 +283,6 @@ object FormMain: TFormMain
       object TabSheet3: TTabSheet
         Caption = 'Audio'
         ImageIndex = 2
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button21: TButton
           Left = 3
           Top = 3
@@ -386,8 +377,6 @@ object FormMain: TFormMain
       object TabSheet4: TTabSheet
         Caption = 'Board'
         ImageIndex = 3
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button22: TButton
           Left = 3
           Top = 3
@@ -401,8 +390,6 @@ object FormMain: TFormMain
       object TabSheet5: TTabSheet
         Caption = 'Status'
         ImageIndex = 4
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button17: TButton
           Left = 3
           Top = 3
@@ -425,8 +412,6 @@ object FormMain: TFormMain
       object TabSheet6: TTabSheet
         Caption = 'Wall'
         ImageIndex = 5
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button19: TButton
           Left = 3
           Top = 3
@@ -449,8 +434,6 @@ object FormMain: TFormMain
       object TabSheet7: TTabSheet
         Caption = 'Users'
         ImageIndex = 6
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button12: TButton
           Left = 3
           Top = 3
@@ -464,8 +447,6 @@ object FormMain: TFormMain
       object TabSheet8: TTabSheet
         Caption = 'Groups'
         ImageIndex = 7
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button25: TButton
           Left = 3
           Top = 3
@@ -497,8 +478,6 @@ object FormMain: TFormMain
       object TabSheet10: TTabSheet
         Caption = 'Messages'
         ImageIndex = 9
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button27: TButton
           Left = 3
           Top = 3
@@ -521,8 +500,6 @@ object FormMain: TFormMain
       object TabSheet11: TTabSheet
         Caption = 'Friends'
         ImageIndex = 10
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button28: TButton
           Left = 3
           Top = 3
@@ -545,8 +522,6 @@ object FormMain: TFormMain
       object TabSheetPolls: TTabSheet
         Caption = 'Polls'
         ImageIndex = 11
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button32: TButton
           Left = 3
           Top = 3
@@ -560,8 +535,6 @@ object FormMain: TFormMain
       object TabSheetPodcasts: TTabSheet
         Caption = 'Podcasts'
         ImageIndex = 12
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button33: TButton
           Left = 3
           Top = 3
@@ -575,8 +548,6 @@ object FormMain: TFormMain
       object TabSheetNewsfeed: TTabSheet
         Caption = 'Newsfeed'
         ImageIndex = 13
-        ExplicitWidth = 780
-        ExplicitHeight = 512
         object Button48: TButton
           Left = 3
           Top = 3
@@ -667,6 +638,7 @@ object FormMain: TFormMain
     OnChangeDialogFlags = VkUserEvents1ChangeDialogFlags
     OnChangeMessageFlags = VkUserEvents1ChangeMessageFlags
     OnChatChanged = VkUserEvents1ChatChanged
+    OnChatChangeInfo = VkUserEvents1ChatChangeInfo
     OnCountChange = VkUserEvents1CountChange
     OnDeleteMessages = VkUserEvents1DeleteMessages
     OnEditMessage = VkUserEvents1EditMessage
@@ -688,8 +660,7 @@ object FormMain: TFormMain
   end
   object VkGroupEventsController1: TVkGroupEventsController
     Groups.Strings = (
-      '-145962568'
-      '-184755622')
+      '-192458090')
     Logging = True
     OnAudioNew = VkGroupEventsController1AudioNew
     OnBoardPostDelete = VkGroupEventsController1BoardPostDelete

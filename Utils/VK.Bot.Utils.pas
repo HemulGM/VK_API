@@ -6,8 +6,7 @@ uses
   {$IFDEF MSWINDOWS}
   Winapi.Windows, Winapi.Messages,
   {$ENDIF}
-  System.SysUtils, System.UITypes, System.Variants, System.Classes,
-  System.StrUtils;
+  System.SysUtils, System.UITypes, System.Variants, System.Classes, System.StrUtils;
 
 type
   TOnInput = reference to procedure(Command: string; var Quit: Boolean);

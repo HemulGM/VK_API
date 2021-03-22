@@ -280,6 +280,7 @@
         <DCCReference Include="Controllers\VK.Streaming.pas"/>
         <DCCReference Include="Entity\VK.Entity.Streaming.pas"/>
         <DCCReference Include="Entity\VK.Entity.Message.Templates.pas"/>
+        <DCCReference Include="Utils\VK.Bot.Commands.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
@@ -339,7 +340,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\..\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VKComponents.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

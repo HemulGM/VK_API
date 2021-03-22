@@ -641,6 +641,7 @@ type
   public
     function ToString: string; inline;
     class function All: TVkProfileFields; static; inline;
+    class function AllForGroup: TVkProfileFields; static; inline;
   end;
 
   /// <summary>
@@ -1987,6 +1988,31 @@ begin
     TVkProfileField.Contacts, TVkProfileField.Site, TVkProfileField.Education,
     TVkProfileField.Universities, TVkProfileField.Schools, TVkProfileField.Status,
     TVkProfileField.LastSeen, TVkProfileField.FollowersCount, TVkProfileField.CommonCount,
+    TVkProfileField.Occupation, TVkProfileField.Nickname, TVkProfileField.Relatives,
+    TVkProfileField.Relation, TVkProfileField.Personal, TVkProfileField.Connections,
+    TVkProfileField.&Exports, TVkProfileField.Activities, TVkProfileField.Interests,
+    TVkProfileField.Music, TVkProfileField.Movies, TVkProfileField.TV, TVkProfileField.Books,
+    TVkProfileField.Games, TVkProfileField.About, TVkProfileField.Quotes,
+    TVkProfileField.CanPost, TVkProfileField.CanSeeAllPosts, TVkProfileField.CanSeeAudio,
+    TVkProfileField.CanWritePrivateMessage, TVkProfileField.CanSendFriendRequest,
+    TVkProfileField.IsFavorite, TVkProfileField.IsHiddenFromFeed, TVkProfileField.TimeZone,
+    TVkProfileField.ScreenName, TVkProfileField.MaidenName, TVkProfileField.CropPhoto,
+    TVkProfileField.IsFriend, TVkProfileField.FriendStatus, TVkProfileField.Career,
+    TVkProfileField.Military, TVkProfileField.Blacklisted, TVkProfileField.BlacklistedByMe,
+    TVkProfileField.CanBeInvitedGroup, TVkProfileField.OnlineMobile, TVkProfileField.Counters];
+end;
+
+class function TVkProfileFieldsHelper.AllForGroup: TVkProfileFields;
+begin
+  Result := [TVkProfileField.PhotoId, TVkProfileField.Verified, TVkProfileField.Sex,
+    TVkProfileField.BirthDate, TVkProfileField.City, TVkProfileField.Country,
+    TVkProfileField.HomeTown, TVkProfileField.HasPhoto, TVkProfileField.Photo50,
+    TVkProfileField.Photo100, TVkProfileField.Photo200Orig, TVkProfileField.Photo200,
+    TVkProfileField.Photo400Orig, TVkProfileField.PhotoMax, TVkProfileField.PhotoMaxOrig,
+    TVkProfileField.Online, TVkProfileField.Domain, TVkProfileField.HasMobile,
+    TVkProfileField.Contacts, TVkProfileField.Site, TVkProfileField.Education,
+    TVkProfileField.Universities, TVkProfileField.Schools, TVkProfileField.Status,
+    TVkProfileField.LastSeen, TVkProfileField.FollowersCount,
     TVkProfileField.Occupation, TVkProfileField.Nickname, TVkProfileField.Relatives,
     TVkProfileField.Relation, TVkProfileField.Personal, TVkProfileField.Connections,
     TVkProfileField.&Exports, TVkProfileField.Activities, TVkProfileField.Interests,

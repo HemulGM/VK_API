@@ -285,6 +285,8 @@ begin
     FYoula.Free;
   if Assigned(FAction_button) then
     FAction_button.Free;
+  if Assigned(FLive_covers) then
+    FLive_covers.Free;
   inherited;
 end;
 
