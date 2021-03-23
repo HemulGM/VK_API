@@ -470,7 +470,6 @@ type
     FOccupation: TVkOccupation;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FOnline: Boolean;
-    //[JsonReflectAttribute(ctObject, rtObject, TIntBooleanInterceptor)]
     FPersonal: TVkPersonal;
     FPhoto_100: string;
     FPhoto_200: string;
@@ -636,11 +635,11 @@ type
     /// </summary>
     property Domain: string read FDomain write FDomain;
     /// <summary>
-    ///
+    /// EducationForm
     /// </summary>
     property EducationForm: string read FEducation_form write FEducation_form;
     /// <summary>
-    ///
+    /// EducationStatus
     /// </summary>
     property EducationStatus: string read FEducation_status write FEducation_status;
     /// <summary>

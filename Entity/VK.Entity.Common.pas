@@ -9,7 +9,8 @@ type
   TVkEntity = class(TInterfacedObject)
   public
     function ToJsonString: string;
-    class function FromJsonString<T: class, constructor>(AJsonString: string): T;
+    class function FromJsonString<T: class, constructor>(AJsonString: string): T; overload;
+    class function FromJsonString<T: class, constructor>(AJson: TJSONObject): T; overload;
     procedure FromJson(AJson: TJSONObject);
     constructor Create; virtual;
   end;
@@ -84,45 +85,6 @@ type
     ///  оордината Y правого нижнего угла в процентах
     /// </summary>
     property Y2: Integer read FY2 write FY2;
-  end;
-
-  /// <summary>
-  /// ќбъект post_source, описывающий способ размещени€ записи на стене
-  /// </summary>
-  TVkPostSource = class(TVkEntity)
-  private
-    FData: string;
-    FPlatform: string;
-    FType: string;
-    FUrl: string;
-  public
-    /// <summary>
-    /// “ип действи€ (только дл€ type = vk или widget)
-    /// ¬озможные значени€:
-    /// profile_activity Ч изменение статуса под именем пользовател€ (дл€ type = vk);
-    /// profile_photo Ч изменение профильной фотографии пользовател€ (дл€ type = vk);
-    /// comments Ч виджет комментариев (дл€ type = widget);
-    /// like Ч виджет Ђћне нравитс€ї (дл€ type = widget);
-    /// poll Ч виджет опросов (дл€ type = widget);
-    /// </summary>
-    property Data: string read FData write FData;
-    /// <summary>
-    /// Ќазвание платформы, если оно доступно (android; iphone; wphone)
-    /// </summary>
-    property&Platform: string read FPlatform write FPlatform;
-    /// <summary>
-    /// “ип источника
-    ///  vk Ч запись создана через основной интерфейс сайта (http://vk.com/);
-    ///  widget Ч запись создана через виджет на стороннем сайте;
-    ///  api Ч запись создана приложением через API;
-    ///  rssЧ запись создана посредством импорта RSS-ленты со стороннего сайта;
-    ///  sms Ч запись создана посредством отправки SMS-сообщени€ на специальный номер.
-    /// </summary>
-    property&Type: string read FType write FType;
-    /// <summary>
-    /// URL ресурса, с которого была опубликована запись
-    /// </summary>
-    property Url: string read FUrl write FUrl;
   end;
 
   TVkLiked = class(TVkEntity)
@@ -352,6 +314,11 @@ end;
 procedure TVkEntity.FromJson(AJson: TJSONObject);
 begin
   TJson.JsonToObject(Self, AJson);
+end;
+
+class function TVkEntity.FromJsonString<T>(AJson: TJSONObject): T;
+begin
+  Result := TJson.JsonToObject<T>(AJson, [joIgnoreEmptyArrays]);
 end;
 
 class function TVkEntity.FromJsonString<T>(AJsonString: string): T;

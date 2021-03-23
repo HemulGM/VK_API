@@ -3,10 +3,10 @@
         <ProjectGuid>{89E169EC-E394-4A57-9BFA-0C43AFB6B940}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Samples\Auth\VKAuth.dproj">
+        <Projects Include="VKComponents.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="VKComponents.dproj">
+        <Projects Include="Samples\Auth\VKAuth.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Samples\Bot\VKBotTemplate.dproj">
@@ -29,15 +29,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="VKAuth">
-        <MSBuild Projects="Samples\Auth\VKAuth.dproj"/>
-    </Target>
-    <Target Name="VKAuth:Clean">
-        <MSBuild Projects="Samples\Auth\VKAuth.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="VKAuth:Make">
-        <MSBuild Projects="Samples\Auth\VKAuth.dproj" Targets="Make"/>
-    </Target>
     <Target Name="VKComponents">
         <MSBuild Projects="VKComponents.dproj"/>
     </Target>
@@ -46,6 +37,15 @@
     </Target>
     <Target Name="VKComponents:Make">
         <MSBuild Projects="VKComponents.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="VKAuth">
+        <MSBuild Projects="Samples\Auth\VKAuth.dproj"/>
+    </Target>
+    <Target Name="VKAuth:Clean">
+        <MSBuild Projects="Samples\Auth\VKAuth.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VKAuth:Make">
+        <MSBuild Projects="Samples\Auth\VKAuth.dproj" Targets="Make"/>
     </Target>
     <Target Name="VKBotTemplate">
         <MSBuild Projects="Samples\Bot\VKBotTemplate.dproj"/>
@@ -84,13 +84,13 @@
         <MSBuild Projects="Samples\VKParamsParse\VKParams.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="VKAuth;VKComponents;VKBotTemplate;SQLiteWork;SQLiteFMX;VKParams"/>
+        <CallTarget Targets="VKComponents;VKAuth;VKBotTemplate;SQLiteWork;SQLiteFMX;VKParams"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="VKAuth:Clean;VKComponents:Clean;VKBotTemplate:Clean;SQLiteWork:Clean;SQLiteFMX:Clean;VKParams:Clean"/>
+        <CallTarget Targets="VKComponents:Clean;VKAuth:Clean;VKBotTemplate:Clean;SQLiteWork:Clean;SQLiteFMX:Clean;VKParams:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="VKAuth:Make;VKComponents:Make;VKBotTemplate:Make;SQLiteWork:Make;SQLiteFMX:Make;VKParams:Make"/>
+        <CallTarget Targets="VKComponents:Make;VKAuth:Make;VKBotTemplate:Make;SQLiteWork:Make;SQLiteFMX:Make;VKParams:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

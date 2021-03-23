@@ -69,3 +69,4 @@ __recovery/
 modules/
 *.inc
 Samples/Auth/Win32/Debug/keys.json
+Samples/Auth/Win32/Debug/token.tmp

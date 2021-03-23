@@ -3,12 +3,10 @@ unit VK.UserEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, System.JSON, VK.Types,
+  System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
-
-
   TVkMessageInfo = class
   private
     FTitle: string;
@@ -315,9 +313,9 @@ begin
             if TJSONArray(Update).Count > 5 then
               ExtraFields.Text := TJSONArray(Update).Items[5].GetValue<string>;
             if TJSONArray(Update).Count > 6 then
-              ExtraFields.Info := TVkMessageInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[6].GetValue<TJSONValue>).ToJSON);
+              ExtraFields.Info := TVkMessageInfo.FromJsonString(TJSONArray(Update).Items[6].GetValue<TJSONValue>.ToJSON);
             if TJSONArray(Update).Count > 7 then
-              ExtraFields.Attachments := TVkMessageAttachmentInfo.FromJsonString(TJSONValue(TJSONArray(Update).Items[7].GetValue<TJSONValue>).ToJSON);
+              ExtraFields.Attachments := TVkMessageAttachmentInfo.FromJsonString(TJSONArray(Update).Items[7].GetValue<TJSONValue>.ToJSON);
             if TJSONArray(Update).Count > 8 then
               ExtraFields.RandomId := TJSONArray(Update).Items[8].GetValue<Integer>;
           end;

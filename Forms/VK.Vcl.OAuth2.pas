@@ -18,8 +18,7 @@ type
     procedure BrowserNavigateComplete2(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BrowserFileDownload(ASender: TObject; ActiveDocument: WordBool; var Cancel: WordBool);
-    procedure BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame, StatusCode: OleVariant;
-      var Cancel: WordBool);
+    procedure BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame, StatusCode: OleVariant; var Cancel: WordBool);
   private
     FLastTitle: string;
     FProxyUserName: string;
@@ -182,8 +181,7 @@ begin
   end;
 end;
 
-procedure TFormOAuth2.BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame, StatusCode:
-  OleVariant; var Cancel: WordBool);
+procedure TFormOAuth2.BrowserNavigateError(ASender: TObject; const pDisp: IDispatch; const URL, Frame, StatusCode: OleVariant; var Cancel: WordBool);
 begin
   FIsError := True;
   FErrorCode := StatusCode;
@@ -212,12 +210,16 @@ begin
 end;
 
 procedure TFormOAuth2.FormCreate(Sender: TObject);
+const
+  UserAgent =
+    'Mozilla/5.0 (Windows Phone 10.0;  Android 4.2.1; Nokia; Lumia 520) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Mobile Safari/537.36 Edge/12.0';
 begin
   FLastTitle := '';
   FIsError := False;
   FBrakeAll := False;
   FLastURL := '';
   FixIE;
+  UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, PAnsiChar(AnsiString(UserAgent)), Length(UserAgent), 0);
 end;
 
 procedure TFormOAuth2.FormKeyPress(Sender: TObject; var Key: Char);

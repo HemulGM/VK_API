@@ -286,7 +286,7 @@ type
     /// <summary>
     /// Определяет, какие типы записей на стене необходимо получить
     /// </summary>
-    function Filter(const Value: TVkPostType = TVkPostType.All): Integer;
+    function Filter(const Value: TVkPostTypeFilter = TVkPostTypeFilter.All): Integer;
     /// <summary>
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
     /// содержащие информацию о пользователях и сообществах
@@ -1186,7 +1186,7 @@ begin
   Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
 end;
 
-function TVkParamsWallGet.Filter(const Value: TVkPostType): Integer;
+function TVkParamsWallGet.Filter(const Value: TVkPostTypeFilter): Integer;
 begin
   Result := List.Add('value', Value.ToString);
 end;

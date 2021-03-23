@@ -55,9 +55,11 @@ type
     LevelNew: TVkGroupLevel;
   end;
 
-  TVkGroupChangePhoto = record
+  TVkGroupChangePhoto = class
+  public
     UserId: integer;
     Photo: TVkPhoto;
+    destructor Destroy; override;
   end;
 
   TVkPayTransaction = record
@@ -503,7 +505,7 @@ begin
     try
       FOnAudioNew(Self, GroupId, Audio, EventId);
     finally
-      Audio.Free;
+      //Audio.Free;
     end;
   end;
 end;
@@ -550,7 +552,7 @@ begin
     try
       FOnBoardPostEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -568,7 +570,7 @@ begin
     try
       FOnBoardPostNew(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -586,7 +588,7 @@ begin
     try
       FOnBoardPostRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -597,12 +599,13 @@ var
 begin
   if Assigned(FOnGroupChangePhoto) then
   begin
+    Changes := TVkGroupChangePhoto.Create;
     Changes.UserId := EventObject.GetValue<Integer>('user_id', -1);
-    Changes.Photo := TVkPhoto.FromJsonString<TVkPhoto>(EventObject.GetValue<TJSONValue>('photo', nil).ToString);
+    Changes.Photo := TVkPhoto.FromJsonString<TVkPhoto>(EventObject.GetValue<TJSONObject>('photo', nil));
     try
       FOnGroupChangePhoto(Self, GroupId, Changes, EventId);
     finally
-      Changes.Photo.Free;
+      //Changes.Free;
     end;
   end;
 end;
@@ -617,7 +620,7 @@ begin
     try
       FOnGroupChangeSettings(Self, GroupId, Changes, EventId);
     finally
-      Changes.Free;
+      //Changes.Free;
     end;
   end;
 end;
@@ -665,9 +668,7 @@ end;
 procedure TCustomGroupEvents.DoGroupUnhandledEvents(GroupId: Integer; JSON: TJSONValue);
 begin
   if Assigned(FOnGroupUnhandledEvents) then
-  begin
     FOnGroupUnhandledEvents(Self, GroupId, JSON);
-  end;
 end;
 
 procedure TCustomGroupEvents.DoMarketCommentDelete(GroupId: Integer; EventObject: TJSONValue; const EventId: string);
@@ -698,7 +699,7 @@ begin
     try
       FOnMarketCommentEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -716,7 +717,7 @@ begin
     try
       FOnMarketCommentNew(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -734,7 +735,7 @@ begin
     try
       FOnMarketCommentRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -773,7 +774,7 @@ begin
     try
       FOnMessageEdit(Self, GroupId, Message, EventId);
     finally
-      Message.Free;
+      //Message.Free;
     end;
   end;
 end;
@@ -785,13 +786,13 @@ var
 begin
   if Assigned(FOnMessageNew) then
   begin
-    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.GetValue<TJSONValue>('message').ToString);
-    ClientInfo := TVkClientInfo.FromJsonString<TVkClientInfo>(EventObject.GetValue<TJSONValue>('client_info').ToString);
+    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.GetValue<TJSONObject>('message'));
+    ClientInfo := TVkClientInfo.FromJsonString<TVkClientInfo>(EventObject.GetValue<TJSONObject>('client_info'));
     try
       FOnMessageNew(Self, GroupId, Message, ClientInfo, EventId);
     finally
-      Message.Free;
-      ClientInfo.Free;
+      //Message.Free;
+      //ClientInfo.Free;
     end;
   end;
 end;
@@ -806,7 +807,7 @@ begin
     try
       FOnMessageReply(Self, GroupId, Message, EventId);
     finally
-      Message.Free;
+      //Message.Free;
     end;
   end;
 end;
@@ -852,7 +853,7 @@ begin
     try
       FOnPhotoCommentEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -870,7 +871,7 @@ begin
     try
       FOnPhotoCommentNew(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -888,7 +889,7 @@ begin
     try
       FOnPhotoCommentRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -903,7 +904,7 @@ begin
     try
       FOnPhotoNew(Self, GroupId, Photo, EventId);
     finally
-      Photo.Free;
+      //Photo.Free;
     end;
   end;
 end;
@@ -978,7 +979,7 @@ begin
     try
       FOnVideoCommentEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -996,7 +997,7 @@ begin
     try
       FOnVideoCommentNew(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -1014,7 +1015,7 @@ begin
     try
       FOnVideoCommentRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -1029,7 +1030,7 @@ begin
     try
       FOnVideoNew(Self, GroupId, Video, EventId);
     finally
-      Video.Free;
+      //Video.Free;
     end;
   end;
 end;
@@ -1058,7 +1059,7 @@ begin
     try
       FOnWallPostNew(Self, GroupId, Post, EventId);
     finally
-      Post.Free;
+      //Post.Free;
     end;
   end;
 end;
@@ -1091,7 +1092,7 @@ begin
     try
       FOnWallReplyEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -1109,7 +1110,7 @@ begin
     try
       FOnWallReplyNew(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -1127,7 +1128,7 @@ begin
     try
       FOnWallReplyRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      Comment.Free;
+      //Comment.Free;
     end;
   end;
 end;
@@ -1142,7 +1143,7 @@ begin
     try
       FOnWallRepost(Self, GroupId, Post, EventId);
     finally
-      Post.Free;
+      //Post.Free;
     end;
   end;
 end;
@@ -1621,6 +1622,15 @@ var
 begin
   for i := 0 to FItems.Count - 1 do
     FItems[i].Stop;
+end;
+
+{ TVkGroupChangePhoto }
+
+destructor TVkGroupChangePhoto.Destroy;
+begin
+  if Assigned(Photo) then
+    Photo.Free;
+  inherited;
 end;
 
 end.

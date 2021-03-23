@@ -325,7 +325,7 @@ type
   TVkBoardTopicPreview = (OnlyFirst = 1, OnlyLast = 2, Both = 3);
 
   /// <summary>
-  ///  Флаги сообщений
+  /// Флаги сообщений
   /// </summary>
   TVkMessageFlag = (UNKNOWN_9, UNKNOWN_8, UNKNOWN_7, UNKNOWN_6, NotDelivered, //
     DeleteForAll, Hidden, UNKNOWN_5, UNKNOWN_4, UnreadMultichat, UNKNOWN_3,   //
@@ -380,7 +380,9 @@ type
   /// <b>Market</b> — товары;
   /// <b>Wall</b> — записи;
   /// <b>Share</b> — ссылки, товары и записи.
-  /// Обратите внимание — существует ограничение по дате отправки вложений. Так, для получения доступны вложения типов photo, video, audio, doc, отправленные не ранее 25.03.2013, link — не ранее 20.05.13, market, wall — 01.02.2016.
+  /// Обратите внимание — существует ограничение по дате отправки вложений.
+  /// Так, для получения доступны вложения типов photo, video, audio, doc,
+  /// отправленные не ранее 25.03.2013, link — не ранее 20.05.13, market, wall — 01.02.2016.
   /// </summary>
   TVkHistoryAttachment = (Photo, Video, Audio, Doc, Link, Market, Wall, Share);
 
@@ -389,8 +391,9 @@ type
   end;
 
   /// <summary>
-  ///  Интент — это метка, которая обозначает приблизительное содержание сообщения от сообщества. Передаётся в необязательном параметре messages.send — Intent.
-  ///  Default
+  /// Интент — это метка, которая обозначает приблизительное содержание сообщения от сообщества.
+  /// Передаётся в необязательном параметре messages.send — Intent.
+  /// Default
   /// <b>PromoNewsletter</b> - интент, который должен сопровождать рекламную рассылку для ботов.
   /// <b>BotAdInvite</b> - интент, который должен сопровождать сообщения, запрашивающее подтверждение пользователя на отправку этому пользователю рекламы.
   /// <b>BotAdPromo</b> - интент, который должен сопровождать сообщение содержащее рекламу от бота.
@@ -435,11 +438,13 @@ type
   /// Note — новые заметки;
   /// Audio — записи сообществ и друзей, содержащие аудиозаписи, а также новые аудиозаписи, добавленные ими;
   /// Video — новые видеозаписи.
+  /// AudioPlaylist = плей-лист
   /// </summary>
-  TVkNewsfeedType = (Post, Photo, PhotoTag, WallPhoto, Friend, Note, Audio, Video);
+  TVkNewsfeedType = (Post, Photo, PhotoTag, WallPhoto, Friend, Note, Audio, Video, AudioPlaylist);
 
   TVkNewsfeedTypeHelper = record Helper for TVkNewsfeedType
     function ToString: string; inline;
+    class function Create(Value: string): TVkNewsfeedType; static;
   end;
 
   TVkNewsfeedTypes = set of TVkNewsfeedType;
@@ -504,7 +509,7 @@ type
   end;
 
   /// <summary>
-  ///  Жанры музыки
+  /// Жанры музыки
   /// </summary>
   TVkAudioGenre = (None, Rock, Pop, RapAndHipHop, EasyListening,    //
     HouseAndDance, Instrumental, Metal, Alternative, Dubstep,       //
@@ -552,12 +557,12 @@ type
   end;
 
   /// <summary>
-  ///  <b>Friends</b> — будут возвращены только друзья в этом сообществе.
-  ///  <b>Unsure</b> — будут возвращены пользователи, которые выбрали «Возможно
-  ///  пойду» (если сообщество относится к мероприятиям).
-  ///  <b>Managers</b> — будут возвращены только руководители сообщества
-  ///  (доступно при запросе с передачей access_token от имени администратора сообщества).
-  ///  <b>donut</b> — будут возвращены только доны (пользователи, у которых есть платная подписка VK Donut
+  /// <b>Friends</b> — будут возвращены только друзья в этом сообществе.
+  /// <b>Unsure</b> — будут возвращены пользователи, которые выбрали «Возможно
+  /// пойду» (если сообщество относится к мероприятиям).
+  /// <b>Managers</b> — будут возвращены только руководители сообщества
+  /// (доступно при запросе с передачей access_token от имени администратора сообщества).
+  /// <b>donut</b> — будут возвращены только доны (пользователи, у которых есть платная подписка VK Donut
   /// </summary>
   TVkGroupMembersFilter = (Friends, Unsure, Managers, Donut);
 
@@ -636,6 +641,7 @@ type
   public
     function ToString: string; inline;
     class function All: TVkProfileFields; static; inline;
+    class function AllForGroup: TVkProfileFields; static; inline;
   end;
 
   /// <summary>
@@ -650,7 +656,7 @@ type
     function ToString: string; inline;
   end;
 
-  TVkFriendAddInfo = (faiSuccess = 1, faiApproved = 2, faiResended = 4);
+  TVkFriendAddInfo = (Success = 1, Approved = 2, Resended = 4);
 
   TVkGroupField = (City, Country, Place, Description, WikiPage, MembersCount, //
     Counters, StartDate, FinishDate, CanPost, CanSeeAllPosts, Activity,       //
@@ -705,8 +711,6 @@ type
   TVkOrderStateActionHelper = record helper for TVkOrderStateAction
     function ToString: string; inline;
   end;
-
-  TVkNoteText = string;
 
   /// <summary>
   /// <b>wisNoInformation</b> — нет информации о расписании;
@@ -836,7 +840,7 @@ type
   end;
 
   /// <summary>
-  ///  Флаги диалогов
+  /// Флаги диалогов
   /// </summary>
   TVkDialogFlag = (Important, Unanswered);
 
@@ -849,14 +853,13 @@ type
   end;
 
   /// <summary>
-  ///  Идентификатор типа изменения в чате
+  /// Идентификатор типа изменения в чате
   /// </summary>
-
   TVkChatChangeInfoType = (None, Name, Pic, NewAdmin, FixMessage, Join,       //
     Leave, Kick, Unadmin);
 
   /// <summary>
-  ///  Платформы
+  /// Платформы
   /// </summary>
   TVkPlatform = (Unknown, Mobile, IPhone, IPad, Android, WindowsPhone,        //
     Windows, Web);
@@ -906,7 +909,7 @@ type
   end;
 
   /// <summary>
-  ///  Тип смены флагов
+  /// Тип смены флагов
   /// </summary>
   TVkFlagsChangeType = (Replace, &Set, Reset);
 
@@ -915,7 +918,7 @@ type
   end;
 
   /// <summary>
-  ///  Типы объектов
+  /// Типы объектов
   /// </summary>
   TVkItemType = (Post, Comment, Photo, Audio, Video, Note, Market,            //
     PhotoComment, VideoComment, TopicComment, MarketComment, Sitepage, Story);
@@ -925,7 +928,7 @@ type
   end;
 
   /// <summary>
-  ///  Типы вложений
+  /// Типы вложений
   /// </summary>
   TVkAttachmentType = (Unknown, Photo, Video, Audio, Doc, Link, Market,       //
     MarketAlbum, Wall, WallReply, Sticker, Gift, Call, AudioMessage,          //
@@ -968,10 +971,14 @@ type
   /// NoAccessEMail — нет доступа к e-mail;
   /// NoAccessGroup — нет доступа к сообществу.
   /// </summary>
-  TVkConversationDisableReason = (UserBannedOrDeleted = 18,                   //
-    UserBlacklisted = 900, UserDisableGroupsMessages = 901, UserPrivacy = 902, //
-    GroupDisableMessages = 915, GroupBannedMessages = 916, NoAccessChat = 917, //
-    NoAccessEMail = 918, NoAccessGroup = 203);
+  TVkConversationDisableReason = (UserBannedOrDeleted, UserBlacklisted,       //
+    UserDisableGroupsMessages, UserPrivacy, GroupDisableMessages,             //
+    GroupBannedMessages, NoAccessChat, NoAccessEMail, NoAccessGroup);
+
+  TVkConversationDisableReasonHelper = record helper for TVkConversationDisableReason
+    function ToString: string; inline;
+    class function Create(Value: string): TVkConversationDisableReason; static;
+  end;
 
   TVkKeyboardActionType = (Text, OpenLink, Location, VKPay, OpenApp, Callback);
 
@@ -996,10 +1003,31 @@ type
   /// Others — записи не от владельца стены;
   /// All — все записи на стене (owner + others).
   /// </summary>
-  TVkPostType = (Suggests, Postponed, Owner, Others, All);
+  TVkPostTypeFilter = (Suggests, Postponed, Owner, Others, All);
+
+  TVkPostTypeFilterHelper = record helper for TVkPostTypeFilter
+    function ToString: string; inline;
+  end;
+
+  TVkPostType = (Post, Copy, Reply, Postpone, Suggest);
 
   TVkPostTypeHelper = record helper for TVkPostType
     function ToString: string; inline;
+    class function Create(const Value: string): TVkPostType; static;
+  end;
+
+  /// <summary>
+  /// VK — запись создана через основной интерфейс сайта (http://vk.com/);
+  /// Widget — запись создана через виджет на стороннем сайте;
+  /// API — запись создана приложением через API;
+  /// RSS — запись создана посредством импорта RSS-ленты со стороннего сайта;
+  /// SMS — запись создана посредством отправки SMS-сообщения на специальный номер.
+  /// </summary>
+  TVkPostSourceType = (VK, Widget, API, RSS, SMS);
+
+  TVkPostSourceTypeHelper = record helper for TVkPostSourceType
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkPostSourceType; static;
   end;
 
   TVkDonutPaidDuration = (DonutOnly = -1, Days1 = 86400, Days2 = 172800,      //
@@ -1082,7 +1110,7 @@ type
     function ToString: string; overload; inline;
   end;
 
-  TVkLinkStatusType = (lsNotBanned, lsBanned, lsProcessing);
+  TVkLinkStatusType = (NotBanned, Banned, Processing);
 
   TVkLinkStatusTypeHelper = record helper for TVkLinkStatusType
     function ToString: string; overload; inline;
@@ -1098,7 +1126,7 @@ type
   TVkUserBlockReason = (Other, Spam, InsultingParticipants,                   //
     ObsceneExpressions, OffTopic);
 
-  TUserBlockReasonHelper = record helper for TVkUserBlockReason
+  TVkUserBlockReasonHelper = record helper for TVkUserBlockReason
     function ToString: string; overload; inline;
   end;
 
@@ -1326,7 +1354,7 @@ const
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo', 'audio', 'video', 'note', 'market',
     'photo_comment', 'video_comment', 'topic_comment', 'market_comment', 'sitepage', 'story');
   VkGroupJoinType: array[TVkGroupJoinType] of string = ('', 'join', 'unsure', 'accepted', 'approved', 'request');
-  VkPostType: array[TVkPostType] of string = ('suggests', 'postponed', 'owner', 'others', 'all');
+  VkPostTypeFilter: array[TVkPostTypeFilter] of string = ('suggests', 'postponed', 'owner', 'others', 'all');
   VkPremissionStr: array[TVkPermission] of string = ('notify', 'friends', 'photos', 'audio', 'video', 'stories',
     'pages', 'status', 'notes', 'messages', 'wall', 'ads', 'offline', 'docs', 'groups', 'notifications', 'stats',
     'email', 'market', 'app_widget', 'manage');
@@ -1361,13 +1389,16 @@ const
   VkCurrencyId: array[TVkCurrency] of Integer = (643, 980, 398, 978, 840);
   VkGroupAddressField: array[TVkGroupAddressField] of string = ('title', 'address', 'additional_address', 'country_id',
     'city_id', 'metro_station_id', 'latitude', 'longitude', 'work_info_status', 'time_offset');
-  VkGroupTagColors: array of TVkGroupTagColor = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107', '76787a', '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf', 'aaaeb3', 'bbaa84'];
+  VkGroupTagColors: array of TVkGroupTagColor = ['4bb34b', '5c9ce6', 'e64646', '792ec0', '63b9ba', 'ffa000', 'ffc107',
+    '76787a', '9e8d6b', '45678f', '539b9c', '454647', '7a6c4f', '6bc76b', '5181b8', 'ff5c5c', 'a162de', '7ececf',
+    'aaaeb3', 'bbaa84'];
   VkDeactivated: array[TVkDeactivated] of string = ('', 'deleted', 'banned');
   VkNameRequestStatus: array[TVkNameRequestStatus] of string = ('processing', 'declined', 'response', 'response_with_link');
   VkMessageActionType: array[TVkMessageActionType] of string = ('', 'chat_photo_update', 'chat_photo_remove',
     'chat_create', 'chat_title_update', 'chat_invite_user', 'chat_kick_user', 'chat_pin_message', 'chat_unpin_message',
     'chat_invite_user_by_link');
-  VkKeyboardButtonColor: array[TVkKeyboardButtonColor] of string = ('default', 'positive', 'negative', 'primary', 'secondary');
+  VkKeyboardButtonColor: array[TVkKeyboardButtonColor] of string = ('default', 'positive', 'negative', 'primary',
+    'secondary');
   VkKeyboardButtonColorValue: array[TVkKeyboardButtonColor] of TAlphaColor = (VkColorDefault, VkColorPositive,
     VkColorNegative, VkColorPrimary, VkColorSecondary);
   VkGroupStatusType: array[TVkGroupStatusType] of string = ('none', 'online', 'answer_mark');
@@ -1397,7 +1428,7 @@ const
   VkNewsfeedCommentsType: array[TVkNewsfeedCommentsType] of string = ('post', 'photo', 'video', 'topic', 'market',
     'note');
   VkNewsfeedType: array[TVkNewsfeedType] of string = ('post', 'photo', 'photo_tag', 'wall_photo', 'friend', 'note',
-    'audio', 'video');
+    'audio', 'video', 'audio_playlist');
   VkChatState: array[TVkChatState] of string = ('', 'in', 'kicked', 'left');
   VkStreamStatType: array[TVkStreamStatType] of string = ('received', 'prepared');
   VkStreamStatInterval: array[TVkStreamStatInterval] of string = ('5m', '1h', '24h');
@@ -1414,11 +1445,15 @@ const
   VkLinkText: array[TVkLinkText] of string = ('to_store', 'vote', 'more', 'book', 'order', 'enroll', 'fill', 'signup',
     'buy', 'ticket', 'write', 'open', 'learn_more', 'view', 'go_to', 'contact', 'watch', 'play', 'install', 'read', 'game');
   VkConversationFilter: array[TVkConversationFilter] of string = ('all', 'unread', 'important', 'unanswered');
-  VkKeyboardActionType: array[TVkKeyboardActionType] of string = ('text', 'open_link', 'location', 'vkpay', 'open_app', 'callback');
+  VkKeyboardActionType: array[TVkKeyboardActionType] of string = ('text', 'open_link', 'location', 'vkpay', 'open_app',
+    'callback');
   VkLiveStatus: array[TVkLiveStatus] of string = ('waiting', 'started', 'finished', 'failed', 'upcoming');
   VkPaymentStatus: array[TVkPaymentStatus] of string = ('not_paid', 'paid', 'returned');
   VkFaveType: array[TVkFaveType] of string = ('post', 'video', 'product', 'article', 'link');
   VkMonthlyTier: array[TVkMonthlyTier] of string = ('tier_1', 'tier_2', 'tier_3', 'tier_4', 'tier_5', 'tier_6', 'unlimited');
+  VkConversationDisableReason: array[TVkConversationDisableReason] of Integer = (18, 900, 901, 902, 915, 916, 917, 918, 203);
+  VkPostType: array[TVkPostType] of string = ('post', 'copy', 'reply', 'postpone', 'suggest');
+  VkPostSourceType: array[TVkPostSourceType] of string = ('vk', 'widget', 'api', 'rss', 'sms');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -1457,7 +1492,7 @@ begin
   Result := Value;
 end;
 
-{ TMessageChangeTypeHelper }
+{ TVkFlagsChangeTypeHelper }
 
 function TVkFlagsChangeTypeHelper.ToString: string;
 begin
@@ -1519,7 +1554,7 @@ begin
   Result.TrimRight([',']);
 end;
 
-{ TDialogFlagsHelper }
+{ TVkDialogFlagsHelper }
 
 class function TVkDialogFlagsHelper.Create(Data: Integer): TVkDialogFlags;
 var
@@ -1816,7 +1851,7 @@ begin
   Result := VkAudioGenresStr[Self];
 end;
 
-{ TGroupJoinTypeHelper }
+{ TVkGroupJoinTypeHelper }
 
 class function TVkGroupJoinTypeHelper.Create(Value: string): TVkGroupJoinType;
 begin
@@ -1828,7 +1863,9 @@ begin
   Result := VkGroupJoinType[Self];
 end;
 
-function TUserBlockReasonHelper.ToString: string;
+{ TVkUserBlockReasonHelper }
+
+function TVkUserBlockReasonHelper.ToString: string;
 begin
   Result := VkUserBlockReason[Self];
 end;
@@ -1878,11 +1915,11 @@ begin
   Result := VkPeerType[Self];
 end;
 
-{ TVkPostTypeHelper }
+{ TVkPostTypeFilterHelper }
 
-function TVkPostTypeHelper.ToString: string;
+function TVkPostTypeFilterHelper.ToString: string;
 begin
-  Result := VKPostType[Self];
+  Result := VkPostTypeFilter[Self];
 end;
 
 { TVkPermissionHelper }
@@ -1951,6 +1988,31 @@ begin
     TVkProfileField.Contacts, TVkProfileField.Site, TVkProfileField.Education,
     TVkProfileField.Universities, TVkProfileField.Schools, TVkProfileField.Status,
     TVkProfileField.LastSeen, TVkProfileField.FollowersCount, TVkProfileField.CommonCount,
+    TVkProfileField.Occupation, TVkProfileField.Nickname, TVkProfileField.Relatives,
+    TVkProfileField.Relation, TVkProfileField.Personal, TVkProfileField.Connections,
+    TVkProfileField.&Exports, TVkProfileField.Activities, TVkProfileField.Interests,
+    TVkProfileField.Music, TVkProfileField.Movies, TVkProfileField.TV, TVkProfileField.Books,
+    TVkProfileField.Games, TVkProfileField.About, TVkProfileField.Quotes,
+    TVkProfileField.CanPost, TVkProfileField.CanSeeAllPosts, TVkProfileField.CanSeeAudio,
+    TVkProfileField.CanWritePrivateMessage, TVkProfileField.CanSendFriendRequest,
+    TVkProfileField.IsFavorite, TVkProfileField.IsHiddenFromFeed, TVkProfileField.TimeZone,
+    TVkProfileField.ScreenName, TVkProfileField.MaidenName, TVkProfileField.CropPhoto,
+    TVkProfileField.IsFriend, TVkProfileField.FriendStatus, TVkProfileField.Career,
+    TVkProfileField.Military, TVkProfileField.Blacklisted, TVkProfileField.BlacklistedByMe,
+    TVkProfileField.CanBeInvitedGroup, TVkProfileField.OnlineMobile, TVkProfileField.Counters];
+end;
+
+class function TVkProfileFieldsHelper.AllForGroup: TVkProfileFields;
+begin
+  Result := [TVkProfileField.PhotoId, TVkProfileField.Verified, TVkProfileField.Sex,
+    TVkProfileField.BirthDate, TVkProfileField.City, TVkProfileField.Country,
+    TVkProfileField.HomeTown, TVkProfileField.HasPhoto, TVkProfileField.Photo50,
+    TVkProfileField.Photo100, TVkProfileField.Photo200Orig, TVkProfileField.Photo200,
+    TVkProfileField.Photo400Orig, TVkProfileField.PhotoMax, TVkProfileField.PhotoMaxOrig,
+    TVkProfileField.Online, TVkProfileField.Domain, TVkProfileField.HasMobile,
+    TVkProfileField.Contacts, TVkProfileField.Site, TVkProfileField.Education,
+    TVkProfileField.Universities, TVkProfileField.Schools, TVkProfileField.Status,
+    TVkProfileField.LastSeen, TVkProfileField.FollowersCount,
     TVkProfileField.Occupation, TVkProfileField.Nickname, TVkProfileField.Relatives,
     TVkProfileField.Relation, TVkProfileField.Personal, TVkProfileField.Connections,
     TVkProfileField.&Exports, TVkProfileField.Activities, TVkProfileField.Interests,
@@ -2056,7 +2118,7 @@ begin
   Result.TrimRight([',']);
 end;
 
-{ TVkGroupTypeHelper }
+{ TVkGroupTypeCreateHelper }
 
 class function TVkGroupTypeCreateHelper.Create(const Value: string): TVkGroupTypeCreate;
 begin
@@ -2128,6 +2190,8 @@ begin
   Result := VkSort[Self];
 end;
 
+{ TVkMediaReportReasonHelper }
+
 function TVkMediaReportReasonHelper.ToString: string;
 begin
   Result := VkPhotoReportReason[Self];
@@ -2174,7 +2238,7 @@ begin
   Result := TVkValidationType(IndexStr(Value, VkValidationType));
 end;
 
-{ TMessageFlagHelper }
+{ TVkMessageFlagHelper }
 
 function TVkMessageFlagHelper.ToString: string;
 begin
@@ -2448,7 +2512,7 @@ begin
   Result := VkGroupStatusType[Self];
 end;
 
-{ TVkFriendsSortHelper }
+{ TVkFriendsOrderHelper }
 
 function TVkFriendsOrderHelper.ToString: string;
 begin
@@ -2530,6 +2594,11 @@ begin
 end;
 
 { TVkNewsfeedTypeHelper }
+
+class function TVkNewsfeedTypeHelper.Create(Value: string): TVkNewsfeedType;
+begin
+  Result := TVkNewsfeedType(IndexStr(Value, VkNewsfeedType));
+end;
 
 function TVkNewsfeedTypeHelper.ToString: string;
 begin
@@ -2884,6 +2953,42 @@ end;
 function TVkMonthlyTierHelper.ToString: string;
 begin
   Result := VkMonthlyTier[Self];
+end;
+
+{ TVkConversationDisableReasonHelper }
+
+class function TVkConversationDisableReasonHelper.Create(Value: string): TVkConversationDisableReason;
+begin
+  Result := TVkConversationDisableReason(IndexInt(StrToIntDef(Value, 18), VkConversationDisableReason));
+end;
+
+function TVkConversationDisableReasonHelper.ToString: string;
+begin
+  Result := VkConversationDisableReason[Self].ToString;
+end;
+
+{ TVkPostTypeHelper }
+
+class function TVkPostTypeHelper.Create(const Value: string): TVkPostType;
+begin
+  Result := TVkPostType(IndexStr(Value, VkPostType));
+end;
+
+function TVkPostTypeHelper.ToString: string;
+begin
+  Result := VkPostType[Self];
+end;
+
+{ TVkPostSourceTypeHelper }
+
+class function TVkPostSourceTypeHelper.Create(const Value: string): TVkPostSourceType;
+begin
+  Result := TVkPostSourceType(IndexStr(Value, VkPostSourceType));
+end;
+
+function TVkPostSourceTypeHelper.ToString: string;
+begin
+  Result := VkPostSourceType[Self];
 end;
 
 end.
