@@ -40,7 +40,7 @@ object FormMain: TFormMain
       Width = 782
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheet9
+      ActivePage = TabSheet8
       Align = alClient
       MultiLine = True
       TabOrder = 0

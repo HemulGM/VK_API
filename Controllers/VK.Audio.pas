@@ -595,17 +595,16 @@ var
   ItemStr: string;
   JArray: TJSONArray;
 begin
+  Result := False;
   if AccessKey.IsEmpty then
     ItemStr := OwnerId.ToString + '_' + AudioId.ToString
   else
     ItemStr := OwnerId.ToString + '_' + AudioId.ToString + '_' + AccessKey;
   with Handler.Execute('audio.getById', [['count', '1'], ['audios', ItemStr]]) do
   begin
-    Result := Success;
-    if Result then
+    if GetValue(JArray) then
     begin
       try
-        JArray := TJSONArray(TJSONObject.ParseJSONValue(Response));
         try
           if JArray.Count > 0 then
             Audio := TVkAudio.FromJsonString<TVkAudio>(JArray.Items[0].ToString);

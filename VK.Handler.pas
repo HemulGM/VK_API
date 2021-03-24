@@ -14,15 +14,16 @@ uses
 type
   TResponse = record
   private
+    Response: string;
     function AppendItemsTag(JSON: string): string; inline;
   public
     Success: Boolean;
-    Response: string;
     JSON: string;
     Error: record
       Code: Integer;
       Text: string;
     end;
+    function ResponseText: string;
     function ResponseAsItems: string;
     function ResponseIsTrue: Boolean;
     function ResponseIsFalse: Boolean;
@@ -32,7 +33,8 @@ type
     function ResponseAsStr(var Value: string): Boolean;
     function GetJSONValue: TJSONValue;
     function GetJSONResponse: TJSONValue;
-    function GetValue<T>(const Field: string; var Value: T): Boolean;
+    function GetValue<T>(const Field: string; var Value: T): Boolean; overload;
+    function GetValue<T: class>(var Value: T): Boolean; overload;
     function GetObject<T: TVkEntity, constructor>(var Value: T): Boolean;
     function GetObjects<T: TVkEntity, constructor>(var Value: T): Boolean;
     function IsError: Boolean;
@@ -459,7 +461,7 @@ begin
       end;
     end
     else
-      raise TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString);
+      raise TVkParserException.Create('Неизвестный ответ от сервера: ' + Request.Response.StatusCode.ToString);
   end;
 end;
 
@@ -545,12 +547,10 @@ function TResponse.GetObject<T>(var Value: T): Boolean;
 begin
   Result := Success;
   if Result then
-  begin
-    try
-      Value := T.FromJsonString<T>(Response);
-    except
-      Result := False;
-    end;
+  try
+    Value := T.FromJsonString<T>(Response);
+  except
+    Result := False;
   end;
 end;
 
@@ -558,12 +558,25 @@ function TResponse.GetObjects<T>(var Value: T): Boolean;
 begin
   Result := Success;
   if Result then
-  begin
-    try
-      Value := T.FromJsonString<T>(ResponseAsItems);
-    except
-      Result := False;
-    end;
+  try
+    Value := T.FromJsonString<T>(ResponseAsItems);
+  except
+    Result := False;
+  end;
+end;
+
+function TResponse.GetValue<T>(var Value: T): Boolean;
+var
+  JSONItem: TJSONValue;
+begin
+  Result := Success;
+  if Result then
+  try
+    JSONItem := TJSONObject.ParseJSONValue(Response);
+    Value := T(JSONItem);
+  except
+    JSONItem.Free;
+    Result := False;
   end;
 end;
 
@@ -634,6 +647,11 @@ end;
 function TResponse.ResponseAsItems: string;
 begin
   Result := AppendItemsTag(Response);
+end;
+
+function TResponse.ResponseText: string;
+begin
+  Result := Response;
 end;
 
 function TResponse.GetJSONResponse: TJSONValue;

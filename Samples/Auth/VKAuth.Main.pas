@@ -844,7 +844,7 @@ begin
   VK1.CallMethod('audio.search', [['q', 'Noize']],
     procedure(Respone: TResponse)
     begin
-      Memo1.Lines.Add(Respone.Response);
+      Memo1.Lines.Add(Respone.ResponseText);
     end);
 end;
 

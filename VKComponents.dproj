@@ -281,6 +281,7 @@
         <DCCReference Include="Entity\VK.Entity.Streaming.pas"/>
         <DCCReference Include="Entity\VK.Entity.Message.Templates.pas"/>
         <DCCReference Include="Utils\VK.Bot.Commands.pas"/>
+        <DCCReference Include="Tools\VK.Tool.Sqlite.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

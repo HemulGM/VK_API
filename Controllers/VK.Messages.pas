@@ -3,11 +3,10 @@ unit VK.Messages;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client,
-  System.Json, VK.Controller, VK.Types, VK.Handler, VK.Entity.Keyboard,
-  VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.LongPoll,
-  VK.Entity.Common.List, VK.Entity.Message.Templates;
+  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
+  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.LongPoll, VK.Entity.Common.List,
+  VK.Entity.Message.Templates;
 
 type
   TMessagesController = class;
@@ -1194,33 +1193,25 @@ end;
 function TMessagesController.Delete(var Items: TVkMessageDelete; Params: TParams): Boolean;
 var
   RespJSON: TJSONValue;
-  Ids: TStringList;
-  i: Integer;
+  Id: string;
 begin
+  Result := False;
   with Handler.Execute('messages.delete', Params) do
   begin
-    Result := Success;
-    if Result then
+    if GetValue(RespJSON) then
     begin
-      Ids := TStringList.Create;
       try
-        Ids.Delimiter := ',';
-        Ids.DelimitedText := Params.GetValue('message_ids');
         Items := TVkMessageDelete.Create;
         try
-          RespJSON := TJSONObject.ParseJSONValue(Response);
-          try
-            for i := 0 to Pred(Ids.Count) do
-              Items.Items.Add(Ids[i], RespJSON.GetValue(Ids[i], 0) = 1);
-          finally
-            RespJSON.Free;
-          end;
+          for Id in Params.GetValue('message_ids').Split([',']) do
+            Items.Items.Add(Id, RespJSON.GetValue(Id, 0) = 1);
+          Result := True;
         except
           Items.Free;
           Result := False;
         end;
       finally
-        Ids.Free;
+        RespJSON.Free;
       end;
     end;
   end;
@@ -1653,10 +1644,10 @@ begin
       Result := TVkMessageSendResponses.CreateFalse
     else
     begin
-      if TryStrToInt(Response, Value) then
+      if ResponseAsInt(Value) then
         Result := TVkMessageSendResponses.CreateTrue(Value)
       else
-        Result := TVkMessageSendResponses.FromJsonString(Response);
+        GetObject(Result);
     end;
   end;
   {$IFNDEF AUTOREFCOUNT}
