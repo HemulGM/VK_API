@@ -114,15 +114,9 @@
         <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
         <DCCReference Include="fmx.dcp"/>
-        <DCCReference Include="Utils\pbInput.pas"/>
-        <DCCReference Include="Utils\pbOutput.pas"/>
-        <DCCReference Include="Utils\pbPublic.pas"/>
-        <DCCReference Include="Utils\StrBuffer.pas"/>
-        <DCCReference Include="Utils\uAbstractProtoBufClasses.pas"/>
         <DCCReference Include="VK.API.pas"/>
         <DCCReference Include="VK.Components.pas"/>
         <DCCReference Include="VK.Controller.pas"/>
-        <DCCReference Include="VK.FakeAndroidProto.pas"/>
         <DCCReference Include="VK.GroupEvents.pas"/>
         <DCCReference Include="VK.Handler.pas"/>
         <DCCReference Include="VK.LongPollServer.pas"/>
@@ -183,18 +177,6 @@
         <DCCReference Include="Controllers\VK.Status.pas"/>
         <DCCReference Include="Controllers\VK.Users.pas"/>
         <DCCReference Include="Controllers\VK.Wall.pas"/>
-        <DCCReference Include="Forms\VK.Vcl.Captcha.pas">
-            <Form>FormCaptcha</Form>
-        </DCCReference>
-        <DCCReference Include="Forms\VK.Vcl.OAuth2.pas">
-            <Form>FormOAuth2</Form>
-        </DCCReference>
-        <DCCReference Include="Forms\VK.FMX.OAuth2.pas">
-            <Form>FormFMXOAuth2</Form>
-        </DCCReference>
-        <DCCReference Include="Forms\VK.FMX.Captcha.pas">
-            <Form>FormFMXCaptcha</Form>
-        </DCCReference>
         <DCCReference Include="Controllers\VK.Utils.pas"/>
         <DCCReference Include="Controllers\VK.Video.pas"/>
         <DCCReference Include="VK.Bot.pas"/>
@@ -281,7 +263,14 @@
         <DCCReference Include="Entity\VK.Entity.Streaming.pas"/>
         <DCCReference Include="Entity\VK.Entity.Message.Templates.pas"/>
         <DCCReference Include="Utils\VK.Bot.Commands.pas"/>
-        <DCCReference Include="Tools\VK.Tool.Sqlite.pas"/>
+        <DCCReference Include="Forms\VK.FMX.Captcha.pas">
+            <Form>FormFMXCaptcha</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="Forms\VK.Vcl.Captcha.pas">
+            <Form>FormCaptcha</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
