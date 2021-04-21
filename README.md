@@ -271,7 +271,6 @@ VKAPI.Walk(
      Params.Offset(Offset);
      if VKAPI.Audio.Get(Audios, Params) then
      begin
-       Cnt := Audios.Count;
        Result := Length(Audios.Items);  //Возвращение кол-во полученных элементов
        for Audio in Audios.Items do
        begin
