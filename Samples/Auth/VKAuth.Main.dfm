@@ -40,7 +40,7 @@ object FormMain: TFormMain
       Width = 782
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheet8
+      ActivePage = TabSheet10
       Align = alClient
       MultiLine = True
       TabOrder = 0
@@ -496,6 +496,15 @@ object FormMain: TFormMain
           TabOrder = 1
           OnClick = Button46Click
         end
+        object ButtonSend: TButton
+          Left = 175
+          Top = 3
+          Width = 75
+          Height = 25
+          Caption = 'ButtonSend'
+          TabOrder = 2
+          OnClick = ButtonSendClick
+        end
       end
       object TabSheet11: TTabSheet
         Caption = 'Friends'
@@ -629,6 +638,9 @@ object FormMain: TFormMain
     OnLogin = VK1Login
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     Proxy.Port = 0
+    Token = 
+      '550f3c12ef5d4c8b1cbc4a90a868e370d641cb24fd1621172582b6dff0da0e33' +
+      '63895528b6d9376895a99'
     UsePseudoAsync = True
     Left = 96
     Top = 56
@@ -659,8 +671,6 @@ object FormMain: TFormMain
     Top = 56
   end
   object VkGroupEventsController1: TVkGroupEventsController
-    Groups.Strings = (
-      '-192458090')
     Logging = True
     OnAudioNew = VkGroupEventsController1AudioNew
     OnBoardPostDelete = VkGroupEventsController1BoardPostDelete

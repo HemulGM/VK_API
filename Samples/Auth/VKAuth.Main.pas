@@ -88,6 +88,7 @@ type
     Button47: TButton;
     TabSheetNewsfeed: TTabSheet;
     Button48: TButton;
+    ButtonSend: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -206,6 +207,7 @@ type
     procedure Button46Click(Sender: TObject);
     procedure Button47Click(Sender: TObject);
     procedure Button48Click(Sender: TObject);
+    procedure ButtonSendClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -1063,6 +1065,13 @@ begin
   VK1.Login;
 end;
 
+procedure TFormMain.ButtonSendClick(Sender: TObject);
+var
+  Item: Integer;
+begin
+  if VK1.Messages.SendToPeer(Item, 2000000001, 'Hello') then
+end;
+
 procedure TFormMain.ButtonWallGetClick(Sender: TObject);
 var
   Items: TVkPosts;
@@ -1084,8 +1093,8 @@ begin
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
   //VK1.Application := TVkApplicationData.Android;
-  if TFile.Exists('token.tmp') then
-    VK1.Token := TFile.ReadAllText('token.tmp');
+  {if TFile.Exists('token.tmp') then
+    VK1.Token := TFile.ReadAllText('token.tmp');   }
   VK1.Login;
 end;
 
@@ -1275,6 +1284,7 @@ end;
 procedure TFormMain.VkGroupEventsController1MessageNew(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);
 begin
   Memo1.Lines.Add('Новое сообщение в группе ' + GroupId.ToString + ': ' + Message.Text);
+  Memo1.Lines.Add(Message.PeerId.ToString);
   if Message.Text = 'погода' then
     VK1.Messages.
       New.

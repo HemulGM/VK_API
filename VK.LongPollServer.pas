@@ -147,8 +147,11 @@ begin
   try
     with FHandler.Execute(FMethod, FParams) do
     begin
-      ResponseJSON := GetJSONResponse;
-      JSText := ResponseJSON.ToJSON;
+      if Success then
+      begin
+        ResponseJSON := GetJSONResponse;
+        JSText := ResponseJSON.ToJSON;
+      end;
       Result := Success;
     end;
   except
