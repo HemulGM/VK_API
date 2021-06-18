@@ -746,9 +746,12 @@ begin
   begin
     if Response.GetObject(Items) then
     begin
-      Memo1.Lines.Add(Items.Count.ToString);
+      try
+        Memo1.Lines.Add(Items.Count.ToString);
       //
-      Items.Free;
+      finally
+        Items.Free;
+      end;
     end;
   end;
 end;
@@ -1092,7 +1095,7 @@ begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
-  //VK1.Application := TVkApplicationData.Android;
+  VK1.Application := TVkApplicationData.VKAdmin;
   {if TFile.Exists('token.tmp') then
     VK1.Token := TFile.ReadAllText('token.tmp');   }
   VK1.Login;

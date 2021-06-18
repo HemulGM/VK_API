@@ -627,7 +627,6 @@ object FormMain: TFormMain
     end
   end
   object VK1: TVK
-    AppID = '6121396'
     BaseURL = 'https://api.vk.com/method'
     EndPoint = 'https://oauth.vk.com/authorize'
     Logging = True
@@ -638,9 +637,6 @@ object FormMain: TFormMain
     OnLogin = VK1Login
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     Proxy.Port = 0
-    Token = 
-      '550f3c12ef5d4c8b1cbc4a90a868e370d641cb24fd1621172582b6dff0da0e33' +
-      '63895528b6d9376895a99'
     UsePseudoAsync = True
     Left = 96
     Top = 56

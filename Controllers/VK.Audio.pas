@@ -611,6 +611,7 @@ begin
         finally
           JArray.Free;
         end;
+        Result := True;
       except
         Result := False;
       end;
