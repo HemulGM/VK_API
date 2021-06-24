@@ -89,6 +89,7 @@ type
     TabSheetNewsfeed: TTabSheet;
     Button48: TButton;
     ButtonSend: TButton;
+    Button49: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -208,6 +209,7 @@ type
     procedure Button47Click(Sender: TObject);
     procedure Button48Click(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
+    procedure Button49Click(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -795,6 +797,25 @@ begin
     for Item in Items.Items do
       Memo1.Lines.Add(Item.Text + ' ' + Item.&Type.ToString);
     Items.Free;
+  end;
+end;
+
+procedure TFormMain.Button49Click(Sender: TObject);
+var
+  Keys: TVkKeyboard;
+  k: string;
+begin
+  Keys := TVkKeyboard.Create;
+  Keys.AddButtonLine;
+  Keys.AddButtonToLine(0, TVkKeyboardButton.CreateText('ֽאזלט', '{\"button\": \"2\"}'));
+  k := '{"buttons":[[{"action":{"label":"test","payload":"{\"button\": \"2\"}","type":"text"},"color":"positive"}]],"one_time":false}';
+  try
+    //VK1.Messages.New.UserId(58553419).GroupId(145962568).Message('hi').Keyboard(Keys).Send.Free;
+    VK1.Messages.SetActivity(TVkMessageActivity.Typing, 0, '58553419', 145962568);
+    Sleep(5 * 1000);
+    VK1.Messages.New.UserId(58553419).GroupId(145962568).Message('hi').Keyboard(k).Send.Free;
+  finally
+    Keys.Free;
   end;
 end;
 

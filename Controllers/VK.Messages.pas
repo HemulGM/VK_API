@@ -50,7 +50,11 @@ type
     /// <summary>
     /// Объект, описывающий клавиатуру бота
     /// </summary>
-    function Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+    function Keyboard(const Value: TVkKeyboard): TVkMessageNew; overload;
+    /// <summary>
+    /// Объект, описывающий клавиатуру бота
+    /// </summary>
+    function Keyboard(const Value: string): TVkMessageNew; overload;
     /// <summary>
     /// Географические координаты
     /// </summary>
@@ -1105,7 +1109,7 @@ type
     /// Изменяет статус набора текста пользователем в диалоге.
     /// Текст «N набирает сообщение...» отображается в течение 10 секунд после вызова метода, либо до момента отправки сообщения.
     /// </summary>
-    function SetActivity(const UserId: string; ActivityType: TVkMessageActivity; PeerId, GroupId: Integer): Boolean;
+    function SetActivity(ActivityType: TVkMessageActivity; PeerId: Integer = 0; const UserId: string = ''; GroupId: Integer = 0): Boolean;
     /// <summary>
     /// Позволяет установить фотографию мультидиалога, загруженную с помощью метода Photos.GetChatUploadServer.
     /// <b>UploadFile</b> - Содержимое поля Response из ответа специального upload сервера, полученного в результате загрузки изображения на адрес, полученный методом Photos.GetChatUploadServer.
@@ -1562,14 +1566,17 @@ begin
   Result := SendToPeer(Id, PeerId, Message, Attachments);
 end;
 
-function TMessagesController.SetActivity(const UserId: string; ActivityType: TVkMessageActivity; PeerId, GroupId: Integer): Boolean;
+function TMessagesController.SetActivity(ActivityType: TVkMessageActivity; PeerId: Integer; const UserId: string; GroupId: Integer): Boolean;
 var
   Params: TParams;
 begin
-  Params.Add('user_id', UserId);
-  Params.Add('peer_id', PeerId);
+  if not UserId.IsEmpty then
+    Params.Add('user_id', UserId);
+  if PeerId <> 0 then
+    Params.Add('peer_id', PeerId);
+  if GroupId <> 0 then
+    Params.Add('group_id', GroupId);
   Params.Add('type', ActivityType.ToString);
-  Params.Add('group_id', GroupId);
   Result := Handler.Execute('messages.setActivity', Params).ResponseIsTrue;
 end;
 
@@ -1714,9 +1721,15 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+function TVkMessageNew.Keyboard(const Value: string): TVkMessageNew;
 begin
   Params.Add('keyboard', Value);
+  Result := Self;
+end;
+
+function TVkMessageNew.Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+begin
+  Params.Add('keyboard', Value.ToJsonString);
   Result := Self;
 end;
 
