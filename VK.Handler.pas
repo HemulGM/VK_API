@@ -346,7 +346,7 @@ begin
     on E: Exception do
     begin
       IsError := True;
-      DoProcError(Self, E.Create(E.Message), ERROR_VK_NETWORK, E.Message);
+      DoProcError(Self, TVkHandlerException.Create(E.Message), ERROR_VK_NETWORK, E.Message);
     end;
   end;
 
