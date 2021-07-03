@@ -186,8 +186,6 @@ contains
   VK.Streaming in 'Controllers\VK.Streaming.pas',
   VK.Entity.Streaming in 'Entity\VK.Entity.Streaming.pas',
   VK.Entity.Message.Templates in 'Entity\VK.Entity.Message.Templates.pas',
-  VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas',
-  VK.FMX.Captcha in 'Forms\VK.FMX.Captcha.pas' {FormFMXCaptcha},
-  VK.Vcl.Captcha in 'Forms\VK.Vcl.Captcha.pas' {FormCaptcha};
+  VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas';
 
 end.

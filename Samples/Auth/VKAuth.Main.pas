@@ -1144,7 +1144,7 @@ begin
         else
         begin
           LabelLogin.Caption := 'login error';
-          ShowMessage('Ошибка: ' + Form.ErrorCode.ToString);
+          ShowMessage('Ошибка загрузки страницы авторизации');
         end;
       end);
   end
