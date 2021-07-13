@@ -72,6 +72,7 @@ begin
   Form := TFormOAuth2.Create(Application);
   Form.FProc := Proc;
   Form.ShowWithURL(nil, Url, Modal);
+  Form.BringToFront;
 end;
 
 procedure TFormOAuth2.SetChangePasswordHash(const Value: string);
@@ -205,6 +206,7 @@ end;
 
 procedure TFormOAuth2.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  Hide;
   FProc(Self);
   Action := caFree;
 end;
@@ -224,7 +226,7 @@ end;
 
 procedure TFormOAuth2.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-  if (Key = #27) then
+  if (Key = Char(VK_ESCAPE)) then
   begin
     Close;
   end;

@@ -3,8 +3,8 @@ unit VK.Tool.Sqlite;
 interface
 
 uses
-  System.Classes, FireDAC.Comp.Client, FireDAC.Stan.Param, REST.Json,
-  VK.Entity.Common, VK.Entity.Group, VK.Entity.Profile, VK.Entity.Audio;
+  System.Classes, FireDAC.Comp.Client, FireDAC.Stan.Param, REST.Json, VK.Entity.Common, VK.Entity.Group,
+  VK.Entity.Profile, VK.Entity.Audio;
 
 type
   TVkCacheDB = class;
@@ -17,7 +17,9 @@ type
     function GetSQLCreateTable(const TableName: string): string;
   public
     function Save(const Item: T): Boolean;
-    function Find(const Id: Integer; var Item: T): Boolean;
+    function Find(const Id: Integer; var Item: T): Boolean; overload;
+    function Find(const Id: Integer; var Item: T; var Date: TDateTime): Boolean; overload;
+    function GetDate(const Id: Integer; var Date: TDateTime): Boolean;
     procedure CheckTable;
     constructor Create(DB: TVkCacheDB; const TableName: string);
   end;
@@ -64,19 +66,51 @@ begin
   FTableName := TableName;
 end;
 
-function TVkCacheTable<T>.Find(const Id: Integer; var Item: T): Boolean;
+function TVkCacheTable<T>.Find(const Id: Integer; var Item: T; var Date: TDateTime): Boolean;
 begin
   Result := False;
   CheckTable;
   try
-    with FDB.CreateQuery('SELECT data FROM ' + FTableName + ' WHERE id = :id') do
+    with FDB.CreateQuery('SELECT data, date FROM ' + FTableName + ' WHERE id = :id') do
     begin
       ParamByName('id').Value := Id;
       try
         Open;
         if not Eof then
         begin
+          Date := FieldByName('date').AsDateTime;
           Item := TJson.JsonToObject<T>(FieldByName('data').AsString);
+          Result := True;
+        end;
+      finally
+        Free;
+      end;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function TVkCacheTable<T>.Find(const Id: Integer; var Item: T): Boolean;
+var
+  Date: TDateTime;
+begin
+  Result := Find(Id, Item, Date);
+end;
+
+function TVkCacheTable<T>.GetDate(const Id: Integer; var Date: TDateTime): Boolean;
+begin
+  Result := False;
+  CheckTable;
+  try
+    with FDB.CreateQuery('SELECT date FROM ' + FTableName + ' WHERE id = :id') do
+    begin
+      ParamByName('id').Value := Id;
+      try
+        Open;
+        if not Eof then
+        begin
+          Date := FieldByName('date').AsDateTime;
           Result := True;
         end;
       finally
@@ -99,16 +133,14 @@ begin
   CheckTable;
   try
     with FDB.CreateQuery('INSERT OR REPLACE INTO ' + FTableName + ' VALUES (:id, :data, :date)') do
-    begin
-      try
-        ParamByName('id').Value := Item.Id;
-        ParamByName('data').Value := TJson.ObjectToJsonString(Item);
-        ParamByName('date').Value := Now;
-        ExecSQL;
-        Result := True;
-      finally
-        Free;
-      end;
+    try
+      ParamByName('id').Value := Item.Id;
+      ParamByName('data').Value := TJson.ObjectToJsonString(Item);
+      ParamByName('date').Value := Now;
+      ExecSQL;
+      Result := True;
+    finally
+      Free;
     end;
   except
     Result := False;

@@ -3,9 +3,8 @@ unit VK.Photos;
 interface
 
 uses
-  System.SysUtils, System.Types, System.Generics.Collections, System.Classes,
-  VK.Controller, VK.Types, VK.Entity.Album, REST.Json, VK.Entity.Photo.Upload,
-  VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common;
+  System.SysUtils, System.Types, System.Generics.Collections, System.Classes, VK.Controller, VK.Types, VK.Entity.Album,
+  REST.Json, VK.Entity.Photo.Upload, VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common;
 
 type
   TVkParamsPhotosGetAll = record
@@ -915,15 +914,19 @@ type
     /// <summary>
     /// Загрузки фотографии
     /// </summary>
-    function Upload(const UploadUrl: string; const FileNames: array of string; var Response: TVkPhotoUploadResponse): Boolean; overload;
+    function Upload(var Response: TVkPhotoUploadResponse; const UploadUrl: string; const FileNames: array of string): Boolean; overload;
     /// <summary>
     /// Загрузки фотографии
     /// </summary>
-    function Upload(const UploadUrl: string; Stream: TStream; const FileName: string; var Response: TVkPhotoUploadResponse): Boolean; overload;
+    function Upload(var Response: TVkPhotoUploadResponse; const UploadUrl: string; Stream: TStream; const FileName: string): Boolean; overload;
     /// <summary>
     /// Загрузки фотографии для отправки в сообщении
     /// </summary>
-    function UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of string): Boolean;
+    function UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of string): Boolean; overload;
+    /// <summary>
+    /// Загрузки фотографии для отправки в сообщении
+    /// </summary>
+    function UploadForMessage(var Photos: TAttachmentArray; const PeerId: Integer; const FileNames: array of string): Boolean; overload;
     /// <summary>
     /// Загрузки фотографии для публикации на стену пользователя или сообщества
     /// </summary>
@@ -941,12 +944,11 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils, System.Net.HttpClient,
-  System.Net.Mime;
+  VK.API, VK.CommonUtils, System.DateUtils, System.Net.HttpClient, System.Net.Mime;
 
 { TPhotosController }
 
-function TPhotosController.Upload(const UploadUrl: string; Stream: TStream; const FileName: string; var Response: TVkPhotoUploadResponse): Boolean;
+function TPhotosController.Upload(var Response: TVkPhotoUploadResponse; const UploadUrl: string; Stream: TStream; const FileName: string): Boolean;
 var
   HTTP: THTTPClient;
   Data: TMultipartFormData;
@@ -970,7 +972,7 @@ begin
   end;
 end;
 
-function TPhotosController.Upload(const UploadUrl: string; const FileNames: array of string; var Response: TVkPhotoUploadResponse): Boolean;
+function TPhotosController.Upload(var Response: TVkPhotoUploadResponse; const UploadUrl: string; const FileNames: array of string): Boolean;
 var
   HTTP: THTTPClient;
   Data: TMultipartFormData;
@@ -1165,6 +1167,7 @@ var
   Params: TParams;
   Item: TVkPhotoGetUploadResponse;
 begin
+  Result := False;
   Params.Add('chat_id', ChatId);
   if not Crop.IsZero then
   begin
@@ -1175,19 +1178,17 @@ begin
     Params.Add('crop_width', CropWidth);
   with Handler.Execute('photos.getChatUploadServer', Params) do
   begin
-    Result := Success;
-    if Result then
+    if GetObject(Item) then
     begin
       try
-        Item := TVkPhotoGetUploadResponse.FromJsonString<TVkPhotoGetUploadResponse>(Response);
         try
           UploadUrl := Item.UploadUrl;
-        finally
-          Item.Free;
+          Result := not UploadUrl.IsEmpty;
+        except
+          Result := False;
         end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
+      finally
+        Item.Free;
       end;
     end;
   end;
@@ -1207,21 +1208,20 @@ function TPhotosController.GetMarketAlbumUploadServer(var UploadUrl: string; Gro
 var
   Item: TVkPhotoGetUploadResponse;
 begin
+  Result := False;
   with Handler.Execute('photos.getMarketAlbumUploadServer', ['group_id', GroupId.ToString]) do
   begin
-    Result := Success;
-    if Result then
+    if GetObject(Item) then
     begin
       try
-        Item := TVkPhotoGetUploadResponse.FromJsonString<TVkPhotoGetUploadResponse>(Response);
         try
           UploadUrl := Item.UploadUrl;
-        finally
-          Item.Free;
+          Result := not UploadUrl.IsEmpty;
+        except
+          Result := False;
         end;
-        Result := not UploadUrl.IsEmpty;
-      except
-        Result := False;
+      finally
+        Item.Free;
       end;
     end;
   end;
@@ -1236,13 +1236,12 @@ function TPhotosController.GetMarketUploadServer(var UploadUrl: string; Params: 
 var
   Item: TVkPhotoGetUploadResponse;
 begin
+  Result := False;
   with Handler.Execute('photos.getMarketUploadServer', Params) do
   begin
-    Result := Success;
-    if Result then
+    if GetObject(Item) then
     begin
       try
-        Item := TVkPhotoGetUploadResponse.FromJsonString<TVkPhotoGetUploadResponse>(Response);
         try
           UploadUrl := Item.UploadUrl;
         finally
@@ -1284,14 +1283,13 @@ var
   Params: TParams;
   Item: TVkPhotoGetUploadResponse;
 begin
+  Result := False;
   Params.Add('owner_id', OwnerId);
   with Handler.Execute('photos.getOwnerPhotoUploadServer', Params) do
   begin
-    Result := Success;
-    if Result then
+    if GetObject(Item) then
     begin
       try
-        Item := TVkPhotoGetUploadResponse.FromJsonString<TVkPhotoGetUploadResponse>(Response);
         try
           UploadUrl := Item.UploadUrl;
         finally
@@ -1447,6 +1445,7 @@ var
   Params: TParams;
   Item: TVkPhotoGetUploadResponse;
 begin
+  Result := False;
   Params.Add('group_id', GroupId);
   Params.Add('crop_x', CropLeft.X);
   Params.Add('crop_y', CropLeft.y);
@@ -1454,11 +1453,9 @@ begin
   Params.Add('crop_y2', CropRight.y);
   with Handler.Execute('photos.getOwnerCoverPhotoUploadServer', Params) do
   begin
-    Result := Success;
-    if Result then
+    if GetObject(Item) then
     begin
       try
-        Item := TVkPhotoGetUploadResponse.FromJsonString<TVkPhotoGetUploadResponse>(Response);
         try
           UploadUrl := Item.UploadUrl;
         finally
@@ -1526,7 +1523,7 @@ begin
   Result := False;
   if GetOwnerPhotoUploadServer(Server) then
   begin
-    if Upload(Server, FileName, Response) then
+    if Upload(Response, Server, FileName) then
     begin
       try
         if SaveOwnerPhoto(Info, Response) then
@@ -1577,6 +1574,18 @@ begin
   Result := UploadForWall(Photos, FileNames, SaveParams, GroupId);
 end;
 
+function TPhotosController.UploadForMessage(var Photos: TAttachmentArray; const PeerId: Integer; const FileNames: array of string): Boolean;
+var
+  Items: TVkPhotos;
+begin
+  Result := UploadForMessage(Items, PeerId, FileNames);
+  if Result then
+  begin
+    Photos := Items.ToAttachments;
+    Items.Free;
+  end;
+end;
+
 function TPhotosController.UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of string): Boolean;
 var
   Url: string;
@@ -1585,7 +1594,7 @@ begin
   Result := False;
   if GetMessagesUploadServer(Url, PeerId) then
   begin
-    if Upload(Url, FileNames, Response) then
+    if Upload(Response, Url, FileNames) then
     begin
       try
         Result := SaveMessagesPhoto(Photos, Response);
@@ -1613,7 +1622,7 @@ begin
   if GetWallUploadServer(PhotoUpload, GroupId) then
   begin
     try
-      if Upload(PhotoUpload.UploadUrl, FileNames, Response) then
+      if Upload(Response, PhotoUpload.UploadUrl, FileNames) then
       begin
         try
           Params.Photo(Response.Photo);

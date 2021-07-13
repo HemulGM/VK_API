@@ -3,8 +3,8 @@ unit VK.Friends;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
-  VK.Types, VK.Entity.Profile, VK.Entity.Common, VK.Entity.Common.List;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
+  VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkParamsFriendsGet = record
@@ -389,18 +389,14 @@ begin
 end;
 
 function TFriendsController.Add(var Info: TVkFriendAddInfo; UserId: Integer; Text: string; Follow: Boolean): Boolean;
+var
+  Value: Integer;
 begin
   with Handler.Execute('friends.add', [['user_id', UserId.ToString], ['text', Text], ['follow', BoolToString(Follow)]]) do
   begin
-    Result := Success;
+    Result := ResponseAsInt(Value);
     if Result then
-    begin
-      try
-        Info := TVkFriendAddInfo(StrToInt(Response));
-      except
-        Result := False;
-      end;
-    end;
+      Info := TVkFriendAddInfo(Value);
   end;
 end;
 
@@ -422,13 +418,12 @@ function TFriendsController.Delete(UserId: Integer): Boolean;
 var
   Info: TVkFriendDeleteInfo;
 begin
+  Result := False;
   with Handler.Execute('friends.delete', ['user_id', UserId.ToString]) do
   begin
-    Result := Success;
-    if Result then
+    if GetObject(Info) then
     begin
       try
-        Info := TVkFriendDeleteInfo.FromJsonString<TVkFriendDeleteInfo>(Response);
         try
           Result := Info.Success;
         finally

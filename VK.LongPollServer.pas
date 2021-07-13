@@ -143,12 +143,16 @@ var
   ResponseJSON: TJSONValue;
 begin
   Result := False;
+  ResponseJSON := nil;
   //Выполняем запрос
   try
     with FHandler.Execute(FMethod, FParams) do
     begin
-      ResponseJSON := GetJSONResponse;
-      JSText := Response;
+      if Success then
+      begin
+        ResponseJSON := GetJSONResponse;
+        JSText := ResponseJSON.ToJSON;
+      end;
       Result := Success;
     end;
   except

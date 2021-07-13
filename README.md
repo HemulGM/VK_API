@@ -96,14 +96,6 @@ begin
 end;
 
 VK.Login(<родитель для окна для VCL, необяз.>);
-...
-VKAPI.Application := TVkApplicationData.Android;  <-- Данные оф. клиента для Android
-VKAPI.Login('+7**********', '*****************',
-  function(var Code: string): Boolean
-  begin
-    Code := InputBox('', '', ''); <-- Код двухэтапной авторизации
-    Result := not Code.IsEmpty;
-  end);
 
 ```
 
@@ -140,6 +132,18 @@ begin
     Users.Free;
   end;
 end;
+```
+
+4 . Прямая авторизация (бета)
+
+```Pascal
+VKAPI.Application := TVkApplicationData.Android;  <-- Данные оф. клиента для Android
+VKAPI.Login('+7**********', '*****************',
+  function(var Code: string): Boolean
+  begin
+    Code := InputBox('', '', ''); <-- Код двухэтапной авторизации
+    Result := not Code.IsEmpty;
+  end);
 ```
     
 **Установка статуса онлайн**
@@ -267,7 +271,6 @@ VKAPI.Walk(
      Params.Offset(Offset);
      if VKAPI.Audio.Get(Audios, Params) then
      begin
-       Cnt := Audios.Count;
        Result := Length(Audios.Items);  //Возвращение кол-во полученных элементов
        for Audio in Audios.Items do
        begin

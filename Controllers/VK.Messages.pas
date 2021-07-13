@@ -3,11 +3,10 @@ unit VK.Messages;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client,
-  System.Json, VK.Controller, VK.Types, VK.Handler, VK.Entity.Keyboard,
-  VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.LongPoll,
-  VK.Entity.Common.List, VK.Entity.Message.Templates;
+  System.SysUtils, System.Classes, System.Generics.Collections, REST.Client, System.Json, VK.Controller, VK.Types,
+  VK.Handler, VK.Entity.Keyboard, VK.Entity.Message, VK.Entity.Conversation, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Message.Chat, VK.Entity.Media, VK.Entity.Common, VK.Entity.LongPoll, VK.Entity.Common.List,
+  VK.Entity.Message.Templates;
 
 type
   TMessagesController = class;
@@ -51,7 +50,11 @@ type
     /// <summary>
     /// Объект, описывающий клавиатуру бота
     /// </summary>
-    function Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+    function Keyboard(const Value: TVkKeyboard): TVkMessageNew; overload;
+    /// <summary>
+    /// Объект, описывающий клавиатуру бота
+    /// </summary>
+    function Keyboard(const Value: string): TVkMessageNew; overload;
     /// <summary>
     /// Географические координаты
     /// </summary>
@@ -1106,7 +1109,7 @@ type
     /// Изменяет статус набора текста пользователем в диалоге.
     /// Текст «N набирает сообщение...» отображается в течение 10 секунд после вызова метода, либо до момента отправки сообщения.
     /// </summary>
-    function SetActivity(const UserId: string; ActivityType: TVkMessageActivity; PeerId, GroupId: Integer): Boolean;
+    function SetActivity(ActivityType: TVkMessageActivity; PeerId: Integer = 0; const UserId: string = ''; GroupId: Integer = 0): Boolean;
     /// <summary>
     /// Позволяет установить фотографию мультидиалога, загруженную с помощью метода Photos.GetChatUploadServer.
     /// <b>UploadFile</b> - Содержимое поля Response из ответа специального upload сервера, полученного в результате загрузки изображения на адрес, полученный методом Photos.GetChatUploadServer.
@@ -1194,33 +1197,25 @@ end;
 function TMessagesController.Delete(var Items: TVkMessageDelete; Params: TParams): Boolean;
 var
   RespJSON: TJSONValue;
-  Ids: TStringList;
-  i: Integer;
+  Id: string;
 begin
+  Result := False;
   with Handler.Execute('messages.delete', Params) do
   begin
-    Result := Success;
-    if Result then
+    if GetValue(RespJSON) then
     begin
-      Ids := TStringList.Create;
       try
-        Ids.Delimiter := ',';
-        Ids.DelimitedText := Params.GetValue('message_ids');
         Items := TVkMessageDelete.Create;
         try
-          RespJSON := TJSONObject.ParseJSONValue(Response);
-          try
-            for i := 0 to Pred(Ids.Count) do
-              Items.Items.Add(Ids[i], RespJSON.GetValue(Ids[i], 0) = 1);
-          finally
-            RespJSON.Free;
-          end;
+          for Id in Params.GetValue('message_ids').Split([',']) do
+            Items.Items.Add(Id, RespJSON.GetValue(Id, 0) = 1);
+          Result := True;
         except
           Items.Free;
           Result := False;
         end;
       finally
-        Ids.Free;
+        RespJSON.Free;
       end;
     end;
   end;
@@ -1571,14 +1566,17 @@ begin
   Result := SendToPeer(Id, PeerId, Message, Attachments);
 end;
 
-function TMessagesController.SetActivity(const UserId: string; ActivityType: TVkMessageActivity; PeerId, GroupId: Integer): Boolean;
+function TMessagesController.SetActivity(ActivityType: TVkMessageActivity; PeerId: Integer; const UserId: string; GroupId: Integer): Boolean;
 var
   Params: TParams;
 begin
-  Params.Add('user_id', UserId);
-  Params.Add('peer_id', PeerId);
+  if not UserId.IsEmpty then
+    Params.Add('user_id', UserId);
+  if PeerId <> 0 then
+    Params.Add('peer_id', PeerId);
+  if GroupId <> 0 then
+    Params.Add('group_id', GroupId);
   Params.Add('type', ActivityType.ToString);
-  Params.Add('group_id', GroupId);
   Result := Handler.Execute('messages.setActivity', Params).ResponseIsTrue;
 end;
 
@@ -1653,10 +1651,10 @@ begin
       Result := TVkMessageSendResponses.CreateFalse
     else
     begin
-      if TryStrToInt(Response, Value) then
+      if ResponseAsInt(Value) then
         Result := TVkMessageSendResponses.CreateTrue(Value)
       else
-        Result := TVkMessageSendResponses.FromJsonString(Response);
+        GetObject(Result);
     end;
   end;
   {$IFNDEF AUTOREFCOUNT}
@@ -1723,9 +1721,15 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+function TVkMessageNew.Keyboard(const Value: string): TVkMessageNew;
 begin
   Params.Add('keyboard', Value);
+  Result := Self;
+end;
+
+function TVkMessageNew.Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+begin
+  Params.Add('keyboard', Value.ToJsonString);
   Result := Self;
 end;
 
