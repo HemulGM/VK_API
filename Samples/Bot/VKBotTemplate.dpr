@@ -19,16 +19,19 @@ begin
     OnMessage :=
       procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
       begin
-        if Message.Action.&Type = TVkMessageActionType.ChatInviteUser then
-          Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome')
-        else
-          Bot.API.Messages.SendToPeer(Message.PeerId, '=)');
+        if PeerIdIsUser(Message.PeerId) then
+        begin
+          case Message.Action.&Type of
+            TVkMessageActionType.ChatInviteUser:
+              Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome');
+          end;
+        end;
       end;
 
     if Init and Run then
     begin
       Console.Run(
-        procedure(Command: string; var Quit: Boolean)
+        procedure(const Command: string; var Quit: Boolean)
         begin
           Quit := Command = 'exit';
         end);

@@ -355,6 +355,14 @@ type
   /// ChatUnpinMessage — откреплено сообщение;
   /// ChatInviteUserByLink — пользователь присоединился к беседе по ссылке.
   /// </summary>
+  /// <list type="bullet">
+  /// <item>
+  /// <description>123123</description>
+  /// </item>
+  /// <item>
+  /// <description>fg464g6</description>
+  /// </item>
+  /// </list>
   TVkMessageActionType = (Unknown, ChatPhotoUpdate, ChatPhotoRemove,          //
     ChatCreate, ChatTitleUpdate, ChatInviteUser, ChatKickUser,                //
     ChatPinMessage, ChatUnpinMessage, ChatInviteUserByLink);

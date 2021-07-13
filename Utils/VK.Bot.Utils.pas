@@ -10,7 +10,7 @@ uses
   System.StrUtils;
 
 type
-  TOnInput = reference to procedure(Command: string; var Quit: Boolean);
+  TOnInput = reference to procedure(const Command: string; var Quit: Boolean);
 
   Console = class
     class procedure AddLine(Text: string; AColor: ShortInt = 0); overload;
