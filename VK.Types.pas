@@ -7,8 +7,8 @@ interface
 {$SCOPEDENUMS ON}
 
 uses
-  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types, System.Generics.Collections, System.JSON,
-  VK.Entity.Common;
+  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types,
+  System.Generics.Collections, System.JSON, VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -965,7 +965,8 @@ type
 
   TVkPeerTypeHelper = record helper for TVkPeerType
     function ToString: string; inline;
-    class function Create(Value: string): TVkPeerType; static;
+    class function Create(Value: string): TVkPeerType; overload; static;
+    class function Create(PeerId: Integer): TVkPeerType; overload; static;
   end;
 
   /// <summary>
@@ -1916,6 +1917,17 @@ end;
 class function TVkPeerTypeHelper.Create(Value: string): TVkPeerType;
 begin
   Result := TVkPeerType(IndexStr(Value, VkPeerType));
+end;
+
+class function TVkPeerTypeHelper.Create(PeerId: Integer): TVkPeerType;
+begin
+  if PeerIdIsChat(PeerId) then
+    Exit(TVkPeerType.Chat);
+  if PeerIdIsUser(PeerId) then
+    Exit(TVkPeerType.User);
+  if PeerIdIsGroup(PeerId) then
+    Exit(TVkPeerType.Group);
+  Result := TVkPeerType.Unknown;
 end;
 
 function TVkPeerTypeHelper.ToString: string;

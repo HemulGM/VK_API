@@ -88,7 +88,7 @@ type
     /// </summary>
     function GroupId(const Value: Integer): TVkMessageNew;
     /// <summary>
-    /// идентификатор сообщения, на которое требуется ответить
+    /// Идентификатор сообщения, на которое требуется ответить
     /// </summary>
     function ReplyTo(const Value: Integer): TVkMessageNew;
     /// <summary>
