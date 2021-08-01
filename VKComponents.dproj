@@ -134,7 +134,6 @@
         <DCCReference Include="Entity\VK.Entity.Catalog.Section.pas"/>
         <DCCReference Include="Entity\VK.Entity.ClientInfo.pas"/>
         <DCCReference Include="Entity\VK.Entity.Info.pas"/>
-        <DCCReference Include="Entity\VK.Entity.Common.pas"/>
         <DCCReference Include="Entity\VK.Entity.Conversation.pas"/>
         <DCCReference Include="Entity\VK.Entity.Counters.pas"/>
         <DCCReference Include="Entity\VK.Entity.Doc.pas"/>
@@ -263,6 +262,7 @@
         <DCCReference Include="Entity\VK.Entity.Streaming.pas"/>
         <DCCReference Include="Entity\VK.Entity.Message.Templates.pas"/>
         <DCCReference Include="Utils\VK.Bot.Commands.pas"/>
+        <DCCReference Include="Entity\VK.Entity.Common.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>

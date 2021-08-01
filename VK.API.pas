@@ -3,18 +3,15 @@ unit VK.API;
 interface
 
 uses
-  System.SysUtils, System.Variants, System.Classes, REST.Client, REST.Authenticator.OAuth, VK.Types, VK.Account,
-  VK.Handler, VK.Auth, VK.Users, VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections, VK.Status,
-  VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types, VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market,
-  VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders, Vk.Pages, VK.Polls,
-  VK.Podcasts, VK.Search, VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps,
-  VK.Clients, VK.Donut, VK.Streaming,
-  {$IFDEF NEEDFMX}
-  VK.FMX.Captcha,
-  {$ELSE}
-  VK.Vcl.Captcha,
-  {$ENDIF}
-  System.Types;
+  System.SysUtils, System.Variants, System.Classes, System.Types, REST.Client,
+  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
+  VK.LongPollServer, System.JSON, VK.Messages, System.Generics.Collections,
+  VK.Status, VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board, REST.Types,
+  VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave, VK.Notes,
+  VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders,
+  Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
+  VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
+  VK.Donut, VK.Streaming;
 
 type
   TCustomVK = class(TComponent)
@@ -464,8 +461,8 @@ const
 implementation
 
 uses
-  System.DateUtils, System.Net.Mime, System.Net.HttpClient, VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile,
-  VK.Entity.Login;
+  System.DateUtils, System.Net.Mime, System.Net.HttpClient,
+  VK.Entity.AccountInfo, VK.CommonUtils, VK.Entity.Profile, VK.Entity.Login;
 
 { TCustomVK }
 
@@ -552,15 +549,7 @@ begin
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
   SetAPIVersion(Version);
-  Permissions := [
-    TVkPermission.Groups,
-    TVkPermission.Friends,
-    TVkPermission.Wall,
-    TVkPermission.Photos,
-    TVkPermission.Video,
-    TVkPermission.Docs,
-    TVkPermission.Notes,
-    TVkPermission.Market];
+  Permissions := [TVkPermission.Groups, TVkPermission.Friends, TVkPermission.Wall, TVkPermission.Photos, TVkPermission.Video, TVkPermission.Docs, TVkPermission.Notes, TVkPermission.Market];
   //Controllers
   FAccount := TAccountController.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
@@ -685,13 +674,9 @@ begin
     FOnCaptcha(Self, CaptchaImg, Answer);
   end
   else
-  begin
-    {$IFDEF NEEDFMX}
-    TFormFMXCaptcha.Execute(CaptchaImg, Answer);
-    {$ELSE}
-    TFormCaptcha.Execute(CaptchaImg, Answer);
-    {$ENDIF}
-  end;
+    //raise TVkE.Create('Error Message');
+{ TODO -oHemulGM -c : Captcha 30.07.2021 23:08:35 }
+
 end;
 
 function TCustomVK.Execute(Code: string): TResponse;
@@ -758,8 +743,7 @@ begin
   HTTP.HandleRedirects := True;
   Response := TStringStream.Create;
   try
-    Url := Format('https://oauth.vk.com/token?grant_type=password&client_id=%s&client_secret=%s&username=%s&password=%s',
-      [AppID, AppKey, ALogin, APassword]);
+    Url := Format('https://oauth.vk.com/token?grant_type=password&client_id=%s&client_secret=%s&username=%s&password=%s', [AppID, AppKey, ALogin, APassword]);
     case HTTP.Get(Url, Response).StatusCode of
       401:
         begin
@@ -797,8 +781,7 @@ begin
                                 FAskCaptcha(Self, 'https://vk.com/captcha.php?sid=' + CaptchaSid, Code);
                                 if not Code.IsEmpty then
                                 begin
-                                  EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash +
-                                    '&captcha_sid=' + CaptchaSid + '&captcha_key=' + Code, FormData);
+                                  EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash + '&captcha_sid=' + CaptchaSid + '&captcha_key=' + Code, FormData);
                                 end
                                 else
                                   Break;
@@ -1057,9 +1040,7 @@ end;
 
 function TCustomVK.GetTestMode: Boolean;
 begin
-  Result :=
-    Assigned(FHandler.Client.Params.ParameterByName('test_mode')) and
-    (FHandler.Client.Params.ParameterByName('test_mode').Value = '1');
+  Result := Assigned(FHandler.Client.Params.ParameterByName('test_mode')) and (FHandler.Client.Params.ParameterByName('test_mode').Value = '1');
 end;
 
 function TCustomVK.GetToken: string;

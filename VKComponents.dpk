@@ -58,7 +58,6 @@ contains
   VK.Entity.Catalog.Section in 'Entity\VK.Entity.Catalog.Section.pas',
   VK.Entity.ClientInfo in 'Entity\VK.Entity.ClientInfo.pas',
   VK.Entity.Info in 'Entity\VK.Entity.Info.pas',
-  VK.Entity.Common in 'Entity\VK.Entity.Common.pas',
   VK.Entity.Conversation in 'Entity\VK.Entity.Conversation.pas',
   VK.Entity.Counters in 'Entity\VK.Entity.Counters.pas',
   VK.Entity.Doc in 'Entity\VK.Entity.Doc.pas',
@@ -186,6 +185,7 @@ contains
   VK.Streaming in 'Controllers\VK.Streaming.pas',
   VK.Entity.Streaming in 'Entity\VK.Entity.Streaming.pas',
   VK.Entity.Message.Templates in 'Entity\VK.Entity.Message.Templates.pas',
-  VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas';
+  VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas',
+  VK.Entity.Common in 'Entity\VK.Entity.Common.pas';
 
 end.
