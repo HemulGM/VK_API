@@ -3,9 +3,8 @@ unit VK.LongPollServer;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, VK.Handler,
-  System.Generics.Collections;
+  System.SysUtils, System.Types, System.Classes, REST.Client, System.JSON,
+  System.Net.HttpClient, VK.Types, VK.Handler, System.Generics.Collections;
 
 type
   TOnLongPollServerUpdate = procedure(Sender: TObject; GroupID: string; Update: TJSONValue) of object;
@@ -87,11 +86,10 @@ implementation
 
 uses
   {$IFDEF NEEDFMX}
-  FMX.Forms, FMX.Types,
+  FMX.Forms, FMX.Types
   {$ELSE}
-  Vcl.Forms,
-  {$ENDIF}
-  System.SyncObjs;
+  Vcl.Forms
+  {$ENDIF};
 
 { TLongPollServer }
 
@@ -122,7 +120,7 @@ begin
   if Assigned(FOnError) then
   begin
     if FDoSync or (TThread.CurrentThread.ThreadID <> MainThreadID) then
-      TThread.Synchronize(nil,
+      TThread.ForceQueue(nil,
         procedure
         begin
           FOnError(Self, E, ERROR_VK_LONGPOLL, E.Message);
@@ -354,9 +352,9 @@ begin
         on E: Exception do
           DoError(TVkLongPollServerParseException.Create(E.Message));
       end;
+      FLongPollStopped := True;
       HTTP.Free;
       Stream.Free;
-      FLongPollStopped := True;
     end);
   FThread.FreeOnTerminate := False;
   FThread.Start;

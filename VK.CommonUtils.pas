@@ -36,7 +36,8 @@ function IndexInt(const Value: Integer; const Items: array of Integer): Integer;
 implementation
 
 uses
-  System.DateUtils, system.Math, System.StrUtils, System.SysUtils, System.IOUtils;
+  System.DateUtils, System.Math, System.StrUtils, System.SysUtils,
+  System.IOUtils;
 
 function IndexInt(const Value: Integer; const Items: array of Integer): Integer;
 var
@@ -215,5 +216,4 @@ begin
 end;
 
 end.
-
 

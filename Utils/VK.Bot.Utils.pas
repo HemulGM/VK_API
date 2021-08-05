@@ -6,7 +6,8 @@ uses
   {$IFDEF MSWINDOWS}
   Winapi.Windows, Winapi.Messages,
   {$ENDIF}
-  System.SysUtils, System.UITypes, System.Variants, System.Classes, System.StrUtils;
+  System.SysUtils, System.UITypes, System.Variants, System.Classes,
+  System.StrUtils;
 
 type
   TOnInput = reference to procedure(const Command: string; var Quit: Boolean);
@@ -24,6 +25,10 @@ type
     class procedure Run(OnCommand: TOnInput);
   end;
 
+function MessagePatternValue(const Text: string; StartWith: array of string; out Value: string): Boolean;
+
+function MessageIncludeAll(const Text: string; Words: array of string): Boolean;
+
 const
 {$IFDEF MSWINDOWS}
   RED = FOREGROUND_RED;
@@ -36,6 +41,33 @@ const
 {$ENDIF}
 
 implementation
+
+function MessagePatternValue(const Text: string; StartWith: array of string; out Value: string): Boolean;
+var
+  Word: string;
+begin
+  Result := False;
+  for Word in StartWith do
+  begin
+    Result := Text.ToLowerInvariant.StartsWith(Word.ToLowerInvariant);
+    if Result then
+    begin
+      Value := Text.Substring(Word.Length, 1000);
+      Exit;
+    end;
+  end;
+end;
+
+function MessageIncludeAll(const Text: string; Words: array of string): Boolean;
+var
+  Word, Txt: string;
+begin
+  Txt := Text.ToLowerInvariant;
+  for Word in Words do
+    if not (Txt.ToLower.Contains(Word)) then
+      Exit(False);
+  Result := True;
+end;
 
 procedure SetColor(AColor: ShortInt);
 begin

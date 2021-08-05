@@ -79,7 +79,7 @@ type
     procedure SetOnJoin(const Value: TVkBotJoin);
     function HandleMessageListener(GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo): Boolean;
   public
-    class function GetInstance: TVkBotChat; overload;
+    class function GetInstance(const GroupId: Integer; const Token: string): TVkBotChat; overload;
     constructor Create; override;
     destructor Destroy; override;
     procedure AddMessageListener(PeerTypes: TVkPeerTypes; Method: TVkBotMessageListener);
@@ -121,7 +121,7 @@ begin
   if Assigned(FOnError) then
     FOnError(Self, E, Code, Text)
   else
-    Console.AddLine(Text + #13#10 + E.Message, RED);
+    Console.AddLine(Text, RED);
 end;
 
 function TVkBot.GetGroupId: Integer;
@@ -144,13 +144,9 @@ end;
 function TVkBot.Init: Boolean;
 begin
   Result := False;
-  Console.AddText('Initializate...');
+  Console.AddText('Initializate... ');
   if Assigned(FOnInit) then
-  try
     FOnInit(Self);
-  except
-    Exit(False);
-  end;
   try
     Result := FVK.Login;
   finally
@@ -295,11 +291,13 @@ begin
   end;
 end;
 
-class function TVkBotChat.GetInstance: TVkBotChat;
+class function TVkBotChat.GetInstance(const GroupId: Integer; const Token: string): TVkBotChat;
 begin
   if not Assigned(Instance) then
     Instance := TVkBotChat.Create;
   Result := TVkBotChat(Instance);
+  Result.GroupId := GroupId;
+  Result.Token := Token;
 end;
 
 procedure TVkBotChat.SetOnJoin(const Value: TVkBotJoin);
