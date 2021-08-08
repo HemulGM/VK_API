@@ -289,6 +289,24 @@ type
     destructor Destroy; override;
   end;
 
+  TVkConversationMember = class(TVkEntity)
+  private
+    FInvited_By: Integer;
+    FIs_Admin: Boolean;
+    FIs_Owner: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FJoin_Date: TDateTime;
+    FMember_Id: Integer;
+  public
+    property InvitedBy: Integer read FInvited_By write FInvited_By;
+    property IsAdmin: Boolean read FIs_Admin write FIs_Admin;
+    property IsOwner: Boolean read FIs_Owner write FIs_Owner;
+    property JoinDate: TDateTime read FJoin_Date write FJoin_Date;
+    property MemberId: Integer read FMember_Id write FMember_Id;
+  end;
+
+  TVkConversationMembers = TVkEntityExtendedList<TVkConversationMember>;
+
 implementation
 
 uses

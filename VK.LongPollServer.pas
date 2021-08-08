@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Types, System.Classes, REST.Client, System.JSON,
-  System.Net.HttpClient, VK.Types, VK.Handler, System.Generics.Collections;
+  System.Net.HttpClient, VK.Types, VK.Handler;
 
 type
   TOnLongPollServerUpdate = procedure(Sender: TObject; GroupID: string; Update: TJSONValue) of object;
@@ -86,10 +86,11 @@ implementation
 
 uses
   {$IFDEF NEEDFMX}
-  FMX.Forms, FMX.Types
+  FMX.Forms, FMX.Types,
   {$ELSE}
-  Vcl.Forms
-  {$ENDIF};
+  Vcl.Forms,
+  {$ENDIF}
+  System.Generics.Collections;
 
 { TLongPollServer }
 
@@ -369,7 +370,10 @@ begin
     FThread.Terminate;
     while not FLongPollStopped do
     begin
-      Application.ProcessMessages;
+      if not IsConsole then
+        Application.ProcessMessages
+      else
+        TThread.Yield;
       Sleep(100);
     end;
     FThread.Free;

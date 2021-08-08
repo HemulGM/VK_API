@@ -801,22 +801,22 @@ begin
 end;
 
 procedure TFormMain.Button49Click(Sender: TObject);
-var
+{var
   Keys: TVkKeyboard;
-  k: string;
+  k: string; }
 begin
-  Keys := TVkKeyboard.Create;
-  Keys.AddButtonLine;
-  Keys.AddButtonToLine(0, TVkKeyboardButton.CreateText('ֽאזלט', '{\"button\": \"2\"}'));
-  k := '{"buttons":[[{"action":{"label":"test","payload":"{\"button\": \"2\"}","type":"text"},"color":"positive"}]],"one_time":false}';
-  try
-    //VK1.Messages.New.UserId(58553419).GroupId(145962568).Message('hi').Keyboard(Keys).Send.Free;
-    VK1.Messages.SetActivity(TVkMessageActivity.Typing, 0, '58553419', 145962568);
-    Sleep(5 * 1000);
-    VK1.Messages.New.UserId(58553419).GroupId(145962568).Message('hi').Keyboard(k).Send.Free;
-  finally
-    Keys.Free;
-  end;
+  //Keys := TVkKeyboard.Create;
+  //Keys.AddButtonLine;
+  //Keys.AddButtonToLine(0, TVkKeyboardButton.CreateText('ֽאזלט', '{\"button\": \"2\"}'));
+  //k := '{"buttons":[[{"action":{"label":"test","payload":"{\"button\": \"2\"}","type":"text"},"color":"positive"}]],"one_time":false}';
+  //try
+  //  //VK1.Messages.New.UserId(58553419).GroupId(145962568).Message('hi').Keyboard(Keys).Send.Free;
+  //  VK1.Messages.SetActivity(TVkMessageActivity.Typing, 0, '58553419', 145962568);
+  //  Sleep(5 * 1000);
+  //  VK1.Messages.New.UserId(58553419).GroupId(145962568).Message('hi').Keyboard(k).Send.Free;
+  //finally
+  //  Keys.Free;
+  //end;  }
 end;
 
 procedure TFormMain.Button4Click(Sender: TObject);

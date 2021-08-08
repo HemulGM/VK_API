@@ -82,6 +82,7 @@ type
     class function GetInstance(const GroupId: Integer; const Token: string): TVkBotChat; overload;
     constructor Create; override;
     destructor Destroy; override;
+    function IsAdmin(PeerId: Integer; UserId: Integer): Boolean;
     procedure AddMessageListener(PeerTypes: TVkPeerTypes; Method: TVkBotMessageListener);
     property MessageListeners: TMessageListeners read FMessageListeners;
     property OnJoin: TVkBotJoin read FOnJoin write SetOnJoin;
@@ -93,7 +94,8 @@ type
 implementation
 
 uses
-  VK.Bot.Utils, System.Threading, System.StrUtils;
+  VK.Bot.Utils, System.Threading, System.StrUtils, VK.Entity.Conversation,
+  VK.Messages, HGM.ArrayHelper;
 
 { TVkBot }
 
@@ -263,9 +265,50 @@ begin
         Exit(True);
     except
       on E: Exception do
-        Console.AddLine('Error with Listener ' + E.Message, RED);
+        Console.AddLine('Error with Listener: "' + E.Message + '"', RED);
     end;
   Result := False;
+end;
+
+function TVkBotChat.IsAdmin(PeerId, UserId: Integer): Boolean;
+var
+  Members: TVkConversationMembers;
+  Params: TVkParamsConversationMembersGet;
+  UserIsAdmin, Found: Boolean;
+begin
+  UserIsAdmin := False;
+  try
+    Params.PeerId(PeerId);
+    Params.Extended(False);
+    Found := False;
+    API.Walk(
+      function(Offset: Integer; var Cancel: Boolean): Integer
+      begin
+        Params.Count(200);
+        Params.Offset(Offset);
+        Result := 0;
+        if API.Messages.GetConversationMembers(Members, Params) then
+        try
+          Result := Length(Members.Items);
+          TArrayHelp.Walk<TVkConversationMember>(Members.Items,
+            procedure(const Item: TVkConversationMember; Index: Integer; var Cancel: Boolean)
+            begin
+              if Item.MemberId = UserId then
+              begin
+                Found := True;
+                Cancel := True;
+                UserIsAdmin := Item.IsAdmin;
+              end;
+            end);
+          Cancel := Found;
+        finally
+          Members.Free;
+        end;
+      end, 200);
+    Result := UserIsAdmin;
+  except
+    Result := False;
+  end;
 end;
 
 procedure TVkBotChat.FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);

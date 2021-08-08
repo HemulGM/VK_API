@@ -25,9 +25,18 @@ type
     class procedure Run(OnCommand: TOnInput);
   end;
 
+  TVkUserAlias = record
+    UserId: string;
+    Caption: string;
+  end;
+
 function MessagePatternValue(const Text: string; StartWith: array of string; out Value: string): Boolean;
 
 function MessageIncludeAll(const Text: string; Words: array of string): Boolean;
+
+function ButtonPayload(const Value: string): string;
+
+function ParseUserAlias(const Value: string): TVkUserAlias;
 
 const
 {$IFDEF MSWINDOWS}
@@ -41,6 +50,24 @@ const
 {$ENDIF}
 
 implementation
+
+function ParseUserAlias(const Value: string): TVkUserAlias;
+var
+  tmp: string;
+  Strs: TArray<string>;
+begin
+  tmp := Value.Trim(['[', ']']);
+  Strs := tmp.Split(['|']);
+  if Length(Strs) > 0 then
+    Result.UserId := Strs[0];
+  if Length(Strs) > 1 then
+    Result.Caption := Strs[1];
+end;
+
+function ButtonPayload(const Value: string): string;
+begin
+  Result := '{"button": "' + Value + '"}';
+end;
 
 function MessagePatternValue(const Text: string; StartWith: array of string; out Value: string): Boolean;
 var

@@ -186,6 +186,7 @@ contains
   VK.Entity.Streaming in 'Entity\VK.Entity.Streaming.pas',
   VK.Entity.Message.Templates in 'Entity\VK.Entity.Message.Templates.pas',
   VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas',
-  VK.Entity.Common in 'Entity\VK.Entity.Common.pas';
+  VK.Entity.Common in 'Entity\VK.Entity.Common.pas',
+  VK.Params in 'VK.Params.pas';
 
 end.

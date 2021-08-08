@@ -160,20 +160,13 @@ begin
   Result := False;
   if Assigned(FOnCaptcha) then
   begin
-    if (TThread.Current.ThreadID = MainThreadID) then
-    begin
-      FOnCaptcha(Sender, CaptchaImg, Answer);
-    end
-    else
-    begin
-      FRes := '';
-      TThread.Synchronize(nil,
-        procedure
-        begin
-          FOnCaptcha(Sender, CaptchaImg, FRes);
-        end);
-      Answer := FRes;
-    end;
+    FRes := '';
+    Synchronize(
+      procedure
+      begin
+        FOnCaptcha(Sender, CaptchaImg, FRes);
+      end);
+    Answer := FRes;
     Result := not Answer.IsEmpty;
   end;
 end;
@@ -210,19 +203,13 @@ begin
   end
   else
   begin
-    Result := False;
-    if TThread.Current.ThreadID = MainThreadID then
-      FOnConfirm(Self, Answer, Result)
-    else
-    begin
-      FRes := False;
-      TThread.Synchronize(nil,
-        procedure
-        begin
-          FOnConfirm(Self, Answer, FRes);
-        end);
-      Result := FRes;
-    end;
+    FRes := False;
+    Synchronize(
+      procedure
+      begin
+        FOnConfirm(Self, Answer, FRes);
+      end);
+    Result := FRes;
   end;
 end;
 
@@ -230,18 +217,11 @@ function TVkHandler.DoProcError(Sender: TObject; E: Exception; Code: Integer; Te
 begin
   Result := Assigned(FOnError);
   if Result then
-  begin
-    if TThread.Current.ThreadID = MainThreadID then
-      FOnError(Sender, E, Code, Text)
-    else
-    begin
-      TThread.Synchronize(nil,
-        procedure
-        begin
-          FOnError(Sender, E, Code, Text);
-        end);
-    end;
-  end;
+    Synchronize(
+      procedure
+      begin
+        FOnError(Sender, E, Code, Text);
+      end);
 end;
 
 function TVkHandler.Execute(Request: string; Param: TParam): TResponse;

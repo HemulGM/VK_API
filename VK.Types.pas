@@ -1471,10 +1471,20 @@ function PeerIdIsUser(Value: Integer): Boolean;
 
 function PeerIdIsGroup(Value: Integer): Boolean;
 
+procedure Synchronize(Proc: TThreadProcedure);
+
 implementation
 
 uses
   VK.CommonUtils, System.DateUtils, System.Character, System.StrUtils;
+
+procedure Synchronize(Proc: TThreadProcedure);
+begin
+  if (TThread.Current.ThreadID = MainThreadID) or IsConsole then
+    Proc
+  else
+    TThread.Synchronize(nil, Proc);
+end;
 
 function PeerIdIsChat(Value: Integer): Boolean;
 begin

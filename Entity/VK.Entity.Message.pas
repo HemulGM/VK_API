@@ -283,10 +283,10 @@ end;
 
 function TVkMessage.GetPayloadButton: TVkPayloadButton;
 begin
-  if Payload.IsEmpty then
-    Exit(nil);
   if Assigned(FPayloadButton) then
     Exit(FPayloadButton);
+  if Payload.IsEmpty then
+    Exit(nil);
   try
     FPayloadButton := TVkPayloadButton.FromJsonString<TVkPayloadButton>(Payload);
     Result := FPayloadButton;

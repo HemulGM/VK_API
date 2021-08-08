@@ -761,27 +761,27 @@ type
     /// <summary>
     /// Фамилия (именительный)
     /// </summary>
-    property LastName_Nom: string read FLast_name_nom write FLast_name_nom;
+    property LastNameNom: string read FLast_name_nom write FLast_name_nom;
     /// <summary>
     /// Фамилия (родительный)
     /// </summary>
-    property LastName_Gen: string read FLast_name_gen write FLast_name_gen;
+    property LastNameGen: string read FLast_name_gen write FLast_name_gen;
     /// <summary>
     /// Фамилия (дательный)
     /// </summary>
-    property LastName_Dat: string read FLast_name_dat write FLast_name_dat;
+    property LastNameDat: string read FLast_name_dat write FLast_name_dat;
     /// <summary>
     /// Фамилия (винительный)
     /// </summary>
-    property LastName_Acc: string read FLast_name_acc write FLast_name_acc;
+    property LastNameAcc: string read FLast_name_acc write FLast_name_acc;
     /// <summary>
     /// Фамилия (творительный)
     /// </summary>
-    property LastName_Ins: string read FLast_name_ins write FLast_name_ins;
+    property LastNameIns: string read FLast_name_ins write FLast_name_ins;
     /// <summary>
     /// Фамилия (предложный)
     /// </summary>
-    property LastName_Abl: string read FLast_name_abl write FLast_name_abl;
+    property LastNameAbl: string read FLast_name_abl write FLast_name_abl;
     /// <summary>
     /// Время последнего посещения
     /// </summary>

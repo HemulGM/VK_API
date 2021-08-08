@@ -263,6 +263,7 @@
         <DCCReference Include="Entity\VK.Entity.Message.Templates.pas"/>
         <DCCReference Include="Utils\VK.Bot.Commands.pas"/>
         <DCCReference Include="Entity\VK.Entity.Common.pas"/>
+        <DCCReference Include="VK.Params.pas"/>
         <RcItem Include="Media\vk group 2.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>TVkGroupEventsController</ResourceId>
