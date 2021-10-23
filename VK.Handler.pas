@@ -402,7 +402,7 @@ begin
             raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
           end;
         end;
-      VK_ERROR_CONFIRM: //Подтверждение для ВК
+      VK_ERROR_CONFIRM, VK_ERROR_TOKEN_CONFIRM, VK_ERROR_MORE_CONFIRM: //Подтверждение для ВК
         begin
           Answer := JS.GetValue<string>('confirmation_text', '');
           if DoConfirm(Answer) then

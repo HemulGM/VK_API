@@ -134,7 +134,8 @@ type
     procedure SetApplication(const Value: TVkApplicationData);
     function GetApplication: TVkApplicationData;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(const AToken: string); reintroduce; overload;
+    constructor Create(AOwner: TComponent); overload; override;
     destructor Destroy; override;
     /// <summary>
     /// ћетод возвращает запрос дл€ получени€ токена через OAuth2
@@ -725,6 +726,12 @@ var
   MT: Int64;
 begin
   Result := Utils.GetServerTimeUnix(MT);
+end;
+
+constructor TCustomVK.Create(const AToken: string);
+begin
+  with Create(nil) do
+    Token := AToken;
 end;
 
 function TCustomVK.Login(ALogin, APassword: string; On2FA: TOn2FA): Boolean;
