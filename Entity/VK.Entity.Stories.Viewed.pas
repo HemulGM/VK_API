@@ -3,7 +3,8 @@ unit VK.Entity.Stories.Viewed;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Common,
+  VK.Entity.Common.List;
 
 type
   TVkStoryView = class(TVkEntity)

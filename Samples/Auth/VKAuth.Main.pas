@@ -3,11 +3,13 @@ unit VKAuth.Main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler, Vcl.StdCtrls,
-  System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents, VK.GroupEvents, VK.Entity.Media, System.Net.URLClient,
-  System.Net.HttpClient, VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video, VK.Entity.Photo, VK.Entity.Audio,
-  System.JSON, VK.Entity.GroupSettings;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types,
+  System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
+  Vcl.Dialogs, VK.API, VK.Components, VK.Types, Vcl.ExtCtrls, VK.Handler,
+  Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents,
+  VK.GroupEvents, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video, VK.Entity.Photo,
+  VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
 
 type
   TFormMain = class(TForm)
@@ -210,6 +212,7 @@ type
     procedure Button48Click(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
     procedure Button49Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -224,14 +227,18 @@ var
 implementation
 
 uses
-  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save,
-  VK.Utils, VK.Account, VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
-  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section,
-  VK.CommonUtils, VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
-  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage, VK.Entity.Stories,
-  VK.Entity.Podcast.Episode, VK.Auth, VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
-  REST.Json, VK.Entity.Newsfeed, VK.Newsfeed;
+  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
+  VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
+  VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
+  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest,
+  VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
+  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
+  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
+  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
+  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
+  VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
+  VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json,
+  VK.Entity.Newsfeed, VK.Newsfeed;
 
 {$R *.dfm}
 
@@ -245,10 +252,11 @@ end;
 
 procedure TFormMain.Button11Click(Sender: TObject);
 begin
-  if VK1.Auth.CheckPhone('+79512202849', True) then
+  //depricated
+  {if VK1.Auth.CheckPhone('+79512202849', True) then
     Memo1.Lines.Add('CheckPhone is ok')
   else
-    Memo1.Lines.Add('CheckPhone not is ok');
+    Memo1.Lines.Add('CheckPhone not is ok');   }
 end;
 
 procedure TFormMain.Button12Click(Sender: TObject);
@@ -257,7 +265,7 @@ var
   i: Integer;
 begin
   if VK1.Users.Get(Users, [286400863, 415730216, VK1.UserId], TVkProfileFields.AllForGroup) then
-  begin
+  try
     for i := Low(Users.Items) to High(Users.Items) do
     begin
       Memo1.Lines.Add('About: ' + Users.Items[i].About);
@@ -268,8 +276,10 @@ begin
       Memo1.Lines.Add('Movies: ' + Users.Items[i].Movies);
       Memo1.Lines.Add('------------');
     end;
-    Memo1.Lines.Add(Users.Items[2].ToJsonString);
+    if Length(Users.Items) > 2 then
+      Memo1.Lines.Add(Users.Items[2].ToJsonString);
     Memo1.Lines.Add('------------');
+  finally
     Users.Free;
   end;
 end;
@@ -299,12 +309,13 @@ var
   Status: TVkStatus;
 begin
   if Vk1.Status.Get(Status) then
-  begin
+  try
     Memo1.Lines.Add(Status.Text);
     if Assigned(Status.Audio) then
     begin
       Memo1.Lines.Add(Status.Audio.Artist + ' ' + Status.Audio.Title + ', ' + Status.Audio.Url);
     end;
+  finally
     Status.Free;
   end
   else
@@ -387,10 +398,11 @@ var
   Doc: TVkDocSaved;
 begin
   if Vk1.Docs.SaveAudioMessage(Doc, '1.ogg', 'Тестовая аудиозапись', '') then
-  begin
+  try
     Memo1.Lines.Add(Doc.&Type);
     Memo1.Lines.Add(Doc.AudioMessage.LinkOgg);
     Memo1.Lines.Add(Doc.AudioMessage.ToAttachment);
+  finally
     Doc.Free;
   end
   else
@@ -404,10 +416,11 @@ begin
     if VK1.Upload(Url, ['1.ogg'], Response) then
     begin
       if VK1.Docs.Save(Doc, Response, 'Тестовая аудиозапись', '') then
-      begin
+      try
         Memo1.Lines.Add(Doc.&Type);
         Memo1.Lines.Add(Doc.AudioMessage.LinkOgg);
         Memo1.Lines.Add(Doc.AudioMessage.ToAttachment);
+      finally
         Doc.Free;
       end;
     end
@@ -423,17 +436,15 @@ var
   List: TVkAudios;
   Audio: TVkAudio;
 begin
-  if VK1.Audio.Get(List, TVkParamsAudioGet.Create.
-    OwnerId(415730216).
-    AlbumId(86751037)
-    )
-    then
-  begin
+  if VK1.Audio.Get(List, TVkParamsAudioGet.Create.OwnerId(415730216).AlbumId(86751037)) then
+  try
     for Audio in List.Items do
     begin
-      Memo1.Lines.Add(Audio.Artist + ' - ' + Audio.Title + BoolToString(Audio.ContentRestricted > 0,
-        ' - аудиозапись не доступна', ''));
+      Memo1.Lines.Add(
+        Audio.Artist + ' - ' +
+        Audio.Title + BoolToString(Audio.ContentRestricted > 0, ' - аудиозапись не доступна', ''));
     end;
+  finally
     List.Free;
   end
   else
@@ -455,12 +466,15 @@ var
 begin
   //VK1.CallMethod('audio.getPlaylist', [['album_id', '86751037']]);
   if VK1.Audio.GetPlaylists(List, 415730216) then
-  begin
+  try
     for i := Low(List.Items) to High(List.Items) do
     begin
-      Memo1.Lines.Add(List.Items[i].Title + '-' + List.Items[i].Description + ' Playlist Type: ' +
-        List.Items[i].AlbumType);
+      Memo1.Lines.Add(
+        List.Items[i].Title + '-' +
+        List.Items[i].Description +
+        ' Playlist Type: ' + List.Items[i].AlbumType);
     end;
+  finally
     List.Free;
   end
   else
@@ -473,12 +487,16 @@ var
   i: Integer;
 begin
   if VK1.Audio.GetRecommendations(List) then
-  begin
+  try
     for i := Low(List.Items) to High(List.Items) do
     begin
-      Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title + ' ' + BoolToString(List.Items
-        [i].ContentRestricted > 0, ' - аудиозапись не доступна', ''));
+      Memo1.Lines.Add(
+        List.Items[i].Artist + '-' +
+        List.Items[i].Title + ' ' +
+        BoolToString(List.Items[i].ContentRestricted > 0,
+        ' - аудиозапись не доступна', ''));
     end;
+  finally
     List.Free;
   end
   else
@@ -500,13 +518,14 @@ begin
       TS := GetTickCount;
       Param.GroupId('fcarsenaltula');
       if VK1.Groups.GetMembers(Users, Param) then
-      begin
+      try
         Memo1.Lines.Add('done ' + Users.Count.ToString);
         Memo1.Lines.Add('time ' + ((GetTickCount - TS) / 1000).ToString);
         for i := Low(Users.Items) to High(Users.Items) do
         begin
           Memo1.Lines.Add(Users.Items[i].FirstName + ' ' + Users.Items[i].LastName);
         end;
+      finally
         Users.Free;
       end;
     end).Start;
@@ -539,8 +558,9 @@ begin
     Memo1.Lines.Add('Error VK1.Audio.GetUploadServer'); }
   //or
   if VK1.Audio.Upload(Audio, 'D:\Мультимедиа\Музыка\ТГК\Триагрутрика - Вечерний Челябинск (2012)\06. Блэк дэй.mp3') then
-  begin
+  try
     Memo1.Lines.Add(Audio.Title);
+  finally
     Audio.Free;
   end;
 end;
@@ -552,17 +572,27 @@ var
   Item: TVkConversationItem;
 begin
   if VK1.Messages.GetConversations(List, Params) then
-  begin
+  try
     Memo1.Lines.Add('Count: ' + List.Count.ToString);
     for Item in List.Items do
     begin
-      Memo1.Lines.Add('Тип беседы: ' + Item.Conversation.Peer.&Type.ToString);
-      if Item.Conversation.IsChat then
-        Memo1.Lines.Add('Название беседы: ' + Item.Conversation.ChatSettings.Title)
-      else
-        Memo1.Lines.Add('Собеседник: ' + Item.Conversation.Peer.Id.ToString);
+      if Assigned(Item.Conversation) then
+      begin
+        if Assigned(Item.Conversation.Peer) then
+          Memo1.Lines.Add('Тип беседы: ' + Item.Conversation.Peer.&Type.ToString);
+        if Item.Conversation.IsChat then
+        begin
+          if Assigned(Item.Conversation.ChatSettings) then
+            Memo1.Lines.Add('Название беседы: ' + Item.Conversation.ChatSettings.Title);
+        end
+        else
+        begin
+          if Assigned(Item.Conversation.Peer) then
+            Memo1.Lines.Add('Собеседник: ' + Item.Conversation.Peer.Id.ToString);
+        end;
+      end;
     end;
-
+  finally
     List.Free;
   end;
 end;
@@ -573,11 +603,10 @@ var
   User: TVkProfile;
 begin
   if VK1.Friends.Get(Users, TVkProfileFields.All) then
-  begin
+  try
     for User in Users.Items do
-    begin
       Memo1.Lines.Add(User.FullName);
-    end;
+  finally
     Users.Free;
   end;
 end;
@@ -588,11 +617,12 @@ var
   i: Integer;
 begin
   if VK1.Audio.GetPopular(List) then
-  begin
+  try
     for i := Low(List.Items) to High(List.Items) do
     begin
       Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title);
     end;
+  finally
     List.Free;
   end;
 end;
@@ -609,42 +639,53 @@ procedure TFormMain.Button30Click(Sender: TObject);
 var
   Chart: TVkSectionData;
   i: Integer;
-  {Catalog: TVkCatalog;
+ { Catalog: TVkCatalog;
   Section: TVkSectionData;
-  Block: Integer; }
+  Block: Integer;  }
 begin
-  {if VK1.Catalog.GetAudio(Catalog, True) then
-  begin
+ { if VK1.Catalog.GetAudio(Catalog, True) then
+  try
     if VK1.Catalog.GetSection(Section, Catalog.Catalog.Sections[1].Id, False) then
-    begin
+    try
       Memo1.Clear;
       Memo1.Lines.Add(Section.ToJsonString);
       Block := Section.Section.FindBlock('music_audios', 'music_chart_triple_stacked_slider');
       if Block <> -1 then
       begin
         if VK1.Catalog.GetSection(Chart, Section.Section.Blocks[Block].Id, False) then
-        begin
+        try
           Memo1.Clear;
           for i := 0 to High(Chart.Audios) do
           begin
-            Memo1.Lines.Add(Chart.Audios[i].AudioChartInfo.Position.ToString + ' - ' + Chart.Audios[i].Artist
-              + ' - ' + Chart.Audios[i].Title);
+            if Assigned(Chart.Audios[i].AudioChartInfo) then
+              Memo1.Lines.Add(
+                Chart.Audios[i].AudioChartInfo.Position.ToString + ' - ' +
+                Chart.Audios[i].Artist + ' - ' +
+                Chart.Audios[i].Title);
           end;
+        finally
           Chart.Free;
         end;
       end;
+    finally
       Section.Free;
     end;
+  finally
     Catalog.Free;
-  end; }
+  end;        }
   if VK1.Catalog.GetChart(Chart) then
-  begin
+  try
     Memo1.Clear;
     for i := 0 to High(Chart.Audios) do
     begin
-      Memo1.Lines.Add(Chart.Audios[i].AudioChartInfo.Position.ToString + ' - ' + Chart.Audios[i].Artist
-        + ' - ' + Chart.Audios[i].Title);
+      if Assigned(Chart.Audios[i].AudioChartInfo) then
+        Memo1.Lines.Add(
+          Chart.Audios[i].AudioChartInfo.Position.ToString + ' - ' +
+          Chart.Audios[i].Artist + ' - ' +
+          Chart.Audios[i].Title);
     end;
+  finally
+    Chart.Free;
   end;
 end;
 
@@ -654,13 +695,14 @@ var
   i: Integer;
 begin
   if VK1.Account.GetActiveOffers(Offers, 0) then
-  begin
+  try
     Memo1.Lines.Add('ActiveOffers ' + Offers.Count.ToString);
     for i := 0 to Length(Offers.Items) - 1 do
     begin
       Memo1.Lines.Add('--');
-      Memo1.Lines.Add(Offers.items[i].Description);
+      Memo1.Lines.Add(Offers.Items[i].Description);
     end;
+  finally
     Offers.Free;
   end;
 end;
@@ -670,8 +712,9 @@ var
   PI: TVkProfileInfo;
 begin
   if VK1.Account.GetProfileInfo(PI) then
-  begin
+  try
     Memo1.Lines.Add(PI.ToJsonString);
+  finally
     PI.Free;
   end
   else
@@ -693,8 +736,9 @@ begin
     Sex(TVkSex.Male).
     Birthday(StrToDate('22.03.1994'));
   if VK1.Auth.Signup(St, Params) then
-  begin
+  try
     Memo1.Lines.Add(St.ToJsonString);
+  finally
     St.Free;
   end;
 end;
@@ -704,8 +748,10 @@ var
   Items: TVkGroups;
 begin
   if Vk1.Groups.GetById(Items, 'proglib', TVkGroupFields.All) then
-  begin
-    Memo1.Lines.Add(Items.Items[0].Name);
+  try
+    if Length(Items.Items) > 0 then
+      Memo1.Lines.Add(Items.Items[0].Name);
+  finally
     Items.Free;
   end;
 end;
@@ -717,8 +763,9 @@ var
 begin
   Params.Fields(TVkGroupFields.All);
   if Vk1.Groups.Get(Items, Params) then
-  begin
+  try
     Memo1.Lines.Add(Items.Items[0].Name);
+  finally
     Items.Free;
   end;
 end;
@@ -762,19 +809,19 @@ procedure TFormMain.Button46Click(Sender: TObject);
 var
   Items: TVkMessageHistory;
   Params: TVkParamsMessageHistory;
-  i: Integer;
-  m: Integer;
+  i, m: Integer;
 begin
   Params.PeerId(-30666517);
   Params.Extended(True);
   if VK1.Messages.GetHistory(Items, Params) then
-  begin
+  try
     for m := 0 to High(Items.Items) do
       for i := 0 to High(Items.Items[m].Attachments) do
       begin
         Memo1.Lines.Add(Items.Items[m].Attachments[i].&Type.ToString);
         Memo1.Lines.Add(Items.Items[m].Attachments[i].ToJsonString);
       end;
+  finally
     Items.Free;
   end;
 end;
@@ -793,9 +840,10 @@ var
   Item: TVkNewsItem;
 begin
   if VK1.Newsfeed.Get(Items, Params) then
-  begin
+  try
     for Item in Items.Items do
       Memo1.Lines.Add(Item.Text + ' ' + Item.&Type.ToString);
+  finally
     Items.Free;
   end;
 end;
@@ -832,9 +880,10 @@ var
   Counters: TVkCounters;
 begin
   if VK1.Account.GetCounters(Counters) then
-  begin
+  try
     Memo1.Lines.Add('messages ' + Counters.Messages.ToString);
     Memo1.Lines.Add('notifications ' + Counters.Notifications.ToString);
+  finally
     Counters.Free;
   end;
 end;
@@ -844,9 +893,11 @@ var
   PushSettings: TVkPushSettings;
 begin
   if VK1.Account.GetPushSettings(PushSettings, '1') then
-  begin
+  try
     Memo1.Lines.Add('disabled ' + PushSettings.Disabled.ToString);
-    Memo1.Lines.Add('conversations ' + PushSettings.Conversations.Count.ToString);
+    if Assigned(PushSettings.Conversations) then
+      Memo1.Lines.Add('conversations ' + PushSettings.Conversations.Count.ToString);
+  finally
     PushSettings.Free;
   end;
 end;
@@ -858,8 +909,9 @@ var
 begin
   Info.Status('test123');
   if VK1.Account.SaveProfileInfo(Info, Response) then
-  begin
+  try
     Memo1.Lines.Add(Response.Status);
+  finally
     Response.Free;
   end;
 end;
@@ -887,8 +939,9 @@ var
   Playlist: TVkAudioPlaylist;
 begin
   if VK1.Audio.CreatePlaylist(Playlist, VK1.UserId, 'Новый плейлист 2021') then
-  begin
+  try
     Memo1.Lines.Add(Playlist.ToJsonString);
+  finally
     Playlist.Free;
   end;
 end;
@@ -913,8 +966,9 @@ var
   Str1: TVkAudioInfoItems;
 begin
   if VK1.Audio.AddToPlaylist(Str1, VK1.UserId, 11, ['58553419_456239101']) then
-  begin
+  try
     Memo1.Lines.Add(Str1.ToJsonString);
+  finally
     Str1.Free;
   end
   else
@@ -927,11 +981,12 @@ var
   Item: TVkPollBackground;
 begin
   if VK1.Polls.GetBackgrounds(Items) then
-  begin
+  try
     for Item in Items.Items do
     begin
       Memo1.Lines.Add(Item.Name);
     end;
+  finally
     Items.Free;
   end;
 end;
@@ -943,11 +998,12 @@ var
   Episode: TVkPodcastsEpisode;
 begin
   if VK1.Podcasts.Search(Items, 'гонки') then
-  begin
+  try
     for Podcast in Items.Podcasts do
       Memo1.Lines.Add(Podcast.OwnerTitle);
     for Episode in Items.Episodes do
       Memo1.Lines.Add(Episode.Title);
+  finally
     Items.Free;
   end;
 end;
@@ -958,13 +1014,14 @@ var
   Item: TVkSearchItem;
 begin
   if VK1.Search.GetHints(Items, 'vk') then
-  begin
+  try
     for Item in Items.Items do
     begin
       Memo1.Lines.Add(Item.Description);
       Memo1.Lines.Add(Item.Section);
       Memo1.Lines.Add(Item.&Type);
     end;
+  finally
     Items.Free;
   end;
 end;
@@ -975,11 +1032,12 @@ var
   Item: TVkRegion;
 begin
   if VK1.Database.GetRegions(Items, 1, 'Алтай') then
-  begin
+  try
     for Item in Items.Items do
     begin
       Memo1.Lines.Add(Item.Title);
     end;
+  finally
     Items.Free;
   end;
 end;
@@ -990,11 +1048,12 @@ var
   Item: TVkSchoolClass;
 begin
   if VK1.Database.GetSchoolClasses(Items) then
-  begin
+  try
     for Item in Items.Items do
     begin
       Memo1.Lines.Add(Item.Text);
     end;
+  finally
     Items.Free;
   end;
 end;
@@ -1025,7 +1084,7 @@ var
   i, j: Integer;
 begin
   if VK1.Stories.Get(Items) then
-  begin
+  try
     for i := Low(Items.Items) to High(Items.Items) do
     begin
       Memo1.Lines.Add(Items.Items[i].&Type);
@@ -1040,6 +1099,7 @@ begin
           Memo1.Lines.Add(Items.Items[i].Grouped[j].&Type);
       end;
     end;
+  finally
     Items.Free;
   end;
 end;
@@ -1053,7 +1113,7 @@ var
   Link: TVkCatalogLink;
 begin
   if VK1.Audio.GetCatalog(Catalog) then
-  begin
+  try
     for CatalogItem in Catalog.Items do
     begin
       Memo1.Lines.Add('');
@@ -1080,6 +1140,7 @@ begin
           Memo1.Lines.Add(Link.Title + ' - ' + Link.Subtitle);
       end;
     end;
+  finally
     Catalog.Free;
   end;
 end;
@@ -1104,9 +1165,10 @@ var
 begin
   Params.OwnerId(Vk1.UserId);
   if VK1.Wall.Get(Items, Params) then
-  begin
+  try
     for i := 0 to High(Items.Items) do
       Memo1.Lines.Add(Items.Items[i].ToJsonString);
+  finally
     Items.Free;
   end;
 end;
@@ -1119,6 +1181,10 @@ begin
   VK1.Application := TVkApplicationData.VKAdmin;
   {if TFile.Exists('token.tmp') then
     VK1.Token := TFile.ReadAllText('token.tmp');   }
+end;
+
+procedure TFormMain.FormShow(Sender: TObject);
+begin
   VK1.Login;
 end;
 
@@ -1520,7 +1586,7 @@ begin
     end;
 
     if VK1.Messages.GetById(Msg, MessageData.MessageId) then
-    begin
+    try
       if Length(Msg.Items[0].Attachments) > 0 then
       begin
         if Msg.Items[0].Attachments[0].&Type = TVkAttachmentType.AudioMessage then
@@ -1531,6 +1597,7 @@ begin
             Send.
             Free;
       end;
+    finally
       Msg.Free;
     end;
   end;

@@ -50,7 +50,7 @@ type
     /// <summary>
     /// Тип фона. Возможные значения: gradient, tile
     /// </summary>
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     /// <summary>
     /// (для type = tile) ширина плитки паттерна
     /// </summary>
@@ -209,7 +209,6 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     //
-    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: TAttachment;
   end;
@@ -239,12 +238,6 @@ end;
 
 {TVkPoll}
 
-constructor TVkPoll.Create;
-begin
-  inherited;
-  FBackground := TVkPollBackground.Create();
-end;
-
 destructor TVkPoll.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPollAnswer>(FAnswers);
@@ -253,7 +246,8 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   if Assigned(FPhoto) then
     FPhoto.Free;
-  FBackground.Free;
+  if Assigned(FBackground) then
+    FBackground.Free;
   inherited;
 end;
 

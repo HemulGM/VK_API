@@ -12,7 +12,7 @@ type
     FType: string;
   public
     property ObjectId: Integer read FObject_id write FObject_id;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
   end;
 
 implementation

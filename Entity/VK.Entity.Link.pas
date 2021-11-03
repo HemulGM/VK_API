@@ -3,8 +3,9 @@ unit VK.Entity.Link;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Entity.Photo, VK.Entity.Market, VK.Entity.App, VK.Types;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo, VK.Entity.Market,
+  VK.Entity.App, VK.Types;
 
 type
   TVkLinkStatus = class(TVkEntity)
@@ -23,7 +24,7 @@ type
     FType: string;
     FUrl: string;
   public
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     property Url: string read FUrl write FUrl;
   end;
 
@@ -34,7 +35,6 @@ type
   public
     property Action: TVkLinkAction read FAction write FAction;
     property Title: string read FTitle write FTitle;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -238,21 +238,16 @@ implementation
 uses
   VK.CommonUtils, System.StrUtils;
 
-{TButtonClass}
-
-constructor TVkLinkButton.Create;
-begin
-  inherited;
-  FAction := TVkLinkAction.Create();
-end;
+{TVkLinkButton}
 
 destructor TVkLinkButton.Destroy;
 begin
-  FAction.Free;
+  if Assigned(FAction) then
+    FAction.Free;
   inherited;
 end;
 
-{TLinkClass}
+{TVkLink}
 
 destructor TVkLink.Destroy;
 begin

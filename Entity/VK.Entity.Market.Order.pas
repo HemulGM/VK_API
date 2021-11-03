@@ -25,7 +25,7 @@ type
     FType: string;
   public
     property Address: string read FAddress write FAddress;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
   end;
 
   TVkOrderPayment = class(TVkEntity)
@@ -96,7 +96,6 @@ type
     property Recipient: TVkOrderRecipient read FRecipient write FRecipient;
     property Payment: TVkOrderPayment read FPayment write FPayment;
     property Seller: TVkOrderSeller read FSeller write FSeller;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -109,19 +108,14 @@ uses
 
 {TVkOrder}
 
-constructor TVkOrder.Create;
-begin
-  inherited;
-  FTotal_price := TVkProductPrice.Create();
-  FRecipient := TVkOrderRecipient.Create();
-end;
-
 destructor TVkOrder.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkProduct>(FPreview_order_items);
   TArrayHelp.FreeArrayOfObject<TVkOrderTag>(FTags);
-  FTotal_price.Free;
-  FRecipient.Free;
+  if Assigned(FTotal_price) then
+    FTotal_price.Free;
+  if Assigned(FRecipient) then
+    FRecipient.Free;
   if Assigned(FDelivery) then
     FDelivery.Free;
   if Assigned(FPayment) then

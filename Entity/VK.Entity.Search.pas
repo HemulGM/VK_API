@@ -3,7 +3,8 @@ unit VK.Entity.Search;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
+  VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkSearchItem = class(TVkEntity)
@@ -34,7 +35,7 @@ type
     /// Поле возвращается, если объект был найден в глобальном поиске, всегда содержит 1
     /// </summary>
     property Global: Boolean read FGlobal write FGlobal;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     destructor Destroy; override;
   end;
 

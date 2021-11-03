@@ -35,7 +35,6 @@ type
   public
     property Action: TVkKeyboardAction read FAction write FAction;
     property Color: TVkKeyboardButtonColor read FColor write FColor;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -65,8 +64,6 @@ type
     class function CreateCallback(const Text, Payload: string; Color: TVkKeyboardButtonColor): TVkKeyboardButtonConstruct;
     procedure Color(const Value: TVkKeyboardButtonColor);
     property Action: TJSONObject read GetAction;
-    destructor Destroy; override;
-    function ToJsonString(FreeObject: Boolean = False): string; override;
   end;
 
   TVkKeyboardButtonsConstruct = TArray<TVkKeyboardButtonConstruct>;
@@ -115,7 +112,7 @@ implementation
 uses
   VK.CommonUtils;
 
-{ TVkKeyboardAction }
+{ TVkKeyboard }
 
 function TVkKeyboard.AddButtonLine: Integer;
 begin
@@ -143,16 +140,14 @@ end;
 
 { TVkKeyboardButton }
 
-constructor TVkKeyboardButton.Create;
+destructor TVkKeyboardButton.Destroy;
 begin
+  if Assigned(FAction) then
+    FAction.Free;
   inherited;
-  Action := TVkKeyboardAction.Create;
 end;
 
-destructor TVkKeyboardButtonConstruct.Destroy;
-begin
-  inherited;
-end;
+{ TVkKeyboardButtonConstruct }
 
 function TVkKeyboardButtonConstruct.GetAction: TJSONObject;
 begin
@@ -162,11 +157,6 @@ begin
     Add('action', FAction);
   end;
   Result := FAction;
-end;
-
-function TVkKeyboardButtonConstruct.ToJsonString(FreeObject: Boolean): string;
-begin
-  Result := inherited;
 end;
 
 procedure TVkKeyboardButtonConstruct.Color(const Value: TVkKeyboardButtonColor);
@@ -228,12 +218,6 @@ begin
   Result.Action.AddPair('app_id', TJSONNumber.Create(AppId));
   Result.Action.AddPair('owner_id', TJSONNumber.Create(OwnerId));
   Result.Color(Color);
-end;
-
-destructor TVkKeyboardButton.Destroy;
-begin
-  FAction.Free;
-  inherited;
 end;
 
 { TVkKeyboardConstruct }

@@ -16,7 +16,7 @@ type
     FMp4_480: string;
     FMp4_240: string;
   public
-    property&External: string read FExternal write FExternal;
+    property &External: string read FExternal write FExternal;
     property Mp4_720: string read FMp4_720 write FMp4_720;
     property Mp4_360: string read FMp4_360 write FMp4_360;
     property Mp4_240: string read FMp4_240 write FMp4_240;
@@ -240,7 +240,7 @@ type
     /// <summary>
     /// Поле возвращается в том случае, если видео зациклено, всегда содержит 1
     /// </summary>
-    property&Repeat: Boolean read FRepeat write FRepeat;
+    property &Repeat: Boolean read FRepeat write FRepeat;
     /// <summary>
     /// Содержит объект репоста
     /// </summary>
@@ -272,14 +272,13 @@ type
     /// <summary>
     /// Название платформы (для видеозаписей, добавленных с внешних сайтов)
     /// </summary>
-    property&Platform: string read FPlatform write FPlatform;
+    property &Platform: string read FPlatform write FPlatform;
     /// <summary>
     /// Тип видеозаписи
     /// </summary>
-    property&Type: TVkVideoType read FType write FType;
+    property &Type: TVkVideoType read FType write FType;
     ///Методы
     function ToAttachment: TAttachment;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -301,7 +300,6 @@ type
     property Privacy: TVkPrivacy read FPrivacy write FPrivacy;
     property Title: string read FTitle write FTitle;
     property UpdatedTime: TDateTime read FUpdated_time write FUpdated_time;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -314,21 +312,16 @@ uses
 
 {TVkVideo}
 
-constructor TVkVideo.Create;
-begin
-  inherited;
-  FFiles := TVkVideoFiles.Create();
-  FLikes := TVkLikesInfo.Create();
-  FReposts := TVkRepostsInfo.Create();
-end;
-
 destructor TVkVideo.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
   TArrayHelp.FreeArrayOfObject<TVkImage>(FFirstFrame);
-  FFiles.Free;
-  FLikes.Free;
-  FReposts.Free;
+  if Assigned(FFiles) then
+    FFiles.Free;
+  if Assigned(FLikes) then
+    FLikes.Free;
+  if Assigned(FReposts) then
+    FReposts.Free;
   inherited;
 end;
 
@@ -339,16 +332,11 @@ end;
 
 {TVkVideoAlbum}
 
-constructor TVkVideoAlbum.Create;
-begin
-  inherited;
-  FPrivacy := TVkPrivacy.Create();
-end;
-
 destructor TVkVideoAlbum.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
-  FPrivacy.Free;
+  if Assigned(FPrivacy) then
+    FPrivacy.Free;
   inherited;
 end;
 

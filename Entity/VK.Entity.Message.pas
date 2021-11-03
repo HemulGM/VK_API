@@ -112,7 +112,7 @@ type
     /// <summary>
     /// Тип действия
     /// </summary>
-    property&Type: TVkMessageActionType read FType write FType;
+    property &Type: TVkMessageActionType read FType write FType;
     /// <summary>
     /// Идентификатор пользователя (если > 0) или email (если < 0), которого пригласили или исключили
     /// (для служебных сообщений с type = chat_invite_user или chat_kick_user).
@@ -138,7 +138,7 @@ type
     FPeer_id: Integer;
     FUrl: string;
   public
-    property&Type: string read FType write FType; // 'message', 'url'
+    property &Type: string read FType write FType; // 'message', 'url'
     property PeerId: Integer read FPeer_id write FPeer_id;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
@@ -196,8 +196,7 @@ type
     /// <summary>
     /// Исходящее сообщение
     /// </summary>
-    property&Out: Boolean read FOut write FOut;
-    constructor Create; override;
+    property &Out: Boolean read FOut write FOut;
     destructor Destroy; override;
   end;
 
@@ -216,7 +215,6 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property NewPts: Integer read FNew_pts write FNew_pts;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -236,12 +234,6 @@ end;
 
 {TVkMessage}
 
-constructor TVkMessage.Create;
-begin
-  inherited;
-  FAction := TVkMessageAction.Create;
-end;
-
 destructor TVkMessage.Destroy;
 begin
   {$IFNDEF AUTOREFCOUNT}
@@ -255,7 +247,8 @@ begin
     FGeo.Free;
   if Assigned(FPayloadButton) then
     FPayloadButton.Free;
-  FAction.Free;
+  if Assigned(FAction) then
+    FAction.Free;
   {$ENDIF}
   inherited;
 end;
@@ -329,17 +322,13 @@ end;
 
 { TVkLongPollHistory }
 
-constructor TVkLongPollHistory.Create;
-begin
-  FMessages := TVkMessages.Create;
-end;
-
 destructor TVkLongPollHistory.Destroy;
 begin
   {$IFNDEF AUTOREFCOUNT}
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  FMessages.Free;
+  if Assigned(FMessages) then
+    FMessages.Free;
   {$ENDIF}
   inherited;
 end;

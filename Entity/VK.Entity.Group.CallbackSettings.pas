@@ -96,7 +96,6 @@ type
   public
     property ApiVersion: string read FApi_version write FApi_version;
     property Events: TVkCallbackSetting read FEvents write FEvents;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -104,15 +103,10 @@ implementation
 
 {TVkCallbackSettings}
 
-constructor TVkCallbackSettings.Create;
-begin
-  inherited;
-  FEvents := TVkCallbackSetting.Create();
-end;
-
 destructor TVkCallbackSettings.Destroy;
 begin
-  FEvents.Free;
+  if Assigned(FEvents) then
+    FEvents.Free;
   inherited;
 end;
 

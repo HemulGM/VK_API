@@ -3,7 +3,8 @@ unit VK.Entity.PushSettings;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkConversation = class(TVkEntity)
@@ -74,7 +75,6 @@ type
     property Conversations: TVkConversations read FConversations write FConversations;
     property Disabled: Boolean read FDisabled write FDisabled;
     property Settings: TVkPushSettingsItem read Fsettings write Fsettings;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -85,15 +85,10 @@ uses
 
 {TVkPushSettings}
 
-constructor TVkPushSettings.Create;
-begin
-  inherited;
-  FConversations := TVkConversations.Create();
-end;
-
 destructor TVkPushSettings.Destroy;
 begin
-  FConversations.Free;
+  if Assigned(FConversations) then
+    FConversations.Free;
   inherited;
 end;
 

@@ -13,6 +13,7 @@ object FormMain: TFormMain
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -40,7 +41,7 @@ object FormMain: TFormMain
       Width = 782
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheet10
+      ActivePage = TabSheet1
       Align = alClient
       MultiLine = True
       TabOrder = 0
@@ -167,6 +168,7 @@ object FormMain: TFormMain
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
+        ExplicitLeft = 3
         object Button1: TButton
           Left = 3
           Top = 3

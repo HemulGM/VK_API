@@ -35,7 +35,7 @@ type
     property Product: TVkProduct read FProduct write FProduct;
     property Seen: Boolean read FSeen write FSeen;
     property Tags: TArray<TVkFaveTag> read FTags write FTags;
-    property&Type: TVkFaveType read FType write FType;
+    property &Type: TVkFaveType read FType write FType;
     destructor Destroy; override;
   end;
 
@@ -44,7 +44,7 @@ type
 implementation
 
 uses
-  System.DateUtils, VK.CommonUtils;
+  VK.CommonUtils;
 
 destructor TVkFave.Destroy;
 begin

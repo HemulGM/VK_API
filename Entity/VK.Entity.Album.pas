@@ -3,8 +3,9 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Privacy, VK.Entity.Common.List, VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Common.List,
+  VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkPhotoAlbum = class(TVkObject, IAttachment)
@@ -74,7 +75,6 @@ type
     /// </summary>
     property Updated: TDateTime read FUpdated write FUpdated;
     property UploadByAdminsOnly: Boolean read FUpload_by_admins_only write FUpload_by_admins_only;
-    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: TAttachment;
   end;
@@ -84,24 +84,19 @@ type
 implementation
 
 uses
-  System.DateUtils, VK.CommonUtils;
+  VK.CommonUtils;
 
 {TVkPhotoAlbum}
-
-constructor TVkPhotoAlbum.Create;
-begin
-  inherited;
-  FThumb := TVkThumb.Create();
-  FPrivacy_view := TVkPrivacy.Create();
-  FPrivacy_comment := TVkPrivacy.Create();
-end;
 
 destructor TVkPhotoAlbum.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
-  FThumb.Free;
-  FPrivacy_view.Free;
-  FPrivacy_comment.Free;
+  if Assigned(FThumb) then
+    FThumb.Free;
+  if Assigned(FPrivacy_view) then
+    FPrivacy_view.Free;
+  if Assigned(FPrivacy_comment) then
+    FPrivacy_comment.Free;
   inherited;
 end;
 

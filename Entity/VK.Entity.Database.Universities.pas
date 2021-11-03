@@ -17,8 +17,5 @@ type
 
 implementation
 
-uses
-  VK.CommonUtils;
-
 end.
 

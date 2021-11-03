@@ -3,11 +3,14 @@ unit VK.Entity.Newsfeed;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
-  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page,
-  VK.Entity.Album, VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
-  VK.Entity.Media, VK.Entity.Info, VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Geo,
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
+  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
+  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note,
+  VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
+  VK.Entity.Group, VK.Entity.Call, VK.Entity.Media, VK.Entity.Info,
+  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Geo,
   VK.Wrap.Interceptors, VK.Entity.Donut;
 
 type
@@ -83,7 +86,7 @@ type
     property Text: string read FText write FText;
     property ToId: Integer read FTo_id write FTo_id;
     property Views: TVkViewsInfo read FViews write FViews;
-    property&Type: TVkNewsfeedType read FType write FType;
+    property &Type: TVkNewsfeedType read FType write FType;
     destructor Destroy; override;
   end;
 
@@ -147,7 +150,7 @@ type
     FIs_admin: Boolean;
   public
     //common
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     property Photo50: string read FPhoto_50 write FPhoto_50;
     property IsClosed: Boolean read FIs_closed write FIs_closed;
     //profile
@@ -169,7 +172,7 @@ type
 implementation
 
 uses
-  System.DateUtils, VK.CommonUtils;
+  VK.CommonUtils;
 
 { TVkNewsItem }
 
@@ -189,7 +192,8 @@ begin
     FLikes.Free;
   if Assigned(FReposts) then
     FReposts.Free;
-  FViews.Free;
+  if Assigned(FViews) then
+    FViews.Free;
   if Assigned(FDonut) then
     FDonut.Free;
   inherited;

@@ -309,7 +309,7 @@ end;
 
 constructor TVkEntity.Create;
 begin
-  //
+  //dummy
 end;
 
 procedure TVkEntity.FromJson(AJson: TJSONObject);

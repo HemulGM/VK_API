@@ -3,8 +3,9 @@ unit VK.Entity.Market;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Photo, VK.Entity.Info,
-  VK.Entity.Common, VK.Entity.Common.List, VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Photo, VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List,
+  VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkMarketSection = class(TVkBasicObject)
@@ -48,7 +49,6 @@ type
     /// </summary>
     property Text: string read FText write FText;
     property DiscountRate: Integer read FDiscount_rate write FDiscount_rate;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -68,7 +68,6 @@ type
     /// Секция
     /// </summary>
     property Section: TVkMarketSection read FSection write FSection;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -225,35 +224,25 @@ implementation
 uses
   VK.CommonUtils;
 
-{TVkMarketPrice}
-
-constructor TVkProductPrice.Create;
-begin
-  inherited;
-  FCurrency := TVkProductCurrency.Create();
-end;
+{TVkProductPrice}
 
 destructor TVkProductPrice.Destroy;
 begin
-  FCurrency.Free;
+  if Assigned(FCurrency) then
+    FCurrency.Free;
   inherited;
 end;
 
-{TVkMarketCategory}
-
-constructor TVkProductCategory.Create;
-begin
-  inherited;
-  FSection := TVkMarketSection.Create();
-end;
+{TVkProductCategory}
 
 destructor TVkProductCategory.Destroy;
 begin
-  FSection.Free;
+  if Assigned(FSection) then
+    FSection.Free;
   inherited;
 end;
 
-{TVkMarket}
+{TVkProduct}
 
 destructor TVkProduct.Destroy;
 begin

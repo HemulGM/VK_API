@@ -25,7 +25,7 @@ type
     property ClickableArea: TArray<TVkClickableArea> read FClickable_area write FClickable_area;
     property Mention: string read FMention write FMention;
     property Style: string read FStyle write FStyle;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     destructor Destroy; override;
   end;
 

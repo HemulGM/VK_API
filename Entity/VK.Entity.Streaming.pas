@@ -3,7 +3,8 @@ unit VK.Entity.Streaming;
 interface
 
 uses
-  VK.Entity.Common, VK.Entity.Common.List, System.Generics.Collections, REST.Json.Types;
+  VK.Entity.Common, VK.Entity.Common.List, System.Generics.Collections,
+  REST.Json.Types;
 
 type
   TVkStreamServer = class(TVkEntity)

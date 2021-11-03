@@ -3,8 +3,8 @@ unit VK.Entity.Geo;
 interface
 
 uses
-  Generics.Collections, System.Json, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, REST.Json.Types,
-  VK.Entity.Common, VK.Wrap.Interceptors;
+  Generics.Collections, System.Json, REST.JsonReflect, REST.Json.Interceptors,
+  Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Wrap.Interceptors;
 
 type
   /// <summary>
@@ -49,7 +49,7 @@ type
     /// <summary>
     /// Тип места
     /// </summary>
-    property&Type: Integer read FType write FType;
+    property &Type: Integer read FType write FType;
     /// <summary>
     /// Идентификатор страны
     /// </summary>
@@ -110,12 +110,11 @@ type
     /// <summary>
     /// Тип места
     /// </summary>
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     /// <summary>
     /// Информация о том, отображается ли карта
     /// </summary>
     property Showmap: Boolean read FShowmap write FShowmap;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -123,15 +122,10 @@ implementation
 
 {TVkGeo}
 
-constructor TVkGeo.Create;
-begin
-  inherited;
-  FCoordinates := TVkCoordinates.Create;
-end;
-
 destructor TVkGeo.Destroy;
 begin
-  FCoordinates.Free;
+  if Assigned(FCoordinates) then
+    FCoordinates.Free;
   if Assigned(FPlace) then
     FPlace.Free;
   inherited;

@@ -3,8 +3,9 @@ unit VK.Entity.Notifications;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Photo, VK.Entity.Common,
+  VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
 
 type
   TVkNotificationAction = class
@@ -12,7 +13,7 @@ type
     FType: string;
     FUrl: string;
   public
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     property Url: string read FUrl write FUrl;
   end;
 
@@ -31,8 +32,7 @@ type
     FType: string;
   public
     property Context: TVkNotificationButtonActionContext read FContext write FContext;
-    property&Type: string read FType write FType;
-    constructor Create; override;
+    property &Type: string read FType write FType;
     destructor Destroy; override;
   end;
 
@@ -44,10 +44,9 @@ type
     FStyle: string;
   public
     property Action: TVkNotificationButtonAction read FAction write FAction;
-    property&Label: string read FLabel write FLabel;
+    property &Label: string read FLabel write FLabel;
     property ShortLabel: string read FShort_label write FShort_label;
     property Style: string read FStyle write FStyle;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -57,7 +56,7 @@ type
     FType: string;
   public
     property ObjectId: string read FObject_id write FObject_id;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
   end;
 
   TVkNotification = class(TVkEntity)
@@ -84,7 +83,6 @@ type
     property IconUrl: string read FIcon_url write FIcon_url;
     property Id: string read FId write FId;
     property MainItem: TVKNotificationMainItem read FMain_item write FMain_item;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -137,45 +135,31 @@ uses
 
 {TVkNotificationButtonAction}
 
-constructor TVkNotificationButtonAction.Create;
-begin
-  inherited;
-  FContext := TVkNotificationButtonActionContext.Create();
-end;
-
 destructor TVkNotificationButtonAction.Destroy;
 begin
-  FContext.Free;
+  if Assigned(FContext) then
+    FContext.Free;
   inherited;
 end;
 
 {TVkNotificationHideButton}
 
-constructor TVkNotificationHideButton.Create;
-begin
-  inherited;
-  FAction := TVkNotificationButtonAction.Create();
-end;
-
 destructor TVkNotificationHideButton.Destroy;
 begin
-  FAction.Free;
+  if Assigned(FAction) then
+    FAction.Free;
   inherited;
 end;
-{TVkNotification}
 
-constructor TVkNotification.Create;
-begin
-  inherited;
-  FMain_item := TVKNotificationMainItem.Create();
-  FAction := TVkNotificationAction.Create();
-end;
+{TVkNotification}
 
 destructor TVkNotification.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkNotificationHideButton>(FHide_buttons);
-  FMain_item.Free;
-  FAction.Free;
+  if Assigned(FMain_item) then
+    FMain_item.Free;
+  if Assigned(FAction) then
+    FAction.Free;
   inherited;
 end;
 
