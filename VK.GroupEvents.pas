@@ -3,11 +3,9 @@ unit VK.GroupEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  REST.Client, System.JSON, VK.Types, System.Generics.Collections,
-  VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
-  VK.Entity.GroupSettings;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON, VK.Types,
+  System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo, VK.Entity.GroupSettings;
 
 type
   TLongPollEventProc = procedure(GroupId: Integer; EventObject: TJSONValue; const EventId: string) of object;
@@ -491,7 +489,8 @@ begin
     else
       DoGroupUnhandledEvents(GroupId, Update);
   except
-    //
+    on E: Exception do
+      VK.DoLog(Sender, 'Error TCustomGroupEvents.DoEvent ' + E.Message + #13#10 + Update.ToJSON);
   end;
 end;
 

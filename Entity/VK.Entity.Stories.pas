@@ -73,10 +73,9 @@ type
     property Replies: TVkStoryReplies read FReplies write FReplies;
     property Seen: Integer read FSeen write FSeen;
     property TrackCode: string read FTrack_code write FTrack_code;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     property Photo: TVkPhoto read FPhoto write FPhoto;
     property Video: TVkVideo read FVideo write FVideo;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -97,7 +96,7 @@ type
     /// <summary>
     /// stories, community_grouped_stories, app_grouped_stories
     /// </summary>
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     property IsStories: Boolean read GetIsStories;
     property IsCommunityGroupedStories: Boolean read GetIsCommunityGroupedStories;
     property IsAppGroupedStories: Boolean read GetIsAppGroupedStories;
@@ -121,19 +120,14 @@ uses
 
 {TVkStory}
 
-constructor TVkStory.Create;
-begin
-  inherited;
-  FPhoto := TVkPhoto.Create();
-  FLink := TVkLink.Create();
-  FReplies := TVkStoryReplies.Create();
-end;
-
 destructor TVkStory.Destroy;
 begin
-  FPhoto.Free;
-  FLink.Free;
-  FReplies.Free;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  if Assigned(FLink) then
+    FLink.Free;
+  if Assigned(FReplies) then
+    FReplies.Free;
   if Assigned(FVideo) then
     FVideo.Free;
   inherited;

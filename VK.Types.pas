@@ -7,8 +7,7 @@ interface
 {$SCOPEDENUMS ON}
 
 uses
-  System.Classes, System.UITypes, REST.Json, System.SysUtils, System.Types, System.Generics.Collections, System.JSON,
-  VK.Entity.Common;
+  System.Classes, System.SysUtils, System.Generics.Collections, VK.Entity.Common;
 
 type
   TVkException = Exception;
@@ -355,6 +354,14 @@ type
   /// ChatUnpinMessage — откреплено сообщение;
   /// ChatInviteUserByLink — пользователь присоединился к беседе по ссылке.
   /// </summary>
+  /// <list type="bullet">
+  /// <item>
+  /// <description>123123</description>
+  /// </item>
+  /// <item>
+  /// <description>fg464g6</description>
+  /// </item>
+  /// </list>
   TVkMessageActionType = (Unknown, ChatPhotoUpdate, ChatPhotoRemove,          //
     ChatCreate, ChatTitleUpdate, ChatInviteUser, ChatKickUser,                //
     ChatPinMessage, ChatUnpinMessage, ChatInviteUserByLink);
@@ -957,7 +964,8 @@ type
 
   TVkPeerTypeHelper = record helper for TVkPeerType
     function ToString: string; inline;
-    class function Create(Value: string): TVkPeerType; static;
+    class function Create(Value: string): TVkPeerType; overload; static;
+    class function Create(PeerId: Integer): TVkPeerType; overload; static;
   end;
 
   /// <summary>
@@ -991,7 +999,7 @@ type
 
   TVkKeyboardButtonColorHelper = record helper for TVkKeyboardButtonColor
     function ToString: string; inline;
-    function ToColor: TAlphaColor; inline;
+    function ToColor: Cardinal; inline;
     class function Create(Value: string): TVkKeyboardButtonColor; static;
   end;
 
@@ -1301,7 +1309,7 @@ type
   TOnVKError = procedure(Sender: TObject; E: Exception; Code: Integer; Text: string) of object;
 
 const
-  VkColorDefault = TAlphaColorRec.Null;
+  VkColorDefault = $00000000;
   VkColorPositive = $FF4BB34B;
   VkColorNegative = $FFE64646;
   VkColorPrimary = $FF5181B8;
@@ -1399,7 +1407,7 @@ const
     'chat_invite_user_by_link');
   VkKeyboardButtonColor: array[TVkKeyboardButtonColor] of string = ('default', 'positive', 'negative', 'primary',
     'secondary');
-  VkKeyboardButtonColorValue: array[TVkKeyboardButtonColor] of TAlphaColor = (VkColorDefault, VkColorPositive,
+  VkKeyboardButtonColorValue: array[TVkKeyboardButtonColor] of Cardinal = (VkColorDefault, VkColorPositive,
     VkColorNegative, VkColorPrimary, VkColorSecondary);
   VkGroupStatusType: array[TVkGroupStatusType] of string = ('none', 'online', 'answer_mark');
   VkGroupTypeCreate: array[TVkGroupTypeCreate] of string = ('group', 'event', 'public');
@@ -1463,10 +1471,20 @@ function PeerIdIsUser(Value: Integer): Boolean;
 
 function PeerIdIsGroup(Value: Integer): Boolean;
 
+procedure Synchronize(Proc: TThreadProcedure);
+
 implementation
 
 uses
   VK.CommonUtils, System.DateUtils, System.Character, System.StrUtils;
+
+procedure Synchronize(Proc: TThreadProcedure);
+begin
+  if (TThread.Current.ThreadID = MainThreadID) or IsConsole then
+    Proc
+  else
+    TThread.Synchronize(nil, Proc);
+end;
 
 function PeerIdIsChat(Value: Integer): Boolean;
 begin
@@ -1910,6 +1928,17 @@ begin
   Result := TVkPeerType(IndexStr(Value, VkPeerType));
 end;
 
+class function TVkPeerTypeHelper.Create(PeerId: Integer): TVkPeerType;
+begin
+  if PeerIdIsChat(PeerId) then
+    Exit(TVkPeerType.Chat);
+  if PeerIdIsUser(PeerId) then
+    Exit(TVkPeerType.User);
+  if PeerIdIsGroup(PeerId) then
+    Exit(TVkPeerType.Group);
+  Result := TVkPeerType.Unknown;
+end;
+
 function TVkPeerTypeHelper.ToString: string;
 begin
   Result := VkPeerType[Self];
@@ -2300,7 +2329,7 @@ begin
   Result := TVkKeyboardButtonColor(IndexStr(Value, VkKeyboardButtonColor));
 end;
 
-function TVkKeyboardButtonColorHelper.ToColor: TAlphaColor;
+function TVkKeyboardButtonColorHelper.ToColor: Cardinal;
 begin
   Result := VkKeyboardButtonColorValue[Self];
 end;

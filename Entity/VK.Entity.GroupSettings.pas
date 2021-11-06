@@ -3,8 +3,9 @@ unit VK.Entity.GroupSettings;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Interceptors, VK.Entity.Common, VK.Entity.Group, VK.Entity.Market,
-  VK.Entity.Geo, VK.Types, REST.JsonReflect, VK.Entity.Group.Categories, VK.Wrap.Interceptors, VK.Entity.Group.Youla;
+  Generics.Collections, Rest.Json, REST.Json.Interceptors, VK.Entity.Common,
+  VK.Entity.Group, VK.Entity.Market, VK.Entity.Geo, VK.Types, REST.JsonReflect,
+  VK.Entity.Group.Categories, VK.Wrap.Interceptors, VK.Entity.Group.Youla;
 
 type
   TVkActionButtonTarget = class
@@ -31,7 +32,6 @@ type
     property IsEnabled: Boolean read FIs_Enabled write FIs_Enabled;
     property Target: TVkActionButtonTarget read FTarget write FTarget;
     property Title: string read FTitle write FTitle;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -92,7 +92,6 @@ type
   public
     property Changes: TVkGroupChangeList read FChanges write FChanges;
     property UserId: Integer read FUser_id write FUser_id;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -117,8 +116,7 @@ type
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property CanMessage: Boolean read FCan_message write FCan_message;
     property Enabled: Boolean read FEnabled write FEnabled;
-    property&Type: string read FType write FType;
-    constructor Create; override;
+    property &Type: string read FType write FType;
     destructor Destroy; override;
   end;
 
@@ -243,7 +241,6 @@ type
     property Website: string read FWebsite write FWebsite;
     property Wiki: Boolean read FWiki write FWiki;
     property Youla: TVkGroupYoula read FYoula write FYoula;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -254,25 +251,14 @@ uses
 
 {TVkGroupSettingsChange}
 
-constructor TVkGroupSettingsChange.Create;
-begin
-  inherited;
-  FChanges := TVkGroupChangeList.Create();
-end;
-
 destructor TVkGroupSettingsChange.Destroy;
 begin
-  FChanges.Free;
+  if Assigned(FChanges) then
+    FChanges.Free;
   inherited;
 end;
 
 { TVkGroupSettings }
-
-constructor TVkGroupSettings.Create;
-begin
-  inherited;
-  FMarket := TVkGroupMarket.Create;
-end;
 
 destructor TVkGroupSettings.Destroy;
 begin
@@ -280,7 +266,8 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkGroupCategory>(FPublic_category_list);
   if Assigned(FPlace) then
     FPlace.Free;
-  FMarket.Free;
+  if Assigned(FMarket) then
+    FMarket.Free;
   if Assigned(FYoula) then
     FYoula.Free;
   if Assigned(FAction_button) then
@@ -292,29 +279,19 @@ end;
 
 { TVkGroupMarket }
 
-constructor TVkGroupMarket.Create;
-begin
-  inherited;
-  FCurrency := TVkProductCurrency.Create;
-end;
-
 destructor TVkGroupMarket.Destroy;
 begin
-  FCurrency.Free;
+  if Assigned(FCurrency) then
+    FCurrency.Free;
   inherited;
 end;
 
 { TVkActionButton }
 
-constructor TVkActionButton.Create;
-begin
-  inherited;
-  FTarget := TVkActionButtonTarget.Create;
-end;
-
 destructor TVkActionButton.Destroy;
 begin
-  FTarget.Free;
+  if Assigned(FTarget) then
+    FTarget.Free;
   inherited;
 end;
 

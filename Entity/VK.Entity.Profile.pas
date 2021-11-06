@@ -122,7 +122,7 @@ type
     /// <summary>
     /// Буква класса
     /// </summary>
-    property&Class: string read FClass write FClass;
+    property &Class: string read FClass write FClass;
     /// <summary>
     /// Идентификатор страны, в которой расположена школа
     /// </summary>
@@ -134,7 +134,7 @@ type
     /// <summary>
     /// Идентификатор типа
     /// </summary>
-    property&Type: Integer read FType write FType;
+    property &Type: Integer read FType write FType;
     /// <summary>
     /// Название типа. Возможные значения для пар type-typeStr
     ///  0 — "школа";
@@ -315,9 +315,9 @@ type
   public
     property CountryId: Integer read FCountry_id write FCountry_id;
     property From: Integer read FFrom write FFrom;
-    property&Unit: string read FUnit write FUnit;
+    property &Unit: string read FUnit write FUnit;
     property UnitId: Integer read FUnit_id write FUnit_id;
-    property&Until: TDateTime read FUntil write FUntil;
+    property &Until: TDateTime read FUntil write FUntil;
   end;
 
   TVkCareer = class(TVkEntity)
@@ -339,7 +339,7 @@ type
     property CountryId: Integer read FCountry_id write FCountry_id;
     property From: Integer read FFrom write FFrom;
     property Position: string read FPosition write FPosition;
-    property&Until: TDateTime read FUntil write FUntil;
+    property &Until: TDateTime read FUntil write FUntil;
   end;
 
   TVkOccupation = class(TVkBasicObject)
@@ -349,7 +349,7 @@ type
     /// <summary>
     /// Тип
     /// </summary>
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     /// <summary>
     /// Идентификатор школы, вуза, сообщества компании (в которой пользователь работает);
     /// </summary>
@@ -360,28 +360,6 @@ type
     property Name;
   end;
 
-  TVkCropPhoto = class(TVkEntity)
-  private
-    FCrop: TVkRect;
-    FPhoto: TVkPhoto;
-    FRect: TVkRect;
-  public
-    /// <summary>
-    /// Вырезанная фотография сообщества.
-    /// </summary>
-    property Crop: TVkRect read FCrop write FCrop;
-    /// <summary>
-    /// Объект photo фотографии пользователя, из которой вырезается главное фото сообщества.
-    /// </summary>
-    property Photo: TVkPhoto read FPhoto write FPhoto;
-    /// <summary>
-    /// Миниатюрная квадратная фотография, вырезанная из фотографии crop. Содержит набор полей, аналогичный объекту crop.
-    /// </summary>
-    property Rect: TVkRect read FRect write FRect;
-    constructor Create; override;
-    destructor Destroy; override;
-  end;
-
   TVkLastSeen = class(TVkEntity)
   private
     [JsonReflectAttribute(ctString, rtString, TPlatformInterceptor)]
@@ -389,7 +367,7 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FTime: TDateTime;
   public
-    property&Platform: TVkPlatform read FPlatform write FPlatform;
+    property &Platform: TVkPlatform read FPlatform write FPlatform;
     property Time: TDateTime read FTime write FTime;
   end;
 
@@ -645,7 +623,7 @@ type
     /// <summary>
     /// Внешние сервисы, в которые настроен экспорт из ВК (twitter, facebook, livejournal, instagram)
     /// </summary>
-    property&Exports: TArray<TVkExport> read FExports write FExports;
+    property &Exports: TArray<TVkExport> read FExports write FExports;
     /// <summary>
     /// Facebook
     /// </summary>
@@ -761,27 +739,27 @@ type
     /// <summary>
     /// Фамилия (именительный)
     /// </summary>
-    property LastName_Nom: string read FLast_name_nom write FLast_name_nom;
+    property LastNameNom: string read FLast_name_nom write FLast_name_nom;
     /// <summary>
     /// Фамилия (родительный)
     /// </summary>
-    property LastName_Gen: string read FLast_name_gen write FLast_name_gen;
+    property LastNameGen: string read FLast_name_gen write FLast_name_gen;
     /// <summary>
     /// Фамилия (дательный)
     /// </summary>
-    property LastName_Dat: string read FLast_name_dat write FLast_name_dat;
+    property LastNameDat: string read FLast_name_dat write FLast_name_dat;
     /// <summary>
     /// Фамилия (винительный)
     /// </summary>
-    property LastName_Acc: string read FLast_name_acc write FLast_name_acc;
+    property LastNameAcc: string read FLast_name_acc write FLast_name_acc;
     /// <summary>
     /// Фамилия (творительный)
     /// </summary>
-    property LastName_Ins: string read FLast_name_ins write FLast_name_ins;
+    property LastNameIns: string read FLast_name_ins write FLast_name_ins;
     /// <summary>
     /// Фамилия (предложный)
     /// </summary>
-    property LastName_Abl: string read FLast_name_abl write FLast_name_abl;
+    property LastNameAbl: string read FLast_name_abl write FLast_name_abl;
     /// <summary>
     /// Время последнего посещения
     /// </summary>
@@ -969,7 +947,7 @@ type
     /// <summary>
     /// Type
     /// </summary>
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     /// <summary>
     /// Режим стены по умолчанию. Возможные значения: owner, all.
     /// </summary>
@@ -1013,25 +991,7 @@ begin
       Exit(i);
 end;
 
-{TVkCropPhoto}
-
-constructor TVkCropPhoto.Create;
-begin
-  inherited;
-  FPhoto := TVkPhoto.Create();
-  FCrop := TVkRect.Create();
-  FRect := TVkRect.Create();
-end;
-
-destructor TVkCropPhoto.Destroy;
-begin
-  FPhoto.Free;
-  FCrop.Free;
-  FRect.Free;
-  inherited;
-end;
-
-{TVkUser}
+{TVkProfile}
 
 destructor TVkProfile.Destroy;
 begin

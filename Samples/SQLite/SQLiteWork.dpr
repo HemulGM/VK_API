@@ -3,7 +3,8 @@ program SQLiteWork;
 uses
   System.StartUpCopy,
   FMX.Forms,
-  Sample.SqliteWork in 'Sample.SqliteWork.pas' {Form1};
+  Sample.SqliteWork in 'Sample.SqliteWork.pas' {Form1},
+  VK.Tool.Sqlite in '..\..\Tools\VK.Tool.Sqlite.pas';
 
 {$R *.res}
 

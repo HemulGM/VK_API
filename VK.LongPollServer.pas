@@ -3,9 +3,8 @@ unit VK.LongPollServer;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  REST.Client, System.JSON, System.Net.HttpClient, VK.Types, VK.Handler,
-  System.Generics.Collections;
+  System.SysUtils, System.Types, System.Classes, REST.Client, System.JSON,
+  System.Net.HttpClient, VK.Types, VK.Handler;
 
 type
   TOnLongPollServerUpdate = procedure(Sender: TObject; GroupID: string; Update: TJSONValue) of object;
@@ -91,7 +90,7 @@ uses
   {$ELSE}
   Vcl.Forms,
   {$ENDIF}
-  System.SyncObjs;
+  System.Generics.Collections;
 
 { TLongPollServer }
 
@@ -122,7 +121,7 @@ begin
   if Assigned(FOnError) then
   begin
     if FDoSync or (TThread.CurrentThread.ThreadID <> MainThreadID) then
-      TThread.Synchronize(nil,
+      TThread.ForceQueue(nil,
         procedure
         begin
           FOnError(Self, E, ERROR_VK_LONGPOLL, E.Message);
@@ -143,12 +142,16 @@ var
   ResponseJSON: TJSONValue;
 begin
   Result := False;
+  ResponseJSON := nil;
   //Выполняем запрос
   try
     with FHandler.Execute(FMethod, FParams) do
     begin
-      ResponseJSON := GetJSONResponse;
-      JSText := Response;
+      if Success then
+      begin
+        ResponseJSON := GetJSONResponse;
+        JSText := ResponseJSON.ToJSON;
+      end;
       Result := Success;
     end;
   except
@@ -350,9 +353,9 @@ begin
         on E: Exception do
           DoError(TVkLongPollServerParseException.Create(E.Message));
       end;
+      FLongPollStopped := True;
       HTTP.Free;
       Stream.Free;
-      FLongPollStopped := True;
     end);
   FThread.FreeOnTerminate := False;
   FThread.Start;
@@ -367,7 +370,10 @@ begin
     FThread.Terminate;
     while not FLongPollStopped do
     begin
-      Application.ProcessMessages;
+      if not IsConsole then
+        Application.ProcessMessages
+      else
+        TThread.Yield;
       Sleep(100);
     end;
     FThread.Free;

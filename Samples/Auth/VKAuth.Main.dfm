@@ -3,7 +3,7 @@ object FormMain: TFormMain
   Top = 0
   Caption = 'FormMain'
   ClientHeight = 559
-  ClientWidth = 1092
+  ClientWidth = 1076
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -13,10 +13,11 @@ object FormMain: TFormMain
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
-    Left = 304
+    Left = 288
     Top = 0
     Width = 788
     Height = 559
@@ -40,7 +41,7 @@ object FormMain: TFormMain
       Width = 782
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheet9
+      ActivePage = TabSheet1
       Align = alClient
       MultiLine = True
       TabOrder = 0
@@ -167,6 +168,7 @@ object FormMain: TFormMain
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
+        ExplicitLeft = 3
         object Button1: TButton
           Left = 3
           Top = 3
@@ -496,6 +498,24 @@ object FormMain: TFormMain
           TabOrder = 1
           OnClick = Button46Click
         end
+        object ButtonSend: TButton
+          Left = 175
+          Top = 3
+          Width = 75
+          Height = 25
+          Caption = 'ButtonSend'
+          TabOrder = 2
+          OnClick = ButtonSendClick
+        end
+        object Button49: TButton
+          Left = 3
+          Top = 65
+          Width = 166
+          Height = 25
+          Caption = 'SendToGroupChat'
+          TabOrder = 3
+          OnClick = Button49Click
+        end
       end
       object TabSheet11: TTabSheet
         Caption = 'Friends'
@@ -581,7 +601,7 @@ object FormMain: TFormMain
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 304
+    Width = 288
     Height = 559
     Align = alClient
     BevelOuter = bvNone
@@ -589,7 +609,7 @@ object FormMain: TFormMain
     object Memo1: TMemo
       Left = 0
       Top = 0
-      Width = 304
+      Width = 288
       Height = 360
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
@@ -604,7 +624,7 @@ object FormMain: TFormMain
     object MemoLog: TMemo
       Left = 0
       Top = 360
-      Width = 304
+      Width = 288
       Height = 199
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -618,7 +638,6 @@ object FormMain: TFormMain
     end
   end
   object VK1: TVK
-    AppID = '6121396'
     BaseURL = 'https://api.vk.com/method'
     EndPoint = 'https://oauth.vk.com/authorize'
     Logging = True
@@ -659,8 +678,6 @@ object FormMain: TFormMain
     Top = 56
   end
   object VkGroupEventsController1: TVkGroupEventsController
-    Groups.Strings = (
-      '-192458090')
     Logging = True
     OnAudioNew = VkGroupEventsController1AudioNew
     OnBoardPostDelete = VkGroupEventsController1BoardPostDelete

@@ -51,7 +51,11 @@ type
     /// <summary>
     /// Объект, описывающий клавиатуру бота
     /// </summary>
-    function Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+    function Keyboard(const Value: TVkKeyboard): TVkMessageNew; overload;
+    /// <summary>
+    /// Объект, описывающий клавиатуру бота
+    /// </summary>
+    function Keyboard(const Value: string): TVkMessageNew; overload;
     /// <summary>
     /// Географические координаты
     /// </summary>
@@ -85,7 +89,7 @@ type
     /// </summary>
     function GroupId(const Value: Integer): TVkMessageNew;
     /// <summary>
-    /// идентификатор сообщения, на которое требуется ответить
+    /// Идентификатор сообщения, на которое требуется ответить
     /// </summary>
     function ReplyTo(const Value: Integer): TVkMessageNew;
     /// <summary>
@@ -253,12 +257,44 @@ type
     function StartMessageId(const Value: Integer): Integer;
   end;
 
+  TVkParamsConversationMembersGet = record
+    List: TParams;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
+    function PeerId(const Value: Integer): Integer;
+    /// <summary>
+    /// Смещение, необходимое для выборки определенного подмножества результатов
+    /// </summary>
+    function Offset(const Value: Integer = 0): Integer;
+    /// <summary>
+    /// Максимальное число результатов, которые нужно получить
+    /// </summary>
+    function Count(const Value: Integer = 20): Integer;
+    /// <summary>
+    /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
+    /// </summary>
+    function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Список дополнительных полей для пользователей и сообществ
+    /// </summary>
+    function Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    /// <summary>
+    /// Возвращать дополнительные поля для пользователей и сообществ
+    /// </summary>
+    function Extended(const Value: Boolean): Integer;
+  end;
+
   TVkParamsMessageDelete = record
     List: TParams;
     /// <summary>
     /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
     function GroupId(const Value: Integer): Integer;
+    /// <summary>
+    /// Идентификатор беседы, из которого необходимо удалить сообщения по conversation_message_ids.
+    /// </summary>
+    function PeerId(const Value: Integer): Integer;
     /// <summary>
     /// Список идентификаторов сообщений, разделённых через запятую
     /// </summary>
@@ -267,6 +303,14 @@ type
     /// Идентификатор сообщения
     /// </summary>
     function MessageId(const Value: Integer): Integer; overload;
+    /// <summary>
+    /// Список идентификаторов сообщений беседы, разделённых через запятую
+    /// </summary>
+    function ConversationMessageIds(const Value: TIdList): Integer; overload;
+    /// <summary>
+    /// Идентификатор сообщения беседы
+    /// </summary>
+    function ConversationMessageId(const Value: Integer): Integer; overload;
     /// <summary>
     /// Пометить сообщения как спам
     /// </summary>
@@ -927,6 +971,14 @@ type
     /// <summary>
     /// Удаляет сообщение
     /// </summary>
+    function Delete(Params: TVkParamsMessageDelete): Boolean; overload;
+    /// <summary>
+    /// Удаляет сообщение
+    /// </summary>
+    function DeleteInChat(const PeerId, MessageId: Integer; DeleteForAll: Boolean = False; Spam: Boolean = False): Boolean; overload;
+    /// <summary>
+    /// Удаляет сообщение
+    /// </summary>
     function Delete(var Items: TVkMessageDelete; Params: TParams): Boolean; overload;
     /// <summary>
     /// Получает ссылку для приглашения пользователя в беседу.
@@ -1003,6 +1055,14 @@ type
     function GetConversationsById(var Items: TVkConversations; Params: TParams): Boolean; overload;
     /// <summary>
     /// Позволяет получить беседу по её идентификатору.
+    /// </summary>
+    function GetConversationMembers(var Items: TVkConversationMembers; Params: TParams): Boolean; overload;
+    /// <summary>
+    /// Позволяет получить беседу по её идентификатору.
+    /// </summary>
+    function GetConversationMembers(var Items: TVkConversationMembers; Params: TVkParamsConversationMembersGet): Boolean; overload;
+    /// <summary>
+    /// Позволяет получить список участников беседы.
     /// </summary>
     function GetConversationsById(var Items: TVkConversations; Params: TVkParamsConversationsGetById): Boolean; overload;
     /// <summary>
@@ -1106,7 +1166,7 @@ type
     /// Изменяет статус набора текста пользователем в диалоге.
     /// Текст «N набирает сообщение...» отображается в течение 10 секунд после вызова метода, либо до момента отправки сообщения.
     /// </summary>
-    function SetActivity(const UserId: string; ActivityType: TVkMessageActivity; PeerId, GroupId: Integer): Boolean;
+    function SetActivity(ActivityType: TVkMessageActivity; PeerId: Integer = 0; const UserId: string = ''; GroupId: Integer = 0): Boolean;
     /// <summary>
     /// Позволяет установить фотографию мультидиалога, загруженную с помощью метода Photos.GetChatUploadServer.
     /// <b>UploadFile</b> - Содержимое поля Response из ответа специального upload сервера, полученного в результате загрузки изображения на адрес, полученный методом Photos.GetChatUploadServer.
@@ -1174,6 +1234,22 @@ begin
     Items.Free;
 end;
 
+function TMessagesController.DeleteInChat(const PeerId, MessageId: Integer; DeleteForAll, Spam: Boolean): Boolean;
+var
+  Params: TVkParamsMessageDelete;
+  Items: TVkMessageDelete;
+begin
+  Params.ConversationMessageId(MessageId);
+  Params.PeerId(PeerId);
+  if DeleteForAll then
+    Params.DeleteForAll(DeleteForAll);
+  if Spam then
+    Params.Spam(Spam);
+  Result := Delete(Items, Params.List);
+  if Result then
+    Items.Free;
+end;
+
 function TMessagesController.AllowMessagesFromGroup(const GroupId: Integer; Key: string): Boolean;
 begin
   Result := Handler.Execute('messages.allowMessagesFromGroup', [
@@ -1194,33 +1270,25 @@ end;
 function TMessagesController.Delete(var Items: TVkMessageDelete; Params: TParams): Boolean;
 var
   RespJSON: TJSONValue;
-  Ids: TStringList;
-  i: Integer;
+  Id: string;
 begin
+  Result := False;
   with Handler.Execute('messages.delete', Params) do
   begin
-    Result := Success;
-    if Result then
+    if GetValue(RespJSON) then
     begin
-      Ids := TStringList.Create;
       try
-        Ids.Delimiter := ',';
-        Ids.DelimitedText := Params.GetValue('message_ids');
         Items := TVkMessageDelete.Create;
         try
-          RespJSON := TJSONObject.ParseJSONValue(Response);
-          try
-            for i := 0 to Pred(Ids.Count) do
-              Items.Items.Add(Ids[i], RespJSON.GetValue(Ids[i], 0) = 1);
-          finally
-            RespJSON.Free;
-          end;
+          for Id in Params.GetValue('message_ids').Split([',']) do
+            Items.Items.Add(Id, RespJSON.GetValue(Id, 0) = 1);
+          Result := True;
         except
           Items.Free;
           Result := False;
         end;
       finally
-        Ids.Free;
+        RespJSON.Free;
       end;
     end;
   end;
@@ -1264,6 +1332,15 @@ end;
 function TMessagesController.Delete(var Items: TVkMessageDelete; Params: TVkParamsMessageDelete): Boolean;
 begin
   Result := Delete(Items, Params.List);
+end;
+
+function TMessagesController.Delete(Params: TVkParamsMessageDelete): Boolean;
+var
+  Items: TVkMessageDelete;
+begin
+  Result := Delete(Items, Params.List);
+  if Result then
+    Items.Free;
 end;
 
 function TMessagesController.GetByConversationMessageId(var Items: TVkMessages; Params: TParams): Boolean;
@@ -1329,6 +1406,16 @@ end;
 function TMessagesController.GetChatPreview(var Item: TVkChatPreview; Params: TParams): Boolean;
 begin
   Result := Handler.Execute('messages.getChatPreview', Params).GetObject(Item);
+end;
+
+function TMessagesController.GetConversationMembers(var Items: TVkConversationMembers; Params: TParams): Boolean;
+begin
+  Result := Handler.Execute('messages.getConversationMembers', Params).GetObject(Items);
+end;
+
+function TMessagesController.GetConversationMembers(var Items: TVkConversationMembers; Params: TVkParamsConversationMembersGet): Boolean;
+begin
+  Result := GetConversationMembers(Items, Params.List);
 end;
 
 function TMessagesController.GetConversations(var Items: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean;
@@ -1571,14 +1658,17 @@ begin
   Result := SendToPeer(Id, PeerId, Message, Attachments);
 end;
 
-function TMessagesController.SetActivity(const UserId: string; ActivityType: TVkMessageActivity; PeerId, GroupId: Integer): Boolean;
+function TMessagesController.SetActivity(ActivityType: TVkMessageActivity; PeerId: Integer; const UserId: string; GroupId: Integer): Boolean;
 var
   Params: TParams;
 begin
-  Params.Add('user_id', UserId);
-  Params.Add('peer_id', PeerId);
+  if not UserId.IsEmpty then
+    Params.Add('user_id', UserId);
+  if PeerId <> 0 then
+    Params.Add('peer_id', PeerId);
+  if GroupId <> 0 then
+    Params.Add('group_id', GroupId);
   Params.Add('type', ActivityType.ToString);
-  Params.Add('group_id', GroupId);
   Result := Handler.Execute('messages.setActivity', Params).ResponseIsTrue;
 end;
 
@@ -1653,10 +1743,10 @@ begin
       Result := TVkMessageSendResponses.CreateFalse
     else
     begin
-      if TryStrToInt(Response, Value) then
+      if ResponseAsInt(Value) then
         Result := TVkMessageSendResponses.CreateTrue(Value)
       else
-        Result := TVkMessageSendResponses.FromJsonString(Response);
+        GetObject(Result);
     end;
   end;
   {$IFNDEF AUTOREFCOUNT}
@@ -1723,9 +1813,15 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+function TVkMessageNew.Keyboard(const Value: string): TVkMessageNew;
 begin
   Params.Add('keyboard', Value);
+  Result := Self;
+end;
+
+function TVkMessageNew.Keyboard(const Value: TVkKeyboard): TVkMessageNew;
+begin
+  Params.Add('keyboard', Value.ToJsonString);
   Result := Self;
 end;
 
@@ -1920,6 +2016,16 @@ end;
 
 { TVkParamsMessageDelete }
 
+function TVkParamsMessageDelete.ConversationMessageId(const Value: Integer): Integer;
+begin
+  Result := List.Add('conversation_message_ids', Value);
+end;
+
+function TVkParamsMessageDelete.ConversationMessageIds(const Value: TIdList): Integer;
+begin
+  Result := List.Add('conversation_message_ids', Value);
+end;
+
 function TVkParamsMessageDelete.DeleteForAll(const Value: Boolean): Integer;
 begin
   Result := List.Add('delete_for_all', Value);
@@ -1938,6 +2044,11 @@ end;
 function TVkParamsMessageDelete.MessageIds(const Value: TIdList): Integer;
 begin
   Result := List.Add('message_ids', Value);
+end;
+
+function TVkParamsMessageDelete.PeerId(const Value: Integer): Integer;
+begin
+  Result := List.Add('peer_id', Value);
 end;
 
 function TVkParamsMessageDelete.Spam(const Value: Boolean): Integer;
@@ -2614,6 +2725,38 @@ end;
 function TVkParamsMessageSearchConversations.Query(const Value: string): Integer;
 begin
   Result := List.Add('q', Value);
+end;
+
+{ TVkParamsConversationMembersGet }
+
+function TVkParamsConversationMembersGet.Count(const Value: Integer): Integer;
+begin
+  Result := List.Add('count', Value);
+end;
+
+function TVkParamsConversationMembersGet.Extended(const Value: Boolean): Integer;
+begin
+  Result := List.Add('extended', Value);
+end;
+
+function TVkParamsConversationMembersGet.Fields(const UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+begin
+  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+end;
+
+function TVkParamsConversationMembersGet.GroupID(const Value: Integer): Integer;
+begin
+  Result := List.Add('group_id', Value);
+end;
+
+function TVkParamsConversationMembersGet.Offset(const Value: Integer): Integer;
+begin
+  Result := List.Add('offset', Value);
+end;
+
+function TVkParamsConversationMembersGet.PeerId(const Value: Integer): Integer;
+begin
+  Result := List.Add('peer_id', Value);
 end;
 
 end.

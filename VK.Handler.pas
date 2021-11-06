@@ -14,15 +14,16 @@ uses
 type
   TResponse = record
   private
+    Response: string;
     function AppendItemsTag(JSON: string): string; inline;
   public
     Success: Boolean;
-    Response: string;
     JSON: string;
     Error: record
       Code: Integer;
       Text: string;
     end;
+    function ResponseText: string;
     function ResponseAsItems: string;
     function ResponseIsTrue: Boolean;
     function ResponseIsFalse: Boolean;
@@ -32,7 +33,8 @@ type
     function ResponseAsStr(var Value: string): Boolean;
     function GetJSONValue: TJSONValue;
     function GetJSONResponse: TJSONValue;
-    function GetValue<T>(const Field: string; var Value: T): Boolean;
+    function GetValue<T>(const Field: string; var Value: T): Boolean; overload;
+    function GetValue<T: class>(var Value: T): Boolean; overload;
     function GetObject<T: TVkEntity, constructor>(var Value: T): Boolean;
     function GetObjects<T: TVkEntity, constructor>(var Value: T): Boolean;
     function IsError: Boolean;
@@ -158,20 +160,13 @@ begin
   Result := False;
   if Assigned(FOnCaptcha) then
   begin
-    if (TThread.Current.ThreadID = MainThreadID) then
-    begin
-      FOnCaptcha(Sender, CaptchaImg, Answer);
-    end
-    else
-    begin
-      FRes := '';
-      TThread.Synchronize(nil,
-        procedure
-        begin
-          FOnCaptcha(Sender, CaptchaImg, FRes);
-        end);
-      Answer := FRes;
-    end;
+    FRes := '';
+    Synchronize(
+      procedure
+      begin
+        FOnCaptcha(Sender, CaptchaImg, FRes);
+      end);
+    Answer := FRes;
     Result := not Answer.IsEmpty;
   end;
 end;
@@ -208,19 +203,13 @@ begin
   end
   else
   begin
-    Result := False;
-    if TThread.Current.ThreadID = MainThreadID then
-      FOnConfirm(Self, Answer, Result)
-    else
-    begin
-      FRes := False;
-      TThread.Synchronize(nil,
-        procedure
-        begin
-          FOnConfirm(Self, Answer, FRes);
-        end);
-      Result := FRes;
-    end;
+    FRes := False;
+    Synchronize(
+      procedure
+      begin
+        FOnConfirm(Self, Answer, FRes);
+      end);
+    Result := FRes;
   end;
 end;
 
@@ -228,18 +217,11 @@ function TVkHandler.DoProcError(Sender: TObject; E: Exception; Code: Integer; Te
 begin
   Result := Assigned(FOnError);
   if Result then
-  begin
-    if TThread.Current.ThreadID = MainThreadID then
-      FOnError(Sender, E, Code, Text)
-    else
-    begin
-      TThread.Synchronize(nil,
-        procedure
-        begin
-          FOnError(Sender, E, Code, Text);
-        end);
-    end;
-  end;
+    Synchronize(
+      procedure
+      begin
+        FOnError(Sender, E, Code, Text);
+      end);
 end;
 
 function TVkHandler.Execute(Request: string; Param: TParam): TResponse;
@@ -344,7 +326,7 @@ begin
     on E: Exception do
     begin
       IsError := True;
-      DoProcError(Self, E.Create(E.Message), ERROR_VK_NETWORK, E.Message);
+      DoProcError(Self, TVkHandlerException.Create(E.Message), ERROR_VK_NETWORK, E.Message);
     end;
   end;
 
@@ -420,7 +402,7 @@ begin
             raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
           end;
         end;
-      VK_ERROR_CONFIRM: //Подтверждение для ВК
+      VK_ERROR_CONFIRM, VK_ERROR_TOKEN_CONFIRM, VK_ERROR_MORE_CONFIRM: //Подтверждение для ВК
         begin
           Answer := JS.GetValue<string>('confirmation_text', '');
           if DoConfirm(Answer) then
@@ -459,7 +441,7 @@ begin
       end;
     end
     else
-      raise TVkParserException.Create('Не известный ответ от сервера: ' + Request.Response.StatusCode.ToString);
+      raise TVkParserException.Create('Неизвестный ответ от сервера: ' + Request.Response.StatusCode.ToString);
   end;
 end;
 
@@ -545,12 +527,10 @@ function TResponse.GetObject<T>(var Value: T): Boolean;
 begin
   Result := Success;
   if Result then
-  begin
-    try
-      Value := T.FromJsonString<T>(Response);
-    except
-      Result := False;
-    end;
+  try
+    Value := T.FromJsonString<T>(Response);
+  except
+    Result := False;
   end;
 end;
 
@@ -558,12 +538,25 @@ function TResponse.GetObjects<T>(var Value: T): Boolean;
 begin
   Result := Success;
   if Result then
-  begin
-    try
-      Value := T.FromJsonString<T>(ResponseAsItems);
-    except
-      Result := False;
-    end;
+  try
+    Value := T.FromJsonString<T>(ResponseAsItems);
+  except
+    Result := False;
+  end;
+end;
+
+function TResponse.GetValue<T>(var Value: T): Boolean;
+var
+  JSONItem: TJSONValue;
+begin
+  Result := Success;
+  if Result then
+  try
+    JSONItem := TJSONObject.ParseJSONValue(Response);
+    Value := T(JSONItem);
+  except
+    JSONItem.Free;
+    Result := False;
   end;
 end;
 
@@ -634,6 +627,11 @@ end;
 function TResponse.ResponseAsItems: string;
 begin
   Result := AppendItemsTag(Response);
+end;
+
+function TResponse.ResponseText: string;
+begin
+  Result := Response;
 end;
 
 function TResponse.GetJSONResponse: TJSONValue;

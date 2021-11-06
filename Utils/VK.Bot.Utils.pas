@@ -6,10 +6,11 @@ uses
   {$IFDEF MSWINDOWS}
   Winapi.Windows, Winapi.Messages,
   {$ENDIF}
-  System.SysUtils, System.UITypes, System.Variants, System.Classes, System.StrUtils;
+  System.SysUtils, System.UITypes, System.Variants, System.Classes,
+  System.StrUtils;
 
 type
-  TOnInput = reference to procedure(Command: string; var Quit: Boolean);
+  TOnInput = reference to procedure(const Command: string; var Quit: Boolean);
 
   Console = class
     class procedure AddLine(Text: string; AColor: ShortInt = 0); overload;
@@ -24,6 +25,19 @@ type
     class procedure Run(OnCommand: TOnInput);
   end;
 
+  TVkUserAlias = record
+    UserId: string;
+    Caption: string;
+  end;
+
+function MessagePatternValue(const Text: string; StartWith: array of string; out Value: string): Boolean;
+
+function MessageIncludeAll(const Text: string; Words: array of string): Boolean;
+
+function ButtonPayload(const Value: string): string;
+
+function ParseUserAlias(const Value: string): TVkUserAlias;
+
 const
 {$IFDEF MSWINDOWS}
   RED = FOREGROUND_RED;
@@ -36,6 +50,51 @@ const
 {$ENDIF}
 
 implementation
+
+function ParseUserAlias(const Value: string): TVkUserAlias;
+var
+  tmp: string;
+  Strs: TArray<string>;
+begin
+  tmp := Value.Trim(['[', ']']);
+  Strs := tmp.Split(['|']);
+  if Length(Strs) > 0 then
+    Result.UserId := Strs[0];
+  if Length(Strs) > 1 then
+    Result.Caption := Strs[1];
+end;
+
+function ButtonPayload(const Value: string): string;
+begin
+  Result := '{"button": "' + Value + '"}';
+end;
+
+function MessagePatternValue(const Text: string; StartWith: array of string; out Value: string): Boolean;
+var
+  Word: string;
+begin
+  Result := False;
+  for Word in StartWith do
+  begin
+    Result := Text.ToLowerInvariant.StartsWith(Word.ToLowerInvariant);
+    if Result then
+    begin
+      Value := Text.Substring(Word.Length, 1000);
+      Exit;
+    end;
+  end;
+end;
+
+function MessageIncludeAll(const Text: string; Words: array of string): Boolean;
+var
+  Word, Txt: string;
+begin
+  Txt := Text.ToLowerInvariant;
+  for Word in Words do
+    if not (Txt.ToLower.Contains(Word)) then
+      Exit(False);
+  Result := True;
+end;
 
 procedure SetColor(AColor: ShortInt);
 begin

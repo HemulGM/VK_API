@@ -3,7 +3,8 @@ unit VK.Entity.Secure;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common;
 
 type
   TVkSecureCheckToken = class(TVkEntity)

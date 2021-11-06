@@ -3,8 +3,8 @@ unit VK.Entity.Catalog.Section;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Audio, VK.Entity.Album, VK.Entity.Group,
-  VK.Entity.Playlist, VK.Entity.Catalog;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Audio,
+  VK.Entity.Album, VK.Entity.Group, VK.Entity.Playlist, VK.Entity.Catalog;
 
 type
   TVkCatalogThumb = class(TVkThumb)
@@ -40,7 +40,6 @@ type
     property Subtitle: string read FSubtitle write FSubtitle;
     property Title: string read FTitle write FTitle;
     property Url: string read FUrl write FUrl;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -59,7 +58,6 @@ type
     property Playlists: TArray<TVkAudioPlaylist> read FPlaylists write FPlaylists;
     property Section: TVkCatalogSection read FSection write FSection;
     property Thumbs: TArray<TVkCatalogThumb> read FThumbs write FThumbs;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -70,26 +68,15 @@ uses
 
 {TVkCatalogLink}
 
-constructor TVkCatalogLink.Create;
-begin
-  inherited;
-  FMeta := TVkLinkMeta.Create();
-end;
-
 destructor TVkCatalogLink.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkImage>(FImage);
-  FMeta.Free;
+  if Assigned(FMeta) then
+    FMeta.Free;
   inherited;
 end;
 
 {TVkSectionAudio}
-
-constructor TVkSectionData.Create;
-begin
-  inherited;
-  FSection := TVkCatalogSection.Create();
-end;
 
 destructor TVkSectionData.Destroy;
 begin
@@ -98,7 +85,8 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkAudio>(FAudios);
   TArrayHelp.FreeArrayOfObject<TVkCatalogThumb>(FThumbs);
   TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FPlaylists);
-  FSection.Free;
+  if Assigned(FSection) then
+    FSection.Free;
   inherited;
 end;
 

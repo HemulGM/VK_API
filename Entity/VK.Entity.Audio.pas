@@ -3,8 +3,9 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, System.SysUtils, Rest.Json, System.Json,
-  VK.Entity.Common, VK.Types, VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.Group;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors,
+  System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types,
+  VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.Group;
 
 type
   TVkAudioArtistPhoto = class(TVkEntity)
@@ -12,7 +13,7 @@ type
     FType: string;
     FPhoto: TArray<TVkImage>;
   public
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     property Photo: TArray<TVkImage> read FPhoto write FPhoto;
     destructor Destroy; override;
   end;
@@ -59,7 +60,6 @@ type
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Thumb: TVkThumb read FThumb write FThumb;
     property Title: string read FTitle write FTitle;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -230,7 +230,6 @@ type
     /// Ссылка на аудиозапись (привязана к ip-адресу клиентского приложения)
     /// </summary>
     property Url: string read FUrl write FUrl;
-    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: TAttachment;
     function DurationText(const AFormat: string): string;
@@ -261,11 +260,6 @@ uses
 
 {TVkAudio}
 
-constructor TVkAudio.Create;
-begin
-  inherited;
-end;
-
 destructor TVkAudio.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FMain_artists);
@@ -294,17 +288,12 @@ begin
   Result := TAttachment.Audio(OwnerId, Id, AccessKey);
 end;
 
-{TAlbumClass}
-
-constructor TVkAudioAlbum.Create;
-begin
-  inherited;
-  FThumb := TVkThumb.Create();
-end;
+{TVkAudioAlbum}
 
 destructor TVkAudioAlbum.Destroy;
 begin
-  FThumb.Free;
+  if Assigned(FThumb) then
+    FThumb.Free;
   inherited;
 end;
 

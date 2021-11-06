@@ -38,15 +38,9 @@ requires
   fmx;
 
 contains
-  pbInput in 'Utils\pbInput.pas',
-  pbOutput in 'Utils\pbOutput.pas',
-  pbPublic in 'Utils\pbPublic.pas',
-  StrBuffer in 'Utils\StrBuffer.pas',
-  uAbstractProtoBufClasses in 'Utils\uAbstractProtoBufClasses.pas',
   VK.API in 'VK.API.pas',
   VK.Components in 'VK.Components.pas',
   VK.Controller in 'VK.Controller.pas',
-  VK.FakeAndroidProto in 'VK.FakeAndroidProto.pas',
   VK.GroupEvents in 'VK.GroupEvents.pas',
   VK.Handler in 'VK.Handler.pas',
   VK.LongPollServer in 'VK.LongPollServer.pas',
@@ -64,7 +58,6 @@ contains
   VK.Entity.Catalog.Section in 'Entity\VK.Entity.Catalog.Section.pas',
   VK.Entity.ClientInfo in 'Entity\VK.Entity.ClientInfo.pas',
   VK.Entity.Info in 'Entity\VK.Entity.Info.pas',
-  VK.Entity.Common in 'Entity\VK.Entity.Common.pas',
   VK.Entity.Conversation in 'Entity\VK.Entity.Conversation.pas',
   VK.Entity.Counters in 'Entity\VK.Entity.Counters.pas',
   VK.Entity.Doc in 'Entity\VK.Entity.Doc.pas',
@@ -107,13 +100,8 @@ contains
   VK.Status in 'Controllers\VK.Status.pas',
   VK.Users in 'Controllers\VK.Users.pas',
   VK.Wall in 'Controllers\VK.Wall.pas',
-  VK.Vcl.Captcha in 'Forms\VK.Vcl.Captcha.pas' {FormCaptcha},
-  VK.Vcl.OAuth2 in 'Forms\VK.Vcl.OAuth2.pas' {FormOAuth2},
-  VK.FMX.OAuth2 in 'Forms\VK.FMX.OAuth2.pas' {FormFMXOAuth2},
-  VK.FMX.Captcha in 'Forms\VK.FMX.Captcha.pas' {FormFMXCaptcha},
   VK.Utils in 'Controllers\VK.Utils.pas',
   VK.Video in 'Controllers\VK.Video.pas',
-  VK.Bot in 'VK.Bot.pas',
   VK.Entity.Video.Save in 'Entity\VK.Entity.Video.Save.pas',
   VK.Bot.Utils in 'Utils\VK.Bot.Utils.pas',
   VK.Market in 'Controllers\VK.Market.pas',
@@ -196,8 +184,9 @@ contains
   VK.Streaming in 'Controllers\VK.Streaming.pas',
   VK.Entity.Streaming in 'Entity\VK.Entity.Streaming.pas',
   VK.Entity.Message.Templates in 'Entity\VK.Entity.Message.Templates.pas',
-  VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas';
+  VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas',
+  VK.Entity.Common in 'Entity\VK.Entity.Common.pas',
+  VK.Params in 'VK.Params.pas';
 
 end.
-
 

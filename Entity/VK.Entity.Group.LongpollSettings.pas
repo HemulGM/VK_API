@@ -120,7 +120,6 @@ type
     property ApiVersion: string read FApi_version write FApi_version;
     property Events: TVkLongpollSetting read FEvents write FEvents;
     property IsEnabled: Boolean read FIs_enabled write FIs_enabled;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -128,15 +127,10 @@ implementation
 
 {TVkLongpollSettings}
 
-constructor TVkLongpollSettings.Create;
-begin
-  inherited;
-  FEvents := TVkLongpollSetting.Create();
-end;
-
 destructor TVkLongpollSettings.Destroy;
 begin
-  FEvents.Free;
+  if Assigned(FEvents) then
+    FEvents.Free;
   inherited;
 end;
 

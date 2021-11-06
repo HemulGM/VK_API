@@ -3,8 +3,8 @@ unit VK.Entity.Catalog;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common, VK.Entity.Group, VK.Entity.Audio,
-  VK.Entity.Playlist, VK.Entity.Profile;
+  Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
+  VK.Entity.Group, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Profile;
 
 type
   TVkCatalogAction = class
@@ -16,7 +16,7 @@ type
   public
     property ConsumeReason: string read FConsume_reason write FConsume_reason;
     property Target: string read FTarget write FTarget;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     property Url: string read FUrl write FUrl;
   end;
 
@@ -39,7 +39,6 @@ type
     property RefDataType: string read FRef_data_type write FRef_data_type;
     property RefItemsCount: Integer read FRef_items_count write FRef_items_count;
     property RefLayoutName: string read FRef_layout_name write FRef_layout_name;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -99,7 +98,6 @@ type
     property AudiosIds: TArray<string> read FAudios_ids write FAudios_ids;
     property LinksIds: TArray<string> read FLinks_ids write FLinks_ids;
     property PlaylistsIds: TArray<string> read FPlaylists_ids write FPlaylists_ids;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -149,7 +147,6 @@ type
     property Placeholders: TArray<TVkCatalogPlaceholder> read FPlaceholders write FPlaceholders;
     property Playlists: TArray<TVkAudioPlaylist> read FPlaylists write FPlaylists;
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -160,15 +157,10 @@ uses
 
 {TVkCatalogButton}
 
-constructor TVkCatalogButton.Create;
-begin
-  inherited;
-  FAction := TVkCatalogAction.Create();
-end;
-
 destructor TVkCatalogButton.Destroy;
 begin
-  FAction.Free;
+  if Assigned(FAction) then
+    FAction.Free;
   inherited;
 end;
 
@@ -183,16 +175,11 @@ end;
 
 {TVkCatalogBlock}
 
-constructor TVkCatalogBlock.Create;
-begin
-  inherited;
-  FLayout := TVkCatalogLayout.Create();
-end;
-
 destructor TVkCatalogBlock.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCatalogButton>(FButtons);
-  FLayout.Free;
+  if Assigned(FLayout) then
+    FLayout.Free;
   inherited;
 end;
 
@@ -229,12 +216,6 @@ end;
 
 {TVkCatalog}
 
-constructor TVkCatalog.Create;
-begin
-  inherited;
-  FCatalog := TVkCatalogItem.Create();
-end;
-
 destructor TVkCatalog.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
@@ -242,7 +223,8 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkAudio>(FAudios);
   TArrayHelp.FreeArrayOfObject<TVkCatalogPlaceholder>(FPlaceholders);
   TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FPlaylists);
-  FCatalog.Free;
+  if Assigned(FCatalog) then
+    FCatalog.Free;
   inherited;
 end;
 

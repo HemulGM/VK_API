@@ -3,8 +3,8 @@ unit Sample.SqliteWork;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, VK.Tool.Sqlite;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, FMX.Types, FMX.Controls, FMX.Forms,
+  FMX.Graphics, FMX.Dialogs, VK.Tool.Sqlite;
 
 type
   TForm1 = class(TForm)
@@ -28,3 +28,4 @@ begin
 end;
 
 end.
+

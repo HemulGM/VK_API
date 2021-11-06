@@ -3,8 +3,9 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, Vk.Types, VK.Entity.Common,
-  VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.AudioMessage;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  Vk.Types, VK.Entity.Common, VK.Entity.Common.List, VK.Wrap.Interceptors,
+  VK.Entity.AudioMessage;
 
 type
   TVkPreviewPhoto = class
@@ -96,12 +97,11 @@ type
     /// <summary>
     /// Тип документа
     /// </summary>
-    property&Type: TVkDocumentType read FType write FType;
+    property &Type: TVkDocumentType read FType write FType;
     /// <summary>
     /// Адрес документа, по которому его можно загрузить
     /// </summary>
     property Url: string read FUrl write FUrl;
-    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: TAttachment;
   end;
@@ -140,16 +140,11 @@ end;
 
 {TVkDocument}
 
-constructor TVkDocument.Create;
-begin
-  inherited;
-  FPreview := TVkPreview.Create();
-end;
-
 destructor TVkDocument.Destroy;
 begin
   {$IFNDEF AUTOREFCOUNT}
-  FPreview.Free;
+  if Assigned(FPreview) then
+    FPreview.Free;
   {$ENDIF}
   inherited;
 end;

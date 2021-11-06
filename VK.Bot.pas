@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, VK.API, VK.Components, VK.GroupEvents, VK.Entity.Message,
-  VK.Types, VK.Entity.ClientInfo, System.Classes;
+  VK.Types, VK.Entity.ClientInfo, System.Classes, System.Generics.Collections;
 
 type
   TVkBot = class;
@@ -13,11 +13,22 @@ type
 
   TVkBotMessage = reference to procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo);
 
+  TVkBotMessageListener = reference to function(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo): Boolean;
+
   TVkBotMessageEdit = reference to procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage);
 
   TVkBotError = reference to procedure(Bot: TVkBot; E: Exception; Code: Integer; Text: string);
 
   TVkBotJoin = reference to procedure(Bot: TVkBot; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; const EventId: string);
+
+  TVkPeerTypes = set of TVkPeerType;
+
+  TMessageListener = record
+    PeerTypes: TVkPeerTypes;
+    Method: TVkBotMessageListener;
+  end;
+
+  TMessageListeners = TList<TMessageListener>;
 
   TVkBot = class
     class var
@@ -58,6 +69,7 @@ type
     FOnMessage: TVkBotMessage;
     FOnMessageEdit: TVkBotMessageEdit;
     FOnJoin: TVkBotJoin;
+    FMessageListeners: TMessageListeners;
     procedure FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);
     procedure FOnEditMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; const EventId: string);
     procedure FOnGroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; const EventId: string);
@@ -65,9 +77,14 @@ type
     procedure SetOnMessage(const Value: TVkBotMessage);
     procedure SetSkipOtherBotMessages(const Value: Boolean);
     procedure SetOnJoin(const Value: TVkBotJoin);
+    function HandleMessageListener(GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo): Boolean;
   public
-    class function GetInstance: TVkBotChat; overload;
+    class function GetInstance(const GroupId: Integer; const Token: string): TVkBotChat; overload;
     constructor Create; override;
+    destructor Destroy; override;
+    function IsAdmin(PeerId: Integer; UserId: Integer): Boolean;
+    procedure AddMessageListener(PeerTypes: TVkPeerTypes; Method: TVkBotMessageListener);
+    property MessageListeners: TMessageListeners read FMessageListeners;
     property OnJoin: TVkBotJoin read FOnJoin write SetOnJoin;
     property OnMessage: TVkBotMessage read FOnMessage write SetOnMessage;
     property OnMessageEdit: TVkBotMessageEdit read FOnMessageEdit write SetOnMessageEdit;
@@ -77,7 +94,8 @@ type
 implementation
 
 uses
-  VK.Bot.Utils, System.Threading, System.StrUtils;
+  VK.Bot.Utils, System.Threading, System.StrUtils, VK.Entity.Conversation,
+  VK.Messages, HGM.ArrayHelper;
 
 { TVkBot }
 
@@ -103,7 +121,9 @@ end;
 procedure TVkBot.FOnVkError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
   if Assigned(FOnError) then
-    FOnError(Self, E, Code, Text);
+    FOnError(Self, E, Code, Text)
+  else
+    Console.AddLine(Text, RED);
 end;
 
 function TVkBot.GetGroupId: Integer;
@@ -126,13 +146,9 @@ end;
 function TVkBot.Init: Boolean;
 begin
   Result := False;
-  Console.AddText('Initializate...');
+  Console.AddText('Initializate... ');
   if Assigned(FOnInit) then
-  try
     FOnInit(Self);
-  except
-    Exit(False);
-  end;
   try
     Result := FVK.Login;
   finally
@@ -182,20 +198,36 @@ end;
 
 { TVkBotChat }
 
+procedure TVkBotChat.AddMessageListener(PeerTypes: TVkPeerTypes; Method: TVkBotMessageListener);
+var
+  Item: TMessageListener;
+begin
+  Item.PeerTypes := PeerTypes;
+  Item.Method := Method;
+  FMessageListeners.Add(Item);
+end;
+
 constructor TVkBotChat.Create;
 begin
   inherited;
+  FMessageListeners := TMessageListeners.Create;
   LongPoll.OnMessageNew := FOnNewMessage;
   LongPoll.OnMessageEdit := FOnEditMessage;
   LongPoll.OnGroupJoin := FOnGroupJoin;
 end;
 
+destructor TVkBotChat.Destroy;
+begin
+  FMessageListeners.Free;
+  inherited;
+end;
+
 procedure TVkBotChat.FOnEditMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; const EventId: string);
 begin
+  if FSkipOtherBotMessages and (Message.FromId < 0) then
+    Exit;
   if Assigned(FOnMessage) then
   begin
-    if FSkipOtherBotMessages and (Message.FromId < 0) then
-      Exit;
     TTask.Run(
       procedure
       begin
@@ -210,10 +242,10 @@ end;
 
 procedure TVkBotChat.FOnGroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; const EventId: string);
 begin
+  if FSkipOtherBotMessages and (UserId < 0) then
+    Exit;
   if Assigned(FOnJoin) then
   begin
-    if FSkipOtherBotMessages and (UserId < 0) then
-      Exit;
     TTask.Run(
       procedure
       begin
@@ -222,17 +254,78 @@ begin
   end;
 end;
 
+function TVkBotChat.HandleMessageListener(GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo): Boolean;
+var
+  Listener: TMessageListener;
+begin
+  for Listener in FMessageListeners do
+    if TVkPeerType.Create(Message.PeerId) in Listener.PeerTypes then
+    try
+      if Listener.Method(Self, GroupId, Message, ClientInfo) then
+        Exit(True);
+    except
+      on E: Exception do
+        Console.AddLine('Error with Listener: "' + E.Message + '"', RED);
+    end;
+  Result := False;
+end;
+
+function TVkBotChat.IsAdmin(PeerId, UserId: Integer): Boolean;
+var
+  Members: TVkConversationMembers;
+  Params: TVkParamsConversationMembersGet;
+  UserIsAdmin, Found: Boolean;
+begin
+  UserIsAdmin := False;
+  try
+    Params.PeerId(PeerId);
+    Params.Extended(False);
+    Found := False;
+    API.Walk(
+      function(Offset: Integer; var Cancel: Boolean): Integer
+      begin
+        Params.Count(200);
+        Params.Offset(Offset);
+        Result := 0;
+        if API.Messages.GetConversationMembers(Members, Params) then
+        try
+          Result := Length(Members.Items);
+          TArrayHelp.Walk<TVkConversationMember>(Members.Items,
+            procedure(const Item: TVkConversationMember; Index: Integer; var Cancel: Boolean)
+            begin
+              if Item.MemberId = UserId then
+              begin
+                Found := True;
+                Cancel := True;
+                UserIsAdmin := Item.IsAdmin;
+              end;
+            end);
+          Cancel := Found;
+        finally
+          Members.Free;
+        end;
+      end, 200);
+    Result := UserIsAdmin;
+  except
+    Result := False;
+  end;
+end;
+
 procedure TVkBotChat.FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);
 begin
-  if Assigned(FOnMessage) then
+  if FSkipOtherBotMessages and (Message.FromId < 0) then
+    Exit;
+  if Assigned(FOnMessage) or (FMessageListeners.Count > 0) then
   begin
-    if FSkipOtherBotMessages and (Message.FromId < 0) then
-      Exit;
     TTask.Run(
       procedure
       begin
         try
-          FOnMessage(Self, GroupId, Message, ClientInfo);
+          if (FMessageListeners.Count <= 0) or (not HandleMessageListener(GroupId, Message, ClientInfo)) then
+          begin
+            if Assigned(FOnMessage) then
+              FOnMessage(Self, GroupId, Message, ClientInfo);
+          end;
         finally
           Message.Free;
           ClientInfo.Free;
@@ -241,11 +334,13 @@ begin
   end;
 end;
 
-class function TVkBotChat.GetInstance: TVkBotChat;
+class function TVkBotChat.GetInstance(const GroupId: Integer; const Token: string): TVkBotChat;
 begin
   if not Assigned(Instance) then
     Instance := TVkBotChat.Create;
   Result := TVkBotChat(Instance);
+  Result.GroupId := GroupId;
+  Result.Token := Token;
 end;
 
 procedure TVkBotChat.SetOnJoin(const Value: TVkBotJoin);

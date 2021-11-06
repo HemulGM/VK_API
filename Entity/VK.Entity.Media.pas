@@ -3,11 +3,14 @@ unit VK.Entity.Media;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Photo,
-  VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page,
-  VK.Entity.Album, VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
-  VK.Entity.Market.Album, VK.Entity.Info, VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
+  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
+  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note,
+  VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
+  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
+  VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Info,
+  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
   VK.Wrap.Interceptors, VK.Entity.MoneyTransfer, VK.Entity.Geo;
 
 type
@@ -43,11 +46,11 @@ type
     /// <summary>
     /// Название платформы, если оно доступно (android; iphone; wphone)
     /// </summary>
-    property&Platform: string read FPlatform write FPlatform;
+    property &Platform: string read FPlatform write FPlatform;
     /// <summary>
     /// Тип источника
     /// </summary>
-    property&Type: TVkPostSourceType read FType write FType;
+    property &Type: TVkPostSourceType read FType write FType;
     /// <summary>
     /// URL ресурса, с которого была опубликована запись
     /// </summary>
@@ -82,7 +85,7 @@ type
     FCall: TVkCall;
     FMoney_transfer: TVkMoneyTransfer;
   public
-    property&Type: TVkAttachmentType read FType write FType;
+    property &Type: TVkAttachmentType read FType write FType;
     /// <summary>
     /// Ссылка
     /// </summary>
@@ -192,7 +195,6 @@ type
     property Attachment: TVkAttachment read FAttachment write FAttachment;
     property MessageId: Integer read FMessage_id write FMessage_id;
     property FromId: Integer read FFrom_id write FFrom_id;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -287,7 +289,6 @@ type
     /// Информация о вложенной ветке комментариев
     /// </summary>
     property Thread: TVkCommentThread read FThread write FThread;
-    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: TAttachment;
   end;
@@ -511,12 +512,11 @@ type
     /// <summary>
     /// Тип записи, может принимать следующие значения: post, copy, reply, postpone, suggest.
     /// </summary>
-    property&Type: TVkPostType read FType write FType;
+    property &Type: TVkPostType read FType write FType;
     /// <summary>
     /// Информация о просмотрах записи
     /// </summary>
     property Views: TVkViewsInfo read FViews write FViews;
-    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: TAttachment;
   end;
@@ -591,7 +591,6 @@ begin
     FPretty_cards.Free;
   if Assigned(FEvent) then
     FEvent.Free;
-
   inherited;
 end;
 
@@ -627,18 +626,14 @@ end;
 
 { TVkComment }
 
-constructor TVkComment.Create;
-begin
-  FAttachments := TVkAttachments.Create;
-  FLikes := TVkLikesInfo.Create;
-  FThread := TVkCommentThread.Create;
-end;
-
 destructor TVkComment.Destroy;
 begin
-  FThread.Free;
-  FAttachments.Free;
-  FLikes.Free;
+  if Assigned(FThread) then
+    FThread.Free;
+  if Assigned(FAttachments) then
+    FAttachments.Free;
+  if Assigned(FLikes) then
+    FLikes.Free;
   inherited;
 end;
 
@@ -649,23 +644,18 @@ end;
 
 {TVkPost}
 
-constructor TVkPost.Create;
-begin
-  inherited;
-  FComments := TVkCommentsInfo.Create();
-  FLikes := TVkLikesInfo.Create();
-  FReposts := TVkRepostsInfo.Create();
-  FViews := TVkViewsInfo.Create;
-end;
-
 destructor TVkPost.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPost>(FCopy_history);
   TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
-  FComments.Free;
-  FLikes.Free;
-  FReposts.Free;
-  FViews.Free;
+  if Assigned(FComments) then
+    FComments.Free;
+  if Assigned(FLikes) then
+    FLikes.Free;
+  if Assigned(FReposts) then
+    FReposts.Free;
+  if Assigned(FViews) then
+    FViews.Free;
   if Assigned(FGeo) then
     FGeo.Free;
   if Assigned(FPost_source) then
@@ -684,14 +674,10 @@ end;
 
 { TVkAttachmentHistoryItem }
 
-constructor TVkAttachmentHistoryItem.Create;
-begin
-  FAttachment := TVkAttachment.Create;
-end;
-
 destructor TVkAttachmentHistoryItem.Destroy;
 begin
-  FAttachment.Free;
+  if Assigned(FAttachment) then
+    FAttachment.Free;
   inherited;
 end;
 

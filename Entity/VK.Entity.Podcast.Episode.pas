@@ -3,7 +3,8 @@ unit VK.Entity.Podcast.Episode;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common;
 
 type
   TVkPodcastCover = class
@@ -27,7 +28,6 @@ type
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property Plays: Integer read FPlays write FPlays;
     property Position: Integer read FPosition write FPosition;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -63,7 +63,6 @@ type
     property Title: string read FTitle write FTitle;
     property TrackCode: string read FTrack_code write FTrack_code;
     property Url: string read FUrl write FUrl;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -82,29 +81,19 @@ end;
 
 {TVkPodcastInfo}
 
-constructor TVkPodcastInfo.Create;
-begin
-  inherited;
-  FCover := TVkPodcastCover.Create();
-end;
-
 destructor TVkPodcastInfo.Destroy;
 begin
-  FCover.Free;
+  if Assigned(FCover) then
+    FCover.Free;
   inherited;
 end;
 
 {TVkPodcastsEpisode}
 
-constructor TVkPodcastsEpisode.Create;
-begin
-  inherited;
-  FPodcast_info := TVkPodcastInfo.Create();
-end;
-
 destructor TVkPodcastsEpisode.Destroy;
 begin
-  FPodcast_info.Free;
+  if Assigned(FPodcast_info) then
+    FPodcast_info.Free;
   inherited;
 end;
 

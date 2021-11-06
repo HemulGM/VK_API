@@ -3,8 +3,9 @@ unit VK.Entity.ProfileInfo;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.JsonReflect, VK.Wrap.Interceptors, VK.Entity.Common,
-  VK.Entity.Database.Countries, VK.Entity.Database.Cities, VK.Types, VK.Entity.Profile;
+  Generics.Collections, Rest.Json, REST.JsonReflect, VK.Wrap.Interceptors,
+  VK.Entity.Common, VK.Entity.Database.Countries, VK.Entity.Database.Cities,
+  VK.Types, VK.Entity.Profile;
 
 type
   TVkNameRequest = class(TVkObject)
@@ -69,29 +70,23 @@ type
     property Status: string read FStatus write FStatus;
     property RelationPending: Boolean read FRelation_pending write FRelation_pending;
     property NameRequest: TVkNameRequest read FName_request write FName_request;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  VK.CommonUtils, System.StrUtils;
+  VK.CommonUtils;
 
 {TVkProfileInfo}
-
-constructor TVkProfileInfo.Create;
-begin
-  inherited;
-  FCountry := TVkCountry.Create();
-  FCity := TVkCity.Create();
-end;
 
 destructor TVkProfileInfo.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FRelation_requests);
-  FCountry.Free;
-  FCity.Free;
+  if Assigned(FCountry) then
+    FCountry.Free;
+  if Assigned(FCity) then
+    FCity.Free;
   if Assigned(FRelation_partner) then
     FRelation_partner.Free;
   if Assigned(FName_request) then

@@ -3,7 +3,8 @@ unit VK.Entity.Group.Youla;
 interface
 
 uses
-  REST.Json, System.Generics.Collections, VK.Entity.Common, VK.Entity.Group.Categories, REST.Json.Types;
+  REST.Json, System.Generics.Collections, VK.Entity.Common,
+  VK.Entity.Group.Categories, REST.Json.Types;
 
 type
   TVkYoulaGroupSettings = class
@@ -74,7 +75,6 @@ type
   public
     property CategoryTree: TVkYoulaCategoryTree read FCategory_Tree write FCategory_Tree;
     property GroupSettings: TVkYoulaGroupSettings read FGroup_Settings write FGroup_Settings;
-    constructor Create;
     destructor Destroy; override;
   end;
 
@@ -101,17 +101,12 @@ end;
 
 { TVkGroupYoula }
 
-constructor TVkGroupYoula.Create;
-begin
-  inherited;
-  FCategory_Tree := TVkYoulaCategoryTree.Create;
-  FGroup_Settings := TVkYoulaGroupSettings.Create;
-end;
-
 destructor TVkGroupYoula.Destroy;
 begin
-  FCategory_Tree.Free;
-  FGroup_Settings.Free;
+  if Assigned(FCategory_Tree) then
+    FCategory_Tree.Free;
+  if Assigned(FGroup_Settings) then
+    FGroup_Settings.Free;
   inherited;
 end;
 

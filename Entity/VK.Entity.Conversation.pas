@@ -3,8 +3,9 @@ unit VK.Entity.Conversation;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile,
-  VK.Entity.Group, VK.Types, VK.Entity.Common.ExtendedList, REST.JsonReflect, REST.Json.Interceptors,
+  Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common,
+  VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group, VK.Types,
+  VK.Entity.Common.ExtendedList, REST.JsonReflect, REST.Json.Interceptors,
   VK.Wrap.Interceptors, VK.Entity.Keyboard;
 
 type
@@ -105,7 +106,6 @@ type
     /// Название
     /// </summary>
     property Title: string read FTitle write FTitle;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -139,7 +139,7 @@ type
     /// <summary>
     /// Тип. Возможные значения: user, chat, group, email
     /// </summary>
-    property&Type: TVkPeerType read FType write FType;
+    property &Type: TVkPeerType read FType write FType;
     property IsUser: Boolean read GetIsUser;
     property IsGroup: Boolean read GetIsGroup;
     property IsChat: Boolean read GetIsChat;
@@ -237,7 +237,6 @@ type
     /// </summary>
     property PushSettings: TVkChatPushSettings read FPush_settings write FPush_settings;
     property CurrcurrentKeyboard: TVkKeyboard read FCurrent_keyboard write FCurrent_keyboard;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -250,7 +249,6 @@ type
   public
     property Conversation: TVkConversation read FConversation write FConversation;
     property LastMessage: TVkMessage read FLast_message write FLast_message;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -285,9 +283,26 @@ type
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property Conversations: TArray<TVkConversation> read FConversations write FConversations;
-    constructor Create; override;
     destructor Destroy; override;
   end;
+
+  TVkConversationMember = class(TVkEntity)
+  private
+    FInvited_By: Integer;
+    FIs_Admin: Boolean;
+    FIs_Owner: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FJoin_Date: TDateTime;
+    FMember_Id: Integer;
+  public
+    property InvitedBy: Integer read FInvited_By write FInvited_By;
+    property IsAdmin: Boolean read FIs_Admin write FIs_Admin;
+    property IsOwner: Boolean read FIs_Owner write FIs_Owner;
+    property JoinDate: TDateTime read FJoin_Date write FJoin_Date;
+    property MemberId: Integer read FMember_Id write FMember_Id;
+  end;
+
+  TVkConversationMembers = TVkEntityExtendedList<TVkConversationMember>;
 
 implementation
 
@@ -296,21 +311,16 @@ uses
 
 {TVkChatSettings}
 
-constructor TVkChatSettings.Create;
-begin
-  inherited;
-  FAcl := TVkChatAccess.Create();
-  FPhoto := TVkChatPhoto.Create();
-  FPermissions := TVkChatPermissions.Create;
-end;
-
 destructor TVkChatSettings.Destroy;
 begin
-  FAcl.Free;
+  if Assigned(FAcl) then
+    FAcl.Free;
   if Assigned(FPinned_message) then
     FPinned_message.Free;
-  FPhoto.Free;
-  FPermissions.Free;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
+  if Assigned(FPermissions) then
+    FPermissions.Free;
   inherited;
 end;
 
@@ -333,19 +343,14 @@ end;
 
 {TVkConversation}
 
-constructor TVkConversation.Create;
-begin
-  inherited;
-  FPeer := TVkPeer.Create();
-  FSort_id := TVkConversationSort.Create;
-  FCan_write := TVkCanWrite.Create();
-end;
-
 destructor TVkConversation.Destroy;
 begin
-  FPeer.Free;
-  FSort_id.Free;
-  FCan_write.Free;
+  if Assigned(FPeer) then
+    FPeer.Free;
+  if Assigned(FSort_id) then
+    FSort_id.Free;
+  if Assigned(FCan_write) then
+    FCan_write.Free;
   if Assigned(FChat_settings) then
     FChat_settings.Free;
   if Assigned(FPush_settings) then
@@ -366,11 +371,6 @@ begin
 end;
 
 { TVkConversationItem }
-
-constructor TVkConversationItem.Create;
-begin
-  inherited;
-end;
 
 destructor TVkConversationItem.Destroy;
 begin
@@ -394,9 +394,7 @@ begin
   if not FSaveObjects then
   begin
     if not FSaveMessages then
-    begin
       TArrayHelp.FreeArrayOfObject<TVkMessage>(FItems);
-    end;
 
     TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
     TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
@@ -407,21 +405,17 @@ end;
 procedure TVkMessageHistory.SetSaveMessages(const Value: Boolean);
 begin
   FSaveMessages := Value;
-end;    
+end;
 
 { TVkImportantMessages }
-
-constructor TVkImportantMessages.Create;
-begin
-  FMessages := TVkMessages.Create;
-end;
 
 destructor TVkImportantMessages.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkConversation>(FConversations);
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FProfiles);
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
-  FMessages.Free;
+  if Assigned(FMessages) then
+    FMessages.Free;
   inherited;
 end;
 

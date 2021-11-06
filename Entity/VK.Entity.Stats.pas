@@ -88,7 +88,6 @@ type
     property PeriodTo: Integer read FPeriod_to write FPeriod_to;
     property Reach: TVkStatReach read FReach write FReach;
     property Visitors: TVkStatVisitors read FVisitors write FVisitors;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -182,17 +181,12 @@ end;
 
 {TVkStatItem}
 
-constructor TVkStatItem.Create;
-begin
-  inherited;
-  FReach := TVkStatReach.Create();
-  FVisitors := TVkStatVisitors.Create();
-end;
-
 destructor TVkStatItem.Destroy;
 begin
-  FReach.Free;
-  FVisitors.Free;
+  if Assigned(FReach) then
+    FReach.Free;
+  if Assigned(FVisitors) then
+    FVisitors.Free;
   inherited;
 end;
 

@@ -26,7 +26,7 @@ type
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property Photo50: string read FPhoto_50 write FPhoto_50;
     property Title: string read FTitle write FTitle;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     property Users: TArray<TVkProfile> read FUsers write FUsers;
     destructor Destroy; override;
   end;
@@ -51,7 +51,6 @@ type
   public
     property Chat: TVkChat read FChat write FChat;
     property MessageId: Integer read FMessage_id write FMessage_id;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -106,15 +105,10 @@ end;
 
 {TVkChatInfoMessage}
 
-constructor TVkChatInfoMessage.Create;
-begin
-  inherited;
-  FChat := TVkChat.Create();
-end;
-
 destructor TVkChatInfoMessage.Destroy;
 begin
-  FChat.Free;
+  if Assigned(FChat) then
+    FChat.Free;
   inherited;
 end;
 

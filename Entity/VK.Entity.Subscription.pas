@@ -36,7 +36,7 @@ type
     property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
     property FirstName: string read FFirst_name write FFirst_name;
     property LastName: string read FLast_name write FLast_name;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
   end;
 
   TVkSubscriptions = TVkEntityList<TVkSubscription>;

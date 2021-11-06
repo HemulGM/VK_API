@@ -11,7 +11,7 @@ type
   private
     FType: string;
   public
-    property&Type: string read FType write FType;  //carousel
+    property &Type: string read FType write FType;  //carousel
   end;
 
   TVkMessageTemplateCarouselAction = class
@@ -20,7 +20,7 @@ type
     FLink: string;
   public
     property Link: string read FLink write FLink;
-    property&Type: string read FType write FType; //open_link, open_photo
+    property &Type: string read FType write FType; //open_link, open_photo
   end;
 
   TVkMessageTemplateCarouselElement = class

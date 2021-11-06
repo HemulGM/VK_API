@@ -35,37 +35,31 @@ type
     property Shares: TVkStoryStatCounter read FShares write FShares;
     property Subscribers: TVkStoryStatCounter read FSubscribers write FSubscribers;
     property Views: TVkStoryStatCounter read FViews write FViews;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
 implementation
 
-{TRootClass}
-
-constructor TVkStoryStat.Create;
-begin
-  inherited;
-  FAnswer := TVkStoryStatCounter.Create();
-  FBans := TVkStoryStatCounter.Create();
-  FOpen_link := TVkStoryStatCounter.Create();
-  FReplies := TVkStoryStatCounter.Create();
-  FShares := TVkStoryStatCounter.Create();
-  FSubscribers := TVkStoryStatCounter.Create();
-  FViews := TVkStoryStatCounter.Create();
-  FLikes := TVkStoryStatCounter.Create();
-end;
+{TVkStoryStat}
 
 destructor TVkStoryStat.Destroy;
 begin
-  FAnswer.Free;
-  FBans.Free;
-  FOpen_link.Free;
-  FReplies.Free;
-  FShares.Free;
-  FSubscribers.Free;
-  FViews.Free;
-  FLikes.Free;
+  if Assigned(FAnswer) then
+    FAnswer.Free;
+  if Assigned(FBans) then
+    FBans.Free;
+  if Assigned(FOpen_link) then
+    FOpen_link.Free;
+  if Assigned(FReplies) then
+    FReplies.Free;
+  if Assigned(FShares) then
+    FShares.Free;
+  if Assigned(FSubscribers) then
+    FSubscribers.Free;
+  if Assigned(FViews) then
+    FViews.Free;
+  if Assigned(FLikes) then
+    FLikes.Free;
   inherited;
 end;
 

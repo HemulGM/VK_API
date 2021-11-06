@@ -3,12 +3,13 @@ unit VK.Entity.Common;
 interface
 
 uses
-  Generics.Collections, System.Json, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, REST.Json.Types;
+  System.SysUtils, System.Json, Rest.Json;
 
 type
   TVkEntity = class(TInterfacedObject)
   public
     function ToJsonString: string;
+    function ToJsonObject: TJSONObject;
     class function FromJsonString<T: class, constructor>(AJsonString: string): T; overload;
     class function FromJsonString<T: class, constructor>(AJson: TJSONObject): T; overload;
     procedure FromJson(AJson: TJSONObject);
@@ -47,7 +48,7 @@ type
   public
     property Link: string read FLink write FLink;
     property Name: string read FName write FName;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
   end;
 
   TVkProductCurrency = class(TVkBasicObject)
@@ -150,7 +151,7 @@ type
     /// <summary>
     /// Обозначение размера и пропорций копии
     /// </summary>
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     /// <summary>
     /// URL копии
     /// </summary>
@@ -231,7 +232,7 @@ var
 implementation
 
 uses
-  System.SysUtils, VK.CommonUtils;
+  VK.CommonUtils;
 
 { TVkSizesHelper }
 
@@ -308,7 +309,7 @@ end;
 
 constructor TVkEntity.Create;
 begin
-  //
+  //dummy
 end;
 
 procedure TVkEntity.FromJson(AJson: TJSONObject);
@@ -318,12 +319,17 @@ end;
 
 class function TVkEntity.FromJsonString<T>(AJson: TJSONObject): T;
 begin
-  Result := TJson.JsonToObject<T>(AJson, [joIgnoreEmptyArrays]);
+  Result := TJson.JsonToObject<T>(AJson, [joIgnoreEmptyArrays, joIgnoreEmptyStrings]);
 end;
 
 class function TVkEntity.FromJsonString<T>(AJsonString: string): T;
 begin
-  Result := TJson.JsonToObject<T>(AJsonString, [joIgnoreEmptyArrays]);
+  Result := TJson.JsonToObject<T>(AJsonString, [joIgnoreEmptyArrays, joIgnoreEmptyStrings]);
+end;
+
+function TVkEntity.ToJsonObject: TJSONObject;
+begin
+  Result := TJson.ObjectToJsonObject(Self);
 end;
 
 function TVkEntity.ToJsonString: string;

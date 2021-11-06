@@ -3,8 +3,8 @@ unit VK.Entity.Playlist;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, VK.Entity.Audio, VK.Entity.Common,
-  VK.Entity.Common.List;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect,
+  VK.Entity.Audio, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkAudioOriginal = class
@@ -60,8 +60,7 @@ type
     property Title: string read FTitle write FTitle;
     property UpdateTime: TDateTime read FUpdate_time write FUpdate_time;
     property Year: Integer read FYear write FYear;
-    property&Type: Integer read FType write FType;
-    constructor Create; override;
+    property &Type: Integer read FType write FType;
     destructor Destroy; override;
   end;
 
@@ -70,24 +69,19 @@ type
 implementation
 
 uses
-  VK.CommonUtils, System.DateUtils;
+  VK.CommonUtils;
 
 {TVkAudioPlaylist}
-
-constructor TVkAudioPlaylist.Create;
-begin
-  inherited;
-  FOriginal := TVkAudioOriginal.Create();
-  FPhoto := TVkThumb.Create();
-end;
 
 destructor TVkAudioPlaylist.Destroy;
 begin
   {$IFNDEF AUTOREFCOUNT}
   TArrayHelp.FreeArrayOfObject<TVkAudioGenres>(FGenres);
   TArrayHelp.FreeArrayOfObject<TVkAudioArtist>(FMain_artists);
-  FOriginal.Free;
-  FPhoto.Free;
+  if Assigned(FOriginal) then
+    FOriginal.Free;
+  if Assigned(FPhoto) then
+    FPhoto.Free;
   {$ENDIF}
   inherited;
 end;

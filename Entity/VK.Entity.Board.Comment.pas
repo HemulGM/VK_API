@@ -25,7 +25,6 @@ type
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Text: string read FText write FText;
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -34,7 +33,6 @@ type
     FPoll: TVkPoll;
   public
     property Poll: TVkPoll read FPoll write FPoll;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -45,30 +43,20 @@ uses
 
 {TVkBoardComment}
 
-constructor TVkBoardComment.Create;
-begin
-  inherited;
-  FLikes := TVkLikesInfo.Create();
-end;
-
 destructor TVkBoardComment.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
-  FLikes.Free;
+  if Assigned(FLikes) then
+    FLikes.Free;
   inherited;
 end;
 
 {TVkBoardComments}
 
-constructor TVkBoardComments.Create;
-begin
-  inherited;
-  FPoll := TVkPoll.Create;
-end;
-
 destructor TVkBoardComments.Destroy;
 begin
-  FPoll.Free;
+  if Assigned(FPoll) then
+    FPoll.Free;
   inherited;
 end;
 

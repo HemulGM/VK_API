@@ -3,7 +3,8 @@ unit VK.Entity.PrettyCard;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, Rest.Json, VK.Entity.Link, VK.Entity.Common,
+  VK.Entity.Common.List;
 
 type
   TVkPrettyCard = class(TVkEntity)
@@ -23,7 +24,6 @@ type
     property Price: string read FPrice write FPrice;
     property PriceOld: string read FPrice_old write FPrice_old;
     property Title: string read FTitle write FTitle;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -36,16 +36,11 @@ uses
 
 {TVkPrettyCard}
 
-constructor TVkPrettyCard.Create;
-begin
-  inherited;
-  FButton := TVkLinkButton.Create();
-end;
-
 destructor TVkPrettyCard.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
-  FButton.Free;
+  if Assigned(FButton) then
+    FButton.Free;
   inherited;
 end;
 

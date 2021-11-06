@@ -134,7 +134,7 @@ end;
 
 function TUtilsController.ResolveScreenName(var Item: TVkScreenNameType; const ScreenName: string): Boolean;
 begin
-  Result := Handler.Execute('utils.resolveScreenName', ['screen_name', ScreenName]).GetObject<TVkScreenNameType>(Item);
+  Result := Handler.Execute('utils.resolveScreenName', ['screen_name', ScreenName]).GetObject(Item);
 end;
 
 { TVkParamsUtilsGetLinkStats }

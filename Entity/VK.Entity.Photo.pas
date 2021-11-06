@@ -3,7 +3,8 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Entity.Info, VK.Types;
+  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Info, VK.Types;
 
 type
   TVkOwnerPhoto = class(TVkEntity)
@@ -170,7 +171,6 @@ type
     /// </summary>
     property PostId: Integer read FPost_id write FPost_id;
     //
-    constructor Create; override;
     destructor Destroy; override;
     function ToAttachment: TAttachment;
   end;
@@ -248,22 +248,17 @@ uses
 
 {TVkPhoto}
 
-constructor TVkPhoto.Create;
-begin
-  inherited;
-  FLikes := TVkLikesInfo.Create;
-  FReposts := TVkRepostsInfo.Create;
-  FComments := TVkCommentsInfo.Create;
-  FTags := TVkCounterEntity.Create;
-end;
-
 destructor TVkPhoto.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSize>(FSizes);
-  FLikes.Free;
-  FReposts.Free;
-  FComments.Free;
-  FTags.Free;
+  if Assigned(FLikes) then
+    FLikes.Free;
+  if Assigned(FReposts) then
+    FReposts.Free;
+  if Assigned(FComments) then
+    FComments.Free;
+  if Assigned(FTags) then
+    FTags.Free;
   inherited;
 end;
 

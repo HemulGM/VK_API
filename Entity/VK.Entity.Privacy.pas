@@ -22,7 +22,6 @@ type
   public
     property Category: string read FCategory write FCategory;
     property Owners: TVkPrivacyOwners read FOwners write FOwners;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -30,15 +29,10 @@ implementation
 
 {TVkPrivacy}
 
-constructor TVkPrivacy.Create;
-begin
-  inherited;
-  FOwners := TVkPrivacyOwners.Create();
-end;
-
 destructor TVkPrivacy.Destroy;
 begin
-  FOwners.Free;
+  if Assigned(FOwners) then
+    FOwners.Free;
   inherited;
 end;
 

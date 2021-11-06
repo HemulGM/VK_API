@@ -6,7 +6,7 @@ uses
   VK.Entity.Common, VK.Types, REST.JsonReflect, REST.Json.Interceptors;
 
 type
-  TMoneyAmount = class
+  TVkMoneyAmount = class
   private
     FAmount: string;
     FCurrency: TVkProductCurrency;
@@ -15,13 +15,12 @@ type
     property Amount: string read FAmount write FAmount;
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Text: string read FText write FText;
-    constructor Create;
     destructor Destroy; override;
   end;
 
   TVkMoneyTransfer = class(TVkEntity)
   private
-    FAmount: TMoneyAmount;
+    FAmount: TVkMoneyAmount;
     FBy_Phone: Boolean;
     FComment: string;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
@@ -33,7 +32,7 @@ type
     FStatus: Integer;
     FTo_Id: Integer;
   public
-    property Amount: TMoneyAmount read FAmount write FAmount;
+    property Amount: TVkMoneyAmount read FAmount write FAmount;
     property ByPhone: Boolean read FBy_Phone write FBy_Phone;
     property Comment: string read FComment write FComment;
     property Date: TDateTime read FDate write FDate;
@@ -43,37 +42,26 @@ type
     property IsVkpay: Boolean read FIs_Vkpay write FIs_Vkpay;
     property Status: Integer read FStatus write FStatus;
     property ToId: Integer read FTo_Id write FTo_Id;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
 implementation
 
-{ TMoneyAmount }
+{ TVkMoneyAmount }
 
-constructor TMoneyAmount.Create;
+destructor TVkMoneyAmount.Destroy;
 begin
-  inherited;
-  FCurrency := TVkProductCurrency.Create;
-end;
-
-destructor TMoneyAmount.Destroy;
-begin
-  FCurrency.Free;
+  if Assigned(FCurrency) then
+    FCurrency.Free;
   inherited;
 end;
 
 { TVkMoneyTransfer }
 
-constructor TVkMoneyTransfer.Create;
-begin
-  inherited;
-  FAmount := TMoneyAmount.Create;
-end;
-
 destructor TVkMoneyTransfer.Destroy;
 begin
-  FAmount.Free;
+  if Assigned(FAmount) then
+    FAmount.Free;
   inherited;
 end;
 

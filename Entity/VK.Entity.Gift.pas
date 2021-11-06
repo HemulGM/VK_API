@@ -83,7 +83,6 @@ type
     /// Значение приватности подарка (только для текущего пользователя)
     /// </summary>
     property Privacy: TVkGiftPrivacy read FPrivacy write FPrivacy;
-    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -93,14 +92,10 @@ implementation
 
 { TVkGiftItem }
 
-constructor TVkGiftItem.Create;
-begin
-  FGift := TVkGift.Create();
-end;
-
 destructor TVkGiftItem.Destroy;
 begin
-  FGift.Free;
+  if Assigned(FGift) then
+    FGift.Free;
   inherited;
 end;
 
