@@ -50,8 +50,6 @@ type
   end;
 
   TVkHandler = class
-    const
-      RequestLimit = 3; //Round(1000 / 3) + 10; //задержка между запросами 3 запроса в секунду + 10 мс страховка
   private
     FStartRequest: Cardinal;
     FRequests: Integer;
@@ -69,6 +67,7 @@ type
     FCaptchaWait: Boolean;
     FCancelAll: Boolean;
     FWaitCount: Integer;
+    FRequestLimit: Integer;
     function DoConfirm(Answer: string): Boolean;
     function DoProcError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     procedure SetOnConfirm(const Value: TOnConfirm);
@@ -109,6 +108,10 @@ type
     property UsePseudoAsync: Boolean read FUsePseudoAsync write SetUsePseudoAsync;
     property Logging: Boolean read FLogging write SetLogging;
     property LogResponse: Boolean read FLogResponse write SetLogResponse;
+    /// <summary>
+    /// Лимит запросов в сек (по умолчанию 3)
+    /// </summary>
+    property RequestLimit: Integer read FRequestLimit write FRequestLimit;
   end;
 
 var
@@ -174,6 +177,7 @@ end;
 constructor TVkHandler.Create(AOwner: TObject);
 begin
   inherited Create;
+  FRequestLimit := 3;
   FOwner := AOwner;
   FCaptchaWait := False;
   FExecuting := 0;
@@ -183,7 +187,6 @@ begin
   FRESTClient := TRESTClient.Create(nil);
   FRESTClient.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
   FRESTClient.AcceptCharset := 'UTF-8, *;q=0.8';
-
   TRequestConstruct.Client := FRESTClient;
 end;
 

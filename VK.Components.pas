@@ -31,6 +31,7 @@ type
     property Token;
     property UsePseudoAsync default False;
     property UseServiceKeyOnly default False;
+    property RequestLimit default 3;
   end;
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]
