@@ -628,9 +628,12 @@ type
     /// </summary>
     function Search(var Items: TVkVideos; Params: TVkParamsVideoSearch): Boolean; overload;
     /// <summary>
-    /// Загрузки видео
+    /// Загрузка видео (вручную)
     /// </summary>
     function Upload(var Response: TVkVideoUploadResponse; const UploadUrl: string; const FileName: string; Callback: TReceiveDataEvent = nil): Boolean; overload;
+    /// <summary>
+    /// Загрузка видео
+    /// </summary>
     function Upload(var Response: TVkVideoUploadResponse; Params: TVkParamsVideoSave; const FileName: string; Callback: TReceiveDataEvent = nil): Boolean; overload;
   end;
 
@@ -638,7 +641,7 @@ implementation
 
 uses
   VK.API, VK.CommonUtils, System.NetConsts, System.Net.URLClient,
-  System.Net.Mime, System.Classes, IdHTTP, IdMultipartFormData;
+  System.Net.Mime, System.Classes, IdHTTP, IdMultipartFormData, System.Types;
 
 { TVideoController }
 
@@ -928,8 +931,9 @@ begin
     {$IF CompilerVersion >= 34.0}
     HTTP.OnSendData := Callback;
     {$ENDIF}
-    Data.AddFile('video_file1', FileName);
+    Data.AddFile('video_file', FileName);
     HTTP.ContentType := Data.RequestContentType;
+    HTTP.CustomHeaders[sContentLength] := Data.Size.ToString;
     if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
     begin
       Response := TVkVideoUploadResponse.FromJsonString<TVkVideoUploadResponse>(ResStream.DataString);
