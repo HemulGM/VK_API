@@ -355,8 +355,10 @@ begin
       end;
     end;
   except
+    on E: TVkUnknownMethodException do
+      raise;
     on E: TVkMethodException do
-      DoProcError(Self, TVkMethodException.Create(E.Message, E.Code), E.Code, E.Message);
+      DoProcError(Self, TVkUnknownMethodException.Create(E.Message, E.Code), E.Code, E.Message);
   end;
 end;
 
@@ -379,6 +381,10 @@ begin
       TestCaptcha := False;
     end;
     case Result.Error.Code of
+      VK_ERROR_INVALID_TOKEN:
+        raise TVkInvalidTokenException.Create(VKErrors.Get(Result.Error.Code), Result.Error.Code);
+      VK_ERROR_TOO_MANY_SIMILAR_ACTIONS:
+        raise TVkTooManySimilarActionException.Create(VKErrors.Get(Result.Error.Code), Result.Error.Code);
       VK_ERROR_CAPTCHA: //Капча
         begin
           if FCaptchaWait then
@@ -402,7 +408,7 @@ begin
           begin
             FCancelAll := True;
             FCaptchaWait := False;
-            raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
+            raise TVkCaptchaException.Create(Result.Error.Text, Result.Error.Code);
           end;
         end;
       VK_ERROR_CONFIRM, VK_ERROR_TOKEN_CONFIRM, VK_ERROR_MORE_CONFIRM: //Подтверждение для ВК
@@ -415,7 +421,7 @@ begin
             Request.Params.Delete('confirm');
           end
           else
-            raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
+            raise TVkConfirmException.Create(Result.Error.Text, Result.Error.Code);
         end;
       VK_ERROR_REQUESTLIMIT: //Превышено кол-во запросов в сек
         begin
@@ -429,7 +435,7 @@ begin
           Result := Execute(Request);
         end;
     else
-      raise TVkMethodException.Create(Result.Error.Text, Result.Error.Code);
+      raise TVkUnknownMethodException.Create(Result.Error.Text, Result.Error.Code);
     end;
   end
   else

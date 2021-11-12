@@ -12,13 +12,9 @@ uses
 type
   TVkException = Exception;
 
-  TVkAuthException = TVkException;
+  TVkParserException = class(TVkException);
 
-  TVkCaptchaException = TVkException;
-
-  TVkParserException = TVkException;
-
-  TVkHandlerException = TVkException;
+  TVkHandlerException = class(TVkException);
 
   TVkMethodException = class(TVkException)
   private
@@ -28,15 +24,27 @@ type
     constructor Create(const Msg: string; Code: Integer);
   end;
 
-  TVkLongPollServerException = TVkException;
+  TVkCaptchaException = class(TVkMethodException);
 
-  TVkLongPollServerParseException = TVkLongPollServerException;
+  TVkAuthException = class(TVkMethodException);
 
-  TVkLongPollServerHTTPException = TVkLongPollServerException;
+  TVkInvalidTokenException = class(TVkMethodException);
 
-  TVkGroupEventsException = TVkLongPollServerException;
+  TVkConfirmException = class(TVkMethodException);
 
-  TVkUserEventsException = TVkLongPollServerException;
+  TVkTooManySimilarActionException = class(TVkMethodException);
+
+  TVkUnknownMethodException = class(TVkMethodException);
+
+  TVkLongPollServerException = class(TVkException);
+
+  TVkLongPollServerParseException = class(TVkLongPollServerException);
+
+  TVkLongPollServerHTTPException = class(TVkLongPollServerException);
+
+  TVkGroupEventsException = class(TVkLongPollServerException);
+
+  TVkUserEventsException = class(TVkLongPollServerException);
 
 const
   //Inner VK errors

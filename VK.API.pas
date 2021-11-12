@@ -867,7 +867,7 @@ begin
     else
     begin
       Result := False;
-      raise TVkAuthException.Create('Login request error');
+      raise TVkAuthException.Create('Login request error', ERROR_VK_AUTH);
     end;
   except
     on E: Exception do

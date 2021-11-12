@@ -1113,7 +1113,11 @@ type
     /// <summary>
     /// Помечает сообщения как важные либо снимает отметку.
     /// </summary>
-    function MarkAsImportant(var Items: TIdList; MessageIds: TIdList; Important: Boolean): Boolean;
+    function MarkAsImportant(var Items: TIdList; MessageIds: TIdList; Important: Boolean): Boolean; overload;
+    /// <summary>
+    /// Помечает сообщения как важные либо снимает отметку.
+    /// </summary>
+    function MarkAsImportant(var Item: Integer; MessageId: Integer; Important: Boolean): Boolean; overload;
     /// <summary>
     /// Помечает беседу как важную либо снимает отметку.
     /// </summary>
@@ -1522,6 +1526,32 @@ begin
         Resp := TVkIdList.FromJsonString<TVkIdList>(ResponseAsItems);
         try
           Items := Resp.Items;
+        finally
+          Resp.Free;
+        end;
+      except
+        Result := False;
+      end;
+    end;
+  end;
+end;
+
+function TMessagesController.MarkAsImportant(var Item: Integer; MessageId: Integer; Important: Boolean): Boolean;
+var
+  Resp: TVkIdList;
+begin
+  with Handler.Execute('messages.markAsImportant', [['message_ids', MessageId.ToString], ['important', BoolToString(Important)]]) do
+  begin
+    Result := Success;
+    if Result then
+    begin
+      try
+        Resp := TVkIdList.FromJsonString<TVkIdList>(ResponseAsItems);
+        try
+          if Length(Resp.Items) > 0 then
+            Item := Resp.Items[0]
+          else
+            Item := -1;
         finally
           Resp.Free;
         end;
