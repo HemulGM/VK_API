@@ -3,8 +3,9 @@ unit VK.Video;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Video, System.JSON,
-  VK.Entity.Status, VK.Entity.Media, VK.Entity.Video.Save;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Video, System.JSON, VK.Entity.Status, VK.Entity.Media,
+  VK.Entity.Video.Save, System.Net.HttpClient;
 
 type
   TVkParamsVideoGet = record
@@ -626,12 +627,21 @@ type
     /// ¬озвращает список видеозаписей в соответствии с заданным критерием поиска
     /// </summary>
     function Search(var Items: TVkVideos; Params: TVkParamsVideoSearch): Boolean; overload;
+    /// <summary>
+    /// «агрузка видео (вручную)
+    /// </summary>
+    function Upload(var Response: TVkVideoUploadResponse; const UploadUrl: string; const FileName: string; Callback: TReceiveDataEvent = nil): Boolean; overload;
+    /// <summary>
+    /// «агрузка видео
+    /// </summary>
+    function Upload(var Response: TVkVideoUploadResponse; Params: TVkParamsVideoSave; const FileName: string; Callback: TReceiveDataEvent = nil): Boolean; overload;
   end;
 
 implementation
 
 uses
-  VK.API, VK.CommonUtils;
+  VK.API, VK.CommonUtils, System.NetConsts, System.Net.URLClient,
+  System.Net.Mime, System.Classes, IdHTTP, IdMultipartFormData, System.Types;
 
 { TVideoController }
 
@@ -878,20 +888,8 @@ begin
 end;
 
 function TVideoController.Save(var VideoSaved: TVkVideoSaved; Link: string): Boolean;
-var
-  Params: TParams;
-  SaveResp: string;
 begin
-  Params.Add('link', Link);
-  Result := Handler.Execute('video.save', Params).GetObject<TVkVideoSaved>(VideoSaved);
-  if Result then
-  begin
-    Result := False;
-    if TCustomVK(VK).Upload(VideoSaved.UploadUrl, [''], SaveResp) then
-      Result := not SaveResp.IsEmpty
-    else
-      TCustomVK(VK).DoError(Self, TVkException.Create(SaveResp), -1, SaveResp);
-  end;
+  Result := Handler.Execute('video.save', ['link', Link]).GetObject(VideoSaved);
 end;
 
 function TVideoController.Search(var Items: TVkVideos; Params: TVkParamsVideoSearch): Boolean;
@@ -902,6 +900,50 @@ end;
 function TVideoController.Search(var Items: TVkVideos; Params: TParams): Boolean;
 begin
   Result := Handler.Execute('video.search', Params).GetObject(Items);
+end;
+
+function TVideoController.Upload(var Response: TVkVideoUploadResponse; Params: TVkParamsVideoSave; const FileName: string; Callback: TReceiveDataEvent): Boolean;
+var
+  VideoSaved: TVkVideoSaved;
+begin
+  Result := False;
+  if Save(VideoSaved, Params) then
+  try
+    Result := Upload(Response, VideoSaved.UploadUrl, FileName, Callback);
+    if Result then
+      Response.AccessKey := VideoSaved.AccessKey;
+  finally
+    VideoSaved.Free;
+  end;
+end;
+
+function TVideoController.Upload(var Response: TVkVideoUploadResponse; const UploadUrl: string; const FileName: string; Callback: TReceiveDataEvent): Boolean;
+var
+  HTTP: THTTPClient;
+  Data: TIdMultiPartFormDataStream;
+  ResStream: TStringStream;
+begin
+  Result := False;
+  Data := TIdMultiPartFormDataStream.Create;
+  HTTP := THTTPClient.Create;
+  ResStream := TStringStream.Create;
+  try
+    {$IF CompilerVersion >= 34.0}
+    HTTP.OnSendData := Callback;
+    {$ENDIF}
+    Data.AddFile('video_file', FileName);
+    HTTP.ContentType := Data.RequestContentType;
+    HTTP.CustomHeaders[sContentLength] := Data.Size.ToString;
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      Response := TVkVideoUploadResponse.FromJsonString<TVkVideoUploadResponse>(ResStream.DataString);
+      Result := True;
+    end;
+  finally
+    ResStream.Free;
+    Data.Free;
+    HTTP.Free;
+  end;
 end;
 
 { TVkVideosGetParams }

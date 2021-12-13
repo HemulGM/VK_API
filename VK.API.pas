@@ -133,6 +133,8 @@ type
     function GetUserId: Integer;
     procedure SetApplication(const Value: TVkApplicationData);
     function GetApplication: TVkApplicationData;
+    procedure SetRequestLimit(const Value: Integer);
+    function GetRequestLimit: Integer;
   public
     constructor Create(const AToken: string); reintroduce; overload;
     constructor Create(AOwner: TComponent); overload; override;
@@ -453,6 +455,7 @@ type
     /// Данные клиента AppId (client_id) + AppKey (client_secret)
     /// </summary>
     property Application: TVkApplicationData read GetApplication write SetApplication;
+    property RequestLimit: Integer read GetRequestLimit write SetRequestLimit;
   end;
 
 const
@@ -864,7 +867,7 @@ begin
     else
     begin
       Result := False;
-      raise TVkAuthException.Create('Login request error');
+      raise TVkAuthException.Create('Login request error', ERROR_VK_AUTH);
     end;
   except
     on E: Exception do
@@ -880,6 +883,11 @@ begin
   FOAuth2Authenticator.AuthorizationEndpoint := FEndPoint;
   FOAuth2Authenticator.Scope := FPermissions.ToString;
   Result := FOAuth2Authenticator.AuthorizationRequestURI;
+end;
+
+function TCustomVK.GetRequestLimit: Integer;
+begin
+  Result := FHandler.RequestLimit;
 end;
 
 function TCustomVK.Login: Boolean;
@@ -1082,6 +1090,11 @@ end;
 procedure TCustomVK.SetPermissions(const Value: TVkPermissions);
 begin
   FPermissions := Value;
+end;
+
+procedure TCustomVK.SetRequestLimit(const Value: Integer);
+begin
+  FHandler.RequestLimit := Value;
 end;
 
 procedure TCustomVK.SetUsePseudoAsync(const Value: Boolean);

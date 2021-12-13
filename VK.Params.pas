@@ -6,7 +6,15 @@ uses
   System.Classes, System.JSON, System.Generics.Collections, VK.Entity.Common;
 
 type
-  TJSONParam = class
+  IJSONParam = interface
+    function ToJsonString(FreeObject: Boolean = False): string;
+  end;
+
+  IJSONParamExt = interface(IJSONParam)
+    procedure Clear;
+  end;
+
+  TJSONParam = class(TInterfacedObject, IJSONParam)
   private
     FJSON: TJSONObject;
     procedure SetJSON(const Value: TJSONObject);
@@ -25,8 +33,8 @@ type
     function Add(const Key: string; Value: TArray<TJSONValue>): TJSONParam; overload; virtual;
     function Add(const Key: string; Value: TArray<TJSONParam>): TJSONParam; overload; virtual;
     function Add<T: TVkEntity, constructor>(const Key: string; Value: TArray<T>): TJSONParam; overload;
-    function GetOrCreateObject(const Name: string): TJSONObject;
-    function GetOrCreate<T: TJSONValue, constructor>(const Name: string): T;
+    function GetOrCreate(const Name: string): TJSONObject; overload;
+    function GetOrCreate<T: TJSONValue, constructor>(const Name: string): T; overload;
     procedure Delete(const Key: string); virtual;
     procedure Clear; virtual;
     property JSON: TJSONObject read FJSON write SetJSON;
@@ -199,7 +207,7 @@ begin
   end;
 end;
 
-function TJSONParam.GetOrCreateObject(const Name: string): TJSONObject;
+function TJSONParam.GetOrCreate(const Name: string): TJSONObject;
 begin
   Result := GetOrCreate<TJSONObject>(Name);
 end;

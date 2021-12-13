@@ -3,7 +3,7 @@ unit VK.Entity.Video.Save;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Types;
 
 type
   TVkVideoSaved = class(TVkEntity)
@@ -23,7 +23,34 @@ type
     property VideoId: Integer read FVideo_id write FVideo_id;
   end;
 
+  TVkVideoUploadResponse = class(TVkEntity, IAttachment)
+  private
+    FOwner_id: Integer;
+    FVideo_hash: string;
+    FSize: Int64;
+    FVideo_id: Integer;
+    FAccess_key: string;
+  public
+    property AccessKey: string read FAccess_key write FAccess_key;
+    property VideoHash: string read FVideo_hash write FVideo_hash;
+    property Size: Int64 read FSize write FSize;
+    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property VideoId: Integer read FVideo_id write FVideo_id;
+    function ToAttachment: TAttachment;
+  end;
+
 implementation
+
+{ TVkVideoUploadResponse }
+
+function TVkVideoUploadResponse.ToAttachment: TAttachment;
+begin
+  Result.Id := FVideo_id;
+  Result.&Type := 'video';
+  Result.OwnerId := FOwner_id;
+  Result.Kind := TAttachmentKind.Media;
+  Result.AccessKey := FAccess_key;
+end;
 
 end.
 
