@@ -13,19 +13,19 @@ type
     /// Перечисленные через запятую идентификаторы пользователей или их короткие имена (ScreenName).
     /// По умолчанию — идентификатор текущего пользователя
     /// </summary>
-    function UserIds(const Value: TIdList): Integer;
+    function UserIds(const Value: TIdList): TVkParamsUsersGet;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: string): Integer; overload;
+    function Fields(const Value: string): TVkParamsUsersGet; overload;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): Integer; overload;
+    function Fields(const Value: TVkProfileFields): TVkParamsUsersGet; overload;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
-    function NameCase(const Value: TVkNameCase): Integer; overload;
+    function NameCase(const Value: TVkNameCase): TVkParamsUsersGet; overload;
   end;
 
   TVkParamsUsersGetFollowers = record
@@ -33,27 +33,27 @@ type
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    function UserId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): TVkParamsUsersGetFollowers;
     /// <summary>
     /// Количество подписчиков, информацию о которых нужно получить
     /// </summary>
-    function Count(const Value: Integer = 100): Integer; overload;
+    function Count(const Value: Integer = 100): TVkParamsUsersGetFollowers; overload;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества подписчиков
     /// </summary>
-    function Offset(const Value: Integer): Integer; overload;
+    function Offset(const Value: Integer): TVkParamsUsersGetFollowers; overload;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: string): Integer; overload;
+    function Fields(const Value: string): TVkParamsUsersGetFollowers; overload;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): Integer; overload;
+    function Fields(const Value: TVkProfileFields): TVkParamsUsersGetFollowers; overload;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
-    function NameCase(const Value: TVkNameCase): Integer; overload;
+    function NameCase(const Value: TVkNameCase): TVkParamsUsersGetFollowers; overload;
   end;
 
   TVkParamsUsersGetSubscriptions = record
@@ -61,26 +61,26 @@ type
     /// <summary>
     /// Идентификатор пользователя, подписки которого необходимо получить
     /// </summary>
-    function UserId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): TVkParamsUsersGetSubscriptions;
     /// <summary>
     /// True – возвращает объединенный список, содержащий объекты group и user вместе.
     /// False – возвращает список идентификаторов групп и пользователей отдельно. (по умолчанию)
     /// </summary>
-    function Extended(const Value: Boolean = False): Integer;
+    function Extended(const Value: Boolean = False): TVkParamsUsersGetSubscriptions;
     /// <summary>
     /// Смещение необходимое для выборки определенного подмножества подписок.
     /// Этот параметр используется только если передан Extended = True
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsUsersGetSubscriptions;
     /// <summary>
     /// Количество подписок, которые необходимо вернуть.
     /// Этот параметр используется только если передан Extended = True
     /// </summary>
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer): TVkParamsUsersGetSubscriptions;
     /// <summary>
     /// Список дополнительных полей для объектов User и Group, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsUsersGetSubscriptions;
   end;
 
   TVkParamsUsersSearch = record
@@ -88,136 +88,135 @@ type
     /// <summary>
     /// Строка поискового запроса
     /// </summary>
-    function Query(const Value: string): Integer;
+    function Query(const Value: string): TVkParamsUsersSearch;
     /// <summary>
     /// Сортировка результатов
     /// </summary>
-    function Sort(const Value: TVkSortUser): Integer;
+    function Sort(const Value: TVkSortUser): TVkParamsUsersSearch;
     /// <summary>
     /// Смещение относительно первого найденного пользователя для выборки определенного подмножества
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Количество возвращаемых пользователей
     /// </summary>
-    function Count(const Value: Integer = 20): Integer;
+    function Count(const Value: Integer = 20): TVkParamsUsersSearch;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): Integer;
+    function Fields(const Value: TVkProfileFields): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор города
     /// </summary>
-    function City(const Value: Integer): Integer;
+    function City(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор страны
     /// </summary>
-    function Country(const Value: Integer): Integer;
+    function Country(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Название города строкой
     /// </summary>
-    function Hometown(const Value: string): Integer;
+    function Hometown(const Value: string): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор страны, в которой пользователи закончили ВУЗ
     /// </summary>
-    function UniversityCountry(const Value: Integer): Integer;
+    function UniversityCountry(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор ВУЗа
     /// </summary>
-    function University(const Value: Integer): Integer;
+    function University(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Год окончания ВУЗа
     /// </summary>
-    function UniversityYear(const Value: Integer): Integer;
+    function UniversityYear(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор факультета
     /// </summary>
-    function UniversityFaculty(const Value: Integer): Integer;
+    function UniversityFaculty(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор кафедры
     /// </summary>
-    function UniversityChair(const Value: Integer): Integer;
+    function UniversityChair(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Пол
     /// </summary>
-    function Sex(const Value: TVkSex): Integer;
+    function Sex(const Value: TVkSex): TVkParamsUsersSearch;
     /// <summary>
     /// Семейное положение
     /// </summary>
-    function Status(const Value: TVkRelation): Integer;
+    function Status(const Value: TVkRelation): TVkParamsUsersSearch;
     /// <summary>
     /// Возраст, от
     /// </summary>
-    function AgeFrom(const Value: Integer): Integer;
+    function AgeFrom(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Возраст, до
     /// </summary>
-    function AgeTo(const Value: Integer): Integer;
+    function AgeTo(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// День рождения
     /// </summary>
-    function BirthDay(const Value: Integer): Integer;
+    function BirthDay(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Месяц рождения
     /// </summary>
-    function BirthMonth(const Value: Integer): Integer;
+    function BirthMonth(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Год рождения
     /// </summary>
-    function BirthYear(const Value: Integer): Integer;
+    function BirthYear(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Учитывать ли статус «онлайн»
     /// </summary>
-    function Online(const Value: Boolean): Integer;
+    function Online(const Value: Boolean): TVkParamsUsersSearch;
     /// <summary>
     /// Учитывать ли наличие фото
     /// </summary>
-    function HasPhoto(const Value: Boolean): Integer;
+    function HasPhoto(const Value: Boolean): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор страны, в которой пользователи закончили школу
     /// </summary>
-    function SchoolCountry(const Value: Integer): Integer;
+    function SchoolCountry(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор города, в котором пользователи закончили школу
     /// </summary>
-    function SchoolCity(const Value: Integer): Integer;
+    function SchoolCity(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Буква класса
     /// </summary>
-    function SchoolClass(const Value: TIdList): Integer;
+    function SchoolClass(const Value: TIdList): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор школы, которую закончили пользователи
     /// </summary>
-    function School(const Value: Integer): Integer;
+    function School(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Год окончания школы
     /// </summary>
-    function SchoolYear(const Value: Integer): Integer;
+    function SchoolYear(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Религиозные взгляды
     /// </summary>
-    function Religion(const Value: string): Integer;
+    function Religion(const Value: string): TVkParamsUsersSearch;
     /// <summary>
     /// Название компании, в которой работают пользователи
     /// </summary>
-    function Company(const Value: string): Integer;
+    function Company(const Value: string): TVkParamsUsersSearch;
     /// <summary>
     /// Название должности
     /// </summary>
-    function Position(const Value: string): Integer;
+    function Position(const Value: string): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор группы, среди пользователей которой необходимо проводить поиск
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
     /// Разделы среди которых нужно осуществить поиск
     /// </summary>
-    function FromList(const Value: TVkSearchTargets): Integer;
+    function FromList(const Value: TVkSearchTargets): TVkParamsUsersSearch;
   end;
 
   TUsersController = class(TVkController)
-  public
-    /// <summary>
+  public    /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
     /// </summary>
@@ -385,245 +384,292 @@ end;
 
 { TVkParamsUsersGet }
 
-function TVkParamsUsersGet.Fields(const Value: string): Integer;
+function TVkParamsUsersGet.Fields(const Value: string): TVkParamsUsersGet;
 begin
-  Result := List.Add('fields', Value);
+  List.Add('fields', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersGet.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsUsersGet.Fields(const Value: TVkProfileFields): TVkParamsUsersGet;
 begin
-  Result := List.Add('fields', Value.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsUsersGet.NameCase(const Value: TVkNameCase): Integer;
+function TVkParamsUsersGet.NameCase(const Value: TVkNameCase): TVkParamsUsersGet;
 begin
-  Result := List.Add('name_case', Value.ToString);
+  List.Add('name_case', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsUsersGet.UserIds(const Value: TIdList): Integer;
+function TVkParamsUsersGet.UserIds(const Value: TIdList): TVkParamsUsersGet;
 begin
-  Result := List.Add('user_ids', Value);
+  List.Add('user_ids', Value);
+  Result := Self;
 end;
 
 { TVkParamsUsersGetFollowers }
 
-function TVkParamsUsersGetFollowers.Count(const Value: Integer): Integer;
+function TVkParamsUsersGetFollowers.Count(const Value: Integer): TVkParamsUsersGetFollowers;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetFollowers.Fields(const Value: string): Integer;
+function TVkParamsUsersGetFollowers.Fields(const Value: string): TVkParamsUsersGetFollowers;
 begin
-  Result := List.Add('fields', Value);
+  List.Add('fields', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetFollowers.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsUsersGetFollowers.Fields(const Value: TVkProfileFields): TVkParamsUsersGetFollowers;
 begin
-  Result := List.Add('fields', Value.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetFollowers.NameCase(const Value: TVkNameCase): Integer;
+function TVkParamsUsersGetFollowers.NameCase(const Value: TVkNameCase): TVkParamsUsersGetFollowers;
 begin
-  Result := List.Add('name_case', Value.ToString);
+  List.Add('name_case', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetFollowers.Offset(const Value: Integer): Integer;
+function TVkParamsUsersGetFollowers.Offset(const Value: Integer): TVkParamsUsersGetFollowers;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetFollowers.UserId(const Value: Integer): Integer;
+function TVkParamsUsersGetFollowers.UserId(const Value: Integer): TVkParamsUsersGetFollowers;
 begin
-  Result := List.Add('user_id', Value);
+  List.Add('user_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsUsersGetSubscriptions }
 
-function TVkParamsUsersGetSubscriptions.UserId(const Value: Integer): Integer;
+function TVkParamsUsersGetSubscriptions.UserId(const Value: Integer): TVkParamsUsersGetSubscriptions;
 begin
-  Result := List.Add('user_id', Value);
+  List.Add('user_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetSubscriptions.Extended(const Value: Boolean): Integer;
+function TVkParamsUsersGetSubscriptions.Extended(const Value: Boolean): TVkParamsUsersGetSubscriptions;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetSubscriptions.Offset(const Value: Integer): Integer;
+function TVkParamsUsersGetSubscriptions.Offset(const Value: Integer): TVkParamsUsersGetSubscriptions;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetSubscriptions.Count(const Value: Integer): Integer;
+function TVkParamsUsersGetSubscriptions.Count(const Value: Integer): TVkParamsUsersGetSubscriptions;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersGetSubscriptions.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsUsersGetSubscriptions.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsUsersGetSubscriptions;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
 { TVkParamsUsersSearch }
 
-function TVkParamsUsersSearch.Query(const Value: string): Integer;
+function TVkParamsUsersSearch.Query(const Value: string): TVkParamsUsersSearch;
 begin
-  Result := List.Add('q', Value);
+  List.Add('q', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Sort(const Value: TVkSortUser): Integer;
+function TVkParamsUsersSearch.Sort(const Value: TVkSortUser): TVkParamsUsersSearch;
 begin
-  Result := List.Add('sort', Ord(Value));
+  List.Add('sort', Ord(Value));
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Offset(const Value: Integer): Integer;
+function TVkParamsUsersSearch.Offset(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Count(const Value: Integer): Integer;
+function TVkParamsUsersSearch.Count(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsUsersSearch.Fields(const Value: TVkProfileFields): TVkParamsUsersSearch;
 begin
-  Result := List.Add('fields', Value.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.City(const Value: Integer): Integer;
+function TVkParamsUsersSearch.City(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('city', Value);
+  List.Add('city', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Country(const Value: Integer): Integer;
+function TVkParamsUsersSearch.Country(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('country', Value);
+  List.Add('country', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Hometown(const Value: string): Integer;
+function TVkParamsUsersSearch.Hometown(const Value: string): TVkParamsUsersSearch;
 begin
-  Result := List.Add('hometown', Value);
+  List.Add('hometown', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.UniversityCountry(const Value: Integer): Integer;
+function TVkParamsUsersSearch.UniversityCountry(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('university_country', Value);
+  List.Add('university_country', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.University(const Value: Integer): Integer;
+function TVkParamsUsersSearch.University(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('university', Value);
+  List.Add('university', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.UniversityYear(const Value: Integer): Integer;
+function TVkParamsUsersSearch.UniversityYear(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('university_year', Value);
+  List.Add('university_year', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.UniversityFaculty(const Value: Integer): Integer;
+function TVkParamsUsersSearch.UniversityFaculty(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('university_faculty', Value);
+  List.Add('university_faculty', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.UniversityChair(const Value: Integer): Integer;
+function TVkParamsUsersSearch.UniversityChair(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('university_chair', Value);
+  List.Add('university_chair', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Sex(const Value: TVkSex): Integer;
+function TVkParamsUsersSearch.Sex(const Value: TVkSex): TVkParamsUsersSearch;
 begin
-  Result := List.Add('sex', Ord(Value));
+  List.Add('sex', Ord(Value));
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Status(const Value: TVkRelation): Integer;
+function TVkParamsUsersSearch.Status(const Value: TVkRelation): TVkParamsUsersSearch;
 begin
-  Result := List.Add('status', Ord(Value));
+  List.Add('status', Ord(Value));
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.AgeFrom(const Value: Integer): Integer;
+function TVkParamsUsersSearch.AgeFrom(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('age_from', Value);
+  List.Add('age_from', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.AgeTo(const Value: Integer): Integer;
+function TVkParamsUsersSearch.AgeTo(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('age_to', Value);
+  List.Add('age_to', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.BirthDay(const Value: Integer): Integer;
+function TVkParamsUsersSearch.BirthDay(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('birth_day', Value);
+  List.Add('birth_day', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.BirthMonth(const Value: Integer): Integer;
+function TVkParamsUsersSearch.BirthMonth(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('birth_month', Value);
+  List.Add('birth_month', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.BirthYear(const Value: Integer): Integer;
+function TVkParamsUsersSearch.BirthYear(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('birth_year', Value);
+  List.Add('birth_year', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Online(const Value: Boolean): Integer;
+function TVkParamsUsersSearch.Online(const Value: Boolean): TVkParamsUsersSearch;
 begin
-  Result := List.Add('online', Value);
+  List.Add('online', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.HasPhoto(const Value: Boolean): Integer;
+function TVkParamsUsersSearch.HasPhoto(const Value: Boolean): TVkParamsUsersSearch;
 begin
-  Result := List.Add('has_photo', Value);
+  List.Add('has_photo', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.SchoolCountry(const Value: Integer): Integer;
+function TVkParamsUsersSearch.SchoolCountry(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('school_country', Value);
+  List.Add('school_country', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.SchoolCity(const Value: Integer): Integer;
+function TVkParamsUsersSearch.SchoolCity(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('school_city', Value);
+  List.Add('school_city', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.SchoolClass(const Value: TIdList): Integer;
+function TVkParamsUsersSearch.SchoolClass(const Value: TIdList): TVkParamsUsersSearch;
 begin
-  Result := List.Add('school_class', Value);
+  List.Add('school_class', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.School(const Value: Integer): Integer;
+function TVkParamsUsersSearch.School(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('school', Value);
+  List.Add('school', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.SchoolYear(const Value: Integer): Integer;
+function TVkParamsUsersSearch.SchoolYear(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('school_year', Value);
+  List.Add('school_year', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Religion(const Value: string): Integer;
+function TVkParamsUsersSearch.Religion(const Value: string): TVkParamsUsersSearch;
 begin
-  Result := List.Add('religion', Value);
+  List.Add('religion', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Company(const Value: string): Integer;
+function TVkParamsUsersSearch.Company(const Value: string): TVkParamsUsersSearch;
 begin
-  Result := List.Add('company', Value);
+  List.Add('company', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.Position(const Value: string): Integer;
+function TVkParamsUsersSearch.Position(const Value: string): TVkParamsUsersSearch;
 begin
-  Result := List.Add('position', Value);
+  List.Add('position', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.GroupId(const Value: Integer): Integer;
+function TVkParamsUsersSearch.GroupId(const Value: Integer): TVkParamsUsersSearch;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsUsersSearch.FromList(const Value: TVkSearchTargets): Integer;
+function TVkParamsUsersSearch.FromList(const Value: TVkSearchTargets): TVkParamsUsersSearch;
 begin
-  Result := List.Add('from_list', Value.ToString);
+  List.Add('from_list', Value.ToString);
+  Result := Self;
 end;
 
 end.

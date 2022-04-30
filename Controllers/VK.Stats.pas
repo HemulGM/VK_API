@@ -12,39 +12,39 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Cardinal): Integer;
+    function GroupId(const Value: Cardinal): TVkParamsStatsGet;
     /// <summary>
     /// Идентификатор приложения
     /// </summary>
-    function AppId(const Value: Cardinal): Integer;
+    function AppId(const Value: Cardinal): TVkParamsStatsGet;
     /// <summary>
     /// Начало периода статистики
     /// </summary>
-    function TimestampFrom(const Value: TDateTime): Integer;
+    function TimestampFrom(const Value: TDateTime): TVkParamsStatsGet;
     /// <summary>
     /// Окончание периода статистики
     /// </summary>
-    function TimestampTo(const Value: TDateTime): Integer;
+    function TimestampTo(const Value: TDateTime): TVkParamsStatsGet;
     /// <summary>
     /// Временные интервалы
     /// </summary>
-    function Interval(const Value: TVkStatInterval = TVkStatInterval.Day): Integer;
+    function Interval(const Value: TVkStatInterval = TVkStatInterval.Day): TVkParamsStatsGet;
     /// <summary>
     /// Количество интервалов времени
     /// </summary>
-    function IntervalsCount(const Value: Integer): Integer;
+    function IntervalsCount(const Value: Integer): TVkParamsStatsGet;
     /// <summary>
     /// [Нет описания]
     /// </summary>
-    function Filters(const Value: TArrayOfString): Integer;
+    function Filters(const Value: TArrayOfString): TVkParamsStatsGet;
     /// <summary>
     /// Фильтр для получения данных по конкретному блоку статистики сообщества
     /// </summary>
-    function StatsGroups(const Value: TVkStatReachFilters): Integer;
+    function StatsGroups(const Value: TVkStatReachFilters): TVkParamsStatsGet;
     /// <summary>
     /// True — возвращать дополнительно агрегированные данные в результатах
     /// </summary>
-    function Extended(const Value: Boolean = True): Integer;
+    function Extended(const Value: Boolean = True): TVkParamsStatsGet;
   end;
 
   /// <summary>
@@ -105,49 +105,58 @@ end;
 
 { TVkParamsStatsGet }
 
-function TVkParamsStatsGet.GroupId(const Value: Cardinal): Integer;
+function TVkParamsStatsGet.GroupId(const Value: Cardinal): TVkParamsStatsGet;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStatsGet.AppId(const Value: Cardinal): Integer;
+function TVkParamsStatsGet.AppId(const Value: Cardinal): TVkParamsStatsGet;
 begin
-  Result := List.Add('app_id', Value);
+  List.Add('app_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStatsGet.TimestampFrom(const Value: TDateTime): Integer;
+function TVkParamsStatsGet.TimestampFrom(const Value: TDateTime): TVkParamsStatsGet;
 begin
-  Result := List.Add('timestamp_from', Value);
+  List.Add('timestamp_from', Value);
+  Result := Self;
 end;
 
-function TVkParamsStatsGet.TimestampTo(const Value: TDateTime): Integer;
+function TVkParamsStatsGet.TimestampTo(const Value: TDateTime): TVkParamsStatsGet;
 begin
-  Result := List.Add('timestamp_to', Value);
+  List.Add('timestamp_to', Value);
+  Result := Self;
 end;
 
-function TVkParamsStatsGet.Interval(const Value: TVkStatInterval): Integer;
+function TVkParamsStatsGet.Interval(const Value: TVkStatInterval): TVkParamsStatsGet;
 begin
-  Result := List.Add('interval', Value.ToString);
+  List.Add('interval', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsStatsGet.IntervalsCount(const Value: Integer): Integer;
+function TVkParamsStatsGet.IntervalsCount(const Value: Integer): TVkParamsStatsGet;
 begin
-  Result := List.Add('intervals_count', Value);
+  List.Add('intervals_count', Value);
+  Result := Self;
 end;
 
-function TVkParamsStatsGet.Filters(const Value: TArrayOfString): Integer;
+function TVkParamsStatsGet.Filters(const Value: TArrayOfString): TVkParamsStatsGet;
 begin
-  Result := List.Add('filters', Value);
+  List.Add('filters', Value);
+  Result := Self;
 end;
 
-function TVkParamsStatsGet.StatsGroups(const Value: TVkStatReachFilters): Integer;
+function TVkParamsStatsGet.StatsGroups(const Value: TVkStatReachFilters): TVkParamsStatsGet;
 begin
-  Result := List.Add('stats_groups', Value.ToString);
+  List.Add('stats_groups', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsStatsGet.Extended(const Value: Boolean): Integer;
+function TVkParamsStatsGet.Extended(const Value: Boolean): TVkParamsStatsGet;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
 end.

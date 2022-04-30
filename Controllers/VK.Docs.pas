@@ -57,8 +57,7 @@ type
   end;
 
   TDocController = class(TVkController)
-  public
-    /// <summary>
+  public    /// <summary>
     /// Получает адрес сервера для загрузки документа в личное сообщение.
     /// </summary>
     function GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: Integer): Boolean; overload;
@@ -230,14 +229,8 @@ begin
   Result := False;
   if GetMessagesUploadServer(Url, TVkDocUploadType.AudioMessage, PeerId) then
   begin
-    try
-      if TCustomVK(VK).Upload(Url, FileName, Response) then
-        Result := Save(Doc, Response, Title, Tags)
-      else
-        TCustomVK(VK).DoError(Self, TVkException.Create(Response), -1, Response);
-    except
-      Result := False;
-    end;
+    if TCustomVK(VK).Upload(Url, FileName, Response) then
+      Result := Save(Doc, Response, Title, Tags);
   end;
 end;
 

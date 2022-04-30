@@ -35,7 +35,10 @@ requires
   vclie,
   RESTComponents,
   vclimg,
-  fmx;
+  fmx,
+  IndySystem,
+  IndyProtocols,
+  IndyCore;
 
 contains
   VK.API in 'VK.API.pas',
@@ -186,7 +189,8 @@ contains
   VK.Entity.Message.Templates in 'Entity\VK.Entity.Message.Templates.pas',
   VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas',
   VK.Entity.Common in 'Entity\VK.Entity.Common.pas',
-  VK.Params in 'VK.Params.pas';
+  VK.Params in 'VK.Params.pas',
+  VK.ExternalAuth in 'Tools\VK.ExternalAuth.pas';
 
 end.
 

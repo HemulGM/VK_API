@@ -12,27 +12,27 @@ type
     /// <summary>
     /// —окращенна€ ссылка (часть URL после "vk.cc/")
     /// </summary>
-    function Key(const Value: string): Integer;
+    function Key(const Value: string): TVkParamsUtilsGetLinkStats;
     /// <summary>
     /// —трока, по умолчанию vk_cc
     /// </summary>
-    function Source(const Value: string): Integer;
+    function Source(const Value: string): TVkParamsUtilsGetLinkStats;
     /// <summary>
     ///  люч доступа к приватной статистике ссылки
     /// </summary>
-    function AccessKey(const Value: string): Integer;
+    function AccessKey(const Value: string): TVkParamsUtilsGetLinkStats;
     /// <summary>
     /// ≈диница времени дл€ подсчета статистики
     /// </summary>
-    function Interval(const Value: TVkStatInterval = TVkStatInterval.Day): Integer;
+    function Interval(const Value: TVkStatInterval = TVkStatInterval.Day): TVkParamsUtilsGetLinkStats;
     /// <summary>
     /// ƒлительность периода дл€ получени€ статистики в выбранных единицах (из параметра Interval)
     /// </summary>
-    function IntervalsCount(const Value: Integer): Integer;
+    function IntervalsCount(const Value: Integer): TVkParamsUtilsGetLinkStats;
     /// <summary>
     /// True Ч возвращать расширенную статистику (пол/возраст/страна/город), False Ч возвращать только количество переходов
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsUtilsGetLinkStats;
   end;
 
   TUtilsController = class(TVkController)
@@ -139,34 +139,40 @@ end;
 
 { TVkParamsUtilsGetLinkStats }
 
-function TVkParamsUtilsGetLinkStats.Key(const Value: string): Integer;
+function TVkParamsUtilsGetLinkStats.Key(const Value: string): TVkParamsUtilsGetLinkStats;
 begin
-  Result := List.Add('key', Value);
+  List.Add('key', Value);
+  Result := Self;
 end;
 
-function TVkParamsUtilsGetLinkStats.Source(const Value: string): Integer;
+function TVkParamsUtilsGetLinkStats.Source(const Value: string): TVkParamsUtilsGetLinkStats;
 begin
-  Result := List.Add('source', Value);
+  List.Add('source', Value);
+  Result := Self;
 end;
 
-function TVkParamsUtilsGetLinkStats.AccessKey(const Value: string): Integer;
+function TVkParamsUtilsGetLinkStats.AccessKey(const Value: string): TVkParamsUtilsGetLinkStats;
 begin
-  Result := List.Add('access_key', Value);
+  List.Add('access_key', Value);
+  Result := Self;
 end;
 
-function TVkParamsUtilsGetLinkStats.Interval(const Value: TVkStatInterval): Integer;
+function TVkParamsUtilsGetLinkStats.Interval(const Value: TVkStatInterval): TVkParamsUtilsGetLinkStats;
 begin
-  Result := List.Add('interval', Value.ToString);
+  List.Add('interval', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsUtilsGetLinkStats.IntervalsCount(const Value: Integer): Integer;
+function TVkParamsUtilsGetLinkStats.IntervalsCount(const Value: Integer): TVkParamsUtilsGetLinkStats;
 begin
-  Result := List.Add('intervals_count', Value);
+  List.Add('intervals_count', Value);
+  Result := Self;
 end;
 
-function TVkParamsUtilsGetLinkStats.Extended(const Value: Boolean): Integer;
+function TVkParamsUtilsGetLinkStats.Extended(const Value: Boolean): TVkParamsUtilsGetLinkStats;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
 end.

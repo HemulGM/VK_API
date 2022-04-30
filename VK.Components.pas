@@ -29,7 +29,6 @@ type
     property ServiceKey;  // default empty
     property TestMode default False;
     property Token;
-    property UsePseudoAsync default False;
     property UseServiceKeyOnly default False;
     property RequestLimit default 3;
   end;

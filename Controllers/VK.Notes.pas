@@ -11,23 +11,23 @@ type
     /// <summary>
     /// Идентификаторы заметок, информацию о которых необходимо получить
     /// </summary>
-    function NoteIds(const Value: TIdList): Integer;
+    function NoteIds(const Value: TIdList): TVkParamsNotesGet;
     /// <summary>
     /// Идентификатор пользователя, информацию о заметках которого требуется получить
     /// </summary>
-    function UserId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): TVkParamsNotesGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества заметок
     /// </summary>
-    function Offset(const Value: Integer = 0): Integer;
+    function Offset(const Value: Integer = 0): TVkParamsNotesGet;
     /// <summary>
     /// Количество заметок, информацию о которых необходимо получить
     /// </summary>
-    function Count(const Value: Integer = 20): Integer;
+    function Count(const Value: Integer = 20): TVkParamsNotesGet;
     /// <summary>
     /// Сортировка результатов (по дате создания)
     /// </summary>
-    function Sort(const Value: TVkSort): Integer;
+    function Sort(const Value: TVkSort): TVkParamsNotesGet;
   end;
 
   TVkParamsNotesAdd = record
@@ -35,19 +35,19 @@ type
     /// <summary>
     /// Заголовок заметки
     /// </summary>
-    function Title(const Value: string): Integer;
+    function Title(const Value: string): TVkParamsNotesAdd;
     /// <summary>
     /// Текст заметки
     /// </summary>
-    function Text(const Value: string): Integer;
+    function Text(const Value: string): TVkParamsNotesAdd;
     /// <summary>
     /// Настройки приватности просмотра заметки
     /// </summary>
-    function PrivacyView(const Value: TVkPrivacySettings): Integer;
+    function PrivacyView(const Value: TVkPrivacySettings): TVkParamsNotesAdd;
     /// <summary>
     /// Настройки приватности комментирования заметки
     /// </summary>
-    function PrivacyComment(const Value: TVkPrivacySettings): Integer;
+    function PrivacyComment(const Value: TVkPrivacySettings): TVkParamsNotesAdd;
   end;
 
   TVkParamsNotesCreateComment = record
@@ -55,23 +55,23 @@ type
     /// <summary>
     /// Идентификатор заметки
     /// </summary>
-    function NoteId(const Value: Integer): Integer;
+    function NoteId(const Value: Integer): TVkParamsNotesCreateComment;
     /// <summary>
     /// Идентификатор владельца заметки
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsNotesCreateComment;
     /// <summary>
     /// Идентификатор пользователя, ответом на комментарий которого является добавляемый комментарий (не передаётся, если комментарий не является ответом)
     /// </summary>
-    function ReplyTo(const Value: Integer): Integer;
+    function ReplyTo(const Value: Integer): TVkParamsNotesCreateComment;
     /// <summary>
     /// Текст комментария
     /// </summary>
-    function Message(const Value: string): Integer;
+    function Message(const Value: string): TVkParamsNotesCreateComment;
     /// <summary>
     /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария
     /// </summary>
-    function Guid(const Value: string): Integer;
+    function Guid(const Value: string): TVkParamsNotesCreateComment;
   end;
 
   TVkParamsNotesGetComments = record
@@ -79,23 +79,23 @@ type
     /// <summary>
     /// Идентификатор заметки
     /// </summary>
-    function NoteId(const Value: Integer): Integer;
+    function NoteId(const Value: Integer): TVkParamsNotesGetComments;
     /// <summary>
     /// Идентификатор владельца заметки
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsNotesGetComments;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества комментариев
     /// </summary>
-    function Offset(const Value: Integer = 0): Integer;
+    function Offset(const Value: Integer = 0): TVkParamsNotesGetComments;
     /// <summary>
     /// Количество комментариев, которое необходимо получить
     /// </summary>
-    function Count(const Value: Integer = 20): Integer;
+    function Count(const Value: Integer = 20): TVkParamsNotesGetComments;
     /// <summary>
     /// Сортировка результатов (по дате добавления)
     /// </summary>
-    function Sort(const Value: TVkSort = TVkSort.Asc): Integer;
+    function Sort(const Value: TVkSort = TVkSort.Asc): TVkParamsNotesGetComments;
   end;
 
   TNotesController = class(TVkController)
@@ -261,105 +261,124 @@ end;
 
 { TVkParamsNotesGet }
 
-function TVkParamsNotesGet.Count(const Value: Integer): Integer;
+function TVkParamsNotesGet.Count(const Value: Integer): TVkParamsNotesGet;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesGet.NoteIds(const Value: TIdList): Integer;
+function TVkParamsNotesGet.NoteIds(const Value: TIdList): TVkParamsNotesGet;
 begin
-  Result := List.Add('notes_ids', Value.ToString);
+  List.Add('notes_ids', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsNotesGet.Offset(const Value: Integer): Integer;
+function TVkParamsNotesGet.Offset(const Value: Integer): TVkParamsNotesGet;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesGet.Sort(const Value: TVkSort): Integer;
+function TVkParamsNotesGet.Sort(const Value: TVkSort): TVkParamsNotesGet;
 begin
-  Result := List.Add('sort', Ord(Value));
+  List.Add('sort', Ord(Value));
+  Result := Self;
 end;
 
-function TVkParamsNotesGet.UserId(const Value: Integer): Integer;
+function TVkParamsNotesGet.UserId(const Value: Integer): TVkParamsNotesGet;
 begin
-  Result := List.Add('user_id', Value);
+  List.Add('user_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsNotesAdd }
 
-function TVkParamsNotesAdd.PrivacyComment(const Value: TVkPrivacySettings): Integer;
+function TVkParamsNotesAdd.PrivacyComment(const Value: TVkPrivacySettings): TVkParamsNotesAdd;
 begin
-  Result := List.Add('privacy_comment', Value.ToString);
+  List.Add('privacy_comment', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsNotesAdd.PrivacyView(const Value: TVkPrivacySettings): Integer;
+function TVkParamsNotesAdd.PrivacyView(const Value: TVkPrivacySettings): TVkParamsNotesAdd;
 begin
-  Result := List.Add('privacy_view', Value.ToString);
+  List.Add('privacy_view', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsNotesAdd.Text(const Value: string): Integer;
+function TVkParamsNotesAdd.Text(const Value: string): TVkParamsNotesAdd;
 begin
-  Result := List.Add('text', Value);
+  List.Add('text', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesAdd.Title(const Value: string): Integer;
+function TVkParamsNotesAdd.Title(const Value: string): TVkParamsNotesAdd;
 begin
-  Result := List.Add('title', Value);
+  List.Add('title', Value);
+  Result := Self;
 end;
 
 { TVkParamsNotesCreateComment }
 
-function TVkParamsNotesCreateComment.Guid(const Value: string): Integer;
+function TVkParamsNotesCreateComment.Guid(const Value: string): TVkParamsNotesCreateComment;
 begin
-  Result := List.Add('guid', Value);
+  List.Add('guid', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesCreateComment.Message(const Value: string): Integer;
+function TVkParamsNotesCreateComment.Message(const Value: string): TVkParamsNotesCreateComment;
 begin
-  Result := List.Add('message', Value);
+  List.Add('message', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesCreateComment.NoteId(const Value: Integer): Integer;
+function TVkParamsNotesCreateComment.NoteId(const Value: Integer): TVkParamsNotesCreateComment;
 begin
-  Result := List.Add('note_id', Value);
+  List.Add('note_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesCreateComment.OwnerId(const Value: Integer): Integer;
+function TVkParamsNotesCreateComment.OwnerId(const Value: Integer): TVkParamsNotesCreateComment;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesCreateComment.ReplyTo(const Value: Integer): Integer;
+function TVkParamsNotesCreateComment.ReplyTo(const Value: Integer): TVkParamsNotesCreateComment;
 begin
-  Result := List.Add('reply_to', Value);
+  List.Add('reply_to', Value);
+  Result := Self;
 end;
 
 { TVkParamsNotesGetComments }
 
-function TVkParamsNotesGetComments.Count(const Value: Integer): Integer;
+function TVkParamsNotesGetComments.Count(const Value: Integer): TVkParamsNotesGetComments;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesGetComments.NoteId(const Value: Integer): Integer;
+function TVkParamsNotesGetComments.NoteId(const Value: Integer): TVkParamsNotesGetComments;
 begin
-  Result := List.Add('note_id', Value);
+  List.Add('note_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesGetComments.Offset(const Value: Integer): Integer;
+function TVkParamsNotesGetComments.Offset(const Value: Integer): TVkParamsNotesGetComments;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesGetComments.OwnerId(const Value: Integer): Integer;
+function TVkParamsNotesGetComments.OwnerId(const Value: Integer): TVkParamsNotesGetComments;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotesGetComments.Sort(const Value: TVkSort): Integer;
+function TVkParamsNotesGetComments.Sort(const Value: TVkSort): TVkParamsNotesGetComments;
 begin
-  Result := List.Add('sort', Ord(Value));
+  List.Add('sort', Ord(Value));
+  Result := Self;
 end;
 
 end.

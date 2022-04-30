@@ -11,26 +11,26 @@ type
     /// <summary>
     /// ”казывает, какое максимальное число оповещений следует возвращать (максимальное значение 100)
     /// </summary>
-    function Count(const Value: Integer = 30): Integer;
+    function Count(const Value: Integer = 30): TVkParamsNotificationsGet;
     /// <summary>
     /// —троковый идентификатор оповещени€, полученного последним в предыдущем вызове (см. описание пол€ NextFrom в результате)
     /// </summary>
-    function StartFrom(const Value: string): Integer;
+    function StartFrom(const Value: string): TVkParamsNotificationsGet;
     /// <summary>
     /// ѕеречисленные через зап€тую типы оповещений, которые необходимо получить.
     /// ≈сли параметр не задан, то будут получены все возможные типы оповещений
     /// </summary>
-    function Filters(const Value: TVkNotificationFilter): Integer;
+    function Filters(const Value: TVkNotificationFilter): TVkParamsNotificationsGet;
     /// <summary>
     /// ¬рем€, начина€ с которого следует получить оповещени€ дл€ текущего пользовател€.
     /// ≈сли параметр не задан, то он считаетс€ равным значению времени, которое было сутки назад
     /// </summary>
-    function StartTime(const Value: TDateTime): Integer;
+    function StartTime(const Value: TDateTime): TVkParamsNotificationsGet;
     /// <summary>
     /// ¬рем€, до которого следует получить оповещени€ дл€ текущего пользовател€.
     /// ≈сли параметр не задан, то он считаетс€ равным текущему времени
     /// </summary>
-    function EndTime(const Value: TDateTime): Integer;
+    function EndTime(const Value: TDateTime): TVkParamsNotificationsGet;
   end;
 
   TVkParamsNotificationsSendMessage = record
@@ -38,24 +38,24 @@ type
     /// <summary>
     /// —писок идентификаторов пользователей, которым нужно отправить уведомление (максимум 100 идентификаторов)
     /// </summary>
-    function UserIds(const Value: TIdList): Integer;
+    function UserIds(const Value: TIdList): TVkParamsNotificationsSendMessage;
     /// <summary>
     /// “екст уведомлени€ (максимальна€ длина 254)
     /// </summary>
-    function Message(const Value: string): Integer;
+    function Message(const Value: string): TVkParamsNotificationsSendMessage;
     /// <summary>
     /// —одержимое хэша (часть URL в ссылке на приложение вида https://vk.com/app123456#fragment)
     /// </summary>
-    function Fragment(const Value: string): Integer;
+    function Fragment(const Value: string): TVkParamsNotificationsSendMessage;
     /// <summary>
     /// »д сообщества
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsNotificationsSendMessage;
     /// <summary>
     /// ”никальный (в прив€зке к API_ID и ID отправител€) идентификатор, предназначенный дл€ предотвращени€ повторной отправки одинакового сообщени€.
     /// «аданный RandomId используетс€ дл€ проверки уникальности уведомлени€ в течение часа после отправки
     /// </summary>
-    function RandomId(const Value: Integer): Integer;
+    function RandomId(const Value: Integer): TVkParamsNotificationsSendMessage;
   end;
 
   TNotificationsController = class(TVkController)
@@ -118,56 +118,66 @@ end;
 
 { TVkParamsNotificationsGet }
 
-function TVkParamsNotificationsGet.Count(const Value: Integer): Integer;
+function TVkParamsNotificationsGet.Count(const Value: Integer): TVkParamsNotificationsGet;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotificationsGet.EndTime(const Value: TDateTime): Integer;
+function TVkParamsNotificationsGet.EndTime(const Value: TDateTime): TVkParamsNotificationsGet;
 begin
-  Result := List.Add('end_time', Value);
+  List.Add('end_time', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotificationsGet.Filters(const Value: TVkNotificationFilter): Integer;
+function TVkParamsNotificationsGet.Filters(const Value: TVkNotificationFilter): TVkParamsNotificationsGet;
 begin
-  Result := List.Add('filters', Value.ToString);
+  List.Add('filters', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsNotificationsGet.StartFrom(const Value: string): Integer;
+function TVkParamsNotificationsGet.StartFrom(const Value: string): TVkParamsNotificationsGet;
 begin
-  Result := List.Add('start_from', Value);
+  List.Add('start_from', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotificationsGet.StartTime(const Value: TDateTime): Integer;
+function TVkParamsNotificationsGet.StartTime(const Value: TDateTime): TVkParamsNotificationsGet;
 begin
-  Result := List.Add('start_time', Value);
+  List.Add('start_time', Value);
+  Result := Self;
 end;
 
 { TVkParamsNotificationsSendMessage }
 
-function TVkParamsNotificationsSendMessage.Fragment(const Value: string): Integer;
+function TVkParamsNotificationsSendMessage.Fragment(const Value: string): TVkParamsNotificationsSendMessage;
 begin
-  Result := List.Add('fragment', Value);
+  List.Add('fragment', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotificationsSendMessage.GroupId(const Value: Integer): Integer;
+function TVkParamsNotificationsSendMessage.GroupId(const Value: Integer): TVkParamsNotificationsSendMessage;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotificationsSendMessage.Message(const Value: string): Integer;
+function TVkParamsNotificationsSendMessage.Message(const Value: string): TVkParamsNotificationsSendMessage;
 begin
-  Result := List.Add('message', Value);
+  List.Add('message', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotificationsSendMessage.RandomId(const Value: Integer): Integer;
+function TVkParamsNotificationsSendMessage.RandomId(const Value: Integer): TVkParamsNotificationsSendMessage;
 begin
-  Result := List.Add('random_id', Value);
+  List.Add('random_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsNotificationsSendMessage.UserIds(const Value: TIdList): Integer;
+function TVkParamsNotificationsSendMessage.UserIds(const Value: TIdList): TVkParamsNotificationsSendMessage;
 begin
-  Result := List.Add('user_ids', Value);
+  List.Add('user_ids', Value);
+  Result := Self;
 end;
 
 end.

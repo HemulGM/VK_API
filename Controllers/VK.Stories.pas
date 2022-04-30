@@ -13,15 +13,15 @@ type
     /// <summary>
     /// Идентификатор пользователя, истории которого необходимо получить
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsStoriesGet;
     /// <summary>
     /// True — возвращать в ответе дополнительную информацию о профилях пользователей
     /// </summary>
-    function Extended(const Value: Boolean = False): Integer;
+    function Extended(const Value: Boolean = False): TVkParamsStoriesGet;
     /// <summary>
     /// Список дополнительных полей для объектов User и Group, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsStoriesGet;
   end;
 
   TVkParamsStoriesGetUploadServer = record
@@ -29,35 +29,35 @@ type
     /// <summary>
     /// True — разместить историю в новостях
     /// </summary>
-    function AddToNews(const Value: Boolean): Integer;
+    function AddToNews(const Value: Boolean): TVkParamsStoriesGetUploadServer;
     /// <summary>
     /// Идентификаторы пользователей, которые будут видеть историю (для отправки в личном сообщении)
     /// </summary>
-    function UserIds(const Value: TIdList): Integer;
+    function UserIds(const Value: TIdList): TVkParamsStoriesGetUploadServer;
     /// <summary>
     /// Идентификатор истории, в ответ на которую создается новая
     /// </summary>
-    function ReplyToStory(const Value: string): Integer;
+    function ReplyToStory(const Value: string): TVkParamsStoriesGetUploadServer;
     /// <summary>
     /// Текст ссылки для перехода из истории (только для историй сообществ)
     /// </summary>
-    function LinkText(const Value: TVkLinkText): Integer;
+    function LinkText(const Value: TVkLinkText): TVkParamsStoriesGetUploadServer;
     /// <summary>
     /// Адрес ссылки для перехода из истории
     /// </summary>
-    function LinkUrl(const Value: string): Integer;
+    function LinkUrl(const Value: string): TVkParamsStoriesGetUploadServer;
     /// <summary>
     /// Идентификатор сообщества, в которое должна быть загружена история (при работе с ключом доступа пользователя)
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsStoriesGetUploadServer;
     /// <summary>
     /// Объект кликабельного стикера (данные в формате JSON)
     /// </summary>
-    function ClickableStickers(const Value: string): Integer; overload;
+    function ClickableStickers(const Value: string): TVkParamsStoriesGetUploadServer; overload;
     /// <summary>
     /// Объект кликабельного стикера
     /// </summary>
-    function ClickableStickers(Value: TVkStoriesStickersInfo): Integer; overload;
+    function ClickableStickers(Value: TVkStoriesStickersInfo): TVkParamsStoriesGetUploadServer; overload;
   end;
 
   TVkParamsStoriesGetReplies = record
@@ -65,23 +65,23 @@ type
     /// <summary>
     /// Идентификатор владельца истории
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsStoriesGetReplies;
     /// <summary>
     /// Идентификатор истории
     /// </summary>
-    function StoryId(const Value: Integer): Integer;
+    function StoryId(const Value: Integer): TVkParamsStoriesGetReplies;
     /// <summary>
     /// Ключ доступа для приватного объекта
     /// </summary>
-    function AccessKey(const Value: string): Integer;
+    function AccessKey(const Value: string): TVkParamsStoriesGetReplies;
     /// <summary>
     /// True — возвращать дополнительную информацию о профилях и сообществах
     /// </summary>
-    function Extended(const Value: Boolean = False): Integer;
+    function Extended(const Value: Boolean = False): TVkParamsStoriesGetReplies;
     /// <summary>
     /// Дополнительные поля профилей и сообществ, которые необходимо вернуть в ответе
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsStoriesGetReplies;
   end;
 
   TVkParamsStoriesGetViewers = record
@@ -89,23 +89,23 @@ type
     /// <summary>
     /// Идентификатор владельца истории
     /// </summary>
-    function OwnerId(Value: Integer): Integer;
+    function OwnerId(Value: Integer): TVkParamsStoriesGetViewers;
     /// <summary>
     /// Идентификатор истории
     /// </summary>
-    function StoryId(Value: Integer): Integer;
+    function StoryId(Value: Integer): TVkParamsStoriesGetViewers;
     /// <summary>
     /// Максимальное число результатов в ответе
     /// </summary>
-    function Count(Value: Integer = 100): Integer;
+    function Count(Value: Integer = 100): TVkParamsStoriesGetViewers;
     /// <summary>
     /// Сдвиг для получения определённого подмножества результатов
     /// </summary>
-    function Offset(Value: Integer = 0): Integer;
+    function Offset(Value: Integer = 0): TVkParamsStoriesGetViewers;
     /// <summary>
     /// True — возвращать в ответе расширенную информацию о пользователях
     /// </summary>
-    function Extended(Value: Boolean = False): Integer;
+    function Extended(Value: Boolean = False): TVkParamsStoriesGetViewers;
   end;
 
   TVkParamsStoriesSearch = record
@@ -113,41 +113,41 @@ type
     /// <summary>
     /// Поисковый запрос
     /// </summary>
-    function Query(Value: string): Integer;
+    function Query(Value: string): TVkParamsStoriesSearch;
     /// <summary>
     /// Идентификатор места
     /// </summary>
-    function PlaceId(Value: Integer): Integer;
+    function PlaceId(Value: Integer): TVkParamsStoriesSearch;
     /// <summary>
     /// Географическая широта точки, в радиусе которой необходимо производить поиск, заданная в градусах (от -90 до 90)
     /// </summary>
-    function Latitude(Value: Extended): Integer;
+    function Latitude(Value: Extended): TVkParamsStoriesSearch;
     /// <summary>
     /// Географическая долгота точки, в радиусе которой необходимо производить поиск, заданная в градусах (от -180 до 180)
     /// </summary>
-    function Longitude(Value: Extended): Integer;
+    function Longitude(Value: Extended): TVkParamsStoriesSearch;
     /// <summary>
     /// Радиус зоны поиска в метрах
     /// </summary>
-    function Radius(Value: Integer): Integer;
+    function Radius(Value: Integer): TVkParamsStoriesSearch;
     /// <summary>
     /// Идентификатор упомянутого в истории пользователя или сообщества
     /// </summary>
-    function MentionedId(Value: Integer): Integer;
+    function MentionedId(Value: Integer): TVkParamsStoriesSearch;
     /// <summary>
     /// Количество историй, информацию о которых необходимо вернуть
     /// </summary>
-    function Count(Value: Integer = 20): Integer;
+    function Count(Value: Integer = 20): TVkParamsStoriesSearch;
     /// <summary>
     /// Параметр, определяющий необходимость возвращать расширенную информацию о владельце истории
     /// False - возвращаются только идентификаторы
     /// True — будут дополнительно возвращены имя и фамили
     /// </summary>
-    function Extended(Value: Boolean): Integer;
+    function Extended(Value: Boolean): TVkParamsStoriesSearch;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsStoriesSearch;
   end;
 
   TVkParamsStoriesSendInteraction = record
@@ -155,22 +155,22 @@ type
     /// <summary>
     /// Ключ доступа пользователя, полученный при подписке. Возвращает событие VKWebAppSubscribeStoryApp
     /// </summary>
-    function AccessKey(Value: string): Integer;
+    function AccessKey(Value: string): TVkParamsStoriesSendInteraction;
     /// <summary>
     /// Текст фидбека
     /// </summary>
-    function Message(Value: string): Integer;
+    function Message(Value: string): TVkParamsStoriesSendInteraction;
     /// <summary>
     /// False — фидбек виден только отправителю и автору истории;
     /// True — фидбек виден всем зрителям истории и автору
     /// </summary>
-    function IsBroadcast(Value: Boolean = False): Integer;
+    function IsBroadcast(Value: Boolean = False): TVkParamsStoriesSendInteraction;
     /// <summary>
     /// False — автор фидбека не анонимный;
     /// True — автор фидбека анонимный
     /// </summary>
-    function IsAnonymous(Value: Boolean = False): Integer;
-    function UnseenMarker(Value: Boolean): Integer;
+    function IsAnonymous(Value: Boolean = False): TVkParamsStoriesSendInteraction;
+    function UnseenMarker(Value: Boolean): TVkParamsStoriesSendInteraction;
   end;
 
   /// <summary>
@@ -376,189 +376,224 @@ end;
 
 { TVkParamsStoriesGet }
 
-function TVkParamsStoriesGet.Extended(const Value: Boolean): Integer;
+function TVkParamsStoriesGet.Extended(const Value: Boolean): TVkParamsStoriesGet;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsStoriesGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsStoriesGet;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGet.OwnerId(const Value: Integer): Integer;
+function TVkParamsStoriesGet.OwnerId(const Value: Integer): TVkParamsStoriesGet;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsStoriesGetPhotoUploadServer }
 
-function TVkParamsStoriesGetUploadServer.AddToNews(const Value: Boolean): Integer;
+function TVkParamsStoriesGetUploadServer.AddToNews(const Value: Boolean): TVkParamsStoriesGetUploadServer;
 begin
-  Result := List.Add('add_to_news', Value);
+  List.Add('add_to_news', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.UserIds(const Value: TIdList): Integer;
+function TVkParamsStoriesGetUploadServer.UserIds(const Value: TIdList): TVkParamsStoriesGetUploadServer;
 begin
-  Result := List.Add('user_ids', Value);
+  List.Add('user_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.ReplyToStory(const Value: string): Integer;
+function TVkParamsStoriesGetUploadServer.ReplyToStory(const Value: string): TVkParamsStoriesGetUploadServer;
 begin
-  Result := List.Add('reply_to_story', Value);
+  List.Add('reply_to_story', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.LinkText(const Value: TVkLinkText): Integer;
+function TVkParamsStoriesGetUploadServer.LinkText(const Value: TVkLinkText): TVkParamsStoriesGetUploadServer;
 begin
-  Result := List.Add('link_text', Value.ToString);
+  List.Add('link_text', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.LinkUrl(const Value: string): Integer;
+function TVkParamsStoriesGetUploadServer.LinkUrl(const Value: string): TVkParamsStoriesGetUploadServer;
 begin
-  Result := List.Add('link_url', Value);
+  List.Add('link_url', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.ClickableStickers(Value: TVkStoriesStickersInfo): Integer;
+function TVkParamsStoriesGetUploadServer.ClickableStickers(Value: TVkStoriesStickersInfo): TVkParamsStoriesGetUploadServer;
 begin
-  Result := List.Add('clickable_stickers', Value.ToJsonString);
+  List.Add('clickable_stickers', Value.ToJsonString);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.GroupId(const Value: Integer): Integer;
+function TVkParamsStoriesGetUploadServer.GroupId(const Value: Integer): TVkParamsStoriesGetUploadServer;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.ClickableStickers(const Value: string): Integer;
+function TVkParamsStoriesGetUploadServer.ClickableStickers(const Value: string): TVkParamsStoriesGetUploadServer;
 begin
-  Result := List.Add('clickable_stickers', Value);
+  List.Add('clickable_stickers', Value);
+  Result := Self;
 end;
 
 { TVkParamsStoriesGetReplies }
 
-function TVkParamsStoriesGetReplies.OwnerId(const Value: Integer): Integer;
+function TVkParamsStoriesGetReplies.OwnerId(const Value: Integer): TVkParamsStoriesGetReplies;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetReplies.StoryId(const Value: Integer): Integer;
+function TVkParamsStoriesGetReplies.StoryId(const Value: Integer): TVkParamsStoriesGetReplies;
 begin
-  Result := List.Add('story_id', Value);
+  List.Add('story_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetReplies.AccessKey(const Value: string): Integer;
+function TVkParamsStoriesGetReplies.AccessKey(const Value: string): TVkParamsStoriesGetReplies;
 begin
-  Result := List.Add('access_key', Value);
+  List.Add('access_key', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetReplies.Extended(const Value: Boolean): Integer;
+function TVkParamsStoriesGetReplies.Extended(const Value: Boolean): TVkParamsStoriesGetReplies;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetReplies.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsStoriesGetReplies.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsStoriesGetReplies;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
 { TVkParamsStoriesGetViewers }
 
-function TVkParamsStoriesGetViewers.OwnerId(Value: Integer): Integer;
+function TVkParamsStoriesGetViewers.OwnerId(Value: Integer): TVkParamsStoriesGetViewers;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetViewers.StoryId(Value: Integer): Integer;
+function TVkParamsStoriesGetViewers.StoryId(Value: Integer): TVkParamsStoriesGetViewers;
 begin
-  Result := List.Add('story_id', Value);
+  List.Add('story_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetViewers.Count(Value: Integer): Integer;
+function TVkParamsStoriesGetViewers.Count(Value: Integer): TVkParamsStoriesGetViewers;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetViewers.Offset(Value: Integer): Integer;
+function TVkParamsStoriesGetViewers.Offset(Value: Integer): TVkParamsStoriesGetViewers;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesGetViewers.Extended(Value: Boolean): Integer;
+function TVkParamsStoriesGetViewers.Extended(Value: Boolean): TVkParamsStoriesGetViewers;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
 { TVkParamsStoriesSearch }
 
-function TVkParamsStoriesSearch.Query(Value: string): Integer;
+function TVkParamsStoriesSearch.Query(Value: string): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('q', Value);
+  List.Add('q', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSearch.PlaceId(Value: Integer): Integer;
+function TVkParamsStoriesSearch.PlaceId(Value: Integer): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('place_id', Value);
+  List.Add('place_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSearch.Latitude(Value: Extended): Integer;
+function TVkParamsStoriesSearch.Latitude(Value: Extended): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('latitude', Value);
+  List.Add('latitude', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSearch.Longitude(Value: Extended): Integer;
+function TVkParamsStoriesSearch.Longitude(Value: Extended): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('longitude', Value);
+  List.Add('longitude', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSearch.Radius(Value: Integer): Integer;
+function TVkParamsStoriesSearch.Radius(Value: Integer): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('radius', Value);
+  List.Add('radius', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSearch.MentionedId(Value: Integer): Integer;
+function TVkParamsStoriesSearch.MentionedId(Value: Integer): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('mentioned_id', Value);
+  List.Add('mentioned_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSearch.Count(Value: Integer): Integer;
+function TVkParamsStoriesSearch.Count(Value: Integer): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSearch.Extended(Value: Boolean): Integer;
+function TVkParamsStoriesSearch.Extended(Value: Boolean): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsStoriesSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsStoriesSearch;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
 { TVkParamsStoriesSendInteraction }
 
-function TVkParamsStoriesSendInteraction.AccessKey(Value: string): Integer;
+function TVkParamsStoriesSendInteraction.AccessKey(Value: string): TVkParamsStoriesSendInteraction;
 begin
-  Result := List.Add('access_key', Value);
+  List.Add('access_key', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSendInteraction.Message(Value: string): Integer;
+function TVkParamsStoriesSendInteraction.Message(Value: string): TVkParamsStoriesSendInteraction;
 begin
-  Result := List.Add('message', Value);
+  List.Add('message', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSendInteraction.IsBroadcast(Value: Boolean): Integer;
+function TVkParamsStoriesSendInteraction.IsBroadcast(Value: Boolean): TVkParamsStoriesSendInteraction;
 begin
-  Result := List.Add('is_broadcast', Value);
+  List.Add('is_broadcast', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSendInteraction.IsAnonymous(Value: Boolean): Integer;
+function TVkParamsStoriesSendInteraction.IsAnonymous(Value: Boolean): TVkParamsStoriesSendInteraction;
 begin
-  Result := List.Add('is_anonymous', Value);
+  List.Add('is_anonymous', Value);
+  Result := Self;
 end;
 
-function TVkParamsStoriesSendInteraction.UnseenMarker(Value: Boolean): Integer;
+function TVkParamsStoriesSendInteraction.UnseenMarker(Value: Boolean): TVkParamsStoriesSendInteraction;
 begin
-  Result := List.Add('unseen_marker', Value);
+  List.Add('unseen_marker', Value);
+  Result := Self;
 end;
 
 end.

@@ -8,17 +8,17 @@ uses
 type
   TVkParamsNewsfeedBanned = record
   private
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsNewsfeedBanned;
   public
     List: TParams;
     /// <summary>
     /// список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsNewsfeedBanned;
     /// <summary>
     /// падеж для склонения имени и фамилии пользователя
     /// </summary>
-    function NameCase(const Value: TVkNameCase): Integer;
+    function NameCase(const Value: TVkNameCase): TVkParamsNewsfeedBanned;
   end;
 
   TVkParamsNewsfeedGet = record
@@ -27,24 +27,24 @@ type
     /// Перечисленные через запятую названия списков новостей, которые необходимо получить
     /// Если параметр не задан, то будут получены все возможные списки новостей
     /// </summary>
-    function Filters(const Value: TVkNewsfeedTypes = []): Integer;
+    function Filters(const Value: TVkNewsfeedTypes = []): TVkParamsNewsfeedGet;
     /// <summary>
     /// True - включить в выдачу также скрытых из новостей пользователей. False - не возвращать скрытых пользователей
     /// </summary>
-    function ReturnBanned(const Value: Boolean): Integer;
+    function ReturnBanned(const Value: Boolean): TVkParamsNewsfeedGet;
     /// <summary>
     /// Время, начиная с которого следует получить новости для текущего пользователя
     /// </summary>
-    function StartTime(const Value: TDateTime): Integer;
+    function StartTime(const Value: TDateTime): TVkParamsNewsfeedGet;
     /// <summary>
     /// Время, до которого следует получить новости для текущего пользователя.
     /// Если параметр не задан, то он считается равным текущему времени
     /// </summary>
-    function EndTime(const Value: TDateTime): Integer;
+    function EndTime(const Value: TDateTime): TVkParamsNewsfeedGet;
     /// <summary>
     /// Максимальное количество фотографий, информацию о которых необходимо вернуть (максимальное значение: 100)
     /// </summary>
-    function MaxPhotos(const Value: Integer = 5): Integer;
+    function MaxPhotos(const Value: Integer = 5): TVkParamsNewsfeedGet;
     /// <summary>
     /// Перечисленные через запятую иcточники новостей, новости от которых необходимо получить
     /// [uid] или u[uid], -[gid] или g[gid]
@@ -55,23 +55,23 @@ type
     /// following - список пользователей, на которых подписан текущий пользователь
     /// list[идентификатор списка новостей] - список новостей. Вы можете найти все списки новостей пользователя используя метод newsfeed.getLists
     /// </summary>
-    function SourceIds(const Value: TArrayOfString): Integer;
+    function SourceIds(const Value: TArrayOfString): TVkParamsNewsfeedGet;
     /// <summary>
     /// Идентификатор, необходимый для получения следующей страницы результатов. Значение, необходимое для передачи в этом параметре, возвращается в поле ответа next_from
     /// </summary>
-    function StartFrom(const Value: string): Integer;
+    function StartFrom(const Value: string): TVkParamsNewsfeedGet;
     /// <summary>
     /// Указывает, какое максимальное число новостей следует возвращать, но не более 100
     /// </summary>
-    function Count(const Value: Integer = 50): Integer;
+    function Count(const Value: Integer = 50): TVkParamsNewsfeedGet;
     /// <summary>
     /// Список дополнительных полей для профилей и групп, которые необходимо вернуть
     /// </summary>
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsNewsfeedGet;
     /// <summary>
     /// [Нет описания]
     /// </summary>
-    function Section(const Value: string): Integer;
+    function Section(const Value: string): TVkParamsNewsfeedGet;
   end;
 
   TVkParamsNewsfeedGetComments = record
@@ -79,41 +79,41 @@ type
     /// <summary>
     /// Перечисленные через запятую типы объектов, изменения комментариев к которым нужно вернуть
     /// </summary>
-    function Filters(const Value: TVkNewsfeedCommentsTypes = []): Integer;
+    function Filters(const Value: TVkNewsfeedCommentsTypes = []): TVkParamsNewsfeedGetComments;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields = []): Integer;
+    function Fields(const Value: TVkProfileFields = []): TVkParamsNewsfeedGetComments;
     /// <summary>
     /// Указывает, какое максимальное число новостей следует возвращать, но не более 100.
     /// Для автоподгрузки Вы можете использовать возвращаемый данным методом параметр NewOffset.
     /// </summary>
-    function Count(const Value: Integer = 30): Integer;
+    function Count(const Value: Integer = 30): TVkParamsNewsfeedGetComments;
     /// <summary>
     /// Количество комментариев к записям, которые нужно получить.
     /// Положительное число, доступен начиная с версии 5.23, максимальное значение 10
     /// </summary>
-    function LastCommentsCount(const Value: Integer = 0): Integer;
+    function LastCommentsCount(const Value: Integer = 0): TVkParamsNewsfeedGetComments;
     /// <summary>
     /// Время, до которого следует получить новости для текущего пользователя.
     /// Если параметр не задан, то он считается равным текущему времени
     /// </summary>
-    function StartTime(const Value: TDateTime): Integer;
+    function StartTime(const Value: TDateTime): TVkParamsNewsfeedGetComments;
     /// <summary>
     /// Время, начиная с которого следует получить новости для текущего пользователя.
     /// Если параметр не задан, то он считается равным значению времени, которое было сутки назад
     /// </summary>
-    function EndTime(const Value: TDateTime): Integer;
+    function EndTime(const Value: TDateTime): TVkParamsNewsfeedGetComments;
     /// <summary>
     /// Идентификатор, необходимый для получения следующей страницы результатов.
     /// Значение, необходимое для передачи в этом параметре, возвращается в поле ответа NextFrom
     /// </summary>
-    function StartFrom(const Value: string): Integer;
+    function StartFrom(const Value: string): TVkParamsNewsfeedGetComments;
     /// <summary>
     /// Идентификатор объекта, комментарии к репостам которого необходимо вернуть,
     /// например wall1_45486. Если указан данный параметр, параметр Filters указывать необязательно
     /// </summary>
-    function Reposts(const Value: string): Integer;
+    function Reposts(const Value: string): TVkParamsNewsfeedGetComments;
   end;
 
   TVkParamsNewsfeedGetMentions = record
@@ -121,27 +121,27 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsNewsfeedGetMentions;
     /// <summary>
     /// Количество возвращаемых записей. Максимальное значение параметра 50
     /// </summary>
-    function Count(const Value: Integer = 20): Integer;
+    function Count(const Value: Integer = 20): TVkParamsNewsfeedGetMentions;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества новостей
     /// </summary>
-    function Offset(const Value: Integer = 0): Integer;
+    function Offset(const Value: Integer = 0): TVkParamsNewsfeedGetMentions;
     /// <summary>
     /// Время, начиная с которого следует получать упоминания о пользователе.
     /// Если параметр не задан, то будут возвращены все упоминания о пользователе,
     /// если не задан параметр EndTime, в противном случае упоминания с учетом параметра EndTime
     /// </summary>
-    function StartTime(const Value: TDateTime): Integer;
+    function StartTime(const Value: TDateTime): TVkParamsNewsfeedGetMentions;
     /// <summary>
     /// Время, в формате unixtime, до которого следует получать упоминания о пользователе.
     /// Если параметр не задан, то будут возвращены все упоминания о пользователе,
     /// если не задан параметр StartTime, в противном случае упоминания с учетом параметра StartTime
     /// </summary>
-    function EndTime(const Value: TDateTime): Integer;
+    function EndTime(const Value: TDateTime): TVkParamsNewsfeedGetMentions;
   end;
 
   TVkParamsNewsfeedGetRecommended = record
@@ -149,30 +149,30 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields = []): Integer;
+    function Fields(const Value: TVkProfileFields = []): TVkParamsNewsfeedGetRecommended;
     /// <summary>
     /// Указывает, какое максимальное число новостей следует возвращать, но не более 100
     /// </summary>
-    function Count(const Value: Integer = 50): Integer;
+    function Count(const Value: Integer = 50): TVkParamsNewsfeedGetRecommended;
     /// <summary>
     /// Время, начиная с которого следует получить новости для текущего пользователя.
     /// Если параметр не задан, то он считается равным значению времени, которое было сутки назад
     /// </summary>
-    function StartTime(const Value: TDateTime): Integer;
+    function StartTime(const Value: TDateTime): TVkParamsNewsfeedGetRecommended;
     /// <summary>
     /// Время, до которого следует получить новости для текущего пользователя.
     /// Если параметр не задан, то он считается равным текущему времени
     /// </summary>
-    function EndTime(const Value: TDateTime): Integer;
+    function EndTime(const Value: TDateTime): TVkParamsNewsfeedGetRecommended;
     /// <summary>
     /// Идентификатор, необходимый для получения следующей страницы результатов.
     /// Значение, необходимое для передачи в этом параметре, возвращается в поле ответа NextFrom
     /// </summary>
-    function StartFrom(const Value: string): Integer;
+    function StartFrom(const Value: string): TVkParamsNewsfeedGetRecommended;
     /// <summary>
     /// Максимальное количество фотографий, информацию о которых необходимо вернуть
     /// </summary>
-    function MaxPhotos(const Value: Integer = 5): Integer;
+    function MaxPhotos(const Value: Integer = 5): TVkParamsNewsfeedGetRecommended;
   end;
 
   TVkParamsNewsfeedSearch = record
@@ -180,44 +180,44 @@ type
     /// <summary>
     /// Поисковой запрос
     /// </summary>
-    function Query(const Value: string): Integer;
+    function Query(const Value: string): TVkParamsNewsfeedSearch;
     /// <summary>
     /// Список дополнительных полей для профилей и групп, которые необходимо вернуть
     /// </summary>
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsNewsfeedSearch;
     /// <summary>
     /// Указывает, какое максимальное число записей следует возвращать.
     /// Обратите внимание — даже при использовании параметра Offset для получения информации
     /// доступны только первые 1000 результатов (максимальное значение 200)
     /// </summary>
-    function Count(const Value: Integer = 30): Integer;
+    function Count(const Value: Integer = 30): TVkParamsNewsfeedSearch;
     /// <summary>
     /// Время, начиная с которого следует получить новости для текущего пользователя.
     /// Если параметр не задан, то он считается равным значению времени, которое было сутки назад
     /// </summary>
-    function StartTime(const Value: TDateTime): Integer;
+    function StartTime(const Value: TDateTime): TVkParamsNewsfeedSearch;
     /// <summary>
     /// Время, до которого следует получить новости для текущего пользователя.
     /// Если параметр не задан, то он считается равным текущему времени
     /// </summary>
-    function EndTime(const Value: TDateTime): Integer;
+    function EndTime(const Value: TDateTime): TVkParamsNewsfeedSearch;
     /// <summary>
     /// Идентификатор, необходимый для получения следующей страницы результатов.
     /// Значение, необходимое для передачи в этом параметре, возвращается в поле ответа NextFrom
     /// </summary>
-    function StartFrom(const Value: string): Integer;
+    function StartFrom(const Value: string): TVkParamsNewsfeedSearch;
     /// <summary>
     /// Географическая широта точки, в радиусе от которой необходимо производить поиск, заданная в градусах (от -90 до 90)
     /// </summary>
-    function Latitude(const Value: Extended): Integer;
+    function Latitude(const Value: Extended): TVkParamsNewsfeedSearch;
     /// <summary>
     /// Географическая долгота точки, в радиусе от которой необходимо производить поиск, заданная в градусах (от -180 до 180)
     /// </summary>
-    function Longitude(const Value: Extended): Integer;
+    function Longitude(const Value: Extended): TVkParamsNewsfeedSearch;
     /// <summary>
     /// True, если необходимо получить информацию о пользователе или сообществе, разместившем запись
     /// </summary>
-    function Extended(const Value: Boolean = False): Integer;
+    function Extended(const Value: Boolean = False): TVkParamsNewsfeedSearch;
   end;
 
   TNewsfeedController = class(TVkController)
@@ -482,219 +482,260 @@ end;
 
 { TVkParamsNewsfeedGet }
 
-function TVkParamsNewsfeedGet.Count(const Value: Integer): Integer;
+function TVkParamsNewsfeedGet.Count(const Value: Integer): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.EndTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedGet.EndTime(const Value: TDateTime): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('end_time', Value);
+  List.Add('end_time', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
+function TVkParamsNewsfeedGet.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.Filters(const Value: TVkNewsfeedTypes): Integer;
+function TVkParamsNewsfeedGet.Filters(const Value: TVkNewsfeedTypes): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('filters', Value.ToString);
+  List.Add('filters', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.MaxPhotos(const Value: Integer): Integer;
+function TVkParamsNewsfeedGet.MaxPhotos(const Value: Integer): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('max_photos', Value);
+  List.Add('max_photos', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.ReturnBanned(const Value: Boolean): Integer;
+function TVkParamsNewsfeedGet.ReturnBanned(const Value: Boolean): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('return_banned', Value);
+  List.Add('return_banned', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.Section(const Value: string): Integer;
+function TVkParamsNewsfeedGet.Section(const Value: string): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('section', Value);
+  List.Add('section', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.SourceIds(const Value: TArrayOfString): Integer;
+function TVkParamsNewsfeedGet.SourceIds(const Value: TArrayOfString): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('source_ids', Value);
+  List.Add('source_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.StartFrom(const Value: string): Integer;
+function TVkParamsNewsfeedGet.StartFrom(const Value: string): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('start_from', Value);
+  List.Add('start_from', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.StartTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedGet.StartTime(const Value: TDateTime): TVkParamsNewsfeedGet;
 begin
-  Result := List.Add('start_time', Value);
+  List.Add('start_time', Value);
+  Result := Self;
 end;
 
 { TVkParamsNewsfeedBanned }
 
-function TVkParamsNewsfeedBanned.Extended(const Value: Boolean): Integer;
+function TVkParamsNewsfeedBanned.Extended(const Value: Boolean): TVkParamsNewsfeedBanned;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedBanned.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
+function TVkParamsNewsfeedBanned.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsNewsfeedBanned;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedBanned.NameCase(const Value: TVkNameCase): Integer;
+function TVkParamsNewsfeedBanned.NameCase(const Value: TVkNameCase): TVkParamsNewsfeedBanned;
 begin
-  Result := List.Add('name_case', Value.ToString);
+  List.Add('name_case', Value.ToString);
+  Result := Self;
 end;
 
 { TVkParamsNewsfeedGetComments }
 
-function TVkParamsNewsfeedGetComments.Count(const Value: Integer): Integer;
+function TVkParamsNewsfeedGetComments.Count(const Value: Integer): TVkParamsNewsfeedGetComments;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetComments.EndTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedGetComments.EndTime(const Value: TDateTime): TVkParamsNewsfeedGetComments;
 begin
-  Result := List.Add('end_time', Value);
+  List.Add('end_time', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetComments.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsNewsfeedGetComments.Fields(const Value: TVkProfileFields): TVkParamsNewsfeedGetComments;
 begin
-  Result := List.Add('fields', Value.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetComments.Filters(const Value: TVkNewsfeedCommentsTypes): Integer;
+function TVkParamsNewsfeedGetComments.Filters(const Value: TVkNewsfeedCommentsTypes): TVkParamsNewsfeedGetComments;
 begin
-  Result := List.Add('filters', Value.ToString);
+  List.Add('filters', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetComments.LastCommentsCount(const Value: Integer): Integer;
+function TVkParamsNewsfeedGetComments.LastCommentsCount(const Value: Integer): TVkParamsNewsfeedGetComments;
 begin
-  Result := List.Add('last_comments_count', Value);
+  List.Add('last_comments_count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetComments.Reposts(const Value: string): Integer;
+function TVkParamsNewsfeedGetComments.Reposts(const Value: string): TVkParamsNewsfeedGetComments;
 begin
-  Result := List.Add('reposts', Value);
+  List.Add('reposts', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetComments.StartFrom(const Value: string): Integer;
+function TVkParamsNewsfeedGetComments.StartFrom(const Value: string): TVkParamsNewsfeedGetComments;
 begin
-  Result := List.Add('start_from', Value);
+  List.Add('start_from', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetComments.StartTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedGetComments.StartTime(const Value: TDateTime): TVkParamsNewsfeedGetComments;
 begin
-  Result := List.Add('start_time', Value);
+  List.Add('start_time', Value);
+  Result := Self;
 end;
 
 { TVkParamsNewsfeedGetMentions }
 
-function TVkParamsNewsfeedGetMentions.Count(const Value: Integer): Integer;
+function TVkParamsNewsfeedGetMentions.Count(const Value: Integer): TVkParamsNewsfeedGetMentions;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetMentions.EndTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedGetMentions.EndTime(const Value: TDateTime): TVkParamsNewsfeedGetMentions;
 begin
-  Result := List.Add('end_time', Value);
+  List.Add('end_time', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetMentions.Offset(const Value: Integer): Integer;
+function TVkParamsNewsfeedGetMentions.Offset(const Value: Integer): TVkParamsNewsfeedGetMentions;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetMentions.OwnerId(const Value: Integer): Integer;
+function TVkParamsNewsfeedGetMentions.OwnerId(const Value: Integer): TVkParamsNewsfeedGetMentions;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetMentions.StartTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedGetMentions.StartTime(const Value: TDateTime): TVkParamsNewsfeedGetMentions;
 begin
-  Result := List.Add('start_time', Value);
+  List.Add('start_time', Value);
+  Result := Self;
 end;
 
 { TVkParamsNewsfeedGetRecommended }
 
-function TVkParamsNewsfeedGetRecommended.Count(const Value: Integer): Integer;
+function TVkParamsNewsfeedGetRecommended.Count(const Value: Integer): TVkParamsNewsfeedGetRecommended;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetRecommended.EndTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedGetRecommended.EndTime(const Value: TDateTime): TVkParamsNewsfeedGetRecommended;
 begin
-  Result := List.Add('end_time', Value);
+  List.Add('end_time', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetRecommended.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsNewsfeedGetRecommended.Fields(const Value: TVkProfileFields): TVkParamsNewsfeedGetRecommended;
 begin
-  Result := List.Add('fields', Value.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetRecommended.MaxPhotos(const Value: Integer): Integer;
+function TVkParamsNewsfeedGetRecommended.MaxPhotos(const Value: Integer): TVkParamsNewsfeedGetRecommended;
 begin
-  Result := List.Add('max_photos', Value);
+  List.Add('max_photos', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetRecommended.StartFrom(const Value: string): Integer;
+function TVkParamsNewsfeedGetRecommended.StartFrom(const Value: string): TVkParamsNewsfeedGetRecommended;
 begin
-  Result := List.Add('start_from', Value);
+  List.Add('start_from', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedGetRecommended.StartTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedGetRecommended.StartTime(const Value: TDateTime): TVkParamsNewsfeedGetRecommended;
 begin
-  Result := List.Add('start_time', Value);
+  List.Add('start_time', Value);
+  Result := Self;
 end;
 
 { TVkParamsNewsfeedSearch }
 
-function TVkParamsNewsfeedSearch.Count(const Value: Integer): Integer;
+function TVkParamsNewsfeedSearch.Count(const Value: Integer): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.EndTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedSearch.EndTime(const Value: TDateTime): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('end_time', Value);
+  List.Add('end_time', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.Extended(const Value: Boolean): Integer;
+function TVkParamsNewsfeedSearch.Extended(const Value: Boolean): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
+function TVkParamsNewsfeedSearch.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.Latitude(const Value: Extended): Integer;
+function TVkParamsNewsfeedSearch.Latitude(const Value: Extended): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('latitude', Value);
+  List.Add('latitude', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.Longitude(const Value: Extended): Integer;
+function TVkParamsNewsfeedSearch.Longitude(const Value: Extended): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('longitude', Value);
+  List.Add('longitude', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.Query(const Value: string): Integer;
+function TVkParamsNewsfeedSearch.Query(const Value: string): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('q', Value);
+  List.Add('q', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.StartFrom(const Value: string): Integer;
+function TVkParamsNewsfeedSearch.StartFrom(const Value: string): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('start_from', Value);
+  List.Add('start_from', Value);
+  Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.StartTime(const Value: TDateTime): Integer;
+function TVkParamsNewsfeedSearch.StartTime(const Value: TDateTime): TVkParamsNewsfeedSearch;
 begin
-  Result := List.Add('start_time', Value);
+  List.Add('start_time', Value);
+  Result := Self;
 end;
 
 end.

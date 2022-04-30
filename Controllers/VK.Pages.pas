@@ -12,31 +12,31 @@ type
     /// <summary>
     /// Идентификатор владельца вики-страницы
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsPagesGet;
     /// <summary>
     /// Идентификатор вики-страницы
     /// </summary>
-    function PageId(const Value: Integer): Integer;
+    function PageId(const Value: Integer): TVkParamsPagesGet;
     /// <summary>
     /// True — требуется получить информацию о глобальной вики-странице
     /// </summary>
-    function Global(const Value: Boolean): Integer;
+    function Global(const Value: Boolean = True): TVkParamsPagesGet;
     /// <summary>
     /// True — получаемая wiki страница является предпросмотром для прикрепленной ссылки
     /// </summary>
-    function SitePreview(const Value: Boolean): Integer;
+    function SitePreview(const Value: Boolean = True): TVkParamsPagesGet;
     /// <summary>
     /// Название страницы
     /// </summary>
-    function Title(const Value: string): Integer;
+    function Title(const Value: string): TVkParamsPagesGet;
     /// <summary>
     /// True — требуется вернуть содержимое страницы в вики-формате
     /// </summary>
-    function NeedSource(const Value: Boolean): Integer;
+    function NeedSource(const Value: Boolean = True): TVkParamsPagesGet;
     /// <summary>
     /// True — требуется вернуть html-представление страницы
     /// </summary>
-    function NeedHtml(const Value: Boolean): Integer;
+    function NeedHtml(const Value: Boolean = True): TVkParamsPagesGet;
   end;
 
   TVkParamsPagesGetVersion = record
@@ -44,19 +44,19 @@ type
     /// <summary>
     /// Идентификатор версии
     /// </summary>
-    function VersionId(const Value: Integer): Integer;
+    function VersionId(const Value: Integer): TVkParamsPagesGetVersion;
     /// <summary>
     /// Идентификатор сообщества, которому принадлежит вики-страница
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsPagesGetVersion;
     /// <summary>
     /// Идентификатор пользователя, который создал страницу
     /// </summary>
-    function UserId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): TVkParamsPagesGetVersion;
     /// <summary>
     /// Определяет, требуется ли в ответе html-представление вики-страницы
     /// </summary>
-    function NeedHtml(const Value: Boolean): Integer;
+    function NeedHtml(const Value: Boolean): TVkParamsPagesGetVersion;
   end;
 
   TVkParamsPagesSave = record
@@ -64,47 +64,47 @@ type
     /// <summary>
     /// Новый текст страницы в вики-формате
     /// </summary>
-    function Text(const Value: string): Integer;
+    function Text(const Value: string): TVkParamsPagesSave;
     /// <summary>
     /// Идентификатор вики-страницы. Вместо PageId может быть передан параметр Title
     /// </summary>
-    function PageId(const Value: Integer): Integer;
+    function PageId(const Value: Integer): TVkParamsPagesSave;
     /// <summary>
     /// Идентификатор сообщества, которому принадлежит вики-страница
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsPagesSave;
     /// <summary>
     /// Идентификатор пользователя, создавшего вики-страницу
     /// </summary>
-    function UserId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): TVkParamsPagesSave;
     /// <summary>
     /// Название вики-страницы
     /// </summary>
-    function Title(const Value: string): Integer;
+    function Title(const Value: string): TVkParamsPagesSave;
   end;
 
   TVkParamsPagesSaveAccess = record
     List: TParams;
     /// <summary>
-    /// идентификатор вики-страницы
+    /// Идентификатор вики-страницы
     /// </summary>
-    function PageId(const Value: Integer): Integer;
+    function PageId(const Value: Integer): TVkParamsPagesSaveAccess;
     /// <summary>
-    /// идентификатор сообщества, которому принадлежит вики-страница
+    /// Идентификатор сообщества, которому принадлежит вики-страница
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsPagesSaveAccess;
     /// <summary>
-    /// идентификатор пользователя, создавшего вики-страницу
+    /// Идентификатор пользователя, создавшего вики-страницу
     /// </summary>
-    function UserId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): TVkParamsPagesSaveAccess;
     /// <summary>
-    /// значение настройки доступа на чтение
+    /// Значение настройки доступа на чтение
     /// </summary>
-    function View(const Value: TVkPageAccess): Integer;
+    function View(const Value: TVkPageAccess): TVkParamsPagesSaveAccess;
     /// <summary>
-    /// значение настройки доступа на редактирование
+    /// Значение настройки доступа на редактирование
     /// </summary>
-    function Edit(const Value: TVkPageAccess): Integer;
+    function Edit(const Value: TVkPageAccess): TVkParamsPagesSaveAccess;
   end;
 
   /// <summary>
@@ -206,8 +206,7 @@ var
 begin
   if GroupId <> 0 then
     Params.Add('group_id', GroupId);
-  Params.Add('text', Text);
-  Result := Handler.Execute('pages.parseWiki', Params).ResponseAsStr(Html);
+  Result := Handler.Execute('pages.parseWiki', Params.Add('text', Text)).ResponseAsStr(Html);
 end;
 
 function TPagesController.Save(var Id: Integer; Params: TVkParamsPagesSave): Boolean;
@@ -222,115 +221,136 @@ end;
 
 { TVkParamsPagesGet }
 
-function TVkParamsPagesGet.OwnerId(const Value: Integer): Integer;
+function TVkParamsPagesGet.OwnerId(const Value: Integer): TVkParamsPagesGet;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGet.PageId(const Value: Integer): Integer;
+function TVkParamsPagesGet.PageId(const Value: Integer): TVkParamsPagesGet;
 begin
-  Result := List.Add('page_id', Value);
+  List.Add('page_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGet.Global(const Value: Boolean): Integer;
+function TVkParamsPagesGet.Global(const Value: Boolean): TVkParamsPagesGet;
 begin
-  Result := List.Add('global', Value);
+  List.Add('global', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGet.SitePreview(const Value: Boolean): Integer;
+function TVkParamsPagesGet.SitePreview(const Value: Boolean): TVkParamsPagesGet;
 begin
-  Result := List.Add('site_preview', Value);
+  List.Add('site_preview', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGet.Title(const Value: string): Integer;
+function TVkParamsPagesGet.Title(const Value: string): TVkParamsPagesGet;
 begin
-  Result := List.Add('title', Value);
+  List.Add('title', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGet.NeedSource(const Value: Boolean): Integer;
+function TVkParamsPagesGet.NeedSource(const Value: Boolean): TVkParamsPagesGet;
 begin
-  Result := List.Add('need_source', Value);
+  List.Add('need_source', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGet.NeedHtml(const Value: Boolean): Integer;
+function TVkParamsPagesGet.NeedHtml(const Value: Boolean): TVkParamsPagesGet;
 begin
-  Result := List.Add('need_html', Value);
+  List.Add('need_html', Value);
+  Result := Self;
 end;
 
 { TVkParamsPagesGetVersion }
 
-function TVkParamsPagesGetVersion.VersionId(const Value: Integer): Integer;
+function TVkParamsPagesGetVersion.VersionId(const Value: Integer): TVkParamsPagesGetVersion;
 begin
-  Result := List.Add('version_id', Value);
+  List.Add('version_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGetVersion.GroupId(const Value: Integer): Integer;
+function TVkParamsPagesGetVersion.GroupId(const Value: Integer): TVkParamsPagesGetVersion;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGetVersion.UserId(const Value: Integer): Integer;
+function TVkParamsPagesGetVersion.UserId(const Value: Integer): TVkParamsPagesGetVersion;
 begin
-  Result := List.Add('user_id', Value);
+  List.Add('user_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesGetVersion.NeedHtml(const Value: Boolean): Integer;
+function TVkParamsPagesGetVersion.NeedHtml(const Value: Boolean): TVkParamsPagesGetVersion;
 begin
-  Result := List.Add('need_html', Value);
+  List.Add('need_html', Value);
+  Result := Self;
 end;
 
 { TVkParamsPagesSave }
 
-function TVkParamsPagesSave.Text(const Value: string): Integer;
+function TVkParamsPagesSave.Text(const Value: string): TVkParamsPagesSave;
 begin
-  Result := List.Add('text', Value);
+  List.Add('text', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesSave.PageId(const Value: Integer): Integer;
+function TVkParamsPagesSave.PageId(const Value: Integer): TVkParamsPagesSave;
 begin
-  Result := List.Add('page_id', Value);
+  List.Add('page_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesSave.GroupId(const Value: Integer): Integer;
+function TVkParamsPagesSave.GroupId(const Value: Integer): TVkParamsPagesSave;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesSave.UserId(const Value: Integer): Integer;
+function TVkParamsPagesSave.UserId(const Value: Integer): TVkParamsPagesSave;
 begin
-  Result := List.Add('user_id', Value);
+  List.Add('user_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesSave.Title(const Value: string): Integer;
+function TVkParamsPagesSave.Title(const Value: string): TVkParamsPagesSave;
 begin
-  Result := List.Add('title', Value);
+  List.Add('title', Value);
+  Result := Self;
 end;
 
 { TVkParamsPagesSaveAccess }
 
-function TVkParamsPagesSaveAccess.PageId(const Value: Integer): Integer;
+function TVkParamsPagesSaveAccess.PageId(const Value: Integer): TVkParamsPagesSaveAccess;
 begin
-  Result := List.Add('page_id', Value);
+  List.Add('page_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesSaveAccess.GroupId(const Value: Integer): Integer;
+function TVkParamsPagesSaveAccess.GroupId(const Value: Integer): TVkParamsPagesSaveAccess;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesSaveAccess.UserId(const Value: Integer): Integer;
+function TVkParamsPagesSaveAccess.UserId(const Value: Integer): TVkParamsPagesSaveAccess;
 begin
-  Result := List.Add('user_id', Value);
+  List.Add('user_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPagesSaveAccess.View(const Value: TVkPageAccess): Integer;
+function TVkParamsPagesSaveAccess.View(const Value: TVkPageAccess): TVkParamsPagesSaveAccess;
 begin
-  Result := List.Add('view', Ord(Value));
+  List.Add('view', Ord(Value));
+  Result := Self;
 end;
 
-function TVkParamsPagesSaveAccess.Edit(const Value: TVkPageAccess): Integer;
+function TVkParamsPagesSaveAccess.Edit(const Value: TVkPageAccess): TVkParamsPagesSaveAccess;
 begin
-  Result := List.Add('edit', Ord(Value));
+  List.Add('edit', Ord(Value));
+  Result := Self;
 end;
 
 end.

@@ -151,6 +151,7 @@ const
   VK_CHAT_ID_START = 2000000000;
   VK_GROUP_ID_START = 1000000000;
 
+
 type
   {$IFDEF OLD_VERSION}
   TArrayOfString = array of string;
@@ -253,28 +254,28 @@ type
 
   TParamsHelper = record helper for TParams
   private
-    function AddParam(var Dest: TParams; Param: TParam): Integer; inline;
+    function AddParam(Param: TParam): TParams; {$IFNDEF DEBUG} inline; {$ENDIF}
   public
-    function Add(Param: TParam): Integer; overload; inline;
-    function Add(Key: string; Value: string): Integer; overload; inline;
-    function Add(Key: string; Value: Integer): Integer; overload; inline;
-    function Add(Key: string; Value: Extended): Integer; overload; inline;
-    function Add(Key: string; Value: TDateTime; Format: string = ''): Integer; overload; inline;
-    function Add(Key: string; Value: Boolean): Integer; overload; inline;
-    function Add(Key: string; Value: TArrayOfString): Integer; overload; inline;
-    function Add(Key: string; Value: TArrayOfInteger): Integer; overload; inline;
-    function Add(Key: string; Value: TAttachmentArray): Integer; overload; inline;
-    function Add(Key: string; Value: TVkEntity): Integer; overload; inline;
-    function Add(Key: string; Value: TAttachment): Integer; overload; inline;
-    function KeyExists(Key: string): Boolean; inline;
-    function GetValue(Key: string): string; inline;
-    function Remove(Key: string): string; inline;
+    function Add(Param: TParam): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: string): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: Integer): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: Extended): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: TDateTime; Format: string = ''): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: Boolean): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: TArrayOfString): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: TArrayOfInteger): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: TAttachmentArray): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: TVkEntity): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: TAttachment): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function KeyExists(Key: string): Boolean; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function GetValue(Key: string): string; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Remove(Key: string): string; {$IFNDEF DEBUG} inline; {$ENDIF}
   end;
 
   TVkPhotoFeedType = (Photo, PhotoTag);
 
   TVkPhotoFeedTypeHelper = record helper for TVkPhotoFeedType
-    function ToString: string; inline;
+    function ToString: string; {$IFNDEF DEBUG} inline; {$ENDIF}
   end;
 
   /// <summary>
@@ -285,8 +286,8 @@ type
   TVkPhotoSystemAlbum = (Wall, Saved, Profile);
 
   TVkPhotoSystemAlbumHelper = record helper for TVkPhotoSystemAlbum
-    function ToString: string; inline;
-    function ToVkId: Integer; inline;
+    function ToString: string; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function ToVkId: Integer; {$IFNDEF DEBUG} inline; {$ENDIF}
   end;
 
   TVkMediaSort = (DateAdd, Duration, Popular);
@@ -296,7 +297,7 @@ type
   TVkVideosFilter = (MP4, YouTube, Vimeo, Short, Long);
 
   TVkVideosFilterHelper = record helper for TVkVideosFilter
-    function ToString: string; inline;
+    function ToString: string; {$IFNDEF DEBUG} inline; {$ENDIF}
   end;
 
   TVkVideosFilters = set of TVkVideosFilter;
@@ -1323,6 +1324,7 @@ const
   VkColorPrimary = $FF5181B8;
   VkColorSecondary = $FFFFFFFF;
 
+
 const
   //Вспомогательное текстовое представление
   VkUserActive: array[Boolean] of string = ('Бездействие', 'Покинул сайт');
@@ -1345,6 +1347,7 @@ const
     'Сменилась обложка беседы', 'Назначен новый администратор', 'Закреплено сообщение',
     'Пользователь присоединился к беседе', 'Пользователь покинул беседу', 'Пользователя исключили из беседы',
     'С пользователя сняты права администратора');
+
 
 const
   //Аналогии типов
@@ -1470,6 +1473,7 @@ const
   VkConversationDisableReason: array[TVkConversationDisableReason] of Integer = (18, 900, 901, 902, 915, 916, 917, 918, 203);
   VkPostType: array[TVkPostType] of string = ('post', 'copy', 'reply', 'postpone', 'suggest');
   VkPostSourceType: array[TVkPostSourceType] of string = ('vk', 'widget', 'api', 'rss', 'sms');
+
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -1754,57 +1758,57 @@ end;
 
 { TParamsHelper }
 
-function TParamsHelper.AddParam(var Dest: TParams; Param: TParam): Integer;
+function TParamsHelper.AddParam(Param: TParam): TParams;
 var
   i: Integer;
 begin
-  for i := Low(Dest) to High(Dest) do
-    if Dest[i][0] = Param[0] then
+  for i := Low(Self) to High(Self) do
+    if Self[i][0] = Param[0] then
     begin
-      Dest[i] := Param;
-      Exit(i);
+      Self[i] := Param;
+      Exit(Self);
     end;
-  Result := Length(Dest) + 1;
-  SetLength(Dest, Result);
-  Dest[Result - 1] := Param;
+  SetLength(Self, Length(Self) + 1);
+  Self[High(Self)] := Param;
+  Result := Self;
 end;
 
-function TParamsHelper.Add(Param: TParam): Integer;
+function TParamsHelper.Add(Param: TParam): TParams;
 begin
-  Result := AddParam(Self, Param);
+  Result := AddParam(Param);
 end;
 
-function TParamsHelper.Add(Key, Value: string): Integer;
+function TParamsHelper.Add(Key, Value: string): TParams;
 begin
-  Result := AddParam(Self, [Key, Value]);
+  Result := AddParam([Key, Value]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: Integer): Integer;
+function TParamsHelper.Add(Key: string; Value: Integer): TParams;
 begin
-  Result := AddParam(Self, [Key, Value.ToString]);
+  Result := AddParam([Key, Value.ToString]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: Boolean): Integer;
+function TParamsHelper.Add(Key: string; Value: Boolean): TParams;
 begin
-  Result := AddParam(Self, [Key, BoolToString(Value)]);
+  Result := AddParam([Key, BoolToString(Value)]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: TArrayOfInteger): Integer;
+function TParamsHelper.Add(Key: string; Value: TArrayOfInteger): TParams;
 begin
-  Result := AddParam(Self, [Key, Value.ToString]);
+  Result := AddParam([Key, Value.ToString]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: TDateTime; Format: string): Integer;
+function TParamsHelper.Add(Key: string; Value: TDateTime; Format: string): TParams;
 begin
   if Format.IsEmpty then
-    Result := AddParam(Self, [Key, DateTimeToUnix(Value, False).ToString])
+    Result := AddParam([Key, DateTimeToUnix(Value, False).ToString])
   else
-    Result := AddParam(Self, [Key, FormatDateTime(Format, Value)]);
+    Result := AddParam([Key, FormatDateTime(Format, Value)]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: Extended): Integer;
+function TParamsHelper.Add(Key: string; Value: Extended): TParams;
 begin
-  Result := AddParam(Self, [Key, Value.ToString]);
+  Result := AddParam([Key, Value.ToString]);
 end;
 
 function TParamsHelper.GetValue(Key: string): string;
@@ -1817,24 +1821,24 @@ begin
       Exit(Self[i][1]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: TArrayOfString): Integer;
+function TParamsHelper.Add(Key: string; Value: TArrayOfString): TParams;
 begin
-  Result := AddParam(Self, [Key, Value.ToString]);
+  Result := AddParam([Key, Value.ToString]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: TAttachmentArray): Integer;
+function TParamsHelper.Add(Key: string; Value: TAttachmentArray): TParams;
 begin
-  Result := AddParam(Self, [Key, Value.ToStrings.ToString]);
+  Result := AddParam([Key, Value.ToStrings.ToString]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: TVkEntity): Integer;
+function TParamsHelper.Add(Key: string; Value: TVkEntity): TParams;
 begin
-  Result := AddParam(Self, [Key, Value.ToJsonString]);
+  Result := AddParam([Key, Value.ToJsonString]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: TAttachment): Integer;
+function TParamsHelper.Add(Key: string; Value: TAttachment): TParams;
 begin
-  Result := AddParam(Self, [Key, Value.ToString]);
+  Result := AddParam([Key, Value.ToString]);
 end;
 
 function TParamsHelper.KeyExists(Key: string): Boolean;

@@ -12,31 +12,31 @@ type
     /// <summary>
     /// Идентификатор метки, закладки отмеченные которой требуется вернуть
     /// </summary>
-    function TagId(const Value: Integer): Integer;
+    function TagId(const Value: Integer): TVkParamsFaveGet;
     /// <summary>
     /// Типы объектов, которые необходимо вернуть
     /// </summary>
-    function ItemType(const Value: TVkFaveType): Integer;
+    function ItemType(const Value: TVkFaveType): TVkParamsFaveGet;
     /// <summary>
     /// Смещение относительно первого объекта в закладках пользователя для выборки определенного подмножества
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsFaveGet;
     /// <summary>
     /// Количество возвращаемых закладок (максимальное значение 100)
     /// </summary>
-    function Count(const Value: Integer = 50): Integer;
+    function Count(const Value: Integer = 50): TVkParamsFaveGet;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): Integer;
+    function Fields(const Value: TVkProfileFields): TVkParamsFaveGet;
     /// <summary>
     /// IsFromSnackbar
     /// </summary>
-    function IsFromSnackbar(const Value: Boolean): Integer;
+    function IsFromSnackbar(const Value: Boolean): TVkParamsFaveGet;
     /// <summary>
     /// True, если необходимо получить информацию о пользователе
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsFaveGet;
   end;
 
   TVkParamsFavePageTagsSet = record
@@ -45,23 +45,23 @@ type
     /// Идентификатор пользователя, которому требуется проставить метку в закладках.
     /// Обязательный параметр, если не задан параметр GroupId
     /// </summary>
-    function UserId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): TVkParamsFavePageTagsSet;
     /// <summary>
     /// Идентификатор сообщества, которому требуется проставить метку в закладках.
     /// Обязательный параметр, если не задан параметр UserId
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsFavePageTagsSet;
     /// <summary>
     /// Перечисленные через запятую идентификаторы тегов, которые требуется присвоить странице
     /// </summary>
-    function TagIds(const Value: TArrayOfInteger): Integer;
+    function TagIds(const Value: TArrayOfInteger): TVkParamsFavePageTagsSet;
   end;
 
   TVkParamsFavePostAdd = record
     List: TParams;
-    function Ref(const Value: string): Integer;
-    function TrackCode(const Value: string): Integer;
-    function Source(const Value: string): Integer;
+    function Ref(const Value: string): TVkParamsFavePostAdd;
+    function TrackCode(const Value: string): TVkParamsFavePostAdd;
+    function Source(const Value: string): TVkParamsFavePostAdd;
   end;
 
   TVkParamsFaveTagsSet = record
@@ -69,27 +69,27 @@ type
     /// <summary>
     /// Тип объекта, которому необходимо присвоить метку
     /// </summary>
-    function ItemType(const Value: TVkFaveType): Integer;
+    function ItemType(const Value: TVkFaveType): TVkParamsFaveTagsSet;
     /// <summary>
     /// Идентификатор владельца объекта, которому требуется присвоить метку
     /// </summary>
-    function ItemOwnerId(const Value: Integer): Integer;
+    function ItemOwnerId(const Value: Integer): TVkParamsFaveTagsSet;
     /// <summary>
     /// Идентификатор объекта
     /// </summary>
-    function ItemId(const Value: Integer): Integer;
+    function ItemId(const Value: Integer): TVkParamsFaveTagsSet;
     /// <summary>
     /// Идентификатор метки, которую требуется присвоить объекту
     /// </summary>
-    function TagIds(const Value: TArrayOfInteger): Integer;
+    function TagIds(const Value: TArrayOfInteger): TVkParamsFaveTagsSet;
     /// <summary>
     /// Идентификатор ссылки, которой требуется присвоить метку
     /// </summary>
-    function LinkId(const Value: string): Integer;
+    function LinkId(const Value: string): TVkParamsFaveTagsSet;
     /// <summary>
     /// LinkUrl
     /// </summary>
-    function LinkUrl(const Value: string): Integer;
+    function LinkUrl(const Value: string): TVkParamsFaveTagsSet;
   end;
 
   TVkParamsFavePagesGet = record
@@ -98,24 +98,24 @@ type
     /// Смещение относительно первого объекта в закладках пользователя для выборки определенного подмножества
     /// (максимальное значение 10000)
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsFavePagesGet;
     /// <summary>
     /// Количество возвращаемых закладок (максимальное значение 500)
     /// </summary>
-    function Count(const Value: Integer = 50): Integer;
+    function Count(const Value: Integer = 50): TVkParamsFavePagesGet;
     /// <summary>
     /// Типы объектов, которые необходимо вернуть
     /// Если параметр не указан — вернутся объекты пользователей и сообществ, добавленных в закладки, в порядке добавления
     /// </summary>
-    function &Type(const Value: TVkFavePageType): Integer;
+    function &Type(const Value: TVkFavePageType): TVkParamsFavePagesGet;
     /// <summary>
     /// Список дополнительных полей для объектов user и group, которые необходимо вернуть
     /// </summary>
-    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): Integer;
+    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsFavePagesGet;
     /// <summary>
     /// Идентификатор метки, закладки отмеченные которой требуется вернуть
     /// </summary>
-    function TagId(const Value: Integer): Integer;
+    function TagId(const Value: Integer): TVkParamsFavePagesGet;
   end;
 
   TFaveController = class(TVkController)
@@ -407,132 +407,156 @@ end;
 
 { TVkGetFaveParams }
 
-function TVkParamsFaveGet.Count(const Value: Integer): Integer;
+function TVkParamsFaveGet.Count(const Value: Integer): TVkParamsFaveGet;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsFaveGet.Extended(const Value: Boolean): Integer;
+function TVkParamsFaveGet.Extended(const Value: Boolean): TVkParamsFaveGet;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsFaveGet.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsFaveGet.Fields(const Value: TVkProfileFields): TVkParamsFaveGet;
 begin
-  Result := List.Add('fields', Value.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsFaveGet.IsFromSnackbar(const Value: Boolean): Integer;
+function TVkParamsFaveGet.IsFromSnackbar(const Value: Boolean): TVkParamsFaveGet;
 begin
-  Result := List.Add('is_from_snackbar', Value);
+  List.Add('is_from_snackbar', Value);
+  Result := Self;
 end;
 
-function TVkParamsFaveGet.ItemType(const Value: TVkFaveType): Integer;
+function TVkParamsFaveGet.ItemType(const Value: TVkFaveType): TVkParamsFaveGet;
 begin
-  Result := List.Add('item_type', Value.ToString);
+  List.Add('item_type', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsFaveGet.Offset(const Value: Integer): Integer;
+function TVkParamsFaveGet.Offset(const Value: Integer): TVkParamsFaveGet;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsFaveGet.TagId(const Value: Integer): Integer;
+function TVkParamsFaveGet.TagId(const Value: Integer): TVkParamsFaveGet;
 begin
-  Result := List.Add('tag_id', Value);
+  List.Add('tag_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsFavePageTagsSet }
 
-function TVkParamsFavePageTagsSet.GroupId(const Value: Integer): Integer;
+function TVkParamsFavePageTagsSet.GroupId(const Value: Integer): TVkParamsFavePageTagsSet;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsFavePageTagsSet.TagIds(const Value: TArrayOfInteger): Integer;
+function TVkParamsFavePageTagsSet.TagIds(const Value: TArrayOfInteger): TVkParamsFavePageTagsSet;
 begin
-  Result := List.Add('tag_ids', Value);
+  List.Add('tag_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsFavePageTagsSet.UserId(const Value: Integer): Integer;
+function TVkParamsFavePageTagsSet.UserId(const Value: Integer): TVkParamsFavePageTagsSet;
 begin
-  Result := List.Add('user_id', Value);
+  List.Add('user_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsFaveTagsSet }
 
-function TVkParamsFaveTagsSet.ItemId(const Value: Integer): Integer;
+function TVkParamsFaveTagsSet.ItemId(const Value: Integer): TVkParamsFaveTagsSet;
 begin
-  Result := List.Add('item_id', Value);
+  List.Add('item_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsFaveTagsSet.ItemOwnerId(const Value: Integer): Integer;
+function TVkParamsFaveTagsSet.ItemOwnerId(const Value: Integer): TVkParamsFaveTagsSet;
 begin
-  Result := List.Add('item_owner_id', Value);
+  List.Add('item_owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsFaveTagsSet.ItemType(const Value: TVkFaveType): Integer;
+function TVkParamsFaveTagsSet.ItemType(const Value: TVkFaveType): TVkParamsFaveTagsSet;
 begin
-  Result := List.Add('item_type', Value.ToString);
+  List.Add('item_type', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsFaveTagsSet.LinkId(const Value: string): Integer;
+function TVkParamsFaveTagsSet.LinkId(const Value: string): TVkParamsFaveTagsSet;
 begin
-  Result := List.Add('link_id', Value);
+  List.Add('link_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsFaveTagsSet.LinkUrl(const Value: string): Integer;
+function TVkParamsFaveTagsSet.LinkUrl(const Value: string): TVkParamsFaveTagsSet;
 begin
-  Result := List.Add('link_url', Value);
+  List.Add('link_url', Value);
+  Result := Self;
 end;
 
-function TVkParamsFaveTagsSet.TagIds(const Value: TArrayOfInteger): Integer;
+function TVkParamsFaveTagsSet.TagIds(const Value: TArrayOfInteger): TVkParamsFaveTagsSet;
 begin
-  Result := List.Add('tag_ids', Value);
+  List.Add('tag_ids', Value);
+  Result := Self;
 end;
 
 { TVkParamsFavePagesGet }
 
-function TVkParamsFavePagesGet.Count(const Value: Integer): Integer;
+function TVkParamsFavePagesGet.Count(const Value: Integer): TVkParamsFavePagesGet;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsFavePagesGet.Fields(GroupFields: TVkGroupFields; UserFields: TVkProfileFields): Integer;
+function TVkParamsFavePagesGet.Fields(GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsFavePagesGet;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsFavePagesGet.Offset(const Value: Integer): Integer;
+function TVkParamsFavePagesGet.Offset(const Value: Integer): TVkParamsFavePagesGet;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsFavePagesGet.TagId(const Value: Integer): Integer;
+function TVkParamsFavePagesGet.TagId(const Value: Integer): TVkParamsFavePagesGet;
 begin
-  Result := List.Add('tag_id', Value);
+  List.Add('tag_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsFavePagesGet.&Type(const Value: TVkFavePageType): Integer;
+function TVkParamsFavePagesGet.&Type(const Value: TVkFavePageType): TVkParamsFavePagesGet;
 begin
-  Result := List.Add('type', Value.ToString);
+  List.Add('type', Value.ToString);
+  Result := Self;
 end;
 
 { TVkParamsFavePostAdd }
 
-function TVkParamsFavePostAdd.Ref(const Value: string): Integer;
+function TVkParamsFavePostAdd.Ref(const Value: string): TVkParamsFavePostAdd;
 begin
-  Result := List.Add('ref', Value);
+  List.Add('ref', Value);
+  Result := Self;
 end;
 
-function TVkParamsFavePostAdd.Source(const Value: string): Integer;
+function TVkParamsFavePostAdd.Source(const Value: string): TVkParamsFavePostAdd;
 begin
-  Result := List.Add('source', Value);
+  List.Add('source', Value);
+  Result := Self;
 end;
 
-function TVkParamsFavePostAdd.TrackCode(const Value: string): Integer;
+function TVkParamsFavePostAdd.TrackCode(const Value: string): TVkParamsFavePostAdd;
 begin
-  Result := List.Add('track_code', Value);
+  List.Add('track_code', Value);
+  Result := Self;
 end;
 
 end.

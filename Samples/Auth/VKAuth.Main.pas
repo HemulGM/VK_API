@@ -213,16 +213,17 @@ type
     procedure ButtonSendClick(Sender: TObject);
     procedure Button49Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure TabSheet1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
   private
     FToken: string;
     FChangePasswordHash: string;
     FTokenExpiry: Int64;
-  public
-    { Public declarations }
+  public    { Public declarations }
   end;
 
 var
   FormMain: TFormMain;
+
 
 implementation
 
@@ -1178,14 +1179,20 @@ begin
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
-  VK1.Application := TVkApplicationData.VKAdmin;
+  //VK1.Application := TVkApplicationData.VKAdmin;
   {if TFile.Exists('token.tmp') then
     VK1.Token := TFile.ReadAllText('token.tmp');   }
+  VK1.Token := '7317a7a252ba1180322eb675d541c32a23117564e028f91e69d2024be99afd29b318173eb2f207779feae';
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);
 begin
   VK1.Login;
+end;
+
+procedure TFormMain.TabSheet1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+begin
+
 end;
 
 {

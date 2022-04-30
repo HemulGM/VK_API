@@ -13,65 +13,65 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
     /// Название товара. Ограничение по длине считается в кодировке cp1251 (минимальная длина 4, максимальная длина 100)
     /// </summary>
-    function Name(const Value: string): Integer;
+    function Name(const Value: string): TVkParamsMarketAdd;
     /// <summary>
     /// Описание товара (минимальная длина 10)
     /// </summary>
-    function Description(const Value: string): Integer;
+    function Description(const Value: string): TVkParamsMarketAdd;
     /// <summary>
     /// Идентификатор категории товара (market.getCategories)
     /// </summary>
-    function CategoryId(const Value: Integer): Integer;
+    function CategoryId(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
     /// Цена товара
     /// </summary>
-    function Price(const Value: Extended): Integer;
+    function Price(const Value: Extended): TVkParamsMarketAdd;
     /// <summary>
     /// Старая цена товара
     /// </summary>
-    function OldPrice(const Value: Extended): Integer;
+    function OldPrice(const Value: Extended): TVkParamsMarketAdd;
     /// <summary>
     /// Статус товара (True — товар удален, False — товар не удален)
     /// </summary>
-    function Deleted(const Value: Boolean): Integer;
+    function Deleted(const Value: Boolean): TVkParamsMarketAdd;
     /// <summary>
     /// Идентификатор фотографии обложки товара.
     /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer, передав параметр MainPhoto
     /// </summary>
-    function MainPhotoId(const Value: Integer): Integer;
+    function MainPhotoId(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
     /// Идентификаторы дополнительных фотографий товара.
     /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer
     /// </summary>
-    function PhotoIds(const Value: TIdList): Integer;
+    function PhotoIds(const Value: TIdList): TVkParamsMarketAdd;
     /// <summary>
     /// Ссылка на сайт товара (максимальная длина 320)
     /// </summary>
-    function Url(const Value: string): Integer;
+    function Url(const Value: string): TVkParamsMarketAdd;
     /// <summary>
     /// Ширина в миллиметрах (максимальное значение 100000)
     /// </summary>
-    function DimensionWidth(const Value: Integer): Integer;
+    function DimensionWidth(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
     /// Высота в миллиметрах (максимальное значение 100000)
     /// </summary>
-    function DimensionHeight(const Value: Integer): Integer;
+    function DimensionHeight(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
     /// Толщина в миллиметрах (максимальное значение 100000)
     /// </summary>
-    function DimensionLength(const Value: Integer): Integer;
+    function DimensionLength(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
     /// Вес в граммах (максимальное значение 100000000)
     /// </summary>
-    function Weight(const Value: Integer): Integer;
+    function Weight(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
     /// Артикул товара, произвольная строка (максимальная длина 50)
     /// </summary>
-    function Sku(const Value: string): Integer;
+    function Sku(const Value: string): TVkParamsMarketAdd;
   end;
 
   TVkParamsMarketCreateComment = record
@@ -79,37 +79,37 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketCreateComment;
     /// <summary>
     /// Идентификатор товара
     /// </summary>
-    function ItemId(const Value: Integer): Integer;
+    function ItemId(const Value: Integer): TVkParamsMarketCreateComment;
     /// <summary>
     /// Текст комментария (является обязательным, если не задан параметр Attachments)
     /// Максимальное количество символов: 2048
     /// </summary>
-    function Message(const Value: string): Integer;
+    function Message(const Value: string): TVkParamsMarketCreateComment;
     /// <summary>
     /// Список объектов, приложенных к комментарию
     /// </summary>
-    function Attachments(const Value: TAttachmentArray): Integer;
+    function Attachments(const Value: TAttachmentArray): TVkParamsMarketCreateComment;
     /// <summary>
     /// True — комментарий будет опубликован от имени группы,
     /// False — комментарий будет опубликован от имени пользователя (по умолчанию)
     /// </summary>
-    function FromGroup(const Value: Boolean = False): Integer;
+    function FromGroup(const Value: Boolean = False): TVkParamsMarketCreateComment;
     /// <summary>
     /// Идентификатор комментария, в ответ на который должен быть добавлен новый комментарий
     /// </summary>
-    function ReplyToComment(const Value: Integer): Integer;
+    function ReplyToComment(const Value: Integer): TVkParamsMarketCreateComment;
     /// <summary>
     /// Идентификатор стикера
     /// </summary>
-    function StickerId(const Value: Integer): Integer;
+    function StickerId(const Value: Integer): TVkParamsMarketCreateComment;
     /// <summary>
     /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария
     /// </summary>
-    function Guid(const Value: string): Integer;
+    function Guid(const Value: string): TVkParamsMarketCreateComment;
   end;
 
   TVkParamsMarketEdit = record
@@ -117,69 +117,69 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
     /// Идентификатор товара
     /// </summary>
-    function ItemId(const Value: Integer): Integer;
+    function ItemId(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
     /// Название товара. Ограничение по длине считается в кодировке cp1251 (минимальная длина 4, максимальная длина 100)
     /// </summary>
-    function Name(const Value: string): Integer;
+    function Name(const Value: string): TVkParamsMarketEdit;
     /// <summary>
     /// Описание товара (минимальная длина 10)
     /// </summary>
-    function Description(const Value: string): Integer;
+    function Description(const Value: string): TVkParamsMarketEdit;
     /// <summary>
     /// Идентификатор категории товара (market.getCategories)
     /// </summary>
-    function CategoryId(const Value: Integer): Integer;
+    function CategoryId(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
     /// Цена товара
     /// </summary>
-    function Price(const Value: Extended): Integer;
+    function Price(const Value: Extended): TVkParamsMarketEdit;
     /// <summary>
     /// Старая цена товара
     /// </summary>
-    function OldPrice(const Value: Extended): Integer;
+    function OldPrice(const Value: Extended): TVkParamsMarketEdit;
     /// <summary>
     /// Статус товара (True — товар недоступен, False — товар доступен)
     /// </summary>
-    function Deleted(const Value: Boolean): Integer;
+    function Deleted(const Value: Boolean): TVkParamsMarketEdit;
     /// <summary>
     /// Идентификатор фотографии обложки товара.
     /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer, передав параметр MainPhoto
     /// </summary>
-    function MainPhotoId(const Value: Integer): Integer;
+    function MainPhotoId(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
     /// Идентификаторы дополнительных фотографий товара.
     /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer
     /// </summary>
-    function PhotoIds(const Value: TIdList): Integer;
+    function PhotoIds(const Value: TIdList): TVkParamsMarketEdit;
     /// <summary>
     /// Ссылка на сайт товара (максимальная длина 320)
     /// </summary>
-    function Url(const Value: string): Integer;
+    function Url(const Value: string): TVkParamsMarketEdit;
     /// <summary>
     /// Ширина в миллиметрах (максимальное значение 100000)
     /// </summary>
-    function DimensionWidth(const Value: Integer): Integer;
+    function DimensionWidth(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
     /// Высота в миллиметрах (максимальное значение 100000)
     /// </summary>
-    function DimensionHeight(const Value: Integer): Integer;
+    function DimensionHeight(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
     /// Толщина в миллиметрах (максимальное значение 100000)
     /// </summary>
-    function DimensionLength(const Value: Integer): Integer;
+    function DimensionLength(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
     /// Вес в граммах (максимальное значение 100000000)
     /// </summary>
-    function Weight(const Value: Integer): Integer;
+    function Weight(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
     /// Артикул товара, произвольная строка (максимальная длина 50)
     /// </summary>
-    function Sku(const Value: string): Integer;
+    function Sku(const Value: string): TVkParamsMarketEdit;
   end;
 
   TVkParamsMarketEditAlbum = record
@@ -187,24 +187,24 @@ type
     /// <summary>
     /// Идентификатор владельца подборки
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketEditAlbum;
     /// <summary>
     /// Идентификатор подборки
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsMarketEditAlbum;
     /// <summary>
     /// Название подборки (максимальная длина 128)
     /// </summary>
-    function Title(const Value: string): Integer;
+    function Title(const Value: string): TVkParamsMarketEditAlbum;
     /// <summary>
     /// Идентификатор фотографии-обложки подборки.
     /// Фотография должна быть загружена с помощью метода photos.getMarkeAlbumUploadServer
     /// </summary>
-    function PhotoId(const Value: Integer): Integer;
+    function PhotoId(const Value: Integer): TVkParamsMarketEditAlbum;
     /// <summary>
     /// Назначить подборку основной (True — назначить, False — нет)
     /// </summary>
-    function MainAlbum(const Value: Boolean): Integer;
+    function MainAlbum(const Value: Boolean): TVkParamsMarketEditAlbum;
   end;
 
   TVkParamsMarketEditComment = record
@@ -212,20 +212,20 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketEditComment;
     /// <summary>
     /// Идентификатор комментария
     /// </summary>
-    function CommentId(const Value: Integer): Integer;
+    function CommentId(const Value: Integer): TVkParamsMarketEditComment;
     /// <summary>
     /// Текст комментария (является обязательным, если не задан параметр Attachments)
     /// Максимальное количество символов: 2048
     /// </summary>
-    function Message(const Value: string): Integer;
+    function Message(const Value: string): TVkParamsMarketEditComment;
     /// <summary>
     /// Список объектов, приложенных к комментарию
     /// </summary>
-    function Attachments(const Value: TAttachmentArray): Integer;
+    function Attachments(const Value: TAttachmentArray): TVkParamsMarketEditComment;
   end;
 
   TVkParamsMarketEditOrder = record
@@ -233,51 +233,51 @@ type
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    function UserId(const Value: Integer): Integer;
+    function UserId(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
     /// Идентификатор заказа
     /// </summary>
-    function OrderId(const Value: Integer): Integer;
+    function OrderId(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
     /// Комментарий продавца (максимальная длина 400)
     /// </summary>
-    function MerchantComment(const Value: string): Integer;
+    function MerchantComment(const Value: string): TVkParamsMarketEditOrder;
     /// <summary>
     /// Статус заказа
     /// </summary>
-    function Status(const Value: TVkOrderStatus): Integer;
+    function Status(const Value: TVkOrderStatus): TVkParamsMarketEditOrder;
     /// <summary>
     /// Трек-номер
     /// </summary>
-    function TrackNumber(const Value: string): Integer;
+    function TrackNumber(const Value: string): TVkParamsMarketEditOrder;
     /// <summary>
     /// Статус платежа
     /// </summary>
-    function PaymentStatus(const Value: TVkPaymentStatus): Integer;
+    function PaymentStatus(const Value: TVkPaymentStatus): TVkParamsMarketEditOrder;
     /// <summary>
     /// Стоимость доставки
     /// </summary>
-    function DeliveryPrice(const Value: Integer): Integer;
+    function DeliveryPrice(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
     /// Ширина
     /// </summary>
-    function Width(const Value: Integer): Integer;
+    function Width(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
     /// Длина
     /// </summary>
-    function Length(const Value: Integer): Integer;
+    function Length(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
     /// Высота
     /// </summary>
-    function Height(const Value: Integer): Integer;
+    function Height(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
     /// Вес
     /// </summary>
-    function Weight(const Value: Integer): Integer;
+    function Weight(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
     /// Комментарий для пользователя
     /// </summary>
-    function CommentForUser(const Value: string): Integer;
+    function CommentForUser(const Value: string): TVkParamsMarketEditOrder;
   end;
 
   TVkParamsMarketGet = record
@@ -285,23 +285,23 @@ type
     /// <summary>
     /// Идентификатор владельца товаров
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketGet;
     /// <summary>
     /// Идентификатор подборки, товары из которой нужно вернуть
     /// </summary>
-    function AlbumId(const Value: Integer = 0): Integer;
+    function AlbumId(const Value: Integer = 0): TVkParamsMarketGet;
     /// <summary>
     /// True — будут возвращены дополнительные поля Likes, CanComment, CanRepost, Photos, ViewsCount
     /// </summary>
-    function Extended(const Value: Boolean = False): Integer;
+    function Extended(const Value: Boolean = False): TVkParamsMarketGet;
     /// <summary>
     /// Смещение относительно первого найденного товара для выборки определенного подмножества
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsMarketGet;
     /// <summary>
     /// Количество возвращаемых товаров (максимальное значение 200)
     /// </summary>
-    function Count(const Value: Integer = 100): Integer;
+    function Count(const Value: Integer = 100): TVkParamsMarketGet;
   end;
 
   TVkParamsMarketGetComments = record
@@ -309,40 +309,40 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketGetComments;
     /// <summary>
     /// Идентификатор товара
     /// </summary>
-    function ItemId(const Value: Integer): Integer;
+    function ItemId(const Value: Integer): TVkParamsMarketGetComments;
     /// <summary>
     /// True — возвращать информацию о лайках
     /// </summary>
-    function NeedLikes(const Value: Boolean): Integer;
+    function NeedLikes(const Value: Boolean): TVkParamsMarketGetComments;
     /// <summary>
     /// Идентификатор комментария, начиная с которого нужно вернуть список
     /// </summary>
-    function StartCommentId(const Value: Integer): Integer;
+    function StartCommentId(const Value: Integer): TVkParamsMarketGetComments;
     /// <summary>
     /// Сдвиг, необходимый для получения конкретной выборки результатов
     /// </summary>
-    function Offset(const Value: Integer = 0): Integer;
+    function Offset(const Value: Integer = 0): TVkParamsMarketGetComments;
     /// <summary>
     /// Число комментариев, которые необходимо получить (максимальное значение 100)
     /// </summary>
-    function Count(const Value: Integer = 20): Integer;
+    function Count(const Value: Integer = 20): TVkParamsMarketGetComments;
     /// <summary>
     /// Порядок сортировки комментариев (asc — от старых к новым, desc - от новых к старым)
     /// </summary>
-    function Sort(const Value: TVkSort = TVkSort.Asc): Integer;
+    function Sort(const Value: TVkSort = TVkSort.Asc): TVkParamsMarketGetComments;
     /// <summary>
     /// True — комментарии в ответе будут возвращены в виде пронумерованных объектов,
     /// дополнительно будут возвращены списки объектов Profiles, Groups
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsMarketGetComments;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsMarketGetComments;
   end;
 
   TVkParamsMarketReorderAlbums = record
@@ -350,19 +350,19 @@ type
     /// <summary>
     /// Идентификатор владельца альбомаы
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketReorderAlbums;
     /// <summary>
     /// Идентификатор подборки
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsMarketReorderAlbums;
     /// <summary>
     /// Идентификатор подборки, перед которой следует поместить текущую
     /// </summary>
-    function Before(const Value: Integer): Integer;
+    function Before(const Value: Integer): TVkParamsMarketReorderAlbums;
     /// <summary>
     /// Идентификатор подборки, после которой следует поместить текущую
     /// </summary>
-    function After(const Value: Integer): Integer;
+    function After(const Value: Integer): TVkParamsMarketReorderAlbums;
   end;
 
   TVkParamsMarketReorderItems = record
@@ -370,23 +370,23 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketReorderItems;
     /// <summary>
     /// Идентификатор подборки, в которой находится товар. 0 — для сортировки общего списка товаров
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsMarketReorderItems;
     /// <summary>
     /// Идентификатор товара
     /// </summary>
-    function ItemId(const Value: Integer): Integer;
+    function ItemId(const Value: Integer): TVkParamsMarketReorderItems;
     /// <summary>
     /// Идентификатор товара, перед которым следует поместить текущий
     /// </summary>
-    function Before(const Value: Integer): Integer;
+    function Before(const Value: Integer): TVkParamsMarketReorderItems;
     /// <summary>
     /// Идентификатор товара, после которого следует поместить текущий
     /// </summary>
-    function After(const Value: Integer): Integer;
+    function After(const Value: Integer): TVkParamsMarketReorderItems;
   end;
 
   TVkParamsMarketSearch = record
@@ -394,51 +394,51 @@ type
     /// <summary>
     /// Идентификатор сообщества, которому принадлежат товары
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
     /// Идентификатор подборки, товары из которой нужно вернуть
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
     /// Строка поискового запроса
     /// </summary>
-    function Query(const Value: string): Integer;
+    function Query(const Value: string): TVkParamsMarketSearch;
     /// <summary>
     /// Минимальное значение цены товаров в сотых долях единицы валюты. Например, 100000
     /// </summary>
-    function PriceFrom(const Value: Integer): Integer;
+    function PriceFrom(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
     /// Максимальное значение цены товаров в сотых долях единицы валюты. Например, 1410000
     /// </summary>
-    function PriceTo(const Value: Integer): Integer;
+    function PriceTo(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
     /// Вид сортировки
     /// </summary>
-    function Sort(const Value: TVkMarketSort = TVkMarketSort.User): Integer;
+    function Sort(const Value: TVkMarketSort = TVkMarketSort.User): TVkParamsMarketSearch;
     /// <summary>
     /// False — не использовать обратный порядок, True — использовать обратный порядок
     /// </summary>
-    function Rev(const Value: Boolean = True): Integer;
+    function Rev(const Value: Boolean = True): TVkParamsMarketSearch;
     /// <summary>
     /// Смещение относительно первого найденного товара для выборки определенного подмножества
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
     /// Количество возвращаемых товаров (максимальное значение 200)
     /// </summary>
-    function Count(const Value: Integer = 20): Integer;
+    function Count(const Value: Integer = 20): TVkParamsMarketSearch;
     /// <summary>
     /// True — будут возвращены дополнительные поля Likes, CanComment, CanRepost, Photos, ViewsCount
     /// </summary>
-    function Extended(const Value: Boolean = False): Integer;
+    function Extended(const Value: Boolean = False): TVkParamsMarketSearch;
     /// <summary>
     /// [Не известный параметр]
     /// </summary>
-    function Status(const Value: Integer = 0): Integer;
+    function Status(const Value: Integer = 0): TVkParamsMarketSearch;
     /// <summary>
     /// [Не известный параметр, возможно вообще не используется]
     /// </summary>
-    function Tags(const Value: TIdList): Integer;
+    function Tags(const Value: TIdList): TVkParamsMarketSearch;
   end;
 
   TMarketController = class(TVkController)
@@ -875,499 +875,594 @@ end;
 
 { TVkParamsMarketGet }
 
-function TVkParamsMarketGet.AlbumId(const Value: Integer): Integer;
+function TVkParamsMarketGet.AlbumId(const Value: Integer): TVkParamsMarketGet;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGet.Count(const Value: Integer): Integer;
+function TVkParamsMarketGet.Count(const Value: Integer): TVkParamsMarketGet;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGet.Extended(const Value: Boolean): Integer;
+function TVkParamsMarketGet.Extended(const Value: Boolean): TVkParamsMarketGet;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGet.Offset(const Value: Integer): Integer;
+function TVkParamsMarketGet.Offset(const Value: Integer): TVkParamsMarketGet;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGet.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketGet.OwnerId(const Value: Integer): TVkParamsMarketGet;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketAdd }
 
-function TVkParamsMarketAdd.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketAdd.OwnerId(const Value: Integer): TVkParamsMarketAdd;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.Name(const Value: string): Integer;
+function TVkParamsMarketAdd.Name(const Value: string): TVkParamsMarketAdd;
 begin
-  Result := List.Add('name', Value);
+  List.Add('name', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.Description(const Value: string): Integer;
+function TVkParamsMarketAdd.Description(const Value: string): TVkParamsMarketAdd;
 begin
-  Result := List.Add('description', Value);
+  List.Add('description', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.CategoryId(const Value: Integer): Integer;
+function TVkParamsMarketAdd.CategoryId(const Value: Integer): TVkParamsMarketAdd;
 begin
-  Result := List.Add('category_id', Value);
+  List.Add('category_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.Price(const Value: Extended): Integer;
+function TVkParamsMarketAdd.Price(const Value: Extended): TVkParamsMarketAdd;
 begin
-  Result := List.Add('price', Value);
+  List.Add('price', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.Sku(const Value: string): Integer;
+function TVkParamsMarketAdd.Sku(const Value: string): TVkParamsMarketAdd;
 begin
-  Result := List.Add('sku', Value);
+  List.Add('sku', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.OldPrice(const Value: Extended): Integer;
+function TVkParamsMarketAdd.OldPrice(const Value: Extended): TVkParamsMarketAdd;
 begin
-  Result := List.Add('old_price', Value);
+  List.Add('old_price', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.Deleted(const Value: Boolean): Integer;
+function TVkParamsMarketAdd.Deleted(const Value: Boolean): TVkParamsMarketAdd;
 begin
-  Result := List.Add('deleted', Value);
+  List.Add('deleted', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.MainPhotoId(const Value: Integer): Integer;
+function TVkParamsMarketAdd.MainPhotoId(const Value: Integer): TVkParamsMarketAdd;
 begin
-  Result := List.Add('main_photo_id', Value);
+  List.Add('main_photo_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.PhotoIds(const Value: TIdList): Integer;
+function TVkParamsMarketAdd.PhotoIds(const Value: TIdList): TVkParamsMarketAdd;
 begin
-  Result := List.Add('photo_ids', Value);
+  List.Add('photo_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.Url(const Value: string): Integer;
+function TVkParamsMarketAdd.Url(const Value: string): TVkParamsMarketAdd;
 begin
-  Result := List.Add('url', Value);
+  List.Add('url', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.DimensionWidth(const Value: Integer): Integer;
+function TVkParamsMarketAdd.DimensionWidth(const Value: Integer): TVkParamsMarketAdd;
 begin
-  Result := List.Add('dimension_width', Value);
+  List.Add('dimension_width', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.DimensionHeight(const Value: Integer): Integer;
+function TVkParamsMarketAdd.DimensionHeight(const Value: Integer): TVkParamsMarketAdd;
 begin
-  Result := List.Add('dimension_height', Value);
+  List.Add('dimension_height', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.DimensionLength(const Value: Integer): Integer;
+function TVkParamsMarketAdd.DimensionLength(const Value: Integer): TVkParamsMarketAdd;
 begin
-  Result := List.Add('dimension_length', Value);
+  List.Add('dimension_length', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketAdd.Weight(const Value: Integer): Integer;
+function TVkParamsMarketAdd.Weight(const Value: Integer): TVkParamsMarketAdd;
 begin
-  Result := List.Add('weight', Value);
+  List.Add('weight', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketCreateComment }
 
-function TVkParamsMarketCreateComment.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketCreateComment.OwnerId(const Value: Integer): TVkParamsMarketCreateComment;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketCreateComment.ItemId(const Value: Integer): Integer;
+function TVkParamsMarketCreateComment.ItemId(const Value: Integer): TVkParamsMarketCreateComment;
 begin
-  Result := List.Add('item_id', Value);
+  List.Add('item_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketCreateComment.Message(const Value: string): Integer;
+function TVkParamsMarketCreateComment.Message(const Value: string): TVkParamsMarketCreateComment;
 begin
-  Result := List.Add('message', Value);
+  List.Add('message', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketCreateComment.Attachments(const Value: TAttachmentArray): Integer;
+function TVkParamsMarketCreateComment.Attachments(const Value: TAttachmentArray): TVkParamsMarketCreateComment;
 begin
-  Result := List.Add('attachments', Value);
+  List.Add('attachments', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketCreateComment.FromGroup(const Value: Boolean): Integer;
+function TVkParamsMarketCreateComment.FromGroup(const Value: Boolean): TVkParamsMarketCreateComment;
 begin
-  Result := List.Add('from_group', Value);
+  List.Add('from_group', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketCreateComment.ReplyToComment(const Value: Integer): Integer;
+function TVkParamsMarketCreateComment.ReplyToComment(const Value: Integer): TVkParamsMarketCreateComment;
 begin
-  Result := List.Add('reply_to_comment', Value);
+  List.Add('reply_to_comment', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketCreateComment.StickerId(const Value: Integer): Integer;
+function TVkParamsMarketCreateComment.StickerId(const Value: Integer): TVkParamsMarketCreateComment;
 begin
-  Result := List.Add('sticker_id', Value);
+  List.Add('sticker_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketCreateComment.Guid(const Value: string): Integer;
+function TVkParamsMarketCreateComment.Guid(const Value: string): TVkParamsMarketCreateComment;
 begin
-  Result := List.Add('guid', Value);
+  List.Add('guid', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketEdit }
 
-function TVkParamsMarketEdit.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketEdit.OwnerId(const Value: Integer): TVkParamsMarketEdit;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.ItemId(const Value: Integer): Integer;
+function TVkParamsMarketEdit.ItemId(const Value: Integer): TVkParamsMarketEdit;
 begin
-  Result := List.Add('item_id', Value);
+  List.Add('item_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.Name(const Value: string): Integer;
+function TVkParamsMarketEdit.Name(const Value: string): TVkParamsMarketEdit;
 begin
-  Result := List.Add('name', Value);
+  List.Add('name', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.Description(const Value: string): Integer;
+function TVkParamsMarketEdit.Description(const Value: string): TVkParamsMarketEdit;
 begin
-  Result := List.Add('description', Value);
+  List.Add('description', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.CategoryId(const Value: Integer): Integer;
+function TVkParamsMarketEdit.CategoryId(const Value: Integer): TVkParamsMarketEdit;
 begin
-  Result := List.Add('category_id', Value);
+  List.Add('category_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.Price(const Value: Extended): Integer;
+function TVkParamsMarketEdit.Price(const Value: Extended): TVkParamsMarketEdit;
 begin
-  Result := List.Add('price', Value);
+  List.Add('price', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.Sku(const Value: string): Integer;
+function TVkParamsMarketEdit.Sku(const Value: string): TVkParamsMarketEdit;
 begin
-  Result := List.Add('sku', Value);
+  List.Add('sku', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.OldPrice(const Value: Extended): Integer;
+function TVkParamsMarketEdit.OldPrice(const Value: Extended): TVkParamsMarketEdit;
 begin
-  Result := List.Add('old_price', Value);
+  List.Add('old_price', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.Deleted(const Value: Boolean): Integer;
+function TVkParamsMarketEdit.Deleted(const Value: Boolean): TVkParamsMarketEdit;
 begin
-  Result := List.Add('deleted', Value);
+  List.Add('deleted', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.MainPhotoId(const Value: Integer): Integer;
+function TVkParamsMarketEdit.MainPhotoId(const Value: Integer): TVkParamsMarketEdit;
 begin
-  Result := List.Add('main_photo_id', Value);
+  List.Add('main_photo_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.PhotoIds(const Value: TIdList): Integer;
+function TVkParamsMarketEdit.PhotoIds(const Value: TIdList): TVkParamsMarketEdit;
 begin
-  Result := List.Add('photo_ids', Value);
+  List.Add('photo_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.Url(const Value: string): Integer;
+function TVkParamsMarketEdit.Url(const Value: string): TVkParamsMarketEdit;
 begin
-  Result := List.Add('url', Value);
+  List.Add('url', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.DimensionWidth(const Value: Integer): Integer;
+function TVkParamsMarketEdit.DimensionWidth(const Value: Integer): TVkParamsMarketEdit;
 begin
-  Result := List.Add('dimension_width', Value);
+  List.Add('dimension_width', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.DimensionHeight(const Value: Integer): Integer;
+function TVkParamsMarketEdit.DimensionHeight(const Value: Integer): TVkParamsMarketEdit;
 begin
-  Result := List.Add('dimension_height', Value);
+  List.Add('dimension_height', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.DimensionLength(const Value: Integer): Integer;
+function TVkParamsMarketEdit.DimensionLength(const Value: Integer): TVkParamsMarketEdit;
 begin
-  Result := List.Add('dimension_length', Value);
+  List.Add('dimension_length', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEdit.Weight(const Value: Integer): Integer;
+function TVkParamsMarketEdit.Weight(const Value: Integer): TVkParamsMarketEdit;
 begin
-  Result := List.Add('weight', Value);
+  List.Add('weight', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketEditAlbum }
 
-function TVkParamsMarketEditAlbum.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketEditAlbum.OwnerId(const Value: Integer): TVkParamsMarketEditAlbum;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditAlbum.AlbumId(const Value: Integer): Integer;
+function TVkParamsMarketEditAlbum.AlbumId(const Value: Integer): TVkParamsMarketEditAlbum;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditAlbum.Title(const Value: string): Integer;
+function TVkParamsMarketEditAlbum.Title(const Value: string): TVkParamsMarketEditAlbum;
 begin
-  Result := List.Add('title', Value);
+  List.Add('title', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditAlbum.PhotoId(const Value: Integer): Integer;
+function TVkParamsMarketEditAlbum.PhotoId(const Value: Integer): TVkParamsMarketEditAlbum;
 begin
-  Result := List.Add('photo_id', Value);
+  List.Add('photo_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditAlbum.MainAlbum(const Value: Boolean): Integer;
+function TVkParamsMarketEditAlbum.MainAlbum(const Value: Boolean): TVkParamsMarketEditAlbum;
 begin
-  Result := List.Add('main_album', Value);
+  List.Add('main_album', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketEditComment }
 
-function TVkParamsMarketEditComment.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketEditComment.OwnerId(const Value: Integer): TVkParamsMarketEditComment;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditComment.CommentId(const Value: Integer): Integer;
+function TVkParamsMarketEditComment.CommentId(const Value: Integer): TVkParamsMarketEditComment;
 begin
-  Result := List.Add('comment_id', Value);
+  List.Add('comment_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditComment.Message(const Value: string): Integer;
+function TVkParamsMarketEditComment.Message(const Value: string): TVkParamsMarketEditComment;
 begin
-  Result := List.Add('message', Value);
+  List.Add('message', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditComment.Attachments(const Value: TAttachmentArray): Integer;
+function TVkParamsMarketEditComment.Attachments(const Value: TAttachmentArray): TVkParamsMarketEditComment;
 begin
-  Result := List.Add('attachments', Value);
+  List.Add('attachments', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketEditOrder }
 
-function TVkParamsMarketEditOrder.UserId(const Value: Integer): Integer;
+function TVkParamsMarketEditOrder.UserId(const Value: Integer): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('user_id', Value);
+  List.Add('user_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.OrderId(const Value: Integer): Integer;
+function TVkParamsMarketEditOrder.OrderId(const Value: Integer): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('order_id', Value);
+  List.Add('order_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.MerchantComment(const Value: string): Integer;
+function TVkParamsMarketEditOrder.MerchantComment(const Value: string): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('merchant_comment', Value);
+  List.Add('merchant_comment', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.Status(const Value: TVkOrderStatus): Integer;
+function TVkParamsMarketEditOrder.Status(const Value: TVkOrderStatus): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('status', Ord(Value));
+  List.Add('status', Ord(Value));
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.TrackNumber(const Value: string): Integer;
+function TVkParamsMarketEditOrder.TrackNumber(const Value: string): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('track_number', Value);
+  List.Add('track_number', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.PaymentStatus(const Value: TVkPaymentStatus): Integer;
+function TVkParamsMarketEditOrder.PaymentStatus(const Value: TVkPaymentStatus): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('payment_status', Value.ToString);
+  List.Add('payment_status', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.CommentForUser(const Value: string): Integer;
+function TVkParamsMarketEditOrder.CommentForUser(const Value: string): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('comment_for_user', Value);
+  List.Add('comment_for_user', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.DeliveryPrice(const Value: Integer): Integer;
+function TVkParamsMarketEditOrder.DeliveryPrice(const Value: Integer): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('delivery_price', Value);
+  List.Add('delivery_price', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.Width(const Value: Integer): Integer;
+function TVkParamsMarketEditOrder.Width(const Value: Integer): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('width', Value);
+  List.Add('width', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.Length(const Value: Integer): Integer;
+function TVkParamsMarketEditOrder.Length(const Value: Integer): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('length', Value);
+  List.Add('length', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.Height(const Value: Integer): Integer;
+function TVkParamsMarketEditOrder.Height(const Value: Integer): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('height', Value);
+  List.Add('height', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketEditOrder.Weight(const Value: Integer): Integer;
+function TVkParamsMarketEditOrder.Weight(const Value: Integer): TVkParamsMarketEditOrder;
 begin
-  Result := List.Add('weight', Value);
+  List.Add('weight', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketGetComments }
 
-function TVkParamsMarketGetComments.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketGetComments.OwnerId(const Value: Integer): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGetComments.ItemId(const Value: Integer): Integer;
+function TVkParamsMarketGetComments.ItemId(const Value: Integer): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('item_id', Value);
+  List.Add('item_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGetComments.NeedLikes(const Value: Boolean): Integer;
+function TVkParamsMarketGetComments.NeedLikes(const Value: Boolean): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('need_likes', Value);
+  List.Add('need_likes', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGetComments.StartCommentId(const Value: Integer): Integer;
+function TVkParamsMarketGetComments.StartCommentId(const Value: Integer): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('start_comment_id', Value);
+  List.Add('start_comment_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGetComments.Offset(const Value: Integer): Integer;
+function TVkParamsMarketGetComments.Offset(const Value: Integer): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGetComments.Count(const Value: Integer): Integer;
+function TVkParamsMarketGetComments.Count(const Value: Integer): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGetComments.Sort(const Value: TVkSort): Integer;
+function TVkParamsMarketGetComments.Sort(const Value: TVkSort): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('sort', Value.ToString);
+  List.Add('sort', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsMarketGetComments.Extended(const Value: Boolean): Integer;
+function TVkParamsMarketGetComments.Extended(const Value: Boolean): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketGetComments.Fields(const UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsMarketGetComments.Fields(const UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsMarketGetComments;
 begin
-  Result := List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
+  List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
+  Result := Self;
 end;
 
 { TVkParamsMarketReorderAlbums }
 
-function TVkParamsMarketReorderAlbums.After(const Value: Integer): Integer;
+function TVkParamsMarketReorderAlbums.After(const Value: Integer): TVkParamsMarketReorderAlbums;
 begin
-  Result := List.Add('after', Value);
+  List.Add('after', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketReorderAlbums.AlbumId(const Value: Integer): Integer;
+function TVkParamsMarketReorderAlbums.AlbumId(const Value: Integer): TVkParamsMarketReorderAlbums;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketReorderAlbums.Before(const Value: Integer): Integer;
+function TVkParamsMarketReorderAlbums.Before(const Value: Integer): TVkParamsMarketReorderAlbums;
 begin
-  Result := List.Add('before', Value);
+  List.Add('before', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketReorderAlbums.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketReorderAlbums.OwnerId(const Value: Integer): TVkParamsMarketReorderAlbums;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketReorderItems }
 
-function TVkParamsMarketReorderItems.After(const Value: Integer): Integer;
+function TVkParamsMarketReorderItems.After(const Value: Integer): TVkParamsMarketReorderItems;
 begin
-  Result := List.Add('after', Value);
+  List.Add('after', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketReorderItems.AlbumId(const Value: Integer): Integer;
+function TVkParamsMarketReorderItems.AlbumId(const Value: Integer): TVkParamsMarketReorderItems;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketReorderItems.Before(const Value: Integer): Integer;
+function TVkParamsMarketReorderItems.Before(const Value: Integer): TVkParamsMarketReorderItems;
 begin
-  Result := List.Add('before', Value);
+  List.Add('before', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketReorderItems.ItemId(const Value: Integer): Integer;
+function TVkParamsMarketReorderItems.ItemId(const Value: Integer): TVkParamsMarketReorderItems;
 begin
-  Result := List.Add('item_id', Value);
+  List.Add('item_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketReorderItems.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketReorderItems.OwnerId(const Value: Integer): TVkParamsMarketReorderItems;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsMarketSearch }
 
-function TVkParamsMarketSearch.OwnerId(const Value: Integer): Integer;
+function TVkParamsMarketSearch.OwnerId(const Value: Integer): TVkParamsMarketSearch;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.AlbumId(const Value: Integer): Integer;
+function TVkParamsMarketSearch.AlbumId(const Value: Integer): TVkParamsMarketSearch;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.Query(const Value: string): Integer;
+function TVkParamsMarketSearch.Query(const Value: string): TVkParamsMarketSearch;
 begin
-  Result := List.Add('q', Value);
+  List.Add('q', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.PriceFrom(const Value: Integer): Integer;
+function TVkParamsMarketSearch.PriceFrom(const Value: Integer): TVkParamsMarketSearch;
 begin
-  Result := List.Add('price_from', Value);
+  List.Add('price_from', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.PriceTo(const Value: Integer): Integer;
+function TVkParamsMarketSearch.PriceTo(const Value: Integer): TVkParamsMarketSearch;
 begin
-  Result := List.Add('price_to', Value);
+  List.Add('price_to', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.Tags(const Value: TIdList): Integer;
+function TVkParamsMarketSearch.Tags(const Value: TIdList): TVkParamsMarketSearch;
 begin
-  Result := List.Add('tags', Value);
+  List.Add('tags', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.Sort(const Value: TVkMarketSort): Integer;
+function TVkParamsMarketSearch.Sort(const Value: TVkMarketSort): TVkParamsMarketSearch;
 begin
-  Result := List.Add('sort', Ord(Value));
+  List.Add('sort', Ord(Value));
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.Rev(const Value: Boolean): Integer;
+function TVkParamsMarketSearch.Rev(const Value: Boolean): TVkParamsMarketSearch;
 begin
-  Result := List.Add('rev', Value);
+  List.Add('rev', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.Offset(const Value: Integer): Integer;
+function TVkParamsMarketSearch.Offset(const Value: Integer): TVkParamsMarketSearch;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.Count(const Value: Integer): Integer;
+function TVkParamsMarketSearch.Count(const Value: Integer): TVkParamsMarketSearch;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.Extended(const Value: Boolean): Integer;
+function TVkParamsMarketSearch.Extended(const Value: Boolean): TVkParamsMarketSearch;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsMarketSearch.Status(const Value: Integer): Integer;
+function TVkParamsMarketSearch.Status(const Value: Integer): TVkParamsMarketSearch;
 begin
-  Result := List.Add('status', Value);
+  List.Add('status', Value);
+  Result := Self;
 end;
 
 end.

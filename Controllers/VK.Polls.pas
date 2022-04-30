@@ -12,19 +12,19 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит опрос
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsPollsAddVote;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
-    function PollId(const Value: Integer): Integer;
+    function PollId(const Value: Integer): TVkParamsPollsAddVote;
     /// <summary>
     /// Список идентификаторов ответа (для опроса с мультивыбором)
     /// </summary>
-    function AnswerIds(const Value: TIdList): Integer;
+    function AnswerIds(const Value: TIdList): TVkParamsPollsAddVote;
     /// <summary>
     /// True – опрос находится в обсуждении, False – опрос прикреплен к стене
     /// </summary>
-    function IsBoard(const Value: Boolean): Integer;
+    function IsBoard(const Value: Boolean): TVkParamsPollsAddVote;
   end;
 
   TVkParamsPollsCreate = record
@@ -32,45 +32,45 @@ type
     /// <summary>
     /// Текст вопроса
     /// </summary>
-    function Question(const Value: string): Integer;
+    function Question(const Value: string): TVkParamsPollsCreate;
     /// <summary>
     /// True – анонимный опрос, список проголосовавших недоступен;
     /// False – опрос публичный, список проголосовавших доступен
     /// </summary>
-    function IsAnonymous(const Value: Boolean): Integer;
+    function IsAnonymous(const Value: Boolean): TVkParamsPollsCreate;
     /// <summary>
     /// True — для создания опроса с мультивыбором
     /// </summary>
-    function IsMultiple(const Value: Boolean): Integer;
+    function IsMultiple(const Value: Boolean): TVkParamsPollsCreate;
     /// <summary>
     /// Дата завершения опроса
     /// </summary>
-    function EndDate(const Value: TDateTime): Integer;
+    function EndDate(const Value: TDateTime): TVkParamsPollsCreate;
     /// <summary>
     /// Если опрос будет добавлен в группу, необходимо передать отрицательный идентификатор группы. По умолчанию текущий пользователь
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsPollsCreate;
     /// <summary>
     /// Список вариантов ответов
     /// Может быть не менее 1 и не более 10 вариантов ответа
     /// </summary>
-    function AddAnswers(const Value: TArrayOfString): Integer;
+    function AddAnswers(const Value: TArrayOfString): TVkParamsPollsCreate;
     /// <summary>
     /// Идентификатор фотографии для использования в качестве фона сниппета
     /// </summary>
-    function PhotoId(const Value: Cardinal): Integer;
+    function PhotoId(const Value: Cardinal): TVkParamsPollsCreate;
     /// <summary>
     /// Идентификатор стандартного фона для сниппета
     /// </summary>
-    function BackgroundId(const Value: Integer): Integer; overload;
+    function BackgroundId(const Value: Integer): TVkParamsPollsCreate; overload;
     /// <summary>
     /// Идентификатор стандартного фона для сниппета
     /// </summary>
-    function BackgroundId(const Value: TVkPollBackground): Integer; overload;
+    function BackgroundId(const Value: TVkPollBackground): TVkParamsPollsCreate; overload;
     /// <summary>
     /// Запретить менять выбор
     /// </summary>
-    function DisableUnvote(const Value: Boolean): Integer;
+    function DisableUnvote(const Value: Boolean): TVkParamsPollsCreate;
   end;
 
   TVkParamsPollsDeleteVote = record
@@ -78,19 +78,19 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит опрос
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsPollsDeleteVote;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
-    function PollId(const Value: Integer): Integer;
+    function PollId(const Value: Integer): TVkParamsPollsDeleteVote;
     /// <summary>
     /// Идентификатор варианта ответа
     /// </summary>
-    function AnswerId(const Value: Integer): Integer;
+    function AnswerId(const Value: Integer): TVkParamsPollsDeleteVote;
     /// <summary>
     /// True – опрос находится в обсуждении, False – опрос прикреплен к стене
     /// </summary>
-    function IsBoard(const Value: Boolean): Integer;
+    function IsBoard(const Value: Boolean): TVkParamsPollsDeleteVote;
   end;
 
   TVkParamsPollsEdit = record
@@ -98,45 +98,45 @@ type
     /// <summary>
     /// Идентификатор владельца опроса
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsPollsEdit;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
-    function PollId(const Value: Integer): Integer;
+    function PollId(const Value: Integer): TVkParamsPollsEdit;
     /// <summary>
     /// Новый текст редактируемого опроса
     /// </summary>
-    function Question(const Value: string): Integer;
+    function Question(const Value: string): TVkParamsPollsEdit;
     /// <summary>
     /// Список вариантов ответов
     /// Может быть не менее 1 и не более 10 вариантов ответа
     /// </summary>
-    function AddAnswers(const Value: TArrayOfString): Integer;
+    function AddAnswers(const Value: TArrayOfString): TVkParamsPollsEdit;
     /// <summary>
     /// Объект, содержащий варианты ответов, которые необходимо отредактировать;
     /// ключ – идентификатор ответа, значение – новый текст ответа
     /// </summary>
-    function EditAnswers(const Value: TVkVoteAnswers): Integer;
+    function EditAnswers(const Value: TVkVoteAnswers): TVkParamsPollsEdit;
     /// <summary>
     /// Список идентификаторов ответов, которые необходимо удалить
     /// </summary>
-    function DeleteAnswers(const Value: TIdList): Integer;
+    function DeleteAnswers(const Value: TIdList): TVkParamsPollsEdit;
     /// <summary>
     /// Дата завершения опроса
     /// </summary>
-    function EndDate(const Value: TDateTime): Integer;
+    function EndDate(const Value: TDateTime): TVkParamsPollsEdit;
     /// <summary>
     /// Идентификатор фотографии для сниппета
     /// </summary>
-    function PhotoId(const Value: Cardinal): Integer;
+    function PhotoId(const Value: Cardinal): TVkParamsPollsEdit;
     /// <summary>
     /// Идентификатор стандартного фона для сниппета
     /// </summary>
-    function BackgroundId(const Value: Integer): Integer; overload;
+    function BackgroundId(const Value: Integer): TVkParamsPollsEdit; overload;
     /// <summary>
     /// Идентификатор стандартного фона для сниппета
     /// </summary>
-    function BackgroundId(const Value: TVkPollBackground): Integer; overload;
+    function BackgroundId(const Value: TVkPollBackground): TVkParamsPollsEdit; overload;
   end;
 
   TVkParamsPollsGetById = record
@@ -144,31 +144,31 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит опрос
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsPollsGetById;
     /// <summary>
     /// True — опрос находится в обсуждении, False — опрос прикреплен к стене
     /// </summary>
-    function IsBoard(const Value: Boolean = False): Integer;
+    function IsBoard(const Value: Boolean = False): TVkParamsPollsGetById;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
-    function PollId(const Value: Integer): Integer;
+    function PollId(const Value: Integer): TVkParamsPollsGetById;
     /// <summary>
     /// True — возвращать дополнительную информацию о профилях пользователей
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsPollsGetById;
     /// <summary>
     /// Число идентификаторов проголосовавших друзей, которые необходимо вернуть в ответе
     /// </summary>
-    function FriendsCount(const Value: Integer = 3): Integer;
+    function FriendsCount(const Value: Integer = 3): TVkParamsPollsGetById;
     /// <summary>
     /// Список дополнительных полей профилей
     /// </summary>
-    function Fields(const Value: TVkProfileFields): Integer;
+    function Fields(const Value: TVkProfileFields): TVkParamsPollsGetById;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
-    function NameCase(const Value: TVkNameCase): Integer;
+    function NameCase(const Value: TVkNameCase): TVkParamsPollsGetById;
   end;
 
   TVkParamsPollsGetVoters = record
@@ -176,44 +176,44 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит опрос
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsPollsGetVoters;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
-    function PollId(const Value: Integer): Integer;
+    function PollId(const Value: Integer): TVkParamsPollsGetVoters;
     /// <summary>
     /// Список идентификаторов ответа (для опроса с мультивыбором)
     /// </summary>
-    function AnswerIds(const Value: TIdList): Integer;
+    function AnswerIds(const Value: TIdList): TVkParamsPollsGetVoters;
     /// <summary>
     /// True — опрос находится в обсуждении, False — опрос прикреплен к стене
     /// </summary>
-    function IsBoard(const Value: Boolean): Integer;
+    function IsBoard(const Value: Boolean): TVkParamsPollsGetVoters;
     /// <summary>
     /// Указывает, необходимо ли возвращать только пользователей, которые являются друзьями текущего пользователя. Параметр может принимать следующие значения:
     /// False — возвращать всех пользователей в порядке убывания времени голосования;
     /// True — возвращать только друзей текущего пользователя в порядке убывания времени голосования.
     /// Если параметр не был задан, то считается, что он равен False
     /// </summary>
-    function FriendsOnly(const Value: Boolean = False): Integer;
+    function FriendsOnly(const Value: Boolean = False): TVkParamsPollsGetVoters;
     /// <summary>
     /// Смещение относительно начала списка, для выборки определенного подмножества. Если параметр не задан, то считается, что он равен 0
     /// </summary>
-    function Offset(const Value: Integer = 0): Integer;
+    function Offset(const Value: Integer = 0): TVkParamsPollsGetVoters;
     /// <summary>
     /// Количество возвращаемых идентификаторов пользователей.
     /// Если параметр не задан, то считается, что он равен 100, если не задан параметр FriendsOnly, в противном случае 10.
     /// Максимальное значение параметра 1000, если не задан параметр FriendsOnly, в противном случае 100
     /// </summary>
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer): TVkParamsPollsGetVoters;
     /// <summary>
     /// Перечисленные через запятую поля анкет, необходимые для получения
     /// </summary>
-    function Fields(const Value: TVkProfileFields): Integer;
+    function Fields(const Value: TVkProfileFields): TVkParamsPollsGetVoters;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
-    function NameCase(const Value: TVkNameCase): Integer;
+    function NameCase(const Value: TVkNameCase): TVkParamsPollsGetVoters;
   end;
 
   /// <summary>
@@ -344,234 +344,278 @@ end;
 
 { TVkParamsPollsAddVote }
 
-function TVkParamsPollsAddVote.OwnerId(const Value: Integer): Integer;
+function TVkParamsPollsAddVote.OwnerId(const Value: Integer): TVkParamsPollsAddVote;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsAddVote.PollId(const Value: Integer): Integer;
+function TVkParamsPollsAddVote.PollId(const Value: Integer): TVkParamsPollsAddVote;
 begin
-  Result := List.Add('poll_id', Value);
+  List.Add('poll_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsAddVote.AnswerIds(const Value: TIdList): Integer;
+function TVkParamsPollsAddVote.AnswerIds(const Value: TIdList): TVkParamsPollsAddVote;
 begin
-  Result := List.Add('answer_ids', Value);
+  List.Add('answer_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsAddVote.IsBoard(const Value: Boolean): Integer;
+function TVkParamsPollsAddVote.IsBoard(const Value: Boolean): TVkParamsPollsAddVote;
 begin
-  Result := List.Add('is_board', Value);
+  List.Add('is_board', Value);
+  Result := Self;
 end;
 
 { TVkParamsPollsCreate }
 
-function TVkParamsPollsCreate.Question(const Value: string): Integer;
+function TVkParamsPollsCreate.Question(const Value: string): TVkParamsPollsCreate;
 begin
-  Result := List.Add('question', Value);
+  List.Add('question', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.IsAnonymous(const Value: Boolean): Integer;
+function TVkParamsPollsCreate.IsAnonymous(const Value: Boolean): TVkParamsPollsCreate;
 begin
-  Result := List.Add('is_anonymous', Value);
+  List.Add('is_anonymous', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.IsMultiple(const Value: Boolean): Integer;
+function TVkParamsPollsCreate.IsMultiple(const Value: Boolean): TVkParamsPollsCreate;
 begin
-  Result := List.Add('is_multiple', Value);
+  List.Add('is_multiple', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.EndDate(const Value: TDateTime): Integer;
+function TVkParamsPollsCreate.EndDate(const Value: TDateTime): TVkParamsPollsCreate;
 begin
-  Result := List.Add('end_date', Value);
+  List.Add('end_date', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.OwnerId(const Value: Integer): Integer;
+function TVkParamsPollsCreate.OwnerId(const Value: Integer): TVkParamsPollsCreate;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.AddAnswers(const Value: TArrayOfString): Integer;
+function TVkParamsPollsCreate.AddAnswers(const Value: TArrayOfString): TVkParamsPollsCreate;
 begin
-  Result := List.Add('add_answers', Value.ToJson);
+  List.Add('add_answers', Value.ToJson);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.PhotoId(const Value: Cardinal): Integer;
+function TVkParamsPollsCreate.PhotoId(const Value: Cardinal): TVkParamsPollsCreate;
 begin
-  Result := List.Add('photo_id', Value);
+  List.Add('photo_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.BackgroundId(const Value: Integer): Integer;
+function TVkParamsPollsCreate.BackgroundId(const Value: Integer): TVkParamsPollsCreate;
 begin
-  Result := List.Add('background_id', Value);
+  List.Add('background_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.BackgroundId(const Value: TVkPollBackground): Integer;
+function TVkParamsPollsCreate.BackgroundId(const Value: TVkPollBackground): TVkParamsPollsCreate;
 begin
-  Result := List.Add('background_id', Value.Id);
+  List.Add('background_id', Value.Id);
+  Result := Self;
 end;
 
-function TVkParamsPollsCreate.DisableUnvote(const Value: Boolean): Integer;
+function TVkParamsPollsCreate.DisableUnvote(const Value: Boolean): TVkParamsPollsCreate;
 begin
-  Result := List.Add('disable_unvote', Value);
+  List.Add('disable_unvote', Value);
+  Result := Self;
 end;
 
 { TVkParamsPollsDeleteVote }
 
-function TVkParamsPollsDeleteVote.AnswerId(const Value: Integer): Integer;
+function TVkParamsPollsDeleteVote.AnswerId(const Value: Integer): TVkParamsPollsDeleteVote;
 begin
-  Result := List.Add('answer_id', Value);
+  List.Add('answer_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsDeleteVote.IsBoard(const Value: Boolean): Integer;
+function TVkParamsPollsDeleteVote.IsBoard(const Value: Boolean): TVkParamsPollsDeleteVote;
 begin
-  Result := List.Add('is_board', Value);
+  List.Add('is_board', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsDeleteVote.OwnerId(const Value: Integer): Integer;
+function TVkParamsPollsDeleteVote.OwnerId(const Value: Integer): TVkParamsPollsDeleteVote;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsDeleteVote.PollId(const Value: Integer): Integer;
+function TVkParamsPollsDeleteVote.PollId(const Value: Integer): TVkParamsPollsDeleteVote;
 begin
-  Result := List.Add('poll_id', Value);
+  List.Add('poll_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsPollsEdit }
 
-function TVkParamsPollsEdit.OwnerId(const Value: Integer): Integer;
+function TVkParamsPollsEdit.OwnerId(const Value: Integer): TVkParamsPollsEdit;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.PollId(const Value: Integer): Integer;
+function TVkParamsPollsEdit.PollId(const Value: Integer): TVkParamsPollsEdit;
 begin
-  Result := List.Add('poll_id', Value);
+  List.Add('poll_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.Question(const Value: string): Integer;
+function TVkParamsPollsEdit.Question(const Value: string): TVkParamsPollsEdit;
 begin
-  Result := List.Add('question', Value);
+  List.Add('question', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.AddAnswers(const Value: TArrayOfString): Integer;
+function TVkParamsPollsEdit.AddAnswers(const Value: TArrayOfString): TVkParamsPollsEdit;
 begin
-  Result := List.Add('add_answers', Value.ToJson);
+  List.Add('add_answers', Value.ToJson);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.EditAnswers(const Value: TVkVoteAnswers): Integer;
+function TVkParamsPollsEdit.EditAnswers(const Value: TVkVoteAnswers): TVkParamsPollsEdit;
 begin
-  Result := List.Add('edit_answers', Value.ToJson);
+  List.Add('edit_answers', Value.ToJson);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.BackgroundId(const Value: TVkPollBackground): Integer;
+function TVkParamsPollsEdit.BackgroundId(const Value: TVkPollBackground): TVkParamsPollsEdit;
 begin
-  Result := List.Add('background_id', Value.Id);
+  List.Add('background_id', Value.Id);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.DeleteAnswers(const Value: TIdList): Integer;
+function TVkParamsPollsEdit.DeleteAnswers(const Value: TIdList): TVkParamsPollsEdit;
 begin
-  Result := List.Add('delete_answers', Value.ToJson);
+  List.Add('delete_answers', Value.ToJson);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.EndDate(const Value: TDateTime): Integer;
+function TVkParamsPollsEdit.EndDate(const Value: TDateTime): TVkParamsPollsEdit;
 begin
-  Result := List.Add('end_date', Value);
+  List.Add('end_date', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.PhotoId(const Value: Cardinal): Integer;
+function TVkParamsPollsEdit.PhotoId(const Value: Cardinal): TVkParamsPollsEdit;
 begin
-  Result := List.Add('photo_id', Value);
+  List.Add('photo_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsEdit.BackgroundId(const Value: Integer): Integer;
+function TVkParamsPollsEdit.BackgroundId(const Value: Integer): TVkParamsPollsEdit;
 begin
-  Result := List.Add('background_id', Value);
+  List.Add('background_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsPollsGetById }
 
-function TVkParamsPollsGetById.OwnerId(const Value: Integer): Integer;
+function TVkParamsPollsGetById.OwnerId(const Value: Integer): TVkParamsPollsGetById;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetById.IsBoard(const Value: Boolean): Integer;
+function TVkParamsPollsGetById.IsBoard(const Value: Boolean): TVkParamsPollsGetById;
 begin
-  Result := List.Add('is_board', Value);
+  List.Add('is_board', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetById.PollId(const Value: Integer): Integer;
+function TVkParamsPollsGetById.PollId(const Value: Integer): TVkParamsPollsGetById;
 begin
-  Result := List.Add('poll_id', Value);
+  List.Add('poll_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetById.Extended(const Value: Boolean): Integer;
+function TVkParamsPollsGetById.Extended(const Value: Boolean): TVkParamsPollsGetById;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetById.FriendsCount(const Value: Integer): Integer;
+function TVkParamsPollsGetById.FriendsCount(const Value: Integer): TVkParamsPollsGetById;
 begin
-  Result := List.Add('friends_count', Value);
+  List.Add('friends_count', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetById.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsPollsGetById.Fields(const Value: TVkProfileFields): TVkParamsPollsGetById;
 begin
-  Result := List.Add('fields', Value.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetById.NameCase(const Value: TVkNameCase): Integer;
+function TVkParamsPollsGetById.NameCase(const Value: TVkNameCase): TVkParamsPollsGetById;
 begin
-  Result := List.Add('name_case', Value.ToString);
+  List.Add('name_case', Value.ToString);
+  Result := Self;
 end;
 
 { TVkParamsPollsGetVoters }
 
-function TVkParamsPollsGetVoters.OwnerId(const Value: Integer): Integer;
+function TVkParamsPollsGetVoters.OwnerId(const Value: Integer): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.PollId(const Value: Integer): Integer;
+function TVkParamsPollsGetVoters.PollId(const Value: Integer): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('poll_id', Value);
+  List.Add('poll_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.AnswerIds(const Value: TIdList): Integer;
+function TVkParamsPollsGetVoters.AnswerIds(const Value: TIdList): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('answer_ids', Value);
+  List.Add('answer_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.IsBoard(const Value: Boolean): Integer;
+function TVkParamsPollsGetVoters.IsBoard(const Value: Boolean): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('is_board', Value);
+  List.Add('is_board', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.FriendsOnly(const Value: Boolean): Integer;
+function TVkParamsPollsGetVoters.FriendsOnly(const Value: Boolean): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('friends_only', Value);
+  List.Add('friends_only', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.Offset(const Value: Integer): Integer;
+function TVkParamsPollsGetVoters.Offset(const Value: Integer): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.Count(const Value: Integer): Integer;
+function TVkParamsPollsGetVoters.Count(const Value: Integer): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.Fields(const Value: TVkProfileFields): Integer;
+function TVkParamsPollsGetVoters.Fields(const Value: TVkProfileFields): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('fields', Value.ToString);
+  List.Add('fields', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.NameCase(const Value: TVkNameCase): Integer;
+function TVkParamsPollsGetVoters.NameCase(const Value: TVkNameCase): TVkParamsPollsGetVoters;
 begin
-  Result := List.Add('name_case', Value.ToString);
+  List.Add('name_case', Value.ToString);
+  Result := Self;
 end;
 
 end.

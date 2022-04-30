@@ -12,27 +12,27 @@ type
     /// <summary>
     /// Текст запроса, результаты которого нужно получить
     /// </summary>
-    function Query(const Value: string): Integer;
+    function Query(const Value: string): TVkParamsSearch;
     /// <summary>
     /// Смещение для выборки определённого подмножества результатов
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsSearch;
     /// <summary>
     /// Ограничение на количество возвращаемых результатов
     /// </summary>
-    function Limit(const Value: Integer = 9): Integer;
+    function Limit(const Value: Integer = 9): TVkParamsSearch;
     /// <summary>
     /// Перечисленные через запятую типы данных, которые необходимо вернуть (По умолчанию возвращаются все)
     /// </summary>
-    function Filters(const Value: TVkSearchFilters = []): Integer;
+    function Filters(const Value: TVkSearchFilters = []): TVkParamsSearch;
     /// <summary>
     /// Дополнительные поля профилей и сообществ для получения
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsSearch;
     /// <summary>
     /// True — к результатам поиска добавляются результаты глобального поиска по всем пользователям и группам
     /// </summary>
-    function SearchGlobal(const Value: Boolean = True): Integer;
+    function SearchGlobal(const Value: Boolean = True): TVkParamsSearch;
   end;
 
   /// <summary>
@@ -81,34 +81,40 @@ end;
 
 { TVkParamsSearch }
 
-function TVkParamsSearch.Query(const Value: string): Integer;
+function TVkParamsSearch.Query(const Value: string): TVkParamsSearch;
 begin
-  Result := List.Add('q', Value);
+  List.Add('q', Value);
+  Result := Self;
 end;
 
-function TVkParamsSearch.Offset(const Value: Integer): Integer;
+function TVkParamsSearch.Offset(const Value: Integer): TVkParamsSearch;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsSearch.Limit(const Value: Integer): Integer;
+function TVkParamsSearch.Limit(const Value: Integer): TVkParamsSearch;
 begin
-  Result := List.Add('limit', Value);
+  List.Add('limit', Value);
+  Result := Self;
 end;
 
-function TVkParamsSearch.Filters(const Value: TVkSearchFilters): Integer;
+function TVkParamsSearch.Filters(const Value: TVkSearchFilters): TVkParamsSearch;
 begin
-  Result := List.Add('filters', Value.ToString);
+  List.Add('filters', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsSearch;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsSearch.SearchGlobal(const Value: Boolean): Integer;
+function TVkParamsSearch.SearchGlobal(const Value: Boolean): TVkParamsSearch;
 begin
-  Result := List.Add('search_global', Value);
+  List.Add('search_global', Value);
+  Result := Self;
 end;
 
 end.

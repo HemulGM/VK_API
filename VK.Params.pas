@@ -10,10 +10,6 @@ type
     function ToJsonString(FreeObject: Boolean = False): string;
   end;
 
-  IJSONParamExt = interface(IJSONParam)
-    procedure Clear;
-  end;
-
   TJSONParam = class(TInterfacedObject, IJSONParam)
   private
     FJSON: TJSONObject;

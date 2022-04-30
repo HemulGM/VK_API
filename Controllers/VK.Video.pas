@@ -13,34 +13,34 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежат видеозаписи
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoGet;
     /// <summary>
     /// Идентификатор альбома, видеозаписи из которого нужно вернуть
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsVideoGet;
     /// <summary>
     /// Определяет, возвращать ли информацию о настройках приватности видео для текущего пользователя
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsVideoGet;
     /// <summary>
     /// Количество возвращаемых видеозаписей
     /// </summary>
-    function Count(const Value: Integer): Integer;
+    function Count(const Value: Integer): TVkParamsVideoGet;
     /// <summary>
     /// Смещение относительно первой найденной видеозаписи для выборки определенного подмножества
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsVideoGet;
     /// <summary>
     /// Перечисленные через запятую идентификаторы — идущие через знак подчеркивания
     /// id пользователей, которым принадлежат видеозаписи, и id самих видеозаписей.
     /// Если видеозапись принадлежит сообществу, то в качестве первого параметра используется -id сообщества
     /// Примеры: 4363_136089719, 13245770_137352259, 1_129207899_220df2876123d3542f, 6492_135055734_e0a9bcc31144f67fbd
     /// </summary>
-    function Videos(const Value: TArrayOfString): Integer;
+    function Videos(const Value: TArrayOfString): TVkParamsVideoGet;
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsVideoGet;
   end;
 
   TVkParamsVideoGetAlbums = record
@@ -49,24 +49,24 @@ type
     /// Идентификатор владельца альбомов (пользователь или сообщество).
     /// По умолчанию — идентификатор текущего пользователя
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoGetAlbums;
     /// <summary>
     /// Количество альбомов, информацию о которых нужно вернуть. По умолчанию: 50, максимальное значение: 100
     /// </summary>
-    function Count(const Value: Integer = 50): Integer;
+    function Count(const Value: Integer = 50): TVkParamsVideoGetAlbums;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества альбомов. По умолчанию: 0
     /// </summary>
-    function Offset(const Value: Integer = 0): Integer;
+    function Offset(const Value: Integer = 0): TVkParamsVideoGetAlbums;
     /// <summary>
     /// True — возвращать дополнительные поля Count, UpdatedTime и массив объектов Image для каждого альбома.
     /// Если альбом пустой, то массив объектов Image для него возвращен не будет. По умолчанию: False
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsVideoGetAlbums;
     /// <summary>
     /// True — возвращать системные альбомы
     /// </summary>
-    function NeedSystem(const Value: Boolean): Integer;
+    function NeedSystem(const Value: Boolean): TVkParamsVideoGetAlbums;
   end;
 
   TVkParamsVideoAddToAlbum = record
@@ -74,24 +74,24 @@ type
     /// <summary>
     /// Идентификатор владельца видеозаписи
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoAddToAlbum;
     /// <summary>
     /// Идентификатор владельца альбома, в который нужно добавить видео
     /// </summary>
-    function TargetId(const Value: Integer): Integer;
+    function TargetId(const Value: Integer): TVkParamsVideoAddToAlbum;
     /// <summary>
     /// Идентификатор альбома, в который нужно добавить видео.
     /// Для добавления видео в общий альбом «Добавленные» передавайте -2
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsVideoAddToAlbum;
     /// <summary>
     /// Идентификаторы альбомов, в которые нужно добавить видео
     /// </summary>
-    function AlbumIds(const Value: TIdList): Integer;
+    function AlbumIds(const Value: TIdList): TVkParamsVideoAddToAlbum;
     /// <summary>
     /// Идентификатор видеозаписи
     /// </summary>
-    function VideoId(const Value: Integer): Integer;
+    function VideoId(const Value: Integer): TVkParamsVideoAddToAlbum;
   end;
 
   TVkParamsVideoCreateComment = record
@@ -99,37 +99,37 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит видеозапись
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoCreateComment;
     /// <summary>
     /// Идентификатор видеозаписи
     /// </summary>
-    function VideoId(const Value: Integer): Integer;
+    function VideoId(const Value: Integer): TVkParamsVideoCreateComment;
     /// <summary>
     /// Текст комментария. Обязательный параметр, если не задан параметр Attachments
     /// </summary>
-    function Message(const Value: string): Integer;
+    function Message(const Value: string): TVkParamsVideoCreateComment;
     /// <summary>
     /// Список объектов, приложенных к комментарию
     /// </summary>
-    function Attachments(const Value: TAttachmentArray): Integer;
+    function Attachments(const Value: TAttachmentArray): TVkParamsVideoCreateComment;
     /// <summary>
     /// Этот параметр учитывается, если owner_id меньше 0 (комментарий к видеозаписи группы).
     /// True — комментарий будет опубликован от имени группы,
     /// False — комментарий будет опубликован от имени пользователя. по умолчанию: False
     /// </summary>
-    function FromGroup(const Value: Integer): Integer;
+    function FromGroup(const Value: Integer): TVkParamsVideoCreateComment;
     /// <summary>
     /// Идентификатор комментария, в ответ на который должен быть добавлен новый комментарий
     /// </summary>
-    function ReplyToComment(const Value: Integer): Integer;
+    function ReplyToComment(const Value: Integer): TVkParamsVideoCreateComment;
     /// <summary>
     /// Идентификатор стикера
     /// </summary>
-    function StickerId(const Value: Integer): Integer;
+    function StickerId(const Value: Integer): TVkParamsVideoCreateComment;
     /// <summary>
     /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария
     /// </summary>
-    function Guid(const Value: string): Integer;
+    function Guid(const Value: string): TVkParamsVideoCreateComment;
   end;
 
   TVkParamsVideoEdit = record
@@ -137,37 +137,37 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит видеозапись
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoEdit;
     /// <summary>
     /// Идентификатор видеозаписи
     /// </summary>
-    function VideoId(const Value: Integer): Integer;
+    function VideoId(const Value: Integer): TVkParamsVideoEdit;
     /// <summary>
     /// Новое название для видеозаписи
     /// </summary>
-    function Name(const Value: string): Integer;
+    function Name(const Value: string): TVkParamsVideoEdit;
     /// <summary>
     /// Новое описание для видеозаписи
     /// </summary>
-    function Desc(const Value: string): Integer;
+    function Desc(const Value: string): TVkParamsVideoEdit;
     /// <summary>
     /// Настройки приватности просмотра видеозаписи в специальном формате.
     /// Приватность доступна для видеозаписей, которые пользователь загрузил в профиль
     /// </summary>
-    function PrivacyView(const Value: TArrayOfString): Integer;
+    function PrivacyView(const Value: TArrayOfString): TVkParamsVideoEdit;
     /// <summary>
     /// настройки приватности комментирования видеозаписи в специальном формате.
     /// Приватность доступна для видеозаписей, которые пользователь загрузил в профиль
     /// </summary>
-    function PrivacyComment(const Value: TArrayOfString): Integer;
+    function PrivacyComment(const Value: TArrayOfString): TVkParamsVideoEdit;
     /// <summary>
     /// Закрыть комментарии (для видео из сообществ)
     /// </summary>
-    function NoComments(const Value: Boolean): Integer;
+    function NoComments(const Value: Boolean): TVkParamsVideoEdit;
     /// <summary>
     /// Зацикливание воспроизведения видеозаписи
     /// </summary>
-    function &Repeat(const Value: Boolean): Integer;
+    function &Repeat(const Value: Boolean): TVkParamsVideoEdit;
   end;
 
   TVkParamsVideoEditAlbum = record
@@ -175,20 +175,20 @@ type
     /// <summary>
     /// Идентификатор сообщества (если нужно отредактировать альбом, принадлежащий сообществу)
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsVideoEditAlbum;
     /// <summary>
     /// Идентификатор альбома
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsVideoEditAlbum;
     /// <summary>
     /// Новое название для альбома
     /// </summary>
-    function Title(const Value: string): Integer;
+    function Title(const Value: string): TVkParamsVideoEditAlbum;
     /// <summary>
     /// Уровень доступа к альбому в специальном формате.
     /// Приватность доступна для альбомов с видео в профиле пользователя
     /// </summary>
-    function Privacy(const Value: TArrayOfString): Integer;
+    function Privacy(const Value: TArrayOfString): TVkParamsVideoEditAlbum;
   end;
 
   TVkParamsVideoEditComment = record
@@ -196,19 +196,19 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит видеозапись
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoEditComment;
     /// <summary>
     /// Идентификатор комментария
     /// </summary>
-    function CommentId(const Value: Integer): Integer;
+    function CommentId(const Value: Integer): TVkParamsVideoEditComment;
     /// <summary>
     /// Новый текст комментария. Обязательный параметр, если не задан параметр Attachments
     /// </summary>
-    function Message(const Value: string): Integer;
+    function Message(const Value: string): TVkParamsVideoEditComment;
     /// <summary>
     /// Новый список объектов, приложенных к комментарию
     /// </summary>
-    function Attachments(const Value: TAttachmentArray): Integer;
+    function Attachments(const Value: TAttachmentArray): TVkParamsVideoEditComment;
   end;
 
   TVkParamsVideoGetComments = record
@@ -216,40 +216,40 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит видеозапись
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoGetComments;
     /// <summary>
     /// Идентификатор видеозаписи
     /// </summary>
-    function VideoId(const Value: Integer): Integer;
+    function VideoId(const Value: Integer): TVkParamsVideoGetComments;
     /// <summary>
     /// True — будет возвращено дополнительное поле Likes. По умолчанию поле Likes не возвращается
     /// </summary>
-    function NeedLikes(const Value: Boolean): Integer;
+    function NeedLikes(const Value: Boolean): TVkParamsVideoGetComments;
     /// <summary>
     /// Идентификатор комментария, начиная с которого нужно вернуть список
     /// </summary>
-    function StartCommentId(const Value: Integer): Integer;
+    function StartCommentId(const Value: Integer): TVkParamsVideoGetComments;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества комментариев. По умолчанию: 0
     /// </summary>
-    function Offset(const Value: Integer = 0): Integer;
+    function Offset(const Value: Integer = 0): TVkParamsVideoGetComments;
     /// <summary>
     /// Количество комментариев, информацию о которых необходимо вернуть
     /// </summary>
-    function Count(const Value: Integer = 20): Integer;
+    function Count(const Value: Integer = 20): TVkParamsVideoGetComments;
     /// <summary>
     /// Порядок сортировки комментариев
     /// </summary>
-    function Sort(const Value: TVkSort): Integer;
+    function Sort(const Value: TVkSort): TVkParamsVideoGetComments;
     /// <summary>
     /// True — возвращать дополнительные поля Count, UpdatedTime и массив объектов Image для каждого альбома.
     /// Если альбом пустой, то массив объектов image для него возвращен не будет. По умолчанию: False
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsVideoGetComments;
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsVideoGetComments;
   end;
 
   TVkParamsVideoRemoveFromAlbum = record
@@ -257,23 +257,23 @@ type
     /// <summary>
     /// Идентификатор владельца альбома
     /// </summary>
-    function TargetId(const Value: Integer): Integer;
+    function TargetId(const Value: Integer): TVkParamsVideoRemoveFromAlbum;
     /// <summary>
     /// Идентификатор альбома, из которого нужно убрать видео
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsVideoRemoveFromAlbum;
     /// <summary>
     /// Идентификаторы альбомов, из которых нужно убрать видео
     /// </summary>
-    function AlbumIds(const Value: TIdList): Integer;
+    function AlbumIds(const Value: TIdList): TVkParamsVideoRemoveFromAlbum;
     /// <summary>
     /// Идентификатор владельца видеозаписи
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoRemoveFromAlbum;
     /// <summary>
     /// Идентификатор видеозаписи
     /// </summary>
-    function VideoId(const Value: Integer): Integer;
+    function VideoId(const Value: Integer): TVkParamsVideoRemoveFromAlbum;
   end;
 
   TVkParamsVideoReorderAlbums = record
@@ -281,19 +281,19 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит альбом
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoReorderAlbums;
     /// <summary>
     /// Идентификатор альбома, который нужно переместить
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsVideoReorderAlbums;
     /// <summary>
     /// Идентификатор альбома, перед которым нужно поместить текущий
     /// </summary>
-    function Before(const Value: Integer): Integer;
+    function Before(const Value: Integer): TVkParamsVideoReorderAlbums;
     /// <summary>
     /// Идентификатор альбома, после которого нужно поместить текущий
     /// </summary>
-    function After(const Value: Integer): Integer;
+    function After(const Value: Integer): TVkParamsVideoReorderAlbums;
   end;
 
   TVkParamsVideoReorderVideos = record
@@ -301,35 +301,35 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, в чьем альбоме нужно переместить видео
     /// </summary>
-    function TargetId(const Value: Integer): Integer;
+    function TargetId(const Value: Integer): TVkParamsVideoReorderVideos;
     /// <summary>
     /// Идентификатор альбома с видеозаписью, которую нужно переместить
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsVideoReorderVideos;
     /// <summary>
     /// Идентификатор владельца видеозаписи, которую нужно переместить (пользователь или сообщество)
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoReorderVideos;
     /// <summary>
     /// Идентификатор видеозаписи, которую нужно переместить
     /// </summary>
-    function VideoId(const Value: Integer): Integer;
+    function VideoId(const Value: Integer): TVkParamsVideoReorderVideos;
     /// <summary>
     /// Идентификатор владельца видеозаписи, перед которой следует поместить текущую (пользователь или сообщество)
     /// </summary>
-    function BeforeOwnerId(const Value: Integer): Integer;
+    function BeforeOwnerId(const Value: Integer): TVkParamsVideoReorderVideos;
     /// <summary>
     /// Идентификатор видеозаписи, перед которой следует поместить текущую
     /// </summary>
-    function BeforeVideoId(const Value: Integer): Integer;
+    function BeforeVideoId(const Value: Integer): TVkParamsVideoReorderVideos;
     /// <summary>
     /// Идентификатор владельца видеозаписи, после которой следует поместить текущую (пользователь или сообщество)
     /// </summary>
-    function AfterOwnerId(const Value: Integer): Integer;
+    function AfterOwnerId(const Value: Integer): TVkParamsVideoReorderVideos;
     /// <summary>
     /// Идентификатор видеозаписи, после которой следует поместить текущую
     /// </summary>
-    function AfterVideoId(const Value: Integer): Integer;
+    function AfterVideoId(const Value: Integer): TVkParamsVideoReorderVideos;
   end;
 
   TVkParamsVideoReport = record
@@ -337,23 +337,23 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит видеозапись
     /// </summary>
-    function OwnerId(const Value: Integer): Integer;
+    function OwnerId(const Value: Integer): TVkParamsVideoReport;
     /// <summary>
     /// Идентификатор видеозаписи
     /// </summary>
-    function VideoId(const Value: Integer): Integer;
+    function VideoId(const Value: Integer): TVkParamsVideoReport;
     /// <summary>
     /// Тип жалобы
     /// </summary>
-    function Reason(const Value: TVkMediaReportReason): Integer;
+    function Reason(const Value: TVkMediaReportReason): TVkParamsVideoReport;
     /// <summary>
     /// Комментарий для жалобы
     /// </summary>
-    function Comment(const Value: string): Integer;
+    function Comment(const Value: string): TVkParamsVideoReport;
     /// <summary>
     /// Поисковой запрос, если видеозапись была найдена через поиск
     /// </summary>
-    function SearchQuery(const Value: string): Integer;
+    function SearchQuery(const Value: string): TVkParamsVideoReport;
   end;
 
   TVkParamsVideoSave = record
@@ -361,59 +361,59 @@ type
     /// <summary>
     /// Название видеофайла
     /// </summary>
-    function Name(const Value: string): Integer;
+    function Name(const Value: string): TVkParamsVideoSave;
     /// <summary>
     /// Описание видеофайла
     /// </summary>
-    function Description(const Value: string): Integer;
+    function Description(const Value: string): TVkParamsVideoSave;
     /// <summary>
     /// Указывается True, если видео загружается для отправки личным сообщением.
     /// После загрузки с этим параметром видеозапись не будет отображаться
     /// в списке видеозаписей пользователя и не будет доступна другим
     /// пользователям по ее идентификатору. По умолчанию: False
     /// </summary>
-    function IsPrivate(const Value: Boolean = False): Integer;
+    function IsPrivate(const Value: Boolean = False): TVkParamsVideoSave;
     /// <summary>
     /// Требуется ли после сохранения опубликовать запись с видео на стене (True — требуется, False — не требуется).
     /// Обратите внимание, для публикации записи на стене приложение должно иметь права wall
     /// </summary>
-    function Wallpost(const Value: Boolean): Integer;
+    function Wallpost(const Value: Boolean): TVkParamsVideoSave;
     /// <summary>
     /// Url для встраивания видео с внешнего сайта, например, с Youtube.
     /// В этом случае нужно вызвать полученный UploadUrl, не прикрепляя файл,
     /// достаточно просто обратиться по этому адресу
     /// </summary>
-    function Link(const Value: string): Integer;
+    function Link(const Value: string): TVkParamsVideoSave;
     /// <summary>
     /// Идентификатор сообщества, в которое будет сохранен видеофайл.
     /// По умолчанию файл сохраняется на страницу текущего пользователя
     /// </summary>
-    function GroupId(const Value: Integer): Integer;
+    function GroupId(const Value: Integer): TVkParamsVideoSave;
     /// <summary>
     /// Идентификатор альбома, в который будет загружен видео файл
     /// </summary>
-    function AlbumId(const Value: Integer): Integer;
+    function AlbumId(const Value: Integer): TVkParamsVideoSave;
     /// <summary>
     /// Настройки приватности просмотра видеозаписи в специальном формате. Приватность доступна для видеозаписей, которые пользователь загрузил в профиль
     /// </summary>
-    function PrivacyView(const Value: TArrayOfString): Integer;
+    function PrivacyView(const Value: TArrayOfString): TVkParamsVideoSave;
     /// <summary>
     /// Настройки приватности комментирования видеозаписи в специальном формате.
     /// Приватность доступна для видеозаписей, которые пользователь загрузил в профиль
     /// </summary>
-    function PrivacyComment(const Value: TArrayOfString): Integer;
+    function PrivacyComment(const Value: TArrayOfString): TVkParamsVideoSave;
     /// <summary>
     /// True — закрыть комментарии (для видео из сообществ). По умолчанию: False
     /// </summary>
-    function NoComments(const Value: Boolean = False): Integer;
+    function NoComments(const Value: Boolean = False): TVkParamsVideoSave;
     /// <summary>
     /// Зацикливание воспроизведения видеозаписи
     /// </summary>
-    function &Repeat(const Value: Boolean): Integer;
+    function &Repeat(const Value: Boolean): TVkParamsVideoSave;
     /// <summary>
     /// Сжимать видео
     /// </summary>
-    function Compression(const Value: Boolean): Integer;
+    function Compression(const Value: Boolean): TVkParamsVideoSave;
   end;
 
   TVkParamsVideoSearch = record
@@ -421,48 +421,48 @@ type
     /// <summary>
     /// Строка поискового запроса
     /// </summary>
-    function Query(const Value: string): Integer;
+    function Query(const Value: string): TVkParamsVideoSearch;
     /// <summary>
     /// Сортировка результатов
     /// </summary>
-    function Sort(const Value: TVkMediaSort): Integer;
+    function Sort(const Value: TVkMediaSort): TVkParamsVideoSearch;
     /// <summary>
     /// Поиск производится только по видеозаписям высокого качества
     /// </summary>
-    function HD(const Value: Boolean): Integer;
+    function HD(const Value: Boolean): TVkParamsVideoSearch;
     /// <summary>
     /// Отключить фильтр «Безопасный поиск»
     /// </summary>
-    function Adult(const Value: Boolean): Integer;
+    function Adult(const Value: Boolean): TVkParamsVideoSearch;
     /// <summary>
     /// Список критериев, по которым требуется отфильтровать видео
     /// </summary>
-    function Filters(const Value: TVkVideosFilters): Integer;
+    function Filters(const Value: TVkVideosFilters): TVkParamsVideoSearch;
     /// <summary>
     /// True — искать по видеозаписям пользователя, False — не искать по видеозаписям пользователя
     /// </summary>
-    function SearchOwn(const Value: Boolean = False): Integer;
+    function SearchOwn(const Value: Boolean = False): TVkParamsVideoSearch;
     /// <summary>
     /// Смещение относительно первой найденной видеозаписи для выборки определенного подмножества
     /// </summary>
-    function Offset(const Value: Integer): Integer;
+    function Offset(const Value: Integer): TVkParamsVideoSearch;
     /// <summary>
     /// Количество секунд, видеозаписи длиннее которого необходимо вернуть
     /// </summary>
-    function Longer(const Value: Integer): Integer;
+    function Longer(const Value: Integer): TVkParamsVideoSearch;
     /// <summary>
     /// Количество секунд, видеозаписи короче которого необходимо вернуть
     /// </summary>
-    function Shorter(const Value: Integer): Integer;
+    function Shorter(const Value: Integer): TVkParamsVideoSearch;
     /// <summary>
     /// Количество возвращаемых видеозаписей
     /// Обратите внимание — даже при использовании параметра Offset для получения информации доступны только первые 1000 результатов
     /// </summary>
-    function Count(const Value: Integer = 20): Integer;
+    function Count(const Value: Integer = 20): TVkParamsVideoSearch;
     /// <summary>
     /// True — в ответе будут возвращены дополнительные поля profiles и groups, содержащие информацию о пользователях и сообществах. По умолчанию: False
     /// </summary>
-    function Extended(const Value: Boolean): Integer;
+    function Extended(const Value: Boolean): TVkParamsVideoSearch;
   end;
 
   TVideoController = class(TVkController)
@@ -948,505 +948,600 @@ end;
 
 { TVkVideosGetParams }
 
-function TVkParamsVideoGet.AlbumId(const Value: Integer): Integer;
+function TVkParamsVideoGet.AlbumId(const Value: Integer): TVkParamsVideoGet;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGet.Count(const Value: Integer): Integer;
+function TVkParamsVideoGet.Count(const Value: Integer): TVkParamsVideoGet;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGet.Extended(const Value: Boolean): Integer;
+function TVkParamsVideoGet.Extended(const Value: Boolean): TVkParamsVideoGet;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGet.Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Integer;
+function TVkParamsVideoGet.Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsVideoGet;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
-function TVkParamsVideoGet.Offset(const Value: Integer): Integer;
+function TVkParamsVideoGet.Offset(const Value: Integer): TVkParamsVideoGet;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGet.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoGet.OwnerId(const Value: Integer): TVkParamsVideoGet;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGet.Videos(const Value: TArrayOfString): Integer;
+function TVkParamsVideoGet.Videos(const Value: TArrayOfString): TVkParamsVideoGet;
 begin
-  Result := List.Add('videos', Value);
+  List.Add('videos', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideoAlbumsGet }
 
-function TVkParamsVideoGetAlbums.Count(const Value: Integer): Integer;
+function TVkParamsVideoGetAlbums.Count(const Value: Integer): TVkParamsVideoGetAlbums;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetAlbums.Extended(const Value: Boolean): Integer;
+function TVkParamsVideoGetAlbums.Extended(const Value: Boolean): TVkParamsVideoGetAlbums;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetAlbums.NeedSystem(const Value: Boolean): Integer;
+function TVkParamsVideoGetAlbums.NeedSystem(const Value: Boolean): TVkParamsVideoGetAlbums;
 begin
-  Result := List.Add('need_system', Value);
+  List.Add('need_system', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetAlbums.Offset(const Value: Integer): Integer;
+function TVkParamsVideoGetAlbums.Offset(const Value: Integer): TVkParamsVideoGetAlbums;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetAlbums.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoGetAlbums.OwnerId(const Value: Integer): TVkParamsVideoGetAlbums;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideosAddToAlbum }
 
-function TVkParamsVideoAddToAlbum.AlbumId(const Value: Integer): Integer;
+function TVkParamsVideoAddToAlbum.AlbumId(const Value: Integer): TVkParamsVideoAddToAlbum;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoAddToAlbum.AlbumIds(const Value: TIdList): Integer;
+function TVkParamsVideoAddToAlbum.AlbumIds(const Value: TIdList): TVkParamsVideoAddToAlbum;
 begin
-  Result := List.Add('album_ids', Value);
+  List.Add('album_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoAddToAlbum.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoAddToAlbum.OwnerId(const Value: Integer): TVkParamsVideoAddToAlbum;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoAddToAlbum.TargetId(const Value: Integer): Integer;
+function TVkParamsVideoAddToAlbum.TargetId(const Value: Integer): TVkParamsVideoAddToAlbum;
 begin
-  Result := List.Add('target_id', Value);
+  List.Add('target_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoAddToAlbum.VideoId(const Value: Integer): Integer;
+function TVkParamsVideoAddToAlbum.VideoId(const Value: Integer): TVkParamsVideoAddToAlbum;
 begin
-  Result := List.Add('video_id', Value);
+  List.Add('video_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideosCreateComment }
 
-function TVkParamsVideoCreateComment.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoCreateComment.OwnerId(const Value: Integer): TVkParamsVideoCreateComment;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoCreateComment.VideoId(const Value: Integer): Integer;
+function TVkParamsVideoCreateComment.VideoId(const Value: Integer): TVkParamsVideoCreateComment;
 begin
-  Result := List.Add('video_id', Value);
+  List.Add('video_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoCreateComment.Message(const Value: string): Integer;
+function TVkParamsVideoCreateComment.Message(const Value: string): TVkParamsVideoCreateComment;
 begin
-  Result := List.Add('message', Value);
+  List.Add('message', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoCreateComment.Attachments(const Value: TAttachmentArray): Integer;
+function TVkParamsVideoCreateComment.Attachments(const Value: TAttachmentArray): TVkParamsVideoCreateComment;
 begin
-  Result := List.Add('attachments', Value);
+  List.Add('attachments', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoCreateComment.FromGroup(const Value: Integer): Integer;
+function TVkParamsVideoCreateComment.FromGroup(const Value: Integer): TVkParamsVideoCreateComment;
 begin
-  Result := List.Add('from_group', Value);
+  List.Add('from_group', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoCreateComment.ReplyToComment(const Value: Integer): Integer;
+function TVkParamsVideoCreateComment.ReplyToComment(const Value: Integer): TVkParamsVideoCreateComment;
 begin
-  Result := List.Add('reply_to_comment', Value);
+  List.Add('reply_to_comment', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoCreateComment.StickerId(const Value: Integer): Integer;
+function TVkParamsVideoCreateComment.StickerId(const Value: Integer): TVkParamsVideoCreateComment;
 begin
-  Result := List.Add('sticker_id', Value);
+  List.Add('sticker_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoCreateComment.Guid(const Value: string): Integer;
+function TVkParamsVideoCreateComment.Guid(const Value: string): TVkParamsVideoCreateComment;
 begin
-  Result := List.Add('guid', Value);
+  List.Add('guid', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideosEdit }
 
-function TVkParamsVideoEdit.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoEdit.OwnerId(const Value: Integer): TVkParamsVideoEdit;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEdit.VideoId(const Value: Integer): Integer;
+function TVkParamsVideoEdit.VideoId(const Value: Integer): TVkParamsVideoEdit;
 begin
-  Result := List.Add('video_id', Value);
+  List.Add('video_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEdit.Name(const Value: string): Integer;
+function TVkParamsVideoEdit.Name(const Value: string): TVkParamsVideoEdit;
 begin
-  Result := List.Add('name', Value);
+  List.Add('name', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEdit.Desc(const Value: string): Integer;
+function TVkParamsVideoEdit.Desc(const Value: string): TVkParamsVideoEdit;
 begin
-  Result := List.Add('desc', Value);
+  List.Add('desc', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEdit.PrivacyView(const Value: TArrayOfString): Integer;
+function TVkParamsVideoEdit.PrivacyView(const Value: TArrayOfString): TVkParamsVideoEdit;
 begin
-  Result := List.Add('privacy_view', Value);
+  List.Add('privacy_view', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEdit.PrivacyComment(const Value: TArrayOfString): Integer;
+function TVkParamsVideoEdit.PrivacyComment(const Value: TArrayOfString): TVkParamsVideoEdit;
 begin
-  Result := List.Add('privacy_comment', Value);
+  List.Add('privacy_comment', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEdit.NoComments(const Value: Boolean): Integer;
+function TVkParamsVideoEdit.NoComments(const Value: Boolean): TVkParamsVideoEdit;
 begin
-  Result := List.Add('no_comments', Value);
+  List.Add('no_comments', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEdit.&Repeat(const Value: Boolean): Integer;
+function TVkParamsVideoEdit.&Repeat(const Value: Boolean): TVkParamsVideoEdit;
 begin
-  Result := List.Add('repeat', Value);
+  List.Add('repeat', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideosEditAlbum }
 
-function TVkParamsVideoEditAlbum.GroupId(const Value: Integer): Integer;
+function TVkParamsVideoEditAlbum.GroupId(const Value: Integer): TVkParamsVideoEditAlbum;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEditAlbum.AlbumId(const Value: Integer): Integer;
+function TVkParamsVideoEditAlbum.AlbumId(const Value: Integer): TVkParamsVideoEditAlbum;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEditAlbum.Title(const Value: string): Integer;
+function TVkParamsVideoEditAlbum.Title(const Value: string): TVkParamsVideoEditAlbum;
 begin
-  Result := List.Add('title', Value);
+  List.Add('title', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEditAlbum.Privacy(const Value: TArrayOfString): Integer;
+function TVkParamsVideoEditAlbum.Privacy(const Value: TArrayOfString): TVkParamsVideoEditAlbum;
 begin
-  Result := List.Add('privacy', Value);
+  List.Add('privacy', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideosEditComment }
 
-function TVkParamsVideoEditComment.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoEditComment.OwnerId(const Value: Integer): TVkParamsVideoEditComment;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEditComment.CommentId(const Value: Integer): Integer;
+function TVkParamsVideoEditComment.CommentId(const Value: Integer): TVkParamsVideoEditComment;
 begin
-  Result := List.Add('comment_id', Value);
+  List.Add('comment_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEditComment.Message(const Value: string): Integer;
+function TVkParamsVideoEditComment.Message(const Value: string): TVkParamsVideoEditComment;
 begin
-  Result := List.Add('message', Value);
+  List.Add('message', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoEditComment.Attachments(const Value: TAttachmentArray): Integer;
+function TVkParamsVideoEditComment.Attachments(const Value: TAttachmentArray): TVkParamsVideoEditComment;
 begin
-  Result := List.Add('attachments', Value);
+  List.Add('attachments', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideoGetComments }
 
-function TVkParamsVideoGetComments.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoGetComments.OwnerId(const Value: Integer): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetComments.VideoId(const Value: Integer): Integer;
+function TVkParamsVideoGetComments.VideoId(const Value: Integer): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('video_id', Value);
+  List.Add('video_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetComments.NeedLikes(const Value: Boolean): Integer;
+function TVkParamsVideoGetComments.NeedLikes(const Value: Boolean): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('need_likes', Value);
+  List.Add('need_likes', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetComments.StartCommentId(const Value: Integer): Integer;
+function TVkParamsVideoGetComments.StartCommentId(const Value: Integer): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('start_comment_id', Value);
+  List.Add('start_comment_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetComments.Offset(const Value: Integer): Integer;
+function TVkParamsVideoGetComments.Offset(const Value: Integer): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetComments.Count(const Value: Integer): Integer;
+function TVkParamsVideoGetComments.Count(const Value: Integer): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetComments.Sort(const Value: TVkSort): Integer;
+function TVkParamsVideoGetComments.Sort(const Value: TVkSort): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('sort', Value.ToString);
+  List.Add('sort', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetComments.Extended(const Value: Boolean): Integer;
+function TVkParamsVideoGetComments.Extended(const Value: Boolean): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoGetComments.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): Integer;
+function TVkParamsVideoGetComments.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsVideoGetComments;
 begin
-  Result := List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  Result := Self;
 end;
 
 { TVkParamsVideoRemoveFromAlbum }
 
-function TVkParamsVideoRemoveFromAlbum.TargetId(const Value: Integer): Integer;
+function TVkParamsVideoRemoveFromAlbum.TargetId(const Value: Integer): TVkParamsVideoRemoveFromAlbum;
 begin
-  Result := List.Add('target_id', Value);
+  List.Add('target_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoRemoveFromAlbum.AlbumId(const Value: Integer): Integer;
+function TVkParamsVideoRemoveFromAlbum.AlbumId(const Value: Integer): TVkParamsVideoRemoveFromAlbum;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoRemoveFromAlbum.AlbumIds(const Value: TIdList): Integer;
+function TVkParamsVideoRemoveFromAlbum.AlbumIds(const Value: TIdList): TVkParamsVideoRemoveFromAlbum;
 begin
-  Result := List.Add('album_ids', Value);
+  List.Add('album_ids', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoRemoveFromAlbum.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoRemoveFromAlbum.OwnerId(const Value: Integer): TVkParamsVideoRemoveFromAlbum;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoRemoveFromAlbum.VideoId(const Value: Integer): Integer;
+function TVkParamsVideoRemoveFromAlbum.VideoId(const Value: Integer): TVkParamsVideoRemoveFromAlbum;
 begin
-  Result := List.Add('video_id', Value);
+  List.Add('video_id', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideoReorderAlbums }
 
-function TVkParamsVideoReorderAlbums.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoReorderAlbums.OwnerId(const Value: Integer): TVkParamsVideoReorderAlbums;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderAlbums.AlbumId(const Value: Integer): Integer;
+function TVkParamsVideoReorderAlbums.AlbumId(const Value: Integer): TVkParamsVideoReorderAlbums;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderAlbums.Before(const Value: Integer): Integer;
+function TVkParamsVideoReorderAlbums.Before(const Value: Integer): TVkParamsVideoReorderAlbums;
 begin
-  Result := List.Add('before', Value);
+  List.Add('before', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderAlbums.After(const Value: Integer): Integer;
+function TVkParamsVideoReorderAlbums.After(const Value: Integer): TVkParamsVideoReorderAlbums;
 begin
-  Result := List.Add('after', Value);
+  List.Add('after', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideoReorderVideos }
 
-function TVkParamsVideoReorderVideos.TargetId(const Value: Integer): Integer;
+function TVkParamsVideoReorderVideos.TargetId(const Value: Integer): TVkParamsVideoReorderVideos;
 begin
-  Result := List.Add('target_id', Value);
+  List.Add('target_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderVideos.AlbumId(const Value: Integer): Integer;
+function TVkParamsVideoReorderVideos.AlbumId(const Value: Integer): TVkParamsVideoReorderVideos;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderVideos.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoReorderVideos.OwnerId(const Value: Integer): TVkParamsVideoReorderVideos;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderVideos.VideoId(const Value: Integer): Integer;
+function TVkParamsVideoReorderVideos.VideoId(const Value: Integer): TVkParamsVideoReorderVideos;
 begin
-  Result := List.Add('video_id', Value);
+  List.Add('video_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderVideos.BeforeOwnerId(const Value: Integer): Integer;
+function TVkParamsVideoReorderVideos.BeforeOwnerId(const Value: Integer): TVkParamsVideoReorderVideos;
 begin
-  Result := List.Add('before_owner_id', Value);
+  List.Add('before_owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderVideos.BeforeVideoId(const Value: Integer): Integer;
+function TVkParamsVideoReorderVideos.BeforeVideoId(const Value: Integer): TVkParamsVideoReorderVideos;
 begin
-  Result := List.Add('before_video_id', Value);
+  List.Add('before_video_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderVideos.AfterOwnerId(const Value: Integer): Integer;
+function TVkParamsVideoReorderVideos.AfterOwnerId(const Value: Integer): TVkParamsVideoReorderVideos;
 begin
-  Result := List.Add('after_owner_id', Value);
+  List.Add('after_owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReorderVideos.AfterVideoId(const Value: Integer): Integer;
+function TVkParamsVideoReorderVideos.AfterVideoId(const Value: Integer): TVkParamsVideoReorderVideos;
 begin
-  Result := List.Add('after_video_id', Value);
+  List.Add('after_video_id', Value);
+  Result := Self;
 end;
 
-{ TVkParamsVideosReport }
+{ TVkParamsVideoReport }
 
-function TVkParamsVideoReport.OwnerId(const Value: Integer): Integer;
+function TVkParamsVideoReport.OwnerId(const Value: Integer): TVkParamsVideoReport;
 begin
-  Result := List.Add('owner_id', Value);
+  List.Add('owner_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReport.VideoId(const Value: Integer): Integer;
+function TVkParamsVideoReport.VideoId(const Value: Integer): TVkParamsVideoReport;
 begin
-  Result := List.Add('video_id', Value);
+  List.Add('video_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReport.Reason(const Value: TVkMediaReportReason): Integer;
+function TVkParamsVideoReport.Reason(const Value: TVkMediaReportReason): TVkParamsVideoReport;
 begin
-  Result := List.Add('reason', Ord(Value).ToString);
+  List.Add('reason', Ord(Value).ToString);
+  Result := Self;
 end;
 
-function TVkParamsVideoReport.Comment(const Value: string): Integer;
+function TVkParamsVideoReport.Comment(const Value: string): TVkParamsVideoReport;
 begin
-  Result := List.Add('comment', Value);
+  List.Add('comment', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoReport.SearchQuery(const Value: string): Integer;
+function TVkParamsVideoReport.SearchQuery(const Value: string): TVkParamsVideoReport;
 begin
-  Result := List.Add('search_query', Value);
+  List.Add('search_query', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideosSave }
 
-function TVkParamsVideoSave.Name(const Value: string): Integer;
+function TVkParamsVideoSave.Name(const Value: string): TVkParamsVideoSave;
 begin
-  Result := List.Add('name', Value);
+  List.Add('name', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.Description(const Value: string): Integer;
+function TVkParamsVideoSave.Description(const Value: string): TVkParamsVideoSave;
 begin
-  Result := List.Add('description', Value);
+  List.Add('description', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.IsPrivate(const Value: Boolean): Integer;
+function TVkParamsVideoSave.IsPrivate(const Value: Boolean): TVkParamsVideoSave;
 begin
-  Result := List.Add('is_private', Value);
+  List.Add('is_private', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.Wallpost(const Value: Boolean): Integer;
+function TVkParamsVideoSave.Wallpost(const Value: Boolean): TVkParamsVideoSave;
 begin
-  Result := List.Add('wallpost', Value);
+  List.Add('wallpost', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.Link(const Value: string): Integer;
+function TVkParamsVideoSave.Link(const Value: string): TVkParamsVideoSave;
 begin
-  Result := List.Add('link', Value);
+  List.Add('link', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.GroupId(const Value: Integer): Integer;
+function TVkParamsVideoSave.GroupId(const Value: Integer): TVkParamsVideoSave;
 begin
-  Result := List.Add('group_id', Value);
+  List.Add('group_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.AlbumId(const Value: Integer): Integer;
+function TVkParamsVideoSave.AlbumId(const Value: Integer): TVkParamsVideoSave;
 begin
-  Result := List.Add('album_id', Value);
+  List.Add('album_id', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.PrivacyView(const Value: TArrayOfString): Integer;
+function TVkParamsVideoSave.PrivacyView(const Value: TArrayOfString): TVkParamsVideoSave;
 begin
-  Result := List.Add('privacy_view', Value);
+  List.Add('privacy_view', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.PrivacyComment(const Value: TArrayOfString): Integer;
+function TVkParamsVideoSave.PrivacyComment(const Value: TArrayOfString): TVkParamsVideoSave;
 begin
-  Result := List.Add('privacy_comment', Value);
+  List.Add('privacy_comment', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.NoComments(const Value: Boolean): Integer;
+function TVkParamsVideoSave.NoComments(const Value: Boolean): TVkParamsVideoSave;
 begin
-  Result := List.Add('no_comments', Value);
+  List.Add('no_comments', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.&Repeat(const Value: Boolean): Integer;
+function TVkParamsVideoSave.&Repeat(const Value: Boolean): TVkParamsVideoSave;
 begin
-  Result := List.Add('repeat', Value);
+  List.Add('repeat', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSave.Compression(const Value: Boolean): Integer;
+function TVkParamsVideoSave.Compression(const Value: Boolean): TVkParamsVideoSave;
 begin
-  Result := List.Add('compression', Value);
+  List.Add('compression', Value);
+  Result := Self;
 end;
 
 { TVkParamsVideosSearch }
 
-function TVkParamsVideoSearch.Query(const Value: string): Integer;
+function TVkParamsVideoSearch.Query(const Value: string): TVkParamsVideoSearch;
 begin
-  Result := List.Add('q', Value);
+  List.Add('q', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.Sort(const Value: TVkMediaSort): Integer;
+function TVkParamsVideoSearch.Sort(const Value: TVkMediaSort): TVkParamsVideoSearch;
 begin
-  Result := List.Add('sort', Ord(Value));
+  List.Add('sort', Ord(Value));
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.HD(const Value: Boolean): Integer;
+function TVkParamsVideoSearch.HD(const Value: Boolean): TVkParamsVideoSearch;
 begin
-  Result := List.Add('hd', Value);
+  List.Add('hd', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.Adult(const Value: Boolean): Integer;
+function TVkParamsVideoSearch.Adult(const Value: Boolean): TVkParamsVideoSearch;
 begin
-  Result := List.Add('adult', Value);
+  List.Add('adult', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.Filters(const Value: TVkVideosFilters): Integer;
+function TVkParamsVideoSearch.Filters(const Value: TVkVideosFilters): TVkParamsVideoSearch;
 begin
-  Result := List.Add('filters', Value.ToString);
+  List.Add('filters', Value.ToString);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.SearchOwn(const Value: Boolean): Integer;
+function TVkParamsVideoSearch.SearchOwn(const Value: Boolean): TVkParamsVideoSearch;
 begin
-  Result := List.Add('search_own', Value);
+  List.Add('search_own', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.Offset(const Value: Integer): Integer;
+function TVkParamsVideoSearch.Offset(const Value: Integer): TVkParamsVideoSearch;
 begin
-  Result := List.Add('offset', Value);
+  List.Add('offset', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.Longer(const Value: Integer): Integer;
+function TVkParamsVideoSearch.Longer(const Value: Integer): TVkParamsVideoSearch;
 begin
-  Result := List.Add('longer', Value);
+  List.Add('longer', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.Shorter(const Value: Integer): Integer;
+function TVkParamsVideoSearch.Shorter(const Value: Integer): TVkParamsVideoSearch;
 begin
-  Result := List.Add('shorter', Value);
+  List.Add('shorter', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.Count(const Value: Integer): Integer;
+function TVkParamsVideoSearch.Count(const Value: Integer): TVkParamsVideoSearch;
 begin
-  Result := List.Add('count', Value);
+  List.Add('count', Value);
+  Result := Self;
 end;
 
-function TVkParamsVideoSearch.Extended(const Value: Boolean): Integer;
+function TVkParamsVideoSearch.Extended(const Value: Boolean): TVkParamsVideoSearch;
 begin
-  Result := List.Add('extended', Value);
+  List.Add('extended', Value);
+  Result := Self;
 end;
 
 end.

@@ -127,8 +127,6 @@ type
     procedure SetToken(const Value: string);
     procedure SetTokenExpiry(const Value: Int64);
     procedure SetUseServiceKeyOnly(const Value: Boolean);
-    procedure SetUsePseudoAsync(const Value: Boolean);
-    function GetUsePseudoAsync: Boolean;
     procedure SetLogResponse(const Value: Boolean);
     function GetUserId: Integer;
     procedure SetApplication(const Value: TVkApplicationData);
@@ -448,10 +446,6 @@ type
     /// </summary>
     property Proxy: TVkProxy read FProxy write FProxy;
     /// <summary>
-    /// Использовать "псевдо" асинхронность. Если метод будет вызван в основном потоке и будет включен этот флаг, то будет автоматически создан анонимный поток, завершение которого будет производится путём Application.ProccessMessages;
-    /// </summary>
-    property UsePseudoAsync: Boolean read GetUsePseudoAsync write SetUsePseudoAsync;
-    /// <summary>
     /// Данные клиента AppId (client_id) + AppKey (client_secret)
     /// </summary>
     property Application: TVkApplicationData read GetApplication write SetApplication;
@@ -460,6 +454,7 @@ type
 
 const
   ERROR_INTERNAL = -1;
+
 
 implementation
 
@@ -543,9 +538,8 @@ begin
   FProxy := TVkProxy.Create(Self);
   FOAuth2Authenticator := TOAuth2Authenticator.Create(Self);
   FHandler := TVkHandler.Create(Self);
-  FHandler.OnError := FVKError;
   FHandler.OnLog := FLog;
-  FHandler.Client.Authenticator := FOAuth2Authenticator;
+  FHandler.Authenticator := FOAuth2Authenticator;
   FHandler.OnCaptcha := FAskCaptcha;
   FHandler.OnConfirm := FOnConfirm;
   //Defaults
@@ -658,14 +652,10 @@ begin
   if Result then
   begin
     try
-      try
-        FOnError(Sender, E, Code, Text);
-      finally
-        if Assigned(E) then
-          E.Free;
-      end;
-    except
-      //Ну зачем так?
+      FOnError(Sender, E, Code, Text);
+    finally
+      if Assigned(E) then
+        E.Free;
     end;
   end;
 end;
@@ -928,7 +918,7 @@ end;
 procedure TCustomVK.SetAPIVersion(const Value: string);
 begin
   FAPIVersion := Value;
-  FHandler.Client.AddParameter('v', FAPIVersion);
+  FHandler.AddParameter('v', FAPIVersion);
 end;
 
 procedure TCustomVK.SetServiceKey(const Value: string);
@@ -939,13 +929,13 @@ begin
 
   if FUseServiceKeyOnly then
   begin
-    FHandler.Client.AddParameter('access_token', FServiceKey);
+    FHandler.AddParameter('access_token', FServiceKey);
   end;
 end;
 
 procedure TCustomVK.SetTestMode(const Value: Boolean);
 begin
-  FHandler.Client.AddParameter('test_mode', BoolToString(Value));
+  FHandler.AddParameter('test_mode', BoolToString(Value));
 end;
 
 procedure TCustomVK.SetToken(const Value: string);
@@ -988,9 +978,9 @@ procedure TCustomVK.SetLang(const Value: TVkLang);
 begin
   FLang := Value;
   if FLang <> TVkLang.Auto then
-    FHandler.Client.AddParameter('lang', Ord(Value).ToString)
+    FHandler.AddParameter('lang', Ord(Value).ToString)
   else
-    FHandler.Client.Params.Delete('lang');
+    FHandler.DeleteParameter('lang');
 end;
 
 procedure TCustomVK.SetLogging(const Value: Boolean);
@@ -1008,7 +998,7 @@ end;
 procedure TCustomVK.SetBaseURL(const Value: string);
 begin
   FBaseURL := Value;
-  FHandler.Client.BaseURL := FBaseURL;
+  FHandler.BaseURL := FBaseURL;
 end;
 
 procedure TCustomVK.SetOnAuth(const Value: TOnAuth);
@@ -1054,7 +1044,7 @@ end;
 
 function TCustomVK.GetTestMode: Boolean;
 begin
-  Result := Assigned(FHandler.Client.Params.ParameterByName('test_mode')) and (FHandler.Client.Params.ParameterByName('test_mode').Value = '1');
+  Result := FHandler.Parameter('test_mode') = '1';
 end;
 
 function TCustomVK.GetToken: string;
@@ -1072,11 +1062,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-function TCustomVK.GetUsePseudoAsync: Boolean;
-begin
-  Result := FHandler.UsePseudoAsync;
 end;
 
 function TCustomVK.GetUserId: Integer;
@@ -1097,11 +1082,6 @@ begin
   FHandler.RequestLimit := Value;
 end;
 
-procedure TCustomVK.SetUsePseudoAsync(const Value: Boolean);
-begin
-  FHandler.UsePseudoAsync := Value;
-end;
-
 procedure TCustomVK.SetUseServiceKeyOnly(const Value: Boolean);
 begin
   FUseServiceKeyOnly := Value;
@@ -1111,13 +1091,13 @@ begin
   FHandler.UseServiceKeyOnly := Value;
   if FUseServiceKeyOnly then
   begin
-    FHandler.Client.Authenticator := nil;
-    FHandler.Client.AddParameter('access_token', FServiceKey);
+    FHandler.Authenticator := nil;
+    FHandler.AddParameter('access_token', FServiceKey);
   end
   else
   begin
-    FHandler.Client.Authenticator := FOAuth2Authenticator;
-    FHandler.Client.Params.Delete('access_token');
+    FHandler.Authenticator := FOAuth2Authenticator;
+    FHandler.DeleteParameter('access_token');
   end;
 end;
 
@@ -1149,42 +1129,42 @@ end;
 
 function TCustomVK.TVkProxy.GetIP: string;
 begin
-  Result := FOwner.Handler.Client.ProxyServer;
+  Result := FOwner.Handler.ProxyServer;
 end;
 
 function TCustomVK.TVkProxy.GetPassword: string;
 begin
-  Result := FOwner.Handler.Client.ProxyPassword;
+  Result := FOwner.Handler.ProxyPassword;
 end;
 
 function TCustomVK.TVkProxy.GetPort: Integer;
 begin
-  Result := FOwner.Handler.Client.ProxyPort;
+  Result := FOwner.Handler.ProxyPort;
 end;
 
 function TCustomVK.TVkProxy.GetUserName: string;
 begin
-  Result := FOwner.Handler.Client.ProxyUsername;
+  Result := FOwner.Handler.ProxyUsername;
 end;
 
 procedure TCustomVK.TVkProxy.SetIP(const Value: string);
 begin
-  FOwner.Handler.Client.ProxyServer := Value;
+  FOwner.Handler.ProxyServer := Value;
 end;
 
 procedure TCustomVK.TVkProxy.SetPassword(const Value: string);
 begin
-  FOwner.Handler.Client.ProxyPassword := Value;
+  FOwner.Handler.ProxyPassword := Value;
 end;
 
 procedure TCustomVK.TVkProxy.SetPort(const Value: Integer);
 begin
-  FOwner.Handler.Client.ProxyPort := Value;
+  FOwner.Handler.ProxyPort := Value;
 end;
 
 procedure TCustomVK.TVkProxy.SetUserName(const Value: string);
 begin
-  FOwner.Handler.Client.ProxyUsername := Value;
+  FOwner.Handler.ProxyUsername := Value;
 end;
 
 procedure TCustomVK.TVkProxy.SetProxy(AIP: string; APort: Integer; AUserName, APassword: string);

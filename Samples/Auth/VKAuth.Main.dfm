@@ -41,7 +41,7 @@ object FormMain: TFormMain
       Width = 782
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheet1
+      ActivePage = TabSheet9
       Align = alClient
       MultiLine = True
       TabOrder = 0
@@ -168,7 +168,7 @@ object FormMain: TFormMain
       end
       object TabSheet1: TTabSheet
         Caption = 'Account'
-        ExplicitLeft = 3
+        OnContextPopup = TabSheet1ContextPopup
         object Button1: TButton
           Left = 3
           Top = 3
@@ -638,6 +638,7 @@ object FormMain: TFormMain
     end
   end
   object VK1: TVK
+    AppID = '7245537'
     BaseURL = 'https://api.vk.com/method'
     EndPoint = 'https://oauth.vk.com/authorize'
     Logging = True
@@ -648,7 +649,6 @@ object FormMain: TFormMain
     OnLogin = VK1Login
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     Proxy.Port = 0
-    UsePseudoAsync = True
     Left = 96
     Top = 56
   end

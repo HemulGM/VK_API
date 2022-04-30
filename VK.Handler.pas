@@ -3,26 +3,24 @@ unit VK.Handler;
 interface
 
 uses
-  System.Classes, System.SysUtils,
-  {$IFDEF NEEDFMX}
-  FMX.Types, FMX.Forms,
-  {$ELSE}
-  Vcl.Forms,
-  {$ENDIF}
-  REST.Client, REST.Json, REST.Types, JSON, VK.Types, VK.Entity.Common;
+  System.Classes, System.SysUtils, REST.Client, REST.Json, REST.Types, Json,
+  VK.Types, VK.Entity.Common, REST.Authenticator.OAuth,
+  System.Generics.Collections;
 
 type
   TResponse = record
   private
     Response: string;
-    function AppendItemsTag(JSON: string): string; inline;
+    function AppendItemsTag(Json: string): string; inline;
   public
     Success: Boolean;
-    JSON: string;
+    Json: string;
+
     Error: record
       Code: Integer;
       Text: string;
     end;
+
     function ResponseText: string;
     function ResponseAsItems: string;
     function ResponseIsTrue: Boolean;
@@ -42,36 +40,31 @@ type
 
   TCallMethodCallback = reference to procedure(Respone: TResponse);
 
-  TRequestConstruct = class
-    class var
-      Client: TRESTClient;
-  public
-    class function Request(Resource: string; Params: TParams; Method: TRESTRequestMethod = rmGET): TRESTRequest;
-  end;
-
   TVkHandler = class
   private
+    FProxyServer: string;
+    FProxyPassword: string;
+    FProxyPort: Integer;
+    FProxyUsername: string;
+    FBaseURL: string;
     FStartRequest: Cardinal;
     FRequests: Integer;
-    FRESTClient: TRESTClient;
     FOnConfirm: TOnConfirm;
-    FOnError: TOnVKError;
     FOnLog: TOnLog;
     FUseServiceKeyOnly: Boolean;
     FOwner: TObject;
     FOnCaptcha: TOnCaptcha;
     FExecuting: Integer;
-    FUsePseudoAsync: Boolean;
     FLogging: Boolean;
     FLogResponse: Boolean;
     FCaptchaWait: Boolean;
-    FCancelAll: Boolean;
     FWaitCount: Integer;
     FRequestLimit: Integer;
+    FQueueLock: TObject;
+    FAuthenticator: TOAuth2Authenticator;
+    FParams: TDictionary<string, string>;
     function DoConfirm(Answer: string): Boolean;
-    function DoProcError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     procedure SetOnConfirm(const Value: TOnConfirm);
-    procedure SetOnError(const Value: TOnVKError);
     procedure FLog(const Value: string);
     procedure SetOnLog(const Value: TOnLog);
     procedure SetUseServiceKeyOnly(const Value: Boolean);
@@ -79,7 +72,6 @@ type
     procedure SetOnCaptcha(const Value: TOnCaptcha);
     function FExecute(Request: TRESTRequest): TResponse;
     function GetExecuting: Boolean;
-    procedure SetUsePseudoAsync(const Value: Boolean);
     procedure WaitForQueue;
     function ProcessResponse(Request: TRESTRequest): TResponse;
     procedure SetLogging(const Value: Boolean);
@@ -87,6 +79,7 @@ type
     procedure WaitTime(MS: Int64);
     function GetWaiting: Boolean;
     property Waiting: Boolean read GetWaiting;
+    function CreateRequest(Resource: string; Params: TParams; Method: TRESTRequestMethod = rmGET): TRESTRequest;
   public
     constructor Create(AOwner: TObject);
     destructor Destroy; override;
@@ -97,30 +90,40 @@ type
     function Execute(Request: string; Param: TParam): TResponse; overload;
     function Execute(Request: string): TResponse; overload;
     function Execute(Request: TRESTRequest; FreeRequset: Boolean = False): TResponse; overload;
-    property Client: TRESTClient read FRESTClient;
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
     property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
-    property OnError: TOnVKError read FOnError write SetOnError;
     property OnLog: TOnLog read FOnLog write SetOnLog;
     property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
     property Owner: TObject read FOwner write SetOwner;
     property Executing: Boolean read GetExecuting;
-    property UsePseudoAsync: Boolean read FUsePseudoAsync write SetUsePseudoAsync;
     property Logging: Boolean read FLogging write SetLogging;
     property LogResponse: Boolean read FLogResponse write SetLogResponse;
+    property Authenticator: TOAuth2Authenticator read FAuthenticator write FAuthenticator;
     /// <summary>
     /// Лимит запросов в сек (по умолчанию 3)
     /// </summary>
     property RequestLimit: Integer read FRequestLimit write FRequestLimit;
+    //
+    procedure AddParameter(const Name, Value: string);
+    procedure DeleteParameter(const Name: string);
+    function Parameter(const Name: string): string;
+    property ProxyServer: string read FProxyServer write FProxyServer;
+    property ProxyPassword: string read FProxyPassword write FProxyPassword;
+    property ProxyPort: Integer read FProxyPort write FProxyPort;
+    property ProxyUsername: string read FProxyUsername write FProxyUsername;
+    property BaseURL: string read FBaseURL write FBaseURL;
   end;
 
 var
   TestCaptcha: Boolean = False;
 
+
 implementation
 
 uses
-  VK.Errors;
+  VK.Errors, System.SyncObjs;
+
+{ TVkHandler }
 
 procedure TVkHandler.WaitTime(MS: Int64);
 var
@@ -137,14 +140,61 @@ begin
   Dec(FWaitCount);
 end;
 
-{ TRequsetConstruct }
+procedure TVkHandler.AddParameter(const Name, Value: string);
+begin
+  TMonitor.Enter(FParams);
+  try
+    FParams.Add(Name, Value);
+  finally
+    TMonitor.Exit(FParams);
+  end;
+end;
 
-class function TRequestConstruct.Request(Resource: string; Params: TParams; Method: TRESTRequestMethod): TRESTRequest;
+procedure TVkHandler.DeleteParameter(const Name: string);
+begin
+  TMonitor.Enter(FParams);
+  try
+    if FParams.ContainsKey(Name) then
+      FParams.Remove(Name);
+  finally
+    TMonitor.Exit(FParams);
+  end;
+end;
+
+function TVkHandler.Parameter(const Name: string): string;
+begin
+  TMonitor.Enter(FParams);
+  try
+    if not FParams.TryGetValue(Name, Result) then
+      Result := '';
+  finally
+    TMonitor.Exit(FParams);
+  end;
+end;
+
+function TVkHandler.CreateRequest(Resource: string; Params: TParams; Method: TRESTRequestMethod): TRESTRequest;
 var
   Param: TParam;
+  Pair: TPair<string, string>;
 begin
   Result := TRESTRequest.Create(nil);
-  Result.Client := Client;
+  Result.Client := TRESTClient.Create(Result);
+  Result.Client.Authenticator := FAuthenticator;
+  Result.Client.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
+  Result.Client.AcceptCharset := 'UTF-8, *;q=0.8';
+  TMonitor.Enter(FParams);
+  try
+    Result.Client.BaseURL := FBaseURL;
+    Result.Client.ProxyPort := FProxyPort;
+    Result.Client.ProxyServer := FProxyServer;
+    Result.Client.ProxyUsername := FProxyUsername;
+    Result.Client.ProxyPassword := FProxyPassword;
+    for Pair in FParams do
+      Result.Client.AddParameter(Pair.Key, Pair.Value);
+  finally
+    TMonitor.Exit(FParams);
+  end;
+
   Result.Resource := Resource;
   Result.Method := Method;
   for Param in Params do
@@ -153,8 +203,6 @@ begin
       Result.Params.AddItem(Param[0], Param[1]);
   end;
 end;
-
-{ TVkHandler }
 
 function TVkHandler.AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
 var
@@ -177,22 +225,20 @@ end;
 constructor TVkHandler.Create(AOwner: TObject);
 begin
   inherited Create;
+  FParams := TDictionary<string, string>.Create;
+  FQueueLock := TObject.Create;
   FRequestLimit := 3;
   FOwner := AOwner;
   FCaptchaWait := False;
   FExecuting := 0;
   FStartRequest := 0;
   FRequests := 0;
-  FUsePseudoAsync := False;
-  FRESTClient := TRESTClient.Create(nil);
-  FRESTClient.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
-  FRESTClient.AcceptCharset := 'UTF-8, *;q=0.8';
-  TRequestConstruct.Client := FRESTClient;
 end;
 
 destructor TVkHandler.Destroy;
 begin
-  FRESTClient.Free;
+  FParams.Free;
+  FQueueLock.Free;
   inherited;
 end;
 
@@ -216,35 +262,24 @@ begin
   end;
 end;
 
-function TVkHandler.DoProcError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
-begin
-  Result := Assigned(FOnError);
-  if Result then
-    Synchronize(
-      procedure
-      begin
-        FOnError(Sender, E, Code, Text);
-      end);
-end;
-
 function TVkHandler.Execute(Request: string; Param: TParam): TResponse;
 begin
-  Result := Execute(TRequestConstruct.Request(Request, [Param]), True);
+  Result := Execute(CreateRequest(Request, [Param]), True);
 end;
 
 function TVkHandler.Execute(Request: string; Params: TParams): TResponse;
 begin
-  Result := Execute(TRequestConstruct.Request(Request, Params), True);
+  Result := Execute(CreateRequest(Request, Params), True);
 end;
 
 function TVkHandler.ExecutePost(Request: string; Params: TParams): TResponse;
 begin
-  Result := Execute(TRequestConstruct.Request(Request, Params, rmPOST), True);
+  Result := Execute(CreateRequest(Request, Params, rmPOST), True);
 end;
 
 function TVkHandler.Execute(Request: string): TResponse;
 begin
-  Result := Execute(TRequestConstruct.Request(Request, []), True);
+  Result := Execute(CreateRequest(Request, []), True);
 end;
 
 function TVkHandler.Execute(Request: TRESTRequest; FreeRequset: Boolean): TResponse;
@@ -255,7 +290,6 @@ begin
   finally
     if not Waiting then
     begin
-      FCancelAll := False;
       FCaptchaWait := False;
     end;
     if FreeRequset then
@@ -266,100 +300,36 @@ end;
 
 procedure TVkHandler.WaitForQueue;
 begin
-  FRequests := FRequests + 1;
-  //Если это первый запрос, то сохраняем метку
-  if FRequests = 1 then
-    FStartRequest := TThread.GetTickCount;
-  //Если уже 3 запроса было, то ждём до конца секунды FStartRequest
-  if FRequests > RequestLimit then
-  begin
-    FRequests := 0;
-    WaitTime(1300 - Int64(TThread.GetTickCount - FStartRequest));
+  TMonitor.Enter(FQueueLock);
+  try
+    Inc(FRequests);
+    // Если это первый запрос, то сохраняем метку
+    if FRequests = 1 then
+      FStartRequest := TThread.GetTickCount;
+    // Если уже 3 запроса было, то ждём до конца секунды FStartRequest
+    if FRequests > RequestLimit then
+    begin
+      FRequests := 0;
+      WaitTime(1300 - Int64(TThread.GetTickCount - FStartRequest));
+    end;
+  finally
+    TMonitor.Exit(FQueueLock);
   end;
 end;
 
 function TVkHandler.FExecute(Request: TRESTRequest): TResponse;
-var
-  IsDone, IsError: Boolean;
-  Thr: TThread;
-  ErrStr: string;
 begin
-  IsError := False;
   Result.Success := False;
   if FLogging then
     FLog(Request.GetFullRequestURL);
-  try
-    Request.Response := TRESTResponse.Create(Request);
-    if (TThread.Current.ThreadID = MainThreadID) and FUsePseudoAsync then
-    begin
-      IsDone := False;
-      Thr := TThread.CreateAnonymousThread(
-        procedure
-        begin
-          WaitForQueue;
-          if not FCancelAll then
-          begin
-            try
-              Request.Execute;
-            except
-              on E: Exception do
-              begin
-                IsError := True;
-                ErrStr := E.Message;
-              end;
-            end;
-          end;
-          IsDone := True;
-        end);
-      Thr.FreeOnTerminate := False;
-      Thr.Start;
-      while (not IsDone) and (not Thr.Finished) do
-        Application.ProcessMessages;
-      Thr.Free;
-      if IsError then
-        raise TVkHandlerException.Create(ErrStr);
-    end
-    else
-    begin
-      WaitForQueue;
-      if not FCancelAll then
-        Request.Execute;
-    end;
-  except
-    on E: Exception do
-    begin
-      IsError := True;
-      DoProcError(Self, TVkHandlerException.Create(E.Message), ERROR_VK_NETWORK, E.Message);
-    end;
-  end;
 
-  try
-    if not IsError then
-    begin
-      if FCancelAll then
-      begin
-        if not Waiting then
-          FCancelAll := False;
-        if FLogging then
-          FLog(Request.GetFullRequestURL + ' - canceled');
-        Result.Success := False;
-      end
-      else
-      begin
-        if not Application.Terminated then
-        begin
-          if FLogResponse then
-            FLog(Request.Response.JSONText);
-          Result := ProcessResponse(Request);
-        end;
-      end;
-    end;
-  except
-    on E: TVkUnknownMethodException do
-      raise;
-    on E: TVkMethodException do
-      DoProcError(Self, TVkUnknownMethodException.Create(E.Message, E.Code), E.Code, E.Message);
-  end;
+  Request.Response := TRESTResponse.Create(Request);
+  WaitForQueue;
+  Request.Execute;
+
+  if FLogResponse then
+    FLog(Request.Response.JSONText);
+  Result := ProcessResponse(Request);
 end;
 
 function TVkHandler.ProcessResponse(Request: TRESTRequest): TResponse;
@@ -385,12 +355,10 @@ begin
         raise TVkInvalidTokenException.Create(VKErrors.Get(Result.Error.Code), Result.Error.Code);
       VK_ERROR_TOO_MANY_SIMILAR_ACTIONS:
         raise TVkTooManySimilarActionException.Create(VKErrors.Get(Result.Error.Code), Result.Error.Code);
-      VK_ERROR_CAPTCHA: //Капча
+      VK_ERROR_CAPTCHA: // Капча
         begin
           if FCaptchaWait then
-          begin
             Exit(Execute(Request));
-          end;
           FCaptchaWait := True;
           CaptchaSID := JS.GetValue<string>('captcha_sid', '');
           CaptchaImg := JS.GetValue<string>('captcha_img', '');
@@ -406,12 +374,11 @@ begin
           end
           else
           begin
-            FCancelAll := True;
             FCaptchaWait := False;
             raise TVkCaptchaException.Create(Result.Error.Text, Result.Error.Code);
           end;
         end;
-      VK_ERROR_CONFIRM, VK_ERROR_TOKEN_CONFIRM, VK_ERROR_MORE_CONFIRM: //Подтверждение для ВК
+      VK_ERROR_CONFIRM, VK_ERROR_TOKEN_CONFIRM, VK_ERROR_MORE_CONFIRM: // Подтверждение для ВК
         begin
           Answer := JS.GetValue<string>('confirmation_text', '');
           if DoConfirm(Answer) then
@@ -423,13 +390,13 @@ begin
           else
             raise TVkConfirmException.Create(Result.Error.Text, Result.Error.Code);
         end;
-      VK_ERROR_REQUESTLIMIT: //Превышено кол-во запросов в сек
+      VK_ERROR_REQUESTLIMIT: // Превышено кол-во запросов в сек
         begin
           FLog(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests, RequestLimit, FStartRequest]));
           WaitTime(1000);
           Result := Execute(Request);
         end;
-      VK_ERROR_INTERNAL_SERVER: //Internal Server Error
+      VK_ERROR_INTERNAL_SERVER: // Internal Server Error
         begin
           WaitTime(1000);
           Result := Execute(Request);
@@ -445,7 +412,7 @@ begin
       if Request.Response.JSONValue.TryGetValue<TJSONValue>('response', JS) then
       begin
         Result.Response := JS.ToJSON;
-        Result.JSON := Request.Response.JSONText;
+        Result.Json := Request.Response.JSONText;
         Result.Success := True;
       end;
     end
@@ -476,11 +443,6 @@ begin
     FOnLog(Sender, Text);
 end;
 
-procedure TVkHandler.SetOnError(const Value: TOnVKError);
-begin
-  FOnError := Value;
-end;
-
 procedure TVkHandler.SetOnLog(const Value: TOnLog);
 begin
   FOnLog := Value;
@@ -489,11 +451,6 @@ end;
 procedure TVkHandler.SetOwner(const Value: TObject);
 begin
   FOwner := Value;
-end;
-
-procedure TVkHandler.SetUsePseudoAsync(const Value: Boolean);
-begin
-  FUsePseudoAsync := Value;
 end;
 
 procedure TVkHandler.SetUseServiceKeyOnly(const Value: Boolean);
@@ -524,10 +481,11 @@ end;
 { TResponse }
 
 {$WARNINGS OFF}
+
 function TResponse.GetJSONValue: TJSONValue;
 begin
-  if not JSON.IsEmpty then
-    Result := TJSONObject.ParseJSONValue(UTF8ToString(JSON))
+  if not Json.IsEmpty then
+    Result := TJSONObject.ParseJSONValue(UTF8ToString(Json))
   else
     Result := nil;
 end;
@@ -628,9 +586,9 @@ begin
   Result := Success and (Response = '1');
 end;
 
-function TResponse.AppendItemsTag(JSON: string): string;
+function TResponse.AppendItemsTag(Json: string): string;
 begin
-  Result := '{"Items": ' + JSON + '}';
+  Result := '{"Items": ' + Json + '}';
 end;
 
 function TResponse.ResponseAsItems: string;
