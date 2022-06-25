@@ -21,7 +21,7 @@ type
     /// True — комментарии к записи отключены.
     /// False — комментарии к записи включены.
     /// </summary>
-    function CloseComments(const Value: Boolean = False): TVkParamsWallPost;
+    function CloseComments(const Value: Boolean = True): TVkParamsWallPost;
     /// <summary>
     /// Источник материала. Поддерживаются внешние и внутренние ссылки
     /// </summary>
@@ -34,13 +34,13 @@ type
     /// True — запись будет доступна только друзьям, False — всем пользователям.
     /// По умолчанию публикуемые записи доступны всем пользователям
     /// </summary>
-    function FriendsOnly(const Value: Boolean = False): TVkParamsWallPost;
+    function FriendsOnly(const Value: Boolean = True): TVkParamsWallPost;
     /// <summary>
     /// Данный параметр учитывается, если OwnerId меньше 0 (запись публикуется на стене группы).
     /// True — запись будет опубликована от имени группы,
     /// False — запись будет опубликована от имени пользователя (по умолчанию)
     /// </summary>
-    function FromGroup(const Value: Boolean = False): TVkParamsWallPost;
+    function FromGroup(const Value: Boolean = True): TVkParamsWallPost;
     /// <summary>
     /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи.
     /// Действует в течение одного часа
@@ -57,7 +57,7 @@ type
     /// False — метки добавлено не будет.
     /// В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
     /// </summary>
-    function MarkAsAds(const Value: Boolean): TVkParamsWallPost;
+    function MarkAsAds(const Value: Boolean = True): TVkParamsWallPost;
     /// <summary>
     /// Текст сообщения (является обязательным, если не задан параметр Attachments)
     /// </summary>
@@ -66,7 +66,7 @@ type
     /// True — уведомления к записи отключены.
     /// False — уведомления к записи включены.
     /// </summary>
-    function MuteNotifications(const Value: Boolean): TVkParamsWallPost;
+    function MuteNotifications(const Value: Boolean = True): TVkParamsWallPost;
     /// <summary>
     /// Идентификатор пользователя или сообщества, на стене которого должна быть опубликована запись
     /// </summary>
@@ -95,7 +95,7 @@ type
     /// Параметр учитывается только при публикации на стене сообщества и указании параметра FromGroup.
     /// По умолчанию подпись не добавляется
     /// </summary>
-    function Signed(const Value: Boolean = False): TVkParamsWallPost;
+    function Signed(const Value: Boolean = True): TVkParamsWallPost;
   end;
 
   TVkParamsWallEdit = record
@@ -112,7 +112,7 @@ type
     /// True — комментарии к записи отключены.
     /// False — комментарии к записи включены.
     /// </summary>
-    function CloseComments(const Value: Boolean): TVkParamsWallEdit;
+    function CloseComments(const Value: Boolean = True): TVkParamsWallEdit;
     /// <summary>
     /// Источник материала. Поддерживаются внешние и внутренние ссылки
     /// </summary>
@@ -121,7 +121,7 @@ type
     /// True — запись будет доступна только друзьям, False — всем пользователям.
     /// По умолчанию публикуемые записи доступны всем пользователям
     /// </summary>
-    function FriendsOnly(const Value: Boolean): TVkParamsWallEdit;
+    function FriendsOnly(const Value: Boolean = True): TVkParamsWallEdit;
     /// <summary>
     /// Географическая отметка
     /// Lat - широта, заданная в градусах (от -90 до 90).
@@ -132,7 +132,7 @@ type
     /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама",
     /// False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
     /// </summary>
-    function MarkAsAds(const Value: Boolean): TVkParamsWallEdit;
+    function MarkAsAds(const Value: Boolean = True): TVkParamsWallEdit;
     /// <summary>
     /// Текст сообщения (является обязательным, если не задан параметр attachments)
     /// </summary>
@@ -168,7 +168,7 @@ type
     /// Параметр учитывается только при публикации на стене сообщества и указании параметра FromGroup.
     /// По умолчанию подпись не добавляется
     /// </summary>
-    function Signed(const Value: Boolean): TVkParamsWallEdit;
+    function Signed(const Value: Boolean = True): TVkParamsWallEdit;
   end;
 
   TVkParamsWallEditAdsStealth = record
@@ -199,7 +199,7 @@ type
     /// Параметр учитывается только при публикации на стене сообщества и указании параметра FromGroup.
     /// По умолчанию подпись не добавляется
     /// </summary>
-    function Signed(const Value: Boolean): TVkParamsWallEditAdsStealth;
+    function Signed(const Value: Boolean = True): TVkParamsWallEditAdsStealth;
     /// <summary>
     /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама",
     /// False — метки добавлено не будет.
@@ -291,7 +291,7 @@ type
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
     /// содержащие информацию о пользователях и сообществах
     /// </summary>
-    function Extended(const Value: Boolean = False): TVkParamsWallGet;
+    function Extended(const Value: Boolean = True): TVkParamsWallGet;
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть.
     /// Обратите внимание, этот параметр учитывается только при Extended = True
@@ -313,7 +313,7 @@ type
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
     /// содержащие информацию о пользователях и сообществах
     /// </summary>
-    function Extended(const Value: Boolean = False): TVkParamsWallGetById;
+    function Extended(const Value: Boolean = True): TVkParamsWallGetById;
     /// <summary>
     /// Определяет размер массива copy_history, возвращаемого в ответе, если запись является репостом записи с другой стены
     /// Например, copy_history_depth=1 — copy_history будет содержать один элемент с информацией о записи, прямым репостом которой является текущая.
@@ -340,7 +340,7 @@ type
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
     /// содержащие информацию о пользователях и сообществах
     /// </summary>
-    function Extended(const Value: Boolean = False): TVkParamsWallGetComment;
+    function Extended(const Value: Boolean = True): TVkParamsWallGetComment;
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
     /// </summary>
@@ -366,7 +366,7 @@ type
     /// True — запись будет опубликована от имени группы,
     /// False — запись будет опубликована от имени пользователя (по умолчанию)
     /// </summary>
-    function FromGroup(const Value: Boolean = False): TVkCommentCreateParams;
+    function FromGroup(const Value: Boolean = True): TVkCommentCreateParams;
     /// <summary>
     /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинаковой записи.
     ///  Действует в течение одного часа
@@ -403,7 +403,7 @@ type
     /// <summary>
     /// True — возвращать информацию о лайках
     /// </summary>
-    function NeedLikes(const Value: Boolean): TVkParamsWallGetComments;
+    function NeedLikes(const Value: Boolean = True): TVkParamsWallGetComments;
     /// <summary>
     /// Идентификатор комментария, начиная с которого нужно вернуть список
     /// </summary>
@@ -428,7 +428,7 @@ type
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
     /// содержащие информацию о пользователях и сообществах. По умолчанию: False
     /// </summary>
-    function Extended(const Value: Boolean): TVkParamsWallGetComments;
+    function Extended(const Value: Boolean = True): TVkParamsWallGetComments;
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
     /// </summary>
@@ -467,7 +467,7 @@ type
     /// Параметр учитывается только при публикации на стене сообщества и указании параметра FromGroup.
     /// По умолчанию подпись не добавляется
     /// </summary>
-    function Signed(const Value: Boolean): TVkParamsWallPostAdsStealth;
+    function Signed(const Value: Boolean = True): TVkParamsWallPostAdsStealth;
     /// <summary>
     /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама",
     /// False — метки добавлено не будет.
@@ -531,7 +531,7 @@ type
     /// <summary>
     /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
     /// </summary>
-    function MarkAsAds(const Value: Boolean): TVkParamsWallRepost;
+    function MarkAsAds(const Value: Boolean = True): TVkParamsWallRepost;
     /// <summary>
     /// True — уведомления к записи отключены.
     /// False — уведомления к записи включены.
@@ -569,7 +569,7 @@ type
     /// True — в ответе будут возвращены дополнительные поля profiles и groups,
     /// содержащие информацию о пользователях и сообществах. По умолчанию: False
     /// </summary>
-    function Extended(const Value: Boolean): TVkParamsWallSearch;
+    function Extended(const Value: Boolean = True): TVkParamsWallSearch;
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
     /// </summary>

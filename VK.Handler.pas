@@ -179,6 +179,7 @@ var
 begin
   Result := TRESTRequest.Create(nil);
   Result.Client := TRESTClient.Create(Result);
+  Result.Response := TRESTResponse.Create(Result);
   Result.Client.Authenticator := FAuthenticator;
   Result.Client.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
   Result.Client.AcceptCharset := 'UTF-8, *;q=0.8';
@@ -320,14 +321,11 @@ end;
 function TVkHandler.FExecute(Request: TRESTRequest): TResponse;
 begin
   Result.Success := False;
+  WaitForQueue;
   if FLogging then
     FLog(Request.GetFullRequestURL);
-
-  Request.Response := TRESTResponse.Create(Request);
-  WaitForQueue;
   Request.Execute;
-
-  if FLogResponse then
+  if FLogging and FLogResponse then
     FLog(Request.Response.JSONText);
   Result := ProcessResponse(Request);
 end;

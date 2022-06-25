@@ -85,11 +85,11 @@ const
 implementation
 
 uses
-  {$IFDEF NEEDFMX}
-  FMX.Forms, FMX.Types,
-  {$ELSE}
-  Vcl.Forms,
-  {$ENDIF}
+  //{$IFDEF NEEDFMX}
+  //FMX.Forms, FMX.Types,
+  //{$ELSE}
+  //Vcl.Forms,
+  //{$ENDIF}
   System.Generics.Collections;
 
 { TLongPollServer }
@@ -371,7 +371,7 @@ begin
     while not FLongPollStopped do
     begin
       if not IsConsole then
-        Application.ProcessMessages
+        CheckSynchronize(3000)
       else
         TThread.Yield;
       Sleep(100);

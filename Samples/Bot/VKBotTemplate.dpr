@@ -18,9 +18,14 @@ begin
       begin
         if PeerIdIsUser(Message.PeerId) then
         begin
-          case Message.Action.&Type of
-            TVkMessageActionType.ChatInviteUser:
-              Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome');
+          if Assigned(Message.Action) then
+            case Message.Action.&Type of
+              TVkMessageActionType.ChatInviteUser:
+                Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome');
+            end
+          else
+          begin
+            Bot.API.Messages.SendToPeer(Message.PeerId, 'Your message: '+ Message.Text);
           end;
         end;
       end;

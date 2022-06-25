@@ -49,7 +49,7 @@ type
     TabSheet7: TTabSheet;
     Button12: TButton;
     TabSheet8: TTabSheet;
-    Button25: TButton;
+    ButtonGroupsGetMembers: TButton;
     TabSheet9: TTabSheet;
     Button20: TButton;
     Button26: TButton;
@@ -59,7 +59,7 @@ type
     Button16: TButton;
     Button8: TButton;
     TabSheet10: TTabSheet;
-    Button27: TButton;
+    ButtonMesGetConv: TButton;
     TabSheet11: TTabSheet;
     Button28: TButton;
     Button29: TButton;
@@ -82,15 +82,15 @@ type
     Button40: TButton;
     ButtonWallGet: TButton;
     Button41: TButton;
-    Button42: TButton;
-    Button43: TButton;
+    ButtonGroupsGetById: TButton;
+    ButtonGroupsGet: TButton;
     Button44: TButton;
-    Button45: TButton;
-    Button46: TButton;
+    ButtonGetFriendWithAudio: TButton;
+    ButtonMesGetHistory: TButton;
     Button47: TButton;
     TabSheetNewsfeed: TTabSheet;
     Button48: TButton;
-    ButtonSend: TButton;
+    ButtonMesSendToPeer: TButton;
     Button49: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -178,9 +178,9 @@ type
     procedure VK1Error(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure Button23Click(Sender: TObject);
     procedure Button24Click(Sender: TObject);
-    procedure Button25Click(Sender: TObject);
+    procedure ButtonGroupsGetMembersClick(Sender: TObject);
     procedure Button26Click(Sender: TObject);
-    procedure Button27Click(Sender: TObject);
+    procedure ButtonMesGetConvClick(Sender: TObject);
     procedure Button28Click(Sender: TObject);
     procedure Button29Click(Sender: TObject);
     procedure Button30Click(Sender: TObject);
@@ -203,14 +203,14 @@ type
     procedure VkGroupEventsController1GroupUnhandledEvents(Sender: TObject; GroupId: Integer; const JSON: TJSONValue);
     procedure ButtonWallGetClick(Sender: TObject);
     procedure Button41Click(Sender: TObject);
-    procedure Button42Click(Sender: TObject);
-    procedure Button43Click(Sender: TObject);
+    procedure ButtonGroupsGetByIdClick(Sender: TObject);
+    procedure ButtonGroupsGetClick(Sender: TObject);
     procedure Button44Click(Sender: TObject);
-    procedure Button45Click(Sender: TObject);
-    procedure Button46Click(Sender: TObject);
+    procedure ButtonGetFriendWithAudioClick(Sender: TObject);
+    procedure ButtonMesGetHistoryClick(Sender: TObject);
     procedure Button47Click(Sender: TObject);
     procedure Button48Click(Sender: TObject);
-    procedure ButtonSendClick(Sender: TObject);
+    procedure ButtonMesSendToPeerClick(Sender: TObject);
     procedure Button49Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure TabSheet1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
@@ -239,7 +239,7 @@ uses
   VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
   VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
   VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json,
-  VK.Entity.Newsfeed, VK.Newsfeed;
+  VK.Entity.Newsfeed, VK.Newsfeed, System.Threading;
 
 {$R *.dfm}
 
@@ -504,28 +504,33 @@ begin
     Memo1.Lines.Add('Error GetRecommendations');
 end;
 
-procedure TFormMain.Button25Click(Sender: TObject);
+procedure TFormMain.ButtonGroupsGetMembersClick(Sender: TObject);
 var
   Users: TVkProfiles;
   //Users: TIds;
-  TS: Cardinal;
+  TS, TSEnd: Cardinal;
   Param: TVkParamsGroupsGetMembers;
 begin
   TThread.CreateAnonymousThread(
     procedure
-    var
-      i: Integer;
     begin
       TS := GetTickCount;
       Param.GroupId('fcarsenaltula');
       if VK1.Groups.GetMembers(Users, Param) then
       try
-        Memo1.Lines.Add('done ' + Users.Count.ToString);
-        Memo1.Lines.Add('time ' + ((GetTickCount - TS) / 1000).ToString);
-        for i := Low(Users.Items) to High(Users.Items) do
-        begin
-          Memo1.Lines.Add(Users.Items[i].FirstName + ' ' + Users.Items[i].LastName);
-        end;
+        TSEnd := GetTickCount;
+        TThread.Synchronize(nil,
+          procedure
+          var
+            i: Integer;
+          begin
+            Memo1.Lines.Add('done ' + Users.Count.ToString);
+            Memo1.Lines.Add('time ' + ((TSEnd - TS) / 1000).ToString);
+            for i := Low(Users.Items) to High(Users.Items) do
+            begin
+              Memo1.Lines.Add(Users.Items[i].FirstName + ' ' + Users.Items[i].LastName);
+            end;
+          end);
       finally
         Users.Free;
       end;
@@ -566,13 +571,12 @@ begin
   end;
 end;
 
-procedure TFormMain.Button27Click(Sender: TObject);
+procedure TFormMain.ButtonMesGetConvClick(Sender: TObject);
 var
   List: TVkConversationItems;
-  Params: TVkParamsConversationsGet;
   Item: TVkConversationItem;
 begin
-  if VK1.Messages.GetConversations(List, Params) then
+  if VK1.Messages.GetConversations(List) then
   try
     Memo1.Lines.Add('Count: ' + List.Count.ToString);
     for Item in List.Items do
@@ -744,7 +748,7 @@ begin
   end;
 end;
 
-procedure TFormMain.Button42Click(Sender: TObject);
+procedure TFormMain.ButtonGroupsGetByIdClick(Sender: TObject);
 var
   Items: TVkGroups;
 begin
@@ -757,7 +761,7 @@ begin
   end;
 end;
 
-procedure TFormMain.Button43Click(Sender: TObject);
+procedure TFormMain.ButtonGroupsGetClick(Sender: TObject);
 var
   Items: TVkGroups;
   Params: TVkParamsGroupsGet;
@@ -786,12 +790,12 @@ begin
   end;
 end;
 
-procedure TFormMain.Button45Click(Sender: TObject);
+procedure TFormMain.ButtonGetFriendWithAudioClick(Sender: TObject);
 var
   Response: TResponse;
   Items: TVkProfiles;
 begin
-  Response := VK1.Execute(Format({$INCLUDE GetFriendsWithAudio.js}, [20, 20]));
+  Response := VK1.Execute(Format(TFile.ReadAllText('GetFriendsWithAudio.js'), [20, 0]));
   if Response.Success then
   begin
     if Response.GetObject(Items) then
@@ -806,14 +810,15 @@ begin
   end;
 end;
 
-procedure TFormMain.Button46Click(Sender: TObject);
+procedure TFormMain.ButtonMesGetHistoryClick(Sender: TObject);
 var
   Items: TVkMessageHistory;
   Params: TVkParamsMessageHistory;
   i, m: Integer;
 begin
-  Params.PeerId(-30666517);
-  Params.Extended(True);
+  Params.
+    PeerId(-30666517).
+    Extended(True);
   if VK1.Messages.GetHistory(Items, Params) then
   try
     for m := 0 to High(Items.Items) do
@@ -837,10 +842,9 @@ end;
 procedure TFormMain.Button48Click(Sender: TObject);
 var
   Items: TVkNews;
-  Params: TVkParamsNewsfeedGet;
   Item: TVkNewsItem;
 begin
-  if VK1.Newsfeed.Get(Items, Params) then
+  if VK1.Newsfeed.Get(Items) then
   try
     for Item in Items.Items do
       Memo1.Lines.Add(Item.Text + ' ' + Item.&Type.ToString);
@@ -952,9 +956,10 @@ var
   Params: TVkParamsAudioEditPlaylist;
 begin
   //Params.OwnerId(VK1.UserId);
-  Params.PlaylistId(11);
-  Params.AudioIds(['58553419_456239116']);
-  if VK1.Audio.EditPlaylist(Params) then
+  if VK1.Audio.EditPlaylist(Params.
+    PlaylistId(11).
+    AudioIds(['58553419_456239116']))
+    then
   begin
     Memo1.Lines.Add('ok');
   end
@@ -1151,7 +1156,7 @@ begin
   VK1.Login;
 end;
 
-procedure TFormMain.ButtonSendClick(Sender: TObject);
+procedure TFormMain.ButtonMesSendToPeerClick(Sender: TObject);
 var
   Item: Integer;
 begin

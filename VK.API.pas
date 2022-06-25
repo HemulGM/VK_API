@@ -455,7 +455,6 @@ type
 const
   ERROR_INTERNAL = -1;
 
-
 implementation
 
 uses
@@ -718,7 +717,11 @@ function TCustomVK.CheckAuth: Boolean;
 var
   MT: Int64;
 begin
-  Result := Utils.GetServerTimeUnix(MT);
+  try
+    Result := Utils.GetServerTimeUnix(MT);
+  except
+    Result := False;
+  end;
 end;
 
 constructor TCustomVK.Create(const AToken: string);

@@ -17,8 +17,7 @@ type
     FHandler: TVkHandler;
     FParams: TParams;
     procedure SetParams(const Value: TParams);
-  public
-    /// <summary>
+  public    /// <summary>
     /// Идентификатор назначения
     /// </summary>
     function PeerId(const Value: Integer): TVkMessageNew;
@@ -898,8 +897,7 @@ type
   end;
 
   TMessagesController = class(TVkController)
-  public
-    /// <summary>
+  public    /// <summary>
     /// Отправить сообщение.
     /// </summary>
     function SendToPeer(var Item: Integer; PeerId: Integer; Message: string; Attachments: TAttachmentArray = []): Boolean; overload;
@@ -988,7 +986,11 @@ type
     /// <summary>
     /// Возвращает список бесед пользователя.
     /// </summary>
-    function GetConversations(var Items: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean;
+    function GetConversations(var Items: TVkConversationItems): Boolean; overload;
+    /// <summary>
+    /// Возвращает список бесед пользователя.
+    /// </summary>
+    function GetConversations(var Items: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean; overload;
     /// <summary>
     /// Возвращает историю сообщений для указанного диалога.
     /// </summary>
@@ -1425,6 +1427,11 @@ end;
 function TMessagesController.GetConversations(var Items: TVkConversationItems; Params: TVkParamsConversationsGet): Boolean;
 begin
   Result := Handler.Execute('messages.getConversations', Params.List).GetObject(Items);
+end;
+
+function TMessagesController.GetConversations(var Items: TVkConversationItems): Boolean;
+begin
+  Result := Handler.Execute('messages.getConversations').GetObject(Items);
 end;
 
 function TMessagesController.GetConversationsById(var Items: TVkConversations; Params: TVkParamsConversationsGetById): Boolean;

@@ -41,10 +41,12 @@ object FormMain: TFormMain
       Width = 782
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheet9
+      ActivePage = TabSheet11
       Align = alClient
       MultiLine = True
       TabOrder = 0
+      ExplicitLeft = 35
+      ExplicitTop = 119
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
@@ -449,63 +451,63 @@ object FormMain: TFormMain
       object TabSheet8: TTabSheet
         Caption = 'Groups'
         ImageIndex = 7
-        object Button25: TButton
+        object ButtonGroupsGetMembers: TButton
           Left = 3
           Top = 3
           Width = 137
           Height = 25
           Caption = 'GetMembers'
           TabOrder = 0
-          OnClick = Button25Click
+          OnClick = ButtonGroupsGetMembersClick
         end
-        object Button42: TButton
+        object ButtonGroupsGetById: TButton
           Left = 3
           Top = 34
           Width = 137
           Height = 25
           Caption = 'GetById'
           TabOrder = 1
-          OnClick = Button42Click
+          OnClick = ButtonGroupsGetByIdClick
         end
-        object Button43: TButton
-          Left = 3
+        object ButtonGroupsGet: TButton
+          Left = -1
           Top = 65
           Width = 137
           Height = 25
           Caption = 'Get'
           TabOrder = 2
-          OnClick = Button43Click
+          OnClick = ButtonGroupsGetClick
         end
       end
       object TabSheet10: TTabSheet
         Caption = 'Messages'
         ImageIndex = 9
-        object Button27: TButton
+        object ButtonMesGetConv: TButton
           Left = 3
           Top = 3
           Width = 166
           Height = 25
           Caption = 'GetConversations'
           TabOrder = 0
-          OnClick = Button27Click
+          OnClick = ButtonMesGetConvClick
         end
-        object Button46: TButton
+        object ButtonMesGetHistory: TButton
           Left = 3
           Top = 34
           Width = 166
           Height = 25
-          Caption = 'Get'
+          Caption = 'GetHistory'
           TabOrder = 1
-          OnClick = Button46Click
+          OnClick = ButtonMesGetHistoryClick
         end
-        object ButtonSend: TButton
+        object ButtonMesSendToPeer: TButton
           Left = 175
           Top = 3
-          Width = 75
+          Width = 138
           Height = 25
-          Caption = 'ButtonSend'
+          Caption = 'SendToPeer'
           TabOrder = 2
-          OnClick = ButtonSendClick
+          OnClick = ButtonMesSendToPeerClick
         end
         object Button49: TButton
           Left = 3
@@ -520,8 +522,10 @@ object FormMain: TFormMain
       object TabSheet11: TTabSheet
         Caption = 'Friends'
         ImageIndex = 10
+        ExplicitLeft = -156
+        ExplicitTop = -144
         object Button28: TButton
-          Left = 3
+          Left = -1
           Top = 3
           Width = 137
           Height = 25
@@ -529,14 +533,14 @@ object FormMain: TFormMain
           TabOrder = 0
           OnClick = Button28Click
         end
-        object Button45: TButton
+        object ButtonGetFriendWithAudio: TButton
           Left = 3
           Top = 34
           Width = 137
           Height = 25
           Caption = 'GetFriendsWithAudio'
           TabOrder = 1
-          OnClick = Button45Click
+          OnClick = ButtonGetFriendWithAudioClick
         end
       end
       object TabSheetPolls: TTabSheet

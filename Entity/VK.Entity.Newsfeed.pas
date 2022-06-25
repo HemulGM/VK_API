@@ -182,6 +182,8 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
   if Assigned(FGeo) then
     FGeo.Free;
+  if Assigned(FCopyright) then
+    FCopyright.Free;
   if Assigned(FPhotos) then
     FPhotos.Free;
   if Assigned(FPost_source) then

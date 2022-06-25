@@ -237,7 +237,7 @@ type
     /// <summary>
     /// ¬озвращает данные, необходимые дл€ показа списка новостей дл€ текущего пользовател€.
     /// </summary>
-    function Get(var Items: TVkNews; Params: TParams): Boolean; overload;
+    function Get(var Items: TVkNews; Params: TParams = []): Boolean; overload;
     /// <summary>
     /// ¬озвращает данные, необходимые дл€ показа списка новостей дл€ текущего пользовател€.
     /// </summary>
