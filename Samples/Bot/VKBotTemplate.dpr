@@ -25,7 +25,7 @@ begin
             end
           else
           begin
-            Bot.API.Messages.SendToPeer(Message.PeerId, 'Your message: '+ Message.Text);
+            Bot.API.Messages.SendToPeer(Message.PeerId, 'Your message: ' + Message.Text);
           end;
         end;
       end;
@@ -37,7 +37,9 @@ begin
         begin
           Quit := Command = 'exit';
         end);
-    end;
+    end
+    else
+      Readln;
 
     Free;
   end;
