@@ -11,7 +11,7 @@ uses
 
 begin
   ReportMemoryLeaksOnShutdown := True;
-  with TVkBotChat.GetInstance(145962568, '') do
+  with TVkBotChat.GetInstance(145962568, '<token>') do
   begin
     OnMessage :=
       procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
