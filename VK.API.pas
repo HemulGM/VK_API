@@ -452,6 +452,8 @@ type
     property RequestLimit: Integer read GetRequestLimit write SetRequestLimit;
   end;
 
+  VKAPI = class(TCustomVK);
+
 const
   ERROR_INTERNAL = -1;
 

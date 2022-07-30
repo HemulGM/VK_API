@@ -18,7 +18,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsGetMembers; overload;
+    function GroupId(const Value: Int64): TVkParamsGroupsGetMembers; overload;
     /// <summary>
     /// Короткое имя сообщества
     /// </summary>
@@ -34,11 +34,11 @@ type
     /// <summary>
     /// Количество участников сообщества, информацию о которых необходимо получить (максимальное значение 1000)
     /// </summary>
-    function Count(const Value: Integer = 1000): TVkParamsGroupsGetMembers;
+    function Count(const Value: Int64 = 1000): TVkParamsGroupsGetMembers;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества участников
     /// </summary>
-    function Offset(const Value: Integer = 0): TVkParamsGroupsGetMembers;
+    function Offset(const Value: Int64 = 0): TVkParamsGroupsGetMembers;
     /// <summary>
     /// Сортировка, с которой необходимо вернуть список участников
     /// </summary>
@@ -50,7 +50,7 @@ type
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsGroupsGet;
+    function UserId(const Value: Int64): TVkParamsGroupsGet;
     /// <summary>
     /// Список фильтров сообществ, которые необходимо вернуть
     /// </summary>
@@ -62,11 +62,11 @@ type
     /// <summary>
     /// Количество сообществ, информацию о которых нужно вернуть (максимальное значение 1000)
     /// </summary>
-    function Count(const Value: Integer): TVkParamsGroupsGet;
+    function Count(const Value: Int64): TVkParamsGroupsGet;
     /// <summary>
     /// Смещение, необходимое для выборки определённого подмножества сообществ
     /// </summary>
-    function Offset(const Value: Integer): TVkParamsGroupsGet;
+    function Offset(const Value: Int64): TVkParamsGroupsGet;
   end;
 
   TVkParamsGroupsIsMember = record
@@ -74,7 +74,7 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsIsMember; overload;
+    function GroupId(const Value: Int64): TVkParamsGroupsIsMember; overload;
     /// <summary>
     /// Короткое имя сообщества.
     /// </summary>
@@ -86,7 +86,7 @@ type
     /// <summary>
     /// Идентификатор пользователя.
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsGroupsIsMember;
+    function UserId(const Value: Int64): TVkParamsGroupsIsMember;
     /// <summary>
     /// Идентификаторы пользователей, не более 500.
     /// </summary>
@@ -98,7 +98,7 @@ type
     /// <summary>
     /// идентификатор сообщества, в которое добавляется адрес
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsAddAddress;
+    function GroupId(const Value: Int64): TVkParamsGroupsAddAddress;
     /// <summary>
     /// заголовок адреса (максимальная длина 255)
     /// </summary>
@@ -114,15 +114,15 @@ type
     /// <summary>
     /// идентификатор страны. Для получения можно использовать database.getCountries
     /// </summary>
-    function CountryId(const Value: Integer): TVkParamsGroupsAddAddress;
+    function CountryId(const Value: Int64): TVkParamsGroupsAddAddress;
     /// <summary>
     /// идентификатор города. Для получения можно использовать database.getCities
     /// </summary>
-    function CityId(const Value: Integer): TVkParamsGroupsAddAddress;
+    function CityId(const Value: Int64): TVkParamsGroupsAddAddress;
     /// <summary>
     /// идентификатор станции метро. Для получения можно использовать database.getMetroStations
     /// </summary>
-    function MetroId(const Value: Integer): TVkParamsGroupsAddAddress;
+    function MetroId(const Value: Int64): TVkParamsGroupsAddAddress;
     /// <summary>
     /// географическая широта отметки, заданная в градусах (от -90 до 90)
     /// </summary>
@@ -159,11 +159,11 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsBan;
+    function GroupId(const Value: Int64): TVkParamsGroupsBan;
     /// <summary>
     /// Идентификатор пользователя или сообщества, которое будет добавлено в черный список
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsGroupsBan;
+    function OwnerId(const Value: Int64): TVkParamsGroupsBan;
     /// <summary>
     /// Дата завершения срока действия бана.
     /// Максимальный возможный срок окончания бана, который можно указать, — один год с его начала.
@@ -202,7 +202,7 @@ type
     /// <summary>
     /// Категория публичной страницы (только для Type = TVkGroupTypeCreate.Public)
     /// </summary>
-    function PublicCategory(const Value: Integer): TVkParamsGroupsCreate;
+    function PublicCategory(const Value: Int64): TVkParamsGroupsCreate;
     /// <summary>
     /// Вид публичной страницы (только при Type = TVkGroupTypeCreate.Public)
     /// </summary>
@@ -246,7 +246,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsEdit;
+    function GroupId(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// Название сообщества
     /// </summary>
@@ -295,15 +295,15 @@ type
     /// <summary>
     /// Идентификатор группы, которая является организатором события (только для событий)
     /// </summary>
-    function EventGroupId(const Value: Integer): TVkParamsGroupsEdit;
+    function EventGroupId(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// Категория публичной страницы
     /// </summary>
-    function PublicCategory(const Value: Integer): TVkParamsGroupsEdit;
+    function PublicCategory(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// Подкатегория публичной станицы. Список подкатегорий можно получить методом groups.getSettings
     /// </summary>
-    function PublicSubcategory(const Value: Integer): TVkParamsGroupsEdit;
+    function PublicSubcategory(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// Дата основания компании, организации, которой посвящена публичная страница
     /// </summary>
@@ -392,11 +392,11 @@ type
     /// Контакт для связи для продавцом.
     /// Для использования сообщений сообщества следует включить их и передать значение 0
     /// </summary>
-    function MarketContact(const Value: Integer): TVkParamsGroupsEdit;
+    function MarketContact(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// Идентификатор wiki-страницы с описанием магазина
     /// </summary>
-    function MarketWiki(const Value: Integer): TVkParamsGroupsEdit;
+    function MarketWiki(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// Фильтр нецензурных выражений в комментариях
     /// </summary>
@@ -412,19 +412,19 @@ type
     /// <summary>
     /// MainSection
     /// </summary>
-    function MainSection(const Value: Integer): TVkParamsGroupsEdit;
+    function MainSection(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// SecondarySection
     /// </summary>
-    function SecondarySection(const Value: Integer): TVkParamsGroupsEdit;
+    function SecondarySection(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// Страна
     /// </summary>
-    function Country(const Value: Integer): TVkParamsGroupsEdit;
+    function Country(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
     /// Город
     /// </summary>
-    function City(const Value: Integer): TVkParamsGroupsEdit;
+    function City(const Value: Int64): TVkParamsGroupsEdit;
   end;
 
   TVkParamsGroupsEditManager = record
@@ -436,7 +436,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, чьи полномочия в сообществе нужно изменить
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsGroupsEditManager;
+    function UserId(const Value: Int64): TVkParamsGroupsEditManager;
     /// <summary>
     /// Уровень полномочий
     /// Если параметр не задан, с пользователя user_id снимаются полномочия руководителя
@@ -473,7 +473,7 @@ type
     /// <summary>
     /// Перечисленные через запятую идентификаторы адресов, информацию о которых необходимо вернуть
     /// </summary>
-    function AddressIds(const Value: Integer): TVkParamsGroupsGetAddresses; overload;
+    function AddressIds(const Value: Int64): TVkParamsGroupsGetAddresses; overload;
     /// <summary>
     /// Географическая широта отметки, заданная в градусах (от -90 до 90)
     /// </summary>
@@ -489,11 +489,11 @@ type
     /// <summary>
     /// Количество адресов, которое необходимо вернуть
     /// </summary>
-    function Count(const Value: Integer = 10): TVkParamsGroupsGetAddresses;
+    function Count(const Value: Int64 = 10): TVkParamsGroupsGetAddresses;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества черного списка
     /// </summary>
-    function Offset(const Value: Integer = 0): TVkParamsGroupsGetAddresses;
+    function Offset(const Value: Int64 = 0): TVkParamsGroupsGetAddresses;
   end;
 
   TVkParamsGroupsGetBanned = record
@@ -501,15 +501,15 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsGetBanned;
+    function GroupId(const Value: Int64): TVkParamsGroupsGetBanned;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества черного списка
     /// </summary>
-    function Offset(const Value: Integer = 0): TVkParamsGroupsGetBanned;
+    function Offset(const Value: Int64 = 0): TVkParamsGroupsGetBanned;
     /// <summary>
     /// Количество пользователей, которое необходимо вернуть (максимальное значение 200)
     /// </summary>
-    function Count(const Value: Integer = 20): TVkParamsGroupsGetBanned;
+    function Count(const Value: Int64 = 20): TVkParamsGroupsGetBanned;
     /// <summary>
     /// Список дополнительных полей профилей и сообществ, которые необходимо вернуть
     /// </summary>
@@ -517,7 +517,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества из чёрного списка, информацию о котором нужно получить
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsGroupsGetBanned;
+    function OwnerId(const Value: Int64): TVkParamsGroupsGetBanned;
   end;
 
   TVkParamsGroupsGetInvitedUsers = record
@@ -525,15 +525,15 @@ type
     /// <summary>
     /// Идентификатор группы, список приглашенных в которую пользователей нужно вернуть
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsGetInvitedUsers;
+    function GroupId(const Value: Int64): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
     /// Смещение, необходимое для выборки определённого подмножества пользователей
     /// </summary>
-    function Offset(const Value: Integer = 0): TVkParamsGroupsGetInvitedUsers;
+    function Offset(const Value: Int64 = 0): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
     /// Количество пользователей, информацию о которых нужно вернуть
     /// </summary>
-    function Count(const Value: Integer = 20): TVkParamsGroupsGetInvitedUsers;
+    function Count(const Value: Int64 = 20): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
     /// Список дополнительных полей, которые необходимо вернуть
     /// </summary>
@@ -557,11 +557,11 @@ type
     /// <summary>
     /// Идентификатор страны
     /// </summary>
-    function CountryId(const Value: Integer): TVkParamsGroupsSearch;
+    function CountryId(const Value: Int64): TVkParamsGroupsSearch;
     /// <summary>
     /// Идентификатор города. При передаче этого параметра поле CountryId игнорируется
     /// </summary>
-    function CityId(const Value: Integer): TVkParamsGroupsSearch;
+    function CityId(const Value: Int64): TVkParamsGroupsSearch;
     /// <summary>
     /// При передаче значения True будут выведены предстоящие события.
     /// Учитывается только при передаче в качестве Type значения Event
@@ -578,12 +578,12 @@ type
     /// <summary>
     /// Смещение, необходимое для выборки определённого подмножества результатов поиска
     /// </summary>
-    function Offset(const Value: Integer = 0): TVkParamsGroupsSearch;
+    function Offset(const Value: Int64 = 0): TVkParamsGroupsSearch;
     /// <summary>
     /// Количество результатов поиска, которое необходимо вернуть (1000)
     /// Обратите внимание — даже при использовании параметра offset для получения информации доступны только первые 1000 результатов
     /// </summary>
-    function Count(const Value: Integer = 20): TVkParamsGroupsSearch;
+    function Count(const Value: Int64 = 20): TVkParamsGroupsSearch;
   end;
 
   TVkParamsGroupsSetCallbackSettings = record
@@ -591,7 +591,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsSetCallbackSettings;
+    function GroupId(const Value: Int64): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
     /// Версия Callback API
     /// </summary>
@@ -599,7 +599,7 @@ type
     /// <summary>
     /// Идентификатор сервера
     /// </summary>
-    function ServerId(const Value: Integer): TVkParamsGroupsSetCallbackSettings;
+    function ServerId(const Value: Int64): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
     /// Уведомления о добавлении новой аудиозаписи
     /// </summary>
@@ -815,7 +815,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsSetLongpollSettings;
+    function GroupId(const Value: Int64): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
     /// True — включить Bots Long Poll, False — отключить
     /// </summary>
@@ -1039,7 +1039,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsGroupsSetSettings;
+    function GroupId(const Value: Int64): TVkParamsGroupsSetSettings;
     /// <summary>
     /// Сообщения сообщества
     /// </summary>
@@ -1113,25 +1113,25 @@ type
     /// <summary>
     ///  Позволяет покинуть сообщество или отклонить приглашение в сообщество
     /// </summary>
-    function Leave(GroupId: integer): Boolean;
+    function Leave(GroupId: Int64): Boolean;
     /// <summary>
     ///  Данный метод позволяет вступить в группу, публичную страницу, а также подтвердить участие во встрече.
     ///  NotSure - опциональный параметр, учитываемый, если GroupId принадлежит встрече.
     ///  True — Возможно пойду. False — Точно пойду
     /// </summary>
-    function Join(GroupId: integer; NotSure: Boolean = False): Boolean;
+    function Join(GroupId: Int64; NotSure: Boolean = False): Boolean;
     /// <summary>
     ///  Позволяет приглашать друзей в группу
     /// </summary>
-    function Invite(GroupId, UserId: integer): Boolean;
+    function Invite(GroupId, UserId: Int64): Boolean;
     /// <summary>
     ///  Позволяет исключить пользователя из группы или отклонить заявку на вступление
     /// </summary>
-    function RemoveUser(GroupId, UserId: integer): Boolean;
+    function RemoveUser(GroupId, UserId: Int64): Boolean;
     /// <summary>
     ///  Позволяет одобрить заявку в группу от пользователя
     /// </summary>
-    function ApproveRequest(GroupId, UserId: integer): Boolean;
+    function ApproveRequest(GroupId, UserId: Int64): Boolean;
     /// <summary>
     ///  Позволяет добавить адрес в сообщество.
     ///  Список адресов может быть получен методом groups.getAddresses
@@ -1145,11 +1145,11 @@ type
     /// <summary>
     ///  Добавляет сервер для Callback API в сообщество
     /// </summary>
-    function AddCallbackServer(var ServerId: Integer; GroupId: integer; Url, Title: string; SecretKey: string): Boolean;
+    function AddCallbackServer(var ServerId: Int64; GroupId: Int64; Url, Title: string; SecretKey: string): Boolean;
     /// <summary>
     ///  Позволяет добавлять ссылки в сообщество
     /// </summary>
-    function AddLink(var Item: TVkGroupLink; GroupId: integer; Link: string; Text: string = ''): Boolean;
+    function AddLink(var Item: TVkGroupLink; GroupId: Int64; Link: string; Text: string = ''): Boolean;
     /// <summary>
     ///  Добавляет пользователя или группу в черный список сообщества
     /// </summary>
@@ -1169,15 +1169,15 @@ type
     /// <summary>
     ///  Удаляет адрес сообщества
     /// </summary>
-    function DeleteAddress(GroupId, AddressId: integer): Boolean;
+    function DeleteAddress(GroupId, AddressId: Int64): Boolean;
     /// <summary>
     ///  Удаляет сервер для Callback API из сообщества
     /// </summary>
-    function DeleteCallbackServer(GroupId, ServerId: integer): Boolean;
+    function DeleteCallbackServer(GroupId, ServerId: Int64): Boolean;
     /// <summary>
     ///  Позволяет удалить ссылки из сообщества
     /// </summary>
-    function DeleteLink(GroupId, LinkId: integer): Boolean;
+    function DeleteLink(GroupId, LinkId: Int64): Boolean;
     /// <summary>
     ///  Редактирует сообщество
     /// </summary>
@@ -1193,15 +1193,15 @@ type
     /// <summary>
     ///  Позволяет отредактировать адрес в сообществе
     /// </summary>
-    function EditAddress(var Item: TVkGroupAddress; AddressId: Integer; Params: TVkParamsGroupsEditAddress): Boolean; overload;
+    function EditAddress(var Item: TVkGroupAddress; AddressId: Int64; Params: TVkParamsGroupsEditAddress): Boolean; overload;
     /// <summary>
     ///  Редактирует данные сервера для Callback API в сообществе
     /// </summary>
-    function EditCallbackServer(GroupId: Integer; ServerId: integer; Url, Title: string; SecretKey: string): Boolean;
+    function EditCallbackServer(GroupId: Int64; ServerId: Int64; Url, Title: string; SecretKey: string): Boolean;
     /// <summary>
     ///  Позволяет редактировать ссылки в сообществе
     /// </summary>
-    function EditLink(GroupId: integer; Link: string; Text: string = ''): Boolean;
+    function EditLink(GroupId: Int64; Link: string; Text: string = ''): Boolean;
     /// <summary>
     ///  Позволяет назначить/разжаловать руководителя в сообществе или изменить уровень его полномочий
     /// </summary>
@@ -1229,7 +1229,7 @@ type
     /// <summary>
     ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
-    function GetById(var Items: TVkGroups; GroupId: Integer; Fields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Items: TVkGroups; GroupId: Int64; Fields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
     ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
@@ -1237,19 +1237,19 @@ type
     /// <summary>
     ///  Позволяет получить строку, необходимую для подтверждения адреса сервера в Callback API
     /// </summary>
-    function GetCallbackConfirmationCode(var Code: string; GroupId: Integer): Boolean;
+    function GetCallbackConfirmationCode(var Code: string; GroupId: Int64): Boolean;
     /// <summary>
     ///  Получает информацию о серверах для Callback API в сообществе
     /// </summary>
-    function GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Integer; ServerIds: TIdList = []): Boolean;
+    function GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Int64; ServerIds: TIdList = []): Boolean;
     /// <summary>
     ///  Позволяет получить настройки уведомлений Callback API для сообщества
     /// </summary>
-    function GetCallbackSettings(var Items: TVkCallbackSettings; GroupId: Integer; ServerId: Integer): Boolean;
+    function GetCallbackSettings(var Items: TVkCallbackSettings; GroupId: Int64; ServerId: Int64): Boolean;
     /// <summary>
     ///  Возвращает список сообществ выбранной категории каталога
     /// </summary>
-    function GetCatalog(var Items: TVkGroups; CategoryId: Integer = 0; SubcategoryId: Integer = 0): Boolean;
+    function GetCatalog(var Items: TVkGroups; CategoryId: Int64 = 0; SubcategoryId: Int64 = 0): Boolean;
     /// <summary>
     ///  Возвращает список категорий для каталога сообществ
     /// </summary>
@@ -1261,31 +1261,31 @@ type
     /// <summary>
     ///  Данный метод возвращает список приглашений в сообщества и встречи текущего пользователя
     /// </summary>
-    function GetInvites(var Items: TVkInvitesGroups; Extended: Boolean = False; Count: Integer = 20; Offset: Integer = 0): Boolean;
+    function GetInvites(var Items: TVkInvitesGroups; Extended: Boolean = False; Count: Int64 = 20; Offset: Int64 = 0): Boolean;
     /// <summary>
     ///  Возвращает данные для подключения к Bots Longpoll API
     /// </summary>
-    function GetLongPollServer(var Item: TVkLongpollData; GroupId: Integer): Boolean;
+    function GetLongPollServer(var Item: TVkLongpollData; GroupId: Int64): Boolean;
     /// <summary>
     ///  Получает настройки Bots Longpoll API для сообщества
     /// </summary>
-    function GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Integer): Boolean;
+    function GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Int64): Boolean;
     /// <summary>
     ///  Возвращает список заявок на вступление в сообщество
     /// </summary>
-    function GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields = [TVkProfileField.Domain]; Count: Integer = 20; Offset: Integer = 0): Boolean; overload;
+    function GetRequests(var Items: TVkProfiles; GroupId: Int64; Fields: TVkProfileFields = [TVkProfileField.Domain]; Count: Int64 = 20; Offset: Int64 = 0): Boolean; overload;
     /// <summary>
     ///  Возвращает список заявок на вступление в сообщество
     /// </summary>
-    function GetRequestsIds(var Items: TVkIdList; GroupId: Integer; Count: Integer = 20; Offset: Integer = 0): Boolean; overload;
+    function GetRequestsIds(var Items: TVkIdList; GroupId: Int64; Count: Int64 = 20; Offset: Int64 = 0): Boolean; overload;
     /// <summary>
     ///  Позволяет получать данные, необходимые для отображения страницы редактирования данных сообщества
     /// </summary>
-    function GetSettings(var Item: TVkGroupSettings; GroupId: Integer): Boolean;
+    function GetSettings(var Item: TVkGroupSettings; GroupId: Int64): Boolean;
     /// <summary>
     ///  Возвращает список тегов сообщества
     /// </summary>
-    function GetTagList(var Items: TVkGroupTags; GroupId: Integer): Boolean;
+    function GetTagList(var Items: TVkGroupTags; GroupId: Int64): Boolean;
     /// <summary>
     ///  Возвращает настройки прав для ключа доступа сообщества
     /// </summary>
@@ -1293,7 +1293,7 @@ type
     /// <summary>
     ///  Позволяет менять местоположение ссылки в списке
     /// </summary>
-    function ReorderLink(GroupId, LinkId: Integer; After: Integer): Boolean;
+    function ReorderLink(GroupId, LinkId: Int64; After: Int64): Boolean;
     /// <summary>
     ///  Осуществляет поиск сообществ по заданной подстроке
     /// </summary>
@@ -1325,27 +1325,27 @@ type
     /// <summary>
     ///  Позволяет создать или отредактировать заметку о пользователе в рамках переписки пользователя с сообществом
     /// </summary>
-    function SetUserNote(GroupId, UserId: Integer; Note: string): Boolean;
+    function SetUserNote(GroupId, UserId: Int64; Note: string): Boolean;
     /// <summary>
     ///  Позволяет добавить новый тег в сообщество
     /// </summary>
-    function TagAdd(GroupId: Integer; TagName: string; TagColor: TVkGroupTagColor): Boolean;
+    function TagAdd(GroupId: Int64; TagName: string; TagColor: TVkGroupTagColor): Boolean;
     /// <summary>
     ///  Позволяет "привязывать" и "отвязывать" теги сообщества к беседам
     /// </summary>
-    function TagBind(GroupId: Integer; TagId, UserId: Integer; Act: TVkGroupTagAct): Boolean;
+    function TagBind(GroupId: Int64; TagId, UserId: Int64; Act: TVkGroupTagAct): Boolean;
     /// <summary>
     ///  Позволяет удалить тег сообщества
     /// </summary>
-    function TagDelete(GroupId, TagId: Integer): Boolean;
+    function TagDelete(GroupId, TagId: Int64): Boolean;
     /// <summary>
     ///  Позволяет переименовать существующий тег
     /// </summary>
-    function TagUpdate(GroupId, TagId: Integer; TagName: string): Boolean;
+    function TagUpdate(GroupId, TagId: Int64; TagName: string): Boolean;
     /// <summary>
     ///  Убирает пользователя или группу из черного списка сообщества
     /// </summary>
-    function Unban(GroupId, OwnerId: Integer): Boolean;
+    function Unban(GroupId, OwnerId: Int64): Boolean;
   end;
 
 implementation
@@ -1365,7 +1365,7 @@ begin
   Result := AddAddress(Item, Params.List);
 end;
 
-function TGroupsController.AddCallbackServer(var ServerId: Integer; GroupId: integer; Url, Title, SecretKey: string): Boolean;
+function TGroupsController.AddCallbackServer(var ServerId: Int64; GroupId: Int64; Url, Title, SecretKey: string): Boolean;
 begin
   Result := Handler.Execute('groups.addCallbackServer', [
     ['group_id', GroupId.ToString],
@@ -1375,7 +1375,7 @@ begin
     GetValue('server_id', ServerId);
 end;
 
-function TGroupsController.AddLink(var Item: TVkGroupLink; GroupId: integer; Link, Text: string): Boolean;
+function TGroupsController.AddLink(var Item: TVkGroupLink; GroupId: Int64; Link, Text: string): Boolean;
 begin
   Result := Handler.Execute('groups.addLink', [
     ['GroupId', GroupId.ToString],
@@ -1384,7 +1384,7 @@ begin
     GetObject(Item);
 end;
 
-function TGroupsController.ApproveRequest(GroupId, UserId: integer): Boolean;
+function TGroupsController.ApproveRequest(GroupId, UserId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.approveRequest', [
     ['group_id', GroupId.ToString],
@@ -1412,7 +1412,7 @@ begin
   Result := Handler.Execute('groups.ban', Params).ResponseIsTrue;
 end;
 
-function TGroupsController.DeleteAddress(GroupId, AddressId: integer): Boolean;
+function TGroupsController.DeleteAddress(GroupId, AddressId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.deleteAddress', [
     ['group_id', GroupId.ToString],
@@ -1420,7 +1420,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.DeleteCallbackServer(GroupId, ServerId: integer): Boolean;
+function TGroupsController.DeleteCallbackServer(GroupId, ServerId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.deleteCallbackServer', [
     ['group_id', GroupId.ToString],
@@ -1428,7 +1428,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.DeleteLink(GroupId, LinkId: integer): Boolean;
+function TGroupsController.DeleteLink(GroupId, LinkId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.deleteLink', [
     ['group_id', GroupId.ToString],
@@ -1451,13 +1451,13 @@ begin
   Result := Edit(Params.List);
 end;
 
-function TGroupsController.EditAddress(var Item: TVkGroupAddress; AddressId: Integer; Params: TVkParamsGroupsEditAddress): Boolean;
+function TGroupsController.EditAddress(var Item: TVkGroupAddress; AddressId: Int64; Params: TVkParamsGroupsEditAddress): Boolean;
 begin
   Params.List.Add('address_id', AddressId);
   Result := EditAddress(Item, Params.List);
 end;
 
-function TGroupsController.EditCallbackServer(GroupId, ServerId: integer; Url, Title, SecretKey: string): Boolean;
+function TGroupsController.EditCallbackServer(GroupId, ServerId: Int64; Url, Title, SecretKey: string): Boolean;
 begin
   Result := Handler.Execute('groups.editCallbackServer', [
     ['group_id', GroupId.ToString],
@@ -1468,7 +1468,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.EditLink(GroupId: integer; Link, Text: string): Boolean;
+function TGroupsController.EditLink(GroupId: Int64; Link, Text: string): Boolean;
 begin
   Result := Handler.Execute('groups.editLink', [
     ['GroupId', GroupId.ToString],
@@ -1512,17 +1512,17 @@ begin
   Result := Handler.Execute('groups.getBanned', Params.List).GetObject(Items);
 end;
 
-function TGroupsController.GetById(var Items: TVkGroups; GroupId: Integer; Fields: TVkGroupFields): Boolean;
+function TGroupsController.GetById(var Items: TVkGroups; GroupId: Int64; Fields: TVkGroupFields): Boolean;
 begin
   Result := GetById(Items, [GroupId], Fields);
 end;
 
-function TGroupsController.GetCallbackConfirmationCode(var Code: string; GroupId: Integer): Boolean;
+function TGroupsController.GetCallbackConfirmationCode(var Code: string; GroupId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.getCallbackConfirmationCode', ['group_id', GroupId.ToString]).GetValue('code', Code);
 end;
 
-function TGroupsController.GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Integer; ServerIds: TIdList): Boolean;
+function TGroupsController.GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Int64; ServerIds: TIdList): Boolean;
 begin
   Result := Handler.Execute('groups.getCallbackServers', [
     ['group_id', GroupId.ToString],
@@ -1530,7 +1530,7 @@ begin
     GetObject(Items);
 end;
 
-function TGroupsController.GetCallbackSettings(var Items: TVkCallbackSettings; GroupId, ServerId: Integer): Boolean;
+function TGroupsController.GetCallbackSettings(var Items: TVkCallbackSettings; GroupId, ServerId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.getCallbackSettings', [
     ['group_id', GroupId.ToString],
@@ -1538,7 +1538,7 @@ begin
     GetObject(Items);
 end;
 
-function TGroupsController.GetCatalog(var Items: TVkGroups; CategoryId, SubcategoryId: Integer): Boolean;
+function TGroupsController.GetCatalog(var Items: TVkGroups; CategoryId, SubcategoryId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.getById', [
     ['category_id', CategoryId.ToString],
@@ -1592,7 +1592,7 @@ begin
   Result := Handler.Execute('groups.getInvitedUsers', Params.List).GetObject(Items);
 end;
 
-function TGroupsController.GetInvites(var Items: TVkInvitesGroups; Extended: Boolean; Count, Offset: Integer): Boolean;
+function TGroupsController.GetInvites(var Items: TVkInvitesGroups; Extended: Boolean; Count, Offset: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.getInvites', [
     ['extended', BoolToString(Extended)],
@@ -1601,12 +1601,12 @@ begin
     GetObject(Items);
 end;
 
-function TGroupsController.GetLongPollServer(var Item: TVkLongpollData; GroupId: Integer): Boolean;
+function TGroupsController.GetLongPollServer(var Item: TVkLongpollData; GroupId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.getLongPollServer', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
 
-function TGroupsController.GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Integer): Boolean;
+function TGroupsController.GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.getLongPollSettings', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
@@ -1634,7 +1634,7 @@ begin
   Result := Handler.Execute('groups.getOnlineStatus', ['group_id', GroupId.ToString]).GetObject(Value);
 end;
 
-function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Integer; Fields: TVkProfileFields; Count, Offset: Integer): Boolean;
+function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Int64; Fields: TVkProfileFields; Count, Offset: Int64): Boolean;
 var
   Params: TParams;
 begin
@@ -1647,7 +1647,7 @@ begin
   Result := Handler.Execute('groups.getRequests', Params).GetObject(Items);
 end;
 
-function TGroupsController.GetRequestsIds(var Items: TVkIdList; GroupId, Count, Offset: Integer): Boolean;
+function TGroupsController.GetRequestsIds(var Items: TVkIdList; GroupId, Count, Offset: Int64): Boolean;
 var
   Params: TParams;
 begin
@@ -1657,12 +1657,12 @@ begin
   Result := Handler.Execute('groups.getRequests', Params).GetObject(Items);
 end;
 
-function TGroupsController.GetSettings(var Item: TVkGroupSettings; GroupId: Integer): Boolean;
+function TGroupsController.GetSettings(var Item: TVkGroupSettings; GroupId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.getSettings', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
 
-function TGroupsController.GetTagList(var Items: TVkGroupTags; GroupId: Integer): Boolean;
+function TGroupsController.GetTagList(var Items: TVkGroupTags; GroupId: Int64): Boolean;
 begin
   with Handler.Execute('groups.getTagList', ['group_id', GroupId.ToString]) do
   begin
@@ -1684,7 +1684,7 @@ begin
   Result := Handler.Execute('groups.getTokenPermissions').GetObject(Items);
 end;
 
-function TGroupsController.Invite(GroupId, UserId: integer): Boolean;
+function TGroupsController.Invite(GroupId, UserId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.invite', [
     ['group_id', GroupId.ToString],
@@ -1697,7 +1697,7 @@ begin
   Result := IsMember(Items, Params.List);
 end;
 
-function TGroupsController.Join(GroupId: integer; NotSure: Boolean): Boolean;
+function TGroupsController.Join(GroupId: Int64; NotSure: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -1707,12 +1707,12 @@ begin
   Result := Handler.Execute('groups.join', Params).ResponseIsTrue;
 end;
 
-function TGroupsController.Leave(GroupId: integer): Boolean;
+function TGroupsController.Leave(GroupId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.leave', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
 
-function TGroupsController.RemoveUser(GroupId, UserId: integer): Boolean;
+function TGroupsController.RemoveUser(GroupId, UserId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.removeUser', [
     ['group_id', GroupId.ToString],
@@ -1720,7 +1720,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.ReorderLink(GroupId, LinkId, After: Integer): Boolean;
+function TGroupsController.ReorderLink(GroupId, LinkId, After: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.reorderLink', [
     ['group_id', GroupId.ToString],
@@ -1754,7 +1754,7 @@ begin
   Result := Handler.Execute('groups.setSettings', Params.List).ResponseIsTrue;
 end;
 
-function TGroupsController.SetUserNote(GroupId, UserId: Integer; Note: string): Boolean;
+function TGroupsController.SetUserNote(GroupId, UserId: Int64; Note: string): Boolean;
 begin
   Result := Handler.Execute('groups.setLongPollSettings', [
     ['group_id', GroupId.ToString],
@@ -1763,7 +1763,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagAdd(GroupId: Integer; TagName: string; TagColor: TVkGroupTagColor): Boolean;
+function TGroupsController.TagAdd(GroupId: Int64; TagName: string; TagColor: TVkGroupTagColor): Boolean;
 begin
   Result := Handler.Execute('groups.tagAdd', [
     ['group_id', GroupId.ToString],
@@ -1772,7 +1772,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagBind(GroupId, TagId, UserId: Integer; Act: TVkGroupTagAct): Boolean;
+function TGroupsController.TagBind(GroupId, TagId, UserId: Int64; Act: TVkGroupTagAct): Boolean;
 begin
   Result := Handler.Execute('groups.tagBind', [
     ['group_id', GroupId.ToString],
@@ -1782,7 +1782,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagDelete(GroupId, TagId: Integer): Boolean;
+function TGroupsController.TagDelete(GroupId, TagId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.tagDelete', [
     ['group_id', GroupId.ToString],
@@ -1790,7 +1790,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagUpdate(GroupId, TagId: Integer; TagName: string): Boolean;
+function TGroupsController.TagUpdate(GroupId, TagId: Int64; TagName: string): Boolean;
 begin
   Result := Handler.Execute('groups.tagUpdate', [
     ['group_id', GroupId.ToString],
@@ -1799,7 +1799,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.Unban(GroupId, OwnerId: Integer): Boolean;
+function TGroupsController.Unban(GroupId, OwnerId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.unban', [
     ['group_id', GroupId.ToString],
@@ -1824,7 +1824,7 @@ end;
 
 { TVkGetMembersParams }
 
-function TVkParamsGroupsGetMembers.Count(const Value: Integer): TVkParamsGroupsGetMembers;
+function TVkParamsGroupsGetMembers.Count(const Value: Int64): TVkParamsGroupsGetMembers;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -1848,13 +1848,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetMembers.GroupId(const Value: Integer): TVkParamsGroupsGetMembers;
+function TVkParamsGroupsGetMembers.GroupId(const Value: Int64): TVkParamsGroupsGetMembers;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsGetMembers.Offset(const Value: Integer): TVkParamsGroupsGetMembers;
+function TVkParamsGroupsGetMembers.Offset(const Value: Int64): TVkParamsGroupsGetMembers;
 begin
   List.Add('offset', Value);
   Result := Self;
@@ -1868,7 +1868,7 @@ end;
 
 { TVkGroupsGetParams }
 
-function TVkParamsGroupsGet.Count(const Value: Integer): TVkParamsGroupsGet;
+function TVkParamsGroupsGet.Count(const Value: Int64): TVkParamsGroupsGet;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -1886,13 +1886,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGet.Offset(const Value: Integer): TVkParamsGroupsGet;
+function TVkParamsGroupsGet.Offset(const Value: Int64): TVkParamsGroupsGet;
 begin
   List.Add('offset', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsGet.UserId(const Value: Integer): TVkParamsGroupsGet;
+function TVkParamsGroupsGet.UserId(const Value: Int64): TVkParamsGroupsGet;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -1906,7 +1906,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsIsMember.GroupId(const Value: Integer): TVkParamsGroupsIsMember;
+function TVkParamsGroupsIsMember.GroupId(const Value: Int64): TVkParamsGroupsIsMember;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -1918,7 +1918,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsIsMember.UserId(const Value: Integer): TVkParamsGroupsIsMember;
+function TVkParamsGroupsIsMember.UserId(const Value: Int64): TVkParamsGroupsIsMember;
 begin
   List.Add('user_ids', Value);
   Result := Self;
@@ -1944,19 +1944,19 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsAddAddress.CityId(const Value: Integer): TVkParamsGroupsAddAddress;
+function TVkParamsGroupsAddAddress.CityId(const Value: Int64): TVkParamsGroupsAddAddress;
 begin
   List.Add('city_id', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsAddAddress.CountryId(const Value: Integer): TVkParamsGroupsAddAddress;
+function TVkParamsGroupsAddAddress.CountryId(const Value: Int64): TVkParamsGroupsAddAddress;
 begin
   List.Add('country_id', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsAddAddress.GroupId(const Value: Integer): TVkParamsGroupsAddAddress;
+function TVkParamsGroupsAddAddress.GroupId(const Value: Int64): TVkParamsGroupsAddAddress;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -1980,7 +1980,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsAddAddress.MetroId(const Value: Integer): TVkParamsGroupsAddAddress;
+function TVkParamsGroupsAddAddress.MetroId(const Value: Int64): TVkParamsGroupsAddAddress;
 begin
   List.Add('metro_id', Value);
   Result := Self;
@@ -2030,13 +2030,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsBan.GroupId(const Value: Integer): TVkParamsGroupsBan;
+function TVkParamsGroupsBan.GroupId(const Value: Int64): TVkParamsGroupsBan;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsBan.OwnerId(const Value: Integer): TVkParamsGroupsBan;
+function TVkParamsGroupsBan.OwnerId(const Value: Int64): TVkParamsGroupsBan;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2056,7 +2056,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsCreate.PublicCategory(const Value: Integer): TVkParamsGroupsCreate;
+function TVkParamsGroupsCreate.PublicCategory(const Value: Int64): TVkParamsGroupsCreate;
 begin
   List.Add('public_category', Value);
   Result := Self;
@@ -2112,7 +2112,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.City(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.City(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('city', Value);
   Result := Self;
@@ -2124,7 +2124,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.Country(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.Country(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('country', Value);
   Result := Self;
@@ -2154,7 +2154,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.EventGroupId(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.EventGroupId(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('event_group_id', Value);
   Result := Self;
@@ -2172,7 +2172,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.GroupId(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.GroupId(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2184,7 +2184,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.MainSection(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.MainSection(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('main_section', Value);
   Result := Self;
@@ -2208,7 +2208,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.MarketContact(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.MarketContact(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('market_contact', Value);
   Result := Self;
@@ -2226,7 +2226,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.MarketWiki(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.MarketWiki(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('market_wiki', Value);
   Result := Self;
@@ -2274,7 +2274,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.PublicCategory(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.PublicCategory(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('public_category', Value);
   Result := Self;
@@ -2286,7 +2286,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.PublicSubcategory(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.PublicSubcategory(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('public_subcategory', Value);
   Result := Self;
@@ -2304,7 +2304,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.SecondarySection(const Value: Integer): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.SecondarySection(const Value: Int64): TVkParamsGroupsEdit;
 begin
   List.Add('secondary_section', Value);
   Result := Self;
@@ -2390,7 +2390,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEditManager.UserId(const Value: Integer): TVkParamsGroupsEditManager;
+function TVkParamsGroupsEditManager.UserId(const Value: Int64): TVkParamsGroupsEditManager;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -2404,13 +2404,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetAddresses.AddressIds(const Value: Integer): TVkParamsGroupsGetAddresses;
+function TVkParamsGroupsGetAddresses.AddressIds(const Value: Int64): TVkParamsGroupsGetAddresses;
 begin
   List.Add('address_ids', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsGetAddresses.Count(const Value: Integer): TVkParamsGroupsGetAddresses;
+function TVkParamsGroupsGetAddresses.Count(const Value: Int64): TVkParamsGroupsGetAddresses;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -2440,7 +2440,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetAddresses.Offset(const Value: Integer): TVkParamsGroupsGetAddresses;
+function TVkParamsGroupsGetAddresses.Offset(const Value: Int64): TVkParamsGroupsGetAddresses;
 begin
   List.Add('offset', Value);
   Result := Self;
@@ -2448,7 +2448,7 @@ end;
 
 { TVkParamsGroupsGetBanned }
 
-function TVkParamsGroupsGetBanned.Count(const Value: Integer): TVkParamsGroupsGetBanned;
+function TVkParamsGroupsGetBanned.Count(const Value: Int64): TVkParamsGroupsGetBanned;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -2460,19 +2460,19 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetBanned.GroupId(const Value: Integer): TVkParamsGroupsGetBanned;
+function TVkParamsGroupsGetBanned.GroupId(const Value: Int64): TVkParamsGroupsGetBanned;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsGetBanned.Offset(const Value: Integer): TVkParamsGroupsGetBanned;
+function TVkParamsGroupsGetBanned.Offset(const Value: Int64): TVkParamsGroupsGetBanned;
 begin
   List.Add('offset', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsGetBanned.OwnerId(const Value: Integer): TVkParamsGroupsGetBanned;
+function TVkParamsGroupsGetBanned.OwnerId(const Value: Int64): TVkParamsGroupsGetBanned;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2480,7 +2480,7 @@ end;
 
 { TVkParamsGroupsGetInvitedUsers }
 
-function TVkParamsGroupsGetInvitedUsers.Count(const Value: Integer): TVkParamsGroupsGetInvitedUsers;
+function TVkParamsGroupsGetInvitedUsers.Count(const Value: Int64): TVkParamsGroupsGetInvitedUsers;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -2492,7 +2492,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetInvitedUsers.GroupId(const Value: Integer): TVkParamsGroupsGetInvitedUsers;
+function TVkParamsGroupsGetInvitedUsers.GroupId(const Value: Int64): TVkParamsGroupsGetInvitedUsers;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2504,7 +2504,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetInvitedUsers.Offset(const Value: Integer): TVkParamsGroupsGetInvitedUsers;
+function TVkParamsGroupsGetInvitedUsers.Offset(const Value: Int64): TVkParamsGroupsGetInvitedUsers;
 begin
   List.Add('offset', Value);
   Result := Self;
@@ -2512,19 +2512,19 @@ end;
 
 { TVkParamsGroupsSearch }
 
-function TVkParamsGroupsSearch.CityId(const Value: Integer): TVkParamsGroupsSearch;
+function TVkParamsGroupsSearch.CityId(const Value: Int64): TVkParamsGroupsSearch;
 begin
   List.Add('city_id', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsSearch.Count(const Value: Integer): TVkParamsGroupsSearch;
+function TVkParamsGroupsSearch.Count(const Value: Int64): TVkParamsGroupsSearch;
 begin
   List.Add('count', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsSearch.CountryId(const Value: Integer): TVkParamsGroupsSearch;
+function TVkParamsGroupsSearch.CountryId(const Value: Int64): TVkParamsGroupsSearch;
 begin
   List.Add('country_id', Value);
   Result := Self;
@@ -2542,7 +2542,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsSearch.Offset(const Value: Integer): TVkParamsGroupsSearch;
+function TVkParamsGroupsSearch.Offset(const Value: Int64): TVkParamsGroupsSearch;
 begin
   List.Add('offset', Value);
   Result := Self;
@@ -2658,7 +2658,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsSetCallbackSettings.GroupId(const Value: Integer): TVkParamsGroupsSetCallbackSettings;
+function TVkParamsGroupsSetCallbackSettings.GroupId(const Value: Int64): TVkParamsGroupsSetCallbackSettings;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2814,7 +2814,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsSetCallbackSettings.ServerId(const Value: Integer): TVkParamsGroupsSetCallbackSettings;
+function TVkParamsGroupsSetCallbackSettings.ServerId(const Value: Int64): TVkParamsGroupsSetCallbackSettings;
 begin
   List.Add('server_id', Value);
   Result := Self;
@@ -2997,7 +2997,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsSetLongpollSettings.GroupId(const Value: Integer): TVkParamsGroupsSetLongpollSettings;
+function TVkParamsGroupsSetLongpollSettings.GroupId(const Value: Int64): TVkParamsGroupsSetLongpollSettings;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -3251,7 +3251,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsSetSettings.GroupId(const Value: Integer): TVkParamsGroupsSetSettings;
+function TVkParamsGroupsSetSettings.GroupId(const Value: Int64): TVkParamsGroupsSetSettings;
 begin
   List.Add('group_id', Value);
   Result := Self;

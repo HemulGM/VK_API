@@ -32,6 +32,8 @@ type
 
   TVkConfirmException = class(TVkMethodException);
 
+  TVkAccessDeniedException = class(TVkMethodException);
+
   TVkTooManySimilarActionException = class(TVkMethodException);
 
   TVkUnknownMethodException = class(TVkMethodException);

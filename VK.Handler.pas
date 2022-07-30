@@ -178,7 +178,13 @@ var
   Pair: TPair<string, string>;
 begin
   Result := TRESTRequest.Create(nil);
+  Result.SynchronizedEvents := False;
+  Result.ReadTimeout := 5000;
+  Result.ConnectTimeout := 5000;
   Result.Client := TRESTClient.Create(Result);
+  Result.Client.SynchronizedEvents := False;
+  Result.Client.ConnectTimeout := 5000;
+  Result.Client.ReadTimeout := 5000;
   Result.Response := TRESTResponse.Create(Result);
   Result.Client.Authenticator := FAuthenticator;
   Result.Client.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
@@ -399,6 +405,8 @@ begin
           WaitTime(1000);
           Result := Execute(Request);
         end;
+      VK_ERROR_ACCESS_DENIED, VK_ERROR_ACCESS_DENIED_POST:
+          raise TVkAccessDeniedException.Create(Result.Error.Text, Result.Error.Code);
     else
       raise TVkUnknownMethodException.Create(Result.Error.Text, Result.Error.Code);
     end;
