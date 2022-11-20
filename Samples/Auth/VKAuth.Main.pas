@@ -9,22 +9,41 @@ uses
   Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents,
   VK.GroupEvents, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
   VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video, VK.Entity.Photo,
-  VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
+  VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings, Vcl.CategoryButtons;
 
 type
   TFormMain = class(TForm)
     VK1: TVK;
-    Panel1: TPanel;
-    LabelLogin: TLabel;
     Panel2: TPanel;
     Memo1: TMemo;
     MemoLog: TMemo;
     VkUserEvents1: TVkUserEvents;
     VkGroupEventsController1: TVkGroupEventsController;
     VkGroupEvents1: TVkGroupEvents;
+    PageControl2: TPageControl;
+    TabSheetWelcome: TTabSheet;
+    TabSheetAuth: TTabSheet;
+    TabSheetMethods: TTabSheet;
+    TabSheetTests: TTabSheet;
+    CategoryButtons1: TCategoryButtons;
+    MemoCode: TMemo;
+    Panel1: TPanel;
     PageControl1: TPageControl;
+    TabSheet9: TTabSheet;
+    Button20: TButton;
+    Button26: TButton;
+    Button13: TButton;
+    Button14: TButton;
+    Button15: TButton;
+    Button16: TButton;
+    Button8: TButton;
+    Button34: TButton;
+    Button35: TButton;
+    Button36: TButton;
+    Button37: TButton;
+    Button38: TButton;
+    Button39: TButton;
     TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -34,11 +53,21 @@ type
     Button7: TButton;
     Button9: TButton;
     Button10: TButton;
+    Button40: TButton;
+    TabSheet2: TTabSheet;
     Button11: TButton;
+    Button41: TButton;
     TabSheet3: TTabSheet;
     Button21: TButton;
     Button23: TButton;
     Button24: TButton;
+    Button29: TButton;
+    Button30: TButton;
+    ButtonGetCatalog: TButton;
+    ButtonCreatePlaylist: TButton;
+    ButtonEditPlaylist: TButton;
+    Button31: TButton;
+    Button44: TButton;
     TabSheet4: TTabSheet;
     Button22: TButton;
     TabSheet5: TTabSheet;
@@ -46,56 +75,42 @@ type
     Button18: TButton;
     TabSheet6: TTabSheet;
     Button19: TButton;
+    ButtonWallGet: TButton;
     TabSheet7: TTabSheet;
     Button12: TButton;
     TabSheet8: TTabSheet;
     ButtonGroupsGetMembers: TButton;
-    TabSheet9: TTabSheet;
-    Button20: TButton;
-    Button26: TButton;
-    Button13: TButton;
-    Button14: TButton;
-    Button15: TButton;
-    Button16: TButton;
-    Button8: TButton;
+    ButtonGroupsGetById: TButton;
+    ButtonGroupsGet: TButton;
+    ButtonVideoDelete: TButton;
     TabSheet10: TTabSheet;
     ButtonMesGetConv: TButton;
+    ButtonMesGetHistory: TButton;
+    ButtonMesSendToPeer: TButton;
+    Button49: TButton;
+    ButtonSendPhoto: TButton;
     TabSheet11: TTabSheet;
     Button28: TButton;
-    Button29: TButton;
-    Button30: TButton;
-    ButtonGetCatalog: TButton;
-    ButtonCreatePlaylist: TButton;
-    ButtonEditPlaylist: TButton;
-    Button31: TButton;
+    ButtonGetFriendWithAudio: TButton;
     TabSheetPolls: TTabSheet;
     Button32: TButton;
     TabSheetPodcasts: TTabSheet;
     Button33: TButton;
-    Button34: TButton;
-    Button35: TButton;
-    Button36: TButton;
-    Button37: TButton;
-    Button38: TButton;
-    Button39: TButton;
-    ButtonLogin: TButton;
-    Button40: TButton;
-    ButtonWallGet: TButton;
-    Button41: TButton;
-    ButtonGroupsGetById: TButton;
-    ButtonGroupsGet: TButton;
-    Button44: TButton;
-    ButtonGetFriendWithAudio: TButton;
-    ButtonMesGetHistory: TButton;
-    Button47: TButton;
     TabSheetNewsfeed: TTabSheet;
     Button48: TButton;
-    ButtonMesSendToPeer: TButton;
-    Button49: TButton;
     TabSheetAds: TTabSheet;
     ButtonAdsGetAccounts: TButton;
-    ButtonSendPhoto: TButton;
-    ButtonVideoDelete: TButton;
+    Memo2: TMemo;
+    Label1: TLabel;
+    ScrollBox1: TScrollBox;
+    Panel3: TPanel;
+    ButtonLogin: TButton;
+    Label2: TLabel;
+    LabelLogin: TLabel;
+    Panel4: TPanel;
+    Button47: TButton;
+    Label3: TLabel;
+    HeaderControl1: THeaderControl;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -220,11 +235,13 @@ type
     procedure ButtonSendPhotoClick(Sender: TObject);
     procedure ButtonVideoDeleteClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure TabSheet1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+    procedure CategoryButtons1ButtonClicked(Sender: TObject; const Button: TButtonItem);
+    procedure TabSheetAuthResize(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
     FTokenExpiry: Int64;
+    procedure FillMethods;
   public    { Public declarations }
   end;
 
@@ -234,12 +251,12 @@ var
 implementation
 
 uses
-  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
-  VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
-  VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
-  VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest,
-  VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio, VK.Messages,
-  VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
+  System.IOUtils, System.Rtti, Vk.Controller, VK.Entity.AccountInfo,
+  VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
+  VK.Entity.PushSettings, VK.Entity.Profile, VK.Entity.Keyboard, VK.Status,
+  VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
+  VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio,
+  VK.Messages, VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
   VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
   VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
   VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
@@ -1211,12 +1228,51 @@ begin
   end;
 end;
 
+procedure TFormMain.CategoryButtons1ButtonClicked(Sender: TObject; const Button: TButtonItem);
+begin
+  MemoCode.Text := TRttiMethod(Button.Data).ToString;
+end;
+
+procedure TFormMain.FillMethods;
+var
+  Context: TRttiContext;
+begin
+  CategoryButtons1.Categories.Clear;
+
+  var GetParams :=
+    function(const M: TRttiMethod): string
+    begin
+      Result := '';
+      for var Param in M.GetParameters do
+        Result := Result + Param.Name + ', ';
+      Result := Result.Trim([',', ' ']);
+    end;
+
+  for var Prop in Context.GetType(TVK).GetProperties do
+    if Prop.PropertyType.BaseType = Context.GetType(TVkController) then
+    begin
+      with CategoryButtons1.Categories.Add do
+      begin
+        Caption := Prop.Name;
+        for var Method in Prop.PropertyType.GetDeclaredMethods do
+          with Items.Add do
+          begin
+            Caption := Method.Name + ' (' + GetParams(Method) + ')';
+            Data := Method;
+          end;
+        Collapsed := True;
+      end;
+    end;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  FillMethods;
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
-  VK1.Application := TVkApplicationData.VKAdmin;
+  //VK1.Application := TVkApplicationData.VKAdmin;
+  VK1.Application := TVkApplicationData.VKAPI;
   {if TFile.Exists('token.tmp') then
     VK1.Token := TFile.ReadAllText('token.tmp');   }
   //VK1.Token := '7317a7a252ba1180322eb675d541c32a23117564e028f91e69d2024be99afd29b318173eb2f207779feae';
@@ -1225,12 +1281,15 @@ end;
 
 procedure TFormMain.FormShow(Sender: TObject);
 begin
-  VK1.Login;
+  //VK1.Login;
 end;
 
-procedure TFormMain.TabSheet1ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+procedure TFormMain.TabSheetAuthResize(Sender: TObject);
 begin
-
+  Label2.AutoSize := False;
+  Label2.AutoSize := True;
+  Label3.AutoSize := False;
+  Label3.AutoSize := True;
 end;
 
 {

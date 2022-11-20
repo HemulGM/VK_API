@@ -12,7 +12,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   ReportMemoryLeaksOnShutdown := True;
-  TStyleManager.TrySetStyle('Windows10');
   Application.CreateForm(TFormMain, FormMain);
   Application.Run;
 end.
