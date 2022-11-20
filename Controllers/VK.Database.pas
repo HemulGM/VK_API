@@ -129,6 +129,15 @@ type
     function GetMetroStationsById(var Items: TVkMetroStations; const StationIds: TIdList): Boolean;
     /// <summary>
     /// Возвращает список регионов
+    /// <code> var Regions: TVkRegions;
+    /// if GetRegions(Regions, 0) then
+    /// try
+    ///   for var Region in Regions do
+    ///     //do something
+    /// finally
+    ///   Regions.Free;
+    /// end;
+    /// </code>
     /// </summary>
     function GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
