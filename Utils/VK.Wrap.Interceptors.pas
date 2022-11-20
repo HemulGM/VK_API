@@ -3,7 +3,8 @@ unit VK.Wrap.Interceptors;
 interface
 
 uses
-  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect, REST.Json.Interceptors, VK.Types;
+  System.SysUtils, TypInfo, System.Types, System.RTTI, REST.JsonReflect,
+  REST.Json.Interceptors, VK.Types;
 
 type
   TEnumHelp = record
@@ -203,6 +204,18 @@ type
   end;
 
   TPostSourceTypeInterceptor = class(TEnumInterceptor<TVkPostSourceType>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TAdsAccountTypeInterceptor = class(TEnumInterceptor<TVkAdsAccountType>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TAdsAccessRoleInterceptor = class(TEnumInterceptor<TVkAdsAccessRole>)
   public
     function StringConverter(Data: TObject; Field: string): string; override;
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
@@ -522,6 +535,30 @@ end;
 procedure TPostSourceTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkPostSourceType.Create(Arg)));
+end;
+
+{ TAdsAccountTypeInterceptor }
+
+function TAdsAccountTypeInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAdsAccountType>.ToString;
+end;
+
+procedure TAdsAccountTypeInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAdsAccountType.Create(Arg)));
+end;
+
+{ TAdsAccessRoleInterceptor }
+
+function TAdsAccessRoleInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAdsAccessRole>.ToString;
+end;
+
+procedure TAdsAccessRoleInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAdsAccessRole.Create(Arg)));
 end;
 
 end.

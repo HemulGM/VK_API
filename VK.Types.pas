@@ -153,7 +153,6 @@ const
   VK_CHAT_ID_START = 2000000000;
   VK_GROUP_ID_START = 1000000000;
 
-
 type
   {$IFDEF OLD_VERSION}
   TArrayOfString = array of string;
@@ -175,20 +174,21 @@ type
   end;
 
   {$IFDEF OLD_VERSION}
-  TArrayOfInteger = array of Integer;
+  TArrayOfInteger = array of Int64;
+
   {$ELSE}
 
-  TArrayOfInteger = TArray<Integer>;
+  TArrayOfInteger = TArray<Int64>;
   {$ENDIF}
 
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
     function ToString: string; overload; inline;
     function ToJson: string; overload; inline;
-    function Add(Value: Integer): Integer; inline;
-    procedure Delete(const Value: Integer); inline;
+    function Add(Value: Int64): Integer; inline;
+    procedure Delete(const Value: Int64); inline;
     function IsEmpty: Boolean;
     function Length: Integer;
-    function IndexOf(const Value: Integer): Integer;
+    function IndexOf(const Value: Int64): Integer;
   end;
 
   TFields = TArrayOfString;
@@ -217,10 +217,23 @@ type
 
   TAttachmentKind = (Media, Link, Tel);
 
+  /// <summary>
+  /// “ипы вложений
+  /// </summary>
+  TVkAttachmentType = (Unknown, Photo, Video, Audio, Doc, Link, Market,       //
+    MarketAlbum, Wall, WallReply, Sticker, Gift, Call, AudioMessage,          //
+    PostedPhoto, Graffiti, Note, App, Poll, Page, Album, PhotosList,          //
+    PrettyCards, Event, MoneyTransfer);
+
+  TVkAttachmentTypeHelper = record helper for TVkAttachmentType
+    function ToString: string; inline;
+    class function Create(Value: string): TVkAttachmentType; static;
+  end;
+
   TAttachment = record
-    OwnerId, Id: Integer;
+    OwnerId, Id: Int64;
     AccessKey: string;
-    &Type: string;
+    &Type: TVkAttachmentType;
     Kind: TAttachmentKind;
     Value: string;
   public
@@ -237,10 +250,11 @@ type
     class function Poll(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Gift(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Album(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
-    class function Create(&Type: string; OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
+    class function Create(&Type: TVkAttachmentType; OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class operator Implicit(const Value: string): TAttachment;
     class operator Implicit(const Value: TAttachment): string;
     function ToString: string; inline;
+    function IsEmpty: Boolean; inline;
   end;
 
   IAttachment = interface(IInterface)
@@ -252,6 +266,8 @@ type
   TAttachmentArrayHelper = record helper for TAttachmentArray
     function ToStrings: TArray<string>; inline;
     function IsEmpty: Boolean; inline;
+    function GetByKind(const Kind: TAttachmentKind; var Attachment: TAttachment): Boolean; {$IFDEF RELEASE} inline; {$ENDIF}
+    function GetByType(const&Type: TVkAttachmentType; var Attachment: TAttachment): Boolean; {$IFDEF RELEASE} inline; {$ENDIF}
   end;
 
   TParamsHelper = record helper for TParams
@@ -946,19 +962,6 @@ type
   end;
 
   /// <summary>
-  /// “ипы вложений
-  /// </summary>
-  TVkAttachmentType = (Unknown, Photo, Video, Audio, Doc, Link, Market,       //
-    MarketAlbum, Wall, WallReply, Sticker, Gift, Call, AudioMessage,          //
-    PostedPhoto, Graffiti, Note, App, Poll, Page, Album, PhotosList,          //
-    PrettyCards, Event, MoneyTransfer);
-
-  TVkAttachmentTypeHelper = record helper for TVkAttachmentType
-    function ToString: string; inline;
-    class function Create(Value: string): TVkAttachmentType; static;
-  end;
-
-  /// <summary>
   /// Text Ч текстовые документы;
   /// Archive Ч архивы;
   /// GIF Ч gif;
@@ -1283,6 +1286,29 @@ type
     class function Create(Value: string): TVkStreamStatInterval; static;
   end;
 
+  /// <summary>
+  ///  general Ч обычный;
+  ///  agency Ч агентский.
+  /// </summary>
+  TVkAdsAccountType = (General, Agency);
+
+  TVkAdsAccountTypeHelper = record helper for TVkAdsAccountType
+    function ToString: string; overload; inline;
+    class function Create(Value: string): TVkAdsAccountType; static;
+  end;
+
+  /// <summary>
+  ///  admin Ч главный администратор;
+  ///  manager Ч администратор;
+  ///  reports Ч наблюдатель.
+  /// </summary>
+  TVkAdsAccessRole = (Admin, Manager, Reports);
+
+  TVkAdsAccessRoleHelper = record helper for TVkAdsAccessRole
+    function ToString: string; overload; inline;
+    class function Create(Value: string): TVkAdsAccessRole; static;
+  end;
+
   TVkPrivacySettings = record
   private
     FInt: TArrayOfInteger;
@@ -1307,6 +1333,16 @@ type
     destructor Destroy; override;
   end;
 
+  TVkPeerId = type Int64;
+
+  TVkPeerHelper = record helper for TVkPeerId
+    function IsChat: Boolean;
+    function IsGroup: Boolean;
+    function IsUser: Boolean;
+    function PeerType: TVkPeerType;
+    function ToString: string;
+  end;
+
   TOnLogin = procedure(Sender: TObject) of object;
 
   TOnAuth = procedure(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string) of object;
@@ -1325,7 +1361,6 @@ const
   VkColorNegative = $FFE64646;
   VkColorPrimary = $FF5181B8;
   VkColorSecondary = $FFFFFFFF;
-
 
 const
   //¬спомогательное текстовое представление
@@ -1349,7 +1384,6 @@ const
     '—менилась обложка беседы', 'Ќазначен новый администратор', '«акреплено сообщение',
     'ѕользователь присоединилс€ к беседе', 'ѕользователь покинул беседу', 'ѕользовател€ исключили из беседы',
     '— пользовател€ сн€ты права администратора');
-
 
 const
   //јналогии типов
@@ -1475,7 +1509,8 @@ const
   VkConversationDisableReason: array[TVkConversationDisableReason] of Integer = (18, 900, 901, 902, 915, 916, 917, 918, 203);
   VkPostType: array[TVkPostType] of string = ('post', 'copy', 'reply', 'postpone', 'suggest');
   VkPostSourceType: array[TVkPostSourceType] of string = ('vk', 'widget', 'api', 'rss', 'sms');
-
+  VkAdsAccountType: array[TVkAdsAccountType] of string = ('general', 'agency');
+  VkAdsAccessRole: array[TVkAdsAccessRole] of string = ('admin', 'manager', 'reports');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -1623,14 +1658,14 @@ end;
 
 { TArrayOfIntegerHelper }
 
-function TArrayOfIntegerHelper.Add(Value: Integer): Integer;
+function TArrayOfIntegerHelper.Add(Value: Int64): Integer;
 begin
   Result := System.Length(Self) + 1;
   SetLength(Self, Result);
   Self[Result - 1] := Value;
 end;
 
-procedure TArrayOfIntegerHelper.Delete(const Value: Integer);
+procedure TArrayOfIntegerHelper.Delete(const Value: Int64);
 var
   i: Integer;
 begin
@@ -1639,7 +1674,7 @@ begin
     System.Delete(Self, i, 1);
 end;
 
-function TArrayOfIntegerHelper.IndexOf(const Value: Integer): Integer;
+function TArrayOfIntegerHelper.IndexOf(const Value: Int64): Integer;
 var
   i: Integer;
 begin
@@ -2355,7 +2390,7 @@ end;
 
 { TAttachment }
 
-class function TAttachment.Create(&Type: string; OwnerId, Id: Integer; const AccessKey: string): TAttachment;
+class function TAttachment.Create(&Type: TVkAttachmentType; OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
   Result.&Type := &Type;
   Result.OwnerId := OwnerId;
@@ -2365,67 +2400,67 @@ end;
 
 class function TAttachment.Audio(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('audio', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Audio, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Doc(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('doc', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Doc, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Gift(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('gift', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Gift, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Link(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('link', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Link, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Market(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('market', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Market, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.MarketAlbum(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('market_album', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.MarketAlbum, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Photo(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('photo', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Photo, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Poll(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('poll', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Poll, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Sticker(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('sticker', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Sticker, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Video(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('video', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Video, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Wall(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('wall', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Wall, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.WallReply(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('wall_reply', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.WallReply, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Album(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
 begin
-  Result := Create('album', OwnerId, Id, AccessKey);
+  Result := Create(TVkAttachmentType.Album, OwnerId, Id, AccessKey);
 end;
 
 function TAttachment.ToString: string;
@@ -2433,7 +2468,7 @@ begin
   case Kind of
     TAttachmentKind.Media:
       begin
-        Result := &Type + OwnerId.ToString + '_' + Id.ToString;
+        Result := &Type.ToString + OwnerId.ToString + '_' + Id.ToString;
         if not AccessKey.IsEmpty then
           Result := Result + '_' + AccessKey;
       end;
@@ -2453,6 +2488,11 @@ begin
   Result := Value.ToString;
 end;
 
+function TAttachment.IsEmpty: Boolean;
+begin
+  Result := Id = 0;
+end;
+
 class operator TAttachment.Implicit(const Value: string): TAttachment;
 var
   i: Integer;
@@ -2461,7 +2501,7 @@ begin
   Result.OwnerId := 0;
   Result.Id := 0;
   Result.AccessKey := '';
-  Result.&Type := '';
+  Result.&Type := TVkAttachmentType.Unknown;
 
   tmp := Value.ToLower;
 
@@ -2488,11 +2528,11 @@ begin
   tmpValue := Value + '_';
   for i := 0 to Pred(tmpValue.Length) do
   begin
-    if Result.&Type.IsEmpty then
+    if Result.&Type = TVkAttachmentType.Unknown then
     begin
       if tmpValue.Chars[i].IsDigit then
       begin
-        Result.&Type := tmp;
+        Result.&Type := TVkAttachmentType.Create(tmp);
         tmp := '';
       end;
     end
@@ -2528,6 +2568,28 @@ begin
 end;
 
 { TAttachmentArrayHelper }
+
+function TAttachmentArrayHelper.GetByKind(const Kind: TAttachmentKind; var Attachment: TAttachment): Boolean;
+begin
+  for var Item in Self do
+    if Item.Kind = Kind then
+    begin
+      Attachment := Item;
+      Exit(True);
+    end;
+  Result := False;
+end;
+
+function TAttachmentArrayHelper.GetByType(const&Type: TVkAttachmentType; var Attachment: TAttachment): Boolean;
+begin
+  for var Item in Self do
+    if Item.&Type = &Type then
+    begin
+      Attachment := Item;
+      Exit(True);
+    end;
+  Result := False;
+end;
 
 function TAttachmentArrayHelper.IsEmpty: Boolean;
 begin
@@ -3032,6 +3094,64 @@ end;
 function TVkPostSourceTypeHelper.ToString: string;
 begin
   Result := VkPostSourceType[Self];
+end;
+
+{ TVkAdsAccountTypeHelper }
+
+class function TVkAdsAccountTypeHelper.Create(Value: string): TVkAdsAccountType;
+begin
+  Result := TVkAdsAccountType(IndexStr(Value, VkAdsAccountType));
+end;
+
+function TVkAdsAccountTypeHelper.ToString: string;
+begin
+  Result := VkAdsAccountType[Self];
+end;
+
+{ TVkAdsAccessRoleHelper }
+
+class function TVkAdsAccessRoleHelper.Create(Value: string): TVkAdsAccessRole;
+begin
+  Result := TVkAdsAccessRole(IndexStr(Value, VkAdsAccessRole));
+end;
+
+function TVkAdsAccessRoleHelper.ToString: string;
+begin
+  Result := VkAdsAccessRole[Self];
+end;
+
+{ TVkPeerHelper }
+
+function TVkPeerHelper.IsChat: Boolean;
+begin
+  Result := PeerIdIsChat(Self);
+end;
+
+function TVkPeerHelper.IsGroup: Boolean;
+begin
+  Result := PeerIdIsGroup(Self);
+end;
+
+function TVkPeerHelper.IsUser: Boolean;
+begin
+  Result := PeerIdIsUser(Self);
+end;
+
+function TVkPeerHelper.PeerType: TVkPeerType;
+begin
+  if IsUser then
+    Exit(TVkPeerType.User)
+  else if IsChat then
+    Exit(TVkPeerType.Chat)
+  else if IsGroup then
+    Exit(TVkPeerType.Group)
+  else
+    Exit(TVkPeerType.Unknown);
+end;
+
+function TVkPeerHelper.ToString: string;
+begin
+  Result := Int64(Self).ToString;
 end;
 
 end.

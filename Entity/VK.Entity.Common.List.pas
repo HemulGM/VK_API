@@ -55,7 +55,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkIdList = TVkEntityListSimple<Integer>;
+  TVkIdList = TVkEntityListSimple<Int64>;
 
 implementation
 

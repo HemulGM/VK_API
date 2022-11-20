@@ -11,9 +11,10 @@ type
     function ToJsonString: string;
     function ToJsonObject: TJSONObject;
     class function FromJsonString<T: class, constructor>(AJsonString: string): T; overload;
-    class function FromJsonString<T: class, constructor>(AJson: TJSONObject): T; overload;
+    class function FromJsonObject<T: class, constructor>(AJson: TJSONObject): T; overload;
     procedure FromJson(AJson: TJSONObject);
     constructor Create; virtual;
+    function Clone<T: class, constructor>: T;
   end;
 
   TVkCounterEntity = class(TVkEntity)
@@ -307,6 +308,18 @@ end;
 
 { TVkEntity }
 
+function TVkEntity.Clone<T>: T;
+var
+  JObject: TJSONObject;
+begin
+  JObject := ToJsonObject;
+  try
+    Result := FromJsonObject<T>(JObject);
+  finally
+    JObject.Free;
+  end;
+end;
+
 constructor TVkEntity.Create;
 begin
   //dummy
@@ -317,7 +330,7 @@ begin
   TJson.JsonToObject(Self, AJson);
 end;
 
-class function TVkEntity.FromJsonString<T>(AJson: TJSONObject): T;
+class function TVkEntity.FromJsonObject<T>(AJson: TJSONObject): T;
 begin
   Result := TJson.JsonToObject<T>(AJson, [joIgnoreEmptyArrays, joIgnoreEmptyStrings]);
 end;

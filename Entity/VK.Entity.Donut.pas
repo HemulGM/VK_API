@@ -1,4 +1,4 @@
-unit VK.Entity.Donut;
+п»їunit VK.Entity.Donut;
 
 interface
 
@@ -16,25 +16,25 @@ type
     FEdit_mode: string;
   public
     /// <summary>
-    /// Запись доступна только платным подписчикам VK Donut
+    /// Р—Р°РїРёСЃСЊ РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РїР»Р°С‚РЅС‹Рј РїРѕРґРїРёСЃС‡РёРєР°Рј VK Donut
     /// </summary>
     property IsDonut: Boolean read FIs_donut write FIs_donut;
     /// <summary>
-    /// Можно ли открыть запись для всех пользователей, а не только подписчиков VK Donut
+    /// РњРѕР¶РЅРѕ Р»Рё РѕС‚РєСЂС‹С‚СЊ Р·Р°РїРёСЃСЊ РґР»СЏ РІСЃРµС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, Р° РЅРµ С‚РѕР»СЊРєРѕ РїРѕРґРїРёСЃС‡РёРєРѕРІ VK Donut
     /// </summary>
     property CanPublishFreeCopy: Boolean read FCan_publish_free_copy write FCan_publish_free_copy;
     /// <summary>
-    /// Время, в течение которого запись будет доступна только платным подписчикам VK Donut
+    /// Р’СЂРµРјСЏ, РІ С‚РµС‡РµРЅРёРµ РєРѕС‚РѕСЂРѕРіРѕ Р·Р°РїРёСЃСЊ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РїР»Р°С‚РЅС‹Рј РїРѕРґРїРёСЃС‡РёРєР°Рј VK Donut
     /// </summary>
     property PaidDuration: Integer read FPaid_duration write FPaid_duration;
     /// <summary>
-    /// Заглушка для пользователей, которые не оформили подписку VK Donut. Отображается вместо содержимого записи
+    /// Р—Р°РіР»СѓС€РєР° РґР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµ РѕС„РѕСЂРјРёР»Рё РїРѕРґРїРёСЃРєСѓ VK Donut. РћС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ РІРјРµСЃС‚Рѕ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ Р·Р°РїРёСЃРё
     /// </summary>
     property Placeholder: Integer read FPlaceholder write FPlaceholder;
     /// <summary>
-    /// Информация о том, какие значения VK Donut можно изменить в записи. Возможные значения:
-    /// all — всю информацию о VK Donut.
-    /// duration — время, в течение которого запись будет доступна только платным подписчикам VK Donut.
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РєР°РєРёРµ Р·РЅР°С‡РµРЅРёСЏ VK Donut РјРѕР¶РЅРѕ РёР·РјРµРЅРёС‚СЊ РІ Р·Р°РїРёСЃРё. Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ:
+    /// all вЂ” РІСЃСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ VK Donut.
+    /// duration вЂ” РІСЂРµРјСЏ, РІ С‚РµС‡РµРЅРёРµ РєРѕС‚РѕСЂРѕРіРѕ Р·Р°РїРёСЃСЊ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РїР»Р°С‚РЅС‹Рј РїРѕРґРїРёСЃС‡РёРєР°Рј VK Donut.
     /// </summary>
     property EditMode: string read FEdit_mode write FEdit_mode;
   end;
@@ -45,11 +45,11 @@ type
     FPlaceholder: string;
   public
     /// <summary>
-    /// Является ли комментатор подписчиком VK Donut
+    /// РЇРІР»СЏРµС‚СЃСЏ Р»Рё РєРѕРјРјРµРЅС‚Р°С‚РѕСЂ РїРѕРґРїРёСЃС‡РёРєРѕРј VK Donut
     /// </summary>
     property IsDon: Boolean read FIs_don write FIs_don;
     /// <summary>
-    /// Заглушка для пользователей, которые не оформили подписку VK Donut
+    /// Р—Р°РіР»СѓС€РєР° РґР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµ РѕС„РѕСЂРјРёР»Рё РїРѕРґРїРёСЃРєСѓ VK Donut
     /// </summary>
     property Placeholder: string read FPlaceholder write FPlaceholder;
   end;
@@ -63,19 +63,19 @@ type
     FStatus: string;
   public
     /// <summary>
-    /// Стоимость подписки (в рублях)
+    /// РЎС‚РѕРёРјРѕСЃС‚СЊ РїРѕРґРїРёСЃРєРё (РІ СЂСѓР±Р»СЏС…)
     /// </summary>
     property Amount: Integer read FAmount write FAmount;
     /// <summary>
-    /// Дата следующего платежа
+    /// Р”Р°С‚Р° СЃР»РµРґСѓСЋС‰РµРіРѕ РїР»Р°С‚РµР¶Р°
     /// </summary>
     property NextPaymentDate: TDateTime read FNext_Payment_Date write FNext_Payment_Date;
     /// <summary>
-    /// Идентификатор сообщества, доном которого является пользователь
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°, РґРѕРЅРѕРј РєРѕС‚РѕСЂРѕРіРѕ СЏРІР»СЏРµС‚СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ
     /// </summary>
     property OwnerId: Integer read FOwner_Id write FOwner_Id;
     /// <summary>
-    /// Статус подписки
+    /// РЎС‚Р°С‚СѓСЃ РїРѕРґРїРёСЃРєРё
     /// </summary>
     property Status: string read FStatus write FStatus;
   end;

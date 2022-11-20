@@ -504,7 +504,7 @@ begin
     try
       FOnAudioNew(Self, GroupId, Audio, EventId);
     finally
-      //Audio.Free;
+      Audio.Free;
     end;
   end;
 end;
@@ -551,7 +551,7 @@ begin
     try
       FOnBoardPostEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -569,7 +569,7 @@ begin
     try
       FOnBoardPostNew(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -587,7 +587,7 @@ begin
     try
       FOnBoardPostRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -600,11 +600,11 @@ begin
   begin
     Changes := TVkGroupChangePhoto.Create;
     Changes.UserId := EventObject.GetValue<Integer>('user_id', -1);
-    Changes.Photo := TVkPhoto.FromJsonString<TVkPhoto>(EventObject.GetValue<TJSONObject>('photo', nil));
+    Changes.Photo := TVkPhoto.FromJsonObject<TVkPhoto>(EventObject.GetValue<TJSONObject>('photo', nil));
     try
       FOnGroupChangePhoto(Self, GroupId, Changes, EventId);
     finally
-      //Changes.Free;
+      Changes.Free;
     end;
   end;
 end;
@@ -619,7 +619,7 @@ begin
     try
       FOnGroupChangeSettings(Self, GroupId, Changes, EventId);
     finally
-      //Changes.Free;
+      Changes.Free;
     end;
   end;
 end;
@@ -698,7 +698,7 @@ begin
     try
       FOnMarketCommentEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -716,7 +716,7 @@ begin
     try
       FOnMarketCommentNew(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -729,12 +729,12 @@ begin
   if Assigned(FOnMarketCommentRestore) then
   begin
     Comment := TVkComment.FromJsonString<TVkComment>(EventObject.ToString);
-    Info.Id := EventObject.GetValue<Integer>('item_id', -1);
-    Info.OwnerId := EventObject.GetValue<Integer>('market_owner_id', -1);
+    Info.Id := EventObject.GetValue('item_id', -1);
+    Info.OwnerId := EventObject.GetValue('market_owner_id', -1);
     try
       FOnMarketCommentRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -746,8 +746,8 @@ var
 begin
   if Assigned(FOnMessageAllow) then
   begin
-    UserId := EventObject.GetValue<Integer>('user_id', -1);
-    Key := EventObject.GetValue<string>('key', '');
+    UserId := EventObject.GetValue('user_id', -1);
+    Key := EventObject.GetValue('key', '');
     FOnMessageAllow(Self, GroupId, UserId, Key, EventId);
   end;
 end;
@@ -758,7 +758,7 @@ var
 begin
   if Assigned(FOnMessageDeny) then
   begin
-    UserId := EventObject.GetValue<Integer>('user_id', -1);
+    UserId := EventObject.GetValue('user_id', -1);
     FOnMessageDeny(Self, GroupId, UserId, '', EventId);
   end;
 end;
@@ -773,7 +773,7 @@ begin
     try
       FOnMessageEdit(Self, GroupId, Message, EventId);
     finally
-      //Message.Free;
+      Message.Free;
     end;
   end;
 end;
@@ -785,13 +785,13 @@ var
 begin
   if Assigned(FOnMessageNew) then
   begin
-    Message := TVkMessage.FromJsonString<TVkMessage>(EventObject.GetValue<TJSONObject>('message'));
-    ClientInfo := TVkClientInfo.FromJsonString<TVkClientInfo>(EventObject.GetValue<TJSONObject>('client_info'));
+    Message := TVkMessage.FromJsonObject<TVkMessage>(EventObject.GetValue<TJSONObject>('message'));
+    ClientInfo := TVkClientInfo.FromJsonObject<TVkClientInfo>(EventObject.GetValue<TJSONObject>('client_info'));
     try
       FOnMessageNew(Self, GroupId, Message, ClientInfo, EventId);
     finally
-      //Message.Free;
-      //ClientInfo.Free;
+      Message.Free;
+      ClientInfo.Free;
     end;
   end;
 end;
@@ -806,7 +806,7 @@ begin
     try
       FOnMessageReply(Self, GroupId, Message, EventId);
     finally
-      //Message.Free;
+      Message.Free;
     end;
   end;
 end;
@@ -852,7 +852,7 @@ begin
     try
       FOnPhotoCommentEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -870,7 +870,7 @@ begin
     try
       FOnPhotoCommentNew(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -888,7 +888,7 @@ begin
     try
       FOnPhotoCommentRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -903,7 +903,7 @@ begin
     try
       FOnPhotoNew(Self, GroupId, Photo, EventId);
     finally
-      //Photo.Free;
+      Photo.Free;
     end;
   end;
 end;
@@ -978,7 +978,7 @@ begin
     try
       FOnVideoCommentEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -996,7 +996,7 @@ begin
     try
       FOnVideoCommentNew(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -1014,7 +1014,7 @@ begin
     try
       FOnVideoCommentRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -1029,7 +1029,7 @@ begin
     try
       FOnVideoNew(Self, GroupId, Video, EventId);
     finally
-      //Video.Free;
+      Video.Free;
     end;
   end;
 end;
@@ -1058,7 +1058,7 @@ begin
     try
       FOnWallPostNew(Self, GroupId, Post, EventId);
     finally
-      //Post.Free;
+      Post.Free;
     end;
   end;
 end;
@@ -1091,7 +1091,7 @@ begin
     try
       FOnWallReplyEdit(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -1109,7 +1109,7 @@ begin
     try
       FOnWallReplyNew(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -1127,7 +1127,7 @@ begin
     try
       FOnWallReplyRestore(Self, GroupId, Comment, Info, EventId);
     finally
-      //Comment.Free;
+      Comment.Free;
     end;
   end;
 end;
@@ -1142,7 +1142,7 @@ begin
     try
       FOnWallRepost(Self, GroupId, Post, EventId);
     finally
-      //Post.Free;
+      Post.Free;
     end;
   end;
 end;

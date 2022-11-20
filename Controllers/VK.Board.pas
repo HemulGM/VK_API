@@ -21,7 +21,7 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsBoardCommentCreate;
+    function GroupId(const Value: TVkPeerId): TVkParamsBoardCommentCreate;
     /// <summary>
     /// Идентификатор обсуждения.
     /// </summary>
@@ -49,7 +49,7 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsBoardCommentEdit;
+    function GroupId(const Value: TVkPeerId): TVkParamsBoardCommentEdit;
     /// <summary>
     /// Идентификатор комментария в обсуждении.
     /// </summary>
@@ -73,7 +73,7 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsBoardGet;
+    function GroupId(const Value: TVkPeerId): TVkParamsBoardGet;
     /// <summary>
     /// Список идентификаторов тем, которые необходимо получить (не более 100). По умолчанию возвращаются все темы. Если указан данный параметр, игнорируются параметры order, offset и count (возвращаются все запрошенные темы в указанном порядке).
     /// </summary>
@@ -109,7 +109,7 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsBoardAdd;
+    function GroupId(const Value: TVkPeerId): TVkParamsBoardAdd;
     /// <summary>
     /// Название обсуждения.
     /// </summary>
@@ -133,7 +133,7 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsBoardCommentsGet;
+    function GroupId(const Value: TVkPeerId): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Идентификатор обсуждения.
     /// </summary>
@@ -427,7 +427,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsBoardCommentEdit.GroupId(const Value: Integer): TVkParamsBoardCommentEdit;
+function TVkParamsBoardCommentEdit.GroupId(const Value: TVkPeerId): TVkParamsBoardCommentEdit;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -465,7 +465,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsBoardCommentCreate.GroupId(const Value: Integer): TVkParamsBoardCommentCreate;
+function TVkParamsBoardCommentCreate.GroupId(const Value: TVkPeerId): TVkParamsBoardCommentCreate;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -509,7 +509,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsBoardGet.GroupId(const Value: Integer): TVkParamsBoardGet;
+function TVkParamsBoardGet.GroupId(const Value: TVkPeerId): TVkParamsBoardGet;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -559,7 +559,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsBoardAdd.GroupId(const Value: Integer): TVkParamsBoardAdd;
+function TVkParamsBoardAdd.GroupId(const Value: TVkPeerId): TVkParamsBoardAdd;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -591,7 +591,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsBoardCommentsGet.GroupId(const Value: Integer): TVkParamsBoardCommentsGet;
+function TVkParamsBoardCommentsGet.GroupId(const Value: TVkPeerId): TVkParamsBoardCommentsGet;
 begin
   List.Add('group_id', Value);
   Result := Self;

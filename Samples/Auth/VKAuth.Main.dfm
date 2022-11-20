@@ -41,12 +41,10 @@ object FormMain: TFormMain
       Width = 782
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheet11
+      ActivePage = TabSheet8
       Align = alClient
       MultiLine = True
       TabOrder = 0
-      ExplicitLeft = 35
-      ExplicitTop = 119
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
@@ -478,6 +476,15 @@ object FormMain: TFormMain
           TabOrder = 2
           OnClick = ButtonGroupsGetClick
         end
+        object ButtonVideoDelete: TButton
+          Left = 146
+          Top = 3
+          Width = 111
+          Height = 25
+          Caption = 'VideoDelete'
+          TabOrder = 3
+          OnClick = ButtonVideoDeleteClick
+        end
       end
       object TabSheet10: TTabSheet
         Caption = 'Messages'
@@ -518,14 +525,21 @@ object FormMain: TFormMain
           TabOrder = 3
           OnClick = Button49Click
         end
+        object ButtonSendPhoto: TButton
+          Left = 175
+          Top = 34
+          Width = 138
+          Height = 25
+          Caption = 'SendPhoto'
+          TabOrder = 4
+          OnClick = ButtonSendPhotoClick
+        end
       end
       object TabSheet11: TTabSheet
         Caption = 'Friends'
         ImageIndex = 10
-        ExplicitLeft = -156
-        ExplicitTop = -144
         object Button28: TButton
-          Left = -1
+          Left = 3
           Top = 3
           Width = 137
           Height = 25
@@ -580,6 +594,19 @@ object FormMain: TFormMain
           Caption = 'Button48'
           TabOrder = 0
           OnClick = Button48Click
+        end
+      end
+      object TabSheetAds: TTabSheet
+        Caption = 'Ads'
+        ImageIndex = 14
+        object ButtonAdsGetAccounts: TButton
+          Left = 3
+          Top = 3
+          Width = 142
+          Height = 25
+          Caption = 'ButtonAdsGetAccounts'
+          TabOrder = 0
+          OnClick = ButtonAdsGetAccountsClick
         end
       end
     end

@@ -30,6 +30,8 @@ type
 
   TMessageListeners = TList<TMessageListener>;
 
+  TEventListeners = TList<Pointer>;
+
   TVkBot = class
     class var
       Instance: TVkBot;
@@ -70,6 +72,7 @@ type
     FOnMessageEdit: TVkBotMessageEdit;
     FOnJoin: TVkBotJoin;
     FMessageListeners: TMessageListeners;
+    FListeners: TEventListeners;
     procedure FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);
     procedure FOnEditMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; const EventId: string);
     procedure FOnGroupJoin(Sender: TObject; GroupId, UserId: Integer; JoinType: TVkGroupJoinType; const EventId: string);
@@ -84,6 +87,7 @@ type
     destructor Destroy; override;
     function IsAdmin(PeerId: Integer; UserId: Integer): Boolean;
     procedure AddMessageListener(PeerTypes: TVkPeerTypes; Method: TVkBotMessageListener);
+    procedure AddListener<T>(Method: T);
     property MessageListeners: TMessageListeners read FMessageListeners;
     property OnJoin: TVkBotJoin read FOnJoin write SetOnJoin;
     property OnMessage: TVkBotMessage read FOnMessage write SetOnMessage;
@@ -198,6 +202,19 @@ end;
 
 { TVkBotChat }
 
+procedure TVkBotChat.AddListener<T>(Method: T);
+begin
+  FListeners.Add(@Method);
+  if TypeInfo(T) = TypeInfo(TOnWallPostAction) then
+  begin
+
+  end;
+  if TypeInfo(T) = TypeInfo(TOnGroupMessageNew) then
+  begin
+    Sleep(1);
+  end;
+end;
+
 procedure TVkBotChat.AddMessageListener(PeerTypes: TVkPeerTypes; Method: TVkBotMessageListener);
 var
   Item: TMessageListener;
@@ -210,7 +227,9 @@ end;
 constructor TVkBotChat.Create;
 begin
   inherited;
+  FSkipOtherBotMessages := False;
   FMessageListeners := TMessageListeners.Create;
+  FListeners := TEventListeners.Create;
   LongPoll.OnMessageNew := FOnNewMessage;
   LongPoll.OnMessageEdit := FOnEditMessage;
   LongPoll.OnGroupJoin := FOnGroupJoin;
@@ -219,22 +238,26 @@ end;
 destructor TVkBotChat.Destroy;
 begin
   FMessageListeners.Free;
+  FListeners.Free;
   inherited;
 end;
 
 procedure TVkBotChat.FOnEditMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; const EventId: string);
+var
+  FMessage: TVkMessage;
 begin
   if FSkipOtherBotMessages and (Message.FromId < 0) then
     Exit;
   if Assigned(FOnMessage) then
   begin
+    FMessage := Message.Clone<TVkMessage>;
     TTask.Run(
       procedure
       begin
         try
-          FOnMessageEdit(Self, GroupId, Message);
+          FOnMessageEdit(Self, GroupId, FMessage);
         finally
-          Message.Free;
+          FMessage.Free;
         end;
       end);
   end;
@@ -257,6 +280,7 @@ end;
 function TVkBotChat.HandleMessageListener(GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo): Boolean;
 var
   Listener: TMessageListener;
+  //EventListener: Pointer;
 begin
   for Listener in FMessageListeners do
     if TVkPeerType.Create(Message.PeerId) in Listener.PeerTypes then
@@ -312,23 +336,27 @@ begin
 end;
 
 procedure TVkBotChat.FOnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);
+var
+  FMessage: TVkMessage;
+  FClientInfo: TVkClientInfo;
 begin
   if FSkipOtherBotMessages and (Message.FromId < 0) then
     Exit;
   if Assigned(FOnMessage) or (FMessageListeners.Count > 0) then
   begin
+    FMessage := Message.Clone<TVkMessage>;
+    FClientInfo := ClientInfo.Clone<TVkClientInfo>;
     TTask.Run(
       procedure
       begin
         try
-          if (FMessageListeners.Count <= 0) or (not HandleMessageListener(GroupId, Message, ClientInfo)) then
-          begin
-            if Assigned(FOnMessage) then
-              FOnMessage(Self, GroupId, Message, ClientInfo);
-          end;
+          if FMessageListeners.Count > 0 then
+            HandleMessageListener(GroupId, FMessage, FClientInfo);
+          if Assigned(FOnMessage) then
+            FOnMessage(Self, GroupId, FMessage, FClientInfo);
         finally
-          Message.Free;
-          ClientInfo.Free;
+          FMessage.Free;
+          FClientInfo.Free;
         end;
       end);
   end;

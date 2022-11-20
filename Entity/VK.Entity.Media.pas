@@ -1,4 +1,4 @@
-unit VK.Entity.Media;
+п»їunit VK.Entity.Media;
 
 interface
 
@@ -23,7 +23,7 @@ type
   TVkCommentThread = class;
 
   /// <summary>
-  /// Объект PostSource, описывающий способ размещения записи на стене
+  /// РћР±СЉРµРєС‚ PostSource, РѕРїРёСЃС‹РІР°СЋС‰РёР№ СЃРїРѕСЃРѕР± СЂР°Р·РјРµС‰РµРЅРёСЏ Р·Р°РїРёСЃРё РЅР° СЃС‚РµРЅРµ
   /// </summary>
   TVkPostSource = class(TVkEntity)
   private
@@ -34,25 +34,25 @@ type
     FUrl: string;
   public
     /// <summary>
-    /// Тип действия (только для Type = VK или Widget)
-    /// Возможные значения:
-    /// profile_activity — изменение статуса под именем пользователя (для Type = VK);
-    /// profile_photo — изменение профильной фотографии пользователя (для Type = VK);
-    /// comments — виджет комментариев (для Type = Widget);
-    /// like — виджет «Мне нравится» (для Type = Widget);
-    /// poll — виджет опросов (для Type = Widget);
+    /// РўРёРї РґРµР№СЃС‚РІРёСЏ (С‚РѕР»СЊРєРѕ РґР»СЏ Type = VK РёР»Рё Widget)
+    /// Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ:
+    /// profile_activity вЂ” РёР·РјРµРЅРµРЅРёРµ СЃС‚Р°С‚СѓСЃР° РїРѕРґ РёРјРµРЅРµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РґР»СЏ Type = VK);
+    /// profile_photo вЂ” РёР·РјРµРЅРµРЅРёРµ РїСЂРѕС„РёР»СЊРЅРѕР№ С„РѕС‚РѕРіСЂР°С„РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РґР»СЏ Type = VK);
+    /// comments вЂ” РІРёРґР¶РµС‚ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ (РґР»СЏ Type = Widget);
+    /// like вЂ” РІРёРґР¶РµС‚ В«РњРЅРµ РЅСЂР°РІРёС‚СЃСЏВ» (РґР»СЏ Type = Widget);
+    /// poll вЂ” РІРёРґР¶РµС‚ РѕРїСЂРѕСЃРѕРІ (РґР»СЏ Type = Widget);
     /// </summary>
     property Data: string read FData write FData;
     /// <summary>
-    /// Название платформы, если оно доступно (android; iphone; wphone)
+    /// РќР°Р·РІР°РЅРёРµ РїР»Р°С‚С„РѕСЂРјС‹, РµСЃР»Рё РѕРЅРѕ РґРѕСЃС‚СѓРїРЅРѕ (android; iphone; wphone)
     /// </summary>
     property &Platform: string read FPlatform write FPlatform;
     /// <summary>
-    /// Тип источника
+    /// РўРёРї РёСЃС‚РѕС‡РЅРёРєР°
     /// </summary>
     property &Type: TVkPostSourceType read FType write FType;
     /// <summary>
-    /// URL ресурса, с которого была опубликована запись
+    /// URL СЂРµСЃСѓСЂСЃР°, СЃ РєРѕС‚РѕСЂРѕРіРѕ Р±С‹Р»Р° РѕРїСѓР±Р»РёРєРѕРІР°РЅР° Р·Р°РїРёСЃСЊ
     /// </summary>
     property Url: string read FUrl write FUrl;
   end;
@@ -87,99 +87,99 @@ type
   public
     property &Type: TVkAttachmentType read FType write FType;
     /// <summary>
-    /// Ссылка
+    /// РЎСЃС‹Р»РєР°
     /// </summary>
     property Link: TVkLink read FLink write FLink;
     /// <summary>
-    /// Фотография, загруженная напрямую (Это устаревший тип вложения. Он может быть возвращен лишь для записей, созданных раньше 2013 года)
+    /// Р¤РѕС‚РѕРіСЂР°С„РёСЏ, Р·Р°РіСЂСѓР¶РµРЅРЅР°СЏ РЅР°РїСЂСЏРјСѓСЋ (Р­С‚Рѕ СѓСЃС‚Р°СЂРµРІС€РёР№ С‚РёРї РІР»РѕР¶РµРЅРёСЏ. РћРЅ РјРѕР¶РµС‚ Р±С‹С‚СЊ РІРѕР·РІСЂР°С‰РµРЅ Р»РёС€СЊ РґР»СЏ Р·Р°РїРёСЃРµР№, СЃРѕР·РґР°РЅРЅС‹С… СЂР°РЅСЊС€Рµ 2013 РіРѕРґР°)
     /// </summary>
     property PostedPhoto: TVkPostedPhoto read FPosted_photo write FPosted_photo;
     /// <summary>
-    /// Аудиосообщение
+    /// РђСѓРґРёРѕСЃРѕРѕР±С‰РµРЅРёРµ
     /// </summary>
     property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
     /// <summary>
-    /// Комментарий на стене
+    /// РљРѕРјРјРµРЅС‚Р°СЂРёР№ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     property WallReply: TVkComment read FWall_reply write FWall_reply;
     /// <summary>
-    /// Запись на стене
+    /// Р—Р°РїРёСЃСЊ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     property Wall: TVkPost read FWall write FWall;
     /// <summary>
-    /// Звонок
+    /// Р—РІРѕРЅРѕРє
     /// </summary>
     property Call: TVkCall read FCall write FCall;
     /// <summary>
-    /// Стикер
+    /// РЎС‚РёРєРµСЂ
     /// </summary>
     property Sticker: TVkSticker read FSticker write FSticker;
     /// <summary>
-    /// Подарок
+    /// РџРѕРґР°СЂРѕРє
     /// </summary>
     property Gift: TVkGift read FGift write FGift;
     /// <summary>
-    /// Подборка товаров
+    /// РџРѕРґР±РѕСЂРєР° С‚РѕРІР°СЂРѕРІ
     /// </summary>
     property MarketAlbum: TVkMarketAlbum read FMarket_album write FMarket_album;
     /// <summary>
-    /// Товар
+    /// РўРѕРІР°СЂ
     /// </summary>
     property Market: TVkProduct read FMarket write FMarket;
     /// <summary>
-    /// Документ
+    /// Р”РѕРєСѓРјРµРЅС‚
     /// </summary>
     property Doc: TVkDocument read FDoc write FDoc;
     /// <summary>
-    /// Аудиозапись
+    /// РђСѓРґРёРѕР·Р°РїРёСЃСЊ
     /// </summary>
     property Audio: TVkAudio read FAudio write FAudio;
     /// <summary>
-    /// Видеозапись
+    /// Р’РёРґРµРѕР·Р°РїРёСЃСЊ
     /// </summary>
     property Video: TVkVideo read FVideo write FVideo;
     /// <summary>
-    /// Фотография
+    /// Р¤РѕС‚РѕРіСЂР°С„РёСЏ
     /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
     /// <summary>
-    /// Граффити (Это устаревший тип вложения. Он может быть возвращен лишь для записей, созданных раньше 2013 года. Для более новых записей граффити возвращается в виде вложения с типом photo.)
+    /// Р“СЂР°С„С„РёС‚Рё (Р­С‚Рѕ СѓСЃС‚Р°СЂРµРІС€РёР№ С‚РёРї РІР»РѕР¶РµРЅРёСЏ. РћРЅ РјРѕР¶РµС‚ Р±С‹С‚СЊ РІРѕР·РІСЂР°С‰РµРЅ Р»РёС€СЊ РґР»СЏ Р·Р°РїРёСЃРµР№, СЃРѕР·РґР°РЅРЅС‹С… СЂР°РЅСЊС€Рµ 2013 РіРѕРґР°. Р”Р»СЏ Р±РѕР»РµРµ РЅРѕРІС‹С… Р·Р°РїРёСЃРµР№ РіСЂР°С„С„РёС‚Рё РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ РІРёРґРµ РІР»РѕР¶РµРЅРёСЏ СЃ С‚РёРїРѕРј photo.)
     /// </summary>
     property Graffiti: TVkGraffiti read FGraffiti write FGraffiti;
     /// <summary>
-    /// Заметка
+    /// Р—Р°РјРµС‚РєР°
     /// </summary>
     property Note: TVkNote read FNote write FNote;
     /// <summary>
-    /// Контент приложения (Это устаревший тип вложений. Он может быть возвращен лишь для записей, созданных раньше 2013 года.)
+    /// РљРѕРЅС‚РµРЅС‚ РїСЂРёР»РѕР¶РµРЅРёСЏ (Р­С‚Рѕ СѓСЃС‚Р°СЂРµРІС€РёР№ С‚РёРї РІР»РѕР¶РµРЅРёР№. РћРЅ РјРѕР¶РµС‚ Р±С‹С‚СЊ РІРѕР·РІСЂР°С‰РµРЅ Р»РёС€СЊ РґР»СЏ Р·Р°РїРёСЃРµР№, СЃРѕР·РґР°РЅРЅС‹С… СЂР°РЅСЊС€Рµ 2013 РіРѕРґР°.)
     /// </summary>
     property App: TVkOldApp read FApp write FApp;
     /// <summary>
-    /// Опрос
+    /// РћРїСЂРѕСЃ
     /// </summary>
     property Poll: TVkPoll read FPoll write FPoll;
     /// <summary>
-    /// Вики-страница
+    /// Р’РёРєРё-СЃС‚СЂР°РЅРёС†Р°
     /// </summary>
     property Page: TVkPage read FPage write FPage;
     /// <summary>
-    /// Денежный перевод
+    /// Р”РµРЅРµР¶РЅС‹Р№ РїРµСЂРµРІРѕРґ
     /// </summary>
     property MoneyTransfer: TVkMoneyTransfer read FMoney_transfer write FMoney_transfer;
     /// <summary>
-    /// Альбом с фотографиями
+    /// РђР»СЊР±РѕРј СЃ С„РѕС‚РѕРіСЂР°С„РёСЏРјРё
     /// </summary>
     property Album: TVkPhotoAlbum read FAlbum write FAlbum;
     // /// <summary>
-    // /// Список фотографий
+    // /// РЎРїРёСЃРѕРє С„РѕС‚РѕРіСЂР°С„РёР№
     // /// </summary>
-    //property PhotosList: TVkPhotosList read FPhotosList write FPhotosList; -- я хз че это и где найти структуру)
+    //property PhotosList: TVkPhotosList read FPhotosList write FPhotosList; -- СЏ С…Р· С‡Рµ СЌС‚Рѕ Рё РіРґРµ РЅР°Р№С‚Рё СЃС‚СЂСѓРєС‚СѓСЂСѓ)
     /// <summary>
-    /// Карточки
+    /// РљР°СЂС‚РѕС‡РєРё
     /// </summary>
     property PrettyCards: TVkPrettyCards read FPretty_cards write FPretty_cards;
     /// <summary>
-    /// Встреча
+    /// Р’СЃС‚СЂРµС‡Р°
     /// </summary>
     property Event: TVkEvent read FEvent write FEvent;
     destructor Destroy; override;
@@ -207,8 +207,14 @@ type
 
   TVkAttachments = TVkEntityList<TVkAttachment>;
 
+  TVkAttachmentArray = TArray<TVkAttachment>;
+
+  TVkAttachmentArrayHelper = record helper for TVkAttachmentArray
+    function GetByType<T: class>(const&Type: TVkAttachmentType; var Attachment: T): Boolean; {$IFDEF RELEASE} inline; {$ENDIF}
+  end;
+
   /// <summary>
-  /// Объект, описывающий комментарий к записи
+  /// РћР±СЉРµРєС‚, РѕРїРёСЃС‹РІР°СЋС‰РёР№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РїРёСЃРё
   /// </summary>
   TVkComment = class(TVkObject, IAttachment)
   private
@@ -231,62 +237,62 @@ type
     FDonut: TVkDonutInfo;
   public
     /// <summary>
-    /// Идентификатор комментария
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
     /// </summary>
     property Id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Дата создания комментария
+    /// Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Информация о VK Donut
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ VK Donut
     /// </summary>
     property Donut: TVkDonutInfo read FDonut write FDonut;
     /// <summary>
-    /// Идентификатор автора комментария
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°РІС‚РѕСЂР° РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
     /// </summary>
     property FromId: Integer read FFrom_id write FFrom_id;
     /// <summary>
-    ///  Идентификатор фотографии, к которой был оставлен комментарий
+    ///  РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РѕС‚РѕРіСЂР°С„РёРё, Рє РєРѕС‚РѕСЂРѕР№ Р±С‹Р» РѕСЃС‚Р°РІР»РµРЅ РєРѕРјРјРµРЅС‚Р°СЂРёР№
     /// </summary>
     property PhotoId: Integer read FPid write FPid;
     /// <summary>
-    /// Идентификатор записи, к которой оставлен комментари
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё, Рє РєРѕС‚РѕСЂРѕР№ РѕСЃС‚Р°РІР»РµРЅ РєРѕРјРјРµРЅС‚Р°СЂРё
     /// </summary>
     property PostId: Integer read FPost_id write FPost_id;
     /// <summary>
-    /// Идентификатор владельца стены, на которой оставлен комментарий
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° СЃС‚РµРЅС‹, РЅР° РєРѕС‚РѕСЂРѕР№ РѕСЃС‚Р°РІР»РµРЅ РєРѕРјРјРµРЅС‚Р°СЂРёР№
     /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property PostOwnerId: Integer read FPost_owner_id write FPost_owner_id;
     /// <summary>
-    /// Идентификатор комментария, в ответ на который оставлен текущий (если применимо)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ, РІ РѕС‚РІРµС‚ РЅР° РєРѕС‚РѕСЂС‹Р№ РѕСЃС‚Р°РІР»РµРЅ С‚РµРєСѓС‰РёР№ (РµСЃР»Рё РїСЂРёРјРµРЅРёРјРѕ)
     /// </summary>
     property ReplyToComment: Integer read FReply_to_comment write FReply_to_comment;
     /// <summary>
-    /// Идентификатор пользователя или сообщества, в ответ которому оставлен текущий комментарий (если применимо)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°, РІ РѕС‚РІРµС‚ РєРѕС‚РѕСЂРѕРјСѓ РѕСЃС‚Р°РІР»РµРЅ С‚РµРєСѓС‰РёР№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ (РµСЃР»Рё РїСЂРёРјРµРЅРёРјРѕ)
     /// </summary>
     property ReplyToUser: Integer read FReply_to_user write FReply_to_user;
     /// <summary>
-    /// Текст комментария
+    /// РўРµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
     /// </summary>
     property Text: string read FText write FText;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     /// <summary>
-    /// Массив идентификаторов родительских комментариев
+    /// РњР°СЃСЃРёРІ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ СЂРѕРґРёС‚РµР»СЊСЃРєРёС… РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
     /// </summary>
     property ParentsStack: TArray<Integer> read FParents_stack write FParents_stack;
     property Deleted: Boolean read FDeleted write FDeleted;
     /// <summary>
-    /// Медиавложения комментария (фотографии, ссылки и т.п.)
+    /// РњРµРґРёР°РІР»РѕР¶РµРЅРёСЏ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ (С„РѕС‚РѕРіСЂР°С„РёРё, СЃСЃС‹Р»РєРё Рё С‚.Рї.)
     /// </summary>
     property Attachments: TVkAttachments read FAttachments write FAttachments;
     /// <summary>
-    /// Информация о вложенной ветке комментариев
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РІР»РѕР¶РµРЅРЅРѕР№ РІРµС‚РєРµ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
     /// </summary>
     property Thread: TVkCommentThread read FThread write FThread;
     destructor Destroy; override;
@@ -300,23 +306,23 @@ type
     FGroups_can_post: Boolean;
   public
     /// <summary>
-    /// Массив объектов комментариев к записи (только для метода wall.getComments)
+    /// РњР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє Р·Р°РїРёСЃРё (С‚РѕР»СЊРєРѕ РґР»СЏ РјРµС‚РѕРґР° wall.getComments)
     /// </summary>
     property Items;
     /// <summary>
-    /// Количество комментариев в ветке
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ РІ РІРµС‚РєРµ
     /// </summary>
     property Count;
     /// <summary>
-    /// Может ли текущий пользователь оставлять комментарии в этой ветке
+    /// РњРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕСЃС‚Р°РІР»СЏС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёРё РІ СЌС‚РѕР№ РІРµС‚РєРµ
     /// </summary>
     property CanPost: Boolean read FCan_post write FCan_post;
     /// <summary>
-    /// Нужно ли отображать кнопку «ответить» в ветке
+    /// РќСѓР¶РЅРѕ Р»Рё РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ РєРЅРѕРїРєСѓ В«РѕС‚РІРµС‚РёС‚СЊВ» РІ РІРµС‚РєРµ
     /// </summary>
     property ShowReplyButton: Boolean read FShow_reply_button write FShow_reply_button;
     /// <summary>
-    /// Могут ли сообщества оставлять комментарии в ветке
+    /// РњРѕРіСѓС‚ Р»Рё СЃРѕРѕР±С‰РµСЃС‚РІР° РѕСЃС‚Р°РІР»СЏС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёРё РІ РІРµС‚РєРµ
     /// </summary>
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
   end;
@@ -335,7 +341,7 @@ type
   end;
 
   /// <summary>
-  /// Объект, описывающий запись на стене пользователя или сообщества
+  /// РћР±СЉРµРєС‚, РѕРїРёСЃС‹РІР°СЋС‰РёР№ Р·Р°РїРёСЃСЊ РЅР° СЃС‚РµРЅРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°
   /// </summary>
   TVkPost = class(TVkObject, IAttachment)
   private
@@ -382,139 +388,139 @@ type
     FShort_text_rate: Extended;
   public
     /// <summary>
-    /// Идентификатор записи
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё
     /// </summary>
     property Id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Медиавложения записи (фотографии, ссылки и т.п.)
+    /// РњРµРґРёР°РІР»РѕР¶РµРЅРёСЏ Р·Р°РїРёСЃРё (С„РѕС‚РѕРіСЂР°С„РёРё, СЃСЃС‹Р»РєРё Рё С‚.Рї.)
     /// </summary>
     property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
     /// <summary>
-    /// Информация о том, может ли запись помещена в арихв
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё Р·Р°РїРёСЃСЊ РїРѕРјРµС‰РµРЅР° РІ Р°СЂРёС…РІ
     /// </summary>
     property CanArchive: Boolean read FCan_archive write FCan_archive;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь удалить запись
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃСЊ
     /// </summary>
     property CanDelete: Boolean read FCan_delete write FCan_delete;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь редактировать запись
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р·Р°РїРёСЃСЊ
     /// </summary>
     property CanEdit: Boolean read FCan_edit write FCan_edit;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь закрепить запись
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р·Р°РєСЂРµРїРёС‚СЊ Р·Р°РїРёСЃСЊ
     /// </summary>
     property CanPin: Boolean read FCan_pin write FCan_pin;
     /// <summary>
-    /// Информация о комментариях к записи
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏС… Рє Р·Р°РїРёСЃРё
     /// </summary>
     property Comments: TVkCommentsInfo read FComments write FComments;
     /// <summary>
-    /// Массив, содержащий историю репостов для записи. Возвращается только в том случае, если запись является репостом. Каждый из объектов массива, в свою очередь, является объектом-записью стандартного формата.
+    /// РњР°СЃСЃРёРІ, СЃРѕРґРµСЂР¶Р°С‰РёР№ РёСЃС‚РѕСЂРёСЋ СЂРµРїРѕСЃС‚РѕРІ РґР»СЏ Р·Р°РїРёСЃРё. Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РІ С‚РѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё Р·Р°РїРёСЃСЊ СЏРІР»СЏРµС‚СЃСЏ СЂРµРїРѕСЃС‚РѕРј. РљР°Р¶РґС‹Р№ РёР· РѕР±СЉРµРєС‚РѕРІ РјР°СЃСЃРёРІР°, РІ СЃРІРѕСЋ РѕС‡РµСЂРµРґСЊ, СЏРІР»СЏРµС‚СЃСЏ РѕР±СЉРµРєС‚РѕРј-Р·Р°РїРёСЃСЊСЋ СЃС‚Р°РЅРґР°СЂС‚РЅРѕРіРѕ С„РѕСЂРјР°С‚Р°.
     /// </summary>
     property CopyHistory: TArray<TVkPost> read FCopy_history write FCopy_history;
     /// <summary>
-    /// Источник материала
+    /// РСЃС‚РѕС‡РЅРёРє РјР°С‚РµСЂРёР°Р»Р°
     /// </summary>
     property Copyright: TVkCopyright read FCopyright write FCopyright;
     /// <summary>
-    /// Идентификатор администратора, который опубликовал запись (возвращается только для сообществ при запросе с ключом доступа администратора). Возвращается в записях, опубликованных менее 24 часов назад.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°, РєРѕС‚РѕСЂС‹Р№ РѕРїСѓР±Р»РёРєРѕРІР°Р» Р·Р°РїРёСЃСЊ (РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РґР»СЏ СЃРѕРѕР±С‰РµСЃС‚РІ РїСЂРё Р·Р°РїСЂРѕСЃРµ СЃ РєР»СЋС‡РѕРј РґРѕСЃС‚СѓРїР° Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°). Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ Р·Р°РїРёСЃСЏС…, РѕРїСѓР±Р»РёРєРѕРІР°РЅРЅС‹С… РјРµРЅРµРµ 24 С‡Р°СЃРѕРІ РЅР°Р·Р°Рґ.
     /// </summary>
     property CreatedBy: Integer read FCreated_by write FCreated_by;
     /// <summary>
-    /// Время публикации записи
+    /// Р’СЂРµРјСЏ РїСѓР±Р»РёРєР°С†РёРё Р·Р°РїРёСЃРё
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Информация о записи VK Donut
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ Р·Р°РїРёСЃРё VK Donut
     /// </summary>
     property Donut: TVkDonut read FDonut write FDonut;
     /// <summary>
-    /// True, если запись была создана с опцией «Только для друзей».
+    /// True, РµСЃР»Рё Р·Р°РїРёСЃСЊ Р±С‹Р»Р° СЃРѕР·РґР°РЅР° СЃ РѕРїС†РёРµР№ В«РўРѕР»СЊРєРѕ РґР»СЏ РґСЂСѓР·РµР№В».
     /// </summary>
     property FriendsOnly: Boolean read FFriends_only write FFriends_only;
     /// <summary>
-    /// Идентификатор автора записи (от чьего имени опубликована запись)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°РІС‚РѕСЂР° Р·Р°РїРёСЃРё (РѕС‚ С‡СЊРµРіРѕ РёРјРµРЅРё РѕРїСѓР±Р»РёРєРѕРІР°РЅР° Р·Р°РїРёСЃСЊ)
     /// </summary>
     property FromId: Integer read FFrom_id write FFrom_id;
     /// <summary>
-    /// Информация о местоположении
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРё
     /// </summary>
     property Geo: TVkGeo read FGeo write FGeo;
     /// <summary>
-    /// Архивная запись
+    /// РђСЂС…РёРІРЅР°СЏ Р·Р°РїРёСЃСЊ
     /// </summary>
     property IsArchived: Boolean read FIs_archived write FIs_archived;
     /// <summary>
-    /// True, если объект добавлен в закладки у текущего пользователя.
+    /// True, РµСЃР»Рё РѕР±СЉРµРєС‚ РґРѕР±Р°РІР»РµРЅ РІ Р·Р°РєР»Р°РґРєРё Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     /// <summary>
-    /// Информация о том, что запись закреплена
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, С‡С‚Рѕ Р·Р°РїРёСЃСЊ Р·Р°РєСЂРµРїР»РµРЅР°
     /// </summary>
     property IsPinned: Boolean read FIs_pinned write FIs_pinned;
     /// <summary>
-    /// Информация о лайках к записи
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ Р»Р°Р№РєР°С… Рє Р·Р°РїРёСЃРё
     /// </summary>
     property Likes: TVkLikesInfo read FLikes write FLikes;
     /// <summary>
-    /// Информация о том, содержит ли запись отметку "реклама"
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, СЃРѕРґРµСЂР¶РёС‚ Р»Рё Р·Р°РїРёСЃСЊ РѕС‚РјРµС‚РєСѓ "СЂРµРєР»Р°РјР°"
     /// </summary>
     property MarkedAsAds: Boolean read FMarked_as_ads write FMarked_as_ads;
     /// <summary>
-    /// Идентификатор владельца стены, на которой размещена запись. В версиях API ниже 5.7 это поле называется ToId
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° СЃС‚РµРЅС‹, РЅР° РєРѕС‚РѕСЂРѕР№ СЂР°Р·РјРµС‰РµРЅР° Р·Р°РїРёСЃСЊ. Р’ РІРµСЂСЃРёСЏС… API РЅРёР¶Рµ 5.7 СЌС‚Рѕ РїРѕР»Рµ РЅР°Р·С‹РІР°РµС‚СЃСЏ ToId
     /// </summary>
     property OwnerId: Integer read FOwner_id write FOwner_id;
     /// <summary>
-    /// Идентификатор отложенной записи. Это поле возвращается тогда, когда запись стояла на таймере
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕС‚Р»РѕР¶РµРЅРЅРѕР№ Р·Р°РїРёСЃРё. Р­С‚Рѕ РїРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С‚РѕРіРґР°, РєРѕРіРґР° Р·Р°РїРёСЃСЊ СЃС‚РѕСЏР»Р° РЅР° С‚Р°Р№РјРµСЂРµ
     /// </summary>
     property PostponedId: Integer read FPostponed_id write FPostponed_id;
     /// <summary>
-    /// Информация о способе размещения записи (Поле возвращается только для Standalone-приложений с ключом доступа, полученным в Implicit Flow.)
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃРїРѕСЃРѕР±Рµ СЂР°Р·РјРµС‰РµРЅРёСЏ Р·Р°РїРёСЃРё (РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РґР»СЏ Standalone-РїСЂРёР»РѕР¶РµРЅРёР№ СЃ РєР»СЋС‡РѕРј РґРѕСЃС‚СѓРїР°, РїРѕР»СѓС‡РµРЅРЅС‹Рј РІ Implicit Flow.)
     /// </summary>
     property PostSource: TVkPostSource read FPost_source write FPost_source;
     /// <summary>
-    /// Тип записи, может принимать следующие значения: post, copy, reply, postpone, suggest.
+    /// РўРёРї Р·Р°РїРёСЃРё, РјРѕР¶РµС‚ РїСЂРёРЅРёРјР°С‚СЊ СЃР»РµРґСѓСЋС‰РёРµ Р·РЅР°С‡РµРЅРёСЏ: post, copy, reply, postpone, suggest.
     /// </summary>
     property PostType: string read FPost_type write FPost_type;
     /// <summary>
-    /// Идентификатор владельца записи, в ответ на которую была оставлена текущая
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° Р·Р°РїРёСЃРё, РІ РѕС‚РІРµС‚ РЅР° РєРѕС‚РѕСЂСѓСЋ Р±С‹Р»Р° РѕСЃС‚Р°РІР»РµРЅР° С‚РµРєСѓС‰Р°СЏ
     /// </summary>
     property ReplyOwnerId: Integer read FReply_owner_id write FReply_owner_id;
     /// <summary>
-    /// Идентификатор записи, в ответ на которую была оставлена текущая
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё, РІ РѕС‚РІРµС‚ РЅР° РєРѕС‚РѕСЂСѓСЋ Р±С‹Р»Р° РѕСЃС‚Р°РІР»РµРЅР° С‚РµРєСѓС‰Р°СЏ
     /// </summary>
     property ReplyPostId: Integer read FReply_post_id write FReply_post_id;
     /// <summary>
-    /// Информация о репостах записи («Рассказать друзьям»)
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЂРµРїРѕСЃС‚Р°С… Р·Р°РїРёСЃРё (В«Р Р°СЃСЃРєР°Р·Р°С‚СЊ РґСЂСѓР·СЊСЏРјВ»)
     /// </summary>
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     /// <summary>
-    /// Идентификатор автора, если запись была опубликована от имени сообщества и подписана пользователем
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°РІС‚РѕСЂР°, РµСЃР»Рё Р·Р°РїРёСЃСЊ Р±С‹Р»Р° РѕРїСѓР±Р»РёРєРѕРІР°РЅР° РѕС‚ РёРјРµРЅРё СЃРѕРѕР±С‰РµСЃС‚РІР° Рё РїРѕРґРїРёСЃР°РЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј
     /// </summary>
     property SignerId: Integer read FSigner_id write FSigner_id;
     /// <summary>
-    /// [Получено экспериментальным путём]
+    /// [РџРѕР»СѓС‡РµРЅРѕ СЌРєСЃРїРµСЂРёРјРµРЅС‚Р°Р»СЊРЅС‹Рј РїСѓС‚С‘Рј]
     /// </summary>
     property ShortTextRate: Extended read FShort_text_rate write FShort_text_rate;
     /// <summary>
-    /// Текст записи
+    /// РўРµРєСЃС‚ Р·Р°РїРёСЃРё
     /// </summary>
     property Text: string read FText write FText;
     /// <summary>
-    /// Идентификатор владельца стены, на которой размещена запись (API ниже 5.7)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° СЃС‚РµРЅС‹, РЅР° РєРѕС‚РѕСЂРѕР№ СЂР°Р·РјРµС‰РµРЅР° Р·Р°РїРёСЃСЊ (API РЅРёР¶Рµ 5.7)
     /// </summary>
     property ToId: Integer read FTo_id write FTo_id;
     /// <summary>
-    /// Тип записи, может принимать следующие значения: post, copy, reply, postpone, suggest.
+    /// РўРёРї Р·Р°РїРёСЃРё, РјРѕР¶РµС‚ РїСЂРёРЅРёРјР°С‚СЊ СЃР»РµРґСѓСЋС‰РёРµ Р·РЅР°С‡РµРЅРёСЏ: post, copy, reply, postpone, suggest.
     /// </summary>
     property &Type: TVkPostType read FType write FType;
     /// <summary>
-    /// Информация о просмотрах записи
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїСЂРѕСЃРјРѕС‚СЂР°С… Р·Р°РїРёСЃРё
     /// </summary>
     property Views: TVkViewsInfo read FViews write FViews;
     destructor Destroy; override;
@@ -679,6 +685,68 @@ begin
   if Assigned(FAttachment) then
     FAttachment.Free;
   inherited;
+end;
+
+{ TVkAttachmentArrayHelper }
+
+function TVkAttachmentArrayHelper.GetByType<T>(const&Type: TVkAttachmentType; var Attachment: T): Boolean;
+begin
+  for var Item in Self do
+    if Item.&Type = &Type then
+    begin
+      case&Type of
+        TVkAttachmentType.Photo:
+          Attachment := T(Item.FPhoto);
+        TVkAttachmentType.Video:
+          Attachment := T(Item.FVideo);
+        TVkAttachmentType.Audio:
+          Attachment := T(Item.FAudio);
+        TVkAttachmentType.Doc:
+          Attachment := T(Item.FDoc);
+        TVkAttachmentType.Link:
+          Attachment := T(Item.FLink);
+        TVkAttachmentType.Market:
+          Attachment := T(Item.FMarket);
+        TVkAttachmentType.MarketAlbum:
+          Attachment := T(Item.FMarket_album);
+        TVkAttachmentType.Wall:
+          Attachment := T(Item.FWall);
+        TVkAttachmentType.WallReply:
+          Attachment := T(Item.FWall_reply);
+        TVkAttachmentType.Sticker:
+          Attachment := T(Item.FSticker);
+        TVkAttachmentType.Gift:
+          Attachment := T(Item.FGift);
+        TVkAttachmentType.Call:
+          Attachment := T(Item.FCall);
+        TVkAttachmentType.AudioMessage:
+          Attachment := T(Item.FAudio_message);
+        TVkAttachmentType.PostedPhoto:
+          Attachment := T(Item.FPosted_photo);
+        TVkAttachmentType.Graffiti:
+          Attachment := T(Item.FGraffiti);
+        TVkAttachmentType.Note:
+          Attachment := T(Item.FNote);
+        TVkAttachmentType.App:
+          Attachment := T(Item.FApp);
+        TVkAttachmentType.Poll:
+          Attachment := T(Item.FPoll);
+        TVkAttachmentType.Page:
+          Attachment := T(Item.FPage);
+        TVkAttachmentType.Album:
+          Attachment := T(Item.FAlbum);
+        //TVkAttachmentType.PhotosList:
+        //  Attachment := T(Item.Ph);
+        TVkAttachmentType.PrettyCards:
+          Attachment := T(Item.FPretty_cards);
+        TVkAttachmentType.Event:
+          Attachment := T(Item.FEvent);
+        TVkAttachmentType.MoneyTransfer:
+          Attachment := T(Item.FMoney_transfer);
+      end;
+      Exit(True);
+    end;
+  Result := False;
 end;
 
 end.

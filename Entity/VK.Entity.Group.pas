@@ -1,4 +1,4 @@
-unit VK.Entity.Group;
+п»їunit VK.Entity.Group;
 
 interface
 
@@ -19,11 +19,11 @@ type
     FImages: TArray<TVkImage>;
   public
     /// <summary>
-    /// Информация о том, включена ли обложка
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РІРєР»СЋС‡РµРЅР° Р»Рё РѕР±Р»РѕР¶РєР°
     /// </summary>
     property Enabled: Boolean read FEnabled write FEnabled;
     /// <summary>
-    /// Копии изображений обложки
+    /// РљРѕРїРёРё РёР·РѕР±СЂР°Р¶РµРЅРёР№ РѕР±Р»РѕР¶РєРё
     /// </summary>
     property Images: TArray<TVkImage> read FImages write FImages;
     destructor Destroy; override;
@@ -40,7 +40,7 @@ type
     FImage_processing: Integer;
   public
     /// <summary>
-    /// Идентификатор ссылки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃСЃС‹Р»РєРё
     /// </summary>
     property Id;
     /// <summary>
@@ -48,19 +48,19 @@ type
     /// </summary>
     property Url: string read FUrl write FUrl;
     /// <summary>
-    /// Название ссылки
+    /// РќР°Р·РІР°РЅРёРµ СЃСЃС‹Р»РєРё
     /// </summary>
     property Name;
     /// <summary>
-    /// Описание ссылки
+    /// РћРїРёСЃР°РЅРёРµ СЃСЃС‹Р»РєРё
     /// </summary>
     property Desc: string read FDesc write FDesc;
     /// <summary>
-    /// URL изображения-превью шириной 50px
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ-РїСЂРµРІСЊСЋ С€РёСЂРёРЅРѕР№ 50px
     /// </summary>
     property Photo_50: string read FPhoto_50 write FPhoto_50;
     /// <summary>
-    /// URL изображения-превью шириной 100px
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ-РїСЂРµРІСЊСЋ С€РёСЂРёРЅРѕР№ 100px
     /// </summary>
     property Photo_100: string read FPhoto_100 write FPhoto_100;
     property EditTitle: Boolean read FEdit_title write FEdit_title;
@@ -82,27 +82,27 @@ type
     FUser_id: Integer;
   public
     /// <summary>
-    /// Является ли пользователь участником сообщества
+    /// РЇРІР»СЏРµС‚СЃСЏ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓС‡Р°СЃС‚РЅРёРєРѕРј СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     property Member: Boolean read FMember write FMember;
     /// <summary>
-    /// Есть ли непринятая заявка от пользователя на вступление в группу (такую заявку можно отозвать методом Groups.Leave)
+    /// Р•СЃС‚СЊ Р»Рё РЅРµРїСЂРёРЅСЏС‚Р°СЏ Р·Р°СЏРІРєР° РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР° РІСЃС‚СѓРїР»РµРЅРёРµ РІ РіСЂСѓРїРїСѓ (С‚Р°РєСѓСЋ Р·Р°СЏРІРєСѓ РјРѕР¶РЅРѕ РѕС‚РѕР·РІР°С‚СЊ РјРµС‚РѕРґРѕРј Groups.Leave)
     /// </summary>
     property Request: Boolean read FRequest write FRequest;
     /// <summary>
-    /// Приглашён ли пользователь в группу или встречу
+    /// РџСЂРёРіР»Р°С€С‘РЅ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІ РіСЂСѓРїРїСѓ РёР»Рё РІСЃС‚СЂРµС‡Сѓ
     /// </summary>
     property Invitation: Boolean read FInvitation write FInvitation;
     /// <summary>
-    /// Может ли автор запроса приглашать пользователя в группу
+    /// РњРѕР¶РµС‚ Р»Рё Р°РІС‚РѕСЂ Р·Р°РїСЂРѕСЃР° РїСЂРёРіР»Р°С€Р°С‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ РіСЂСѓРїРїСѓ
     /// </summary>
     property CanInvite: Boolean read FCan_invite write FCan_invite;
     /// <summary>
-    /// Может ли автор отменить приглашение. Появляется, если Invitation: True
+    /// РњРѕР¶РµС‚ Р»Рё Р°РІС‚РѕСЂ РѕС‚РјРµРЅРёС‚СЊ РїСЂРёРіР»Р°С€РµРЅРёРµ. РџРѕСЏРІР»СЏРµС‚СЃСЏ, РµСЃР»Рё Invitation: True
     /// </summary>
     property CanRecall: Boolean read FCan_recall write FCan_recall;
     /// <summary>
-    /// Идентификатор пользователя.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     property UserId: Integer read FUser_id write FUser_id;
   end;
@@ -123,36 +123,36 @@ type
     FType: string;
   public
     /// <summary>
-    /// Информация о том, включен ли блок товаров в сообществе
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РІРєР»СЋС‡РµРЅ Р»Рё Р±Р»РѕРє С‚РѕРІР°СЂРѕРІ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     property Enabled: Boolean read FEnabled write FEnabled;
     /// <summary>
-    /// Минимальная цена товаров
+    /// РњРёРЅРёРјР°Р»СЊРЅР°СЏ С†РµРЅР° С‚РѕРІР°СЂРѕРІ
     /// </summary>
     property PriceMin: Integer read FPrice_min write FPrice_min;
     /// <summary>
-    /// Максимальная цена товаров
+    /// РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ С†РµРЅР° С‚РѕРІР°СЂРѕРІ
     /// </summary>
     property PriceMax: Integer read FPrice_max write FPrice_max;
     /// <summary>
-    /// Идентификатор главной подборки товаров
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіР»Р°РІРЅРѕР№ РїРѕРґР±РѕСЂРєРё С‚РѕРІР°СЂРѕРІ
     /// </summary>
     property MainAlbumId: Integer read FMain_album_id write FMain_album_id;
     /// <summary>
-    /// Идентификатор контактного лица для связи с продавцом. Возвращается отрицательное значение, если для связи с продавцом используются сообщения сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРЅС‚Р°РєС‚РЅРѕРіРѕ Р»РёС†Р° РґР»СЏ СЃРІСЏР·Рё СЃ РїСЂРѕРґР°РІС†РѕРј. Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ, РµСЃР»Рё РґР»СЏ СЃРІСЏР·Рё СЃ РїСЂРѕРґР°РІС†РѕРј РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ СЃРѕРѕР±С‰РµРЅРёСЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     property ContactId: Integer read FContact_id write FContact_id;
     /// <summary>
-    /// Информация о валюте
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РІР°Р»СЋС‚Рµ
     /// </summary>
     property Currency: TVkProductCurrency read FCurrency write FCurrency;
     property Name: string read FName write FName;
     /// <summary>
-    /// Информация о типе магазина
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РёРїРµ РјР°РіР°Р·РёРЅР° (basic Рё advanced)
     /// </summary>
     property&Type: string read FType write FType;
     /// <summary>
-    /// Строковое обозначение
+    /// РЎС‚СЂРѕРєРѕРІРѕРµ РѕР±РѕР·РЅР°С‡РµРЅРёРµ
     /// </summary>
     property CurrencyText: string read FCurrency_text write FCurrency_text;
     destructor Destroy; override;
@@ -192,11 +192,11 @@ type
     FComment: string;
   public
     /// <summary>
-    /// Срок окончания блокировки
+    /// РЎСЂРѕРє РѕРєРѕРЅС‡Р°РЅРёСЏ Р±Р»РѕРєРёСЂРѕРІРєРё
     /// </summary>
     property EndDate: TDateTime read FEnd_date write FEnd_date;
     /// <summary>
-    /// Комментарий к блокировке
+    /// РљРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р±Р»РѕРєРёСЂРѕРІРєРµ
     /// </summary>
     property Comment: string read FComment write FComment;
   end;
@@ -209,19 +209,19 @@ type
     FUser_id: Integer;
   public
     /// <summary>
-    /// Идентификатор пользователя
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property UserId: Integer read FUser_id write FUser_id;
     /// <summary>
-    /// Должность
+    /// Р”РѕР»Р¶РЅРѕСЃС‚СЊ
     /// </summary>
     property Desc: string read FDesc write FDesc;
     /// <summary>
-    /// Номер телефона
+    /// РќРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°
     /// </summary>
     property Phone: string read FPhone write FPhone;
     /// <summary>
-    /// Адрес e-mail
+    /// РђРґСЂРµСЃ e-mail
     /// </summary>
     property Email: string read FEmail write FEmail;
   end;
@@ -232,11 +232,11 @@ type
     FMain_address_id: Integer;
   public
     /// <summary>
-    /// Включен ли блок адресов в сообществе
+    /// Р’РєР»СЋС‡РµРЅ Р»Рё Р±Р»РѕРє Р°РґСЂРµСЃРѕРІ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     property IsEnabled: Boolean read FIs_enabled write FIs_enabled;
     /// <summary>
-    /// Идентификатор основного адреса
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕСЃРЅРѕРІРЅРѕРіРѕ Р°РґСЂРµСЃР°
     /// </summary>
     property MainAddressId: Integer read FMain_address_id write FMain_address_id;
   end;
@@ -319,112 +319,112 @@ type
     function GetFixedPostId: string;
   public
     /// <summary>
-    /// Строка тематики паблика. У групп возвращается строковое значение, открыта ли группа или нет, а у событий дата начала
+    /// РЎС‚СЂРѕРєР° С‚РµРјР°С‚РёРєРё РїР°Р±Р»РёРєР°. РЈ РіСЂСѓРїРї РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ СЃС‚СЂРѕРєРѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ, РѕС‚РєСЂС‹С‚Р° Р»Рё РіСЂСѓРїРїР° РёР»Рё РЅРµС‚, Р° Сѓ СЃРѕР±С‹С‚РёР№ РґР°С‚Р° РЅР°С‡Р°Р»Р°
     /// </summary>
     property Activity: string read FActivity write FActivity;
     /// <summary>
-    /// Уровень полномочий текущего пользователя (если IsAdmin = True)
+    /// РЈСЂРѕРІРµРЅСЊ РїРѕР»РЅРѕРјРѕС‡РёР№ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РµСЃР»Рё IsAdmin = True)
     /// </summary>
     property AdminLevel: TVkGroupAdminLevel read FAdmin_level write FAdmin_level;
     /// <summary>
-    /// Информация об адресах сообщества
+    /// РРЅС„РѕСЂРјР°С†РёСЏ РѕР± Р°РґСЂРµСЃР°С… СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     property Addresses: TVkAddresses read FAddresses write FAddresses;
     /// <summary>
-    /// Возрастное ограничение
+    /// Р’РѕР·СЂР°СЃС‚РЅРѕРµ РѕРіСЂР°РЅРёС‡РµРЅРёРµ
     /// </summary>
     property AgeLimits: TVkAgeLimits read FAge_limits write FAge_limits;
     /// <summary>
-    /// Информация о занесении в черный список сообщества (поле возвращается только при запросе информации об одном сообществе)
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ Р·Р°РЅРµСЃРµРЅРёРё РІ С‡РµСЂРЅС‹Р№ СЃРїРёСЃРѕРє СЃРѕРѕР±С‰РµСЃС‚РІР° (РїРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РїСЂРё Р·Р°РїСЂРѕСЃРµ РёРЅС„РѕСЂРјР°С†РёРё РѕР± РѕРґРЅРѕРј СЃРѕРѕР±С‰РµСЃС‚РІРµ)
     /// </summary>
     property BanInfo: TVkBanInfo read FBan_info write FBan_info;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь создать новое обсуждение в группе
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРѕР·РґР°С‚СЊ РЅРѕРІРѕРµ РѕР±СЃСѓР¶РґРµРЅРёРµ РІ РіСЂСѓРїРїРµ
     /// </summary>
     property CanCreateTopic: Boolean read FCan_create_topic write FCan_create_topic;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь написать сообщение сообществу
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅР°РїРёСЃР°С‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ СЃРѕРѕР±С‰РµСЃС‚РІСѓ
     /// </summary>
     property CanMessage: Boolean read FCan_message write FCan_message;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь оставлять записи на стене сообщества
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕСЃС‚Р°РІР»СЏС‚СЊ Р·Р°РїРёСЃРё РЅР° СЃС‚РµРЅРµ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     property CanPost: Boolean read FCan_post write FCan_message;
     /// <summary>
-    /// Информация о том, разрешено ли видеть чужие записи на стене группы
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, СЂР°Р·СЂРµС€РµРЅРѕ Р»Рё РІРёРґРµС‚СЊ С‡СѓР¶РёРµ Р·Р°РїРёСЃРё РЅР° СЃС‚РµРЅРµ РіСЂСѓРїРїС‹
     /// </summary>
     property CanSeeAllPosts: Boolean read FCan_see_all_posts write FCan_see_all_posts;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь загружать документы в группу
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р·Р°РіСЂСѓР¶Р°С‚СЊ РґРѕРєСѓРјРµРЅС‚С‹ РІ РіСЂСѓРїРїСѓ
     /// </summary>
     property CanUploadDoc: Boolean read FCan_upload_doc write FCan_upload_doc;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь загружать видеозаписи в группу
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р·Р°РіСЂСѓР¶Р°С‚СЊ РІРёРґРµРѕР·Р°РїРёСЃРё РІ РіСЂСѓРїРїСѓ
     /// </summary>
     property CanUploadVideo: Boolean read FCan_upload_video write FCan_upload_video;
     /// <summary>
-    /// Город, указанный в информации о сообществе
+    /// Р“РѕСЂРѕРґ, СѓРєР°Р·Р°РЅРЅС‹Р№ РІ РёРЅС„РѕСЂРјР°С†РёРё Рѕ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     property City: TVkCity read FCity write FCity;
     /// <summary>
-    /// Информация из блока контактов публичной страницы
+    /// РРЅС„РѕСЂРјР°С†РёСЏ РёР· Р±Р»РѕРєР° РєРѕРЅС‚Р°РєС‚РѕРІ РїСѓР±Р»РёС‡РЅРѕР№ СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     property Contacts: TArray<TVkContact> read FContacts write FContacts;
     /// <summary>
-    /// Объект, содержащий счётчики сообщества, может включать любой набор из следующих полей: photos, albums, audios, videos, topics, docs.
+    /// РћР±СЉРµРєС‚, СЃРѕРґРµСЂР¶Р°С‰РёР№ СЃС‡С‘С‚С‡РёРєРё СЃРѕРѕР±С‰РµСЃС‚РІР°, РјРѕР¶РµС‚ РІРєР»СЋС‡Р°С‚СЊ Р»СЋР±РѕР№ РЅР°Р±РѕСЂ РёР· СЃР»РµРґСѓСЋС‰РёС… РїРѕР»РµР№: photos, albums, audios, videos, topics, docs.
     /// </summary>
     property Counters: TVkGroupCounters read FCounters write FCounters;
     /// <summary>
-    /// Страна, указанная в информации о сообществе.
+    /// РЎС‚СЂР°РЅР°, СѓРєР°Р·Р°РЅРЅР°СЏ РІ РёРЅС„РѕСЂРјР°С†РёРё Рѕ СЃРѕРѕР±С‰РµСЃС‚РІРµ.
     /// </summary>
     property Country: TVkCountry read FCountry write FCountry;
     /// <summary>
-    /// Обложка сообщества.
+    /// РћР±Р»РѕР¶РєР° СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     property Cover: TVkCover read FCover write FCover;
     /// <summary>
-    /// Возвращает данные о точках, по которым вырезаны профильная и миниатюрная фотографии сообщества.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РґР°РЅРЅС‹Рµ Рѕ С‚РѕС‡РєР°С…, РїРѕ РєРѕС‚РѕСЂС‹Рј РІС‹СЂРµР·Р°РЅС‹ РїСЂРѕС„РёР»СЊРЅР°СЏ Рё РјРёРЅРёР°С‚СЋСЂРЅР°СЏ С„РѕС‚РѕРіСЂР°С„РёРё СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     property CropPhoto: TVkCropPhoto read FCrop_photo write FCrop_photo;
     /// <summary>
-    /// Возвращается в случае, если сообщество удалено или заблокировано
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё СЃРѕРѕР±С‰РµСЃС‚РІРѕ СѓРґР°Р»РµРЅРѕ РёР»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРѕ
     /// </summary>
     property Deactivated: TVkDeactivated read FDeactivated write FDeactivated;
     /// <summary>
-    /// Текст описания сообщества.
+    /// РўРµРєСЃС‚ РѕРїРёСЃР°РЅРёСЏ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     property Description: string read FDescription write FDescription;
     /// <summary>
-    /// Идентификатор закрепленной записи. Получить дополнительные данные о записи можно методом wall.getById, передав в поле posts {group_id}_{post_id}.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РєСЂРµРїР»РµРЅРЅРѕР№ Р·Р°РїРёСЃРё. РџРѕР»СѓС‡РёС‚СЊ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ Рѕ Р·Р°РїРёСЃРё РјРѕР¶РЅРѕ РјРµС‚РѕРґРѕРј wall.getById, РїРµСЂРµРґР°РІ РІ РїРѕР»Рµ posts {group_id}_{post_id}.
     /// </summary>
     property FixedPost: Integer read FFixed_post write FFixed_post;
     /// <summary>
-    /// Идентификатор закрепленной записи. Получить дополнительные данные о записи можно методом wall.getById, передав в поле posts.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РєСЂРµРїР»РµРЅРЅРѕР№ Р·Р°РїРёСЃРё. РџРѕР»СѓС‡РёС‚СЊ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ Рѕ Р·Р°РїРёСЃРё РјРѕР¶РЅРѕ РјРµС‚РѕРґРѕРј wall.getById, РїРµСЂРµРґР°РІ РІ РїРѕР»Рµ posts.
     /// </summary>
     property FixedPostId: string read GetFixedPostId;
     /// <summary>
-    /// Информация о том, установлена ли у сообщества главная фотография.
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, СѓСЃС‚Р°РЅРѕРІР»РµРЅР° Р»Рё Сѓ СЃРѕРѕР±С‰РµСЃС‚РІР° РіР»Р°РІРЅР°СЏ С„РѕС‚РѕРіСЂР°С„РёСЏ.
     /// </summary>
     property HasPhoto: Boolean read FHas_photo write FHas_photo;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     property Id;
     /// <summary>
-    /// Идентификатор пользователя, который отправил приглашение в сообщество.
-    /// Поле возвращается только для метода groups.getInvites.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РєРѕС‚РѕСЂС‹Р№ РѕС‚РїСЂР°РІРёР» РїСЂРёРіР»Р°С€РµРЅРёРµ РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ.
+    /// РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РґР»СЏ РјРµС‚РѕРґР° groups.getInvites.
     /// </summary>
     property InvitedBy: Integer read FInvited_by write FInvited_by;
     /// <summary>
-    /// Информация о том, является ли текущий пользователь руководителем.
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЂСѓРєРѕРІРѕРґРёС‚РµР»РµРј.
     /// </summary>
     property IsAdmin: Boolean read FIs_admin write FIs_admin;
     /// <summary>
-    /// Информация о том, является ли текущий пользователь рекламодателем.
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЂРµРєР»Р°РјРѕРґР°С‚РµР»РµРј.
     /// </summary>
     property IsAdvertiser: Boolean read FIs_advertiser write FIs_advertiser;
     /// <summary>
-    /// Является ли сообщество закрытым
+    /// РЇРІР»СЏРµС‚СЃСЏ Р»Рё СЃРѕРѕР±С‰РµСЃС‚РІРѕ Р·Р°РєСЂС‹С‚С‹Рј
     /// </summary>
     property IsClosed: TVkGroupAccess read FIs_closed write FIs_closed;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
@@ -432,28 +432,28 @@ type
     property IsMessagesBlocked: Boolean read FIs_messages_blocked write FIs_messages_blocked;
     property IsMember: Boolean read FIs_member write FIs_member;
     /// <summary>
-    /// Информация из блока ссылок сообщества
+    /// РРЅС„РѕСЂРјР°С†РёСЏ РёР· Р±Р»РѕРєР° СЃСЃС‹Р»РѕРє СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     property Links: TArray<TVkGroupLink> read FLinks write FLinks;
     /// <summary>
-    /// Идентификатор основного фотоальбома
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕСЃРЅРѕРІРЅРѕРіРѕ С„РѕС‚РѕР°Р»СЊР±РѕРјР°
     /// </summary>
     property MainAlbumId: Integer read FMain_album_id write FMain_album_id;
     /// <summary>
-    /// Информация о главной секции
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РіР»Р°РІРЅРѕР№ СЃРµРєС†РёРё
     /// </summary>
     property MainSection: TVkGroupMainSection read FMain_section write FMain_section;
     /// <summary>
-    /// Информация о магазине
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РјР°РіР°Р·РёРЅРµ
     /// </summary>
     property Market: TVkGroupMarket read FMarket write FMarket;
     /// <summary>
-    /// Количество участников в сообществе
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     property MembersCount: Integer read FMembers_count write FMembers_count;
-    { TODO -oHemulGM -c : Сделать тип 16.02.2021 13:57:27 }
+    { TODO -oHemulGM -c : РЎРґРµР»Р°С‚СЊ С‚РёРї 16.02.2021 13:57:27 }
     /// <summary>
-    /// Статус участника текущего пользователя
+    /// РЎС‚Р°С‚СѓСЃ СѓС‡Р°СЃС‚РЅРёРєР° С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property MemberStatus: Integer read FMember_status write FMember_status;
     property Name: string read FName write FName;
@@ -462,7 +462,7 @@ type
     property Photo50: string read FPhoto_50 write FPhoto_50;
     property TrackCode: string read FTrack_code write FTrack_code;
     /// <summary>
-    /// Место, указанное в информации о сообществе
+    /// РњРµСЃС‚Рѕ, СѓРєР°Р·Р°РЅРЅРѕРµ РІ РёРЅС„РѕСЂРјР°С†РёРё Рѕ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     property Place: TVkPlace read FPlace write FPlace;
     property PublicDateLabel: string read FPublic_date_label write FPublic_date_label;

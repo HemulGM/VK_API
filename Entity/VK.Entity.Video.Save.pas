@@ -46,7 +46,7 @@ implementation
 function TVkVideoUploadResponse.ToAttachment: TAttachment;
 begin
   Result.Id := FVideo_id;
-  Result.&Type := 'video';
+  Result.&Type := TVkAttachmentType.Video;
   Result.OwnerId := FOwner_id;
   Result.Kind := TAttachmentKind.Media;
   Result.AccessKey := FAccess_key;

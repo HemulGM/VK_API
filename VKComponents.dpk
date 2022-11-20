@@ -190,7 +190,9 @@ contains
   VK.Bot.Commands in 'Utils\VK.Bot.Commands.pas',
   VK.Entity.Common in 'Entity\VK.Entity.Common.pas',
   VK.Params in 'VK.Params.pas',
-  VK.ExternalAuth in 'Tools\VK.ExternalAuth.pas';
+  VK.ExternalAuth in 'Tools\VK.ExternalAuth.pas',
+  VK.Ads in 'Controllers\VK.Ads.pas',
+  VK.Entity.Ads in 'Entity\VK.Entity.Ads.pas';
 
 end.
 

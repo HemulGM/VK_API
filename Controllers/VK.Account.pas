@@ -77,7 +77,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, с которым связано семейное положение
     /// </summary>
-    function RelationPartnerId(const Value: Integer): TVkParamsProfileInfo;
+    function RelationPartnerId(const Value: TVkPeerId): TVkParamsProfileInfo;
     /// <summary>
     /// Дата рождения пользователя
     /// </summary>
@@ -109,7 +109,7 @@ type
     /// <summary>
     /// Добавляет пользователя или группу в черный список.
     /// </summary>
-    function Ban(var Status: Boolean; const OwnerID: Integer): Boolean;
+    function Ban(var Status: Boolean; const OwnerId: TVkPeerId): Boolean;
     /// <summary>
     /// Позволяет сменить пароль пользователя после успешного восстановления доступа к аккаунту через СМС, используя метод Auth.Restore.
     /// </summary>
@@ -121,7 +121,7 @@ type
     /// <summary>
     /// Получает настройки текущего пользователя в данном приложении.
     /// </summary>
-    function GetAppPermissions(var Mask: Integer; UserId: Integer): Boolean;
+    function GetAppPermissions(var Mask: Integer; UserId: TVkPeerId): Boolean;
     /// <summary>
     /// Возвращает список пользователей, находящихся в черном списке.
     /// </summary>
@@ -159,7 +159,7 @@ type
     /// <summary>
     /// Устанавливает короткое название приложения (до 17 символов), которое выводится пользователю в левом меню.
     /// </summary>
-    function SetNameInMenu(const UserId: Integer; Name: string): Boolean;
+    function SetNameInMenu(const UserId: TVkPeerId; Name: string): Boolean;
     /// <summary>
     /// Помечает текущего пользователя как offline (только в текущем приложении).
     /// </summary>
@@ -175,11 +175,12 @@ type
     /// <summary>
     /// Отключает push-уведомления на заданный промежуток времени.
     /// </summary>
-    function SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
+    function SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: TVkPeerId; Sound: Boolean): Boolean;
     /// <summary>
     /// Удаляет пользователя или группу из черного списка.
+    /// OwnerId - Идентификатор пользователя или группы, которого нужно удалить из черного списка.
     /// </summary>
-    function UnBan(const OwnerID: Integer): Boolean;
+    function UnBan(const OwnerId: TVkPeerId): Boolean;
     /// <summary>
     /// Отписывает устройство от Push уведомлений.
     /// </summary>
@@ -211,7 +212,7 @@ begin
     GetObject(Items);
 end;
 
-function TAccountController.GetAppPermissions(var Mask: Integer; UserId: Integer): Boolean;
+function TAccountController.GetAppPermissions(var Mask: Integer; UserId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('account.getAppPermissions', ['user_id', UserId.ToString]).ResponseAsInt(Mask);
 end;
@@ -259,7 +260,7 @@ begin
   Result := Handler.Execute('account.setInfo', [['name', Name], ['value', Value]]).ResponseIsTrue;
 end;
 
-function TAccountController.SetNameInMenu(const UserId: Integer; Name: string): Boolean;
+function TAccountController.SetNameInMenu(const UserId: TVkPeerId; Name: string): Boolean;
 begin
   Result := Handler.Execute('account.setNameInMenu', [['user_id', UserId.ToString], ['name', Name]]).ResponseIsTrue;
 end;
@@ -289,7 +290,7 @@ begin
   Result := Handler.Execute('account.setPushSettings', Params).ResponseIsTrue;
 end;
 
-function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: string; Sound: Boolean): Boolean;
+function TAccountController.SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: TVkPeerId; Sound: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -300,14 +301,14 @@ begin
   Result := Handler.Execute('account.setSilenceMode', Params).ResponseIsTrue;
 end;
 
-function TAccountController.Ban(var Status: Boolean; const OwnerID: Integer): Boolean;
+function TAccountController.Ban(var Status: Boolean; const OwnerId: TVkPeerId): Boolean;
 begin
-  Result := Handler.Execute('account.ban', ['owner_id', OwnerID.ToString]).ResponseAsBool(Status);
+  Result := Handler.Execute('account.ban', ['owner_id', OwnerId.ToString]).ResponseAsBool(Status);
 end;
 
-function TAccountController.UnBan(const OwnerID: Integer): Boolean;
+function TAccountController.UnBan(const OwnerId: TVkPeerId): Boolean;
 begin
-  Result := Handler.Execute('account.unban', ['owner_id', OwnerID.ToString]).ResponseIsTrue;
+  Result := Handler.Execute('account.unban', ['owner_id', OwnerId.ToString]).ResponseIsTrue;
 end;
 
 function TAccountController.UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
@@ -428,7 +429,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsProfileInfo.RelationPartnerId(const Value: Integer): TVkParamsProfileInfo;
+function TVkParamsProfileInfo.RelationPartnerId(const Value: TVkPeerId): TVkParamsProfileInfo;
 begin
   List.Add('relation_partner_id', Value);
   Result := Self;

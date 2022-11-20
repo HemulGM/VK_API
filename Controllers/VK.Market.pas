@@ -1,4 +1,4 @@
-unit VK.Market;
+п»їunit VK.Market;
 
 interface
 
@@ -11,65 +11,65 @@ type
   TVkParamsMarketAdd = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С‚РѕРІР°СЂР°
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
-    /// Название товара. Ограничение по длине считается в кодировке cp1251 (минимальная длина 4, максимальная длина 100)
+    /// РќР°Р·РІР°РЅРёРµ С‚РѕРІР°СЂР°. РћРіСЂР°РЅРёС‡РµРЅРёРµ РїРѕ РґР»РёРЅРµ СЃС‡РёС‚Р°РµС‚СЃСЏ РІ РєРѕРґРёСЂРѕРІРєРµ cp1251 (РјРёРЅРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 4, РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 100)
     /// </summary>
     function Name(const Value: string): TVkParamsMarketAdd;
     /// <summary>
-    /// Описание товара (минимальная длина 10)
+    /// РћРїРёСЃР°РЅРёРµ С‚РѕРІР°СЂР° (РјРёРЅРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 10)
     /// </summary>
     function Description(const Value: string): TVkParamsMarketAdd;
     /// <summary>
-    /// Идентификатор категории товара (market.getCategories)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°С‚РµРіРѕСЂРёРё С‚РѕРІР°СЂР° (market.getCategories)
     /// </summary>
     function CategoryId(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
-    /// Цена товара
+    /// Р¦РµРЅР° С‚РѕРІР°СЂР°
     /// </summary>
     function Price(const Value: Extended): TVkParamsMarketAdd;
     /// <summary>
-    /// Старая цена товара
+    /// РЎС‚Р°СЂР°СЏ С†РµРЅР° С‚РѕРІР°СЂР°
     /// </summary>
     function OldPrice(const Value: Extended): TVkParamsMarketAdd;
     /// <summary>
-    /// Статус товара (True — товар удален, False — товар не удален)
+    /// РЎС‚Р°С‚СѓСЃ С‚РѕРІР°СЂР° (True вЂ” С‚РѕРІР°СЂ СѓРґР°Р»РµРЅ, False вЂ” С‚РѕРІР°СЂ РЅРµ СѓРґР°Р»РµРЅ)
     /// </summary>
     function Deleted(const Value: Boolean): TVkParamsMarketAdd;
     /// <summary>
-    /// Идентификатор фотографии обложки товара.
-    /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer, передав параметр MainPhoto
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РѕС‚РѕРіСЂР°С„РёРё РѕР±Р»РѕР¶РєРё С‚РѕРІР°СЂР°.
+    /// Р¤РѕС‚РѕРіСЂР°С„РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р·Р°РіСЂСѓР¶РµРЅР° СЃ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґР° photos.getMarketUploadServer, РїРµСЂРµРґР°РІ РїР°СЂР°РјРµС‚СЂ MainPhoto
     /// </summary>
     function MainPhotoId(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
-    /// Идентификаторы дополнительных фотографий товара.
-    /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… С„РѕС‚РѕРіСЂР°С„РёР№ С‚РѕРІР°СЂР°.
+    /// Р¤РѕС‚РѕРіСЂР°С„РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р·Р°РіСЂСѓР¶РµРЅР° СЃ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґР° photos.getMarketUploadServer
     /// </summary>
     function PhotoIds(const Value: TIdList): TVkParamsMarketAdd;
     /// <summary>
-    /// Ссылка на сайт товара (максимальная длина 320)
+    /// РЎСЃС‹Р»РєР° РЅР° СЃР°Р№С‚ С‚РѕРІР°СЂР° (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 320)
     /// </summary>
     function Url(const Value: string): TVkParamsMarketAdd;
     /// <summary>
-    /// Ширина в миллиметрах (максимальное значение 100000)
+    /// РЁРёСЂРёРЅР° РІ РјРёР»Р»РёРјРµС‚СЂР°С… (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100000)
     /// </summary>
     function DimensionWidth(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
-    /// Высота в миллиметрах (максимальное значение 100000)
+    /// Р’С‹СЃРѕС‚Р° РІ РјРёР»Р»РёРјРµС‚СЂР°С… (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100000)
     /// </summary>
     function DimensionHeight(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
-    /// Толщина в миллиметрах (максимальное значение 100000)
+    /// РўРѕР»С‰РёРЅР° РІ РјРёР»Р»РёРјРµС‚СЂР°С… (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100000)
     /// </summary>
     function DimensionLength(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
-    /// Вес в граммах (максимальное значение 100000000)
+    /// Р’РµСЃ РІ РіСЂР°РјРјР°С… (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100000000)
     /// </summary>
     function Weight(const Value: Integer): TVkParamsMarketAdd;
     /// <summary>
-    /// Артикул товара, произвольная строка (максимальная длина 50)
+    /// РђСЂС‚РёРєСѓР» С‚РѕРІР°СЂР°, РїСЂРѕРёР·РІРѕР»СЊРЅР°СЏ СЃС‚СЂРѕРєР° (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 50)
     /// </summary>
     function Sku(const Value: string): TVkParamsMarketAdd;
   end;
@@ -77,37 +77,37 @@ type
   TVkParamsMarketCreateComment = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С‚РѕРІР°СЂР°
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketCreateComment;
     /// <summary>
-    /// Идентификатор товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°
     /// </summary>
     function ItemId(const Value: Integer): TVkParamsMarketCreateComment;
     /// <summary>
-    /// Текст комментария (является обязательным, если не задан параметр Attachments)
-    /// Максимальное количество символов: 2048
+    /// РўРµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ (СЏРІР»СЏРµС‚СЃСЏ РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рј, РµСЃР»Рё РЅРµ Р·Р°РґР°РЅ РїР°СЂР°РјРµС‚СЂ Attachments)
+    /// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРјРІРѕР»РѕРІ: 2048
     /// </summary>
     function Message(const Value: string): TVkParamsMarketCreateComment;
     /// <summary>
-    /// Список объектов, приложенных к комментарию
+    /// РЎРїРёСЃРѕРє РѕР±СЉРµРєС‚РѕРІ, РїСЂРёР»РѕР¶РµРЅРЅС‹С… Рє РєРѕРјРјРµРЅС‚Р°СЂРёСЋ
     /// </summary>
     function Attachments(const Value: TAttachmentArray): TVkParamsMarketCreateComment;
     /// <summary>
-    /// True — комментарий будет опубликован от имени группы,
-    /// False — комментарий будет опубликован от имени пользователя (по умолчанию)
+    /// True вЂ” РєРѕРјРјРµРЅС‚Р°СЂРёР№ Р±СѓРґРµС‚ РѕРїСѓР±Р»РёРєРѕРІР°РЅ РѕС‚ РёРјРµРЅРё РіСЂСѓРїРїС‹,
+    /// False вЂ” РєРѕРјРјРµРЅС‚Р°СЂРёР№ Р±СѓРґРµС‚ РѕРїСѓР±Р»РёРєРѕРІР°РЅ РѕС‚ РёРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ)
     /// </summary>
     function FromGroup(const Value: Boolean = False): TVkParamsMarketCreateComment;
     /// <summary>
-    /// Идентификатор комментария, в ответ на который должен быть добавлен новый комментарий
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ, РІ РѕС‚РІРµС‚ РЅР° РєРѕС‚РѕСЂС‹Р№ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РґРѕР±Р°РІР»РµРЅ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№
     /// </summary>
     function ReplyToComment(const Value: Integer): TVkParamsMarketCreateComment;
     /// <summary>
-    /// Идентификатор стикера
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚РёРєРµСЂР°
     /// </summary>
     function StickerId(const Value: Integer): TVkParamsMarketCreateComment;
     /// <summary>
-    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария
+    /// РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ, РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅРЅС‹Р№ РґР»СЏ РїСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёСЏ РїРѕРІС‚РѕСЂРЅРѕР№ РѕС‚РїСЂР°РІРєРё РѕРґРёРЅР°РєРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
     /// </summary>
     function Guid(const Value: string): TVkParamsMarketCreateComment;
   end;
@@ -115,69 +115,69 @@ type
   TVkParamsMarketEdit = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С‚РѕРІР°СЂР°
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
-    /// Идентификатор товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°
     /// </summary>
     function ItemId(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
-    /// Название товара. Ограничение по длине считается в кодировке cp1251 (минимальная длина 4, максимальная длина 100)
+    /// РќР°Р·РІР°РЅРёРµ С‚РѕРІР°СЂР°. РћРіСЂР°РЅРёС‡РµРЅРёРµ РїРѕ РґР»РёРЅРµ СЃС‡РёС‚Р°РµС‚СЃСЏ РІ РєРѕРґРёСЂРѕРІРєРµ cp1251 (РјРёРЅРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 4, РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 100)
     /// </summary>
     function Name(const Value: string): TVkParamsMarketEdit;
     /// <summary>
-    /// Описание товара (минимальная длина 10)
+    /// РћРїРёСЃР°РЅРёРµ С‚РѕРІР°СЂР° (РјРёРЅРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 10)
     /// </summary>
     function Description(const Value: string): TVkParamsMarketEdit;
     /// <summary>
-    /// Идентификатор категории товара (market.getCategories)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°С‚РµРіРѕСЂРёРё С‚РѕРІР°СЂР° (market.getCategories)
     /// </summary>
     function CategoryId(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
-    /// Цена товара
+    /// Р¦РµРЅР° С‚РѕРІР°СЂР°
     /// </summary>
     function Price(const Value: Extended): TVkParamsMarketEdit;
     /// <summary>
-    /// Старая цена товара
+    /// РЎС‚Р°СЂР°СЏ С†РµРЅР° С‚РѕРІР°СЂР°
     /// </summary>
     function OldPrice(const Value: Extended): TVkParamsMarketEdit;
     /// <summary>
-    /// Статус товара (True — товар недоступен, False — товар доступен)
+    /// РЎС‚Р°С‚СѓСЃ С‚РѕРІР°СЂР° (True вЂ” С‚РѕРІР°СЂ РЅРµРґРѕСЃС‚СѓРїРµРЅ, False вЂ” С‚РѕРІР°СЂ РґРѕСЃС‚СѓРїРµРЅ)
     /// </summary>
     function Deleted(const Value: Boolean): TVkParamsMarketEdit;
     /// <summary>
-    /// Идентификатор фотографии обложки товара.
-    /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer, передав параметр MainPhoto
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РѕС‚РѕРіСЂР°С„РёРё РѕР±Р»РѕР¶РєРё С‚РѕРІР°СЂР°.
+    /// Р¤РѕС‚РѕРіСЂР°С„РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р·Р°РіСЂСѓР¶РµРЅР° СЃ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґР° photos.getMarketUploadServer, РїРµСЂРµРґР°РІ РїР°СЂР°РјРµС‚СЂ MainPhoto
     /// </summary>
     function MainPhotoId(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
-    /// Идентификаторы дополнительных фотографий товара.
-    /// Фотография должна быть загружена с помощью метода photos.getMarketUploadServer
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… С„РѕС‚РѕРіСЂР°С„РёР№ С‚РѕРІР°СЂР°.
+    /// Р¤РѕС‚РѕРіСЂР°С„РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р·Р°РіСЂСѓР¶РµРЅР° СЃ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґР° photos.getMarketUploadServer
     /// </summary>
     function PhotoIds(const Value: TIdList): TVkParamsMarketEdit;
     /// <summary>
-    /// Ссылка на сайт товара (максимальная длина 320)
+    /// РЎСЃС‹Р»РєР° РЅР° СЃР°Р№С‚ С‚РѕРІР°СЂР° (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 320)
     /// </summary>
     function Url(const Value: string): TVkParamsMarketEdit;
     /// <summary>
-    /// Ширина в миллиметрах (максимальное значение 100000)
+    /// РЁРёСЂРёРЅР° РІ РјРёР»Р»РёРјРµС‚СЂР°С… (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100000)
     /// </summary>
     function DimensionWidth(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
-    /// Высота в миллиметрах (максимальное значение 100000)
+    /// Р’С‹СЃРѕС‚Р° РІ РјРёР»Р»РёРјРµС‚СЂР°С… (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100000)
     /// </summary>
     function DimensionHeight(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
-    /// Толщина в миллиметрах (максимальное значение 100000)
+    /// РўРѕР»С‰РёРЅР° РІ РјРёР»Р»РёРјРµС‚СЂР°С… (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100000)
     /// </summary>
     function DimensionLength(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
-    /// Вес в граммах (максимальное значение 100000000)
+    /// Р’РµСЃ РІ РіСЂР°РјРјР°С… (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100000000)
     /// </summary>
     function Weight(const Value: Integer): TVkParamsMarketEdit;
     /// <summary>
-    /// Артикул товара, произвольная строка (максимальная длина 50)
+    /// РђСЂС‚РёРєСѓР» С‚РѕРІР°СЂР°, РїСЂРѕРёР·РІРѕР»СЊРЅР°СЏ СЃС‚СЂРѕРєР° (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 50)
     /// </summary>
     function Sku(const Value: string): TVkParamsMarketEdit;
   end;
@@ -185,24 +185,24 @@ type
   TVkParamsMarketEditAlbum = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца подборки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° РїРѕРґР±РѕСЂРєРё
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketEditAlbum;
     /// <summary>
-    /// Идентификатор подборки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР±РѕСЂРєРё
     /// </summary>
     function AlbumId(const Value: Integer): TVkParamsMarketEditAlbum;
     /// <summary>
-    /// Название подборки (максимальная длина 128)
+    /// РќР°Р·РІР°РЅРёРµ РїРѕРґР±РѕСЂРєРё (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 128)
     /// </summary>
     function Title(const Value: string): TVkParamsMarketEditAlbum;
     /// <summary>
-    /// Идентификатор фотографии-обложки подборки.
-    /// Фотография должна быть загружена с помощью метода photos.getMarkeAlbumUploadServer
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РѕС‚РѕРіСЂР°С„РёРё-РѕР±Р»РѕР¶РєРё РїРѕРґР±РѕСЂРєРё.
+    /// Р¤РѕС‚РѕРіСЂР°С„РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р·Р°РіСЂСѓР¶РµРЅР° СЃ РїРѕРјРѕС‰СЊСЋ РјРµС‚РѕРґР° photos.getMarkeAlbumUploadServer
     /// </summary>
     function PhotoId(const Value: Integer): TVkParamsMarketEditAlbum;
     /// <summary>
-    /// Назначить подборку основной (True — назначить, False — нет)
+    /// РќР°Р·РЅР°С‡РёС‚СЊ РїРѕРґР±РѕСЂРєСѓ РѕСЃРЅРѕРІРЅРѕР№ (True вЂ” РЅР°Р·РЅР°С‡РёС‚СЊ, False вЂ” РЅРµС‚)
     /// </summary>
     function MainAlbum(const Value: Boolean): TVkParamsMarketEditAlbum;
   end;
@@ -210,20 +210,20 @@ type
   TVkParamsMarketEditComment = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С‚РѕРІР°СЂР°
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketEditComment;
     /// <summary>
-    /// Идентификатор комментария
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
     /// </summary>
     function CommentId(const Value: Integer): TVkParamsMarketEditComment;
     /// <summary>
-    /// Текст комментария (является обязательным, если не задан параметр Attachments)
-    /// Максимальное количество символов: 2048
+    /// РўРµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ (СЏРІР»СЏРµС‚СЃСЏ РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рј, РµСЃР»Рё РЅРµ Р·Р°РґР°РЅ РїР°СЂР°РјРµС‚СЂ Attachments)
+    /// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРјРІРѕР»РѕРІ: 2048
     /// </summary>
     function Message(const Value: string): TVkParamsMarketEditComment;
     /// <summary>
-    /// Список объектов, приложенных к комментарию
+    /// РЎРїРёСЃРѕРє РѕР±СЉРµРєС‚РѕРІ, РїСЂРёР»РѕР¶РµРЅРЅС‹С… Рє РєРѕРјРјРµРЅС‚Р°СЂРёСЋ
     /// </summary>
     function Attachments(const Value: TAttachmentArray): TVkParamsMarketEditComment;
   end;
@@ -231,51 +231,51 @@ type
   TVkParamsMarketEditOrder = record
     List: TParams;
     /// <summary>
-    /// Идентификатор пользователя
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function UserId(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Идентификатор заказа
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РєР°Р·Р°
     /// </summary>
     function OrderId(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Комментарий продавца (максимальная длина 400)
+    /// РљРѕРјРјРµРЅС‚Р°СЂРёР№ РїСЂРѕРґР°РІС†Р° (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 400)
     /// </summary>
     function MerchantComment(const Value: string): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Статус заказа
+    /// РЎС‚Р°С‚СѓСЃ Р·Р°РєР°Р·Р°
     /// </summary>
     function Status(const Value: TVkOrderStatus): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Трек-номер
+    /// РўСЂРµРє-РЅРѕРјРµСЂ
     /// </summary>
     function TrackNumber(const Value: string): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Статус платежа
+    /// РЎС‚Р°С‚СѓСЃ РїР»Р°С‚РµР¶Р°
     /// </summary>
     function PaymentStatus(const Value: TVkPaymentStatus): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Стоимость доставки
+    /// РЎС‚РѕРёРјРѕСЃС‚СЊ РґРѕСЃС‚Р°РІРєРё
     /// </summary>
     function DeliveryPrice(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Ширина
+    /// РЁРёСЂРёРЅР°
     /// </summary>
     function Width(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Длина
+    /// Р”Р»РёРЅР°
     /// </summary>
     function Length(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Высота
+    /// Р’С‹СЃРѕС‚Р°
     /// </summary>
     function Height(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Вес
+    /// Р’РµСЃ
     /// </summary>
     function Weight(const Value: Integer): TVkParamsMarketEditOrder;
     /// <summary>
-    /// Комментарий для пользователя
+    /// РљРѕРјРјРµРЅС‚Р°СЂРёР№ РґР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function CommentForUser(const Value: string): TVkParamsMarketEditOrder;
   end;
@@ -283,23 +283,23 @@ type
   TVkParamsMarketGet = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца товаров
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С‚РѕРІР°СЂРѕРІ
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketGet;
     /// <summary>
-    /// Идентификатор подборки, товары из которой нужно вернуть
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР±РѕСЂРєРё, С‚РѕРІР°СЂС‹ РёР· РєРѕС‚РѕСЂРѕР№ РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function AlbumId(const Value: Integer = 0): TVkParamsMarketGet;
     /// <summary>
-    /// True — будут возвращены дополнительные поля Likes, CanComment, CanRepost, Photos, ViewsCount
+    /// True вЂ” Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїРѕР»СЏ Likes, CanComment, CanRepost, Photos, ViewsCount
     /// </summary>
     function Extended(const Value: Boolean = False): TVkParamsMarketGet;
     /// <summary>
-    /// Смещение относительно первого найденного товара для выборки определенного подмножества
+    /// РЎРјРµС‰РµРЅРёРµ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РїРµСЂРІРѕРіРѕ РЅР°Р№РґРµРЅРЅРѕРіРѕ С‚РѕРІР°СЂР° РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР°
     /// </summary>
     function Offset(const Value: Integer): TVkParamsMarketGet;
     /// <summary>
-    /// Количество возвращаемых товаров (максимальное значение 200)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… С‚РѕРІР°СЂРѕРІ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 200)
     /// </summary>
     function Count(const Value: Integer = 100): TVkParamsMarketGet;
   end;
@@ -307,40 +307,40 @@ type
   TVkParamsMarketGetComments = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С‚РѕРІР°СЂР°
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketGetComments;
     /// <summary>
-    /// Идентификатор товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°
     /// </summary>
     function ItemId(const Value: Integer): TVkParamsMarketGetComments;
     /// <summary>
-    /// True — возвращать информацию о лайках
+    /// True вЂ” РІРѕР·РІСЂР°С‰Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р»Р°Р№РєР°С…
     /// </summary>
     function NeedLikes(const Value: Boolean): TVkParamsMarketGetComments;
     /// <summary>
-    /// Идентификатор комментария, начиная с которого нужно вернуть список
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ, РЅР°С‡РёРЅР°СЏ СЃ РєРѕС‚РѕСЂРѕРіРѕ РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ СЃРїРёСЃРѕРє
     /// </summary>
     function StartCommentId(const Value: Integer): TVkParamsMarketGetComments;
     /// <summary>
-    /// Сдвиг, необходимый для получения конкретной выборки результатов
+    /// РЎРґРІРёРі, РЅРµРѕР±С…РѕРґРёРјС‹Р№ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РєРѕРЅРєСЂРµС‚РЅРѕР№ РІС‹Р±РѕСЂРєРё СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
     /// </summary>
     function Offset(const Value: Integer = 0): TVkParamsMarketGetComments;
     /// <summary>
-    /// Число комментариев, которые необходимо получить (максимальное значение 100)
+    /// Р§РёСЃР»Рѕ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100)
     /// </summary>
     function Count(const Value: Integer = 20): TVkParamsMarketGetComments;
     /// <summary>
-    /// Порядок сортировки комментариев (asc — от старых к новым, desc - от новых к старым)
+    /// РџРѕСЂСЏРґРѕРє СЃРѕСЂС‚РёСЂРѕРІРєРё РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ (asc вЂ” РѕС‚ СЃС‚Р°СЂС‹С… Рє РЅРѕРІС‹Рј, desc - РѕС‚ РЅРѕРІС‹С… Рє СЃС‚Р°СЂС‹Рј)
     /// </summary>
     function Sort(const Value: TVkSort = TVkSort.Asc): TVkParamsMarketGetComments;
     /// <summary>
-    /// True — комментарии в ответе будут возвращены в виде пронумерованных объектов,
-    /// дополнительно будут возвращены списки объектов Profiles, Groups
+    /// True вЂ” РєРѕРјРјРµРЅС‚Р°СЂРёРё РІ РѕС‚РІРµС‚Рµ Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ РІ РІРёРґРµ РїСЂРѕРЅСѓРјРµСЂРѕРІР°РЅРЅС‹С… РѕР±СЉРµРєС‚РѕРІ,
+    /// РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ СЃРїРёСЃРєРё РѕР±СЉРµРєС‚РѕРІ Profiles, Groups
     /// </summary>
     function Extended(const Value: Boolean): TVkParamsMarketGetComments;
     /// <summary>
-    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsMarketGetComments;
   end;
@@ -348,19 +348,19 @@ type
   TVkParamsMarketReorderAlbums = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца альбомаы
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° Р°Р»СЊР±РѕРјР°С‹
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketReorderAlbums;
     /// <summary>
-    /// Идентификатор подборки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР±РѕСЂРєРё
     /// </summary>
     function AlbumId(const Value: Integer): TVkParamsMarketReorderAlbums;
     /// <summary>
-    /// Идентификатор подборки, перед которой следует поместить текущую
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР±РѕСЂРєРё, РїРµСЂРµРґ РєРѕС‚РѕСЂРѕР№ СЃР»РµРґСѓРµС‚ РїРѕРјРµСЃС‚РёС‚СЊ С‚РµРєСѓС‰СѓСЋ
     /// </summary>
     function Before(const Value: Integer): TVkParamsMarketReorderAlbums;
     /// <summary>
-    /// Идентификатор подборки, после которой следует поместить текущую
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР±РѕСЂРєРё, РїРѕСЃР»Рµ РєРѕС‚РѕСЂРѕР№ СЃР»РµРґСѓРµС‚ РїРѕРјРµСЃС‚РёС‚СЊ С‚РµРєСѓС‰СѓСЋ
     /// </summary>
     function After(const Value: Integer): TVkParamsMarketReorderAlbums;
   end;
@@ -368,23 +368,23 @@ type
   TVkParamsMarketReorderItems = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С‚РѕРІР°СЂР°
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketReorderItems;
     /// <summary>
-    /// Идентификатор подборки, в которой находится товар. 0 — для сортировки общего списка товаров
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР±РѕСЂРєРё, РІ РєРѕС‚РѕСЂРѕР№ РЅР°С…РѕРґРёС‚СЃСЏ С‚РѕРІР°СЂ. 0 вЂ” РґР»СЏ СЃРѕСЂС‚РёСЂРѕРІРєРё РѕР±С‰РµРіРѕ СЃРїРёСЃРєР° С‚РѕРІР°СЂРѕРІ
     /// </summary>
     function AlbumId(const Value: Integer): TVkParamsMarketReorderItems;
     /// <summary>
-    /// Идентификатор товара
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°
     /// </summary>
     function ItemId(const Value: Integer): TVkParamsMarketReorderItems;
     /// <summary>
-    /// Идентификатор товара, перед которым следует поместить текущий
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°, РїРµСЂРµРґ РєРѕС‚РѕСЂС‹Рј СЃР»РµРґСѓРµС‚ РїРѕРјРµСЃС‚РёС‚СЊ С‚РµРєСѓС‰РёР№
     /// </summary>
     function Before(const Value: Integer): TVkParamsMarketReorderItems;
     /// <summary>
-    /// Идентификатор товара, после которого следует поместить текущий
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°, РїРѕСЃР»Рµ РєРѕС‚РѕСЂРѕРіРѕ СЃР»РµРґСѓРµС‚ РїРѕРјРµСЃС‚РёС‚СЊ С‚РµРєСѓС‰РёР№
     /// </summary>
     function After(const Value: Integer): TVkParamsMarketReorderItems;
   end;
@@ -392,51 +392,51 @@ type
   TVkParamsMarketSearch = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества, которому принадлежат товары
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°, РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶Р°С‚ С‚РѕРІР°СЂС‹
     /// </summary>
     function OwnerId(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
-    /// Идентификатор подборки, товары из которой нужно вернуть
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР±РѕСЂРєРё, С‚РѕРІР°СЂС‹ РёР· РєРѕС‚РѕСЂРѕР№ РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function AlbumId(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
-    /// Строка поискового запроса
+    /// РЎС‚СЂРѕРєР° РїРѕРёСЃРєРѕРІРѕРіРѕ Р·Р°РїСЂРѕСЃР°
     /// </summary>
     function Query(const Value: string): TVkParamsMarketSearch;
     /// <summary>
-    /// Минимальное значение цены товаров в сотых долях единицы валюты. Например, 100000
+    /// РњРёРЅРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ С†РµРЅС‹ С‚РѕРІР°СЂРѕРІ РІ СЃРѕС‚С‹С… РґРѕР»СЏС… РµРґРёРЅРёС†С‹ РІР°Р»СЋС‚С‹. РќР°РїСЂРёРјРµСЂ, 100000
     /// </summary>
     function PriceFrom(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
-    /// Максимальное значение цены товаров в сотых долях единицы валюты. Например, 1410000
+    /// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ С†РµРЅС‹ С‚РѕРІР°СЂРѕРІ РІ СЃРѕС‚С‹С… РґРѕР»СЏС… РµРґРёРЅРёС†С‹ РІР°Р»СЋС‚С‹. РќР°РїСЂРёРјРµСЂ, 1410000
     /// </summary>
     function PriceTo(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
-    /// Вид сортировки
+    /// Р’РёРґ СЃРѕСЂС‚РёСЂРѕРІРєРё
     /// </summary>
     function Sort(const Value: TVkMarketSort = TVkMarketSort.User): TVkParamsMarketSearch;
     /// <summary>
-    /// False — не использовать обратный порядок, True — использовать обратный порядок
+    /// False вЂ” РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РѕР±СЂР°С‚РЅС‹Р№ РїРѕСЂСЏРґРѕРє, True вЂ” РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РѕР±СЂР°С‚РЅС‹Р№ РїРѕСЂСЏРґРѕРє
     /// </summary>
     function Rev(const Value: Boolean = True): TVkParamsMarketSearch;
     /// <summary>
-    /// Смещение относительно первого найденного товара для выборки определенного подмножества
+    /// РЎРјРµС‰РµРЅРёРµ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РїРµСЂРІРѕРіРѕ РЅР°Р№РґРµРЅРЅРѕРіРѕ С‚РѕРІР°СЂР° РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР°
     /// </summary>
     function Offset(const Value: Integer): TVkParamsMarketSearch;
     /// <summary>
-    /// Количество возвращаемых товаров (максимальное значение 200)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… С‚РѕРІР°СЂРѕРІ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 200)
     /// </summary>
     function Count(const Value: Integer = 20): TVkParamsMarketSearch;
     /// <summary>
-    /// True — будут возвращены дополнительные поля Likes, CanComment, CanRepost, Photos, ViewsCount
+    /// True вЂ” Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїРѕР»СЏ Likes, CanComment, CanRepost, Photos, ViewsCount
     /// </summary>
     function Extended(const Value: Boolean = False): TVkParamsMarketSearch;
     /// <summary>
-    /// [Не известный параметр]
+    /// [РќРµ РёР·РІРµСЃС‚РЅС‹Р№ РїР°СЂР°РјРµС‚СЂ]
     /// </summary>
     function Status(const Value: Integer = 0): TVkParamsMarketSearch;
     /// <summary>
-    /// [Не известный параметр, возможно вообще не используется]
+    /// [РќРµ РёР·РІРµСЃС‚РЅС‹Р№ РїР°СЂР°РјРµС‚СЂ, РІРѕР·РјРѕР¶РЅРѕ РІРѕРѕР±С‰Рµ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ]
     /// </summary>
     function Tags(const Value: TIdList): TVkParamsMarketSearch;
   end;
@@ -444,155 +444,155 @@ type
   TMarketController = class(TVkController)
   public
     /// <summary>
-    /// Добавляет новый товар.
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ С‚РѕРІР°СЂ.
     /// </summary>
     function Add(var Id: Integer; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Добавляет новый товар.
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ С‚РѕРІР°СЂ.
     /// </summary>
     function Add(var Id: Integer; Params: TVkParamsMarketAdd): Boolean; overload;
     /// <summary>
-    /// Добавляет новую подборку с товарами.
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІСѓСЋ РїРѕРґР±РѕСЂРєСѓ СЃ С‚РѕРІР°СЂР°РјРё.
     /// </summary>
     function AddAlbum(var Id: Integer; OwnerId: Integer; Title: string; PhotoId: Integer = -1; MainAlbum: Boolean = False): Boolean;
     /// <summary>
-    /// Добавляет товар в одну или несколько выбранных подборок.
+    /// Р”РѕР±Р°РІР»СЏРµС‚ С‚РѕРІР°СЂ РІ РѕРґРЅСѓ РёР»Рё РЅРµСЃРєРѕР»СЊРєРѕ РІС‹Р±СЂР°РЅРЅС‹С… РїРѕРґР±РѕСЂРѕРє.
     /// </summary>
     function AddToAlbum(const OwnerId, ItemId: Integer; AlbumIds: TIdList): Boolean;
     /// <summary>
-    /// Создает новый комментарий к товару.
+    /// РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function CreateComment(var Id: Integer; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Создает новый комментарий к товару.
+    /// РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function CreateComment(var Id: Integer; Params: TVkParamsMarketCreateComment): Boolean; overload;
     /// <summary>
-    /// Удаляет товар.
+    /// РЈРґР°Р»СЏРµС‚ С‚РѕРІР°СЂ.
     /// </summary>
     function Delete(const OwnerId, ItemId: Integer): Boolean;
     /// <summary>
-    /// Удаляет подборку с товарами.
+    /// РЈРґР°Р»СЏРµС‚ РїРѕРґР±РѕСЂРєСѓ СЃ С‚РѕРІР°СЂР°РјРё.
     /// </summary>
     function DeleteAlbum(const OwnerId, AlbumId: Integer): Boolean;
     /// <summary>
-    /// Удаляет комментарий к товару.
+    /// РЈРґР°Р»СЏРµС‚ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function DeleteComment(const OwnerId, CommentId: Integer): Boolean;
     /// <summary>
-    /// Редактирует товар.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ С‚РѕРІР°СЂ.
     /// </summary>
     function Edit(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Редактирует товар.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ С‚РѕРІР°СЂ.
     /// </summary>
     function Edit(Params: TVkParamsMarketEdit): Boolean; overload;
     /// <summary>
-    /// Редактирует подборку с товарами.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ РїРѕРґР±РѕСЂРєСѓ СЃ С‚РѕРІР°СЂР°РјРё.
     /// </summary>
     function EditAlbum(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Редактирует подборку с товарами.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ РїРѕРґР±РѕСЂРєСѓ СЃ С‚РѕРІР°СЂР°РјРё.
     /// </summary>
     function EditAlbum(Params: TVkParamsMarketEditAlbum): Boolean; overload;
     /// <summary>
-    /// Изменяет текст комментария к товару.
+    /// РР·РјРµРЅСЏРµС‚ С‚РµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function EditComment(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Изменяет текст комментария к товару.
+    /// РР·РјРµРЅСЏРµС‚ С‚РµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function EditComment(Params: TVkParamsMarketEditComment): Boolean; overload;
     /// <summary>
-    /// Редактирует заказ.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ Р·Р°РєР°Р·.
     /// </summary>
     function EditOrder(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Редактирует заказ.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ Р·Р°РєР°Р·.
     /// </summary>
     function EditOrder(Params: TVkParamsMarketEditOrder): Boolean; overload;
     /// <summary>
-    /// Возвращает список товаров в сообществе.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С‚РѕРІР°СЂРѕРІ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ.
     /// </summary>
     function Get(var Items: TVkProducts; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список товаров в сообществе.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С‚РѕРІР°СЂРѕРІ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ.
     /// </summary>
     function Get(var Items: TVkProducts; Params: TVkParamsMarketGet): Boolean; overload;
     /// <summary>
-    /// Возвращает данные подборки с товарами.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РґР°РЅРЅС‹Рµ РїРѕРґР±РѕСЂРєРё СЃ С‚РѕРІР°СЂР°РјРё.
     /// </summary>
     function GetAlbumById(var Items: TVkMarketAlbums; const OwnerId: Integer; AlbumIds: TIdList): Boolean; overload;
     /// <summary>
-    /// Возвращает список подборок с товарами.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕРґР±РѕСЂРѕРє СЃ С‚РѕРІР°СЂР°РјРё.
     /// </summary>
     function GetAlbums(var Items: TVkMarketAlbums; const OwnerId: Integer; Offset: Integer = 0; Count: Integer = 50): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о товарах по идентификаторам.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РѕРІР°СЂР°С… РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР°Рј.
     /// </summary>
     function GetById(var Items: TVkProducts; const ItemIds: TIdList; Extended: Boolean = False): Boolean; overload;
     /// <summary>
-    /// Возвращает список категорий для товаров.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєР°С‚РµРіРѕСЂРёР№ РґР»СЏ С‚РѕРІР°СЂРѕРІ.
     /// </summary>
     function GetCategories(var Items: TVkProductCategories; const Offset: Integer = 0; Count: Integer = 10): Boolean; overload;
     /// <summary>
-    /// Возвращает список комментариев к товару.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function GetComments(var Items: TVkComments; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список комментариев к товару.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function GetComments(var Items: TVkComments; Params: TVkParamsMarketGetComments): Boolean; overload;
     /// <summary>
-    /// Возвращает заказы сообщества.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РєР°Р·С‹ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GetGroupOrders(var Items: TVkOrders; GroupId: Integer; Offset: Integer = 0; Count: Integer = 10): Boolean; overload;
     /// <summary>
-    /// Возвращает заказ по идентификатору.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РєР°Р· РїРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ.
     /// </summary>
     function GetOrderById(var Item: TVkOrder; const OrderId: Integer; UserId: Integer = 0; Extended: Boolean = False): Boolean; overload;
     /// <summary>
-    /// Возвращает товары в заказе.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РѕРІР°СЂС‹ РІ Р·Р°РєР°Р·Рµ.
     /// </summary>
     function GetOrderItems(var Items: TVkProducts; const OrderId: Integer; UserId: Integer = 0; Offset: Integer = 0; Count: Integer = 50): Boolean; overload;
     /// <summary>
-    /// Возвращает заказы.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РєР°Р·С‹.
     /// </summary>
     function GetOrders(var Items: TVkOrders; const Offset: Integer = 0; Count: Integer = 10; Extended: Boolean = False): Boolean; overload;
     /// <summary>
-    /// Удаляет товар из одной или нескольких выбранных подборок.
+    /// РЈРґР°Р»СЏРµС‚ С‚РѕРІР°СЂ РёР· РѕРґРЅРѕР№ РёР»Рё РЅРµСЃРєРѕР»СЊРєРёС… РІС‹Р±СЂР°РЅРЅС‹С… РїРѕРґР±РѕСЂРѕРє.
     /// </summary>
     function RemoveFromAlbum(const ItemId, OwnerId: Integer; AlbumIds: TIdList): Boolean; overload;
     /// <summary>
-    /// Изменяет положение подборки с товарами в списке.
+    /// РР·РјРµРЅСЏРµС‚ РїРѕР»РѕР¶РµРЅРёРµ РїРѕРґР±РѕСЂРєРё СЃ С‚РѕРІР°СЂР°РјРё РІ СЃРїРёСЃРєРµ.
     /// </summary>
     function ReorderAlbums(const Params: TVkParamsMarketReorderAlbums): Boolean;
     /// <summary>
-    /// Изменяет положение товара в подборке.
+    /// РР·РјРµРЅСЏРµС‚ РїРѕР»РѕР¶РµРЅРёРµ С‚РѕРІР°СЂР° РІ РїРѕРґР±РѕСЂРєРµ.
     /// </summary>
     function ReorderItems(const Params: TVkParamsMarketReorderItems): Boolean;
     /// <summary>
-    /// Позволяет отправить жалобу на товар.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РѕС‚РїСЂР°РІРёС‚СЊ Р¶Р°Р»РѕР±Сѓ РЅР° С‚РѕРІР°СЂ.
     /// </summary>
     function Report(const OwnerId, ItemId: Integer; Reason: TVkMediaReportReason): Boolean;
     /// <summary>
-    /// Позволяет оставить жалобу на комментарий к товару.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РѕСЃС‚Р°РІРёС‚СЊ Р¶Р°Р»РѕР±Сѓ РЅР° РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function ReportComment(const OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
     /// <summary>
-    /// Восстанавливает удаленный товар.
+    /// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРґР°Р»РµРЅРЅС‹Р№ С‚РѕРІР°СЂ.
     /// </summary>
     function Restore(const OwnerId, ItemId: Integer): Boolean;
     /// <summary>
-    /// Восстанавливает удаленный комментарий к товару.
+    /// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРґР°Р»РµРЅРЅС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РѕРІР°СЂСѓ.
     /// </summary>
     function RestoreComment(const OwnerId, CommentId: Integer): Boolean;
     /// <summary>
-    /// Ищет товары в каталоге сообщества.
+    /// РС‰РµС‚ С‚РѕРІР°СЂС‹ РІ РєР°С‚Р°Р»РѕРіРµ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function Search(var Items: TVkProducts; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Ищет товары в каталоге сообщества.
+    /// РС‰РµС‚ С‚РѕРІР°СЂС‹ РІ РєР°С‚Р°Р»РѕРіРµ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function Search(var Items: TVkProducts; Params: TVkParamsMarketSearch): Boolean; overload;
   end;

@@ -148,7 +148,7 @@ type
 
   TVkMessage = class(TVkObject)
   private
-    FAttachments: TArray<TVkAttachment>;
+    FAttachments: TVkAttachmentArray;
     FConversation_message_id: Integer;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
@@ -179,7 +179,7 @@ type
     property RandomId: Integer read FRandom_id write FRandom_id;
     property Ref: string read FRef write FRef;
     property RefSource: string read FRef_source write FRef_source;
-    property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
+    property Attachments: TVkAttachmentArray read FAttachments write FAttachments;
     property Important: Boolean read FImportant write FImportant;
     property WasListened: Boolean read FWas_listened write FWas_listened;
     property Geo: TVkGeo read FGeo write FGeo;

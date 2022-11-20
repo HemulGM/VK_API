@@ -10,7 +10,7 @@ uses
   VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders,
   Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
   VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
-  VK.Donut, VK.Streaming;
+  VK.Donut, VK.Streaming, VK.Ads;
 
 type
   TCustomVK = class(TComponent)
@@ -97,6 +97,7 @@ type
     FVideo: TVideoController;
     FWall: TWallController;
     FStreaming: TStreamingController;
+    FAds: TAds;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -200,6 +201,10 @@ type
     /// Методы для работы с аккаунтом.
     /// </summary>
     property Account: TAccountController read FAccount;
+    /// <summary>
+    /// Методы для работы с аккаунтом.
+    /// </summary>
+    property Ads: TAds read FAds;
     /// <summary>
     /// Методы для работы с приложениями.
     /// </summary>
@@ -550,6 +555,7 @@ begin
   Permissions := [TVkPermission.Groups, TVkPermission.Friends, TVkPermission.Wall, TVkPermission.Photos, TVkPermission.Video, TVkPermission.Docs, TVkPermission.Notes, TVkPermission.Market];
   //Controllers
   FAccount := TAccountController.Create(FHandler);
+  FAds := TAds.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
   FApps := TAppsController.Create(FHandler);
   FDonut := TDonutController.Create(FHandler);
@@ -620,6 +626,7 @@ begin
   FStreaming.Free;
   FUsers.Free;
   FAccount.Free;
+  FAds.Free;
   FApps.Free;
   FDonut.Free;
   FAuth.Free;
