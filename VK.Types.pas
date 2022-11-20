@@ -38,6 +38,8 @@ type
 
   TVkUnknownMethodException = class(TVkMethodException);
 
+  TVkExecuteErrorException = class(TVkMethodException);
+
   TVkLongPollServerException = class(TVkException);
 
   TVkLongPollServerParseException = class(TVkLongPollServerException);

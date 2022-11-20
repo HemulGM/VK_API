@@ -70,10 +70,10 @@ type
     procedure SetUseServiceKeyOnly(const Value: Boolean);
     procedure SetOwner(const Value: TObject);
     procedure SetOnCaptcha(const Value: TOnCaptcha);
-    function FExecute(Request: TRESTRequest): TResponse;
+    function FExecute(Request: TRESTRequest; IsRepeat: Boolean): TResponse;
     function GetExecuting: Boolean;
     procedure WaitForQueue;
-    function ProcessResponse(Request: TRESTRequest): TResponse;
+    function ProcessResponse(Request: TRESTRequest; IsRepeat: Boolean): TResponse;
     procedure SetLogging(const Value: Boolean);
     procedure SetLogResponse(const Value: Boolean);
     procedure WaitTime(MS: Int64);
@@ -89,7 +89,7 @@ type
     function Execute(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Param: TParam): TResponse; overload;
     function Execute(Request: string): TResponse; overload;
-    function Execute(Request: TRESTRequest; FreeRequset: Boolean = False): TResponse; overload;
+    function Execute(Request: TRESTRequest; FreeRequset: Boolean = False; IsRepeat: Boolean = False): TResponse; overload;
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
     property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
     property OnLog: TOnLog read FOnLog write SetOnLog;
@@ -116,7 +116,6 @@ type
 
 var
   TestCaptcha: Boolean = False;
-
 
 implementation
 
@@ -289,11 +288,11 @@ begin
   Result := Execute(CreateRequest(Request, []), True);
 end;
 
-function TVkHandler.Execute(Request: TRESTRequest; FreeRequset: Boolean): TResponse;
+function TVkHandler.Execute(Request: TRESTRequest; FreeRequset: Boolean; IsRepeat: Boolean): TResponse;
 begin
   try
     Inc(FExecuting);
-    Result := FExecute(Request);
+    Result := FExecute(Request, IsRepeat);
   finally
     if not Waiting then
     begin
@@ -324,7 +323,7 @@ begin
   end;
 end;
 
-function TVkHandler.FExecute(Request: TRESTRequest): TResponse;
+function TVkHandler.FExecute(Request: TRESTRequest; IsRepeat: Boolean): TResponse;
 begin
   Result.Success := False;
   WaitForQueue;
@@ -333,10 +332,10 @@ begin
   Request.Execute;
   if FLogging and FLogResponse then
     FLog(Request.Response.JSONText);
-  Result := ProcessResponse(Request);
+  Result := ProcessResponse(Request, IsRepeat);
 end;
 
-function TVkHandler.ProcessResponse(Request: TRESTRequest): TResponse;
+function TVkHandler.ProcessResponse(Request: TRESTRequest; IsRepeat: Boolean): TResponse;
 var
   JS: TJSONValue;
   CaptchaSID: string;
@@ -397,16 +396,27 @@ begin
       VK_ERROR_REQUESTLIMIT: // Превышено кол-во запросов в сек
         begin
           FLog(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests, RequestLimit, FStartRequest]));
-          WaitTime(1000);
-          Result := Execute(Request);
+
+          if not IsRepeat then
+          begin
+            WaitTime(2000);
+            Result := Execute(Request, False, True);
+          end
+          else
+            raise TVkExecuteErrorException.Create(Result.Error.Text, Result.Error.Code);
         end;
       VK_ERROR_INTERNAL_SERVER: // Internal Server Error
         begin
-          WaitTime(1000);
-          Result := Execute(Request);
+          if not IsRepeat then
+          begin
+            WaitTime(1000);
+            Result := Execute(Request, False, True);
+          end
+          else
+            raise TVkExecuteErrorException.Create(Result.Error.Text, Result.Error.Code);
         end;
       VK_ERROR_ACCESS_DENIED, VK_ERROR_ACCESS_DENIED_POST:
-          raise TVkAccessDeniedException.Create(Result.Error.Text, Result.Error.Code);
+        raise TVkAccessDeniedException.Create(Result.Error.Text, Result.Error.Code);
     else
       raise TVkUnknownMethodException.Create(Result.Error.Text, Result.Error.Code);
     end;
