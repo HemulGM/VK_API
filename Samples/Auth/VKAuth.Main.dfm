@@ -3,7 +3,7 @@ object FormMain: TFormMain
   Top = 0
   Caption = 'FormMain'
   ClientHeight = 559
-  ClientWidth = 1076
+  ClientWidth = 1080
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -11,24 +11,23 @@ object FormMain: TFormMain
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
-    Left = 288
+    Left = 51
     Top = 0
-    Width = 788
+    Width = 1029
     Height = 559
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitLeft = 184
     object LabelLogin: TLabel
       AlignWithMargins = True
       Left = 3
       Top = 3
-      Width = 782
+      Width = 1023
       Height = 13
       Align = alTop
       Caption = 'Logining...'
@@ -36,17 +35,18 @@ object FormMain: TFormMain
     end
     object PageControl1: TPageControl
       AlignWithMargins = True
-      Left = 3
+      Left = 732
       Top = 39
-      Width = 782
+      Width = 294
       Height = 517
       Margins.Top = 20
-      ActivePage = TabSheet11
+      ActivePage = TabSheet10
       Align = alClient
       MultiLine = True
       TabOrder = 0
-      ExplicitLeft = 35
-      ExplicitTop = 119
+      ExplicitLeft = 260
+      ExplicitWidth = 525
+      ExplicitHeight = 516
       object TabSheet9: TTabSheet
         Caption = 'General'
         ImageIndex = 8
@@ -470,7 +470,7 @@ object FormMain: TFormMain
           OnClick = ButtonGroupsGetByIdClick
         end
         object ButtonGroupsGet: TButton
-          Left = -1
+          Left = 3
           Top = 65
           Width = 137
           Height = 25
@@ -522,8 +522,6 @@ object FormMain: TFormMain
       object TabSheet11: TTabSheet
         Caption = 'Friends'
         ImageIndex = 10
-        ExplicitLeft = -156
-        ExplicitTop = -144
         object Button28: TButton
           Left = -1
           Top = 3
@@ -601,19 +599,301 @@ object FormMain: TFormMain
       TabOrder = 2
       OnClick = Button47Click
     end
+    object CategoryButtons1: TCategoryButtons
+      Left = 0
+      Top = 19
+      Width = 729
+      Height = 540
+      Align = alLeft
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      BorderStyle = bsNone
+      ButtonFlow = cbfVertical
+      ButtonHeight = 20
+      ButtonOptions = [boFullSize, boShowCaptions, boBoldCaptions, boCaptionOnlyBorder]
+      Categories = <
+        item
+          Caption = 'Account'
+          Color = 15400959
+          Collapsed = False
+          Items = <
+            item
+              Caption = 'ban'
+            end
+            item
+              Caption = 'changePassword'
+            end>
+        end
+        item
+          Caption = 'Ads'
+          Color = 16777194
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'AppWidgets'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Apps'
+          Color = 15466474
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Asr'
+          Color = 16771818
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Auth'
+          Color = 16771839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Board'
+          Color = 16053492
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Calls'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Database'
+          Color = 16771839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Docs'
+          Color = 16771818
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Donut'
+          Color = 15400959
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'DownloadedGames'
+          Color = 16777194
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Fave'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Friends'
+          Color = 15466474
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Gifts'
+          Color = 16771818
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Groups'
+          Color = 16771839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'LeadForms'
+          Color = 16053492
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Likes'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Market'
+          Color = 16771839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Messages'
+          Color = 16771818
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Newsfeed'
+          Color = 15400959
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Notes'
+          Color = 16777194
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Notifications'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Orders'
+          Color = 15466474
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Pages'
+          Color = 16771818
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Photos'
+          Color = 16771839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Places'
+          Color = 16053492
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Podcasts'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Polls'
+          Color = 16771839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'PrettyCards'
+          Color = 16771818
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Search'
+          Color = 15400959
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Secure'
+          Color = 16777194
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Stats'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Status'
+          Color = 15466474
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Storage'
+          Color = 16771818
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Store'
+          Color = 16771839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Stories'
+          Color = 16053492
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Streaming'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Users'
+          Color = 16771839
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Utils'
+          Color = 16771818
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Video'
+          Color = 15400959
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Wall'
+          Color = 16777194
+          Collapsed = False
+          Items = <>
+        end
+        item
+          Caption = 'Widgets'
+          Color = 15395839
+          Collapsed = False
+          Items = <>
+        end>
+      RegularButtonColor = clWhite
+      SelectedButtonColor = 15132390
+      TabOrder = 3
+    end
   end
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 288
+    Width = 51
     Height = 559
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 313
     object Memo1: TMemo
       Left = 0
       Top = 0
-      Width = 288
+      Width = 51
       Height = 360
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
@@ -624,11 +904,13 @@ object FormMain: TFormMain
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
+      ExplicitWidth = 284
+      ExplicitHeight = 359
     end
     object MemoLog: TMemo
       Left = 0
       Top = 360
-      Width = 288
+      Width = 51
       Height = 199
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -639,6 +921,8 @@ object FormMain: TFormMain
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 1
+      ExplicitTop = 359
+      ExplicitWidth = 284
     end
   end
   object VK1: TVK

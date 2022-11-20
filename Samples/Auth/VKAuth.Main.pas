@@ -9,7 +9,7 @@ uses
   Vcl.StdCtrls, System.Generics.Defaults, Vcl.ComCtrls, VK.UserEvents,
   VK.GroupEvents, VK.Entity.Media, System.Net.URLClient, System.Net.HttpClient,
   VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Video, VK.Entity.Photo,
-  VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings;
+  VK.Entity.Audio, System.JSON, VK.Entity.GroupSettings, Vcl.CategoryButtons;
 
 type
   TFormMain = class(TForm)
@@ -92,6 +92,7 @@ type
     Button48: TButton;
     ButtonMesSendToPeer: TButton;
     Button49: TButton;
+    CategoryButtons1: TCategoryButtons;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -218,17 +219,17 @@ type
     FToken: string;
     FChangePasswordHash: string;
     FTokenExpiry: Int64;
-  public    { Public declarations }
+    procedure FillMethods;
+  public
   end;
 
 var
   FormMain: TFormMain;
 
-
 implementation
 
 uses
-  System.IOUtils, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
+  System.IOUtils, VK.Controller, VK.Entity.AccountInfo, VK.Entity.ProfileInfo,
   VK.Entity.ActiveOffers, VK.Entity.Counters, VK.Entity.PushSettings,
   VK.Entity.Profile, VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs,
   VK.Entity.Doc.Save, VK.Utils, VK.Account, VK.Entity.AccountInfoRequest,
@@ -239,7 +240,7 @@ uses
   VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
   VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
   VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json,
-  VK.Entity.Newsfeed, VK.Newsfeed, System.Threading;
+  VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, System.Rtti, System.TypInfo;
 
 {$R *.dfm}
 
@@ -1179,8 +1180,40 @@ begin
   end;
 end;
 
+procedure TFormMain.FillMethods;
+var
+  Context: TRttiContext;
+begin
+  CategoryButtons1.Categories.Clear;
+
+  var GetParams :=
+    function(const M: TRttiMethod): string
+    begin
+      Result := '';
+      for var Param in M.GetParameters do
+        Result := Result + Param.Name + ', ';
+      Result := Result.Trim([',', ' ']);
+    end;
+
+  for var Prop in Context.GetType(TVK).GetProperties do
+    if Prop.PropertyType.BaseType = Context.GetType(TVkController) then
+    begin
+      with CategoryButtons1.Categories.Add do
+      begin
+        Caption := Prop.Name;
+        for var Method in Prop.PropertyType.GetDeclaredMethods do
+          with Items.Add do
+            Caption := Method.Name + ' (' + GetParams(Method) + ')';
+        Collapsed := True;
+      end;
+      MemoLog.Lines.Add(Prop.Name)
+    end;
+end;
+                                                                
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  FillMethods;
+
   //Это мои данные AppID, AppKey, ServiceKey, эту строчку нужно убрать
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
