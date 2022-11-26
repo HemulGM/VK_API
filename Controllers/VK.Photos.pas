@@ -51,11 +51,11 @@ type
     /// <summary>
     /// Идентификатор владельца альбома
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosGet;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosGet;
     /// <summary>
     /// Идентификатор альбома
     /// </summary>
-    function AlbumId(const Value: Integer): TVkParamsPhotosGet; overload;
+    function AlbumId(const Value: Int64): TVkParamsPhotosGet; overload;
     /// <summary>
     /// Идентификатор альбома
     /// </summary>
@@ -1810,7 +1810,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosGet.AlbumId(const Value: Integer): TVkParamsPhotosGet;
+function TVkParamsPhotosGet.AlbumId(const Value: Int64): TVkParamsPhotosGet;
 begin
   List.Add('album_id', Value);
   Result := Self;
@@ -1846,7 +1846,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosGet.OwnerId(const Value: Integer): TVkParamsPhotosGet;
+function TVkParamsPhotosGet.OwnerId(const Value: TVkPeerId): TVkParamsPhotosGet;
 begin
   List.Add('owner_id', Value);
   Result := Self;

@@ -84,7 +84,7 @@ object FormMain: TFormMain
     Top = 3
     Width = 1063
     Height = 482
-    ActivePage = TabSheetMethods
+    ActivePage = TabSheetTests
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -226,7 +226,6 @@ object FormMain: TFormMain
             #1050#1085#1086#1087#1082#1072' Logout '#1087#1088#1086#1089#1090#1086' '#1086#1095#1080#1097#1072#1077#1090' '#1091#1089#1090#1072#1085#1086#1074#1083#1077#1085#1085#1099#1081' '#1090#1086#1082#1077#1085', '#1072' '#1090#1072#1082#1078#1077' '#1082#1077#1096' '#1089#1090 +
             #1072#1085#1076#1072#1088#1090#1085#1086#1075#1086' '#1073#1088#1072#1091#1079#1077#1088#1072
           WordWrap = True
-          ExplicitTop = 175
           ExplicitWidth = 546
         end
         object Panel3: TPanel
@@ -551,7 +550,6 @@ object FormMain: TFormMain
         SelectedButtonColor = 15132390
         TabOrder = 0
         OnButtonClicked = CategoryButtons1ButtonClicked
-        ExplicitTop = 1
       end
       object MemoCode: TMemo
         Left = 305
@@ -592,7 +590,7 @@ object FormMain: TFormMain
           Margins.Top = 30
           Margins.Right = 30
           Margins.Bottom = 30
-          ActivePage = TabSheet9
+          ActivePage = TabSheetPhotos
           Align = alClient
           MultiLine = True
           TabOrder = 0
@@ -1157,6 +1155,19 @@ object FormMain: TFormMain
               Caption = 'ButtonAdsGetAccounts'
               TabOrder = 0
               OnClick = ButtonAdsGetAccountsClick
+            end
+          end
+          object TabSheetPhotos: TTabSheet
+            Caption = 'Photos'
+            ImageIndex = 15
+            object ButtonPhotosGetAlbum: TButton
+              Left = 3
+              Top = 3
+              Width = 110
+              Height = 25
+              Caption = 'GetAlbum'
+              TabOrder = 0
+              OnClick = ButtonPhotosGetAlbumClick
             end
           end
         end

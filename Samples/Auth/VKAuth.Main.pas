@@ -111,6 +111,8 @@ type
     Button47: TButton;
     Label3: TLabel;
     HeaderControl1: THeaderControl;
+    TabSheetPhotos: TTabSheet;
+    ButtonPhotosGetAlbum: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -237,6 +239,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure CategoryButtons1ButtonClicked(Sender: TObject; const Button: TButtonItem);
     procedure TabSheetAuthResize(Sender: TObject);
+    procedure ButtonPhotosGetAlbumClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -251,18 +254,18 @@ var
 implementation
 
 uses
-  System.IOUtils, System.Rtti, Vk.Controller, VK.Entity.AccountInfo,
-  VK.Entity.ProfileInfo, VK.Entity.ActiveOffers, VK.Entity.Counters,
-  VK.Entity.PushSettings, VK.Entity.Profile, VK.Entity.Keyboard, VK.Status,
-  VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils, VK.Account,
-  VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist, VK.Audio,
-  VK.Messages, VK.Entity.Audio.Upload, VK.Entity.Conversation, VK.Entity.Status,
-  VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils, VK.Groups,
-  VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast, VK.Entity.Search,
-  VK.Entity.Database.Regions, VK.Entity.Database.Schools, VK.Entity.Storage,
-  VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
-  VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json,
-  VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads;
+  System.IOUtils, System.Rtti, VK.Entity.Common, Vk.Controller,
+  VK.Entity.AccountInfo, VK.Entity.ProfileInfo, VK.Entity.ActiveOffers,
+  VK.Entity.Counters, VK.Entity.PushSettings, VK.Entity.Profile,
+  VK.Entity.Keyboard, VK.Status, VK.Wall, VK.Docs, VK.Entity.Doc.Save, VK.Utils,
+  VK.Account, VK.Entity.AccountInfoRequest, VK.Vcl.OAuth2, VK.Entity.Playlist,
+  VK.Audio, VK.Messages, VK.Entity.Audio.Upload, VK.Entity.Conversation,
+  VK.Entity.Status, VK.Entity.Catalog, VK.Entity.Catalog.Section, VK.CommonUtils,
+  VK.Groups, VK.Entity.Audio.Catalog, VK.Entity.Poll, VK.Entity.Podcast,
+  VK.Entity.Search, VK.Entity.Database.Regions, VK.Entity.Database.Schools,
+  VK.Entity.Storage, VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth,
+  VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
+  REST.Json, VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads;
 
 {$R *.dfm}
 
@@ -1199,16 +1202,37 @@ begin
   if VK1.Messages.SendToPeer(Item, 2000000001, 'Hello') then
 end;
 
+procedure TFormMain.ButtonPhotosGetAlbumClick(Sender: TObject);
+begin
+  VK1.Walk(
+    function(Offset: Integer; var Cancel: Boolean): Integer
+    var
+      Items: TVkPhotos;
+      Params: TVkParamsPhotosGet;
+    begin
+      Result := 0;
+      Params := Params.OwnerId(-34109479).AlbumId(171648968).Offset(Offset).Count(100);
+      if VK1.Photos.Get(Items, Params) then
+      try
+        Result := Length(Items.Items);
+        for var Item in Items.Items do
+        begin
+          VK1.DownloadFile(Item.Sizes.GetSizeMaxSum.Url, 'D:\Temp\Photos\' + Item.Id.ToString + '.jpg');
+          Memo1.Lines.Add(Item.Sizes.GetSizeMax.Url);
+        end;
+      finally
+        Items.Free;
+      end;
+    end, 100);
+end;
+
 procedure TFormMain.ButtonSendPhotoClick(Sender: TObject);
 begin
-  var Photos: TVkPhotos;
-  VK1.Photos.UploadForMessage(Photos, 58553419, ['D:\Downloads\6q8q9f.gif']);
-  VK1.Messages.New.UserId(58553419).Attachment(Photos.ToAttachments).Send;
-  Photos.Free;
+  VK1.Messages.New.UserId(58553419).AddPhotos(['D:\Downloads\6q8q9f.gif']).Send;
 end;
 
 procedure TFormMain.ButtonVideoDeleteClick(Sender: TObject);
-begin        //Запрос: https://api.vk.com/method/video.delete?v=5.101&owner_id=&video_id=
+begin
   Vk1.Video.Delete(456239072, -184755622);
 end;
 
@@ -1272,9 +1296,9 @@ begin
   //{$INCLUDE app_cred.inc}  //Моё приложение
   //VK1.SetProxy('177.22.24.246', 3128);
   //VK1.Application := TVkApplicationData.VKAdmin;
-  VK1.Application := TVkApplicationData.VKAPI;
-  {if TFile.Exists('token.tmp') then
-    VK1.Token := TFile.ReadAllText('token.tmp');   }
+  VK1.Application := TVkApplicationData.VKAdmin;
+  if TFile.Exists('token.tmp') then
+    VK1.Token := TFile.ReadAllText('token.tmp');
   //VK1.Token := '7317a7a252ba1180322eb675d541c32a23117564e028f91e69d2024be99afd29b318173eb2f207779feae';
   //VK1.Token := 'vk1.a.6bospdnUgd3UWpZLANXxOjWbwcuJ6fN1CJdYaut6jgNX0_tBC4SME9O30r8ghEULds3pYnxgR1NjFeTz0Iw_UwCUK2fIC0M3tswjQcPq73yiR-xzPrtHmiyUrQXNZryF4X3LG-X8yzhrR86x_9TmV4sM7rlHnb4okrFAm--RgpUCwWLNDxq0SnOtzbDOjIpU';
 end;
