@@ -167,14 +167,27 @@ type
   TVkSizes = TArray<TVkSize>;
 
   TVkSizesHelper = record helper for TVkSizes
-  private
-    function GetPrevSize(Value: string; Circular: Boolean): string;
-    function GetNextSize(Value: string; Circular: Boolean): string;
   public
-    function Get(Value: string): TVkSize;
-    function GetSize(Value: string; Circular: Boolean = True): TVkSize;
-    function GetSizeMin(Value: string = 's'; Circular: Boolean = False): TVkSize;
-    function GetSizeMax(Value: string = 'w'; Circular: Boolean = False): TVkSize;
+    /// <summary>
+    /// Получить элемент с указанным размером (например, s, m, w, z, ...)
+    /// </summary>
+    function Get(Value: Char): TVkSize;
+    /// <summary>
+    /// Получить гарантировано элемент с указанным или ближайшим размером
+    /// </summary>
+    function GetSize(Value: Char; Higher: Boolean = True): TVkSize;
+    /// <summary>
+    /// Получить элемент с минимальным размером
+    /// </summary>
+    function GetSizeMin(const From: Char = 'a'): TVkSize;
+    /// <summary>
+    /// Получить элемент с максимальным размером
+    /// </summary>
+    function GetSizeMax(const From: Char = 'z'): TVkSize;
+    /// <summary>
+    /// Получить элемент с максимальным размером (макс. по сумме размерностей W + H)
+    /// </summary>
+    function GetSizeMaxSum: TVkSize;
   end;
 
   TVkChatPhoto = class(TVkEntity)
@@ -227,9 +240,6 @@ type
     property Photo1200: string read FPhoto_1200 write FPhoto_1200;
   end;
 
-var
-  VkSizes: array[0..5] of Char = ('s', 'm', 'x', 'y', 'z', 'w');
-
 implementation
 
 uses
@@ -237,7 +247,7 @@ uses
 
 { TVkSizesHelper }
 
-function TVkSizesHelper.Get(Value: string): TVkSize;
+function TVkSizesHelper.Get(Value: Char): TVkSize;
 var
   i: Integer;
 begin
@@ -247,63 +257,51 @@ begin
       Exit(Self[i]);
 end;
 
-function TVkSizesHelper.GetNextSize(Value: string; Circular: Boolean): string;
-var
-  i: Integer;
-begin
-  Result := VkSizes[0];
-  for i := 0 to 5 do
-    if VkSizes[i] = Value then
-    begin
-      if i < 5 then
-        Exit(VkSizes[i + 1])
-      else if Circular then
-        Result := VkSizes[0];
-    end;
-end;
-
-function TVkSizesHelper.GetPrevSize(Value: string; Circular: Boolean): string;
-var
-  i: Integer;
-begin
-  Result := VkSizes[0];
-  for i := 5 downto 0 do
-    if VkSizes[i] = Value then
-    begin
-      if i > 0 then
-        Exit(VkSizes[i - 1])
-      else if Circular then
-        Result := VkSizes[5];
-    end;
-end;
-
-function TVkSizesHelper.GetSize(Value: string; Circular: Boolean): TVkSize;
+function TVkSizesHelper.GetSize(Value: Char; Higher: Boolean): TVkSize;
 begin
   Result := Get(Value);
   if Assigned(Result) then
     Exit;
-  repeat
-    Value := GetNextSize(Value, Circular);
-    if not Value.IsEmpty then
-      Result := Get(Value);
-  until Assigned(Result);
+  if Higher then
+    Result := GetSizeMin(Value)
+  else
+    Result := GetSizeMax(Value);
 end;
 
-function TVkSizesHelper.GetSizeMax(Value: string; Circular: Boolean): TVkSize;
+function TVkSizesHelper.GetSizeMax(const From: Char): TVkSize;
 begin
-  Result := GetSize(Value, Circular);
+  Result := nil;
+  for var C := From downto 'a' do
+  begin
+    Result := Get(c);
+    if Assigned(Result) then
+      Exit;
+  end;
 end;
 
-function TVkSizesHelper.GetSizeMin(Value: string; Circular: Boolean): TVkSize;
+function TVkSizesHelper.GetSizeMaxSum: TVkSize;
+var
+  MaxSzSum: Integer;
 begin
-  Result := Get(Value);
-  if Assigned(Result) then
-    Exit;
-  repeat
-    Value := GetPrevSize(Value, Circular);
-    if not Value.IsEmpty then
-      Result := Get(Value);
-  until Assigned(Result);
+  MaxSzSum := 0;
+  Result := nil;
+  for var Item in Self do
+    if Item.Height + Item.Width > MaxSzSum then
+    begin
+      Result := Item;
+      MaxSzSum := Item.Height + Item.Width;
+    end;
+end;
+
+function TVkSizesHelper.GetSizeMin(const From: Char): TVkSize;
+begin
+  Result := nil;
+  for var C := From to 'z' do
+  begin
+    Result := Get(c);
+    if Assigned(Result) then
+      Exit;
+  end;
 end;
 
 { TVkEntity }

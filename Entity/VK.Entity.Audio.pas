@@ -27,6 +27,8 @@ type
     FPages: TArray<Integer>;
     FGroups: TArray<TVkGroup>;
     FPhotos: TArray<TVkAudioArtistPhoto>;
+    FIs_followed: Boolean;
+    FCan_followed: Boolean;
   public
     /// <summary>
     /// Идентификатор артиста/группы
@@ -44,6 +46,8 @@ type
     property Photos: TArray<TVkAudioArtistPhoto> read FPhotos write FPhotos;
     property Pages: TArray<Integer> read FPages write FPages;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    property IsFollowed: Boolean read FIs_followed write FIs_followed;
+    property CanFollowed: Boolean read FCan_followed write FCan_followed;
     destructor Destroy; override;
   end;
 

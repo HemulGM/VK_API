@@ -456,6 +456,7 @@ type
     /// </summary>
     property Application: TVkApplicationData read GetApplication write SetApplication;
     property RequestLimit: Integer read GetRequestLimit write SetRequestLimit;
+    function DownloadFile(const Url, FileName: string): Boolean;
   end;
 
   VKAPI = class(TCustomVK);
@@ -699,6 +700,25 @@ begin
       if Assigned(E) then
         E.Free;
     end;
+  end;
+end;
+
+function TCustomVK.DownloadFile(const Url, FileName: string): Boolean;
+var
+  HTTP: THTTPClient;
+  Stream: TFileStream;
+begin
+  HTTP := THTTPClient.Create;
+  try
+    HTTP.HandleRedirects := True;
+    Stream := TFileStream.Create(FileName, fmCreate);
+    try
+      Result := HTTP.Get(Url, Stream).StatusCode = 200;
+    finally
+      Stream.Free;
+    end;
+  finally
+    HTTP.Free;
   end;
 end;
 

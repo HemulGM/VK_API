@@ -19,6 +19,10 @@ type
     /// </summary>
     function PeerId(const Value: TVkPeerId): IVkMessageNew;
     /// <summary>
+    /// Добавить фото (перед этим нужно установить UserId, ChatId или PeerId)
+    /// </summary>
+    function AddPhotos(const Files: TArray<string>): IVkMessageNew;
+    /// <summary>
     /// Идентификатор пользователя, которому отправляется сообщение.
     /// </summary>
     function UserId(const Value: TVkPeerId): IVkMessageNew;
@@ -121,11 +125,16 @@ type
   private
     FHandler: TVkHandler;
     FParams: TParams;
+    FMessageController: TMessagesController;
     procedure SetParams(const Value: TParams);
   public    /// <summary>
     /// Идентификатор назначения
     /// </summary>
     function PeerId(const Value: TVkPeerId): IVkMessageNew;
+    /// <summary>
+    /// Добавить фото (перед этим нужно установить UserId, ChatId или PeerId)
+    /// </summary>
+    function AddPhotos(const Files: TArray<string>): IVkMessageNew;
     /// <summary>
     /// Идентификатор пользователя, которому отправляется сообщение.
     /// </summary>
@@ -225,6 +234,7 @@ type
     function Send: Boolean;
     constructor Create(Controller: TMessagesController);
     property Handler: TVkHandler read FHandler;
+    property Controller: TMessagesController read FMessageController;
     property Params: TParams read FParams write SetParams;
   end;
 
@@ -1298,7 +1308,7 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils, VK.Entity.Doc.Save;
+  VK.API, VK.CommonUtils, System.DateUtils, VK.Entity.Photo, VK.Entity.Doc.Save;
 
 { TMessagesController }
 
@@ -1900,6 +1910,7 @@ end;
 
 constructor TVkMessageNew.Create(Controller: TMessagesController);
 begin
+  FMessageController := Controller;
   FHandler := Controller.Handler;
 end;
 
@@ -1991,6 +2002,27 @@ end;
 function TVkMessageNew.Attachment(const Value: TAttachmentArray): IVkMessageNew;
 begin
   Params.Add('attachment', Value);
+  Result := Self;
+end;
+
+function TVkMessageNew.AddPhotos(const Files: TArray<string>): IVkMessageNew;
+var
+  LoadFor: string;
+begin
+  LoadFor := Params.GetValue('user_id');
+  if LoadFor.IsEmpty then
+    LoadFor := Params.GetValue('peer_id');
+  if LoadFor.IsEmpty then
+    LoadFor := Params.GetValue('chat_id');
+  if LoadFor.IsEmpty then
+    raise TVkException.Create('Необходимо указать сначала кому сообщение');
+  var Photos: TVkPhotos;
+  if TCustomVK(Controller.VK).Photos.UploadForMessage(Photos, LoadFor.ToInt64, Files) then
+  try
+    Attachment(Photos.ToAttachments);
+  finally
+    Photos.Free;
+  end;
   Result := Self;
 end;
 

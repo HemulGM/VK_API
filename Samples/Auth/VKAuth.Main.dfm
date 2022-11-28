@@ -2,8 +2,8 @@ object FormMain: TFormMain
   Left = 0
   Top = 0
   Caption = 'VK API Tester'
-  ClientHeight = 715
-  ClientWidth = 1069
+  ClientHeight = 714
+  ClientWidth = 1065
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -16,14 +16,12 @@ object FormMain: TFormMain
   TextHeight = 13
   object Panel2: TPanel
     Left = 0
-    Top = 488
-    Width = 1069
+    Top = 487
+    Width = 1065
     Height = 227
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 487
-    ExplicitWidth = 1065
     object Memo1: TMemo
       Left = 0
       Top = 17
@@ -84,8 +82,8 @@ object FormMain: TFormMain
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 1063
-    Height = 482
+    Width = 1059
+    Height = 481
     ActivePage = TabSheetTests
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
@@ -96,8 +94,6 @@ object FormMain: TFormMain
     ParentFont = False
     TabHeight = 30
     TabOrder = 1
-    ExplicitWidth = 1059
-    ExplicitHeight = 481
     object TabSheetWelcome: TTabSheet
       Caption = #1044#1086#1073#1088#1086' '#1087#1086#1078#1072#1083#1086#1074#1072#1090#1100
       object Label1: TLabel
@@ -187,7 +183,7 @@ object FormMain: TFormMain
           AlignWithMargins = True
           Left = 3
           Top = 26
-          Width = 1049
+          Width = 1047
           Height = 85
           Align = alTop
           Caption = 
@@ -200,13 +196,12 @@ object FormMain: TFormMain
             #10#1055#1086#1089#1083#1077' '#1101#1090#1086#1075#1086', '#1080#1083#1080' '#1077#1089#1083#1080' '#1090#1086#1082#1077#1085' '#1091#1078#1077' '#1091#1089#1090#1072#1085#1086#1074#1083#1077#1085', '#1074#1099#1087#1086#1083#1085#1103#1077#1090#1089#1103' '#1087#1088#1086#1074#1077#1088#1086 +
             #1095#1085#1099#1081' '#1079#1072#1087#1088#1086#1089'. '#1055#1086#1089#1083#1077' '#1082#1086#1090#1086#1088#1086#1075#1086' '#1073#1091#1076#1077#1090' '#1103#1089#1085#1086' '#1074#1072#1083#1080#1076#1085#1099#1081' '#1090#1086#1082#1077#1085' '#1080#1083#1080' '#1085#1077#1090
           WordWrap = True
-          ExplicitWidth = 1047
         end
         object LabelLogin: TLabel
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 1049
+          Width = 31
           Height = 17
           Align = alTop
           Caption = #1042#1093#1086#1076
@@ -216,20 +211,18 @@ object FormMain: TFormMain
           Font.Name = 'Segoe UI Semibold'
           Font.Style = [fsBold]
           ParentFont = False
-          ExplicitWidth = 31
         end
         object Label3: TLabel
           AlignWithMargins = True
           Left = 3
           Top = 158
-          Width = 1049
+          Width = 546
           Height = 17
           Align = alTop
           Caption = 
             #1050#1085#1086#1087#1082#1072' Logout '#1087#1088#1086#1089#1090#1086' '#1086#1095#1080#1097#1072#1077#1090' '#1091#1089#1090#1072#1085#1086#1074#1083#1077#1085#1085#1099#1081' '#1090#1086#1082#1077#1085', '#1072' '#1090#1072#1082#1078#1077' '#1082#1077#1096' '#1089#1090 +
             #1072#1085#1076#1072#1088#1090#1085#1086#1075#1086' '#1073#1088#1072#1091#1079#1077#1088#1072
           WordWrap = True
-          ExplicitWidth = 546
         end
         object Panel3: TPanel
           Left = 0
@@ -587,15 +580,15 @@ object FormMain: TFormMain
         ExplicitHeight = 441
         object PageControl1: TPageControl
           AlignWithMargins = True
-          Left = 20
-          Top = 20
-          Width = 1015
-          Height = 402
-          Margins.Left = 20
-          Margins.Top = 20
-          Margins.Right = 20
-          Margins.Bottom = 20
-          ActivePage = TabSheet8
+          Left = 30
+          Top = 30
+          Width = 995
+          Height = 382
+          Margins.Left = 30
+          Margins.Top = 30
+          Margins.Right = 30
+          Margins.Bottom = 30
+          ActivePage = TabSheetPhotos
           Align = alClient
           TabOrder = 0
           ExplicitWidth = 1011
@@ -1179,6 +1172,19 @@ object FormMain: TFormMain
               Caption = 'GetAccounts'
               TabOrder = 0
               OnClick = ButtonAdsGetAccountsClick
+            end
+          end
+          object TabSheetPhotos: TTabSheet
+            Caption = 'Photos'
+            ImageIndex = 15
+            object ButtonPhotosGetAlbum: TButton
+              Left = 3
+              Top = 3
+              Width = 110
+              Height = 25
+              Caption = 'GetAlbum'
+              TabOrder = 0
+              OnClick = ButtonPhotosGetAlbumClick
             end
           end
         end

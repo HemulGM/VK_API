@@ -113,6 +113,8 @@ type
     ButtonSendAudioMessage: TButton;
     ButtonUploadAudio: TButton;
     ButtonBoardGetBoard: TButton;
+    TabSheetPhotos: TTabSheet;
+    ButtonPhotosGetAlbum: TButton;
     procedure FormCreate(Sender: TObject);
     procedure ButtonAccountBanClick(Sender: TObject);
     procedure ButtonAccountUnbanClick(Sender: TObject);
@@ -241,12 +243,13 @@ type
     procedure TabSheetAuthResize(Sender: TObject);
     procedure ButtonSendAudioMessageClick(Sender: TObject);
     procedure ButtonBoardGetBoardClick(Sender: TObject);
+    procedure ButtonPhotosGetAlbumClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
     FTokenExpiry: Int64;
     procedure FillMethods;
-  public    { Public declarations }
+  public
   end;
 
 var
@@ -267,7 +270,7 @@ uses
   VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth, VK.Photos,
   VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload, REST.Json,
   VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads,
-  VK.Entity.Board, VK.Board;
+  VK.Entity.Board, VK.Board, VK.Entity.Common;
 
 {$R *.dfm}
 
@@ -1083,15 +1086,33 @@ begin
   VK1.Messages.SendAudioMessage(2000000001, '1.ogg');
 end;
 
+procedure TFormMain.ButtonPhotosGetAlbumClick(Sender: TObject);
+begin
+  VK1.Walk(
+    function(Offset: Integer; var Cancel: Boolean): Integer
+    var
+      Items: TVkPhotos;
+      Params: TVkParamsPhotosGet;
+    begin
+      Result := 0;
+      Params := Params.OwnerId(-34109479).AlbumId(171648968).Offset(Offset).Count(100);
+      if VK1.Photos.Get(Items, Params) then
+      try
+        Result := Length(Items.Items);
+        for var Item in Items.Items do
+        begin
+          VK1.DownloadFile(Item.Sizes.GetSizeMaxSum.Url, 'D:\Temp\Photos\' + Item.Id.ToString + '.jpg');
+          Memo1.Lines.Add(Item.Sizes.GetSizeMax.Url);
+        end;
+      finally
+        Items.Free;
+      end;
+    end, 100);
+end;
+
 procedure TFormMain.ButtonSendPhotoClick(Sender: TObject);
 begin
-  var Photos: TVkPhotos;
-  if VK1.Photos.UploadForMessage(Photos, 58553419, ['D:\Downloads\6q8q9f.gif']) then
-  try
-    VK1.Messages.New.UserId(58553419).Attachment(Photos.ToAttachments).Send;
-  finally
-    Photos.Free;
-  end;
+  VK1.Messages.New.UserId(58553419).AddPhotos(['D:\Downloads\6q8q9f.gif']).Send;
 end;
 
 procedure TFormMain.ButtonVideoDeleteClick(Sender: TObject);
