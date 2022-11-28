@@ -3,8 +3,9 @@
 interface
 
 uses
-  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Types, VK.Entity.Photo, REST.JsonReflect,
-  REST.Json.Interceptors, VK.Entity.Market, VK.Entity.Group.Counters, VK.Wrap.Interceptors, VK.Entity.Database.Cities,
+  System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Types,
+  VK.Entity.Photo, REST.JsonReflect, REST.Json.Interceptors, VK.Entity.Market,
+  VK.Entity.Group.Counters, VK.Wrap.Interceptors, VK.Entity.Database.Cities,
   VK.Entity.Database.Countries, VK.Entity.Common.List, VK.Entity.Geo;
 
 type
@@ -150,7 +151,7 @@ type
     /// <summary>
     /// Информация о типе магазина (basic и advanced)
     /// </summary>
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     /// <summary>
     /// Строковое обозначение
     /// </summary>
@@ -241,6 +242,25 @@ type
     property MainAddressId: Integer read FMain_address_id write FMain_address_id;
   end;
 
+  TVkLikeFriends = class
+  private
+    FCount: Integer;
+    FPreview: TArray<TVkPeerId>;
+  public
+    property Count: Integer read FCount write FCount;
+    property Preview: TArray<TVkPeerId> read FPreview write FPreview;
+  end;
+
+  TVkLike = class
+  private
+    FIs_liked: Boolean;
+    FFriends: TVkLikeFriends;
+  public
+    property IsLiked: Boolean read FIs_liked write FIs_liked;
+    property Friends: TVkLikeFriends read FFriends write FFriends;
+    destructor Destroy; override;
+  end;
+
   TVkGroup = class(TVkObject)
   private
     [JsonReflectAttribute(ctString, rtString, TGroupAdminLevelInterceptor)]
@@ -316,6 +336,7 @@ type
     FTrack_code: string;
     [JsonReflectAttribute(ctString, rtString, TIntDateTimeInterceptor)]
     FStart_date: TDateTime;
+    FLike: TVkLike;
     function GetFixedPostId: string;
   public
     /// <summary>
@@ -431,6 +452,7 @@ type
     property IsHiddenFromFeed: Boolean read FIs_hidden_from_feed write FIs_hidden_from_feed;
     property IsMessagesBlocked: Boolean read FIs_messages_blocked write FIs_messages_blocked;
     property IsMember: Boolean read FIs_member write FIs_member;
+    property Like: TVkLike read FLike write FLike;
     /// <summary>
     /// Информация из блока ссылок сообщества
     /// </summary>
@@ -470,7 +492,7 @@ type
     property Site: string read FSite write FSite;
     property StartDate: TDateTime read FStart_date write FStart_date;
     property Status: string read FStatus write FStatus;
-    property&Type: TVkGroupType read FType write FType;
+    property &Type: TVkGroupType read FType write FType;
     property Trending: Boolean read FTrending write FTrending;
     property Verified: Boolean read FVerified write FVerified;
     property Wall: Integer read FWall write FWall;
@@ -533,6 +555,8 @@ begin
     FMarket.Free;
   if Assigned(FPlace) then
     FPlace.Free;
+  if Assigned(FLike) then
+    FLike.Free;
   inherited;
 end;
 
@@ -556,6 +580,15 @@ end;
 destructor TVkCover.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
+  inherited;
+end;
+
+{ TVkLike }
+
+destructor TVkLike.Destroy;
+begin
+  if Assigned(FFriends) then
+    FFriends.Free;
   inherited;
 end;
 

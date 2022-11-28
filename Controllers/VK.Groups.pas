@@ -230,15 +230,21 @@ type
     type
       TGroupSectionWall = GroupSectionOff..GroupSectionClosed;
 
+
       TGroupSectionTopics = GroupSectionOff..GroupSectionPrivate;
+
 
       TGroupSectionPhotos = GroupSectionOff..GroupSectionPrivate;
 
+
       TGroupSectionVideo = GroupSectionOff..GroupSectionPrivate;
+
 
       TGroupSectionAudio = GroupSectionOff..GroupSectionPrivate;
 
+
       TGroupSectionDocs = GroupSectionOff..GroupSectionPrivate;
+
 
       TGroupSectionWiki = GroupSectionOff..GroupSectionPrivate;
   public
@@ -1034,6 +1040,17 @@ type
     function WallRepost(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
   end;
 
+  TVkParamsToggleMarket = record
+    List: TParams;
+    function Ref(const Value: string): TVkParamsToggleMarket;
+    function UtmSource(const Value: string): TVkParamsToggleMarket;
+    function UtmMedium(const Value: string): TVkParamsToggleMarket;
+    function UtmCampaign(const Value: string): TVkParamsToggleMarket;
+    function UtmContent(const Value: string): TVkParamsToggleMarket;
+    function UtmTerm(const Value: string): TVkParamsToggleMarket;
+    function PromoCode(const Value: string): TVkParamsToggleMarket;
+  end;
+
   TVkParamsGroupsSetSettings = record
     List: TParams;
     /// <summary>
@@ -1341,7 +1358,15 @@ type
     /// <summary>
     ///  Позволяет переименовать существующий тег
     /// </summary>
-    function TagUpdate(GroupId, TagId: Int64; TagName: string): Boolean;
+    function TagUpdate(GroupId, TagId: Int64; const TagName: string): Boolean;
+    /// <summary>
+    ///  Переключает функционал раздела «Товаров» в выбранной группе.
+    /// </summary>
+    function ToggleMarket(GroupId: Int64; State: TVkGroupMarketState; Params: TParams): Boolean; overload;
+    /// <summary>
+    ///  Переключает функционал раздела «Товаров» в выбранной группе.
+    /// </summary>
+    function ToggleMarket(GroupId: Int64; State: TVkGroupMarketState; Params: TVkParamsToggleMarket): Boolean; overload;
     /// <summary>
     ///  Убирает пользователя или группу из черного списка сообщества
     /// </summary>
@@ -1790,13 +1815,25 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagUpdate(GroupId, TagId: Int64; TagName: string): Boolean;
+function TGroupsController.TagUpdate(GroupId, TagId: Int64; const TagName: string): Boolean;
 begin
   Result := Handler.Execute('groups.tagUpdate', [
     ['group_id', GroupId.ToString],
     ['tag_name', TagName],
     ['tag_id', TagId.ToString]]).
     ResponseIsTrue;
+end;
+
+function TGroupsController.ToggleMarket(GroupId: Int64; State: TVkGroupMarketState; Params: TVkParamsToggleMarket): Boolean;
+begin
+  Result := Handler.Execute('groups.toggleMarket', Params.List).ResponseIsTrue;
+end;
+
+function TGroupsController.ToggleMarket(GroupId: Int64; State: TVkGroupMarketState; Params: TParams): Boolean;
+begin
+  Params.Add('group_id', GroupId);
+  Params.Add('state', State.ToString);
+  Result := Handler.Execute('groups.toggleMarket', Params).ResponseIsTrue;
 end;
 
 function TGroupsController.Unban(GroupId, OwnerId: Int64): Boolean;
@@ -3260,6 +3297,50 @@ end;
 function TVkParamsGroupsSetSettings.Messages(const Value: Boolean): TVkParamsGroupsSetSettings;
 begin
   List.Add('messages', Value);
+  Result := Self;
+end;
+
+{ TVkParamsToggleMarket }
+
+function TVkParamsToggleMarket.PromoCode(const Value: string): TVkParamsToggleMarket;
+begin
+  List.Add('promocode', Value);
+  Result := Self;
+end;
+
+function TVkParamsToggleMarket.Ref(const Value: string): TVkParamsToggleMarket;
+begin
+  List.Add('ref', Value);
+  Result := Self;
+end;
+
+function TVkParamsToggleMarket.UtmCampaign(const Value: string): TVkParamsToggleMarket;
+begin
+  List.Add('utm_campaign', Value);
+  Result := Self;
+end;
+
+function TVkParamsToggleMarket.UtmContent(const Value: string): TVkParamsToggleMarket;
+begin
+  List.Add('utm_content', Value);
+  Result := Self;
+end;
+
+function TVkParamsToggleMarket.UtmMedium(const Value: string): TVkParamsToggleMarket;
+begin
+  List.Add('utm_medium', Value);
+  Result := Self;
+end;
+
+function TVkParamsToggleMarket.UtmSource(const Value: string): TVkParamsToggleMarket;
+begin
+  List.Add('utm_source', Value);
+  Result := Self;
+end;
+
+function TVkParamsToggleMarket.UtmTerm(const Value: string): TVkParamsToggleMarket;
+begin
+  List.Add('utm_term', Value);
   Result := Self;
 end;
 

@@ -11,6 +11,15 @@ uses
 type
   TVkProfile = class;
 
+  TVkLangFull = class(TVkEntity)
+  private
+    FId: Integer;
+    FNative_name: string;
+  public
+    property Id: Integer read FId write FId;
+    property NativeName: string read FNative_name write FNative_name;
+  end;
+
   TVkExport = class(TVkEntity)
   private
     FInstagram: Boolean;
@@ -178,6 +187,8 @@ type
     FFaculty: Integer;
     FFaculty_name: string;
     FGraduation: Integer;
+    FEducation_form_id: Integer;
+    FEducation_status_id: Integer;
   public
     /// <summary>
     /// Идентификатор университета
@@ -216,6 +227,10 @@ type
     /// </summary>
     property Graduation: Integer read FGraduation write FGraduation;
     /// <summary>
+    /// Форма обучения (Id)
+    /// </summary>
+    property EducationFormId: Integer read FEducation_form_id write FEducation_form_id;
+    /// <summary>
     /// Форма обучения
     /// </summary>
     property EducationForm: string read FEducation_form write FEducation_form;
@@ -223,6 +238,10 @@ type
     /// Статус (например, «Выпускник (специалист)»)
     /// </summary>
     property EducationStatus: string read FEducation_status write FEducation_status;
+    /// <summary>
+    /// Статус (например, «Выпускник (специалист)») (Id)
+    /// </summary>
+    property EducationStatusId: Integer read FEducation_status_id write FEducation_status_id;
   end;
 
   TVkPersonal = class(TVkEntity)
@@ -237,6 +256,7 @@ type
     FReligion: string;
     FReligion_id: Integer;
     FSmoking: Integer;
+    FLangs_full: TArray<TVkLangFull>;
   public
     /// <summary>
     /// Отношение к алкоголю
@@ -256,6 +276,7 @@ type
     /// Языки
     /// </summary>
     property Langs: TArray<string> read FLangs write FLangs;
+    property LangsFull: TArray<TVkLangFull> read FLangs_full write FLangs_full;
     /// <summary>
     /// Главное в жизни
     ///  Возможные значения:
@@ -302,6 +323,7 @@ type
     ///  5 — положительное.
     /// </summary>
     property Smoking: Integer read FSmoking write FSmoking;
+    destructor Destroy; override;
   end;
 
   TVkMilitary = class(TVkEntity)
@@ -345,6 +367,8 @@ type
   TVkOccupation = class(TVkBasicObject)
   private
     FType: string;
+    FCountry_id: Integer;
+    FCity_id: Integer;
   public
     /// <summary>
     /// Тип
@@ -358,6 +382,8 @@ type
     /// Название школы, вуза или места работы
     /// </summary>
     property Name;
+    property CountryId: Integer read FCountry_id write FCountry_id;
+    property CityId: Integer read FCity_id write FCity_id;
   end;
 
   TVkLastSeen = class(TVkEntity)
@@ -1041,6 +1067,14 @@ end;
 destructor TVkFriendsMutual.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkProfile>(FUsers);
+  inherited;
+end;
+
+{ TVkPersonal }
+
+destructor TVkPersonal.Destroy;
+begin
+  TArrayHelp.FreeArrayOfObject<TVkLangFull>(FLangs_full);
   inherited;
 end;
 

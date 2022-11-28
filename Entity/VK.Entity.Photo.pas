@@ -88,6 +88,7 @@ type
     FPlacer_id: Integer;
     FTag_id: Integer;
     FPost_id: Integer;
+    FSquare_crop: string;
   public
     /// <summary>
     /// Идентификатор фотографии
@@ -166,6 +167,7 @@ type
     property PlacerId: Integer read FPlacer_id write FPlacer_id;
     property TagCreated: TDateTime read FTag_created write FTag_created;
     property TagId: Integer read FTag_id write FTag_id;
+    property SquareCrop: string read FSquare_crop write FSquare_crop;
     /// <summary>
     /// Идентификатор записи, в которую была загружена фотография
     /// </summary>

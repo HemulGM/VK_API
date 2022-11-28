@@ -221,6 +221,12 @@ type
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
+  TAsrStateInterceptor = class(TEnumInterceptor<TVkAsrState>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
 implementation
 
 uses
@@ -559,6 +565,18 @@ end;
 procedure TAdsAccessRoleInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAdsAccessRole.Create(Arg)));
+end;
+
+{ TAsrStateInterceptor }
+
+function TAsrStateInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkAsrState>.ToString;
+end;
+
+procedure TAsrStateInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAsrState.Create(Arg)));
 end;
 
 end.

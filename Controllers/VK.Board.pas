@@ -93,7 +93,7 @@ type
     /// <summary>
     /// Если указать в качестве этого параметра True, то будет возвращена информация о пользователях, являющихся создателями тем или оставившими в них последнее сообщение. По умолчанию False.
     /// </summary>
-    function Extended(const Value: Boolean = False): TVkParamsBoardGet;
+    function Extended(const Value: Boolean = True): TVkParamsBoardGet;
     /// <summary>
     /// Набор флагов, определяющий, необходимо ли вернуть вместе с информацией о темах текст первых и последних сообщений в них. Является суммой флагов
     /// </summary>
@@ -157,7 +157,7 @@ type
     /// <summary>
     /// Если указать в качестве этого параметра True, то будет возвращена информация о пользователях, являющихся авторами сообщений. По умолчанию False.
     /// </summary>
-    function Extended(const Value: Boolean): TVkParamsBoardCommentsGet;
+    function Extended(const Value: Boolean = True): TVkParamsBoardCommentsGet;
     /// <summary>
     /// Порядок сортировки комментариев: asc — хронологический, desc — антихронологический
     /// </summary>

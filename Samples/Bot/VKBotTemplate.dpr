@@ -25,7 +25,7 @@ type
 
 class procedure TMethods.OnNewMessage(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; const EventId: string);
 begin
-
+  Writeln(EventId);
 end;
 
 class procedure TMethods.OnWallPostNew(Sender: TObject; GroupId: Integer; Post: TVkPost; const EventId: string);
@@ -42,7 +42,7 @@ begin
   ReportMemoryLeaksOnShutdown := True;
   VKBot := TVkBotChat.GetInstance(192458090, '<token>');
   with VKBot do
-  begin
+  try
     LongPoll.OnWallPostNew := TMethods.OnWallPostNew;
 
     AddListener<TOnGroupMessageNew>(TMethods.OnNewMessage);
@@ -74,7 +74,7 @@ begin
     end
     else
       Readln;
-
+  finally
     Free;
   end;
 end.

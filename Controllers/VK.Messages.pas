@@ -1002,7 +1002,9 @@ type
   end;
 
   TMessagesController = class(TVkController)
-  public    /// <summary>
+  public
+    function SendAudioMessage(const PeerId: Integer; const FileName: string): Boolean;
+    /// <summary>
     /// Отправить сообщение.
     /// </summary>
     function SendToPeer(var Item: Integer; PeerId: Integer; Message: string; Attachments: TAttachmentArray = []): Boolean; overload;
@@ -1296,7 +1298,7 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils;
+  VK.API, VK.CommonUtils, System.DateUtils, VK.Entity.Doc.Save;
 
 { TMessagesController }
 
@@ -1765,6 +1767,19 @@ end;
 function TMessagesController.Send(var Item: Integer; Params: TVkParamsMessageSend): Boolean;
 begin
   Result := Handler.Execute('messages.send', Params.List).ResponseAsInt(Item);
+end;
+
+function TMessagesController.SendAudioMessage(const PeerId: Integer; const FileName: string): Boolean;
+var
+  Doc: TVkDocSaved;
+begin
+  Result := False;
+  if TCustomVK(VK).Docs.SaveAudioMessage(Doc, FileName, '', '', PeerId) then
+  try
+    Result := SendToPeer(PeerId, '', [Doc.AudioMessage.ToAttachment]);
+  finally
+    Doc.Free;
+  end;
 end;
 
 function TMessagesController.Send(var Item: Integer; UserId: Integer; Attachments: TAttachmentArray): Boolean;

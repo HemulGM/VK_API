@@ -4,13 +4,13 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.Types, System.JSON,
-  REST.Authenticator.OAuth, VK.Types, VK.Account, VK.Handler, VK.Auth, VK.Users,
-  VK.Messages, VK.Status, VK.Wall, VK.Docs, VK.Audio, VK.Likes, VK.Board,
-  VK.Friends, VK.Groups, VK.Photos, VK.Catalog, VK.Market, VK.Fave, VK.Notes,
-  VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed, VK.Notifications, VK.Orders,
-  Vk.Pages, VK.Polls, VK.Podcasts, VK.Search, VK.Database, VK.Storage,
-  VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories, VK.Apps, VK.Clients,
-  VK.Donut, VK.Streaming, VK.Ads;
+  System.Generics.Collections, REST.Authenticator.OAuth, VK.Types, VK.Account,
+  VK.Handler, VK.Auth, VK.Users, VK.Messages, VK.Status, VK.Wall, VK.Docs,
+  VK.Audio, VK.Likes, VK.Board, VK.Friends, VK.Groups, VK.Photos, VK.Catalog,
+  VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed,
+  VK.Notifications, VK.Orders, Vk.Pages, VK.Polls, VK.Podcasts, VK.Search,
+  VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
+  VK.Apps, VK.Clients, VK.Donut, VK.Streaming, VK.Ads;
 
 type
   TCustomVK = class(TComponent)
@@ -195,7 +195,8 @@ type
     /// Метод для загрузки файлов на сервер. UploadUrl должен быть получен соответствющим типу файла образом.
     /// Например, для Фото в альбом - Photos.GetUploadServer.
     /// </summary>
-    function Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;
+    function Upload(const UploadUrl: string; FileNames: TArray<string>; var Response: string): Boolean; overload;
+    function Upload(const UploadUrl: string; const Files: TArray<TPair<string, TStream>>; var Response: string): Boolean; overload;
     //Группы методов
     /// <summary>
     /// Методы для работы с аккаунтом.
@@ -466,7 +467,7 @@ implementation
 
 uses
   System.DateUtils, System.Net.Mime, System.Net.HttpClient, VK.CommonUtils,
-  VK.Entity.Profile, VK.Entity.Login;
+  VK.Entity.Profile, VK.Entity.Login, IdMultipartFormData;
 
 { TCustomVK }
 
@@ -483,39 +484,72 @@ procedure TCustomVK.CallMethodAsync(MethodName: string; Params: TParams; Callbac
 begin
   TThread.CreateAnonymousThread(
     procedure
-    var
-      Response: TResponse;
     begin
-      Response := Handler.Execute(MethodName, Params);
-      if Assigned(Callback) then
-        Callback(Response);
+      CallMethod(MethodName, Params, Callback);
     end).Start;
 end;
 
-function TCustomVK.Upload(const UploadUrl: string; FileNames: array of string; var Response: string): Boolean;
+function TCustomVK.Upload(const UploadUrl: string; FileNames: TArray<string>; var Response: string): Boolean;
 var
   HTTP: THTTPClient;
-  Data: TMultipartFormData;
+  Data: TIdMultiPartFormDataStream;
   ResStream: TStringStream;
   JSON: TJSONValue;
   FileName: string;
 begin
   Result := False;
-  Data := TMultipartFormData.Create;
+  Data := TIdMultiPartFormDataStream.Create;
   HTTP := THTTPClient.Create;
   ResStream := TStringStream.Create;
   try
     for FileName in FileNames do
-    begin
       if not FileName.IsEmpty then
         Data.AddFile('file', FileName);
-    end;
     if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
     begin
       try
         JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
         try
-          Response := JSON.GetValue<string>('file');
+          Response := JSON.GetValue('file', '');
+        finally
+          JSON.Free;
+        end;
+      except
+        Response := '';
+      end;
+      Result := not Response.IsEmpty;
+      if not Result then
+        Response := ResStream.DataString;
+    end;
+  finally
+    ResStream.Free;
+    Data.Free;
+    HTTP.Free;
+  end;
+end;
+
+function TCustomVK.Upload(const UploadUrl: string; const Files: TArray<TPair<string, TStream>>; var Response: string): Boolean;
+var
+  HTTP: THTTPClient;
+  Data: TIdMultiPartFormDataStream;
+  ResStream: TStringStream;
+  JSON: TJSONValue;
+  FileItem: TPair<string, TStream>;
+begin
+  Result := False;
+  Data := TIdMultiPartFormDataStream.Create;
+  HTTP := THTTPClient.Create;
+  ResStream := TStringStream.Create;
+  try
+    for FileItem in Files do
+      if FileItem.Value.Size > 0 then
+        Data.AddFormField('file', '', '', FileItem.Value, FileItem.Key);
+    if HTTP.Post(UploadUrl, Data, ResStream).StatusCode = 200 then
+    begin
+      try
+        JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
+        try
+          Response := JSON.GetValue('file', '');
         finally
           JSON.Free;
         end;

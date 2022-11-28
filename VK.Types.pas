@@ -1300,6 +1300,45 @@ type
   end;
 
   /// <summary>
+  /// none Ч товары отключены;
+  /// basic Ч базовые товары;
+  /// advanced Ч расширенные товары
+  /// </summary>
+  TVkGroupMarketState = (None, Basic, Advanced);
+
+  TVkGroupMarketStateHelper = record helper for TVkGroupMarketState
+    function ToString: string; overload; inline;
+    class function Create(Value: string): TVkGroupMarketState; static;
+  end;
+
+  /// <summary>
+  /// —татус задачи на обработку аудиозаписи
+  /// processing Ч аудиозапись обрабатываетс€.
+  /// finished Ч обработка аудиозаписи закончена.
+  /// internal_error Ч внутренние ошибки сервиса распознавани€ речи ¬ онтакте.
+  /// transcoding_error Ч ошибка перекодировани€ аудиозаписи во внутренний формат. ѕопробуйте загрузить аудиозапись в другом поддерживаемом формате.
+  /// recognition_error Ч ошибка распознавани€ речи, сложности в распознавании. ѕопробуйте говорить чЄтче или снизить фоновые шумы.
+  /// </summary>
+  TVkAsrState = (Processing, Finished, InternalError, TranscodingError, RecognitionError);
+
+  TVkAsrStateHelper = record helper for TVkAsrState
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkAsrState; static;
+  end;
+
+  /// <summary>
+  /// ћодель распознавани€ речи, которую нужно использовать
+  /// neutral Ч распознавание разборчивой речи, как в интервью или телешоу.
+  /// spontaneous Ч распознавание речи со сленгом и ненормативной лексикой.
+  /// </summary>
+  TVkAsrModel = (Neutral, Spontaneous);
+
+  TVkAsrModelHelper = record helper for TVkAsrModel
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkAsrModel; static;
+  end;
+
+  /// <summary>
   ///  admin Ч главный администратор;
   ///  manager Ч администратор;
   ///  reports Ч наблюдатель.
@@ -1513,6 +1552,9 @@ const
   VkPostSourceType: array[TVkPostSourceType] of string = ('vk', 'widget', 'api', 'rss', 'sms');
   VkAdsAccountType: array[TVkAdsAccountType] of string = ('general', 'agency');
   VkAdsAccessRole: array[TVkAdsAccessRole] of string = ('admin', 'manager', 'reports');
+  VkGroupMarketState: array[TVkGroupMarketState] of string = ('none', 'basic', 'advanced');
+  VkAsrState: array[TVkAsrState] of string = ('processing', 'finished', 'internal_error', 'transcoding_error', 'recognition_error');
+  VkAsrModel: array[TVkAsrModel] of string = ('neutral', 'spontaneous');
 
 function NormalizePeerId(Value: Integer): Integer;
 
@@ -3110,6 +3152,18 @@ begin
   Result := VkAdsAccountType[Self];
 end;
 
+{ TVkGroupMarketStateHelper }
+
+class function TVkGroupMarketStateHelper.Create(Value: string): TVkGroupMarketState;
+begin
+  Result := TVkGroupMarketState(IndexStr(Value, VkGroupMarketState));
+end;
+
+function TVkGroupMarketStateHelper.ToString: string;
+begin
+  Result := VkGroupMarketState[Self];
+end;
+
 { TVkAdsAccessRoleHelper }
 
 class function TVkAdsAccessRoleHelper.Create(Value: string): TVkAdsAccessRole;
@@ -3154,6 +3208,30 @@ end;
 function TVkPeerHelper.ToString: string;
 begin
   Result := Int64(Self).ToString;
+end;
+
+{ TVkAsrStateHelper }
+
+class function TVkAsrStateHelper.Create(const Value: string): TVkAsrState;
+begin
+  Result := TVkAsrState(IndexStr(Value, VkAsrState));
+end;
+
+function TVkAsrStateHelper.ToString: string;
+begin
+  Result := VkAsrState[Self];
+end;
+
+{ TVkAsrModelHelper }
+
+class function TVkAsrModelHelper.Create(const Value: string): TVkAsrModel;
+begin
+  Result := TVkAsrModel(IndexStr(Value, VkAsrModel));
+end;
+
+function TVkAsrModelHelper.ToString: string;
+begin
+  Result := VkAsrModel[Self];
 end;
 
 end.
