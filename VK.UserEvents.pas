@@ -3,8 +3,8 @@ unit VK.UserEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.JSON, VK.Types, System.Generics.Collections, VK.LongPollServer, VK.API;
 
 type
   TVkMessageInfo = class
@@ -634,8 +634,12 @@ end;
 
 procedure TCustomUserEvents.DoUnhandledEvents(const JSON: TJSONValue);
 begin
-  if Assigned(FOnUnhandledEvents) then
-    FOnUnhandledEvents(Self, JSON);
+  try
+    if Assigned(FOnUnhandledEvents) then
+      FOnUnhandledEvents(Self, JSON);
+  finally
+    JSON.Free;
+  end;
 end;
 
 procedure TCustomUserEvents.DoUserCall(const UserId, CallId: Integer);

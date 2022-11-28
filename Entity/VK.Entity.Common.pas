@@ -196,23 +196,33 @@ type
     FPhoto_200: string;
     FPhoto_100: string;
     FIs_default_photo: Boolean;
+    FIs_default_call_photo: Boolean;
+    FPhoto_34: string;
+    FPhoto_1200: string;
+    FPhoto_300: string;
+    FPhoto_68: string;
+    FPhoto_270: string;
+    FPhoto_600: string;
+    FPhoto_135: string;
   public
-    /// <summary>
-    /// URL изображения 50x50px;
-    /// </summary>
+    property Photo34: string read FPhoto_34 write FPhoto_34;
     property Photo50: string read FPhoto_50 write FPhoto_50;
-    /// <summary>
-    /// URL изображения 100x100px;
-    /// </summary>
+    property Photo68: string read FPhoto_68 write FPhoto_68;
     property Photo100: string read FPhoto_100 write FPhoto_100;
-    /// <summary>
-    /// URL изображения 200x200px;
-    /// </summary>
+    property Photo135: string read FPhoto_135 write FPhoto_135;
     property Photo200: string read FPhoto_200 write FPhoto_200;
+    property Photo270: string read FPhoto_270 write FPhoto_270;
+    property Photo300: string read FPhoto_300 write FPhoto_300;
+    property Photo600: string read FPhoto_600 write FPhoto_600;
+    property Photo1200: string read FPhoto_1200 write FPhoto_1200;
     /// <summary>
     /// Фото по умолчанию
     /// </summary>
     property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
+    /// <summary>
+    /// Фото по умолчанию (звонки)
+    /// </summary>
+    property IsDefaultCallPhoto: Boolean read FIs_default_call_photo write FIs_default_call_photo;
   end;
 
   TVkThumb = class

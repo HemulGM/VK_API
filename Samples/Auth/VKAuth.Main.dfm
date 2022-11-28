@@ -2,8 +2,8 @@ object FormMain: TFormMain
   Left = 0
   Top = 0
   Caption = 'VK API Tester'
-  ClientHeight = 714
-  ClientWidth = 1065
+  ClientHeight = 715
+  ClientWidth = 1069
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -12,16 +12,17 @@ object FormMain: TFormMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OnCreate = FormCreate
-  OnShow = FormShow
   TextHeight = 13
   object Panel2: TPanel
     Left = 0
-    Top = 487
-    Width = 1065
+    Top = 488
+    Width = 1069
     Height = 227
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 487
+    ExplicitWidth = 1065
     object Memo1: TMemo
       Left = 0
       Top = 17
@@ -82,8 +83,8 @@ object FormMain: TFormMain
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 1059
-    Height = 481
+    Width = 1063
+    Height = 482
     ActivePage = TabSheetTests
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
@@ -94,6 +95,8 @@ object FormMain: TFormMain
     ParentFont = False
     TabHeight = 30
     TabOrder = 1
+    ExplicitWidth = 1059
+    ExplicitHeight = 481
     object TabSheetWelcome: TTabSheet
       Caption = #1044#1086#1073#1088#1086' '#1087#1086#1078#1072#1083#1086#1074#1072#1090#1100
       object Label1: TLabel
@@ -183,7 +186,7 @@ object FormMain: TFormMain
           AlignWithMargins = True
           Left = 3
           Top = 26
-          Width = 1047
+          Width = 1049
           Height = 85
           Align = alTop
           Caption = 
@@ -196,12 +199,13 @@ object FormMain: TFormMain
             #10#1055#1086#1089#1083#1077' '#1101#1090#1086#1075#1086', '#1080#1083#1080' '#1077#1089#1083#1080' '#1090#1086#1082#1077#1085' '#1091#1078#1077' '#1091#1089#1090#1072#1085#1086#1074#1083#1077#1085', '#1074#1099#1087#1086#1083#1085#1103#1077#1090#1089#1103' '#1087#1088#1086#1074#1077#1088#1086 +
             #1095#1085#1099#1081' '#1079#1072#1087#1088#1086#1089'. '#1055#1086#1089#1083#1077' '#1082#1086#1090#1086#1088#1086#1075#1086' '#1073#1091#1076#1077#1090' '#1103#1089#1085#1086' '#1074#1072#1083#1080#1076#1085#1099#1081' '#1090#1086#1082#1077#1085' '#1080#1083#1080' '#1085#1077#1090
           WordWrap = True
+          ExplicitWidth = 1047
         end
         object LabelLogin: TLabel
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 31
+          Width = 1049
           Height = 17
           Align = alTop
           Caption = #1042#1093#1086#1076
@@ -211,18 +215,20 @@ object FormMain: TFormMain
           Font.Name = 'Segoe UI Semibold'
           Font.Style = [fsBold]
           ParentFont = False
+          ExplicitWidth = 31
         end
         object Label3: TLabel
           AlignWithMargins = True
           Left = 3
           Top = 158
-          Width = 546
+          Width = 1049
           Height = 17
           Align = alTop
           Caption = 
             #1050#1085#1086#1087#1082#1072' Logout '#1087#1088#1086#1089#1090#1086' '#1086#1095#1080#1097#1072#1077#1090' '#1091#1089#1090#1072#1085#1086#1074#1083#1077#1085#1085#1099#1081' '#1090#1086#1082#1077#1085', '#1072' '#1090#1072#1082#1078#1077' '#1082#1077#1096' '#1089#1090 +
             #1072#1085#1076#1072#1088#1090#1085#1086#1075#1086' '#1073#1088#1072#1091#1079#1077#1088#1072
           WordWrap = True
+          ExplicitWidth = 546
         end
         object Panel3: TPanel
           Left = 0
@@ -588,11 +594,11 @@ object FormMain: TFormMain
           Margins.Top = 30
           Margins.Right = 30
           Margins.Bottom = 30
-          ActivePage = TabSheetPhotos
+          ActivePage = TabSheet9
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 1011
-          ExplicitHeight = 401
+          ExplicitWidth = 991
+          ExplicitHeight = 381
           object TabSheet9: TTabSheet
             Caption = 'General'
             ImageIndex = 8
@@ -1201,7 +1207,7 @@ object FormMain: TFormMain
     OnError = VK1Error
     OnLog = VK1Log
     OnLogin = VK1Login
-    Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
+    Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     Proxy.Port = 0
     Left = 96
     Top = 56

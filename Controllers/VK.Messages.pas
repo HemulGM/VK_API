@@ -1068,9 +1068,9 @@ type
     /// </summary>
     function GetById(var Items: TVkMessages; Ids: TIdList; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
-    /// Возвращает сообщения по их идентификаторам.
+    /// Возвращает сообщение по идентификатору.
     /// </summary>
-    function GetById(var Items: TVkMessages; Id: Integer; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
+    function GetById(var Item: TVkMessage; Id: Integer; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Добавляет в мультидиалог нового пользователя.
     /// </summary>
@@ -1497,9 +1497,18 @@ begin
   Result := GetById(Items, Params);
 end;
 
-function TMessagesController.GetById(var Items: TVkMessages; Id, PreviewLength, GroupId: Integer): Boolean;
+function TMessagesController.GetById(var Item: TVkMessage; Id, PreviewLength, GroupId: Integer): Boolean;
+var
+  Items: TVkMessages;
 begin
   Result := GetById(Items, [Id], PreviewLength, GroupId);
+  if Result then
+  try
+    Item := Items.Items[0];
+    Items.SaveObjects := True;
+  finally
+    Items.Free;
+  end;
 end;
 
 function TMessagesController.GetById(var Items: TVkMessages; Params: TVkParamsMessageGet): Boolean;

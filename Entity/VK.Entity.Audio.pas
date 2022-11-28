@@ -60,6 +60,7 @@ type
     FThumb: TVkThumb;
     FTitle: string;
   public
+    property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
     property OwnerId: Integer read FOwner_id write FOwner_id;
     property Thumb: TVkThumb read FThumb write FThumb;
