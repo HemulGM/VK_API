@@ -113,6 +113,8 @@ type
     HeaderControl1: THeaderControl;
     TabSheetPhotos: TTabSheet;
     ButtonPhotosGetAlbum: TButton;
+    ButtonMessageGetChat: TButton;
+    ButtonMessageGetConverstion: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -240,6 +242,8 @@ type
     procedure CategoryButtons1ButtonClicked(Sender: TObject; const Button: TButtonItem);
     procedure TabSheetAuthResize(Sender: TObject);
     procedure ButtonPhotosGetAlbumClick(Sender: TObject);
+    procedure ButtonMessageGetChatClick(Sender: TObject);
+    procedure ButtonMessageGetConverstionClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -265,7 +269,8 @@ uses
   VK.Entity.Search, VK.Entity.Database.Regions, VK.Entity.Database.Schools,
   VK.Entity.Storage, VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth,
   VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
-  REST.Json, VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads;
+  REST.Json, VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads,
+  VK.Entity.Message.Chat;
 
 {$R *.dfm}
 
@@ -601,8 +606,11 @@ procedure TFormMain.ButtonMesGetConvClick(Sender: TObject);
 var
   List: TVkConversationItems;
   Item: TVkConversationItem;
+  Params: TVkParamsConversationsGet;
 begin
-  if VK1.Messages.GetConversations(List) then
+  Params.Offset(0);
+  Params.Extended;
+  if VK1.Messages.GetConversations(List, Params) then
   try
     Memo1.Lines.Add('Count: ' + List.Count.ToString);
     for Item in List.Items do
@@ -853,6 +861,34 @@ begin
         Memo1.Lines.Add(Items.Items[m].Attachments[i].&Type.ToString);
         Memo1.Lines.Add(Items.Items[m].Attachments[i].ToJsonString);
       end;
+  finally
+    Items.Free;
+  end;
+end;
+
+procedure TFormMain.ButtonMessageGetChatClick(Sender: TObject);
+begin
+  var Items: TVkChats;
+  var Params: TVkParamsMessageGetChat;
+  Params := Params.ChatId(175);
+  if VK1.Messages.GetChat(Items, Params) then
+  try
+    if Length(Items.Items) > 0 then
+      Memo1.Lines.Add(Items.Items[0].Photo50);
+  finally
+    Items.Free;
+  end;
+end;
+
+procedure TFormMain.ButtonMessageGetConverstionClick(Sender: TObject);
+begin
+  var Items: TVkConversations;
+  var Params: TVkParamsConversationsGetById;
+  Params.PeerId(2000000175);
+  if VK1.Messages.GetConversationsById(Items, Params) then
+  try
+    if Length(Items.Items) > 0 then
+      Memo1.Lines.Add(Items.Items[0].Style);
   finally
     Items.Free;
   end;
@@ -1650,7 +1686,8 @@ begin
   Memo1.Lines.Add('Изменение флагов сообщения ' +
     MessageChangeData.MessageId.ToString + ': ' +
     MessageChangeData.ChangeType.ToString + ' ' +
-    MessageChangeData.Flags.ToString);
+    MessageChangeData.Flags.ToString +
+    ' Чат: ' + MessageChangeData.PeerId.ToString);
 end;
 
 procedure TFormMain.VkUserEvents1ChatChanged(Sender: TObject; const ChatId: Integer; IsSelf: Boolean);

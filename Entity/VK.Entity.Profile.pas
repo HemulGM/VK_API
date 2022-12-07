@@ -378,11 +378,13 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FLast_seen: TDateTime;
     FVisible: Boolean;
+    FApp_id: Int64;
   public
     property IsMobile: Boolean read FIs_mobile write FIs_mobile;
     property IsOnline: Boolean read FIs_online write FIs_online;
     property LastSeen: TDateTime read FLast_seen write FLast_seen;
     property Visible: Boolean read FVisible write FVisible;
+    property AppId: Int64 read FApp_id write FApp_id;
   end;
 
   TVkProfile = class(TVkObject)
@@ -647,27 +649,27 @@ type
     /// <summary>
     /// Имя (именительный)
     /// </summary>
-    property FirstName_Nom: string read FFirst_name_nom write FFirst_name_nom;
+    property FirstNameNom: string read FFirst_name_nom write FFirst_name_nom;
     /// <summary>
     /// Имя (родительный)
     /// </summary>
-    property FirstName_Gen: string read FFirst_name_gen write FFirst_name_gen;
+    property FirstNameGen: string read FFirst_name_gen write FFirst_name_gen;
     /// <summary>
     /// Имя (дательный)
     /// </summary>
-    property FirstName_Dat: string read FFirst_name_dat write FFirst_name_dat;
+    property FirstNameDat: string read FFirst_name_dat write FFirst_name_dat;
     /// <summary>
     /// Имя (винительный)
     /// </summary>
-    property FirstName_Acc: string read FFirst_name_acc write FFirst_name_acc;
+    property FirstNameAcc: string read FFirst_name_acc write FFirst_name_acc;
     /// <summary>
     /// Имя (творительный)
     /// </summary>
-    property FirstName_Ins: string read FFirst_name_ins write FFirst_name_ins;
+    property FirstNameIns: string read FFirst_name_ins write FFirst_name_ins;
     /// <summary>
     /// Имя (предложный)
     /// </summary>
-    property FirstName_Abl: string read FFirst_name_abl write FFirst_name_abl;
+    property FirstNameAbl: string read FFirst_name_abl write FFirst_name_abl;
     /// <summary>
     /// Количество подписчиков пользователя
     /// </summary>

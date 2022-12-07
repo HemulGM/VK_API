@@ -665,7 +665,10 @@ type
     CanSeeAllPosts, CanSeeAudio, CanWritePrivateMessage, CanSendFriendRequest,   //
     IsFavorite, IsHiddenFromFeed, TimeZone, ScreenName, MaidenName, CropPhoto,   //
     IsFriend, FriendStatus, Career, Military, Blacklisted, BlacklistedByMe,      //
-    CanBeInvitedGroup, OnlineMobile, Counters);
+    CanBeInvitedGroup, OnlineMobile, Counters, FirstNameNom, FirstNameGen,       //
+    FirstNameDat, FirstNameAcc, FirstNameIns, FirstNameAbl, LastNameNom,         //
+    LastNameGen, LastNameDat, LastNameAcc, LastNameIns, LastNameAbl,             //
+    WallDefault);                                                                //
 
   TVkProfileFieldHelper = record helper for TVkProfileField
     function ToString: string; inline;
@@ -1425,7 +1428,9 @@ const
     'can_see_audio', 'can_write_private_message', 'can_send_friend_request', 'is_favorite',
     'is_hidden_from_feed', 'timezone', 'screen_name', 'maiden_name', 'crop_photo', 'is_friend',
     'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me', 'can_be_invited_group',
-    'online_mobile', 'counters');
+    'online_mobile', 'counters', 'first_name_nom', 'first_name_gen', 'first_name_dat', 'first_name_acc',
+    'first_name_ins', 'first_name_abl', 'last_name_nom', 'last_name_gen', 'last_name_dat', 'last_name_acc',
+    'last_name_ins', 'last_name_abl', 'wall_default');
   VKPostLinkButton: array[TVkPostLinkButton] of string = (
     'auto', 'app_join', 'app_game_join', 'open_url', 'open', 'more', 'call', 'book', 'enroll', 'register', 'buy',
     'buy_ticket', 'order', 'create', 'install', 'contact', 'fill', 'join_public', 'join_event', 'join', 'im',
@@ -2079,7 +2084,12 @@ begin
     TVkProfileField.ScreenName, TVkProfileField.MaidenName, TVkProfileField.CropPhoto,
     TVkProfileField.IsFriend, TVkProfileField.FriendStatus, TVkProfileField.Career,
     TVkProfileField.Military, TVkProfileField.Blacklisted, TVkProfileField.BlacklistedByMe,
-    TVkProfileField.CanBeInvitedGroup, TVkProfileField.OnlineMobile, TVkProfileField.Counters];
+    TVkProfileField.CanBeInvitedGroup, TVkProfileField.OnlineMobile, TVkProfileField.Counters,
+    TVkProfileField.FirstNameNom, TVkProfileField.FirstNameGen, TVkProfileField.FirstNameDat,
+    TVkProfileField.FirstNameAcc, TVkProfileField.FirstNameIns, TVkProfileField.FirstNameAbl,
+    TVkProfileField.LastNameNom, TVkProfileField.LastNameGen, TVkProfileField.LastNameDat,
+    TVkProfileField.LastNameAcc, TVkProfileField.LastNameIns, TVkProfileField.LastNameAbl,
+    TVkProfileField.WallDefault];
 end;
 
 class function TVkProfileFieldsHelper.AllForGroup: TVkProfileFields;

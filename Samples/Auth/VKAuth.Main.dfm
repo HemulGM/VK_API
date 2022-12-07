@@ -590,7 +590,7 @@ object FormMain: TFormMain
           Margins.Top = 30
           Margins.Right = 30
           Margins.Bottom = 30
-          ActivePage = TabSheetPhotos
+          ActivePage = TabSheet10
           Align = alClient
           MultiLine = True
           TabOrder = 0
@@ -1081,6 +1081,24 @@ object FormMain: TFormMain
               Caption = 'SendPhoto'
               TabOrder = 4
               OnClick = ButtonSendPhotoClick
+            end
+            object ButtonMessageGetChat: TButton
+              Left = 3
+              Top = 96
+              Width = 166
+              Height = 25
+              Caption = 'GetChat'
+              TabOrder = 5
+              OnClick = ButtonMessageGetChatClick
+            end
+            object ButtonMessageGetConverstion: TButton
+              Left = 3
+              Top = 127
+              Width = 166
+              Height = 25
+              Caption = 'GetConversation'
+              TabOrder = 6
+              OnClick = ButtonMessageGetConverstionClick
             end
           end
           object TabSheet11: TTabSheet

@@ -17,6 +17,7 @@ type
     property Count: Integer read FCount write FCount;
     property Items: TArray<T> read FItems write FItems;
     procedure Append(Items: TVkEntityListSimple<T>);
+    procedure Delete(const Index: Integer);
   end;
 
   /// <summary>
@@ -137,6 +138,11 @@ begin
   OldLen := Length(Items.Items);
   SetLength(FItems, OldLen + Length(Items.Items));
   Move(Items.Items[0], FItems[OldLen], Length(Items.Items) * SizeOf(T));
+end;
+
+procedure TVkEntityListSimple<T>.Delete(const Index: Integer);
+begin
+  System.Delete(FItems, Index, 1);
 end;
 
 end.

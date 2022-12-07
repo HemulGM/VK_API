@@ -91,6 +91,8 @@ type
     FStorage: TStorageController;
     FStories: TStoriesController;
     FUserId: Integer;
+    FUserName: string;
+    FUserPhoto100: string;
     FUsers: TUsersController;
     FUseServiceKeyOnly: Boolean;
     FUtils: TUtilsController;
@@ -134,6 +136,8 @@ type
     function GetApplication: TVkApplicationData;
     procedure SetRequestLimit(const Value: Integer);
     function GetRequestLimit: Integer;
+    function GetUserName: string;
+    function GetUserPhoto: string;
   public
     constructor Create(const AToken: string); reintroduce; overload;
     constructor Create(AOwner: TComponent); overload; override;
@@ -390,6 +394,14 @@ type
     /// Идентификатор пользователя (будет запрошен, если не сохранен)
     /// </summary>
     property UserId: Integer read GetUserId;
+    /// <summary>
+    /// Имя пользователя (будет запрошено, если не сохранено)
+    /// </summary>
+    property UserName: string read GetUserName;
+    /// <summary>
+    /// Фото пользователя (будет запрошено, если не сохранено)
+    /// </summary>
+    property UserPhoto100: string read GetUserPhoto;
     /// <summary>
     /// Событие, которое происходит, если токен успешно получен и успешно пройдена проверка авторизации
     /// </summary>
@@ -734,10 +746,13 @@ function TCustomVK.LoadUserInfo: Boolean;
 var
   User: TVkProfile;
 begin
-  Result := Users.Get(User);
+  Result := Users.Get(User, [TVkProfileField.Photo100]);
   if Result then
-  begin
+  try
     FUserId := User.Id;
+    FUserName := User.FullName;
+    FUserPhoto100 := User.Photo100;
+  finally
     User.Free;
   end;
 end;
@@ -1102,6 +1117,22 @@ begin
     Result := FUserId
   else
     Result := -1;
+end;
+
+function TCustomVK.GetUserName: string;
+begin
+  if (FUserId > 0) or LoadUserInfo then
+    Result := FUserName
+  else
+    Result := '';
+end;
+
+function TCustomVK.GetUserPhoto: string;
+begin
+  if (FUserId > 0) or LoadUserInfo then
+    Result := FUserPhoto100
+  else
+    Result := '';
 end;
 
 procedure TCustomVK.SetPermissions(const Value: TVkPermissions);

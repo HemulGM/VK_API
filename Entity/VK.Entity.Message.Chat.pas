@@ -19,6 +19,7 @@ type
     FType: string;
     FUsers: TArray<TVkProfile>;
   public
+    property Id;
     property AdminId: Integer read FAdmin_id write FAdmin_id;
     property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
     property MembersCount: Integer read FMembers_count write FMembers_count;
@@ -26,6 +27,7 @@ type
     property Photo200: string read FPhoto_200 write FPhoto_200;
     property Photo50: string read FPhoto_50 write FPhoto_50;
     property Title: string read FTitle write FTitle;
+    // chat, ...
     property &Type: string read FType write FType;
     property Users: TArray<TVkProfile> read FUsers write FUsers;
     destructor Destroy; override;

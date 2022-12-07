@@ -119,11 +119,12 @@ type
     property Reason: TVkConversationDisableReason read FReason write FReason;
   end;
 
-  TVkPeer = class(TVkObject)
+  TVkPeer = class(TVkEntity)
   private
-    FLocal_id: Integer;
+    FLocal_id: TVkPeerId;
     [JsonReflectAttribute(ctString, rtString, TPeerTypeInterceptor)]
     FType: TVkPeerType;
+    FId: TVkPeerId;
     function GetIsChat: Boolean;
     function GetIsGroup: Boolean;
     function GetIsUser: Boolean;
@@ -131,11 +132,11 @@ type
     /// <summary>
     /// Идентификатор назначения
     /// </summary>
-    property Id;
+    property Id: TVkPeerId read FId write FId;
     /// <summary>
     /// Локальный идентификатор назначения. Для чатов — id - 2000000000, для сообществ — -id, для e-mail — -(id+2000000000).
     /// </summary>
-    property LocalId: Integer read FLocal_id write FLocal_id;
+    property LocalId: TVkPeerId read FLocal_id write FLocal_id;
     /// <summary>
     /// Тип. Возможные значения: user, chat, group, email
     /// </summary>
@@ -187,8 +188,13 @@ type
     FIs_marked_unread: Boolean;
     FPush_settings: TVkChatPushSettings;
     FCurrent_keyboard: TVkKeyboard;
+    FStyle: string;
+    FLast_conversation_message_id: Integer;
+    FIn_read_cmid: Integer;
+    FOut_read_cmid: Integer;
     function GetIsChat: Boolean;
     function GetIsUser: Boolean;
+    function GetIsGroup: Boolean;
   public  //[JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     /// <summary>
     /// Информация о том, может ли пользователь писать в диалог
@@ -203,13 +209,22 @@ type
     /// </summary>
     property InRead: Integer read FIn_read write FIn_read;
     /// <summary>
+    /// Идентификатор последнего прочтенного входящего сообщения.
+    /// </summary>
+    property InReadCmid: Integer read FIn_read_cmid write FIn_read_cmid;
+    /// <summary>
     /// Идентификатор последнего сообщения.
     /// </summary>
     property LastMessageId: Integer read FLast_message_id write FLast_message_id;
+    property LastConversationMessageId: Integer read FLast_conversation_message_id write FLast_conversation_message_id;
     /// <summary>
     /// Идентификатор последнего прочтенного исходящего сообщения.
     /// </summary>
     property OutRead: Integer read FOut_read write FOut_read;
+        /// <summary>
+    /// Идентификатор последнего прочтенного исходящего сообщения.
+    /// </summary>
+    property OutReadCmid: Integer read FOut_read_cmid write FOut_read_cmid;
     /// <summary>
     /// Информация о собеседнике
     /// </summary>
@@ -232,6 +247,8 @@ type
     property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
     property IsChat: Boolean read GetIsChat;
     property IsUser: Boolean read GetIsUser;
+    property IsGroup: Boolean read GetIsGroup;
+    property Style: string read FStyle write FStyle;
     /// <summary>
     /// Настройки Push-уведомлений
     /// </summary>
@@ -358,6 +375,11 @@ begin
   if Assigned(FCurrent_keyboard) then
     FCurrent_keyboard.Free;
   inherited;
+end;
+
+function TVkConversation.GetIsGroup: Boolean;
+begin
+  Result := Peer.&Type = TVkPeerType.Group;
 end;
 
 function TVkConversation.GetIsChat: Boolean;
