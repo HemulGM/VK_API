@@ -3,7 +3,8 @@ unit VK.Entity.Call;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  VK.Entity.Common;
 
 type
   TVkCall = class(TVkEntity)
@@ -24,6 +25,15 @@ type
     property State: string read FState write FState;
     property Time: TDateTime read FTime write FTime;
     property Video: Boolean read FVideo write FVideo;
+  end;
+
+  TVkCallStartInfo = class(TVkEntity)
+  private
+    FJoin_link: string;
+    FCall_id: Int64;
+  public
+    property JoinLink: string read FJoin_link write FJoin_link;
+    property CallId: Int64 read FCall_id write FCall_id;
   end;
 
 implementation

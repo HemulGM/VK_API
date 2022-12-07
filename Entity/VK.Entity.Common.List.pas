@@ -20,6 +20,7 @@ type
     property Items: TArray<T> read FItems write FItems;
     property IsEmpty: Boolean read GetIsEmpty;
     procedure Append(Items: TVkEntityListSimple<T>);
+    procedure Delete(const Index: Integer);
   end;
 
   /// <summary>
@@ -140,6 +141,11 @@ begin
   OldLen := Length(Items.Items);
   SetLength(FItems, OldLen + Length(Items.Items));
   Move(Items.Items[0], FItems[OldLen], Length(Items.Items) * SizeOf(T));
+end;
+
+procedure TVkEntityListSimple<T>.Delete(const Index: Integer);
+begin
+  System.Delete(FItems, Index, 1);
 end;
 
 function TVkEntityListSimple<T>.GetIsEmpty: Boolean;

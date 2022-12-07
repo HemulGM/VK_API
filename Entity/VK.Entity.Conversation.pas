@@ -152,11 +152,12 @@ type
     property Reason: TVkConversationDisableReason read FReason write FReason;
   end;
 
-  TVkPeer = class(TVkObject)
+  TVkPeer = class(TVkEntity)
   private
-    FLocal_id: Integer;
+    FLocal_id: TVkPeerId;
     [JsonReflectAttribute(ctString, rtString, TPeerTypeInterceptor)]
     FType: TVkPeerType;
+    FId: TVkPeerId;
     function GetIsChat: Boolean;
     function GetIsGroup: Boolean;
     function GetIsUser: Boolean;
@@ -164,11 +165,11 @@ type
     /// <summary>
     /// »дентификатор назначени€
     /// </summary>
-    property Id;
+    property Id: TVkPeerId read FId write FId;
     /// <summary>
     /// Ћокальный идентификатор назначени€. ƒл€ чатов Ч id - 2000000000, дл€ сообществ Ч -id, дл€ e-mail Ч -(id+2000000000).
     /// </summary>
-    property LocalId: Integer read FLocal_id write FLocal_id;
+    property LocalId: TVkPeerId read FLocal_id write FLocal_id;
     /// <summary>
     /// “ип. ¬озможные значени€: user, chat, group, email
     /// </summary>
@@ -220,13 +221,16 @@ type
     FIs_marked_unread: Boolean;
     FPush_settings: TVkChatPushSettings;
     FCurrent_keyboard: TVkKeyboard;
-    FIn_read_cmid: Integer;
-    FOut_read_cmid: Integer;
+  public  
     FLast_conversation_message_id: Int64;
+    //[JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_new: Boolean;
     FStyle: string;
+    FIn_read_cmid: Integer;
+    FOut_read_cmid: Integer;
     function GetIsChat: Boolean;
     function GetIsUser: Boolean;
+    function GetIsGroup: Boolean;
   public
     property CanSendMoney: Boolean read FCan_send_money write FCan_send_money;
     property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
@@ -248,7 +252,7 @@ type
     /// </summary>
     property InRead: Integer read FIn_read write FIn_read;
     /// <summary>
-    /// InReadCmid
+    /// »дентификатор последнего прочтенного вход€щего сообщени€.
     /// </summary>
     property InReadCmid: Integer read FIn_read_cmid write FIn_read_cmid;
     property IsChat: Boolean read GetIsChat;
@@ -267,8 +271,8 @@ type
     /// »дентификатор последнего прочтенного исход€щего сообщени€.
     /// </summary>
     property OutRead: Integer read FOut_read write FOut_read;
-    /// <summary>
-    /// OutReadCmid
+        /// <summary>
+    /// »дентификатор последнего прочтенного исход€щего сообщени€.
     /// </summary>
     property OutReadCmid: Integer read FOut_read_cmid write FOut_read_cmid;
     /// <summary>
@@ -289,6 +293,8 @@ type
     /// True, если диалог помечен как неотвеченный (только дл€ сообщений сообществ).
     /// </summary>
     property Unanswered: Boolean read FUnanswered write FUnanswered;
+    property IsGroup: Boolean read GetIsGroup;
+    property CurrcurrentKeyboard: TVkKeyboard read FCurrent_keyboard write FCurrent_keyboard;
     destructor Destroy; override;
   end;
 
@@ -410,6 +416,11 @@ begin
   if Assigned(FCurrent_keyboard) then
     FCurrent_keyboard.Free;
   inherited;
+end;
+
+function TVkConversation.GetIsGroup: Boolean;
+begin
+  Result := Peer.&Type = TVkPeerType.Group;
 end;
 
 function TVkConversation.GetIsChat: Boolean;
