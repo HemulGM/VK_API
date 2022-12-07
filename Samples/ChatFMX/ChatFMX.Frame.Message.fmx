@@ -132,6 +132,7 @@ object FrameMessage: TFrameMessage
           #1099' '#1085#1077' '#1089#1090#1072#1083#1080' '#1087#1086#1076' '#1072#1085#1076#1088#1086#1080#1076' '#1080' ios '#1102#1079#1072#1090#1100' xamarin, '#1072' '#1087#1086#1090#1103#1085#1091#1083#1080' '#1089#1088#1072#1079#1091' MaU' +
           'I, '#1085#1091' '#1090#1072#1082#1086#1077'. '#1054#1073#1105#1088#1090#1082#1072' '#1085#1072#1076' '#1086#1073#1105#1088#1090#1082#1086#1081', '#1082#1086#1090#1086#1088#1072#1103' '#1085#1072#1076' '#1086#1073#1105#1088#1090#1082#1086#1081'.'
         'Mono->Xamarin-> xamarin.forms->MaUI->AvaloniaUI')
+      ShowScrollBars = False
       StyledSettings = [Style, FontColor]
       TextSettings.Font.Family = 'Roboto'
       TextSettings.Font.Size = 13.000000000000000000
@@ -144,12 +145,12 @@ object FrameMessage: TFrameMessage
       Size.Width = 457.000000000000000000
       Size.Height = 84.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'memo_clear1'
+      StyleLookup = 'memo_clear'
       TabOrder = 1
       TabStop = False
       OnResize = MemoTextResize
-      Viewport.Width = 453.000000000000000000
-      Viewport.Height = 80.000000000000000000
+      Viewport.Width = 457.000000000000000000
+      Viewport.Height = 84.000000000000000000
     end
   end
 end

@@ -36,6 +36,9 @@ type
 
 implementation
 
+uses
+  System.Math;
+
 {$R *.fmx}
 
 function GetTextRect(Control: TCustomMemo): TRectF;
@@ -75,11 +78,18 @@ end;
 procedure TFrameMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory);
 begin
   MemoText.Text := Item.Text;
+  (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
+
+  (MemoText.Presentation as TStyledMemo).PrepareForPaint;
 end;
 
 procedure TFrameMessage.FOnMemoApply(Sender: TObject);
-begin
-  MemoTextChange(Sender);
+begin        {
+  TThread.ForceQueue(nil,
+    procedure
+    begin
+      MemoTextChange(Sender);
+    end);  }
 end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
@@ -87,14 +97,15 @@ begin
   var Sz: Single := Padding.Top + Padding.Bottom;
   for var Control in LayoutClient.Controls do
     Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
-  Height := Sz;
+  Height := Max(Sz, 60);
   if Assigned(ParentControl) then
     ParentControl.RecalcSize;
 end;
 
 procedure TFrameMessage.MemoTextChange(Sender: TObject);
 begin
-  MemoText.Height := MemoText.ContentSize.Size.Height;
+  MemoText.Height := MemoText.ContentSize.Size.Height + 5;
+  FrameResize(nil);
   //MemoText.Height := GetTextRect(MemoText).Height;
 end;
 
