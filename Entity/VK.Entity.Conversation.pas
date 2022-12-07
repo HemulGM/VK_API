@@ -22,11 +22,13 @@ type
     FCan_call: Boolean;
     FCan_use_mass_mentions: Boolean;
     FCan_change_service_type: Boolean;
+    FCan_change_style: Boolean;
   public
     property CanCall: Boolean read FCan_call write FCan_call;
     property CanChangeInfo: Boolean read FCan_change_info write FCan_change_info;
     property CanChangeInviteLink: Boolean read FCan_change_invite_link write FCan_change_invite_link;
     property CanChangePin: Boolean read FCan_change_pin write FCan_change_pin;
+    property CanChangeStyle: Boolean read FCan_change_style write FCan_change_style;
     property CanChangeServiceType: Boolean read FCan_change_service_type write FCan_change_service_type;
     property CanCopyChat: Boolean read FCan_copy_chat write FCan_copy_chat;
     property CanInvite: Boolean read FCan_invite write FCan_invite;
@@ -45,21 +47,47 @@ type
     FInvite: string;
     FSee_invite_link: string;
     FUse_mass_mentions: string;
+    FChange_style: string;
   public
+    /// <summary>
+    /// owner_and_admins, all, owner,
+    /// </summary>
     property Call: string read FCall write FCall;
+    /// <summary>
+    /// owner_and_admins, all, owner,
+    /// </summary>
     property ChangeAdmins: string read FChange_admins write FChange_admins;
+    /// <summary>
+    /// owner_and_admins, all, owner,
+    /// </summary>
     property ChangeInfo: string read FChange_info write FChange_info;
+    /// <summary>
+    /// owner_and_admins, all, owner,
+    /// </summary>
     property ChangePin: string read FChange_pin write FChange_pin;
+    /// <summary>
+    /// owner_and_admins, all, owner,
+    /// </summary>
+    property ChangeStyle: string read FChange_style write FChange_style;
+    /// <summary>
+    /// owner_and_admins, all, owner,
+    /// </summary>
     property Invite: string read FInvite write FInvite;
+    /// <summary>
+    /// owner_and_admins, all, owner,
+    /// </summary>
     property SeeInviteLink: string read FSee_invite_link write FSee_invite_link;
+    /// <summary>
+    /// owner_and_admins, all, owner,
+    /// </summary>
     property UseMassMentions: string read FUse_mass_mentions write FUse_mass_mentions;
   end;
 
   TVkChatSettings = class(TVkEntity)
   private
     FAcl: TVkChatAccess;
-    FActive_ids: TArray<Integer>;
-    FAdmin_ids: TArray<Integer>;
+    FActive_ids: TArray<TVkPeerId>;
+    FAdmin_ids: TArray<TVkPeerId>;
     FMembers_count: Integer;
     FOwner_id: Integer;
     FPhoto: TVkChatPhoto;
@@ -71,21 +99,26 @@ type
     FPermissions: TVkChatPermissions;
     FIs_disappearing: Boolean;
     FIs_service: Boolean;
+    FFriends_count: Integer;
   public
     property ACL: TVkChatAccess read FAcl write FAcl;
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property AdminIds: TArray<Integer> read FAdmin_ids write FAdmin_ids;
+    property AdminIds: TArray<TVkPeerId> read FAdmin_ids write FAdmin_ids;
     property Permissions: TVkChatPermissions read FPermissions write FPermissions;
     property IsDisappearing: Boolean read FIs_disappearing write FIs_disappearing;
     property IsService: Boolean read FIs_service write FIs_service;
     /// <summary>
     /// Идентификаторы последних пользователей, писавших в чат
     /// </summary>
-    property ActiveIds: TArray<Integer> read FActive_ids write FActive_ids;
+    property ActiveIds: TArray<TVkPeerId> read FActive_ids write FActive_ids;
     /// <summary>
     /// Число участников
     /// </summary>
     property MembersCount: Integer read FMembers_count write FMembers_count;
+    /// <summary>
+    /// Число друзей-участников
+    /// </summary>
+    property FriendsCount: Integer read FFriends_count write FFriends_count;
     /// <summary>
     /// Информация о том, является ли беседа каналом сообщества
     /// </summary>
@@ -188,14 +221,19 @@ type
     FIs_marked_unread: Boolean;
     FPush_settings: TVkChatPushSettings;
     FCurrent_keyboard: TVkKeyboard;
+  public  
+    FLast_conversation_message_id: Int64;
+    //[JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FIs_new: Boolean;
     FStyle: string;
-    FLast_conversation_message_id: Integer;
     FIn_read_cmid: Integer;
     FOut_read_cmid: Integer;
     function GetIsChat: Boolean;
     function GetIsUser: Boolean;
     function GetIsGroup: Boolean;
-  public  //[JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+  public
+    property CanSendMoney: Boolean read FCan_send_money write FCan_send_money;
+    property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
     /// <summary>
     /// Информация о том, может ли пользователь писать в диалог
     /// </summary>
@@ -204,6 +242,11 @@ type
     /// Настройки чата
     /// </summary>
     property ChatSettings: TVkChatSettings read FChat_settings write FChat_settings;
+    property CurrentKeyboard: TVkKeyboard read FCurrent_keyboard write FCurrent_keyboard;
+    /// <summary>
+    /// True, если диалог помечен как важный (только для сообщений сообществ).
+    /// </summary>
+    property Important: Boolean read FImportant write FImportant;
     /// <summary>
     /// Идентификатор последнего прочтенного входящего сообщения.
     /// </summary>
@@ -212,11 +255,18 @@ type
     /// Идентификатор последнего прочтенного входящего сообщения.
     /// </summary>
     property InReadCmid: Integer read FIn_read_cmid write FIn_read_cmid;
+    property IsChat: Boolean read GetIsChat;
+    property IsMarkedUnread: Boolean read FIs_marked_unread write FIs_marked_unread;
+    property IsNew: Boolean read FIs_new write FIs_new;
+    property IsUser: Boolean read GetIsUser;
+    /// <summary>
+    /// Идентификатор последнего сообщения
+    /// </summary>
+    property LastConversationMessageId: Int64 read FLast_conversation_message_id write FLast_conversation_message_id;
     /// <summary>
     /// Идентификатор последнего сообщения.
     /// </summary>
     property LastMessageId: Integer read FLast_message_id write FLast_message_id;
-    property LastConversationMessageId: Integer read FLast_conversation_message_id write FLast_conversation_message_id;
     /// <summary>
     /// Идентификатор последнего прочтенного исходящего сообщения.
     /// </summary>
@@ -226,11 +276,19 @@ type
     /// </summary>
     property OutReadCmid: Integer read FOut_read_cmid write FOut_read_cmid;
     /// <summary>
+    /// OutReadCmid
+    /// </summary>
+    property OutReadCmid: Integer read FOut_read_cmid write FOut_read_cmid;
+    /// <summary>
     /// Информация о собеседнике
     /// </summary>
     property Peer: TVkPeer read FPeer write FPeer;
+    /// <summary>
+    /// Настройки Push-уведомлений
+    /// </summary>
+    property PushSettings: TVkChatPushSettings read FPush_settings write FPush_settings;
     property SortId: TVkConversationSort read FSort_id write FSort_id;
-    property IsMarkedUnread: Boolean read FIs_marked_unread write FIs_marked_unread;
+    property Style: string read FStyle write FStyle;
     /// <summary>
     /// Число непрочитанных сообщений.
     /// </summary>

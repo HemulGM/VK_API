@@ -1015,8 +1015,12 @@ type
   end;
 
   TMessagesController = class(TVkController)
-  public    /// <summary>
+  public    
+    /// <summary>
     /// Отправить сообщение.
+    function SendAudioMessage(const PeerId: Integer; const FileName: string): Boolean;
+    /// <summary>
+    /// ????? ?????.
     /// </summary>
     function SendToPeer(var Item: Integer; PeerId: Integer; Message: string; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
@@ -1071,7 +1075,7 @@ type
     /// <summary>
     /// Возвращает сообщения по их идентификаторам.
     /// </summary>
-    function GetById(var Items: TVkMessages; Id: Integer; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
+    function GetById(var Item: TVkMessage; Id: Integer; PreviewLength: Integer = 0; GroupId: Integer = 0): Boolean; overload;
     /// <summary>
     /// Добавляет в мультидиалог нового пользователя.
     /// </summary>
@@ -1317,7 +1321,7 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils, VK.Entity.Photo, VK.Entity.Call;
+  VK.API, VK.CommonUtils, System.DateUtils, VK.Entity.Photo, VK.Entity.Call, VK.Entity.Doc.Save;
 
 { TMessagesController }
 
@@ -1511,9 +1515,18 @@ begin
   Result := GetById(Items, Params);
 end;
 
-function TMessagesController.GetById(var Items: TVkMessages; Id, PreviewLength, GroupId: Integer): Boolean;
+function TMessagesController.GetById(var Item: TVkMessage; Id, PreviewLength, GroupId: Integer): Boolean;
+var
+  Items: TVkMessages;
 begin
   Result := GetById(Items, [Id], PreviewLength, GroupId);
+  if Result then
+  try
+    Item := Items.Items[0];
+    Items.SaveObjects := True;
+  finally
+    Items.Free;
+  end;
 end;
 
 function TMessagesController.GetById(var Items: TVkMessages; Params: TVkParamsMessageGet): Boolean;
@@ -1791,6 +1804,19 @@ end;
 function TMessagesController.Send(var Item: Integer; Params: TVkParamsMessageSend): Boolean;
 begin
   Result := Handler.Execute('messages.send', Params.List).ResponseAsInt(Item);
+end;
+
+function TMessagesController.SendAudioMessage(const PeerId: Integer; const FileName: string): Boolean;
+var
+  Doc: TVkDocSaved;
+begin
+  Result := False;
+  if TCustomVK(VK).Docs.SaveAudioMessage(Doc, FileName, '', '', PeerId) then
+  try
+    Result := SendToPeer(PeerId, '', [Doc.AudioMessage.ToAttachment]);
+  finally
+    Doc.Free;
+  end;
 end;
 
 function TMessagesController.Send(var Item: Integer; UserId: Integer; Attachments: TAttachmentArray): Boolean;

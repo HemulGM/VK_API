@@ -386,6 +386,7 @@ type
     FCan_archive: Boolean;
     FIs_archived: Boolean;
     FShort_text_rate: Extended;
+    FHash: string;
   public
     /// <summary>
     /// Идентификатор записи
@@ -451,6 +452,10 @@ type
     /// Информация о местоположении
     /// </summary>
     property Geo: TVkGeo read FGeo write FGeo;
+    /// <summary>
+    /// Hash
+    /// </summary>
+    property Hash: string read FHash write FHash;
     /// <summary>
     /// Архивная запись
     /// </summary>

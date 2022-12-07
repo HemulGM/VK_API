@@ -101,6 +101,8 @@ type
     [JsonReflectAttribute(ctString, rtString, TLiveStatusInterceptor)]
     FLive_status: TVkLiveStatus;
     FSpectators: Integer;
+    FIs_author: Boolean;
+    FTrack_code: string;
   public
     /// <summary>
     /// Ключ доступа к объекту
@@ -193,6 +195,10 @@ type
     /// </summary>
     property Image: TArray<TVkVideoImage> read FImage write FImage;
     /// <summary>
+    /// True, если юзер - автор объекта
+    /// </summary>
+    property IsAuthor: Boolean read FIs_author write FIs_author;
+    /// <summary>
     /// True, если объект добавлен в закладки у текущего пользователя
     /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
@@ -253,6 +259,10 @@ type
     /// Название видеозаписи
     /// </summary>
     property Title: string read FTitle write FTitle;
+    /// <summary>
+    /// TrackCode
+    /// </summary>
+    property TrackCode: string read FTrack_code write FTrack_code;
     /// <summary>
     /// Поле свидетельствует о том, что трансляция скоро начнётся (для live = 1)
     /// </summary>

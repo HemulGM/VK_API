@@ -59,7 +59,7 @@ begin
   Add(VK_ERROR_CAPTCHA, 'Требуется ввод кода с картинки (Captcha)');
   Add(VK_ERROR_ACCESS_DENIED, 'Доступ запрещён. Убедитесь, что Вы используете верные идентификаторы, и доступ к контенту для текущего пользователя есть в полной версии сайта');
   Add(VK_ERROR_HTTPS_NEEDED, 'Требуется выполнение запросов по протоколу HTTPS, т.к. пользователь включил настройку, требующую работу через безопасное соединение'#13#10 +
-  {                       }  'Чтобы избежать появления такой ошибки, в Standalone-приложении Вы можете предварительно проверять состояние этой настройки у пользователя методом account.getInfo');
+    'Чтобы избежать появления такой ошибки, в Standalone-приложении Вы можете предварительно проверять состояние этой настройки у пользователя методом account.getInfo');
   Add(VK_ERROR_VALIDATION_REQUIRED, 'Требуется валидация пользователя. Действие требует подтверждения — необходимо перенаправить пользователя на служебную страницу для валидации');
   Add(18, 'Страница удалена или заблокирована. Страница пользователя была удалена или заблокирована');
   Add(19, 'Контент недоступен/Для сообщества заблокирована загрузка историй');
@@ -179,6 +179,8 @@ begin
   Add(1427, 'Корзина пуста');
   Add(1429, 'Specify width, length, height and weight all together');
   Add(1430, 'VK Pay status can not be changed');
+  Add(1431, 'Market was already enabled in this group');
+  Add(1432, 'Market was already disabled in this group');
   Add(1600, 'Срок хранения истории истёк');
   Add(1602, 'Нельзя ответить на историю в связи с настройками приватности');
   Add(2000, 'Нельзя добавить больше 10 серверов');
@@ -189,6 +191,10 @@ begin
   Add(3303, 'Otp app validation needed');
   Add(3304, 'Требуется подтверждение Email');
   Add(3305, 'Assert votes');
+  Add(7701, 'Total audio duration limit reached');
+  Add(7702, 'Audio file is too big');
+  Add(7703, 'Invalid hash');
+  Add(7704, 'Task not found');
 end;
 
 function TVkErrors.Get(const Code: Integer; const Default: string): string;

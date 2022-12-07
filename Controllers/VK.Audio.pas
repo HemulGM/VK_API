@@ -279,39 +279,6 @@ implementation
 uses
   VK.API, System.Classes, System.Net.HttpClient, System.Net.Mime;
 
-{
-  var parameters = new VkParameters
-  {
-    { "audio", audio ,
-    { "target_ids", targetIds
-  ;
-  return _vk.Call<ReadOnlyCollection<long>>("audio.setBroadcast", parameters);
-}
-{
-var parameters = new VkParameters
-			{
-				{ "filter", filter ,
-				{ "active", active
-			;
-			return _vk.Call<ReadOnlyCollection<object>>("audio.getBroadcastList", parameters);
-}
-{
-var parameters = new VkParameters
-			{
-				{ "lyrics_id", lyricsId
-			;
-			return _vk.Call<Lyrics>("audio.getLyrics", parameters);
-}
-{
-  var parameters = new VkParameters
-  {
-    { "owner_id", ownerId ,
-    { "playlist_id", playlistId ,
-    { "audio_ids", audioIds
-  ;
-  return _vk.Call("audio.addToPlaylist", parameters).ToReadOnlyCollectionOf<long>(x => x["audio_id"]);
-}
-
 { TAudioController }
 
 function TAudioController.Upload(const UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean;
@@ -344,16 +311,11 @@ var
   Response: TVkAudioUploadResponse;
 begin
   Result := False;
-  if GetUploadServer(UploadServer) then
-  begin
-    if Upload(UploadServer, FileName, Response) then
-    begin
-      try
-        Result := Save(Audio, Response);
-      finally
-        Response.Free;
-      end;
-    end;
+  if GetUploadServer(UploadServer) and Upload(UploadServer, FileName, Response) then
+  try
+    Result := Save(Audio, Response);
+  finally
+    Response.Free;
   end;
 end;
 

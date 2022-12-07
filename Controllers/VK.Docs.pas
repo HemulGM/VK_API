@@ -229,7 +229,7 @@ begin
   Result := False;
   if GetMessagesUploadServer(Url, TVkDocUploadType.AudioMessage, PeerId) then
   begin
-    if TCustomVK(VK).Upload(Url, FileName, Response) then
+    if TCustomVK(VK).Upload(Url, [FileName], Response) then
       Result := Save(Doc, Response, Title, Tags);
   end;
 end;

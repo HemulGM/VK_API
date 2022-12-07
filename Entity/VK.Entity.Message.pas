@@ -171,6 +171,7 @@ type
     FAction: TVkMessageAction;
     FWas_listened: Boolean;
     function GetPayloadButton: TVkPayloadButton;
+    function GetIsBotFrom: Boolean;
   public
     property Date: TDateTime read FDate write FDate;
     property PeerId: Integer read FPeer_id write FPeer_id;
@@ -197,6 +198,7 @@ type
     /// Исходящее сообщение
     /// </summary>
     property &Out: Boolean read FOut write FOut;
+    property IsBotFrom: Boolean read GetIsBotFrom;
     destructor Destroy; override;
   end;
 
@@ -272,6 +274,11 @@ begin
       end;
     end;
   end;
+end;
+
+function TVkMessage.GetIsBotFrom: Boolean;
+begin
+  Result := FFrom_id < 0;
 end;
 
 function TVkMessage.GetPayloadButton: TVkPayloadButton;

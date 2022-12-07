@@ -30,7 +30,15 @@ type
 
   TMessageListeners = TList<TMessageListener>;
 
-  TEventListeners = TList<Pointer>;
+  TEventListiner = record
+    Method: Pointer;
+    TypeInfo: Pointer;
+    class function Create(Method, TypeInfo: Pointer): TEventListiner; static;
+  end;
+
+  TEventListeners = class(TList<TEventListiner>)
+    function ForEach<T>(Proc: TFunc<TEventListiner, Boolean>): Boolean;
+  end;
 
   TVkBot = class
     class var
@@ -204,14 +212,14 @@ end;
 
 procedure TVkBotChat.AddListener<T>(Method: T);
 begin
-  FListeners.Add(@Method);
+  FListeners.Add(TEventListiner.Create(@Method, TypeInfo(T)));
   if TypeInfo(T) = TypeInfo(TOnWallPostAction) then
   begin
 
   end;
   if TypeInfo(T) = TypeInfo(TOnGroupMessageNew) then
   begin
-    Sleep(1);
+    TOnGroupMessageNew((@Method)^)(nil, 0, nil, nil, '123');
   end;
 end;
 
@@ -280,7 +288,6 @@ end;
 function TVkBotChat.HandleMessageListener(GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo): Boolean;
 var
   Listener: TMessageListener;
-  //EventListener: Pointer;
 begin
   for Listener in FMessageListeners do
     if TVkPeerType.Create(Message.PeerId) in Listener.PeerTypes then
@@ -340,9 +347,9 @@ var
   FMessage: TVkMessage;
   FClientInfo: TVkClientInfo;
 begin
-  if FSkipOtherBotMessages and (Message.FromId < 0) then
+  if FSkipOtherBotMessages and Message.IsBotFrom then
     Exit;
-  if Assigned(FOnMessage) or (FMessageListeners.Count > 0) then
+  if Assigned(FOnMessage) or (FMessageListeners.Count > 0) or (FListeners.Count > 0) then
   begin
     FMessage := Message.Clone<TVkMessage>;
     FClientInfo := ClientInfo.Clone<TVkClientInfo>;
@@ -351,7 +358,16 @@ begin
       begin
         try
           if FMessageListeners.Count > 0 then
-            HandleMessageListener(GroupId, FMessage, FClientInfo);
+            if HandleMessageListener(GroupId, FMessage, FClientInfo) then
+              Exit;
+          if FListeners.Count > 0 then
+            if FListeners.ForEach<TOnGroupMessageNew>(
+              function(Event: TEventListiner): Boolean
+              begin
+                TOnGroupMessageNew((@Event.Method)^)(Self, GroupId, Message, ClientInfo, EventId);
+                Result := False;
+              end) then
+              Exit;
           if Assigned(FOnMessage) then
             FOnMessage(Self, GroupId, FMessage, FClientInfo);
         finally
@@ -389,6 +405,32 @@ end;
 procedure TVkBotChat.SetSkipOtherBotMessages(const Value: Boolean);
 begin
   FSkipOtherBotMessages := Value;
+end;
+
+{ TEventListiner }
+
+class function TEventListiner.Create(Method, TypeInfo: Pointer): TEventListiner;
+begin
+  Result.Method := Method;
+  Result.TypeInfo := TypeInfo;
+end;
+
+{ TEventListeners }
+
+function TEventListeners.ForEach<T>(Proc: TFunc<TEventListiner, Boolean>): Boolean;
+var
+  Listener: TEventListiner;
+begin
+  for Listener in Self do
+    if Listener.TypeInfo = TypeInfo(T) then
+    try
+      if Proc(Listener) then
+        Exit(True);
+    except
+      on E: Exception do
+        Console.AddLine('Error with Listener: "' + E.Message + '"', RED);
+    end;
+  Result := False;
 end;
 
 end.

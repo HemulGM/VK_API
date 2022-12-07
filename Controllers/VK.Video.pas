@@ -641,7 +641,7 @@ implementation
 
 uses
   VK.API, VK.CommonUtils, System.NetConsts, System.Net.URLClient,
-  System.Net.Mime, System.Classes, IdHTTP, IdMultipartFormData, System.Types;
+  System.Net.Mime, System.Classes, IdMultipartFormData, System.Types;
 
 { TVideoController }
 

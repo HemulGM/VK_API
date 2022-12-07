@@ -72,20 +72,22 @@ type
 
   TVkCommentsInfo = class(TVkCounterEntity)
   private
+    FGroups_can_post: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_post: Boolean;
-    FGroups_can_post: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_close: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_open: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_view: Boolean;
   public
     /// <summary>
     ///  оличество комментариев
     /// </summary>
     property Count;
     /// <summary>
-    /// »нформаци€ о том, может ли текущий пользователь комментировать запись (1 Ч может, 0 Ч не может)
+    /// »нформаци€ о том, может ли текущий пользователь комментировать запись
     /// </summary>
     property CanPost: Boolean read FCan_post write FCan_post;
     /// <summary>
@@ -100,6 +102,10 @@ type
     /// может ли текущий пользователь открыть комментарии к записи
     /// </summary>
     property CanOpen: Boolean read FCan_open write FCan_open;
+    /// <summary>
+    /// »нформаци€ о том, может ли текущий пользователь просматривать запись
+    /// </summary>
+    property CanView: Boolean read FCan_view write FCan_view;
   end;
 
 implementation

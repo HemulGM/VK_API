@@ -10,12 +10,15 @@ type
   /// Базовый класс списка без освобождения элементов списка
   /// </summary>
   TVkEntityListSimple<T> = class(TVkEntity)
+  private
+    function GetIsEmpty: Boolean;
   protected
     FCount: Integer;
     FItems: TArray<T>;
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<T> read FItems write FItems;
+    property IsEmpty: Boolean read GetIsEmpty;
     procedure Append(Items: TVkEntityListSimple<T>);
     procedure Delete(const Index: Integer);
   end;
@@ -143,6 +146,11 @@ end;
 procedure TVkEntityListSimple<T>.Delete(const Index: Integer);
 begin
   System.Delete(FItems, Index, 1);
+end;
+
+function TVkEntityListSimple<T>.GetIsEmpty: Boolean;
+begin
+  Result := Length(FItems) <= 0;
 end;
 
 end.
