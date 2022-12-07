@@ -273,7 +273,7 @@ uses
   VK.Entity.Storage, VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth,
   VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
   REST.Json, VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads,
-  VK.Entity.Message.Chat, VK.Entity.Board, VK.Board, VK.Entity.Common;
+  VK.Entity.Message.Chat, VK.Entity.Board, VK.Board;
 
 {$R *.dfm}
 
@@ -560,7 +560,6 @@ end;
 procedure TFormMain.ButtonMesGetConvClick(Sender: TObject);
 var
   List: TVkConversationItems;
-  Item: TVkConversationItem;
   Params: TVkParamsConversationsGet;
 begin
   Params.Offset(0);

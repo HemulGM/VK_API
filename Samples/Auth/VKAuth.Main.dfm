@@ -1113,6 +1113,7 @@ object FormMain: TFormMain
               Caption = 'GetConversation'
               TabOrder = 6
               OnClick = ButtonMessageGetConverstionClick
+            end
             object ButtonSendAudioMessage: TButton
               Left = 175
               Top = 65

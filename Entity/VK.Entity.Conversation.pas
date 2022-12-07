@@ -276,10 +276,6 @@ type
     /// </summary>
     property OutReadCmid: Integer read FOut_read_cmid write FOut_read_cmid;
     /// <summary>
-    /// OutReadCmid
-    /// </summary>
-    property OutReadCmid: Integer read FOut_read_cmid write FOut_read_cmid;
-    /// <summary>
     /// »нформаци€ о собеседнике
     /// </summary>
     property Peer: TVkPeer read FPeer write FPeer;
@@ -297,20 +293,7 @@ type
     /// True, если диалог помечен как неотвеченный (только дл€ сообщений сообществ).
     /// </summary>
     property Unanswered: Boolean read FUnanswered write FUnanswered;
-    /// <summary>
-    /// True, если диалог помечен как важный (только дл€ сообщений сообществ).
-    /// </summary>
-    property Important: Boolean read FImportant write FImportant;
-    property CanSendMoney: Boolean read FCan_send_money write FCan_send_money;
-    property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
-    property IsChat: Boolean read GetIsChat;
-    property IsUser: Boolean read GetIsUser;
     property IsGroup: Boolean read GetIsGroup;
-    property Style: string read FStyle write FStyle;
-    /// <summary>
-    /// Ќастройки Push-уведомлений
-    /// </summary>
-    property PushSettings: TVkChatPushSettings read FPush_settings write FPush_settings;
     property CurrcurrentKeyboard: TVkKeyboard read FCurrent_keyboard write FCurrent_keyboard;
     destructor Destroy; override;
   end;
