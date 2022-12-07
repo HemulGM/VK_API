@@ -435,10 +435,18 @@ end;
 procedure TFormMain.ButtonAudioGetClick(Sender: TObject);
 var
   List: TVkAudios;
-begin
-  if VK1.Audio.Get(List, TVkParamsAudioGet.Create.OwnerId(415730216).AlbumId(86751037)) then
+  Audio: TVkAudio;
+begin     {
+  if VK1.Audio.GetById(Audio, 280015709, 456247586) then
   try
-    for var Audio in List.Items do
+
+  finally
+    Audio.Free;
+  end;  }
+
+  if VK1.Audio.Get(List, TVkParamsAudioGet.Create.OwnerId(280015709).AudioId(456247586)) then
+  try
+    for Audio in List.Items do
     begin
       Memo1.Lines.Add(
         Audio.Artist + ' - ' +

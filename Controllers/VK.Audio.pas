@@ -11,9 +11,10 @@ type
   TVkParamsAudioGet = record
     List: TParams;
     function OwnerId(const Value: TVkPeerId): TVkParamsAudioGet;
-    function AlbumId(const Value: Integer): TVkParamsAudioGet;
+    function AlbumId(const Value: Int64): TVkParamsAudioGet;
     function PlaylistId(const Value: Integer): TVkParamsAudioGet;
     function AudioIds(const Value: TIdList): TVkParamsAudioGet;
+    function AudioId(const Value: Int64): TVkParamsAudioGet;
     function Offset(const Value: Integer): TVkParamsAudioGet;
     function Count(const Value: Integer): TVkParamsAudioGet;
     function AccessKey(const Value: string): TVkParamsAudioGet;
@@ -22,7 +23,7 @@ type
 
   TVkParamsAudioGetRecomendations = record
     List: TParams;
-    function TargetAudio(const Value: Integer): TVkParamsAudioGetRecomendations;
+    function TargetAudio(const Value: Int64): TVkParamsAudioGetRecomendations;
     function UserId(const Value: TVkPeerId): TVkParamsAudioGetRecomendations;
     function Offset(const Value: Integer): TVkParamsAudioGetRecomendations;
     function Count(const Value: Integer): TVkParamsAudioGetRecomendations;
@@ -80,7 +81,7 @@ type
 
   TVkParamsAudioEdit = record
     List: TParams;
-    function AudioId(const Value: Integer): TVkParamsAudioEdit;
+    function AudioId(const Value: Int64): TVkParamsAudioEdit;
     function OwnerId(const Value: TVkPeerId): TVkParamsAudioEdit;
     function Artist(const Value: string): TVkParamsAudioEdit;
     function Title(const Value: string): TVkParamsAudioEdit;
@@ -91,8 +92,8 @@ type
 
   TVkParamsAudioEditPlaylist = record
     List: TParams;
-    function PlaylistId(const Value: Integer): TVkParamsAudioEditPlaylist;
-    function OwnerId(const Value: Integer): TVkParamsAudioEditPlaylist;
+    function PlaylistId(const Value: Int64): TVkParamsAudioEditPlaylist;
+    function OwnerId(const Value: Int64): TVkParamsAudioEditPlaylist;
     function Description(const Value: string): TVkParamsAudioEditPlaylist;
     function Title(const Value: string): TVkParamsAudioEditPlaylist;
     function AudioIds(const Value: TArrayOfString): TVkParamsAudioEditPlaylist;
@@ -101,9 +102,9 @@ type
   TVkParamsAudioReorder = record
     List: TParams;
     function OwnerId(const Value: TVkPeerId): TVkParamsAudioReorder;
-    function AudioId(const Value: Integer): TVkParamsAudioReorder;
-    function Before(const Value: Integer): TVkParamsAudioReorder;
-    function After(const Value: Integer): TVkParamsAudioReorder;
+    function AudioId(const Value: Int64): TVkParamsAudioReorder;
+    function Before(const Value: Int64): TVkParamsAudioReorder;
+    function After(const Value: Int64): TVkParamsAudioReorder;
   end;
 
   TAudioController = class(TVkController)
@@ -568,41 +569,24 @@ var
   JArray: TJSONArray;
 begin
   Result := False;
-  if AccessKey.IsEmpty then
-    ItemStr := OwnerId.ToString + '_' + AudioId.ToString
-  else
-    ItemStr := OwnerId.ToString + '_' + AudioId.ToString + '_' + AccessKey;
+  ItemStr := OwnerId.ToString + '_' + AudioId.ToString;
+  if not AccessKey.IsEmpty then
+    ItemStr := ItemStr + '_' + AccessKey;
   with Handler.Execute('audio.getById', [['count', '1'], ['audios', ItemStr]]) do
-  begin
     if GetValue(JArray) then
-    begin
+    try
       try
-        try
-          if JArray.Count > 0 then
-            Audio := TVkAudio.FromJsonString<TVkAudio>(JArray.Items[0].ToString);
-        finally
-          JArray.Free;
+        if JArray.Count > 0 then
+        begin
+          Audio := TVkAudio.FromJsonObject<TVkAudio>(JArray.Items[0] as TJSONObject);
+          Result := True;
         end;
-        Result := True;
-      except
-        Result := False;
+      finally
+        JArray.Free;
       end;
+    except
+      Result := False;
     end;
-  end;
-end;
-
-function TAudioController.GetCatalog(var Items: TVkAudioCatalog; Params: TParams): Boolean;
-begin
-  Result := Handler.Execute('audio.getCatalog', Params).GetObject(Items);
-end;
-
-function TAudioController.GetCount(var Value: Integer; OwnerId: TVkPeerId): Boolean;
-var
-  Params: TParams;
-begin
-  if OwnerId <> 0 then
-    Params.Add('owner_id', OwnerId);
-  Result := Handler.Execute('audio.getCount', Params).ResponseAsInt(Value);
 end;
 
 function TAudioController.GetById(var Audios: TVkAudios; List: TVkAudioIndexes): Boolean;
@@ -617,6 +601,20 @@ begin
     ListStr := ListStr + List[i].OwnerId.ToString + '_' + List[i].AudioId.ToString;
   end;
   Result := Handler.Execute('audio.getById', ['audios', ListStr]).GetObject(Audios);
+end;
+
+function TAudioController.GetCatalog(var Items: TVkAudioCatalog; Params: TParams): Boolean;
+begin
+  Result := Handler.Execute('audio.getCatalog', Params).GetObject(Items);
+end;
+
+function TAudioController.GetCount(var Value: Integer; OwnerId: TVkPeerId): Boolean;
+var
+  Params: TParams;
+begin
+  if OwnerId <> 0 then
+    Params.Add('owner_id', OwnerId);
+  Result := Handler.Execute('audio.getCount', Params).ResponseAsInt(Value);
 end;
 
 function TAudioController.GetUploadServer(var UploadUrl: string): Boolean;
@@ -645,9 +643,15 @@ begin
   Result := Self;
 end;
 
-function TVkParamsAudioGet.AlbumId(const Value: Integer): TVkParamsAudioGet;
+function TVkParamsAudioGet.AlbumId(const Value: Int64): TVkParamsAudioGet;
 begin
   List.Add('album_id', Value);
+  Result := Self;
+end;
+
+function TVkParamsAudioGet.AudioId(const Value: Int64): TVkParamsAudioGet;
+begin
+  List.Add('audio_ids', [Value]);
   Result := Self;
 end;
 
@@ -740,7 +744,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsAudioEdit.AudioId(const Value: Integer): TVkParamsAudioEdit;
+function TVkParamsAudioEdit.AudioId(const Value: Int64): TVkParamsAudioEdit;
 begin
   List.Add('audio_id', Value);
   Result := Self;
@@ -792,7 +796,7 @@ end;
 
 function TVkParamsAudioSearch.Lyrics(const Value: string): TVkParamsAudioSearch;
 begin
-  List.Add('lirycs', Value);
+  List.Add('lyrics', Value);
   Result := Self;
 end;
 
@@ -886,13 +890,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsAudioEditPlaylist.OwnerId(const Value: Integer): TVkParamsAudioEditPlaylist;
+function TVkParamsAudioEditPlaylist.OwnerId(const Value: Int64): TVkParamsAudioEditPlaylist;
 begin
   List.Add('owner_id', Value);
   Result := Self;
 end;
 
-function TVkParamsAudioEditPlaylist.PlaylistId(const Value: Integer): TVkParamsAudioEditPlaylist;
+function TVkParamsAudioEditPlaylist.PlaylistId(const Value: Int64): TVkParamsAudioEditPlaylist;
 begin
   List.Add('playlist_id', Value);
   Result := Self;
@@ -924,7 +928,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsAudioGetRecomendations.TargetAudio(const Value: Integer): TVkParamsAudioGetRecomendations;
+function TVkParamsAudioGetRecomendations.TargetAudio(const Value: Int64): TVkParamsAudioGetRecomendations;
 begin
   List.Add('target_audio', Value);
   Result := Self;
@@ -938,19 +942,19 @@ end;
 
 { TVkParamsAudioReorder }
 
-function TVkParamsAudioReorder.After(const Value: Integer): TVkParamsAudioReorder;
+function TVkParamsAudioReorder.After(const Value: Int64): TVkParamsAudioReorder;
 begin
   List.Add('after', Value);
   Result := Self;
 end;
 
-function TVkParamsAudioReorder.AudioId(const Value: Integer): TVkParamsAudioReorder;
+function TVkParamsAudioReorder.AudioId(const Value: Int64): TVkParamsAudioReorder;
 begin
   List.Add('audio_id', Value);
   Result := Self;
 end;
 
-function TVkParamsAudioReorder.Before(const Value: Integer): TVkParamsAudioReorder;
+function TVkParamsAudioReorder.Before(const Value: Int64): TVkParamsAudioReorder;
 begin
   List.Add('before', Value);
   Result := Self;
