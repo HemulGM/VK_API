@@ -331,8 +331,8 @@ begin
     CircleAvatar.Fill.Bitmap.Bitmap.LoadFromFile(FImageFile);
     CircleAvatar.Fill.Kind := TBrushKind.Bitmap;
     CircleAvatar.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
-  finally
-    //CircleAvatar.Fill.Kind := TBrushKind.Solid
+  except
+    CircleAvatar.Fill.Kind := TBrushKind.Solid;
   end;
 end;
 

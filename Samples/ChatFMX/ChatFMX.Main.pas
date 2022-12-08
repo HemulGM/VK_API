@@ -51,6 +51,10 @@ type
     RectangleLoadBG: TRectangle;
     Path2: TPath;
     Label1: TLabel;
+    LayoutError: TLayout;
+    Rectangle2: TRectangle;
+    Label2: TLabel;
+    ButtonRelogin: TButton;
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
@@ -59,6 +63,8 @@ type
     procedure Button1Click(Sender: TObject);
     procedure ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure FormDestroy(Sender: TObject);
+    procedure ButtonReloginClick(Sender: TObject);
+    procedure VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -80,6 +86,8 @@ type
     function CreateChat(PeerId: TVkPeerId): TFrameChat;
     procedure ShowChat(Frame: TFrameChat);
     procedure Login;
+    procedure LoadDone;
+    procedure DoErrorLogin;
   public
     property UnreadOnly: Boolean read FUnreadOnly write SetUnreadOnly;
   end;
@@ -91,7 +99,7 @@ implementation
 
 uses
   System.Math, System.Threading, VK.FMX.OAuth2, System.IOUtils, VK.Clients,
-  ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager;
+  ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager, FMX.Ani;
 
 {$R *.fmx}
 
@@ -133,6 +141,7 @@ procedure TFormMain.FormCreate(Sender: TObject);
 begin
   FLoading := True;
   FChats := TChats.Create;
+  LayoutError.Visible := False;
   ListBoxChats.AniCalculations.Animation := True;
   TPreview.Instance.OnLog := FOnLog;
   VK.Application := TVkApplicationData.VKAdmin;
@@ -149,7 +158,7 @@ end;
 
 procedure TFormMain.FormResize(Sender: TObject);
 begin
-  LayoutClient.Width := Max(Min(1000, ClientWidth), 950) - 40;
+  LayoutClient.Width := Max(Min(1000, ClientWidth), 800) - 40;
 end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
@@ -193,6 +202,12 @@ begin
     Exit;
   if NewViewportPosition.Y + ListBoxChats.Height >= ListBoxChats.ContentBounds.Height then
     EndOfChats;
+end;
+
+procedure TFormMain.ButtonReloginClick(Sender: TObject);
+begin
+  LayoutError.Visible := False;
+  TTask.Run(Login);
 end;
 
 function TFormMain.CreateChat(PeerId: TVkPeerId): TFrameChat;
@@ -284,8 +299,7 @@ begin
               VK.Login
             else
             begin
-          //LabelLogin.Caption := 'login error';
-              ShowMessage('Ошибка загрузки страницы авторизации');
+              DoErrorLogin;
             end;
           end);
       end
@@ -297,6 +311,25 @@ begin
     end);
   Token := AToken;
   TokenExpiry := ATokenExpiry;
+end;
+
+procedure TFormMain.DoErrorLogin;
+begin
+  LayoutLoading.Opacity := 1;
+  LayoutLoading.Visible := True;
+  LayoutError.Visible := True;
+end;
+
+procedure TFormMain.VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
+begin
+  if not VK.IsLogin then
+    DoErrorLogin;
+end;
+
+procedure TFormMain.LoadDone;
+begin
+  TAnimator.AnimateFloatWait(LayoutLoading, 'Opacity', 0);
+  LayoutLoading.Visible := False;
 end;
 
 procedure TFormMain.Reload;
@@ -317,6 +350,12 @@ begin
         end);
       LoadConversationsAsync;
       FLoading := False;
+      Sleep(500);
+      TThread.Queue(nil,
+        procedure
+        begin
+          LoadDone;
+        end);
     end);
 end;
 
@@ -324,8 +363,6 @@ procedure TFormMain.VKLogin(Sender: TObject);
 begin
   TFile.WriteAllText('token.tmp', VK.Token);
   TThread.Queue(nil, Reload);
-  //LabelLogin.Caption := 'login success';
-  //Memo1.Lines.Add(VK1.Token);
 end;
 
 { TChats }

@@ -25,7 +25,6 @@ type
     FIsPinned: Boolean;
     FIsSelfChat: Boolean;
     FIsHaveMention: Boolean;
-    FText: TLabel;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure SetUndreadCount(const Value: Integer);
     procedure SetLastTime(const Value: TDateTime);
@@ -76,11 +75,6 @@ begin
     FWasQueryImage := True;
     if not FImageUrl.IsEmpty then
       TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
-  end;
-  if not Assigned(FText) then
-  begin
-    FindStyleResource('text', FText);
-    SetText(Text);
   end;
   var Circle: TCircle;
   if FindStyleResource('avatar', Circle) then
@@ -335,20 +329,6 @@ end;
 procedure TListBoxItemChat.SetText(const Value: string);
 begin
   inherited;
-  if Assigned(FText) then
-  begin
-    if FText.Width > 160 then
-    begin
-      FText.AutoSize := True;
-      FText.AutoSize := False;
-      FText.Width := 160;
-    end
-    else
-    begin
-      FText.AutoSize := False;
-      FText.AutoSize := True;
-    end;
-  end;
 end;
 
 procedure TListBoxItemChat.SetUnanswered(const Value: Boolean);

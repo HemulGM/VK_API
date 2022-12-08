@@ -88,7 +88,7 @@ begin
   if not FileName.IsEmpty then
   begin
     FileName := TPath.Combine(FLocalPath, FileName);
-    Result := TFile.Exists(FileName);
+    Result := TFile.Exists(FileName) and (TFile.GetSize(FileName) > 0);
   end;
 end;
 
