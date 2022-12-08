@@ -47,6 +47,10 @@ type
     LayoutHeader: TLayout;
     RectangleHeader: TRectangle;
     CircleAvatar: TCircle;
+    LayoutLoading: TLayout;
+    RectangleLoadBG: TRectangle;
+    Path2: TPath;
+    Label1: TLabel;
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
@@ -75,6 +79,7 @@ type
     procedure LoadChat(PeerId: TVkPeerId);
     function CreateChat(PeerId: TVkPeerId): TFrameChat;
     procedure ShowChat(Frame: TFrameChat);
+    procedure Login;
   public
     property UnreadOnly: Boolean read FUnreadOnly write SetUnreadOnly;
   end;
@@ -119,6 +124,11 @@ begin
   TPreview.Instance.Unsubscribe(FOnReadyAvatar);
 end;
 
+procedure TFormMain.Login;
+begin
+  VK.Login;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   FLoading := True;
@@ -128,7 +138,7 @@ begin
   VK.Application := TVkApplicationData.VKAdmin;
   if TFile.Exists('token.tmp') then
     VK.Token := TFile.ReadAllText('token.tmp');
-  VK.Login;
+  TTask.Run(Login);
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
@@ -139,7 +149,7 @@ end;
 
 procedure TFormMain.FormResize(Sender: TObject);
 begin
-  LayoutClient.Width := Max(Min(1000, ClientWidth), 800) - 40;
+  LayoutClient.Width := Max(Min(1000, ClientWidth), 950) - 40;
 end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
@@ -155,7 +165,7 @@ begin
   ListBoxChats.AddObject(ListItem);
   ListItem.Fill(Chat, Data);
   ListItem.OnClick := FOnChatItemClick;
-  ListItem.ApplyStyle;
+  //ListItem.ApplyStyle;
 end;
 
 procedure TFormMain.LabelChatsModeClick(Sender: TObject);
@@ -255,29 +265,38 @@ begin
 end;
 
 procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
+var
+  AToken: string;
+  ATokenExpiry: Int64;
 begin
-  if FToken.IsEmpty then
-  begin
-    TFormFMXOAuth2.Execute(Url,
-      procedure(Form: TFormFMXOAuth2)
+  TThread.Synchronize(nil,
+    procedure
+    begin
+      if FToken.IsEmpty then
       begin
-        FToken := Form.Token;
-        FTokenExpiry := Form.TokenExpiry;
-        FChangePasswordHash := Form.ChangePasswordHash;
-        if not FToken.IsEmpty then
-          VK.Login
-        else
-        begin
+        TFormFMXOAuth2.Execute(Url,
+          procedure(Form: TFormFMXOAuth2)
+          begin
+            FToken := Form.Token;
+            FTokenExpiry := Form.TokenExpiry;
+            FChangePasswordHash := Form.ChangePasswordHash;
+            if not FToken.IsEmpty then
+              VK.Login
+            else
+            begin
           //LabelLogin.Caption := 'login error';
-          ShowMessage('Ошибка загрузки страницы авторизации');
-        end;
-      end);
-  end
-  else
-  begin
-    Token := FToken;
-    TokenExpiry := FTokenExpiry;
-  end;
+              ShowMessage('Ошибка загрузки страницы авторизации');
+            end;
+          end);
+      end
+      else
+      begin
+        AToken := FToken;
+        ATokenExpiry := FTokenExpiry;
+      end;
+    end);
+  Token := AToken;
+  TokenExpiry := ATokenExpiry;
 end;
 
 procedure TFormMain.Reload;
@@ -294,7 +313,7 @@ begin
         procedure
         begin
           TPreview.Instance.Subscribe(VK.UserPhoto100, FOnReadyAvatar);
-          Caption := 'FMX VK Messager [' + VK.UserName + ']';
+          Caption := 'FMX VK Messanger [' + VK.UserName + ']';
         end);
       LoadConversationsAsync;
       FLoading := False;
@@ -304,7 +323,7 @@ end;
 procedure TFormMain.VKLogin(Sender: TObject);
 begin
   TFile.WriteAllText('token.tmp', VK.Token);
-  Reload;
+  TThread.Queue(nil, Reload);
   //LabelLogin.Caption := 'login success';
   //Memo1.Lines.Add(VK1.Token);
 end;

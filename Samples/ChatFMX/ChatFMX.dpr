@@ -1,5 +1,7 @@
 ﻿program ChatFMX;
 
+{$R *.dres}
+
 uses
   System.StartUpCopy,
   FMX.Forms,

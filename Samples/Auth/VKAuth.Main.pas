@@ -117,6 +117,7 @@ type
     ButtonPhotosGetAlbum: TButton;
     ButtonMessageGetChat: TButton;
     ButtonMessageGetConverstion: TButton;
+    ButtonGetMessageById: TButton;
     procedure FormCreate(Sender: TObject);
     procedure ButtonAccountBanClick(Sender: TObject);
     procedure ButtonAccountUnbanClick(Sender: TObject);
@@ -247,6 +248,7 @@ type
     procedure ButtonPhotosGetAlbumClick(Sender: TObject);
     procedure ButtonMessageGetChatClick(Sender: TObject);
     procedure ButtonMessageGetConverstionClick(Sender: TObject);
+    procedure ButtonGetMessageByIdClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -755,13 +757,27 @@ begin
   end;
 end;
 
+procedure TFormMain.ButtonGetMessageByIdClick(Sender: TObject);
+begin
+  var Items: TVkMessages;
+  var Params: TVkParamsMessageGet;
+  Params.MessageId(840128);
+  if VK1.Messages.GetById(Items, Params) then
+  try
+    if Length(Items.Items) > 0 then
+      Memo1.Lines.Add(Items.Items[0].Text);
+  finally
+    Items.Free;
+  end;
+end;
+
 procedure TFormMain.ButtonMesGetHistoryClick(Sender: TObject);
 var
   Items: TVkMessageHistory;
   Params: TVkParamsMessageHistory;
 begin
   Params := Params.
-    PeerId(-30666517).
+    PeerId(-145962568).
     Extended(True);
   if VK1.Messages.GetHistory(Items, Params) then
   try

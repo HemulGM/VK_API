@@ -170,34 +170,127 @@ type
     FReply_message: TVkMessage;
     FAction: TVkMessageAction;
     FWas_listened: Boolean;
+    FAdmin_author_id: TVkPeerId;
+    FIs_cropped: Boolean;
+    FMembers_count: Integer;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FUpdate_time: TDateTime;
+    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FPinned_at: TDateTime;
+    FMessage_tag: string;
     function GetPayloadButton: TVkPayloadButton;
     function GetIsBotFrom: Boolean;
   public
+    /// <summary>
+    /// Идентификатор сообщения
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Время отправки
+    /// </summary>
     property Date: TDateTime read FDate write FDate;
+    /// <summary>
+    /// Идентификатор назначения
+    /// </summary>
     property PeerId: Integer read FPeer_id write FPeer_id;
+    /// <summary>
+    /// Идентификатор отправителя
+    /// </summary>
     property FromId: Integer read FFrom_id write FFrom_id;
+    /// <summary>
+    /// Текст сообщения
+    /// </summary>
     property Text: string read FText write FText;
+    /// <summary>
+    /// Идентификатор, используемый при отправке сообщения. Возвращается только для исходящих сообщений
+    /// </summary>
     property RandomId: Integer read FRandom_id write FRandom_id;
+    /// <summary>
+    /// Произвольный параметр для работы с источниками переходов
+    /// </summary>
     property Ref: string read FRef write FRef;
+    /// <summary>
+    /// Произвольный параметр для работы с источниками переходов
+    /// </summary>
     property RefSource: string read FRef_source write FRef_source;
+    /// <summary>
+    /// Медиавложения сообщения (фотографии, ссылки и т.п.). Описание
+    /// массива attachments находится на отдельной странице.
+    /// </summary>
     property Attachments: TVkAttachmentArray read FAttachments write FAttachments;
+    /// <summary>
+    /// true, если сообщение помечено как важное
+    /// </summary>
     property Important: Boolean read FImportant write FImportant;
+    /// <summary>
+    /// Было ли вложенное аудиосообщение уже прослушано вами
+    /// </summary>
     property WasListened: Boolean read FWas_listened write FWas_listened;
+    /// <summary>
+    /// Информация о местоположении
+    /// </summary>
     property Geo: TVkGeo read FGeo write FGeo;
+    /// <summary>
+    /// Сервисное поле для сообщений ботам (полезная нагрузка)
+    /// </summary>
     property Payload: string read FPayload write FPayload;
+    /// <summary>
+    /// Объект клавиатуры для ботов
+    /// </summary>
     property Keyboard: TVkKeyboard read FKeyboard write FKeyboard;
+    /// <summary>
+    /// Массив пересланных сообщений (если есть). Максимальное количество элементов — 100.
+    /// Максимальная глубина вложенности для пересланных сообщений — 45, общее максимальное
+    /// количество в цепочке с учетом вложенности — 500.
+    /// </summary>
     property FwdMessages: TArray<TVkMessage> read FFwd_messages write FFwd_messages;
+    /// <summary>
+    /// Сообщение, в ответ на которое отправлено текущее
+    /// </summary>
     property ReplyMessage: TVkMessage read FReply_message write FReply_message;
+    /// <summary>
+    /// Информация о сервисном действии с чатом
+    /// </summary>
     property Action: TVkMessageAction read FAction write FAction;
     property PayloadButton: TVkPayloadButton read GetPayloadButton;
     //
     function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
+    /// <summary>
+    /// Уникальный автоматически увеличивающийся номер для всех сообщений с этим peer
+    /// </summary>
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property IsHidden: Boolean read FIs_hidden write FIs_hidden;
     /// <summary>
     /// Исходящее сообщение
     /// </summary>
     property &Out: Boolean read FOut write FOut;
+    /// <summary>
+    /// Только для сообщений сообщества. Содержит идентификатор пользователя (администратора сообщества),
+    /// отправившего это сообщение
+    /// </summary>
+    property AdminAuthorId: TVkPeerId read FAdmin_author_id write FAdmin_author_id;
+    /// <summary>
+    /// Это сообщение обрезано для бота
+    /// </summary>
+    property IsCropped: Boolean read FIs_cropped write FIs_cropped;
+    /// <summary>
+    /// Количество участников
+    /// </summary>
+    property MembersCount: Integer read FMembers_count write FMembers_count;
+    /// <summary>
+    /// Дата, когда сообщение было обновлено
+    /// </summary>
+    property UpdateTime: TDateTime read FUpdate_time write FUpdate_time;
+    /// <summary>
+    /// Дата, когда сообщение было закреплено
+    /// </summary>
+    property PinnedAt: TDateTime read FPinned_at write FPinned_at;
+    /// <summary>
+    /// Строка для сопоставления пользователя Notify и ВКонтакте.
+    /// Данные копирует в момент ответа пользователем на сообщение из Notify,
+    /// отправленное с параметром session_id. Подробнее про Notify: https://notify.mail.ru/
+    /// </summary>
+    property MessageTag: string read FMessage_tag write FMessage_tag;
     property IsBotFrom: Boolean read GetIsBotFrom;
     destructor Destroy; override;
   end;

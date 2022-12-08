@@ -11,7 +11,9 @@ object FormMain: TFormMain
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = True
   OnCreate = FormCreate
+  PixelsPerInch = 96
   TextHeight = 13
   object Panel2: TPanel
     Left = 0
@@ -21,8 +23,6 @@ object FormMain: TFormMain
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 487
-    ExplicitWidth = 1065
     object Memo1: TMemo
       Left = 0
       Top = 17
@@ -52,7 +52,6 @@ object FormMain: TFormMain
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 1
-      ExplicitWidth = 665
     end
     object HeaderControl1: THeaderControl
       Left = 0
@@ -76,7 +75,6 @@ object FormMain: TFormMain
         end>
       Style = hsFlat
       NoSizing = True
-      ExplicitWidth = 1065
     end
   end
   object PageControl2: TPageControl
@@ -95,8 +93,6 @@ object FormMain: TFormMain
     ParentFont = False
     TabHeight = 30
     TabOrder = 1
-    ExplicitWidth = 1059
-    ExplicitHeight = 481
     object TabSheetWelcome: TTabSheet
       Caption = #1044#1086#1073#1088#1086' '#1087#1086#1078#1072#1083#1086#1074#1072#1090#1100
       object Label1: TLabel
@@ -582,8 +578,6 @@ object FormMain: TFormMain
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitWidth = 1051
-        ExplicitHeight = 441
         object PageControl1: TPageControl
           AlignWithMargins = True
           Left = 30
@@ -597,8 +591,6 @@ object FormMain: TFormMain
           ActivePage = TabSheet10
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 991
-          ExplicitHeight = 381
           object TabSheet9: TTabSheet
             Caption = 'General'
             ImageIndex = 8
@@ -1102,7 +1094,7 @@ object FormMain: TFormMain
               Width = 166
               Height = 25
               Caption = 'GetChat'
-              TabOrder = 5
+              TabOrder = 7
               OnClick = ButtonMessageGetChatClick
             end
             object ButtonMessageGetConverstion: TButton
@@ -1122,6 +1114,15 @@ object FormMain: TFormMain
               Caption = 'SendAudioMessage'
               TabOrder = 5
               OnClick = ButtonSendAudioMessageClick
+            end
+            object ButtonGetMessageById: TButton
+              Left = 3
+              Top = 158
+              Width = 166
+              Height = 25
+              Caption = 'GetMessageById'
+              TabOrder = 8
+              OnClick = ButtonGetMessageByIdClick
             end
           end
           object TabSheet11: TTabSheet

@@ -3,13 +3,30 @@
 interface
 
 uses
-  VK.Types;
+  VK.Types, System.SysUtils;
 
 function AttachmentToText(const Value: TVkAttachmentType): string;
 
 function MessageActionTypeToText(const Value: TVkMessageActionType): string;
 
+function WordOfCount(const Count: Integer; const Words: TArrayOfString): string;
+
 implementation
+
+function WordOfCount(const Count: Integer; const Words: TArrayOfString): string;
+begin
+  if Length(Words) < 3 then
+    Exit('');
+  var Num := Count.ToString;
+  case Num[High(Num)] of
+    '1':
+      Exit(Words[0]);
+    '2', '3', '4':
+      Exit(Words[1]);
+    '5', '6', '7', '8', '9', '0':
+      Exit(Words[2]);
+  end;
+end;
 
 function MessageActionTypeToText(const Value: TVkMessageActionType): string;
 begin

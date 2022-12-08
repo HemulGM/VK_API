@@ -7,7 +7,6 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 0'
         SVGText = 
@@ -27,7 +26,6 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 1'
         SVGText = 
@@ -55,7 +53,6 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 2'
         SVGText = 
@@ -73,7 +70,6 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 3'
         SVGText = 
@@ -87,7 +83,6 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 4'
         SVGText = 
@@ -108,7 +103,6 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 5'
         SVGText = 
@@ -121,7 +115,6 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 6'
         SVGText = 
@@ -144,7 +137,6 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 7'
         SVGText = 
@@ -172,78 +164,179 @@ object DataModuleRes: TDataModuleRes
           '4C6.3 0 7 .7 7 1.5v8c0 .8-.7 1.5-1.5 1.5h-4A1.5 1.5 0 010 9.5v-8' +
           'zM1 2h5v6H1V2z"/></svg>'
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+          end>
+        IconName = 'Item 9'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" f' +
+          'ill="none" viewBox="0 0 20 20"><path fill="currentColor" fill-ru' +
+          'le="evenodd" d="M10.4 3.13a.92.92 0 0 0-.82 0c-.05.03-.19.13-.44' +
+          '.6-.24.45-.52 1.09-.92 2-.16.38-.33.74-.48 1.12-.02.05-.09.2-.2.' +
+          '33a1.02 1.02 0 0 1-.33.25c-.16.08-.35.1-.38.1l-.68.1c-1 .14-1.69' +
+          '.24-2.19.35-.52.13-.66.23-.7.27a.92.92 0 0 0-.21.8c0 .05.07.22.4' +
+          '6.59.37.35.92.8 1.7 1.42l.25.2a1.02 1.02 0 0 1 .42 1.13l-.08.41a' +
+          '35.03 35.03 0 0 0-.43 2.56c-.07.64 0 .82.03.86a.92.92 0 0 0 .74.' +
+          '44c.05 0 .24-.02.77-.39.49-.34 1.13-.87 2.03-1.62l.31-.26.15-.12' +
+          'c.07-.04.17-.11.32-.15a1.02 1.02 0 0 1 .55 0c.15.04.25.1.32.15l.' +
+          '15.12.31.26c.9.75 1.54 1.28 2.03 1.62.53.37.72.4.77.4a.92.92 0 0' +
+          ' 0 .74-.45c.03-.04.1-.22.03-.86-.06-.6-.21-1.4-.43-2.56l-.08-.42' +
+          'a1.25 1.25 0 0 1-.02-.4 1.03 1.03 0 0 1 .15-.42c.1-.17.26-.28.3-' +
+          '.3l.24-.2c.78-.63 1.33-1.07 1.7-1.42.39-.37.45-.54.46-.59a.92.92' +
+          ' 0 0 0-.22-.8c-.03-.04-.17-.14-.7-.27-.5-.11-1.18-.21-2.18-.35l-' +
+          '.7-.1c-.04 0-.2-.03-.36-.1a1.02 1.02 0 0 1-.33-.25c-.12-.14-.19-' +
+          '.31-.2-.34l-.48-1.1c-.4-.92-.68-1.56-.92-2-.25-.48-.4-.58-.44-.6' +
+          'ZM8.9 1.76a2.45 2.45 0 0 1 2.2 0c.5.25.82.73 1.1 1.24.28.51.58 1' +
+          '.22.96 2.09l.41.95.53.07c.94.14 1.7.24 2.28.38.56.13 1.11.32 1.4' +
+          '9.74a2.46 2.46 0 0 1 .58 2.12c-.11.55-.5 1-.9 1.4-.43.4-1.03.89-' +
+          '1.78 1.48l-.11.1.04.22c.21 1.1.38 1.99.45 2.66.06.64.07 1.3-.25 ' +
+          '1.81a2.46 2.46 0 0 1-1.99 1.18c-.6.02-1.18-.3-1.7-.67-.56-.38-1.' +
+          '24-.95-2.1-1.67l-.11-.09-.11.09c-.87.72-1.55 1.29-2.1 1.67-.53.3' +
+          '7-1.1.7-1.71.67a2.46 2.46 0 0 1-2-1.18c-.3-.51-.3-1.17-.24-1.81.' +
+          '07-.67.24-1.55.45-2.66l.04-.23-.11-.09c-.74-.6-1.35-1.07-1.77-1.' +
+          '48-.42-.4-.8-.85-.9-1.4a2.46 2.46 0 0 1 .58-2.12c.37-.42.92-.61 ' +
+          '1.48-.74.58-.14 1.34-.24 2.28-.38l.53-.07.4-.95c.39-.87.7-1.58.9' +
+          '7-2.1.28-.5.6-.98 1.1-1.23Z" clip-rule="evenodd"></path></svg>'
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+          end>
+        IconName = 'Item 10'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" f' +
+          'ill="none" viewBox="0 0 20 20"><path fill="currentColor" fill-ru' +
+          'le="evenodd" d="M 6.84 4 H 2.75 a 0.75 0.75 0 0 0 0 1.5 h 0.55 l' +
+          ' 0.9 9.25 c 0.05 0.52 0.1 0.96 0.16 1.31 c 0.06 0.37 0.16 0.71 0' +
+          '.35 1.03 a 2.9 2.9 0 0 0 1.25 1.13 c 0.33 0.16 0.68 0.22 1.06 0.' +
+          '25 c 0.36 0.03 0.8 0.03 1.32 0.03 h 3.32 c 0.53 0 0.96 0 1.32 -0' +
+          '.03 c 0.38 -0.03 0.73 -0.1 1.06 -0.25 a 2.9 2.9 0 0 0 1.25 -1.13' +
+          ' c 0.19 -0.32 0.29 -0.66 0.35 -1.03 c 0.06 -0.35 0.1 -0.79 0.16 ' +
+          '-1.31 l 0.9 -9.25 h 0.55 a 0.75 0.75 0 0 0 0 -1.5 h -4.09 a 3.25' +
+          ' 3.25 0 0 0 -6.32 0 Z m 1.58 0 h 3.16 a 1.75 1.75 0 0 0 -3.16 0 ' +
+          'Z m 6.78 1.5 H 4.8 l 0.9 9.07 c 0.05 0.56 0.08 0.94 0.13 1.23 c ' +
+          '0.05 0.28 0.1 0.42 0.17 0.52 a 1.4 1.4 0 0 0 0.6 0.55 c 0.1 0.04' +
+          ' 0.25 0.08 0.53 0.1 c 0.3 0.03 0.68 0.03 1.24 0.03 h 3.26 c 0.56' +
+          ' 0 0.94 0 1.23 -0.02 c 0.29 -0.03 0.43 -0.07 0.54 -0.11 a 1.4 1.' +
+          '4 0 0 0 0.6 -0.55 c 0.06 -0.1 0.11 -0.24 0.16 -0.52 c 0.05 -0.3 ' +
+          '0.1 -0.67 0.15 -1.23 l 0.89 -9.07 Z m -2.89 2 a 0.75 0.75 0 0 1 ' +
+          '0.69 0.81 l -0.5 6 a 0.75 0.75 0 0 1 -1.5 -0.12 l 0.5 -6 a 0.75 ' +
+          '0.75 0 0 1 0.81 -0.69 Z m -4.62 0 a 0.75 0.75 0 0 1 0.8 0.69 l 0' +
+          '.5 6 a 0.75 0.75 0 0 1 -1.49 0.13 l -0.5 -6 a 0.75 0.75 0 0 1 0.' +
+          '69 -0.82 Z" clip-rule="evenodd"></path></svg>'
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+          end>
+        IconName = 'Item 11'
+        SVGText = 
+          '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmln' +
+          's="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-ru' +
+          'le="evenodd" d="M10 18.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Zm' +
+          '4.4-3.05a7 7 0 0 1-9.84-9.84l9.83 9.84Zm1.05-1.06L5.61 4.55a7 7 ' +
+          '0 0 1 9.84 9.84Z" fill="currentColor"></path></svg>'
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
         Layers = <
           item
             Name = 'Item 0'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 1'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 2'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 3'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 4'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 5'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 6'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 7'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 8'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 9'
             SourceRect.Right = 120.000000000000000000
             SourceRect.Bottom = 120.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 10'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 11'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item

@@ -474,11 +474,11 @@ type
     /// Если указать в качестве этого параметра True, то будет возвращена
     /// информация о пользователях, являющихся авторами сообщений
     /// </summary>
-    function Extended(const Value: Boolean = False): TVkParamsMessageHistory;
+    function Extended(const Value: Boolean = True): TVkParamsMessageHistory;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: string): TVkParamsMessageHistory;
+    function Fields(const UserFields: TVkProfileFields; GroupFields: TVkGroupFields = []): TVkParamsMessageHistory;
     /// <summary>
     /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
@@ -730,7 +730,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields = []): TVkParamsMessageGetChat;
+    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsMessageGetChat;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
@@ -856,7 +856,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields = [TVkProfileField.PhotoId, TVkProfileField.PhotoMedium, TVkProfileField.Sex, TVkProfileField.Online, TVkProfileField.ScreenName]): TVkParamsLongPollHistory;
+    function Fields(const UserFields: TVkProfileFields = [TVkProfileField.PhotoId, TVkProfileField.PhotoMedium, TVkProfileField.Sex, TVkProfileField.Online, TVkProfileField.ScreenName]; const GroupFields: TVkGroupFields = []): TVkParamsLongPollHistory;
     /// <summary>
     /// Лимит по количеству всех событий в истории. Обратите внимание, параметры EventsLimit и MsgsLimit применяются совместно.
     /// Число результатов в ответе ограничивается первым достигнутым лимитом
@@ -2144,7 +2144,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsConversationsGet.Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsConversationsGet;
+function TVkParamsConversationsGet.Fields(const UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsConversationsGet;
 begin
   List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
   Result := Self;
@@ -2188,9 +2188,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageHistory.Fields(const Value: string): TVkParamsMessageHistory;
+function TVkParamsMessageHistory.Fields(const UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsMessageHistory;
 begin
-  List.Add('fields', Value);
+  List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
   Result := Self;
 end;
 
@@ -2741,9 +2741,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageGetChat.Fields(const Value: TVkProfileFields): TVkParamsMessageGetChat;
+function TVkParamsMessageGetChat.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsMessageGetChat;
 begin
-  List.Add('fields', Value.ToString);
+  List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
   Result := Self;
 end;
 
@@ -2899,9 +2899,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsLongPollHistory.Fields(const Value: TVkProfileFields): TVkParamsLongPollHistory;
+function TVkParamsLongPollHistory.Fields(const UserFields: TVkProfileFields; const GroupFields: TVkGroupFields): TVkParamsLongPollHistory;
 begin
-  List.Add('fields', Value.ToString);
+  List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
   Result := Self;
 end;
 

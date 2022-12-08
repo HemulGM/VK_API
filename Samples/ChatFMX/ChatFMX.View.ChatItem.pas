@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils, FMX.ListBox, VK.API, VK.Entity.Conversation, System.Messaging,
-  System.Classes, FMX.Objects, System.UITypes, VK.Types;
+  System.Classes, FMX.Objects, System.UITypes, VK.Types, System.Types,
+  FMX.StdCtrls, FMX.Types;
 
 type
   TListBoxItemChat = class(TListBoxItem)
@@ -19,6 +20,12 @@ type
     FUnanswered: Boolean;
     FFromText: string;
     FConversationId: TVkPeerId;
+    FIsOnline: Boolean;
+    FIsOnlineMobile: Boolean;
+    FIsPinned: Boolean;
+    FIsSelfChat: Boolean;
+    FIsHaveMention: Boolean;
+    FText: TLabel;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure SetUndreadCount(const Value: Integer);
     procedure SetLastTime(const Value: TDateTime);
@@ -27,6 +34,13 @@ type
     procedure SetFromText(const Value: string);
     procedure SetMessageText(const Value: string; IsAttach: Boolean);
     procedure SetConversationId(const Value: TVkPeerId);
+    procedure SetIsOnline(const Value: Boolean);
+    procedure SetIsOnlineMobile(const Value: Boolean);
+    procedure SetIsPinned(const Value: Boolean);
+    procedure SetIsSelfChat(const Value: Boolean);
+    procedure SetIsHaveMention(const Value: Boolean);
+  protected
+    procedure SetText(const Value: string); override;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK);
     procedure Fill(Item: TVkConversationItem; Data: TVkConversationItems);
@@ -37,6 +51,11 @@ type
     property Unanswered: Boolean read FUnanswered write SetUnanswered;
     property FromText: string read FFromText write SetFromText;
     property ConversationId: TVkPeerId read FConversationId write SetConversationId;
+    property IsOnline: Boolean read FIsOnline write SetIsOnline;
+    property IsOnlineMobile: Boolean read FIsOnlineMobile write SetIsOnlineMobile;
+    property IsPinned: Boolean read FIsPinned write SetIsPinned;
+    property IsSelfChat: Boolean read FIsSelfChat write SetIsSelfChat;
+    property IsHaveMention: Boolean read FIsHaveMention write SetIsHaveMention;
     destructor Destroy; override;
   end;
 
@@ -58,14 +77,23 @@ begin
     if not FImageUrl.IsEmpty then
       TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
   end;
+  if not Assigned(FText) then
+  begin
+    FindStyleResource('text', FText);
+    SetText(Text);
+  end;
   var Circle: TCircle;
   if FindStyleResource('avatar', Circle) then
-    if not FImageFile.IsEmpty then
+    if IsSelfChat then
     begin
       try
-        Circle.Fill.Bitmap.Bitmap.LoadFromFile(FImageFile);
+        var RS: TResourceStream := TResourceStream.Create(HInstance, 'im_favorites_100', RT_RCDATA);
+        try
+          Circle.Fill.Bitmap.Bitmap.LoadFromStream(RS);
+        finally
+          RS.Free;
+        end;
       except
-        FImageFile := '';
         Circle.Fill.Kind := TBrushKind.Solid;
         Exit;
       end;
@@ -73,7 +101,22 @@ begin
       Circle.Fill.Kind := TBrushKind.Bitmap;
     end
     else
-      Circle.Fill.Kind := TBrushKind.Solid;
+    begin
+      if not FImageFile.IsEmpty then
+      begin
+        try
+          Circle.Fill.Bitmap.Bitmap.LoadFromFile(FImageFile);
+        except
+          FImageFile := '';
+          Circle.Fill.Kind := TBrushKind.Solid;
+          Exit;
+        end;
+        Circle.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
+        Circle.Fill.Kind := TBrushKind.Bitmap;
+      end
+      else
+        Circle.Fill.Kind := TBrushKind.Solid;
+    end;
 end;
 
 constructor TListBoxItemChat.Create(AOwner: TComponent; AVK: TCustomVK);
@@ -85,7 +128,10 @@ begin
   StyleLookup := 'item_chat';
   UnreadCount := 0;
   IsMuted := False;
+  IsSelfChat := False;
   FromText := '';
+  TextSettings.WordWrap := False;
+  TextSettings.Trimming := TTextTrimming.Character;
 end;
 
 destructor TListBoxItemChat.Destroy;
@@ -96,13 +142,24 @@ end;
 
 procedure TListBoxItemChat.Fill(Item: TVkConversationItem; Data: TVkConversationItems);
 begin
-  FConversationId := Item.Conversation.Peer.Id;
+  IsOnline := False;
+  IsOnlineMobile := False;
   SetMessageText('', False);
+
+  IsHaveMention := not Item.Conversation.Mentions.IsEmpty;
+  IsSelfChat := Item.Conversation.Peer.Id = FVK.UserId;
+  FConversationId := Item.Conversation.Peer.Id;
+  UnreadCount := Item.Conversation.UnreadCount;
+  //IsPinned := Item.Conversation.ChatSettings
+
   if Assigned(Item.LastMessage) then
   begin
     LastTime := Item.LastMessage.Date;
     if Item.LastMessage.FromId = FVK.UserId then
-      FromText := 'Вы: '
+    begin
+      if not IsSelfChat then
+        FromText := 'Вы: ';
+    end
     else
     begin
       if not Item.Conversation.IsUser then
@@ -149,6 +206,11 @@ begin
 
   Unanswered := (Item.Conversation.UnreadCount = 0) and (Item.Conversation.InRead <> Item.Conversation.OutRead);
 
+  if IsSelfChat then
+  begin
+    Text := 'Избранное';
+    Exit;
+  end;
   if Item.Conversation.IsChat then
   begin
     if Assigned(Item.Conversation.ChatSettings) then
@@ -166,6 +228,11 @@ begin
       Text := Data.Profiles[UserId].FullName;
 
       FImageUrl := Data.Profiles[UserId].Photo50;
+      if Assigned(Data.Profiles[UserId].OnlineInfo) then
+      begin
+        IsOnline := Data.Profiles[UserId].OnlineInfo.IsOnline;
+        IsOnlineMobile := Data.Profiles[UserId].OnlineInfo.IsMobile;
+      end;
     end;
   end
   else if Item.Conversation.IsGroup then
@@ -177,8 +244,6 @@ begin
       FImageUrl := Data.Groups[GroupId].Photo50;
     end;
   end;
-
-  UnreadCount := Item.Conversation.UnreadCount;
 end;
 
 procedure TListBoxItemChat.FOnReadyImage(const Sender: TObject; const M: TMessage);
@@ -203,6 +268,16 @@ begin
   StylesData['from'] := FFromText;
 end;
 
+procedure TListBoxItemChat.SetIsHaveMention(const Value: Boolean);
+begin
+  FIsHaveMention := Value;
+  StylesData['mention_layout.Visible'] := FIsHaveMention;
+  StylesData['info_bottom.Visible'] :=
+    StylesData['count_layout.Visible'].AsBoolean or
+    StylesData['unread.Visible'].AsBoolean or
+    StylesData['mention_layout.Visible'].AsBoolean;
+end;
+
 procedure TListBoxItemChat.SetIsMuted(const Value: Boolean);
 begin
   FIsMuted := Value;
@@ -211,6 +286,30 @@ begin
   else
     StylesData['count_circ.Fill.Color'] := TAlphaColorRec.White;
   StylesData['mute.Visible'] := FIsMuted;
+end;
+
+procedure TListBoxItemChat.SetIsOnline(const Value: Boolean);
+begin
+  FIsOnline := Value;
+  StylesData['online.Visible'] := FIsOnline and (not FIsOnlineMobile);
+  StylesData['online_mobile.Visible'] := FIsOnline and FIsOnlineMobile;
+end;
+
+procedure TListBoxItemChat.SetIsOnlineMobile(const Value: Boolean);
+begin
+  FIsOnlineMobile := Value;
+  StylesData['online.Visible'] := FIsOnline and (not FIsOnlineMobile);
+  StylesData['online_mobile.Visible'] := FIsOnline and FIsOnlineMobile;
+end;
+
+procedure TListBoxItemChat.SetIsPinned(const Value: Boolean);
+begin
+  FIsPinned := Value;
+end;
+
+procedure TListBoxItemChat.SetIsSelfChat(const Value: Boolean);
+begin
+  FIsSelfChat := Value;
 end;
 
 procedure TListBoxItemChat.SetLastTime(const Value: TDateTime);
@@ -233,11 +332,33 @@ begin
   StylesData['detail_sel.StartValue'] := StylesData['detail.TextSettings.FontColor'].AsInteger;
 end;
 
+procedure TListBoxItemChat.SetText(const Value: string);
+begin
+  inherited;
+  if Assigned(FText) then
+  begin
+    if FText.Width > 160 then
+    begin
+      FText.AutoSize := True;
+      FText.AutoSize := False;
+      FText.Width := 160;
+    end
+    else
+    begin
+      FText.AutoSize := False;
+      FText.AutoSize := True;
+    end;
+  end;
+end;
+
 procedure TListBoxItemChat.SetUnanswered(const Value: Boolean);
 begin
   FUnanswered := Value;
   StylesData['unread.Visible'] := Value;
-  StylesData['info_bottom.Visible'] := StylesData['count_layout.Visible'].AsBoolean or StylesData['unread.Visible'].AsBoolean;
+  StylesData['info_bottom.Visible'] :=
+    StylesData['count_layout.Visible'].AsBoolean or
+    StylesData['unread.Visible'].AsBoolean or
+    StylesData['mention_layout.Visible'].AsBoolean;
 end;
 
 procedure TListBoxItemChat.SetUndreadCount(const Value: Integer);
@@ -245,7 +366,10 @@ begin
   FUndreadCount := Value;
   StylesData['count_layout.Visible'] := Value > 0;
   StylesData['count'] := Value.ToString;
-  StylesData['info_bottom.Visible'] := StylesData['count_layout.Visible'].AsBoolean or StylesData['unread.Visible'].AsBoolean;
+  StylesData['info_bottom.Visible'] :=
+    StylesData['count_layout.Visible'].AsBoolean or
+    StylesData['unread.Visible'].AsBoolean or
+    StylesData['mention_layout.Visible'].AsBoolean;
 end;
 
 end.

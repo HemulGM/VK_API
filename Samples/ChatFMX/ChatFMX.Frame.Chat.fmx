@@ -27,154 +27,302 @@ object FrameChat: TFrameChat
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
-        object LabelTitle: TLabel
-          Align = MostLeft
-          AutoSize = True
-          StyledSettings = []
-          Margins.Right = 5.000000000000000000
-          Position.X = 20.000000000000000000
-          Size.Width = 63.000000000000000000
+        object LayoutHeadNormal: TLayout
+          Align = Client
+          Size.Width = 608.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
-          TextSettings.Font.Size = 14.000000000000000000
-          TextSettings.Font.StyleExt = {00070000000000000004000000}
-          TextSettings.FontColor = xFFE6E3E1
-          TextSettings.WordWrap = False
-          Text = 'DevGeeks'
-          TabOrder = 0
-        end
-        object LabelInfo: TLabel
-          Align = MostLeft
-          AutoSize = True
-          StyledSettings = [Style]
-          Margins.Right = 5.000000000000000000
-          Position.X = 88.000000000000000000
-          Size.Width = 89.000000000000000000
-          Size.Height = 48.000000000000000000
-          Size.PlatformDefault = False
-          TextSettings.Font.Family = 'Roboto'
-          TextSettings.Font.Size = 13.000000000000000000
-          TextSettings.FontColor = xFF939393
-          TextSettings.WordWrap = False
-          Text = '30 '#1091#1095#1072#1089#1090#1085#1080#1082#1086#1074
-          TabOrder = 1
-        end
-        object CircleImage: TCircle
-          Align = Right
-          Fill.Color = xFF393939
-          Margins.Left = 10.000000000000000000
-          Margins.Top = 9.000000000000000000
-          Margins.Bottom = 9.000000000000000000
-          Position.X = 598.000000000000000000
-          Position.Y = 9.000000000000000000
-          Size.Width = 30.000000000000000000
-          Size.Height = 30.000000000000000000
-          Size.PlatformDefault = False
-          Stroke.Kind = None
-        end
-        object ButtonActions: TButton
-          Align = Right
-          Cursor = crHandPoint
-          Images = DataModuleRes.ImageListSVG
-          ImageIndex = 5
-          Position.X = 552.000000000000000000
-          Size.Width = 36.000000000000000000
-          Size.Height = 48.000000000000000000
-          Size.PlatformDefault = False
-          StyleLookup = 'button_small'
-          TabOrder = 2
-          Text = 'Button1'
-        end
-        object ButtonSearch: TButton
-          Align = Right
-          Cursor = crHandPoint
-          Images = DataModuleRes.ImageListSVG
-          ImageIndex = 3
-          Position.X = 516.000000000000000000
-          Size.Width = 36.000000000000000000
-          Size.Height = 48.000000000000000000
-          Size.PlatformDefault = False
-          StyleLookup = 'button_small'
+          Visible = False
           TabOrder = 3
-          Text = 'Button1'
-          OnClick = ButtonSearchClick
-        end
-        object ButtonCall: TButton
-          Align = Right
-          Cursor = crHandPoint
-          Images = DataModuleRes.ImageListSVG
-          ImageIndex = 4
-          Position.X = 480.000000000000000000
-          Size.Width = 36.000000000000000000
-          Size.Height = 48.000000000000000000
-          Size.PlatformDefault = False
-          StyleLookup = 'button_small'
-          TabOrder = 6
-          Text = 'ButtonCall'
-        end
-        object LayoutMobileIndicate: TLayout
-          Align = Left
-          Position.X = 182.000000000000000000
-          Size.Width = 16.000000000000000000
-          Size.Height = 48.000000000000000000
-          Size.PlatformDefault = False
-          TabOrder = 7
-          object ImageMobileOnline: TImage
-            MultiResBitmap.Height = 11
-            MultiResBitmap.Width = 7
-            MultiResBitmap = <
-              item
-                Width = 7
-                Height = 11
-                PNG = {
-                  89504E470D0A1A0A0000000D49484452000000070000000B0806000000B39097
-                  A8000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-                  005949444154285363DCB0694B2B2323630910B33140C1FFFFFF7F01710FE3C6
-                  CD5B7F224BC0004801C3A62DDBFE43F9280024CE046563050321C988CBB520C0
-                  04F60F14F8F978314299607F82247B600A60A680F8FFFFFFEF01009C9F35FEFE
-                  D733CA0000000049454E44AE426082}
-                FileName = 'D:\Downloads\mobile.png'
-              end>
-            Align = Client
+          object ButtonActions: TButton
+            Align = Right
+            Cursor = crHandPoint
+            Images = DataModuleRes.ImageListSVG
+            ImageIndex = 5
+            Position.X = 532.000000000000000000
+            Size.Width = 36.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'button_small'
+            TabOrder = 2
+            Text = 'Button1'
+          end
+          object ButtonCall: TButton
+            Align = Right
+            Cursor = crHandPoint
+            Images = DataModuleRes.ImageListSVG
+            ImageIndex = 4
+            Position.X = 460.000000000000000000
+            Size.Width = 36.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'button_small'
+            TabOrder = 5
+            Text = 'ButtonCall'
+          end
+          object ButtonSearch: TButton
+            Align = Right
+            Cursor = crHandPoint
+            Images = DataModuleRes.ImageListSVG
+            ImageIndex = 3
+            Position.X = 496.000000000000000000
+            Size.Width = 36.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'button_small'
+            TabOrder = 3
+            Text = 'Button1'
+          end
+          object CircleImage: TCircle
+            Align = Right
+            Fill.Color = xFF393939
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 9.000000000000000000
+            Margins.Bottom = 9.000000000000000000
+            Position.X = 578.000000000000000000
+            Position.Y = 9.000000000000000000
+            Size.Width = 30.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+          end
+          object LabelInfo: TLabel
+            Align = MostLeft
+            AutoSize = True
+            StyledSettings = [Style]
+            Margins.Right = 5.000000000000000000
+            Position.X = 68.000000000000000000
+            Size.Width = 89.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 13.000000000000000000
+            TextSettings.FontColor = xFF939393
+            TextSettings.WordWrap = False
+            Text = '30 '#1091#1095#1072#1089#1090#1085#1080#1082#1086#1074
+            TabOrder = 1
+          end
+          object LabelTitle: TLabel
+            Align = MostLeft
+            AutoSize = True
+            StyledSettings = []
+            Margins.Right = 5.000000000000000000
+            Size.Width = 63.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.Font.StyleExt = {00070000000000000004000000}
+            TextSettings.FontColor = xFFE6E3E1
+            TextSettings.WordWrap = False
+            Text = 'DevGeeks'
+            TabOrder = 0
+          end
+          object LayoutMobileIndicate: TLayout
+            Align = Left
+            Position.X = 162.000000000000000000
             Size.Width = 16.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
-            WrapMode = Center
+            TabOrder = 6
+            object ImageMobileOnline: TImage
+              MultiResBitmap.Height = 11
+              MultiResBitmap.Width = 7
+              MultiResBitmap = <
+                item
+                  Width = 7
+                  Height = 11
+                  PNG = {
+                    89504E470D0A1A0A0000000D49484452000000070000000B0806000000B39097
+                    A8000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                    005949444154285363DCB0694B2B2323630910B33140C1FFFFFF7F01710FE3C6
+                    CD5B7F224BC0004801C3A62DDBFE43F9280024CE046563050321C988CBB520C0
+                    04F60F14F8F978314299607F82247B600A60A680F8FFFFFFEF01009C9F35FEFE
+                    D733CA0000000049454E44AE426082}
+                  FileName = 'D:\Downloads\mobile.png'
+                end>
+              Align = Client
+              Size.Width = 16.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              WrapMode = Center
+            end
+          end
+          object LayoutMuteIndicate: TLayout
+            Align = Left
+            Position.X = 178.000000000000000000
+            Size.Width = 16.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 8
+            object Path1: TPath
+              Align = Center
+              Data.Path = {
+                28000000000000000000004100001041010000009A9919419A99294102000000
+                CDCC1C41CDCC2C41020000009A992141CDCC2C4102000000CDCC24419A992941
+                010000009A992941CDCC244102000000CDCC2C419A99214102000000CDCC2C41
+                CDCC1C41020000009A9929419A99194101000000000000410100E04001000000
+                000000410400803F0200000000000041DCCCCC3E020000006666F640AA99993E
+                020000006666E640A299193F010000003333834068664640010000003233B33F
+                D8CCCC3E020000009899993FE3CC4C3E020000006466663FE3CC4C3E02000000
+                3133333FD8CCCC3E010000009599993E9F99193F02000000BACCCC3DD2CC4C3F
+                02000000BACCCC3DD0CC8C3F020000009599993E6966A63F010000006566A63F
+                3433134003000000000000410000104100000000000000410000304101000000
+                000000410000404102000000000000419A994941020000006666F64033334B41
+                020000006666E64066664641010000000000404000001041010000000000803F
+                0000104102000000CCCCCC3E0000104102000000000000000000084102000000
+                000000000000004101000000000000000000A0400200000000000000CDCC8C40
+                02000000CDCCCC3E00008040020000000000803F000080400300000000000041
+                00003041}
+              Fill.Color = xFF828282
+              Size.Width = 11.000000000000000000
+              Size.Height = 13.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Kind = None
+              WrapMode = Fit
+            end
           end
         end
-        object LayoutMuteIndicate: TLayout
-          Align = Left
-          Position.X = 198.000000000000000000
-          Size.Width = 16.000000000000000000
+        object LayoutSelection: TLayout
+          Align = Client
+          Size.Width = 608.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 8
-          object Path1: TPath
-            Align = Center
-            Data.Path = {
-              28000000000000000000004100001041010000009A9919419A99294102000000
-              CDCC1C41CDCC2C41020000009A992141CDCC2C4102000000CDCC24419A992941
-              010000009A992941CDCC244102000000CDCC2C419A99214102000000CDCC2C41
-              CDCC1C41020000009A9929419A99194101000000000000410100E04001000000
-              000000410400803F0200000000000041DCCCCC3E020000006666F640AA99993E
-              020000006666E640A299193F010000003333834068664640010000003233B33F
-              D8CCCC3E020000009899993FE3CC4C3E020000006466663FE3CC4C3E02000000
-              3133333FD8CCCC3E010000009599993E9F99193F02000000BACCCC3DD2CC4C3F
-              02000000BACCCC3DD0CC8C3F020000009599993E6966A63F010000006566A63F
-              3433134003000000000000410000104100000000000000410000304101000000
-              000000410000404102000000000000419A994941020000006666F64033334B41
-              020000006666E64066664641010000000000404000001041010000000000803F
-              0000104102000000CCCCCC3E0000104102000000000000000000084102000000
-              000000000000004101000000000000000000A0400200000000000000CDCC8C40
-              02000000CDCCCC3E00008040020000000000803F000080400300000000000041
-              00003041}
-            Fill.Color = xFF828282
-            Size.Width = 11.000000000000000000
-            Size.Height = 13.000000000000000000
+          TabOrder = 2
+          object ButtonSelAsSPAM: TButton
+            Align = Right
+            Cursor = crHandPoint
+            Images = DataModuleRes.ImageListSVG
+            ImageIndex = 11
+            Position.X = 392.000000000000000000
+            Size.Width = 36.000000000000000000
+            Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
-            Stroke.Kind = None
-            WrapMode = Fit
+            StyleLookup = 'button_small'
+            TabOrder = 0
+            Text = 'Button1'
+          end
+          object ButtonSelFavorite: TButton
+            Align = Right
+            Cursor = crHandPoint
+            Images = DataModuleRes.ImageListSVG
+            ImageIndex = 9
+            Position.X = 320.000000000000000000
+            Size.Width = 36.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'button_small'
+            TabOrder = 3
+            Text = 'ButtonCall'
+          end
+          object ButtonSelDelete: TButton
+            Align = Right
+            Cursor = crHandPoint
+            Images = DataModuleRes.ImageListSVG
+            ImageIndex = 10
+            Position.X = 356.000000000000000000
+            Size.Width = 36.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'button_small'
+            TabOrder = 1
+            Text = 'Button1'
+          end
+          object LayoutUnsel: TLayout
+            Align = Left
+            Cursor = crHandPoint
+            HitTest = True
+            Size.Width = 233.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 5
+            OnClick = LayoutUnselClick
+            object LabelSelCount: TLabel
+              Align = MostLeft
+              AutoSize = True
+              StyledSettings = []
+              Margins.Right = 5.000000000000000000
+              Size.Width = 80.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.Font.Family = 'Roboto'
+              TextSettings.Font.Size = 13.000000000000000000
+              TextSettings.Font.StyleExt = {00070000000000000004000000}
+              TextSettings.FontColor = xFFE1E3E6
+              TextSettings.WordWrap = False
+              Text = '1 '#1089#1086#1086#1073#1097#1077#1085#1080#1077
+              TabOrder = 0
+            end
+            object Layout5: TLayout
+              Align = Left
+              Position.X = 85.000000000000000000
+              Size.Width = 16.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 8
+              object Path2: TPath
+                Align = Center
+                Data.Path = {
+                  2700000000000000CDCCCC400000A0400100000033331B419A99D93F02000000
+                  999921416766A63F02000000999921413433333F0200000033331B419C99993E
+                  02000000CDCC1441C0CCCCBD0200000033330B41C4CCCCBD02000000CDCC0441
+                  9C99993E010000000000A04066666640010000009A99D93F9899993E02000000
+                  6766A63FD4CCCCBD020000003433333FD4CCCCBD020000009C99993E9899993E
+                  02000000C0CCCCBD3233333F02000000C4CCCCBD6666A63F020000009C99993E
+                  9999D93F01000000666666400000A040010000009899993ECDCC044102000000
+                  D4CCCCBD33330B4102000000D4CCCCBDCDCC1441020000009899993E33331B41
+                  02000000FEFFFF3E66661E41020000003233333F0000204102000000FFFF7F3F
+                  00002041020000006666A63F00002041020000000000C03F66661E4102000000
+                  9999D93F33331B41010000000000A040CCCCCC4001000000CDCC044133331B41
+                  020000000000084166661E410200000033330B41000020410200000000001041
+                  0000204102000000CDCC144100002041020000000000184166661E4102000000
+                  33331B4133331B410200000099992141CDCC1441020000009999214133330B41
+                  0200000033331B41CDCC044103000000CDCCCC400000A040}
+                Fill.Color = xFF828282
+                HitTest = False
+                Size.Width = 10.000000000000000000
+                Size.Height = 10.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Kind = None
+                WrapMode = Fit
+              end
+            end
+          end
+          object ButtonSelAnswerReply: TButton
+            Tag = 15
+            Align = MostRight
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Bottom = 10.000000000000000000
+            Position.X = 438.000000000000000000
+            Position.Y = 10.000000000000000000
+            Size.Width = 80.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'button_simple'
+            TabOrder = 7
+            Text = #1054#1090#1074#1077#1090#1080#1090#1100
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 13.000000000000000000
+            TextSettings.FontColor = xFF222222
+          end
+          object ButtonSelReply: TButton
+            Tag = 15
+            Align = MostRight
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Bottom = 10.000000000000000000
+            Position.X = 528.000000000000000000
+            Position.Y = 10.000000000000000000
+            Size.Width = 80.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'button_simple'
+            TabOrder = 6
+            Text = #1055#1077#1088#1077#1089#1083#1072#1090#1100
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 13.000000000000000000
+            TextSettings.FontColor = xFF222222
           end
         end
       end
@@ -240,68 +388,12 @@ object FrameChat: TFrameChat
       Size.Height = 664.000000000000000000
       Size.PlatformDefault = False
       Stroke.Kind = None
-      object ListBoxChat: TListBox
-        Align = Client
-        Size.Width = 647.000000000000000000
-        Size.Height = 643.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'listboxstyle_clear'
-        TabOrder = 0
-        Visible = False
-        ShowScrollBars = False
-        OnViewportPositionChange = ListBoxChatViewportPositionChange
-        DisableFocusEffect = True
-        DefaultItemStyles.ItemStyle = ''
-        DefaultItemStyles.GroupHeaderStyle = ''
-        DefaultItemStyles.GroupFooterStyle = ''
-        Viewport.Width = 647.000000000000000000
-        Viewport.Height = 643.000000000000000000
-        object ListBoxItem2: TListBoxItem
-          TextSettings.Font.Family = 'Roboto'
-          TextSettings.Font.Size = 12.500000000000000000
-          TextSettings.FontColor = xFF939393
-          TextSettings.HorzAlign = Center
-          StyledSettings = [Style]
-          Size.Width = 647.000000000000000000
-          Size.Height = 20.000000000000000000
-          Size.PlatformDefault = False
-          TabOrder = 3
-          Text = #1074#1095#1077#1088#1072
-        end
-        object ListBoxItem1: TListBoxItem
-          Position.Y = 20.000000000000000000
-          Size.Width = 647.000000000000000000
-          Size.Height = 95.000000000000000000
-          Size.PlatformDefault = False
-          TabOrder = 2
-        end
-        object ListBoxItem4: TListBoxItem
-          TextSettings.Font.Family = 'Roboto'
-          TextSettings.Font.Size = 12.500000000000000000
-          TextSettings.FontColor = xFF939393
-          TextSettings.HorzAlign = Center
-          StyledSettings = [Style]
-          Position.Y = 115.000000000000000000
-          Size.Width = 647.000000000000000000
-          Size.Height = 20.000000000000000000
-          Size.PlatformDefault = False
-          TabOrder = 1
-          Text = #1089#1077#1075#1086#1076#1085#1103
-        end
-        object ListBoxItem3: TListBoxItem
-          Position.Y = 135.000000000000000000
-          Size.Width = 647.000000000000000000
-          Size.Height = 386.000000000000000000
-          Size.PlatformDefault = False
-          TabOrder = 0
-        end
-      end
       object VertScrollBoxMessages: TVertScrollBox
         Align = Client
         Size.Width = 647.000000000000000000
         Size.Height = 664.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 1
+        TabOrder = 0
         OnResize = VertScrollBoxMessagesResize
         ShowScrollBars = False
         Viewport.Width = 647.000000000000000000

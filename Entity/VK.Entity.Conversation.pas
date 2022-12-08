@@ -221,6 +221,9 @@ type
     FIs_marked_unread: Boolean;
     FPush_settings: TVkChatPushSettings;
     FCurrent_keyboard: TVkKeyboard;
+    FMentions: TArrayOfInteger;
+    FMention_cmids: TArrayOfInteger;
+    FExpire_cmids: TArrayOfInteger;
   public  
     FLast_conversation_message_id: Int64;
     //[JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -293,6 +296,9 @@ type
     /// True, если диалог помечен как неотвеченный (только для сообщений сообществ).
     /// </summary>
     property Unanswered: Boolean read FUnanswered write FUnanswered;
+    property Mentions: TArrayOfInteger read FMentions write FMentions;
+    property MentionCmids: TArrayOfInteger read FMention_cmids write FMention_cmids;
+    property ExpireCmids: TArrayOfInteger read FExpire_cmids write FExpire_cmids;
     property IsGroup: Boolean read GetIsGroup;
     property CurrcurrentKeyboard: TVkKeyboard read FCurrent_keyboard write FCurrent_keyboard;
     destructor Destroy; override;

@@ -165,14 +165,15 @@ type
   {$ENDIF}
 
   TArrayOfStringHelper = record helper for TArrayOfString
-    function ToString: string; overload; inline;
-    function ToJson: string; overload; inline;
-    function Add(const Value: string): Integer; inline;
-    procedure Delete(const Value: string); inline;
+    function ToString: string; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function ToJson: string; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(const Value: string): Integer; {$IFNDEF DEBUG} inline; {$ENDIF}
+    procedure Delete(const Value: string); {$IFNDEF DEBUG} inline; {$ENDIF}
     procedure Assign(Source: TStrings); overload;
-    function IsEmpty: Boolean;
-    function Length: Integer;
-    function IndexOf(const Value: string): Integer;
+    function IsEmpty: Boolean; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Length: Integer; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function IndexOf(const Value: string): Integer; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Contains(const Value: string): Boolean; {$IFNDEF DEBUG} inline; {$ENDIF}
   end;
 
   {$IFDEF OLD_VERSION}
@@ -184,13 +185,14 @@ type
   {$ENDIF}
 
   TArrayOfIntegerHelper = record helper for TArrayOfInteger
-    function ToString: string; overload; inline;
-    function ToJson: string; overload; inline;
-    function Add(Value: Int64): Integer; inline;
-    procedure Delete(const Value: Int64); inline;
-    function IsEmpty: Boolean;
-    function Length: Integer;
-    function IndexOf(const Value: Int64): Integer;
+    function ToString: string; overload;  {$IFNDEF DEBUG} inline; {$ENDIF}
+    function ToJson: string; overload;  {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Value: Int64): Integer;  {$IFNDEF DEBUG} inline; {$ENDIF}
+    procedure Delete(const Value: Int64);  {$IFNDEF DEBUG} inline; {$ENDIF}
+    function IsEmpty: Boolean; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Length: Integer; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function IndexOf(const Value: Int64): Integer; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Contains(const Value: Int64): Boolean; {$IFNDEF DEBUG} inline; {$ENDIF}
   end;
 
   TFields = TArrayOfString;
@@ -1561,13 +1563,13 @@ const
   VkAsrState: array[TVkAsrState] of string = ('processing', 'finished', 'internal_error', 'transcoding_error', 'recognition_error');
   VkAsrModel: array[TVkAsrModel] of string = ('neutral', 'spontaneous');
 
-function NormalizePeerId(Value: Integer): Integer;
+function NormalizePeerId(Value: TVkPeerId): TVkPeerId;
 
-function PeerIdIsChat(Value: Integer): Boolean;
+function PeerIdIsChat(Value: TVkPeerId): Boolean;
 
-function PeerIdIsUser(Value: Integer): Boolean;
+function PeerIdIsUser(Value: TVkPeerId): Boolean;
 
-function PeerIdIsGroup(Value: Integer): Boolean;
+function PeerIdIsGroup(Value: TVkPeerId): Boolean;
 
 procedure Synchronize(Proc: TThreadProcedure);
 
@@ -1584,22 +1586,22 @@ begin
     TThread.Synchronize(nil, Proc);
 end;
 
-function PeerIdIsChat(Value: Integer): Boolean;
+function PeerIdIsChat(Value: TVkPeerId): Boolean;
 begin
   Result := Value > VK_CHAT_ID_START;
 end;
 
-function PeerIdIsUser(Value: Integer): Boolean;
+function PeerIdIsUser(Value: TVkPeerId): Boolean;
 begin
   Result := (Value < VK_GROUP_ID_START) and (Value > 0);
 end;
 
-function PeerIdIsGroup(Value: Integer): Boolean;
+function PeerIdIsGroup(Value: TVkPeerId): Boolean;
 begin
   Result := (Value > VK_GROUP_ID_START) and (Value < VK_CHAT_ID_START);
 end;
 
-function NormalizePeerId(Value: Integer): Integer;
+function NormalizePeerId(Value: TVkPeerId): TVkPeerId;
 begin
   if Value > VK_CHAT_ID_START then
     Exit(Value - VK_CHAT_ID_START);
@@ -1714,6 +1716,11 @@ begin
   Self[Result - 1] := Value;
 end;
 
+function TArrayOfIntegerHelper.Contains(const Value: Int64): Boolean;
+begin
+  Result := IndexOf(Value) >= 0;
+end;
+
 procedure TArrayOfIntegerHelper.Delete(const Value: Int64);
 var
   i: Integer;
@@ -1811,7 +1818,7 @@ var
 begin
   for i := Low(Self) to High(Self) do
   begin
-    if i <> Low(Self) then
+    if (i <> Low(Self)) and (not Self[i].IsEmpty) then
       Result := Result + ',';
     Result := Result + Self[i];
   end;
@@ -1831,6 +1838,11 @@ begin
   SetLength(Self, Source.Count);
   for i := 0 to Source.Count - 1 do
     Self[i] := Source[i];
+end;
+
+function TArrayOfStringHelper.Contains(const Value: string): Boolean;
+begin
+  Result := IndexOf(Value) >= 0;
 end;
 
 procedure TArrayOfStringHelper.Delete(const Value: string);
