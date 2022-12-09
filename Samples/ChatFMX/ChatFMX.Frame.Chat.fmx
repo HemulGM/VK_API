@@ -32,7 +32,6 @@ object FrameChat: TFrameChat
           Size.Width = 608.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
-          Visible = False
           TabOrder = 3
           object ButtonActions: TButton
             Align = Right
@@ -188,6 +187,7 @@ object FrameChat: TFrameChat
           Size.Width = 608.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
+          Visible = False
           TabOrder = 2
           object ButtonSelAsSPAM: TButton
             Align = Right
@@ -440,7 +440,7 @@ object FrameChat: TFrameChat
             Size.Width = 90.000000000000000000
             Size.Height = 140.000000000000000000
             Size.PlatformDefault = False
-            TabOrder = 6
+            TabOrder = 5
           end
           object MemoText: TMemo
             Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
@@ -497,8 +497,8 @@ object FrameChat: TFrameChat
         Size.PlatformDefault = False
         TabOrder = 0
         OnResize = VertScrollBoxMessagesResize
-        ShowScrollBars = False
-        Viewport.Width = 647.000000000000000000
+        OnViewportPositionChange = VertScrollBoxMessagesViewportPositionChange
+        Viewport.Width = 631.000000000000000000
         Viewport.Height = 560.000000000000000000
         object LayoutMessageList: TLayout
           Position.Y = 64.000000000000000000

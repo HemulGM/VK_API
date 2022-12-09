@@ -165,8 +165,8 @@ begin
   FLoading := True;
   FLoadingItem := nil;
   var FChatScroll := TSmoothScroll.CreateFor(ListBoxChats);
-  //FChatScroll.ScrollDelta := 2;
-  //FChatScroll.EnableSmoothScroll := False;
+  FChatScroll.ScrollDelta := 2;
+  FChatScroll.EnableSmoothScroll := False;
   LayoutLoading.Visible := True;
   HorzScrollBoxContent.Visible := False;
   PanelLoader.StylesData['left.Enabled'] := True;
@@ -247,7 +247,7 @@ begin
     Exit;
   if NewViewportPosition.Y = 0 then
     Exit;
-  if NewViewportPosition.Y + ListBoxChats.Height >= (ListBoxChats.ContentBounds.Height - 300) then
+  if NewViewportPosition.Y + ListBoxChats.Height >= (ListBoxChats.ContentBounds.Height - ListBoxChats.Height) then
     EndOfChats;
 end;
 

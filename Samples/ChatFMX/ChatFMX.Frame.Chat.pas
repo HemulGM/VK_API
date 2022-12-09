@@ -83,12 +83,12 @@ type
     LayoutFooterBottom: TLayout;
     LayoutFooterMessage: TLayout;
     LabelTextHint: TLabel;
-    procedure ListBoxChatViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
     procedure MemoTextChangeTracking(Sender: TObject);
     procedure LayoutFooterBottomResize(Sender: TObject);
+    procedure VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
   private
     FConversationId: TVkPeerId;
     FVK: TCustomVK;
@@ -114,7 +114,7 @@ type
     procedure EndOfChat;
     procedure LoadConversationAsync;
     procedure LoadConversationInfoAsync;
-    procedure CreateMessageItem(const Item: TVkMessage; Data: TVkMessageHistory);
+    procedure CreateMessageItem(const Item: TVkMessage; History: TVkMessageHistory);
     procedure UpdateInfo(Info: TVkConversation; Data: TVkConversations);
     procedure SetIsMuted(const Value: Boolean);
     procedure SetTitle(const Value: string);
@@ -182,6 +182,7 @@ procedure TFrameChat.EndOfChat;
 begin
   if FLoading then
     Exit;
+  FLoading := True;
   if not FOffsetEnd then
   begin
     Inc(FOffset, 20);
@@ -205,16 +206,6 @@ end;
 procedure TFrameChat.LayoutUnselClick(Sender: TObject);
 begin
   UnselectAll;
-end;
-
-procedure TFrameChat.ListBoxChatViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
-begin     {
-  if FLoading then
-    Exit;
-  if NewViewportPosition.Y = 0 then
-    Exit;
-  if NewViewportPosition.Y + ListBoxChat.Height >= ListBoxChat.ContentBounds.Height then
-    EndOfChat; }
 end;
 
 procedure TFrameChat.Load(const PeerId: TVkPeerId);
@@ -267,21 +258,16 @@ begin
   UpdateSelection(SelectedCount);
 end;
 
-procedure TFrameChat.CreateMessageItem(const Item: TVkMessage; Data: TVkMessageHistory);
-var
-  IsEnd: Boolean;
+procedure TFrameChat.CreateMessageItem(const Item: TVkMessage; History: TVkMessageHistory);
 begin
-  IsEnd := (VertScrollBoxMessages.ViewportPosition.Y + VertScrollBoxMessages.Height) - VertScrollBoxMessages.ContentBounds.Bottom < 10;
-
-  var MessageItem := TFrameMessage.Create(LayoutMessageList, FVK);
-  MessageItem.Parent := LayoutMessageList;
-  MessageItem.Position.Y := -1000;
-  MessageItem.Fill(Item, Data);
-  MessageItem.Align := TAlignLayout.Bottom;
-  MessageItem.OnSelectedChanged := FOnMessageSelected;
-
-  if IsEnd then
-    VertScrollBoxMessages.ViewportPosition := TPointF.Create(0, VertScrollBoxMessages.ContentBounds.Height);
+  with TFrameMessage.Create(LayoutMessageList, FVK) do
+  begin
+    Parent := LayoutMessageList;
+    Position.Y := -1000;
+    Fill(Item, History);
+    Align := TAlignLayout.Bottom;
+    OnSelectedChanged := FOnMessageSelected;
+  end;
 end;
 
 destructor TFrameChat.Destroy;
@@ -309,10 +295,9 @@ begin
       begin
         for var Item in Items.Items do
           CreateMessageItem(Item, Items);
-        LayoutMessageList.RecalcSize;
         VertScrollBoxMessagesResize(nil);
         LayoutMessageList.Opacity := 1;
-        //TAnimator.AnimateFloat(LayoutMessageList, 'Opacity', 1);
+        FLoading := False;
       end);
   finally
     Items.Free;
@@ -429,11 +414,15 @@ end;
 procedure TFrameChat.VertScrollBoxMessagesResize(Sender: TObject);
 begin
   if LayoutMessageList.Width <> VertScrollBoxMessages.Width then
-    LayoutMessageList.Width := VertScrollBoxMessages.Width
-  else
-    for var Control in LayoutMessageList.Controls do
-      Control.RecalcSize;
+    LayoutMessageList.Width := VertScrollBoxMessages.Width;
   LayoutMessageList.Position.Y := VertScrollBoxMessages.Height - LayoutMessageList.Height;
+end;
+
+procedure TFrameChat.VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
+begin
+  var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
+  if Abs(NewViewportPosition.Y - Content.Top) < 500 then
+    EndOfChat;
 end;
 
 procedure TFrameChat.FOnReadyImage(const Sender: TObject; const M: TMessage);
