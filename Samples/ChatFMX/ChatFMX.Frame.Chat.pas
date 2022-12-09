@@ -7,7 +7,8 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Layouts, FMX.ListBox, FMX.Objects, FMX.Controls.Presentation,
   ChatFMX.DM.Res, FMX.Edit, VK.Types, VK.API, FMX.ImgList, VK.Entity.Message,
-  VK.Entity.Conversation, System.Messaging, ChatFMX.Frame.Message;
+  VK.Entity.Conversation, System.Messaging, ChatFMX.Frame.Message,
+  HGM.FMX.SmoothScroll, FMX.Ani, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo;
 
 type
   TChatType = (ctChat, ctUser, ctGroup);
@@ -31,9 +32,7 @@ type
     ButtonActions: TButton;
     ButtonSearch: TButton;
     ButtonCall: TButton;
-    Button1: TButton;
-    EditMessage: TEdit;
-    Button2: TButton;
+    ButtonAttchment: TButton;
     LayoutMobileIndicate: TLayout;
     LayoutMuteIndicate: TLayout;
     ImageMobileOnline: TImage;
@@ -73,10 +72,23 @@ type
     LayoutUnsel: TLayout;
     ButtonSelAnswerReply: TButton;
     ButtonSelReply: TButton;
+    LayoutSend: TLayout;
+    ButtonAudio: TButton;
+    ButtonSend: TButton;
+    LayoutSendControls: TLayout;
+    Layout3: TLayout;
+    RectangleMessage: TRectangle;
+    Layout4: TLayout;
+    MemoText: TMemo;
+    LayoutFooterBottom: TLayout;
+    LayoutFooterMessage: TLayout;
+    LabelTextHint: TLabel;
     procedure ListBoxChatViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
+    procedure MemoTextChangeTracking(Sender: TObject);
+    procedure LayoutFooterBottomResize(Sender: TObject);
   private
     FConversationId: TVkPeerId;
     FVK: TCustomVK;
@@ -95,6 +107,7 @@ type
     FLastSeen: TDateTime;
     FIsSelfChat: Boolean;
     FHeadMode: THeadMode;
+    FChatScroll: TSmoothScroll;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
@@ -119,6 +132,7 @@ type
     function SelectedCount: Integer;
     procedure UpdateSelection(const Count: Integer);
     procedure SetHeadMode(const Value: THeadMode);
+    procedure UpdateFooterSize;
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
@@ -143,7 +157,7 @@ implementation
 
 uses
   System.Threading, VK.Messages, VK.Entity.Profile, VK.Entity.Group,
-  ChatFMX.PreviewManager, System.Math, FMX.Ani, ChatFMX.Utils;
+  ChatFMX.PreviewManager, System.Math, ChatFMX.Utils;
 
 {$R *.fmx}
 
@@ -152,10 +166,16 @@ uses
 constructor TFrameChat.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
+  FChatScroll := TSmoothScroll.CreateFor(VertScrollBoxMessages);
+  FChatScroll.ScrollDelta := 2;
+  FChatScroll.EnableSmoothScroll := False;
   FLoading := True;
   FVK := AVK;
   Name := '';
   HeadMode := hmNormal;
+  MemoText.Text := '';
+  MemoText.PrepareForPaint;
+  UpdateFooterSize;
 end;
 
 procedure TFrameChat.EndOfChat;
@@ -167,6 +187,11 @@ begin
     Inc(FOffset, 20);
     TTask.Run(LoadConversationAsync);
   end;
+end;
+
+procedure TFrameChat.LayoutFooterBottomResize(Sender: TObject);
+begin
+  UpdateFooterSize;
 end;
 
 procedure TFrameChat.LayoutMessageListResize(Sender: TObject);
@@ -453,6 +478,27 @@ begin
   finally
     Items.Free;
   end;
+end;
+
+procedure TFrameChat.MemoTextChangeTracking(Sender: TObject);
+begin
+  UpdateFooterSize;
+  LabelTextHint.Visible := MemoText.Text.IsEmpty;
+  ButtonAudio.Visible := MemoText.Text.IsEmpty;
+  ButtonSend.Visible := not MemoText.Text.IsEmpty;
+end;
+
+procedure TFrameChat.UpdateFooterSize;
+var
+  H: Single;
+begin
+  H :=
+    Max(36, Min(MemoText.ContentSize.Height + 20, 220)) +
+    RectangleMessage.Margins.Top +
+    RectangleMessage.Margins.Bottom;
+  if LayoutFooterBottom.Visible then
+    H := H + LayoutFooterBottom.Height;
+  RectangleFooter.Height := H;
 end;
 
 procedure TFrameChat.ReloadAsync;

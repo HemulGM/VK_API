@@ -795,11 +795,7 @@ function TCustomVK.CheckAuth: Boolean;
 var
   MT: Int64;
 begin
-  try
-    Result := Utils.GetServerTimeUnix(MT);
-  except
-    Result := False;
-  end;
+  Result := Utils.GetServerTimeUnix(MT);
 end;
 
 constructor TCustomVK.Create(const AToken: string);

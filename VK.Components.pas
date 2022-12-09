@@ -35,7 +35,11 @@ type
 
   [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVkUserEvents = class(TCustomUserEvents)
+  private
+    function GetActualVersion: string;
   published
+    property ActualVersion: string read GetActualVersion;
+    property Async default False;
     property Logging default False;
     property OnChangeDialogFlags;
     property OnChangeMessageFlags;
@@ -62,11 +66,10 @@ type
   [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVkGroupEvents = class(TCustomGroupEvents)
   private
-    FActualVersion: string;
-  public
-    constructor Create(AOwner: TComponent); override;
+    function GetActualVersion: string;
   published
-    property ActualVersion: string read FActualVersion;
+    property ActualVersion: string read GetActualVersion;
+    property Async default False;
     property GroupID default 0;
     property Logging default False;
     property OnAudioNew;
@@ -118,11 +121,9 @@ type
   [ComponentPlatformsAttribute(pidAllPlatforms)]
   TVkGroupEventsController = class(TCustomGroupEventControl)
   private
-    FActualVersion: string;
-  public
-    constructor Create(AOwner: TComponent); override;
+    function GetActualVersion: string;
   published
-    property ActualVersion: string read FActualVersion;
+    property ActualVersion: string read GetActualVersion;
     property Groups;
     property Logging default False;
     property OnAudioNew;
@@ -183,20 +184,25 @@ begin
   RegisterComponents('VK API HGM', [TVkGroupEventsController]);
 end;
 
-{ TVkGroupEventsController }
+{ TVkUserEvents }
 
-constructor TVkGroupEventsController.Create(AOwner: TComponent);
+function TVkUserEvents.GetActualVersion: string;
 begin
-  inherited;
-  FActualVersion := TVK.Version;
+  Result := TVK.Version;
 end;
 
 { TVkGroupEvents }
 
-constructor TVkGroupEvents.Create(AOwner: TComponent);
+function TVkGroupEvents.GetActualVersion: string;
 begin
-  inherited;
-  FActualVersion := TVK.Version;
+  Result := TVK.Version;
+end;
+
+{ TVkGroupEventsController }
+
+function TVkGroupEventsController.GetActualVersion: string;
+begin
+  Result := TVK.Version;
 end;
 
 end.

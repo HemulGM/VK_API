@@ -16,9 +16,12 @@ type
     function FindChat(const PeerId: TVkPeerId; var Frame: TFrameChat): Boolean;
   end;
 
+  TListBoxLoading = class(TListBoxItem)
+  end;
+
   TFormMain = class(TForm)
     LayoutClient: TLayout;
-    HorzScrollBox1: THorzScrollBox;
+    HorzScrollBoxContent: THorzScrollBox;
     StyleBook: TStyleBook;
     Rectangle1: TRectangle;
     VK: TVK;
@@ -49,22 +52,33 @@ type
     CircleAvatar: TCircle;
     LayoutLoading: TLayout;
     RectangleLoadBG: TRectangle;
-    Path2: TPath;
-    Label1: TLabel;
+    PathSplashLogo: TPath;
+    LabelLogoSubTitle: TLabel;
     LayoutError: TLayout;
     Rectangle2: TRectangle;
     Label2: TLabel;
     ButtonRelogin: TButton;
+    PanelLoader: TPanel;
+    LayoutLogo: TLayout;
+    Path3: TPath;
+    Path4: TPath;
+    Path5: TPath;
+    LayoutSplash: TLayout;
+    ListBoxItem7: TListBoxItem;
+    ListBoxItem8: TListBoxItem;
+    ListBoxItem9: TListBoxItem;
+    Layout1: TLayout;
+    ScrollBarChats: TSmallScrollBar;
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
     procedure VKLogin(Sender: TObject);
     procedure LabelChatsModeClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure FormDestroy(Sender: TObject);
     procedure ButtonReloginClick(Sender: TObject);
     procedure VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
+    procedure ListBoxChatsApplyStyleLookup(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -74,6 +88,7 @@ type
     FListChatsOffset: Integer;
     FListChatsOffsetEnd: Boolean;
     FChats: TChats;
+    FLoadingItem: TListBoxLoading;
     procedure FOnReadyAvatar(const Sender: TObject; const M: TMessage);
     procedure FOnChatItemClick(Sender: TObject);
     procedure LoadConversationsAsync;
@@ -88,6 +103,8 @@ type
     procedure Login;
     procedure LoadDone;
     procedure DoErrorLogin;
+    procedure CreateLoadingItem;
+    procedure ClearChatList;
   public
     property UnreadOnly: Boolean read FUnreadOnly write SetUnreadOnly;
   end;
@@ -99,7 +116,8 @@ implementation
 
 uses
   System.Math, System.Threading, VK.FMX.OAuth2, System.IOUtils, VK.Clients,
-  ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager, FMX.Ani;
+  ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager, FMX.Ani,
+  HGM.FMX.SmoothScroll;
 
 {$R *.fmx}
 
@@ -134,12 +152,25 @@ end;
 
 procedure TFormMain.Login;
 begin
-  VK.Login;
+  try
+    VK.Login;
+  finally
+    if not VK.IsLogin then
+      TThread.Queue(nil, DoErrorLogin);
+  end;
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   FLoading := True;
+  FLoadingItem := nil;
+  var FChatScroll := TSmoothScroll.CreateFor(ListBoxChats);
+  //FChatScroll.ScrollDelta := 2;
+  //FChatScroll.EnableSmoothScroll := False;
+  LayoutLoading.Visible := True;
+  HorzScrollBoxContent.Visible := False;
+  PanelLoader.StylesData['left.Enabled'] := True;
+  PanelLoader.Visible := True;
   FChats := TChats.Create;
   LayoutError.Visible := False;
   ListBoxChats.AniCalculations.Animation := True;
@@ -161,16 +192,12 @@ begin
   LayoutClient.Width := Max(Min(1000, ClientWidth), 800) - 40;
 end;
 
-procedure TFormMain.Button1Click(Sender: TObject);
-begin
-  ListBoxChats.Clear;
-end;
-
 procedure TFormMain.CreateChatItem(Chat: TVkConversationItem; Data: TVkConversationItems);
 var
   ListItem: TListBoxItemChat;
 begin
   ListItem := TListBoxItemChat.Create(ListBoxChats, VK);
+  ListItem.Height := 63;
   ListBoxChats.AddObject(ListItem);
   ListItem.Fill(Chat, Data);
   ListItem.OnClick := FOnChatItemClick;
@@ -179,6 +206,9 @@ end;
 
 procedure TFormMain.LabelChatsModeClick(Sender: TObject);
 begin
+  if FLoading then
+    Exit;
+  FLoading := True;
   UnreadOnly := not UnreadOnly;
   TTask.Run(LoadConversationsAsync);
 end;
@@ -187,10 +217,27 @@ procedure TFormMain.EndOfChats;
 begin
   if FLoading then
     Exit;
+  FLoading := True;
   if not FListChatsOffsetEnd then
   begin
     Inc(FListChatsOffset, 20);
     TTask.Run(LoadConversationsAsync);
+  end;
+end;
+
+procedure TFormMain.ListBoxChatsApplyStyleLookup(Sender: TObject);
+var
+  Scroll: TSmallScrollBar;
+  Layout: TLayout;
+begin
+  if ListBoxChats.FindStyleResource('small_scroll', Layout) then
+  begin
+    Layout.BringToFront;
+  end;
+  if ListBoxChats.FindStyleResource('vscrollbar', Scroll) then
+  begin
+    Scroll.BringToFront;
+    Scroll.HitTest := True;
   end;
 end;
 
@@ -200,14 +247,20 @@ begin
     Exit;
   if NewViewportPosition.Y = 0 then
     Exit;
-  if NewViewportPosition.Y + ListBoxChats.Height >= ListBoxChats.ContentBounds.Height then
+  if NewViewportPosition.Y + ListBoxChats.Height >= (ListBoxChats.ContentBounds.Height - 300) then
     EndOfChats;
 end;
 
 procedure TFormMain.ButtonReloginClick(Sender: TObject);
 begin
+  PanelLoader.Visible := True;
   LayoutError.Visible := False;
-  TTask.Run(Login);
+  TTask.Run(
+    procedure
+    begin
+      Sleep(2000);
+      Login;
+    end);
 end;
 
 function TFormMain.CreateChat(PeerId: TVkPeerId): TFrameChat;
@@ -256,13 +309,36 @@ begin
         try
           for var Item in Items.Items do
             CreateChatItem(Item, Items);
+          if FListChatsOffsetEnd then
+          begin
+            FLoadingItem.Free;
+            FLoadingItem := nil;
+          end
+          else if Assigned(FLoadingItem) then
+            FLoadingItem.Index := ListBoxChats.Count;
         finally
           ListBoxChats.EndUpdate;
         end;
+        FLoading := False;
       end);
   finally
     Items.Free;
   end;
+end;
+
+procedure TFormMain.CreateLoadingItem;
+begin
+  FLoadingItem := TListBoxLoading.Create(ListBoxChats);
+  FLoadingItem.Text := 'Загрузка...';
+  FLoadingItem.StyleLookup := 'item_loading';
+  FLoadingItem.Height := 40;
+  ListBoxChats.AddObject(FLoadingItem);
+end;
+
+procedure TFormMain.ClearChatList;
+begin
+  ListBoxChats.Clear;
+  CreateLoadingItem;
 end;
 
 procedure TFormMain.SetUnreadOnly(const Value: Boolean);
@@ -270,7 +346,7 @@ begin
   FUnreadOnly := Value;
   FListChatsOffset := 0;
   FListChatsOffsetEnd := False;
-  ListBoxChats.Clear;
+  ClearChatList;
   case FUnreadOnly of
     True:
       LabelChatsMode.Text := 'Показать все';
@@ -318,6 +394,8 @@ begin
   LayoutLoading.Opacity := 1;
   LayoutLoading.Visible := True;
   LayoutError.Visible := True;
+  PanelLoader.Visible := False;
+  HorzScrollBoxContent.Visible := False;
 end;
 
 procedure TFormMain.VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
@@ -330,11 +408,12 @@ procedure TFormMain.LoadDone;
 begin
   TAnimator.AnimateFloatWait(LayoutLoading, 'Opacity', 0);
   LayoutLoading.Visible := False;
+  HorzScrollBoxContent.Visible := True;
 end;
 
 procedure TFormMain.Reload;
 begin
-  ListBoxChats.Clear;
+  ClearChatList;
   FListChatsOffset := 0;
   FListChatsOffsetEnd := False;
   FLoading := True;
@@ -349,7 +428,6 @@ begin
           Caption := 'FMX VK Messanger [' + VK.UserName + ']';
         end);
       LoadConversationsAsync;
-      FLoading := False;
       Sleep(500);
       TThread.Queue(nil,
         procedure

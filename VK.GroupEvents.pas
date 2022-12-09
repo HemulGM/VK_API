@@ -3,9 +3,11 @@ unit VK.GroupEvents;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, REST.Client, System.JSON, VK.Types,
-  System.Generics.Collections, VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
-  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo, VK.Entity.GroupSettings;
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  REST.Client, System.JSON, VK.Types, System.Generics.Collections,
+  VK.LongPollServer, VK.API, VK.Entity.Media, VK.Entity.Audio, VK.Entity.Video,
+  VK.Entity.Message, VK.Entity.ClientInfo, VK.Entity.Photo,
+  VK.Entity.GroupSettings;
 
 type
   TLongPollEventProc = procedure(GroupId: Integer; EventObject: TJSONValue; const EventId: string) of object;
@@ -260,6 +262,8 @@ type
     function GetIsWork: Boolean;
     procedure SetVersion(const Value: string);
     procedure SetLogging(const Value: Boolean);
+    procedure SetAsync(const Value: Boolean);
+    function GetAsync: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -271,6 +275,7 @@ type
     property GroupID: Integer read FGroupID write SetGroupID;
     property IsWork: Boolean read GetIsWork;
     property Logging: Boolean read FLogging write SetLogging;
+    property Async: Boolean read GetAsync write SetAsync;
     //
     property OnWallReplyNew: TOnCommentAction read FOnWallReplyNew write SetOnWallReplyNew;
     property OnWallReplyEdit: TOnCommentAction read FOnWallReplyEdit write SetOnWallReplyEdit;
@@ -458,6 +463,7 @@ begin
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
   FLongPollServer.Logging := True;
+  FLongPollServer.DoSync := True;
   FillEvents;
 end;
 
@@ -1202,9 +1208,19 @@ begin
   DoEvent(Sender, Update);
 end;
 
+function TCustomGroupEvents.GetAsync: Boolean;
+begin
+  Result := not FLongPollServer.DoSync;
+end;
+
 function TCustomGroupEvents.GetIsWork: Boolean;
 begin
   Result := FLongPollServer.IsWork;
+end;
+
+procedure TCustomGroupEvents.SetAsync(const Value: Boolean);
+begin
+  FLongPollServer.DoSync := not Value;
 end;
 
 procedure TCustomGroupEvents.SetGroupID(const Value: Integer);

@@ -7,6 +7,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 24
           end>
         IconName = 'Item 0'
         SVGText = 
@@ -26,6 +27,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 24
           end>
         IconName = 'Item 1'
         SVGText = 
@@ -53,6 +55,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 24
           end>
         IconName = 'Item 2'
         SVGText = 
@@ -155,7 +158,8 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
-            Width = 20
+            Width = 13
+            Height = 20
           end>
         IconName = 'Item 8'
         SVGText = 
@@ -241,102 +245,125 @@ object DataModuleRes: TDataModuleRes
           '4.4-3.05a7 7 0 0 1-9.84-9.84l9.83 9.84Zm1.05-1.06L5.61 4.55a7 7 ' +
           '0 0 1 9.84 9.84Z" fill="currentColor"></path></svg>'
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+          end>
+        IconName = 'Item 12'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" v' +
+          'iewBox="0 0 24 24"><path d="M7.1 6.9a4.9 4.9 0 0 1 9.8 0v4.2a4.9' +
+          ' 4.9 0 1 1-9.8 0V6.9ZM12 3.8a3.1 3.1 0 0 0-3.1 3.1v4.2a3.1 3.1 0' +
+          ' 1 0 6.2 0V6.9A3.1 3.1 0 0 0 12 3.8Z"></path><path d="M19.68 15.' +
+          '35a.9.9 0 0 0-1.56-.9A7.06 7.06 0 0 1 12 18a7.06 7.06 0 0 1-6.12' +
+          '-3.55.9.9 0 1 0-1.56.9 8.87 8.87 0 0 0 6.78 4.4v2.35a.9.9 0 1 0 ' +
+          '1.8 0v-2.35a8.87 8.87 0 0 0 6.78-4.4Z"></path></svg>'
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
         Layers = <
           item
             Name = 'Item 0'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 1'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 2'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 3'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 4'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 5'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 6'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 7'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 8'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 9'
-            SourceRect.Right = 120.000000000000000000
-            SourceRect.Bottom = 120.000000000000000000
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 10'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 11'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 12'
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item

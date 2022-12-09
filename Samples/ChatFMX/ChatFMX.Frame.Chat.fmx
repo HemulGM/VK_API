@@ -57,7 +57,7 @@ object FrameChat: TFrameChat
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'button_small'
-            TabOrder = 5
+            TabOrder = 4
             Text = 'ButtonCall'
           end
           object ButtonSearch: TButton
@@ -212,7 +212,7 @@ object FrameChat: TFrameChat
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'button_small'
-            TabOrder = 3
+            TabOrder = 2
             Text = 'ButtonCall'
           end
           object ButtonSelDelete: TButton
@@ -235,7 +235,7 @@ object FrameChat: TFrameChat
             Size.Width = 233.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
-            TabOrder = 5
+            TabOrder = 3
             OnClick = LayoutUnselClick
             object LabelSelCount: TLabel
               Align = MostLeft
@@ -331,53 +331,155 @@ object FrameChat: TFrameChat
       Align = Bottom
       Corners = [BottomRight]
       Fill.Color = xFF292929
-      Position.Y = 712.000000000000000000
+      Position.Y = 608.000000000000000000
       Sides = [Top, Bottom, Right]
       Size.Width = 648.000000000000000000
-      Size.Height = 63.000000000000000000
+      Size.Height = 167.000000000000000000
       Size.PlatformDefault = False
       Stroke.Color = xFF424242
       XRadius = 12.000000000000000000
       YRadius = 12.000000000000000000
-      object Button1: TButton
-        Align = Left
-        Cursor = crHandPoint
-        Images = DataModuleRes.ImageListSVG
-        ImageIndex = 6
-        Size.Width = 55.000000000000000000
-        Size.Height = 63.000000000000000000
+      object LayoutFooterBottom: TLayout
+        Align = Bottom
+        Position.Y = 117.000000000000000000
+        Size.Width = 648.000000000000000000
+        Size.Height = 50.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'button_small'
-        TabOrder = 7
-        Text = 'ButtonCall'
-      end
-      object Button2: TButton
-        Align = Right
-        Cursor = crHandPoint
-        Images = DataModuleRes.ImageListSVG
-        ImageIndex = 7
-        Position.X = 593.000000000000000000
-        Size.Width = 55.000000000000000000
-        Size.Height = 63.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'button_small'
+        Visible = False
         TabOrder = 6
-        Text = 'ButtonCall'
+        OnResize = LayoutFooterBottomResize
       end
-      object EditMessage: TEdit
-        Touch.InteractiveGestures = [LongTap, DoubleTap]
+      object LayoutFooterMessage: TLayout
         Align = Client
-        StyleLookup = 'edit_message'
-        TabOrder = 8
-        TextSettings.Font.Family = 'Roboto'
-        TextSettings.Font.Size = 13.000000000000000000
-        Margins.Top = 14.000000000000000000
-        Margins.Bottom = 13.000000000000000000
-        Size.Width = 538.000000000000000000
-        Size.Height = 36.000000000000000000
+        Size.Width = 648.000000000000000000
+        Size.Height = 167.000000000000000000
         Size.PlatformDefault = False
-        TextPrompt = #1053#1072#1087#1080#1096#1080#1090#1077' '#1089#1086#1086#1073#1097#1077#1085#1080#1077'...'
-        StyledSettings = [Style, FontColor]
+        TabOrder = 7
+        object LayoutSendControls: TLayout
+          Align = Contents
+          Size.Width = 648.000000000000000000
+          Size.Height = 167.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object Layout3: TLayout
+            Align = Bottom
+            Locked = True
+            Position.Y = 104.000000000000000000
+            Size.Width = 648.000000000000000000
+            Size.Height = 63.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 6
+            object ButtonAttchment: TButton
+              Align = Left
+              Cursor = crHandPoint
+              Images = DataModuleRes.ImageListSVG
+              ImageIndex = 6
+              Size.Width = 55.000000000000000000
+              Size.Height = 63.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'button_small'
+              TabOrder = 7
+              Text = 'ButtonCall'
+            end
+            object LayoutSend: TLayout
+              Align = Right
+              Locked = True
+              Position.X = 593.000000000000000000
+              Size.Width = 55.000000000000000000
+              Size.Height = 63.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 8
+              object ButtonAudio: TButton
+                Align = Client
+                Cursor = crHandPoint
+                Images = DataModuleRes.ImageListSVG
+                ImageIndex = 12
+                Locked = True
+                Size.Width = 55.000000000000000000
+                Size.Height = 63.000000000000000000
+                Size.PlatformDefault = False
+                StyleLookup = 'button_small'
+                TabOrder = 7
+                Text = 'ButtonCall'
+              end
+              object ButtonSend: TButton
+                Align = Client
+                Cursor = crHandPoint
+                Images = DataModuleRes.ImageListSVG
+                ImageIndex = 7
+                Locked = True
+                Size.Width = 55.000000000000000000
+                Size.Height = 63.000000000000000000
+                Size.PlatformDefault = False
+                StyleLookup = 'button_small'
+                TabOrder = 6
+                Text = 'ButtonCall'
+                Visible = False
+              end
+            end
+          end
+        end
+        object RectangleMessage: TRectangle
+          StyleName = 'bg'
+          Align = Client
+          Fill.Kind = None
+          HitTest = False
+          Margins.Left = 55.000000000000000000
+          Margins.Top = 14.000000000000000000
+          Margins.Right = 55.000000000000000000
+          Margins.Bottom = 13.000000000000000000
+          Size.Width = 538.000000000000000000
+          Size.Height = 140.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Color = xFF555555
+          XRadius = 6.000000000000000000
+          YRadius = 6.000000000000000000
+          object Layout4: TLayout
+            Align = Right
+            Position.X = 448.000000000000000000
+            Size.Width = 90.000000000000000000
+            Size.Height = 140.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 6
+          end
+          object MemoText: TMemo
+            Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+            Caret.Color = claWhite
+            DataDetectorTypes = []
+            Lines.Strings = (
+              #1042' '#1088#1072#1079#1099' '#1087#1088#1086#1097#1077' '#1080' '#1083#1091#1095#1096#1077' '#1087#1080#1089#1072#1090#1100)
+            StyledSettings = [Style, FontColor]
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 13.000000000000000000
+            TextSettings.WordWrap = True
+            OnChangeTracking = MemoTextChangeTracking
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Margins.Bottom = 10.000000000000000000
+            Size.Width = 428.000000000000000000
+            Size.Height = 120.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'memo_clear'
+            TabOrder = 1
+            TabStop = False
+            Viewport.Width = 428.000000000000000000
+            Viewport.Height = 120.000000000000000000
+            object LabelTextHint: TLabel
+              Align = Client
+              StyledSettings = [Style]
+              Size.Width = 428.000000000000000000
+              Size.Height = 120.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.Font.Family = 'Roboto'
+              TextSettings.Font.Size = 13.000000000000000000
+              TextSettings.FontColor = x96FFFFFF
+              Text = #1053#1072#1087#1080#1089#1072#1090#1100' '#1089#1086#1086#1073#1097#1077#1085#1080#1077'...'
+              TabOrder = 0
+            end
+          end
+        end
       end
     end
     object RectangleChatBG: TRectangle
@@ -385,19 +487,19 @@ object FrameChat: TFrameChat
       Fill.Color = xFF222222
       Margins.Right = 1.000000000000000000
       Size.Width = 647.000000000000000000
-      Size.Height = 664.000000000000000000
+      Size.Height = 560.000000000000000000
       Size.PlatformDefault = False
       Stroke.Kind = None
       object VertScrollBoxMessages: TVertScrollBox
         Align = Client
         Size.Width = 647.000000000000000000
-        Size.Height = 664.000000000000000000
+        Size.Height = 560.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         OnResize = VertScrollBoxMessagesResize
         ShowScrollBars = False
         Viewport.Width = 647.000000000000000000
-        Viewport.Height = 664.000000000000000000
+        Viewport.Height = 560.000000000000000000
         object LayoutMessageList: TLayout
           Position.Y = 64.000000000000000000
           Size.Width = 641.000000000000000000

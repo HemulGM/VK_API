@@ -215,6 +215,8 @@ type
     procedure SetLogging(const Value: Boolean);
     procedure SetVersion(const Value: string);
     procedure SetVK(const Value: TCustomVK);
+    function GetAsync: Boolean;
+    procedure SetAsync(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -222,6 +224,7 @@ type
     procedure Stop;
     property IsWork: Boolean read GetIsWork;
     property Logging: Boolean read FLogging write SetLogging;
+    property Async: Boolean read GetAsync write SetAsync;
     property OnChangeDialogFlags: TOnChangeDialogFlags read FOnChangeDialogFlags write FOnChangeDialogFlags;
     property OnChangeMessageFlags: TOnChangeMessageFlags read FOnChangeMessageFlags write FOnChangeMessageFlags;
     property OnChatChanged: TOnChatChanged read FOnChatChanged write FOnChatChanged;
@@ -267,6 +270,7 @@ begin
   end;
   FVersion := VK_LP_VERSION;
   FLongPollServer := TVkLongPollServer.Create;
+  FLongPollServer.DoSync := True;
   FLongPollServer.OnUpdate := FOnLongPollUpdate;
   FLongPollServer.OnError := FOnError;
 end;
@@ -508,9 +512,19 @@ begin
   DoEvent(Sender, Update);
 end;
 
+function TCustomUserEvents.GetAsync: Boolean;
+begin
+  Result := not FLongPollServer.DoSync;
+end;
+
 function TCustomUserEvents.GetIsWork: Boolean;
 begin
   Result := FLongPollServer.IsWork;
+end;
+
+procedure TCustomUserEvents.SetAsync(const Value: Boolean);
+begin
+  FLongPollServer.DoSync := not Value;
 end;
 
 procedure TCustomUserEvents.SetLogging(const Value: Boolean);

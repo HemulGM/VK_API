@@ -116,6 +116,7 @@ end;
 constructor TListBoxItemChat.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
+  Cursor := crHandPoint;
   FWasQueryImage := False;
   FVK := AVK;
   HitTest := True;

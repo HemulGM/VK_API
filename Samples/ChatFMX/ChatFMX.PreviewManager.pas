@@ -3,14 +3,19 @@
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Messaging, System.Threading,
-  System.SyncObjs, System.Generics.Collections, System.Net.HttpClient;
+  System.SysUtils, System.IOUtils, System.Classes, System.Messaging,
+  System.Threading, System.SyncObjs, System.Generics.Collections,
+  System.Net.HttpClient;
 
 type
   TPreviewData = record
     Url: string;
     FileName: string;
     class function Create(Url, FileName: string): TPreviewData; static;
+  end;
+
+  TFileHelper = record helper for TFile
+    class function GetSize(const Path: string): Int64; static;
   end;
 
   TOnLog = procedure(Sender: TObject; Value: string) of object;
@@ -50,7 +55,7 @@ type
 implementation
 
 uses
-  FMX.Forms, System.Net.URLClient, System.IOUtils;
+  FMX.Forms,{$IFDEF MSWINDOWS} Winapi.Windows, {$ENDIF} System.Net.URLClient;
 
 { TPreview }
 
@@ -88,6 +93,7 @@ begin
   if not FileName.IsEmpty then
   begin
     FileName := TPath.Combine(FLocalPath, FileName);
+
     Result := TFile.Exists(FileName) and (TFile.GetSize(FileName) > 0);
   end;
 end;
@@ -257,6 +263,40 @@ begin
   Result.Url := Url;
   Result.FileName := FileName;
 end;
+
+{ TFileHelper }
+
+class function TFileHelper.GetSize(const Path: string): Int64;
+{$IFDEF MSWINDOWS}
+var
+  LPath: string;
+  LInfo: TWin32FileAttributeData;
+begin
+  if (Length(Path) < MAX_PATH) or TPath.IsExtendedPrefixed(Path) then
+    LPath := Path
+  else
+    LPath := '\\?\' + Path;
+  if GetFileAttributesEx(PChar(LPath), GetFileExInfoStandard, @LInfo) then
+  begin
+    Result := LInfo.nFileSizeHigh;
+    Result := Result shl 32 + LInfo.nFileSizeLow;
+  end
+  else begin
+    Result := -1;
+  end;
+end;
+{$ELSE}
+var
+  LFileName: UTF8String;
+  LStatBuf: _stat;
+begin
+  LFileName := UTF8Encode(Path);
+  if stat(PAnsiChar(LFileName), LStatBuf) = 0 then
+    Result := LStatBuf.st_size
+  else
+    Result := -1;
+end;
+{$ENDIF}
 
 end.
 
