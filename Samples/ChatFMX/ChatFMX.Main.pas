@@ -138,7 +138,7 @@ end;
 
 procedure TFormMain.FOnLog(Sender: TObject; Value: string);
 begin
-  //FrameChat1.ListBoxChat.Items.Add(Value);
+  Memo1.Lines.Add(Value);
 end;
 
 procedure TFormMain.FOnReadyAvatar(const Sender: TObject; const M: TMessage);
@@ -185,8 +185,12 @@ begin
   ListBoxChats.AniCalculations.Animation := True;
   TPreview.Instance.OnLog := FOnLog;
   VK.Application := TVkApplicationData.VKAdmin;
-  if TFile.Exists('token.tmp') then
-    VK.Token := TFile.ReadAllText('token.tmp');
+  try
+    if TFile.Exists('token.tmp') then
+      VK.Token := TFile.ReadAllText('token.tmp');
+  except
+    //
+  end;
   TTask.Run(Login);
   //LoadDone;
 end;
@@ -311,7 +315,9 @@ begin
   Params.Extended;
   Params.Offset(FListChatsOffset);
   Params.Count(20);
-  Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified], [TVkGroupField.Verified]);
+  Params.Fields(
+    [TVkProfileField.Photo50, TVkProfileField.Verified, TVkProfileField.OnlineInfo,
+    TVkProfileField.FirstNameAcc, TVkProfileField.LastNameAcc]);
   if FUnreadOnly then
     Params.Filter(TVkConversationFilter.Unread);
   try
@@ -414,8 +420,13 @@ end;
 
 procedure TFormMain.DoErrorLogin;
 begin
-  FToken := '';
-  VK.Token := '';
+  if not FToken.IsEmpty then
+  begin
+    FToken := '';
+    VK.Token := '';
+    TTask.Run(Login);
+    Exit;
+  end;
   LayoutLoading.Opacity := 1;
   LayoutLoading.Visible := True;
   LayoutError.Visible := True;
@@ -469,7 +480,11 @@ end;
 
 procedure TFormMain.VKLogin(Sender: TObject);
 begin
-  TFile.WriteAllText('token.tmp', VK.Token);
+  try
+    TFile.WriteAllText('token.tmp', VK.Token);
+  except
+  //
+  end;
   TThread.Queue(nil, Reload);
 end;
 

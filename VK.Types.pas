@@ -672,7 +672,7 @@ type
     CanBeInvitedGroup, OnlineMobile, Counters, FirstNameNom, FirstNameGen,       //
     FirstNameDat, FirstNameAcc, FirstNameIns, FirstNameAbl, LastNameNom,         //
     LastNameGen, LastNameDat, LastNameAcc, LastNameIns, LastNameAbl,             //
-    WallDefault);                                                                //
+    WallDefault, OnlineInfo, CanCall);                                           //
 
   TVkProfileFieldHelper = record helper for TVkProfileField
     function ToString: string; inline;
@@ -1001,10 +1001,11 @@ type
   /// NoAccessChat Ч нет доступа к чату;
   /// NoAccessEMail Ч нет доступа к e-mail;
   /// NoAccessGroup Ч нет доступа к сообществу.
+  /// Forbidden - ќтправка сообщений ограничена
   /// </summary>
   TVkConversationDisableReason = (UserBannedOrDeleted, UserBlacklisted,       //
     UserDisableGroupsMessages, UserPrivacy, GroupDisableMessages,             //
-    GroupBannedMessages, NoAccessChat, NoAccessEMail, NoAccessGroup);
+    GroupBannedMessages, NoAccessChat, NoAccessEMail, NoAccessGroup, Forbidden);
 
   TVkConversationDisableReasonHelper = record helper for TVkConversationDisableReason
     function ToString: string; inline;
@@ -1065,8 +1066,28 @@ type
     Days3 = 172800, Days4 = 345600, Days5 = 432000, Days6 = 518400,           //
     Days7 = 604800);
 
+  /// <summary>
+  /// Communist Ч коммунистические;
+  /// Socialist Ч социалистические;
+  /// Moderate Ч умеренные;
+  /// Liberal Ч либеральные;
+  /// Conservative Ч консервативные;
+  /// Monarchical Ч монархические;
+  /// UltraConservative Ч ультраконсервативные;
+  /// Indifferent Ч индифферентные;
+  /// Libertarian Ч либертарианские.
+  /// </summary>
   TVkPolitical = (None, Communist, Socialist, Moderate, Liberal,              //
     Conservative, Monarchical, UltraConservative, Indifferent, Libertarian);
+
+  /// <summary>
+  /// SharplyNegative Ч резко негативное;
+  /// Negative Ч негативное;
+  /// Compromise Ч компромиссное;
+  /// Neutral Ч нейтральное;
+  /// Positive Ч положительное
+  /// </summary>
+  TVkPersonalAttitude = (None, SharplyNegative, Negative, Compromise, Neutral, Positive);
 
   TVkTagPosition = (Front, Back);
 
@@ -1128,6 +1149,8 @@ type
   /// </summary>
   TVkRelation = (None, NotMarried, HaveFriend, Affiance, Married, Complicated, //
     ActivelyLooking, InLove, CivilMarriage);
+
+  TVkFriendStatus = (NotFriend, SendedRequest, InviteRequest, IsFriend);
 
   TVkSearchTarget = (Friends, Subscriptions);
 
@@ -1473,7 +1496,7 @@ const
     'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me', 'can_be_invited_group',
     'online_mobile', 'counters', 'first_name_nom', 'first_name_gen', 'first_name_dat', 'first_name_acc',
     'first_name_ins', 'first_name_abl', 'last_name_nom', 'last_name_gen', 'last_name_dat', 'last_name_acc',
-    'last_name_ins', 'last_name_abl', 'wall_default');
+    'last_name_ins', 'last_name_abl', 'wall_default', 'online_info', 'can_call');
   VKPostLinkButton: array[TVkPostLinkButton] of string = (
     'auto', 'app_join', 'app_game_join', 'open_url', 'open', 'more', 'call', 'book', 'enroll', 'register', 'buy',
     'buy_ticket', 'order', 'create', 'install', 'contact', 'fill', 'join_public', 'join_event', 'join', 'im',
@@ -1556,7 +1579,7 @@ const
   VkPaymentStatus: array[TVkPaymentStatus] of string = ('not_paid', 'paid', 'returned');
   VkFaveType: array[TVkFaveType] of string = ('post', 'video', 'product', 'article', 'link');
   VkMonthlyTier: array[TVkMonthlyTier] of string = ('tier_1', 'tier_2', 'tier_3', 'tier_4', 'tier_5', 'tier_6', 'unlimited');
-  VkConversationDisableReason: array[TVkConversationDisableReason] of Integer = (18, 900, 901, 902, 915, 916, 917, 918, 203);
+  VkConversationDisableReason: array[TVkConversationDisableReason] of Integer = (18, 900, 901, 902, 915, 916, 917, 918, 203, 945);
   VkPostType: array[TVkPostType] of string = ('post', 'copy', 'reply', 'postpone', 'suggest');
   VkPostSourceType: array[TVkPostSourceType] of string = ('vk', 'widget', 'api', 'rss', 'sms');
   VkAdsAccountType: array[TVkAdsAccountType] of string = ('general', 'agency');

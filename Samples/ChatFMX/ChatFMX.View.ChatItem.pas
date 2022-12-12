@@ -179,7 +179,7 @@ begin
     end;
       // Текст последнего сообщения
     if not Item.LastMessage.Text.IsEmpty then
-      SetMessageText(Item.LastMessage.Text.Replace(#$A, ' '), False)
+      SetMessageText(Item.LastMessage.Text.Replace(#$A, ' ').Replace('  ', ' ', [rfReplaceAll]), False)
       // Вложение
     else if Length(Item.LastMessage.Attachments) > 0 then
     begin
@@ -196,7 +196,10 @@ begin
       begin
         var User: TVkProfile;
         if Data.GetProfileById(Item.LastMessage.Action.MemberId, User) then
-          MemberText := User.FullName;
+          if User.FirstNameAcc.IsEmpty then
+            MemberText := User.FullName
+          else
+            MemberText := User.FullNameAcc;
       end
       else
       begin
@@ -225,12 +228,13 @@ begin
       // Пересланные сообщения
     else if Length(Item.LastMessage.FwdMessages) > 0 then
     begin
-      SetMessageText(Length(Item.LastMessage.FwdMessages).ToString + ' сообщен.', True);
+      SetMessageText(Length(Item.LastMessage.FwdMessages).ToString + WordOfCount(Length(Item.LastMessage.FwdMessages), [' сообщение', ' сообщения', ' сообщений']), True);
     end;
   end;
+
   if Assigned(Item.Conversation.PushSettings) then
   begin
-    IsMuted := Item.Conversation.PushSettings.NoSound;
+    IsMuted := Item.Conversation.PushSettings.NoSound or Item.Conversation.PushSettings.DisabledForever;
   end;
 
   Unanswered := (Item.Conversation.UnreadCount = 0) and (Item.Conversation.InRead <> Item.Conversation.OutRead);
@@ -357,7 +361,7 @@ end;
 
 procedure TListBoxItemChat.SetMessageText(const Value: string; IsAttach: Boolean);
 begin
-  ItemData.Detail := Value;
+  ItemData.Detail := ParseMention(Value);
   if IsAttach then
     StylesData['detail.TextSettings.FontColor'] := $FF71AAEB
   else

@@ -108,7 +108,7 @@ implementation
 
 uses
   System.Math, System.DateUtils, VK.Entity.Profile, VK.Entity.Group,
-  ChatFMX.PreviewManager, ChatFMX.Frame.Attachment.Photo,
+  ChatFMX.PreviewManager, ChatFMX.Frame.Attachment.Photo, ChatFMX.Utils,
   ChatFMX.Frame.Attachment.Sticker, ChatFMX.Frame.Attachment.Video;
 
 {$R *.fmx}
@@ -178,7 +178,7 @@ begin
   if PeerIdIsUser(Item.FromId) then
   begin
     var User: TVkProfile;
-    if Data.GetProfileById(Abs(Item.FromId), User) then
+    if Data.GetProfileById(Item.FromId, User) then
     begin
       if P2P then
         FromText := User.FirstName
@@ -190,7 +190,7 @@ begin
   else
   begin
     var Group: TVkGroup;
-    if Data.GetGroupById(Abs(Item.FromId), Group) then
+    if Data.GetGroupById(Item.FromId, Group) then
     begin
       FromText := Group.Name;
       ImageUrl := Group.Photo50;
@@ -446,11 +446,11 @@ end;
 
 procedure TFrameMessage.SetText(const Value: string);
 begin
-  FText := Value;
-  MemoText.Visible := not Value.IsEmpty;
-  if not Value.IsEmpty then
+  FText := ParseMention(Value);
+  MemoText.Visible := not FText.IsEmpty;
+  if not FText.IsEmpty then
   begin
-    MemoText.Text := Value;
+    MemoText.Text := FText;
     (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
     (MemoText.Presentation as TStyledMemo).PrepareForPaint;
   end;

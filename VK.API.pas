@@ -10,7 +10,7 @@ uses
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed,
   VK.Notifications, VK.Orders, Vk.Pages, VK.Polls, VK.Podcasts, VK.Search,
   VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
-  VK.Apps, VK.Clients, VK.Donut, VK.Streaming, VK.Ads;
+  VK.Apps, VK.Clients, VK.Donut, VK.Streaming, VK.Ads, VK.Asr;
 
 type
   TCustomVK = class(TComponent)
@@ -100,6 +100,7 @@ type
     FWall: TWallController;
     FStreaming: TStreamingController;
     FAds: TAds;
+    FAsr: TAsr;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -214,6 +215,10 @@ type
     /// Методы для работы с приложениями.
     /// </summary>
     property Apps: TAppsController read FApps;
+    /// <summary>
+    /// Метод выполняет распознавание речи из загруженного файла аудиозаписи.
+    /// </summary>
+    property Asr: TAsr read FAsr;
     /// <summary>
     /// Методы для работы с авторизацией.
     /// </summary>
@@ -603,6 +608,7 @@ begin
   //Controllers
   FAccount := TAccountController.Create(FHandler);
   FAds := TAds.Create(FHandler);
+  FAsr := TAsr.Create(FHandler);
   FAuth := TAuthController.Create(FHandler);
   FApps := TAppsController.Create(FHandler);
   FDonut := TDonutController.Create(FHandler);
@@ -674,6 +680,7 @@ begin
   FUsers.Free;
   FAccount.Free;
   FAds.Free;
+  FAsr.Free;
   FApps.Free;
   FDonut.Free;
   FAuth.Free;

@@ -3,8 +3,8 @@ unit VK.Friends;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, VK.Entity.Profile,
-  VK.Entity.Common, VK.Entity.Common.List;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, VK.Entity.Profile, VK.Entity.Common, VK.Entity.Common.List;
 
 type
   TVkParamsFriendsGet = record
@@ -292,6 +292,10 @@ type
     /// </summary>
     function EditList(Params: TVkParamsFriendsListEdit): Boolean; overload;
     /// <summary>
+    /// ѕозвол€ет получить список идентификаторов пользователей, доступных дл€ вызова в приложении, использу€ метод Client API callUser
+    /// </summary>
+    function GetAvailableForCall(var Items: TVkProfiles; Fields: TVkProfileFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean;
+    /// <summary>
     /// ¬озвращает список идентификаторов друзей текущего пользовател€, которые установили данное приложение
     /// </summary>
     function GetAppUsers(var Items: TVkIdList): Boolean;
@@ -472,6 +476,16 @@ end;
 function TFriendsController.GetAppUsers(var Items: TVkIdList): Boolean;
 begin
   Result := Handler.Execute('friends.getAppUsers').GetObject(Items);
+end;
+
+function TFriendsController.GetAvailableForCall(var Items: TVkProfiles; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
+begin
+  if Fields = [] then
+    Fields := [TVkProfileField.Photo50];
+  var Params: TParams;
+  Params.Add('fields', Fields.ToString);
+  Params.Add('name_case', NameCase.ToString);
+  Result := Handler.Execute('friends.getAvailableForCall').GetObjects(Items);
 end;
 
 function TFriendsController.GetByPhones(var Items: TVkProfiles; Phones: TArrayOfString; Fields: TVkProfileFields): Boolean;

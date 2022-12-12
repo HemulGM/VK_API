@@ -91,6 +91,16 @@ type
     LayoutLoading: TLayout;
     FrameLoadingMesages: TFrameLoading;
     LayoutVerified: TLayout;
+    RectangleAddToFriends: TRectangle;
+    LayoutAddToFriends: TLayout;
+    LabelAddFriendHint: TLabel;
+    Button1: TButton;
+    Layout16: TLayout;
+    PathCloseAddToFriends: TPath;
+    RectangleFooterBlock: TRectangle;
+    LayoutBlockInfo: TLayout;
+    ImageWarning: TImage;
+    LabelWarningText: TLabel;
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
@@ -117,6 +127,10 @@ type
     FHeadMode: THeadMode;
     FChatScroll: TSmoothScroll;
     FVerified: Boolean;
+    FIsNeedAddToFriends: Boolean;
+    FUserAccFirstName: string;
+    FIsCanWrtie: Boolean;
+    FNotAllowedReason: TVkConversationDisableReason;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
@@ -146,6 +160,8 @@ type
     function GetMessageDate(Frame: TFrame): TDateTime;
     procedure InsertDateLastMessage(LastDate: TDateTime);
     procedure SetVerified(const Value: Boolean);
+    procedure SetIsNeedAddToFriends(const Value: Boolean);
+    procedure SetIsCanWrtie(const Value: Boolean);
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
@@ -165,13 +181,16 @@ type
     property IsSelfChat: Boolean read FIsSelfChat write SetIsSelfChat;
     procedure UnselectAll;
     property Verified: Boolean read FVerified write SetVerified;
+    property IsNeedAddToFriends: Boolean read FIsNeedAddToFriends write SetIsNeedAddToFriends;
+    property IsCanWrtie: Boolean read FIsCanWrtie write SetIsCanWrtie;
   end;
 
 implementation
 
 uses
   System.Threading, System.DateUtils, VK.Messages, VK.Entity.Profile,
-  VK.Entity.Group, ChatFMX.PreviewManager, System.Math, ChatFMX.Utils;
+  VK.Entity.Group, ChatFMX.PreviewManager, System.Math, ChatFMX.Utils,
+  HGM.FMX.Image;
 
 {$R *.fmx}
 
@@ -189,6 +208,8 @@ begin
   HeadMode := hmNormal;
   MemoText.Text := '';
   MemoText.PrepareForPaint;
+  IsNeedAddToFriends := False;
+  IsCanWrtie := True;
   UpdateFooterSize;
 end;
 
@@ -354,7 +375,8 @@ begin
   Params.Extended;
   Params.Offset(FOffset);
   Params.Count(20);
-  Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified], [TVkGroupField.Verified]);
+  Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified,
+    TVkProfileField.FirstNameAcc, TVkProfileField.LastNameAcc], [TVkGroupField.Verified]);
   Params.PeerId(FConversationId);
   if VK.Messages.GetHistory(Items, Params) then
   try
@@ -387,6 +409,15 @@ begin
   CanCall := False;
   IsSelfChat := Info.Peer.Id = FVK.UserId;
   Verified := False;
+  LastSeen := 0;
+  IsNeedAddToFriends := False;
+  if Assigned(Info.CanWrite) then
+  begin
+    FNotAllowedReason := Info.CanWrite.Reason;
+    IsCanWrtie := Info.CanWrite.Allowed
+  end
+  else
+    IsCanWrtie := True;
 
   if Assigned(Info.PushSettings) then
   begin
@@ -434,13 +465,14 @@ begin
       Title := User.FullName;
       ImageUrl := User.Photo50;
       Verified := User.Verified;
+      FUserAccFirstName := User.FirstNameAcc;
+      IsNeedAddToFriends := (not User.IsFriend) and (User.CanSendFriendRequest);
       if Assigned(User.OnlineInfo) then
       begin
         LastSeen := User.OnlineInfo.LastSeen;
         IsOnline := User.OnlineInfo.IsOnline;
         IsMobile := User.OnlineInfo.IsMobile;
       end;
-      //CanCall := User.
     end;
   end
   else if Info.IsGroup then
@@ -475,8 +507,10 @@ begin
       begin
         if IsOnline then
           LabelInfo.Text := 'online'
+        else if LastSeen <> 0 then
+          LabelInfo.Text := 'был(а) в сети ' + HumanDateTime(LastSeen, True)
         else
-          LabelInfo.Text := 'был в сети ' + FormatDateTime('d mmm', LastSeen);
+          LabelInfo.Text := 'был(а) в сети недавно';
       end;
     ctGroup:
       begin
@@ -527,7 +561,10 @@ var
 begin
   Params.PeerId(FConversationId);
   Params.Extended;
-  Params.Fields([TVkGroupField.Verified, TVkGroupField.Photo50]);
+  Params.Fields([TVkGroupField.Verified, TVkGroupField.Photo50],
+    [TVkProfileField.OnlineInfo, TVkProfileField.FirstNameAcc,
+    TVkProfileField.IsFriend, TVkProfileField.CanSendFriendRequest,
+    TVkProfileField.CanWritePrivateMessage]);
   if VK.Messages.GetConversationsById(Items, Params) then
   try
     if Length(Items.Items) > 0 then
@@ -537,7 +574,6 @@ begin
         begin
           UpdateInfo(Items.Items[0], Items);
           LayoutHead.Opacity := 1;
-          //TAnimator.AnimateFloat(LayoutHead, 'Opacity', 1);
         end);
     end;
   finally
@@ -637,6 +673,43 @@ begin
     CircleImage.Fill.Kind := TBrushKind.Solid;
 end;
 
+procedure TFrameChat.SetIsCanWrtie(const Value: Boolean);
+begin
+  FIsCanWrtie := Value;
+  RectangleFooter.Visible := FIsCanWrtie;
+  RectangleFooterBlock.Visible := not FIsCanWrtie;
+  if RectangleFooterBlock.Visible then
+  begin
+    ImageWarning.Bitmap.LoadFromResource('msg_warning');
+  end;
+  var Reason: string := '';
+  case FNotAllowedReason of
+    TVkConversationDisableReason.UserBannedOrDeleted:
+      Reason := 'Пользователь удалён.';
+    TVkConversationDisableReason.UserBlacklisted:
+      Reason := 'Нельзя отправить сообщение пользователю, который в чёрном списке';
+    TVkConversationDisableReason.UserDisableGroupsMessages:
+      Reason := 'Пользователь запретил сообщения от сообщества';
+    TVkConversationDisableReason.UserPrivacy:
+      Reason := 'Вы не можете отправить сообщение этому пользователю, поскольку он ограничил круг лиц, которые могут присылать ему сообщения.';
+    TVkConversationDisableReason.GroupDisableMessages:
+      Reason := 'Сообщество отключило сообщения.';
+    TVkConversationDisableReason.GroupBannedMessages:
+      Reason := 'В сообществе заблокированы сообщения';
+    TVkConversationDisableReason.NoAccessChat:
+      Reason := 'Вы были исключены из этого чата.';
+    TVkConversationDisableReason.NoAccessEMail:
+      Reason := 'Нет доступа к e-mail';
+    TVkConversationDisableReason.NoAccessGroup:
+      Reason := 'Вы не можете отправить сообщение этому сообществу, поскольку оно ограничило круг лиц, которые могут присылать ему сообщения.';
+    TVkConversationDisableReason.Forbidden:
+      Reason := 'Отправка сообщений ограничена';
+  else
+    Reason := 'Отправка сообщений ограничена';
+  end;
+  LabelWarningText.Text := Reason;
+end;
+
 procedure TFrameChat.SetIsMobile(const Value: Boolean);
 begin
   FIsMobile := Value;
@@ -647,6 +720,16 @@ procedure TFrameChat.SetIsMuted(const Value: Boolean);
 begin
   FIsMuted := Value;
   LayoutMuteIndicate.Visible := FIsMuted;
+end;
+
+procedure TFrameChat.SetIsNeedAddToFriends(const Value: Boolean);
+begin
+  FIsNeedAddToFriends := Value;
+  RectangleAddToFriends.Visible := FIsNeedAddToFriends;
+  if FIsNeedAddToFriends then
+  begin
+    LabelAddFriendHint.Text := 'Добавьте ' + FUserAccFirstName + ' в друзья и общайтесь чаще';
+  end;
 end;
 
 procedure TFrameChat.SetIsOnline(const Value: Boolean);

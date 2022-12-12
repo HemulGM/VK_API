@@ -69,9 +69,14 @@ begin
     var User: TVkProfile;
     if Data.GetProfileById(Abs(Item.Action.MemberId), User) then
       if P2P then
-        FMemberText := User.FirstName
+        if User.FirstNameAcc.IsEmpty then
+          FMemberText := User.FirstName
+        else
+          FMemberText := User.FirstNameAcc
+      else if User.FirstNameAcc.IsEmpty then
+        FMemberText := User.FullName
       else
-        FMemberText := User.FullName;
+        FMemberText := User.FullNameAcc;
   end
   else
   begin

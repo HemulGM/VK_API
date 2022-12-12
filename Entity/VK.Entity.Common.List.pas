@@ -50,12 +50,14 @@ type
     [JSONMarshalledAttribute(False)]
     FSaveObjects: Boolean;
     procedure SetSaveObjects(const Value: Boolean);
+    function GetIsEmpty: Boolean;
   public
     property Count: Integer read FCount write FCount;
     property Items: TArray<T> read FItems write FItems;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Items: TVkObjectList<T>);
     function GetById(const Id: Int64; var Value: T): Boolean;
+    property IsEmpty: Boolean read GetIsEmpty;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -137,6 +139,11 @@ begin
       Exit(True);
     end;
   Result := False;
+end;
+
+function TVkObjectList<T>.GetIsEmpty: Boolean;
+begin
+  Result := Length(Items) <= 0;
 end;
 
 procedure TVkObjectList<T>.SetSaveObjects(const Value: Boolean);

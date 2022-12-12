@@ -101,6 +101,12 @@ type
   TGiftPrivacyInterceptor = class(TEnumInterceptor<TVkGiftPrivacy>)
   end;
 
+  TFriendStatusInterceptor = class(TEnumInterceptor<TVkFriendStatus>)
+  end;
+
+  TPersonalAttitudeInterceptor = class(TEnumInterceptor<TVkPersonalAttitude>)
+  end;
+
   TPeerTypeInterceptor = class(TJSONInterceptorStringToString)
   public
     function StringConverter(Data: TObject; Field: string): string; override;

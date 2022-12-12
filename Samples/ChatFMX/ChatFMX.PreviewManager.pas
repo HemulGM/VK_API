@@ -55,7 +55,7 @@ type
 implementation
 
 uses
-  FMX.Forms,{$IFDEF MSWINDOWS} Winapi.Windows, {$ENDIF} System.Net.URLClient;
+  FMX.Forms,{$IFDEF MSWINDOWS} Winapi.Windows, {$ELSE} Posix.SysStat, {$ENDIF} System.Net.URLClient;
 
 { TPreview }
 

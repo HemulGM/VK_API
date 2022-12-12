@@ -246,7 +246,8 @@ type
 
   TVkPersonal = class(TVkEntity)
   private
-    FAlcohol: Integer;
+    [JsonReflectAttribute(ctString, rtString, TPersonalAttitudeInterceptor)]
+    FAlcohol: TVkPersonalAttitude;
     FInspired_by: string;
     FLangs: TArray<string>;
     FLife_main: Integer;
@@ -255,19 +256,14 @@ type
     FPolitical: TVkPolitical;
     FReligion: string;
     FReligion_id: Integer;
-    FSmoking: Integer;
+    [JsonReflectAttribute(ctString, rtString, TPersonalAttitudeInterceptor)]
+    FSmoking: TVkPersonalAttitude;
     FLangs_full: TArray<TVkLangFull>;
   public
     /// <summary>
     /// ќтношение к алкоголю
-    ///  ¬озможные значени€:
-    ///  1 Ч резко негативное;
-    ///  2 Ч негативное;
-    ///  3 Ч компромиссное;
-    ///  4 Ч нейтральное;
-    ///  5 Ч положительное
     /// </summary>
-    property Alcohol: Integer read FAlcohol write FAlcohol;
+    property Alcohol: TVkPersonalAttitude read FAlcohol write FAlcohol;
     /// <summary>
     /// »сточники вдохновени€
     /// </summary>
@@ -279,7 +275,6 @@ type
     property LangsFull: TArray<TVkLangFull> read FLangs_full write FLangs_full;
     /// <summary>
     /// √лавное в жизни
-    ///  ¬озможные значени€:
     ///  1 Ч семь€ и дети;
     ///  2 Ч карьера и деньги;
     ///  3 Ч развлечени€ и отдых;
@@ -292,7 +287,6 @@ type
     property LifeMain: Integer read FLife_main write FLife_main;
     /// <summary>
     /// √лавное в люд€х
-    ///  ¬озможные значени€:
     ///  1 Ч ум и креативность;
     ///  2 Ч доброта и честность;
     ///  3 Ч красота и здоровье;
@@ -315,14 +309,8 @@ type
     property ReligionId: Integer read FReligion_id write FReligion_id;
     /// <summary>
     /// ќтношение к курению
-    ///  ¬озможные значени€:
-    ///  1 Ч резко негативное;
-    ///  2 Ч негативное;
-    ///  3 Ч компромиссное;
-    ///  4 Ч нейтральное;
-    ///  5 Ч положительное.
     /// </summary>
-    property Smoking: Integer read FSmoking write FSmoking;
+    property Smoking: TVkPersonalAttitude read FSmoking write FSmoking;
     destructor Destroy; override;
   end;
 
@@ -448,7 +436,8 @@ type
     FFaculty_name: string;
     FFirst_name: string;
     FFollowers_count: Integer;
-    FFriend_status: Integer;
+    [JsonReflectAttribute(ctString, rtString, TFriendStatusInterceptor)]
+    FFriend_status: TVkFriendStatus;
     FGames: string;
     FGraduation: Integer;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -541,8 +530,11 @@ type
     FMaiden_name: string;
     FStatus_audio: TVkAudio;
     FWall_default: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FIs_no_index: Boolean;
     function GetRefer: string;
     function FGetFullName: string;
+    function GetFullNameAcc: string;
   public
     /// <summary>
     /// »дентификатор пользовател€
@@ -706,8 +698,12 @@ type
     property FoundWith: string read FFound_with write FFound_with;
     /// <summary>
     /// —татус дружбы с пользователем
+    /// 0 Ч не €вл€етс€ другом
+    /// 1 Ч отправлена за€вка/подписка пользователю
+    /// 2 Ч имеетс€ вход€ща€ за€вка/подписка от пользовател€
+    /// 3 Ч €вл€етс€ другом
     /// </summary>
-    property FriendStatus: Integer read FFriend_status write FFriend_status;
+    property FriendStatus: TVkFriendStatus read FFriend_status write FFriend_status;
     /// <summary>
     /// —одержимое пол€ ЂЋюбимые игрыї из профил€
     /// </summary>
@@ -760,6 +756,14 @@ type
     /// »нформаци€ о том, скрыт ли пользователь из ленты новостей текущего пользовател€
     /// </summary>
     property IsHiddenFromFeed: Boolean read FIs_hidden_from_feed write FIs_hidden_from_feed;
+    /// <summary>
+    /// »ндексируетс€ ли профиль поисковыми сайтами
+    /// True - профиль скрыт от поисковых сайтов
+    /// False - профиль доступен поисковым сайтам.
+    /// (¬ настройках приватности: https://vk.com/settings?act=privacy,
+    /// в пункте Ђ ому в интернете видна мо€ страницаї, выбрано значение Ђ¬семї
+    /// </summary>
+    property IsNoIndex: Boolean read FIs_no_index write FIs_no_index;
     /// <summary>
     /// ‘амили€
     /// </summary>
@@ -988,6 +992,7 @@ type
     /// FirstName LastName
     /// </summary>
     property FullName: string read FGetFullName;
+    property FullNameAcc: string read GetFullNameAcc;
     destructor Destroy; override;
   end;
 
@@ -1001,7 +1006,6 @@ type
   end;
 
   TVkFriendsLists = TVkObjectList<TVkFriendsList>;
-
 
 implementation
 
@@ -1046,6 +1050,11 @@ end;
 function TVkProfile.FGetFullName: string;
 begin
   Result := FFirst_name + ' ' + FLast_name;
+end;
+
+function TVkProfile.GetFullNameAcc: string;
+begin
+  Result := FFirst_name_acc + ' ' + FLast_name_acc;
 end;
 
 function TVkProfile.GetRefer: string;

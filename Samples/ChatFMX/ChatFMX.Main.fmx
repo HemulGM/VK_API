@@ -22,7 +22,7 @@ object FormMain: TFormMain
     Size.PlatformDefault = False
     StyleLookup = 'HorzScrollBox1Style1'
     TabOrder = 0
-    Viewport.Width = 1019.000000000000000000
+    Viewport.Width = 1031.000000000000000000
     Viewport.Height = 661.000000000000000000
     object LayoutClient: TLayout
       Align = HorzCenter
@@ -179,7 +179,7 @@ object FormMain: TFormMain
           DefaultItemStyles.ItemStyle = ''
           DefaultItemStyles.GroupHeaderStyle = ''
           DefaultItemStyles.GroupFooterStyle = ''
-          Viewport.Width = 232.000000000000000000
+          Viewport.Width = 247.000000000000000000
           Viewport.Height = 527.000000000000000000
           object ListBoxItem1: TListBoxItem
             ItemData.Detail = 'sdfsdf'
@@ -1542,7 +1542,7 @@ object FormMain: TFormMain
               Size.Height = 10.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'loadstyle'
-              TabOrder = 4
+              TabOrder = 3
             end
           end
         end
