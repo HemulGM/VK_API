@@ -1,5 +1,4 @@
 object DataModuleRes: TDataModuleRes
-  OldCreateOrder = False
   Height = 292
   Width = 522
   object ImageListSVG: TSVGIconImageList
@@ -7,6 +6,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 20
           end>
         IconName = 'Item 0'
         SVGText = 
@@ -26,6 +26,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 20
           end>
         IconName = 'Item 1'
         SVGText = 
@@ -53,6 +54,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 20
           end>
         IconName = 'Item 2'
         SVGText = 
@@ -141,6 +143,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 20
           end>
         IconName = 'Item 7'
         SVGText = 
@@ -173,6 +176,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 20
           end>
         IconName = 'Item 9'
         SVGText = 
@@ -209,6 +213,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 20
           end>
         IconName = 'Item 10'
         SVGText = 
@@ -237,6 +242,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 20
           end>
         IconName = 'Item 11'
         SVGText = 
@@ -262,30 +268,44 @@ object DataModuleRes: TDataModuleRes
           '-3.55.9.9 0 1 0-1.56.9 8.87 8.87 0 0 0 6.78 4.4v2.35a.9.9 0 1 0 ' +
           '1.8 0v-2.35a8.87 8.87 0 0 0 6.78-4.4Z"></path></svg>'
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 16
+          end>
+        IconName = 'Item 13'
+        SVGText = 
+          '<?xml version="1.0" ?><svg viewBox="0 0 96 96" xmlns="http://www' +
+          '.w3.org/2000/svg"><title/><path d="M39.3756,48.0022l30.47-25.39a' +
+          '6.0035,6.0035,0,0,0-7.6878-9.223L26.1563,43.3906a6.0092,6.0092,0' +
+          ',0,0,0,9.2231L62.1578,82.615a6.0035,6.0035,0,0,0,7.6878-9.2231Z"' +
+          '/></svg>'
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
         Layers = <
           item
             Name = 'Item 0'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 1'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 2'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
@@ -324,8 +344,8 @@ object DataModuleRes: TDataModuleRes
         Layers = <
           item
             Name = 'Item 7'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
@@ -340,24 +360,24 @@ object DataModuleRes: TDataModuleRes
         Layers = <
           item
             Name = 'Item 9'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 10'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 11'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
@@ -366,6 +386,12 @@ object DataModuleRes: TDataModuleRes
             Name = 'Item 12'
             SourceRect.Right = 24.000000000000000000
             SourceRect.Bottom = 24.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 13'
           end>
       end
       item

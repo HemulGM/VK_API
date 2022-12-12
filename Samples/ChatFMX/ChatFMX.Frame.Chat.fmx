@@ -29,7 +29,7 @@ object FrameChat: TFrameChat
         TabOrder = 0
         object LayoutHeadNormal: TLayout
           Align = Client
-          Size.Width = 646.000000000000000000
+          Size.Width = 610.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 3
@@ -38,7 +38,7 @@ object FrameChat: TFrameChat
             Cursor = crHandPoint
             Images = DataModuleRes.ImageListSVG
             ImageIndex = 5
-            Position.X = 570.000000000000000000
+            Position.X = 534.000000000000000000
             Size.Width = 36.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -51,7 +51,7 @@ object FrameChat: TFrameChat
             Cursor = crHandPoint
             Images = DataModuleRes.ImageListSVG
             ImageIndex = 4
-            Position.X = 498.000000000000000000
+            Position.X = 462.000000000000000000
             Size.Width = 36.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -64,7 +64,7 @@ object FrameChat: TFrameChat
             Cursor = crHandPoint
             Images = DataModuleRes.ImageListSVG
             ImageIndex = 3
-            Position.X = 534.000000000000000000
+            Position.X = 498.000000000000000000
             Size.Width = 36.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -78,7 +78,7 @@ object FrameChat: TFrameChat
             Margins.Left = 10.000000000000000000
             Margins.Top = 9.000000000000000000
             Margins.Bottom = 9.000000000000000000
-            Position.X = 616.000000000000000000
+            Position.X = 580.000000000000000000
             Position.Y = 9.000000000000000000
             Size.Width = 30.000000000000000000
             Size.Height = 30.000000000000000000
@@ -356,6 +356,20 @@ object FrameChat: TFrameChat
             TextSettings.FontColor = xFF222222
           end
         end
+        object ButtonBack: TButton
+          Align = MostLeft
+          Cursor = crHandPoint
+          Images = DataModuleRes.ImageListSVG
+          ImageIndex = 13
+          Position.X = 20.000000000000000000
+          Size.Width = 36.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'button_small'
+          TabOrder = 4
+          Text = 'ButtonCall'
+          OnClick = ButtonBackClick
+        end
       end
     end
     object RectangleFooter: TRectangle
@@ -467,8 +481,8 @@ object FrameChat: TFrameChat
           YRadius = 6.000000000000000000
           object Layout4: TLayout
             Align = Right
-            Position.X = 486.000000000000000000
-            Size.Width = 90.000000000000000000
+            Position.X = 528.000000000000000000
+            Size.Width = 48.000000000000000000
             Size.Height = 140.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 2
@@ -489,23 +503,24 @@ object FrameChat: TFrameChat
             Margins.Top = 10.000000000000000000
             Margins.Right = 10.000000000000000000
             Margins.Bottom = 10.000000000000000000
-            Size.Width = 466.000000000000000000
+            Size.Width = 508.000000000000000000
             Size.Height = 120.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'memo_clear'
             TabOrder = 1
             TabStop = False
-            Viewport.Width = 466.000000000000000000
+            Viewport.Width = 508.000000000000000000
             Viewport.Height = 120.000000000000000000
             object LabelTextHint: TLabel
               Align = Client
               StyledSettings = [Style]
-              Size.Width = 466.000000000000000000
+              Size.Width = 508.000000000000000000
               Size.Height = 120.000000000000000000
               Size.PlatformDefault = False
               TextSettings.Font.Family = 'Roboto'
               TextSettings.Font.Size = 13.000000000000000000
               TextSettings.FontColor = x96FFFFFF
+              TextSettings.WordWrap = False
               Text = #1053#1072#1087#1080#1089#1072#1090#1100' '#1089#1086#1086#1073#1097#1077#1085#1080#1077'...'
               TabOrder = 0
             end
@@ -1159,7 +1174,7 @@ object FrameChat: TFrameChat
           Size.Height = 28.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'button_simple'
-          TabOrder = 7
+          TabOrder = 6
           Text = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1076#1088#1091#1079#1100#1103
           TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 12.500000000000000000

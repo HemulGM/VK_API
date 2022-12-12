@@ -24,7 +24,7 @@ type
     LayoutClient: TLayout;
     HorzScrollBoxContent: THorzScrollBox;
     StyleBook: TStyleBook;
-    Rectangle1: TRectangle;
+    RectangleBG: TRectangle;
     VK: TVK;
     LayoutChat: TLayout;
     Line1: TLine;
@@ -68,12 +68,11 @@ type
     ListBoxItem7: TListBoxItem;
     ListBoxItem8: TListBoxItem;
     ListBoxItem9: TListBoxItem;
-    Layout1: TLayout;
-    ScrollBarChats: TSmallScrollBar;
     LayoutChatsLoading: TLayout;
     LayoutChatLoadingAni: TLayout;
     FrameLoading1: TFrameLoading;
     Memo1: TMemo;
+    LayoutAdaptive: TLayout;
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
@@ -98,6 +97,7 @@ type
     FLoadingItem: TListBoxLoading;
     procedure FOnReadyAvatar(const Sender: TObject; const M: TMessage);
     procedure FOnChatItemClick(Sender: TObject);
+    procedure FOnChatItemTap(Sender: TObject; const Point: TPointF);
     procedure LoadConversationsAsync;
     procedure CreateChatItem(Chat: TVkConversationItem; Data: TVkConversationItems);
     procedure SetUnreadOnly(const Value: Boolean);
@@ -112,6 +112,7 @@ type
     procedure DoErrorLogin;
     procedure CreateLoadingItem;
     procedure ClearChatList;
+    procedure FOnBackAdaptive(Sender: TObject);
   public
     property UnreadOnly: Boolean read FUnreadOnly write SetUnreadOnly;
   end;
@@ -134,6 +135,11 @@ var
 begin
   Item.IsSelected := True;
   LoadChat(Item.ConversationId);
+end;
+
+procedure TFormMain.FOnChatItemTap(Sender: TObject; const Point: TPointF);
+begin
+  FOnChatItemClick(Sender);
 end;
 
 procedure TFormMain.FOnLog(Sender: TObject; Value: string);
@@ -174,10 +180,29 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  {$IFDEF ANDROID}
+  ListBoxChats.ShowScrollBars := False;
+  RectangleBG.Visible := False;
+  RectangleHead.Sides := [];
+  RectangleHead.Corners := [];
+  RectangleFooter.Sides := [];
+  RectangleFooter.Corners := [];
+  ListBoxChats.Margins.Left := 0;
+  //LayoutClient.Align := TAlignLayout.Client;
+  LayoutAdaptive.Visible := True;
+  HorzScrollBoxContent.Visible := False;
+  LayoutChat.Visible := False;
+  LayoutChat.Parent := LayoutAdaptive;
+  LayoutChats.Parent := LayoutAdaptive;
+  LayoutChats.Align := TAlignLayout.Client;
+  LayoutChat.Align := TAlignLayout.Client;
+  {$ENDIF}
   FLoading := True;
   FLoadingItem := nil;
   LayoutLoading.Visible := True;
+  LayoutLoading.BringToFront;
   HorzScrollBoxContent.Visible := False;
+  LayoutAdaptive.Visible := False;
   PanelLoader.StylesData['left.Enabled'] := True;
   PanelLoader.Visible := True;
   FChats := TChats.Create;
@@ -214,7 +239,11 @@ begin
   ListItem.Height := 63;
   ListBoxChats.AddObject(ListItem);
   ListItem.Fill(Chat, Data);
+  {$IFNDEF ANDROID}
   ListItem.OnClick := FOnChatItemClick;
+  {$ELSE}
+  ListItem.OnTap := FOnChatItemTap;
+  {$ENDIF}
   //ListItem.ApplyStyle;
 end;
 
@@ -282,6 +311,20 @@ begin
     end);
 end;
 
+procedure TFormMain.FOnBackAdaptive(Sender: TObject);
+begin
+  if LayoutChats.Visible then
+  begin
+    LayoutChats.Visible := False;
+    LayoutChat.Visible := True;
+  end
+  else
+  begin
+    LayoutChats.Visible := True;
+    LayoutChat.Visible := False;
+  end;
+end;
+
 function TFormMain.CreateChat(PeerId: TVkPeerId): TFrameChat;
 begin
   Result := TFrameChat.Create(Self, VK);
@@ -289,6 +332,9 @@ begin
   Result.Parent := LayoutChatFrames;
   Result.Align := TAlignLayout.Client;
   Result.Load(PeerId);
+  {$IFDEF ANDROID}
+  Result.OnBack := FOnBackAdaptive;
+  {$ENDIF}
   FChats.Add(Result);
 end;
 
@@ -296,6 +342,11 @@ procedure TFormMain.ShowChat(Frame: TFrameChat);
 begin
   for var Control in LayoutChatFrames.Controls do
     Control.Visible := Control = Frame;
+
+  {$IFDEF ANDROID}
+  LayoutChats.Visible := False;
+  LayoutChat.Visible := True;
+  {$ENDIF}
 end;
 
 procedure TFormMain.LoadChat(PeerId: TVkPeerId);
@@ -420,10 +471,11 @@ end;
 
 procedure TFormMain.DoErrorLogin;
 begin
-  if not FToken.IsEmpty then
+  if not VK.Token.IsEmpty then
   begin
     FToken := '';
     VK.Token := '';
+    LayoutError.Visible := False;
     TTask.Run(Login);
     Exit;
   end;
@@ -432,6 +484,7 @@ begin
   LayoutError.Visible := True;
   PanelLoader.Visible := False;
   HorzScrollBoxContent.Visible := False;
+  LayoutAdaptive.Visible := False;
 end;
 
 procedure TFormMain.VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
@@ -442,9 +495,15 @@ end;
 
 procedure TFormMain.LoadDone;
 begin
+  {$IFNDEF ANDROID}
   TAnimator.AnimateFloatWait(LayoutLoading, 'Opacity', 0);
+  {$ENDIF}
   LayoutLoading.Visible := False;
+  {$IFNDEF ANDROID}
   HorzScrollBoxContent.Visible := True;
+  {$ELSE}
+  LayoutAdaptive.Visible := True;
+  {$ENDIF}
 end;
 
 procedure TFormMain.Reload;

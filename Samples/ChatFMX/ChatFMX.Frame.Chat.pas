@@ -101,12 +101,14 @@ type
     LayoutBlockInfo: TLayout;
     ImageWarning: TImage;
     LabelWarningText: TLabel;
+    ButtonBack: TButton;
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
     procedure MemoTextChangeTracking(Sender: TObject);
     procedure LayoutFooterBottomResize(Sender: TObject);
     procedure VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
+    procedure ButtonBackClick(Sender: TObject);
   private
     FConversationId: TVkPeerId;
     FVK: TCustomVK;
@@ -131,6 +133,7 @@ type
     FUserAccFirstName: string;
     FIsCanWrtie: Boolean;
     FNotAllowedReason: TVkConversationDisableReason;
+    FOnBack: TNotifyEvent;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
@@ -162,6 +165,7 @@ type
     procedure SetVerified(const Value: Boolean);
     procedure SetIsNeedAddToFriends(const Value: Boolean);
     procedure SetIsCanWrtie(const Value: Boolean);
+    procedure SetOnBack(const Value: TNotifyEvent);
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
@@ -183,6 +187,7 @@ type
     property Verified: Boolean read FVerified write SetVerified;
     property IsNeedAddToFriends: Boolean read FIsNeedAddToFriends write SetIsNeedAddToFriends;
     property IsCanWrtie: Boolean read FIsCanWrtie write SetIsCanWrtie;
+    property OnBack: TNotifyEvent read FOnBack write SetOnBack;
   end;
 
 implementation
@@ -196,9 +201,26 @@ uses
 
 { TFrameChat }
 
+procedure TFrameChat.ButtonBackClick(Sender: TObject);
+begin
+  if Assigned(FOnBack) then
+    FOnBack(Self);
+end;
+
 constructor TFrameChat.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
+  {$IFDEF ANDROID}
+  VertScrollBoxMessages.ShowScrollBars := False;
+  RectangleChatBG.Mergins.Right := 0;
+  RectangleHead.Sides := [];
+  RectangleHead.Corners := [];
+  RectangleFooterBlock.Sides := [];
+  RectangleFooterBlock.Corners := [];
+  RectangleFooter.Sides := [];
+  RectangleFooter.Corners := [];
+  {$ENDIF}
+  ButtonBack.Visible := False;
   FChatScroll := TSmoothScroll.CreateFor(VertScrollBoxMessages);
   FChatScroll.ScrollDelta := 2;
   FChatScroll.EnableSmoothScroll := False;
@@ -754,6 +776,12 @@ procedure TFrameChat.SetMemberCount(const Value: Integer);
 begin
   FMemberCount := Value;
   UpdateInfoText;
+end;
+
+procedure TFrameChat.SetOnBack(const Value: TNotifyEvent);
+begin
+  FOnBack := Value;
+  ButtonBack.Visible := Assigned(FOnBack);
 end;
 
 procedure TFrameChat.SetTitle(const Value: string);
