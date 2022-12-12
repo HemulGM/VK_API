@@ -31,7 +31,7 @@ type
     FViews: TVkViewsInfo;
     FPost_type: string;
     FPost_source: TVkPostSource;
-    FAttachments: TArray<TVkAttachment>;
+    FAttachments: TVkAttachmentArray;
     FGeo: TVkGeo;
     FSigner_id: Integer;
     FCopy_history: TArray<TVkPost>;
@@ -53,7 +53,7 @@ type
     FCopyright: TVkCopyright;
     FDonut: TVkDonut;
   public
-    property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
+    property Attachments: TVkAttachmentArray read FAttachments write FAttachments;
     property CanDelete: Boolean read FCan_delete write FCan_delete;
     property CanDoubtCategory: Boolean read FCan_doubt_category write FCan_doubt_category;
     property CanEdit: Boolean read FCan_edit write FCan_edit;

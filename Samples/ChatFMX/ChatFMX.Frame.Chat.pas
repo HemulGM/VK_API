@@ -8,7 +8,8 @@ uses
   FMX.Layouts, FMX.ListBox, FMX.Objects, FMX.Controls.Presentation,
   ChatFMX.DM.Res, FMX.Edit, VK.Types, VK.API, FMX.ImgList, VK.Entity.Message,
   VK.Entity.Conversation, System.Messaging, ChatFMX.Frame.Message,
-  HGM.FMX.SmoothScroll, FMX.Ani, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo;
+  HGM.FMX.SmoothScroll, FMX.Ani, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo,
+  ChatFMX.Frame.Loading, ChatFMX.Frame.MessageAction, ChatFMX.Frame.MessageDate;
 
 type
   TChatType = (ctChat, ctUser, ctGroup);
@@ -83,6 +84,13 @@ type
     LayoutFooterBottom: TLayout;
     LayoutFooterMessage: TLayout;
     LabelTextHint: TLabel;
+    LayoutActivity: TLayout;
+    FrameLoadingActivity: TFrameLoading;
+    LabelActivity: TLabel;
+    LayoutActivityContent: TLayout;
+    LayoutLoading: TLayout;
+    FrameLoadingMesages: TFrameLoading;
+    LayoutVerified: TLayout;
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
@@ -108,6 +116,7 @@ type
     FIsSelfChat: Boolean;
     FHeadMode: THeadMode;
     FChatScroll: TSmoothScroll;
+    FVerified: Boolean;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
@@ -133,6 +142,10 @@ type
     procedure UpdateSelection(const Count: Integer);
     procedure SetHeadMode(const Value: THeadMode);
     procedure UpdateFooterSize;
+    function GetLastMessage: TFrame;
+    function GetMessageDate(Frame: TFrame): TDateTime;
+    procedure InsertDateLastMessage(LastDate: TDateTime);
+    procedure SetVerified(const Value: Boolean);
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
@@ -151,13 +164,14 @@ type
     property IsMobile: Boolean read FIsMobile write SetIsMobile;
     property IsSelfChat: Boolean read FIsSelfChat write SetIsSelfChat;
     procedure UnselectAll;
+    property Verified: Boolean read FVerified write SetVerified;
   end;
 
 implementation
 
 uses
-  System.Threading, VK.Messages, VK.Entity.Profile, VK.Entity.Group,
-  ChatFMX.PreviewManager, System.Math, ChatFMX.Utils;
+  System.Threading, System.DateUtils, VK.Messages, VK.Entity.Profile,
+  VK.Entity.Group, ChatFMX.PreviewManager, System.Math, ChatFMX.Utils;
 
 {$R *.fmx}
 
@@ -201,6 +215,7 @@ begin
   for var Control in LayoutMessageList.Controls do
     Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
   LayoutMessageList.Height := Sz + 10;
+  FrameLoadingMesages.Visible := LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height;
 end;
 
 procedure TFrameChat.LayoutUnselClick(Sender: TObject);
@@ -258,15 +273,70 @@ begin
   UpdateSelection(SelectedCount);
 end;
 
+function TFrameChat.GetLastMessage: TFrame;
+begin
+  for var Control in LayoutMessageList.Controls do
+    if (Control is TFrameMessage) or (Control is TFrameMessageAction) then
+      Exit(Control as TFrame);
+  Result := nil;
+end;
+
+function TFrameChat.GetMessageDate(Frame: TFrame): TDateTime;
+begin
+  Result := 0;
+  if not Assigned(Frame) then
+    Exit;
+  if Frame is TFrameMessage then
+    Result := (Frame as TFrameMessage).Date
+  else if Frame is TFrameMessageAction then
+    Result := (Frame as TFrameMessageAction).Date;
+end;
+
+procedure TFrameChat.InsertDateLastMessage(LastDate: TDateTime);
+begin
+  if LastDate > 0 then
+  begin
+    var Frame := TFrameMessageDate.Create(LayoutMessageList);
+    LayoutMessageList.InsertObject(0, Frame);
+    with Frame do
+    begin
+      Fill(LastDate);
+      Align := TAlignLayout.Bottom;
+    end;
+  end;
+end;
+
 procedure TFrameChat.CreateMessageItem(const Item: TVkMessage; History: TVkMessageHistory);
 begin
-  with TFrameMessage.Create(LayoutMessageList, FVK) do
+  var LastDate := GetMessageDate(GetLastMessage);
+  if LastDate > 0 then
+    if not IsSameDay(Item.Date, LastDate) then
+      InsertDateLastMessage(LastDate);
+
+  if not Assigned(Item.Action) then
   begin
-    Parent := LayoutMessageList;
-    Position.Y := -1000;
-    Fill(Item, History);
-    Align := TAlignLayout.Bottom;
-    OnSelectedChanged := FOnMessageSelected;
+    var Frame := TFrameMessage.Create(LayoutMessageList, FVK);
+    LayoutMessageList.InsertObject(0, Frame);
+    with Frame do
+    begin
+      Fill(Item, History);
+      Align := TAlignLayout.Top;
+      LayoutMessageList.RecalcSize;
+      Align := TAlignLayout.Bottom;
+      OnSelectedChanged := FOnMessageSelected;
+    end;
+  end
+  else
+  begin
+    var Frame := TFrameMessageAction.Create(LayoutMessageList, FVK);
+    LayoutMessageList.InsertObject(0, Frame);
+    with Frame do
+    begin
+      Fill(Item, History);
+      Align := TAlignLayout.Top;
+      LayoutMessageList.RecalcSize;
+      Align := TAlignLayout.Bottom;
+    end;
   end;
 end;
 
@@ -284,7 +354,7 @@ begin
   Params.Extended;
   Params.Offset(FOffset);
   Params.Count(20);
-  Params.Fields([TVkProfileField.Photo50]);
+  Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified], [TVkGroupField.Verified]);
   Params.PeerId(FConversationId);
   if VK.Messages.GetHistory(Items, Params) then
   try
@@ -298,6 +368,9 @@ begin
         VertScrollBoxMessagesResize(nil);
         LayoutMessageList.Opacity := 1;
         FLoading := False;
+        FrameLoadingMesages.Visible := not FOffsetEnd;
+        if FOffsetEnd then
+          InsertDateLastMessage(GetMessageDate(GetLastMessage));
       end);
   finally
     Items.Free;
@@ -313,6 +386,7 @@ begin
   IsMuted := False;
   CanCall := False;
   IsSelfChat := Info.Peer.Id = FVK.UserId;
+  Verified := False;
 
   if Assigned(Info.PushSettings) then
   begin
@@ -354,12 +428,12 @@ begin
   else if Info.IsUser then
   begin
     ChatType := ctUser;
-    var UserId := FindUser(Info.Peer.Id, Data.Profiles);
-    if UserId >= 0 then
+    var User: TVkProfile;
+    if Data.GetProfileById(Info.Peer.Id, User) then
     begin
-      var User := Data.Profiles[UserId];
       Title := User.FullName;
       ImageUrl := User.Photo50;
+      Verified := User.Verified;
       if Assigned(User.OnlineInfo) then
       begin
         LastSeen := User.OnlineInfo.LastSeen;
@@ -372,11 +446,12 @@ begin
   else if Info.IsGroup then
   begin
     ChatType := ctGroup;
-    var GroupId := FindGroup(Info.Peer.Id, Data.Groups);
-    if GroupId >= 0 then
+    var Group: TVkGroup;
+    if Data.GetGroupById(Info.Peer.Id, Group) then
     begin
-      Title := Data.Groups[GroupId].Name;
-      ImageUrl := Data.Groups[GroupId].Photo50;
+      Title := Group.Name;
+      ImageUrl := Group.Photo50;
+      Verified := Group.Verified;
     end;
   end;
 end;
@@ -414,7 +489,7 @@ end;
 procedure TFrameChat.VertScrollBoxMessagesResize(Sender: TObject);
 begin
   if LayoutMessageList.Width <> VertScrollBoxMessages.Width then
-    LayoutMessageList.Width := VertScrollBoxMessages.Width;
+    LayoutMessageList.Width := VertScrollBoxMessages.ClientWidth;
   LayoutMessageList.Position.Y := VertScrollBoxMessages.Height - LayoutMessageList.Height;
 end;
 
@@ -452,6 +527,7 @@ var
 begin
   Params.PeerId(FConversationId);
   Params.Extended;
+  Params.Fields([TVkGroupField.Verified, TVkGroupField.Photo50]);
   if VK.Messages.GetConversationsById(Items, Params) then
   try
     if Length(Items.Items) > 0 then
@@ -494,8 +570,12 @@ procedure TFrameChat.ReloadAsync;
 begin
   LayoutMessageList.BeginUpdate;
   try
+    LayoutActivity.Parent := nil;
+    LayoutLoading.Parent := nil;
     while LayoutMessageList.ControlsCount > 0 do
       LayoutMessageList.Controls[0].Free;
+    LayoutActivity.Parent := LayoutMessageList;
+    LayoutLoading.Parent := LayoutMessageList;
   finally
     LayoutMessageList.EndUpdate;
   end;
@@ -597,6 +677,12 @@ procedure TFrameChat.SetTitle(const Value: string);
 begin
   FTitle := Value;
   LabelTitle.Text := FTitle;
+end;
+
+procedure TFrameChat.SetVerified(const Value: Boolean);
+begin
+  FVerified := Value;
+  LayoutVerified.Visible := FVerified;
 end;
 
 procedure TFrameChat.SetVK(const Value: TCustomVK);

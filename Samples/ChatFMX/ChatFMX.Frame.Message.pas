@@ -7,7 +7,8 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Layouts, FMX.Objects, FMX.Controls.Presentation, FMX.Memo.Types,
   FMX.ScrollBox, FMX.Memo, VK.Entity.Message, VK.Entity.PushSettings, VK.API,
-  VK.Entity.Conversation, FMX.Memo.Style, System.Messaging, FMX.Ani;
+  VK.Entity.Conversation, FMX.Memo.Style, System.Messaging, FMX.Ani,
+  VK.Entity.Media, VK.Types, ChatFMX.Frame.Attachment.AudioMessage;
 
 type
   TFrameMessage = class(TFrame)
@@ -34,6 +35,13 @@ type
     ColorAnimationEdit: TColorAnimation;
     RectangleUnread: TRectangle;
     LayoutContent: TLayout;
+    FlowLayoutMedia: TFlowLayout;
+    Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    Image5: TImage;
+    Image6: TImage;
     procedure MemoTextChange(Sender: TObject);
     procedure MemoTextResize(Sender: TObject);
     procedure FrameResize(Sender: TObject);
@@ -52,7 +60,6 @@ type
     FFromText: string;
     FImageUrl: string;
     FImageFile: string;
-    FTime: TDateTime;
     FMouseFrame: Boolean;
     FIsSelfMessage: Boolean;
     FIsCanEdit: Boolean;
@@ -61,11 +68,11 @@ type
     FIsSelected: Boolean;
     FWasSelectedText: Boolean;
     FOnSelectedChanged: TNotifyEvent;
+    FDate: TDateTime;
     procedure SetText(const Value: string);
     procedure SetFromText(const Value: string);
     procedure SetImageUrl(const Value: string);
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
-    procedure SetTime(const Value: TDateTime);
     procedure SetMouseFrame(const Value: Boolean);
     procedure SetIsSelfMessage(const Value: Boolean);
     procedure SetIsCanEdit(const Value: Boolean);
@@ -73,6 +80,13 @@ type
     procedure SetIsImportant(const Value: Boolean);
     procedure SetIsSelected(const Value: Boolean);
     procedure SetOnSelectedChanged(const Value: TNotifyEvent);
+    procedure CreatePhotos(Items: TVkAttachmentArray);
+    procedure ClearMedia;
+    procedure RecalcMedia;
+    procedure CreateAutioMessages(Items: TVkAttachmentArray);
+    procedure CreateSticker(Items: TVkAttachmentArray);
+    procedure CreateVideos(Items: TVkAttachmentArray);
+    procedure SetDate(const Value: TDateTime);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
@@ -80,7 +94,6 @@ type
     property Text: string read FText write SetText;
     property FromText: string read FFromText write SetFromText;
     property ImageUrl: string read FImageUrl write SetImageUrl;
-    property Time: TDateTime read FTime write SetTime;
     property MouseFrame: Boolean read FMouseFrame write SetMouseFrame;
     property IsSelfMessage: Boolean read FIsSelfMessage write SetIsSelfMessage;
     property IsCanEdit: Boolean read FIsCanEdit write SetIsCanEdit;
@@ -88,19 +101,42 @@ type
     property IsImportant: Boolean read FIsImportant write SetIsImportant;
     property IsSelected: Boolean read FIsSelected write SetIsSelected;
     property OnSelectedChanged: TNotifyEvent read FOnSelectedChanged write SetOnSelectedChanged;
+    property Date: TDateTime read FDate write SetDate;
   end;
 
 implementation
 
 uses
-  System.Math, System.DateUtils, VK.Types, VK.Entity.Profile, VK.Entity.Group,
-  ChatFMX.PreviewManager;
+  System.Math, System.DateUtils, VK.Entity.Profile, VK.Entity.Group,
+  ChatFMX.PreviewManager, ChatFMX.Frame.Attachment.Photo,
+  ChatFMX.Frame.Attachment.Sticker, ChatFMX.Frame.Attachment.Video;
 
 {$R *.fmx}
 
 procedure TFrameMessage.CircleAvatarClick(Sender: TObject);
 begin
   //
+end;
+
+procedure TFrameMessage.ClearMedia;
+begin
+  FlowLayoutMedia.BeginUpdate;
+  try
+    while FlowLayoutMedia.ControlsCount > 0 do
+      FlowLayoutMedia.Controls[0].Free;
+  finally
+    FlowLayoutMedia.EndUpdate;
+  end;
+  RecalcMedia;
+end;
+
+procedure TFrameMessage.RecalcMedia;
+begin
+  FlowLayoutMedia.RecalcSize;
+  var H: Single := 0;
+  for var Control in FlowLayoutMedia.Controls do
+    H := Max(Control.Position.Y + Control.Height, H);
+  FlowLayoutMedia.Height := H;
 end;
 
 constructor TFrameMessage.Create(AOwner: TComponent; AVK: TCustomVK);
@@ -114,6 +150,7 @@ begin
   MemoText.DisableDisappear := True;
   MouseFrame := False;
   IsSelected := False;
+  ClearMedia;
 end;
 
 destructor TFrameMessage.Destroy;
@@ -125,7 +162,7 @@ end;
 procedure TFrameMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory);
 begin
   Text := Item.Text;
-  Time := Item.Date;
+  Date := Item.Date;
   ImageUrl := '';
   IsSelfMessage := Item.FromId = FVK.UserId;
   IsCanEdit := HoursBetween(Now, Item.Date) < 24;
@@ -140,25 +177,89 @@ begin
   end;
   if PeerIdIsUser(Item.FromId) then
   begin
-    var UserId := FindUser(Abs(Item.FromId), Data.Profiles);
-    if UserId >= 0 then
+    var User: TVkProfile;
+    if Data.GetProfileById(Abs(Item.FromId), User) then
     begin
       if P2P then
-        FromText := Data.Profiles[UserId].FirstName
+        FromText := User.FirstName
       else
-        FromText := Data.Profiles[UserId].FullName;
-      ImageUrl := Data.Profiles[UserId].Photo50;
+        FromText := User.FullName;
+      ImageUrl := User.Photo50;
     end;
   end
   else
   begin
-    var GroupId := FindGroup(Abs(Item.FromId), Data.Groups);
-    if GroupId >= 0 then
+    var Group: TVkGroup;
+    if Data.GetGroupById(Abs(Item.FromId), Group) then
     begin
-      FromText := Data.Groups[GroupId].Name;
-      ImageUrl := Data.Groups[GroupId].Photo50;
+      FromText := Group.Name;
+      ImageUrl := Group.Photo50;
     end;
   end;
+
+  if Length(Item.Attachments) > 0 then
+  begin
+    CreatePhotos(Item.Attachments);
+    CreateVideos(Item.Attachments);
+    CreateAutioMessages(Item.Attachments);
+    CreateSticker(Item.Attachments);
+  end;
+end;
+
+procedure TFrameMessage.CreatePhotos(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Photo then
+    begin
+      var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, FVK);
+      Frame.Parent := FlowLayoutMedia;
+      Frame.Fill(Item.Photo);
+      //Frame.Height := 80;
+      //Frame.Width := 100;
+    end;
+  RecalcMedia;
+end;
+
+procedure TFrameMessage.CreateVideos(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Video then
+    begin
+      var Frame := TFrameAttachmentVideo.Create(FlowLayoutMedia, FVK);
+      Frame.Parent := FlowLayoutMedia;
+      Frame.Fill(Item.Video);
+      //Frame.Height := 80;
+      //Frame.Width := 100;
+    end;
+  RecalcMedia;
+end;
+
+procedure TFrameMessage.CreateSticker(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Sticker then
+    begin
+      var Frame := TFrameAttachmentSticker.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Sticker);
+      //Frame.Height := 147;
+    end;
+end;
+
+procedure TFrameMessage.CreateAutioMessages(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.AudioMessage then
+    begin
+      var Frame := TFrameAttachmentAudioMessage.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.AudioMessage);
+      //Frame.Height := 36;
+    end;
 end;
 
 procedure TFrameMessage.FrameMouseEnter(Sender: TObject);
@@ -230,6 +331,13 @@ end;
 procedure TFrameMessage.MemoTextResize(Sender: TObject);
 begin
   MemoTextChange(Sender);
+end;
+
+procedure TFrameMessage.SetDate(const Value: TDateTime);
+begin
+  FDate := Value;
+  LabelTime.Text := FormatDateTime('HH:nn', FDate);
+  LabelTime.Hint := FormatDateTime('c', FDate);
 end;
 
 procedure TFrameMessage.SetFromText(const Value: string);
@@ -346,12 +454,6 @@ begin
     (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
     (MemoText.Presentation as TStyledMemo).PrepareForPaint;
   end;
-end;
-
-procedure TFrameMessage.SetTime(const Value: TDateTime);
-begin
-  FTime := Value;
-  LabelTime.Text := FormatDateTime('HH:nn', FTime);
 end;
 
 end.

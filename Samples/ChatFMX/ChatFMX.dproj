@@ -273,6 +273,39 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Loading.pas">
+            <Form>FrameLoading</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.Photo.pas">
+            <Form>FrameAttachmentPhoto</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.AudioMessage.pas">
+            <Form>FrameAttachmentAudioMessage</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.Sticker.pas">
+            <Form>FrameAttachmentSticker</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.Video.pas">
+            <Form>FrameAttachmentVideo</Form>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.MessageAction.pas">
+            <Form>FrameMessageAction</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.MessageDate.pas">
+            <Form>FrameMessageDate</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <RcItem Include="Res\im_favorites_100.png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>im_favorites_100</ResourceId>
@@ -304,6 +337,14 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Win32\Debug\ChatFMX.exe" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="Res\im_favorites_100.png" Configuration="Debug" Class="ProjectFile"/>
+                <DeployFile LocalName="Win32\Debug\ChatFMX.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>ChatFMX.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
                         <Overwrite>true</Overwrite>
@@ -314,8 +355,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Res\im_favorites_100.png" Configuration="Debug" Class="ProjectFile"/>
-                <DeployFile LocalName="Win32\Debug\ChatFMX.exe" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="Res\im_favorites_100.png" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployClass Name="AdditionalDebugSymbols">
                     <Platform Name="iOSSimulator">
                         <Operation>1</Operation>

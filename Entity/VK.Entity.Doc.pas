@@ -48,9 +48,9 @@ type
     FExt: string;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_licensed: Boolean;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPreview: TVkPreview;
-    FSize: Integer;
+    FSize: Int64;
     FTitle: string;
     [JsonReflectAttribute(ctString, rtString, TDocumentTypeInterceptor)]
     FType: TVkDocumentType;
@@ -77,7 +77,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, загрузившего документ
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Информация для предварительного просмотра документа
     /// </summary>
@@ -85,7 +85,7 @@ type
     /// <summary>
     /// Размер документа в байтах
     /// </summary>
-    property Size: Integer read FSize write FSize;
+    property Size: Int64 read FSize write FSize;
     /// <summary>
     /// Размер документа в строковом представлении
     /// </summary>

@@ -991,7 +991,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkProfiles = TVkEntityList<TVkProfile>;
+  TVkProfiles = TVkObjectList<TVkProfile>;
 
   TVkFriendsList = class(TVkObject)
   private
@@ -1000,24 +1000,13 @@ type
     property Name: string read FName write FName;
   end;
 
-  TVkFriendsLists = TVkEntityList<TVkFriendsList>;
+  TVkFriendsLists = TVkObjectList<TVkFriendsList>;
 
-function FindUser(Id: Integer; List: TArray<TVkProfile>): Integer;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-function FindUser(Id: Integer; List: TArray<TVkProfile>): Integer;
-var
-  i: Integer;
-begin
-  Result := -1;
-  for i := Low(List) to High(List) do
-    if List[i].Id = Id then
-      Exit(i);
-end;
 
 {TVkProfile}
 

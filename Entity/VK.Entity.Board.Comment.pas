@@ -17,14 +17,14 @@ type
     FFrom_id: Integer;
     FLikes: TVkLikesInfo;
     FText: string;
-    FAttachments: TArray<TVkAttachment>;
+    FAttachments: TVkAttachmentArray;
   public
     property CanEdit: Integer read FCan_edit write FCan_edit;
     property Date: TDateTime read FDate write FDate;
     property FromId: Integer read FFrom_id write FFrom_id;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Text: string read FText write FText;
-    property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
+    property Attachments: TVkAttachmentArray read FAttachments write FAttachments;
     destructor Destroy; override;
   end;
 

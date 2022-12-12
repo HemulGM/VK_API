@@ -1,0 +1,29 @@
+object FrameMessageAction: TFrameMessageAction
+  Padding.Top = 6.000000000000000000
+  Padding.Bottom = 7.000000000000000000
+  Size.Width = 412.000000000000000000
+  Size.Height = 95.000000000000000000
+  Size.PlatformDefault = False
+  object LabelText: TLabel
+    Align = Top
+    AutoSize = True
+    StyledSettings = [Style]
+    Margins.Left = 30.000000000000000000
+    Margins.Right = 30.000000000000000000
+    Position.X = 30.000000000000000000
+    Position.Y = 6.000000000000000000
+    Size.Width = 352.000000000000000000
+    Size.Height = 31.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Size = 12.500000000000000000
+    TextSettings.FontColor = xFF939393
+    TextSettings.HorzAlign = Center
+    TextSettings.VertAlign = Leading
+    Text = 
+      #1052#1080#1096#1072' '#1052#1080#1096#1072' '#1080#1079#1084#1077#1085#1080#1083' '#1086#1092#1086#1088#1084#1083#1077#1085#1080#1077' '#1095#1072#1090#1072' '#1085#1072' '#171#1050#1088#1072#1089#1080#1074#1086#1077#187'. '#1054#1092#1086#1088#1084#1083#1077#1085#1080#1077' '#1095#1072#1090#1072 +
+      ' '#1087#1086#1082#1072#1079#1099#1074#1072#1077#1084' '#1074' '#1084#1086#1073#1080#1083#1100#1085#1086#1084' '#1087#1088#1080#1083#1086#1078#1077#1085#1080#1080
+    TabOrder = 0
+    OnResize = LabelTextResize
+  end
+end

@@ -15,12 +15,26 @@ type
     FMp4_360: string;
     FMp4_480: string;
     FMp4_240: string;
+    FHls_ondemand: string;
+    FDash_ondemand: string;
+    FFailover_host: string;
+    FDash_uni: string;
+    FDash_sep: string;
+    FMp4_144: string;
+    FMp4_1080: string;
   public
     property &External: string read FExternal write FExternal;
-    property Mp4_720: string read FMp4_720 write FMp4_720;
-    property Mp4_360: string read FMp4_360 write FMp4_360;
-    property Mp4_240: string read FMp4_240 write FMp4_240;
-    property Mp4_480: string read FMp4_480 write FMp4_480;
+    property MP4_144: string read FMp4_144 write FMp4_144;
+    property MP4_240: string read FMp4_240 write FMp4_240;
+    property MP4_360: string read FMp4_360 write FMp4_360;
+    property MP4_480: string read FMp4_480 write FMp4_480;
+    property MP4_720: string read FMp4_720 write FMp4_720;
+    property MP4_1080: string read FMp4_1080 write FMp4_1080;
+    property HLSOndemand: string read FHls_ondemand write FHls_ondemand;
+    property FashOndemand: string read FDash_ondemand write FDash_ondemand;
+    property FailoverHost: string read FFailover_host write FFailover_host;
+    property DashUni: string read FDash_uni write FDash_uni;
+    property DashSep: string read FDash_sep write FDash_sep;
   end;
 
   TVkVideoImage = class(TVkImage)
@@ -28,6 +42,27 @@ type
     FWith_padding: Integer;
   public
     property WithPadding: Integer read FWith_padding write FWith_padding;
+  end;
+
+  TVkTimelineThumbs = class(TVkEntity)
+  private
+    FCount_per_image: Integer;
+    FCount_per_row: Integer;
+    FCount_total: Integer;
+    FFrame_height: Extended;
+    FFrame_width: Extended;
+    FFrequency: Extended;
+    FIs_uv: Boolean;
+    FLinks: TArray<string>;
+  public
+    property CountPerImage: Integer read FCount_per_image write FCount_per_image;
+    property CountPerRow: Integer read FCount_per_row write FCount_per_row;
+    property CountTotal: Integer read FCount_total write FCount_total;
+    property FrameHeight: Extended read FFrame_height write FFrame_height;
+    property FrameWidth: Extended read FFrame_width write FFrame_width;
+    property Frequency: Extended read FFrequency write FFrequency;
+    property IsUV: Boolean read FIs_uv write FIs_uv;
+    property Links: TArray<string> read FLinks write FLinks;
   end;
 
   TVkVideo = class(TVkObject, IAttachment)
@@ -54,7 +89,7 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDescription: string;
-    FDuration: Integer;
+    FDuration: Int64;
     FFiles: TVkVideoFiles;
     FImage: TArray<TVkVideoImage>;
     FIs_favorite: Boolean;
@@ -103,6 +138,9 @@ type
     FSpectators: Integer;
     FIs_author: Boolean;
     FTrack_code: string;
+    FTimeline_thumbs: TVkTimelineThumbs;
+    FCan_download: integer;
+    FOv_id: string;
   public
     /// <summary>
     /// Ключ доступа к объекту
@@ -136,6 +174,10 @@ type
     /// Может ли пользователь комментировать видео
     /// </summary>
     property CanComment: Boolean read FCan_comment write FCan_comment;
+    /// <summary>
+    /// Может ли скачать (не известно)
+    /// </summary>
+    property CanDownload: integer read FCan_download write FCan_download;
     /// <summary>
     /// Может ли пользователь редактировать видео
     /// </summary>
@@ -171,7 +213,7 @@ type
     /// <summary>
     /// Длительность ролика в секундах
     /// </summary>
-    property Duration: Integer read FDuration write FDuration;
+    property Duration: Int64 read FDuration write FDuration;
     property Files: TVkVideoFiles read FFiles write FFiles;
     property FirstFrame1280: string read Ffirst_frame_1280 write Ffirst_frame_1280;
     property FirstFrame130: string read Ffirst_frame_130 write Ffirst_frame_130;
@@ -226,6 +268,7 @@ type
     /// Если видео внешнее, количество просмотров в ВК
     /// </summary>
     property LocalViews: Integer read FLocal_views write FLocal_views;
+    property OvId: string read FOv_id write FOv_id;
     /// <summary>
     /// Идентификатор владельца видеозаписи
     /// </summary>
@@ -255,6 +298,7 @@ type
     /// Количество зрителей прямой трансляции
     /// </summary>
     property Spectators: Integer read FSpectators write FSpectators;
+    property TimelineThumbs: TVkTimelineThumbs read FTimeline_thumbs write FTimeline_thumbs;
     /// <summary>
     /// Название видеозаписи
     /// </summary>
@@ -289,6 +333,7 @@ type
     property &Type: TVkVideoType read FType write FType;
     ///Методы
     function ToAttachment: TAttachment;
+    function ToStringId: string;
     destructor Destroy; override;
   end;
 
@@ -318,7 +363,7 @@ type
 implementation
 
 uses
-  VK.CommonUtils;
+  VK.CommonUtils, System.SysUtils;
 
 {TVkVideo}
 
@@ -332,12 +377,21 @@ begin
     FLikes.Free;
   if Assigned(FReposts) then
     FReposts.Free;
+  if Assigned(FTimeline_thumbs) then
+    FTimeline_thumbs.Free;
   inherited;
 end;
 
 function TVkVideo.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Video(OwnerId, Id, AccessKey);
+end;
+
+function TVkVideo.ToStringId: string;
+begin
+  Result := Format('%d_%d', [OwnerId, Id]);
+  if not AccessKey.IsEmpty then
+    Result := Result + '_' + AccessKey;
 end;
 
 {TVkVideoAlbum}

@@ -384,6 +384,7 @@ type
   /// ChatPinMessage Ч закреплено сообщение;
   /// ChatUnpinMessage Ч откреплено сообщение;
   /// ChatInviteUserByLink Ч пользователь присоединилс€ к беседе по ссылке.
+  /// ConversationStyleUpdate Ч
   /// </summary>
   /// <list type="bullet">
   /// <item>
@@ -395,7 +396,8 @@ type
   /// </list>
   TVkMessageActionType = (Unknown, ChatPhotoUpdate, ChatPhotoRemove,          //
     ChatCreate, ChatTitleUpdate, ChatInviteUser, ChatKickUser,                //
-    ChatPinMessage, ChatUnpinMessage, ChatInviteUserByLink);
+    ChatPinMessage, ChatUnpinMessage, ChatInviteUserByLink,                   //
+    ConversationStyleUpdate);
 
   TVkMessageActionTypeHelper = record helper for TVkMessageActionType
     function ToString: string; inline;
@@ -1499,7 +1501,7 @@ const
   VkNameRequestStatus: array[TVkNameRequestStatus] of string = ('processing', 'declined', 'response', 'response_with_link');
   VkMessageActionType: array[TVkMessageActionType] of string = ('', 'chat_photo_update', 'chat_photo_remove',
     'chat_create', 'chat_title_update', 'chat_invite_user', 'chat_kick_user', 'chat_pin_message', 'chat_unpin_message',
-    'chat_invite_user_by_link');
+    'chat_invite_user_by_link', 'conversation_style_update');
   VkKeyboardButtonColor: array[TVkKeyboardButtonColor] of string = ('default', 'positive', 'negative', 'primary',
     'secondary');
   VkKeyboardButtonColorValue: array[TVkKeyboardButtonColor] of Cardinal = (VkColorDefault, VkColorPositive,

@@ -227,7 +227,7 @@ type
     FReply_to_user: Integer;
     FText: string;
     FOwner_id: Integer;
-    FAttachments: TVkAttachments;
+    FAttachments: TVkAttachmentArray;
     FDeleted: Boolean;
     FParents_stack: TArray<Integer>;
     FLikes: TVkLikesInfo;
@@ -290,7 +290,7 @@ type
     /// <summary>
     /// Медиавложения комментария (фотографии, ссылки и т.п.)
     /// </summary>
-    property Attachments: TVkAttachments read FAttachments write FAttachments;
+    property Attachments: TVkAttachmentArray read FAttachments write FAttachments;
     /// <summary>
     /// Информация о вложенной ветке комментариев
     /// </summary>
@@ -361,7 +361,7 @@ type
     FViews: TVkViewsInfo;
     FPost_type: string;
     FPost_source: TVkPostSource;
-    FAttachments: TArray<TVkAttachment>;
+    FAttachments: TVkAttachmentArray;
     FGeo: TVkGeo;
     FSigner_id: Integer;
     FCopy_history: TArray<TVkPost>;
@@ -399,7 +399,7 @@ type
     /// <summary>
     /// Медиавложения записи (фотографии, ссылки и т.п.)
     /// </summary>
-    property Attachments: TArray<TVkAttachment> read FAttachments write FAttachments;
+    property Attachments: TVkAttachmentArray read FAttachments write FAttachments;
     /// <summary>
     /// Информация о том, может ли запись помещена в арихв
     /// </summary>
@@ -639,10 +639,9 @@ end;
 
 destructor TVkComment.Destroy;
 begin
+  TArrayHelp.FreeArrayOfObject<TVkAttachment>(FAttachments);
   if Assigned(FThread) then
     FThread.Free;
-  if Assigned(FAttachments) then
-    FAttachments.Free;
   if Assigned(FLikes) then
     FLikes.Free;
   inherited;
@@ -742,7 +741,7 @@ begin
           Attachment := T(Item.FAlbum);
         //TVkAttachmentType.PhotosList:
         //  Attachment := T(Item.Ph);
-        TVkAttachmentType.PrettyCards:
+          TVkAttachmentType.PrettyCards:
           Attachment := T(Item.FPretty_cards);
         TVkAttachmentType.Event:
           Attachment := T(Item.FEvent);

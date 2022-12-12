@@ -55,6 +55,7 @@ type
     property Items: TArray<T> read FItems write FItems;
     property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
     procedure Append(Items: TVkObjectList<T>);
+    function GetById(const Id: Int64; var Value: T): Boolean;
     constructor Create; override;
     destructor Destroy; override;
   end;
@@ -125,6 +126,17 @@ begin
   end;
   {$ENDIF}
   inherited;
+end;
+
+function TVkObjectList<T>.GetById(const Id: Int64; var Value: T): Boolean;
+begin
+  for var Item in Items do
+    if Item.Id = Id then
+    begin
+      Value := Item;
+      Exit(True);
+    end;
+  Result := False;
 end;
 
 procedure TVkObjectList<T>.SetSaveObjects(const Value: Boolean);

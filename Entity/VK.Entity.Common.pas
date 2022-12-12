@@ -26,9 +26,9 @@ type
 
   TVkObject = class(TVkEntity)
   protected
-    FId: Integer;
+    FId: Int64;
   public
-    property Id: Integer read FId write FId;
+    property Id: Int64 read FId write FId;
   end;
 
   TVkBasicObject = class(TVkObject)
@@ -335,7 +335,7 @@ end;
 
 procedure TVkEntity.FromJson(AJson: TJSONObject);
 begin
-  TJson.JsonToObject(Self, AJson);
+  TJson.JsonToObject(Self, AJson, [joIgnoreEmptyArrays, joIgnoreEmptyStrings]);
 end;
 
 class function TVkEntity.FromJsonObject<T>(AJson: TJSONObject): T;

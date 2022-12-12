@@ -105,6 +105,8 @@ end;
 
 procedure TPreview.Subscribe(Url: string; CallBack: TMessageListenerMethod);
 begin
+  if Url.IsEmpty then
+    Exit;
   TMessageManager.DefaultManager.SubscribeToMessage(TMessagePreview, CallBack);
   TTask.Run(
     procedure
@@ -156,6 +158,10 @@ begin
       Result := Items[High(Items)]
     else
       Result := '';
+    if Length(UrlEnc.Params) > 0 then
+      for var Param in UrlEnc.Params do
+        Result := Result + Param.Name + Param.Value
+
   except
     Result := '';
   end;
@@ -204,7 +210,12 @@ end;
 
 procedure TPreview.AppendFile(const Url, FileName: string);
 begin
-  LockLoaded.Add(Url, FileName);
+  var List := LockLoaded;
+  try
+    List.Add(Url, FileName);
+  except
+    // fine
+  end;
   UnlockLoaded;
   Event(Url, FileName);
 end;
@@ -217,7 +228,7 @@ begin
   HTTP := THTTPClient.Create;
   try
     while not Application.Terminated do
-    begin
+    try
       with FQueue.LockList do
       try
         Urls := ToArray;
@@ -249,6 +260,8 @@ begin
           TFile.Delete(FileName);
         end;
       end;
+      Sleep(10);
+    except
       Sleep(10);
     end;
   finally

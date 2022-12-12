@@ -65,6 +65,10 @@ type
     /// </summary>
     function PhotoIds(const Value: TArrayOfInteger): TVkParamsPhotosGet;
     /// <summary>
+    /// Идентификатор фотографии, информацию о которой необходимо вернуть
+    /// </summary>
+    function PhotoId(const Value: Int64): TVkParamsPhotosGet;
+    /// <summary>
     /// True — будут возвращены дополнительные поля likes, comments, tags, can_comment, reposts. По умолчанию: False
     /// </summary>
     function Extended(const Value: Boolean): TVkParamsPhotosGet;
@@ -1165,7 +1169,7 @@ begin
     Params.Add('extended', Extended);
   if PhotoSizes then
     Params.Add('photo_sizes', PhotoSizes);
-  Result := Handler.Execute('photos.getById', Params).GetObject(Items);
+  Result := Handler.Execute('photos.getById', Params).GetObjects(Items);
 end;
 
 function TPhotosController.GetChatUploadServer(var UploadUrl: string; ChatId: Integer; Crop: TPoint; CropWidth: Integer): Boolean;
@@ -1849,6 +1853,12 @@ end;
 function TVkParamsPhotosGet.OwnerId(const Value: TVkPeerId): TVkParamsPhotosGet;
 begin
   List.Add('owner_id', Value);
+  Result := Self;
+end;
+
+function TVkParamsPhotosGet.PhotoId(const Value: Int64): TVkParamsPhotosGet;
+begin
+  List.Add('photo_ids', Value);
   Result := Self;
 end;
 

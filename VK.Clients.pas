@@ -69,6 +69,10 @@ type
     /// Только AppKey
     /// </summary>
     class function VKAPI: TVkApplicationData; static;
+    /// <summary>
+    /// Только Маруся
+    /// </summary>
+    class function Marusia: TVkApplicationData; static;
   end;
 
 implementation
@@ -162,6 +166,12 @@ end;
 class function TVkApplicationData.KateMobile: TVkApplicationData;
 begin
   Result.AppId := '2685278';
+  Result.AppKey := '';
+end;
+
+class function TVkApplicationData.Marusia: TVkApplicationData;
+begin
+  Result.AppId := '6463690';
   Result.AppKey := '';
 end;
 

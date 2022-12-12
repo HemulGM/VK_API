@@ -104,6 +104,7 @@ type
     FEmail: string;
     FMember_id: integer;
     FPhoto: TVkChatPhoto;
+    FStyle: string;
   public
     /// <summary>
     /// Название беседы (для служебных сообщений с type = chat_create или chat_title_update)
@@ -127,6 +128,10 @@ type
     /// Изображение-обложка чата
     /// </summary>
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
+    /// <summary>
+    /// Стиль чата
+    /// </summary>
+    property Style: string read FStyle write FStyle;
     destructor Destroy; override;
   end;
 

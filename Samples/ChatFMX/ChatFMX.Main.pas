@@ -9,7 +9,8 @@ uses
   FMX.Edit, FMX.StdCtrls, System.ImageList, FMX.ImgList, FMX.SVGIconImageList,
   FMX.Effects, FMX.Filter.Effects, ChatFMX.DM.Res, VK.API, VK.Components,
   VK.Entity.Conversation, System.Messaging, VK.Types,
-  System.Generics.Collections, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo;
+  System.Generics.Collections, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo,
+  ChatFMX.Frame.Loading;
 
 type
   TChats = class(TList<TFrameChat>)
@@ -69,6 +70,10 @@ type
     ListBoxItem9: TListBoxItem;
     Layout1: TLayout;
     ScrollBarChats: TSmallScrollBar;
+    LayoutChatsLoading: TLayout;
+    LayoutChatLoadingAni: TLayout;
+    FrameLoading1: TFrameLoading;
+    Memo1: TMemo;
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
@@ -79,6 +84,8 @@ type
     procedure ButtonReloginClick(Sender: TObject);
     procedure VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure ListBoxChatsApplyStyleLookup(Sender: TObject);
+    procedure Path3Click(Sender: TObject);
+    procedure VKLog(Sender: TObject; const Value: string);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -160,13 +167,15 @@ begin
   end;
 end;
 
+procedure TFormMain.Path3Click(Sender: TObject);
+begin
+  Memo1.Visible := not Memo1.Visible;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   FLoading := True;
   FLoadingItem := nil;
-  var FChatScroll := TSmoothScroll.CreateFor(ListBoxChats);
-  FChatScroll.ScrollDelta := 2;
-  FChatScroll.EnableSmoothScroll := False;
   LayoutLoading.Visible := True;
   HorzScrollBoxContent.Visible := False;
   PanelLoader.StylesData['left.Enabled'] := True;
@@ -179,6 +188,7 @@ begin
   if TFile.Exists('token.tmp') then
     VK.Token := TFile.ReadAllText('token.tmp');
   TTask.Run(Login);
+  //LoadDone;
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
@@ -243,6 +253,11 @@ end;
 
 procedure TFormMain.ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
+  //
+  if Assigned(FLoadingItem) then
+    LayoutChatLoadingAni.Position.Y := -(NewViewportPosition.Y - FLoadingItem.Position.Y)
+  else
+    LayoutChatLoadingAni.Position.Y := -LayoutChatLoadingAni.Height;
   if FLoading then
     Exit;
   if NewViewportPosition.Y = 0 then
@@ -296,40 +311,48 @@ begin
   Params.Extended;
   Params.Offset(FListChatsOffset);
   Params.Count(20);
+  Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified], [TVkGroupField.Verified]);
   if FUnreadOnly then
     Params.Filter(TVkConversationFilter.Unread);
-  if VK.Messages.GetConversations(Items, Params) then
   try
-    if Length(Items.Items) < 20 then
-      FListChatsOffsetEnd := True;
-    TThread.Synchronize(nil,
-      procedure
-      begin
-        ListBoxChats.BeginUpdate;
-        try
-          for var Item in Items.Items do
-            CreateChatItem(Item, Items);
-          if FListChatsOffsetEnd then
-          begin
-            FLoadingItem.Free;
-            FLoadingItem := nil;
-          end
-          else if Assigned(FLoadingItem) then
-            FLoadingItem.Index := ListBoxChats.Count;
-        finally
-          ListBoxChats.EndUpdate;
-        end;
-        FLoading := False;
-      end);
-  finally
-    Items.Free;
+    if VK.Messages.GetConversations(Items, Params) then
+    try
+      if Length(Items.Items) < 20 then
+        FListChatsOffsetEnd := True;
+      TThread.Synchronize(nil,
+        procedure
+        begin
+          ListBoxChats.BeginUpdate;
+          try
+            for var Item in Items.Items do
+              CreateChatItem(Item, Items);
+            if FListChatsOffsetEnd then
+            begin
+              LayoutChatLoadingAni.Position.Y := -LayoutChatLoadingAni.Height;
+              FLoadingItem.Free;
+              FLoadingItem := nil;
+            end
+            else if Assigned(FLoadingItem) then
+              FLoadingItem.Index := ListBoxChats.Count;
+          finally
+            ListBoxChats.EndUpdate;
+          end;
+          FLoading := False;
+        end);
+    finally
+      Items.Free;
+    end;
+  except
+    Dec(FListChatsOffset);
+    FLoading := False;
   end;
 end;
 
 procedure TFormMain.CreateLoadingItem;
 begin
   FLoadingItem := TListBoxLoading.Create(ListBoxChats);
-  FLoadingItem.Text := 'Загрузка...';
+  FLoadingItem.Text := '';
+  FLoadingItem.DisableDisappear := True;
   FLoadingItem.StyleLookup := 'item_loading';
   FLoadingItem.Height := 40;
   ListBoxChats.AddObject(FLoadingItem);
@@ -391,6 +414,8 @@ end;
 
 procedure TFormMain.DoErrorLogin;
 begin
+  FToken := '';
+  VK.Token := '';
   LayoutLoading.Opacity := 1;
   LayoutLoading.Visible := True;
   LayoutError.Visible := True;
@@ -435,6 +460,11 @@ begin
           LoadDone;
         end);
     end);
+end;
+
+procedure TFormMain.VKLog(Sender: TObject; const Value: string);
+begin
+  Memo1.Lines.Add(Value);
 end;
 
 procedure TFormMain.VKLogin(Sender: TObject);

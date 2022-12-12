@@ -500,7 +500,7 @@ type
     destructor Destroy; override;
   end;
 
-  TVkGroups = TVkEntityList<TVkGroup>;
+  TVkGroups = TVkObjectList<TVkGroup>;
 
   TVkGroupTag = class(TVkObject)
   private
@@ -512,24 +512,12 @@ type
     property Name: string read FName write FName;
   end;
 
-  TVkGroupTags = TVkEntityList<TVkGroupTag>;
-
-function FindGroup(Id: Integer; List: TArray<TVkGroup>): Integer;
+  TVkGroupTags = TVkObjectList<TVkGroupTag>;
 
 implementation
 
 uses
   VK.CommonUtils;
-
-function FindGroup(Id: Integer; List: TArray<TVkGroup>): Integer;
-var
-  i: Integer;
-begin
-  Result := -1;
-  for i := Low(List) to High(List) do
-    if List[i].Id = Abs(Id) then
-      Exit(i);
-end;
 
 {TVkGroup}
 

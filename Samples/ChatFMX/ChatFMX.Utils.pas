@@ -3,15 +3,20 @@
 interface
 
 uses
-  VK.Types, System.SysUtils;
+  VK.Types, System.SysUtils, VK.Entity.Message;
 
 function AttachmentToText(const Value: TVkAttachmentType): string;
 
-function MessageActionTypeToText(const Value: TVkMessageActionType): string;
-
 function WordOfCount(const Count: Integer; const Words: TArrayOfString): string;
 
+function HumanDateTime(Value: TDateTime): string;
+
+function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;
+
 implementation
+
+uses
+  System.DateUtils;
 
 function WordOfCount(const Count: Integer; const Words: TArrayOfString): string;
 begin
@@ -28,29 +33,80 @@ begin
   end;
 end;
 
-function MessageActionTypeToText(const Value: TVkMessageActionType): string;
+function MonthTextOf(Value: TDateTime): string;
 begin
-  case Value of
-    TVkMessageActionType.ChatPhotoUpdate:
-      Result := 'обновлена фотография беседы';
-    TVkMessageActionType.ChatPhotoRemove:
-      Result := 'удалена фотография беседы';
-    TVkMessageActionType.ChatCreate:
-      Result := 'создана беседа';
-    TVkMessageActionType.ChatTitleUpdate:
-      Result := 'обновлено название беседы';
-    TVkMessageActionType.ChatInviteUser:
-      Result := 'приглашен пользователь';
-    TVkMessageActionType.ChatKickUser:
-      Result := 'исключен пользователь';
-    TVkMessageActionType.ChatPinMessage:
-      Result := 'закреплено сообщение';
-    TVkMessageActionType.ChatUnpinMessage:
-      Result := 'откреплено сообщение';
-    TVkMessageActionType.ChatInviteUserByLink:
-      Result := 'пользователь присоединился к беседе по ссылке';
+  case MonthOf(Value) of
+    1:
+      Result := 'января';
+    2:
+      Result := 'февраля';
+    3:
+      Result := 'марта';
+    4:
+      Result := 'апреля';
+    5:
+      Result := 'мая';
+    6:
+      Result := 'июня';
+    7:
+      Result := 'июля';
+    8:
+      Result := 'августа';
+    9:
+      Result := 'сентября';
+    10:
+      Result := 'октября';
+    11:
+      Result := 'ноября';
+    12:
+      Result := 'декабря';
   else
-    Result := '';
+    Result := '?????';
+  end;
+end;
+
+function HumanDateTime(Value: TDateTime): string;
+begin
+  if IsSameDay(Value, Today) then
+    Result := 'сегодня'
+  else if IsSameDay(Value, Yesterday) then
+    Result := 'вчера'
+  else if YearOf(Value) = YearOf(Now) then
+    Result := FormatDateTime('d ' + MonthTextOf(Value), Value)
+  else
+    Result := FormatDateTime('d ' + MonthTextOf(Value) + ' YYYY', Value);
+end;
+
+function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;
+begin
+  Result := '';
+  case Value.&Type of
+    TVkMessageActionType.ChatPhotoUpdate:
+      Result := FromText + ' обновил(а) фотографию беседы';
+    TVkMessageActionType.ChatPhotoRemove:
+      Result := FromText + ' удалил(а) фотографию беседы';
+    TVkMessageActionType.ChatCreate:
+      Result := FromText + ' создал(а) беседу';
+    TVkMessageActionType.ChatTitleUpdate:
+      Result := FromText + ' изменил(а) название беседы';
+    TVkMessageActionType.ChatInviteUser:
+      if Value.MemberId = FromId then
+        Result := FromText + ' вошел(ла) в чат'
+      else
+        Result := FromText + ' пригласил(а) пользователя ' + MemberText;
+    TVkMessageActionType.ChatKickUser:
+      if Value.MemberId = FromId then
+        Result := FromText + ' вышел(ла) из чата'
+      else
+        Result := FromText + ' исключил(а) пользователя ' + MemberText;
+    TVkMessageActionType.ChatPinMessage:
+      Result := FromText + ' закрепил(а) сообщение';
+    TVkMessageActionType.ChatUnpinMessage:
+      Result := FromText + ' открепил(а) сообщение';
+    TVkMessageActionType.ChatInviteUserByLink:
+      Result := FromText + ' присоединился к беседе по ссылке';
+    TVkMessageActionType.ConversationStyleUpdate:
+      Result := FromText + ' изменил(а) оформление чата на «' + Value.Style + '». Оформление чата доступно в мобильном приложении';
   end;
 end;
 
@@ -82,7 +138,7 @@ begin
     TVkAttachmentType.Call:
       Result := 'Звонок';
     TVkAttachmentType.AudioMessage:
-      Result := 'Аудиосообщение';
+      Result := 'Голосовое сообщение';
     TVkAttachmentType.PostedPhoto:
       Result := 'Фотография';
     TVkAttachmentType.Graffiti:

@@ -25,6 +25,7 @@ type
     FIsPinned: Boolean;
     FIsSelfChat: Boolean;
     FIsHaveMention: Boolean;
+    FVerified: Boolean;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure SetUndreadCount(const Value: Integer);
     procedure SetLastTime(const Value: TDateTime);
@@ -38,6 +39,7 @@ type
     procedure SetIsPinned(const Value: Boolean);
     procedure SetIsSelfChat(const Value: Boolean);
     procedure SetIsHaveMention(const Value: Boolean);
+    procedure SetVerified(const Value: Boolean);
   protected
     procedure SetText(const Value: string); override;
   public
@@ -55,6 +57,7 @@ type
     property IsPinned: Boolean read FIsPinned write SetIsPinned;
     property IsSelfChat: Boolean read FIsSelfChat write SetIsSelfChat;
     property IsHaveMention: Boolean read FIsHaveMention write SetIsHaveMention;
+    property Verified: Boolean read FVerified write SetVerified;
     destructor Destroy; override;
   end;
 
@@ -139,6 +142,7 @@ procedure TListBoxItemChat.Fill(Item: TVkConversationItem; Data: TVkConversation
 begin
   IsOnline := False;
   IsOnlineMobile := False;
+  Verified := False;
   SetMessageText('', False);
 
   IsHaveMention := not Item.Conversation.Mentions.IsEmpty;
@@ -157,19 +161,19 @@ begin
     end
     else
     begin
-      if not Item.Conversation.IsUser then
+      if Item.Conversation.Peer.Id <> Item.LastMessage.FromId then
       begin
         if PeerIdIsUser(Item.LastMessage.FromId) then
         begin
-          var UserId := FindUser(Item.LastMessage.FromId, Data.Profiles);
-          if UserId >= 0 then
-            FromText := Data.Profiles[UserId].FirstName + ': ';
+          var User: TVkProfile;
+          if Data.GetProfileById(Item.LastMessage.FromId, User) then
+            FromText := User.FirstName + ': ';
         end
         else
         begin
-          var GroupId := FindGroup(Item.LastMessage.FromId, Data.Groups);
-          if GroupId >= 0 then
-            FromText := Data.Groups[GroupId].Name + ': ';
+          var Group: TVkGroup;
+          if Data.GetGroupById(Item.LastMessage.FromId, Group) then
+            FromText := Group.Name + ': ';
         end;
       end;
     end;
@@ -185,7 +189,37 @@ begin
       // Действие
     else if Assigned(Item.LastMessage.Action) then
     begin
-      var ActionText := MessageActionTypeToText(Item.LastMessage.Action.&Type);
+      FromText := '';
+      var MemberText := '';
+
+      if PeerIdIsUser(Item.LastMessage.Action.MemberId) then
+      begin
+        var User: TVkProfile;
+        if Data.GetProfileById(Item.LastMessage.Action.MemberId, User) then
+          MemberText := User.FullName;
+      end
+      else
+      begin
+        var Group: TVkGroup;
+        if Data.GetGroupById(Item.LastMessage.Action.MemberId, Group) then
+          MemberText := Group.Name;
+      end;
+
+      var ActionFromText := '';
+      if PeerIdIsUser(Item.LastMessage.FromId) then
+      begin
+        var User: TVkProfile;
+        if Data.GetProfileById(Item.LastMessage.FromId, User) then
+          ActionFromText := User.FullName;
+      end
+      else
+      begin
+        var Group: TVkGroup;
+        if Data.GetGroupById(Item.LastMessage.FromId, Group) then
+          ActionFromText := Group.Name;
+      end;
+
+      var ActionText := MessageActionToText(Item.LastMessage.Action, Item.LastMessage.FromId, ActionFromText, MemberText);
       SetMessageText(ActionText, False);
     end
       // Пересланные сообщения
@@ -217,26 +251,28 @@ begin
   end
   else if Item.Conversation.IsUser then
   begin
-    var UserId := FindUser(Item.Conversation.Peer.Id, Data.Profiles);
-    if UserId >= 0 then
+    var User: TVkProfile;
+    if Data.GetProfileById(Item.Conversation.Peer.Id, User) then
     begin
-      Text := Data.Profiles[UserId].FullName;
+      Text := User.FullName;
+      Verified := User.Verified;
+      FImageUrl := User.Photo50;
 
-      FImageUrl := Data.Profiles[UserId].Photo50;
-      if Assigned(Data.Profiles[UserId].OnlineInfo) then
+      if Assigned(User.OnlineInfo) then
       begin
-        IsOnline := Data.Profiles[UserId].OnlineInfo.IsOnline;
-        IsOnlineMobile := Data.Profiles[UserId].OnlineInfo.IsMobile;
+        IsOnline := User.OnlineInfo.IsOnline;
+        IsOnlineMobile := User.OnlineInfo.IsMobile;
       end;
     end;
   end
   else if Item.Conversation.IsGroup then
   begin
-    var GroupId := FindGroup(Item.Conversation.Peer.Id, Data.Groups);
-    if GroupId >= 0 then
+    var Group: TVkGroup;
+    if Data.GetGroupById(Item.Conversation.Peer.Id, Group) then
     begin
-      Text := Data.Groups[GroupId].Name;
-      FImageUrl := Data.Groups[GroupId].Photo50;
+      Text := Group.Name;
+      FImageUrl := Group.Photo50;
+      Verified := Group.Verified;
     end;
   end;
 end;
@@ -313,8 +349,10 @@ begin
   StylesData['time.Visible'] := Value > 0;
   if IsToday(Value) then
     StylesData['time'] := FormatDateTime('HH:nn', Value)
-  else
+  else if YearOf(Value) = YearOf(Now) then
     StylesData['time'] := FormatDateTime('D mmm', Value)
+  else
+    StylesData['time'] := FormatDateTime('D mmm YYYY', Value);
 end;
 
 procedure TListBoxItemChat.SetMessageText(const Value: string; IsAttach: Boolean);
@@ -351,6 +389,12 @@ begin
     StylesData['count_layout.Visible'].AsBoolean or
     StylesData['unread.Visible'].AsBoolean or
     StylesData['mention_layout.Visible'].AsBoolean;
+end;
+
+procedure TListBoxItemChat.SetVerified(const Value: Boolean);
+begin
+  FVerified := Value;
+  StylesData['verified.Visible'] := FVerified;
 end;
 
 end.

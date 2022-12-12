@@ -1,0 +1,85 @@
+object FrameAttachmentVideo: TFrameAttachmentVideo
+  Size.Width = 320.000000000000000000
+  Size.Height = 240.000000000000000000
+  Size.PlatformDefault = False
+  object Image: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Align = Client
+    Size.Width = 320.000000000000000000
+    Size.Height = 240.000000000000000000
+    Size.PlatformDefault = False
+    WrapMode = Stretch
+  end
+  object LayoutInfo: TLayout
+    Align = Client
+    Size.Width = 320.000000000000000000
+    Size.Height = 240.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object LayoutInfoB: TLayout
+      Align = Bottom
+      Margins.Left = 8.000000000000000000
+      Margins.Top = 8.000000000000000000
+      Margins.Right = 8.000000000000000000
+      Margins.Bottom = 8.000000000000000000
+      Position.X = 8.000000000000000000
+      Position.Y = 209.000000000000000000
+      Size.Width = 304.000000000000000000
+      Size.Height = 23.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object RectangleTime: TRectangle
+        Align = Right
+        Fill.Color = x66000000
+        HitTest = False
+        Padding.Left = 7.000000000000000000
+        Padding.Right = 7.000000000000000000
+        Position.X = 248.000000000000000000
+        Size.Width = 56.000000000000000000
+        Size.Height = 23.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+        XRadius = 3.000000000000000000
+        YRadius = 3.000000000000000000
+        object LabelTime: TLabel
+          Align = Right
+          AutoSize = True
+          StyledSettings = [Style]
+          Position.X = 23.000000000000000000
+          Size.Width = 26.000000000000000000
+          Size.Height = 23.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 13.000000000000000000
+          TextSettings.FontColor = claWhite
+          TextSettings.WordWrap = False
+          Text = '0:23'
+          TabOrder = 0
+          OnResize = LabelTimeResize
+        end
+        object PathPlay: TPath
+          Align = Right
+          Data.Path = {
+            0D00000000000000CDCC1C416666E6400200000067661641CCCCDC4002000000
+            000010410000E04002000000000010413333F340010000000000104166667641
+            0200000000001041000080410200000066661641CDCC804102000000CDCC1C41
+            CCCC7C41010000009A99694132334341020000000000704165663E4102000000
+            00007041CCCC3441020000009A996941FFFF2F4103000000CDCC1C416666E640}
+          Fill.Color = claWhite
+          Locked = True
+          HitTest = False
+          Margins.Left = 2.000000000000000000
+          Margins.Right = 5.000000000000000000
+          Position.X = 11.000000000000000000
+          Size.Width = 7.000000000000000000
+          Size.Height = 23.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          WrapMode = Fit
+        end
+      end
+    end
+  end
+end

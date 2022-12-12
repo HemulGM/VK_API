@@ -1,0 +1,14 @@
+object FrameAttachmentPhoto: TFrameAttachmentPhoto
+  Size.Width = 320.000000000000000000
+  Size.Height = 240.000000000000000000
+  Size.PlatformDefault = False
+  object Image: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Align = Client
+    Size.Width = 320.000000000000000000
+    Size.Height = 240.000000000000000000
+    Size.PlatformDefault = False
+  end
+end

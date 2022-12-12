@@ -12,7 +12,7 @@ type
     FDuration: Int64;
     FLink_mp3: string;
     FLink_ogg: string;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FWaveform: TArray<Integer>;
     FTranscript: string;
     FTranscript_state: string;
@@ -31,7 +31,7 @@ type
     /// URL .ogg-файла
     /// </summary>
     property LinkOgg: string read FLink_ogg write FLink_ogg;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Массив значений (integer) для визуального отображения звука
     /// </summary>

@@ -175,6 +175,7 @@ type
     //
     destructor Destroy; override;
     function ToAttachment: TAttachment;
+    function ToStringId: string;
   end;
 
   TVkCropPhoto = class(TVkEntity)
@@ -246,7 +247,7 @@ type
 implementation
 
 uses
-  VK.CommonUtils;
+  VK.CommonUtils, System.SysUtils;
 
 {TVkPhoto}
 
@@ -267,6 +268,13 @@ end;
 function TVkPhoto.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Photo(OwnerId, Id, AccessKey);
+end;
+
+function TVkPhoto.ToStringId: string;
+begin
+  Result := Format('%d_%d', [OwnerId, Id]);
+  if not AccessKey.IsEmpty then
+    Result := Result + '_' + AccessKey;
 end;
 
 {TVkPhotos}
