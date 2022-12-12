@@ -212,7 +212,7 @@ begin
   inherited Create(AOwner);
   {$IFDEF ANDROID}
   VertScrollBoxMessages.ShowScrollBars := False;
-  RectangleChatBG.Mergins.Right := 0;
+  RectangleChatBG.Margins.Right := 0;
   RectangleHead.Sides := [];
   RectangleHead.Corners := [];
   RectangleFooterBlock.Sides := [];
