@@ -362,7 +362,7 @@ type
     FPost_type: string;
     FPost_source: TVkPostSource;
     FAttachments: TVkAttachmentArray;
-    FGeo: TVkGeo;
+    FGeo: TVkGeoWall;
     FSigner_id: Integer;
     FCopy_history: TArray<TVkPost>;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -451,7 +451,7 @@ type
     /// <summary>
     /// Информация о местоположении
     /// </summary>
-    property Geo: TVkGeo read FGeo write FGeo;
+    property Geo: TVkGeoWall read FGeo write FGeo;
     /// <summary>
     /// Hash
     /// </summary>

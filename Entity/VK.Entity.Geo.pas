@@ -118,6 +118,33 @@ type
     destructor Destroy; override;
   end;
 
+  TVkGeoWall = class(TVkEntity)
+  private
+    FCoordinates: string;
+    FPlace: TVkPlace;
+    FType: string; //point,
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FShowmap: Boolean;
+  public
+    /// <summary>
+    /// Координаты места
+    /// </summary>
+    property Coordinates: string read FCoordinates write FCoordinates;
+    /// <summary>
+    /// Описание места (если оно добавлено)
+    /// </summary>
+    property Place: TVkPlace read FPlace write FPlace;
+    /// <summary>
+    /// Тип места
+    /// </summary>
+    property &Type: string read FType write FType;
+    /// <summary>
+    /// Информация о том, отображается ли карта
+    /// </summary>
+    property Showmap: Boolean read FShowmap write FShowmap;
+    destructor Destroy; override;
+  end;
+
 implementation
 
 {TVkGeo}
@@ -126,6 +153,15 @@ destructor TVkGeo.Destroy;
 begin
   if Assigned(FCoordinates) then
     FCoordinates.Free;
+  if Assigned(FPlace) then
+    FPlace.Free;
+  inherited;
+end;
+
+{ TVkGeoWall }
+
+destructor TVkGeoWall.Destroy;
+begin
   if Assigned(FPlace) then
     FPlace.Free;
   inherited;

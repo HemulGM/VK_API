@@ -218,7 +218,8 @@ procedure TPreview.AppendFile(const Url, FileName: string);
 begin
   var List := LockLoaded;
   try
-    List.Add(Url, FileName);
+    if not List.ContainsKey(Url) then
+      List.Add(Url, FileName);
   except
     // fine
   end;
