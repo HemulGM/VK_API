@@ -387,6 +387,8 @@ type
     FIs_archived: Boolean;
     FShort_text_rate: Extended;
     FHash: string;
+    FFrom: TVkGroup;
+    FCarousel_offset: Integer;
   public
     /// <summary>
     /// Идентификатор записи
@@ -416,6 +418,7 @@ type
     /// Информация о том, может ли текущий пользователь закрепить запись
     /// </summary>
     property CanPin: Boolean read FCan_pin write FCan_pin;
+    property CarouselOffset: Integer read FCarousel_offset write FCarousel_offset;
     /// <summary>
     /// Информация о комментариях к записи
     /// </summary>
@@ -444,6 +447,10 @@ type
     /// True, если запись была создана с опцией «Только для друзей».
     /// </summary>
     property FriendsOnly: Boolean read FFriends_only write FFriends_only;
+    /// <summary>
+    /// Откуда запись
+    /// </summary>
+    property From: TVkGroup read FFrom write FFrom;
     /// <summary>
     /// Идентификатор автора записи (от чьего имени опубликована запись)
     /// </summary>
@@ -682,6 +689,8 @@ begin
     FCopyright.Free;
   if Assigned(FDonut) then
     FDonut.Free;
+  if Assigned(FFrom) then
+    FFrom.Free;
   inherited;
 end;
 

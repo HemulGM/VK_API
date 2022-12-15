@@ -67,12 +67,12 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FLikes: TVkLikesInfo;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FReposts: TVkRepostsInfo;
     FSizes: TVkSizes;
     FTags: TVkCounterEntity;
     FText: string;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     FWidth: Integer;
     FHeight: Integer;
     FAccess_key: string;
@@ -89,6 +89,8 @@ type
     FTag_id: Integer;
     FPost_id: Integer;
     FSquare_crop: string;
+    FLat: Extended;
+    FLong: Extended;
   public
     /// <summary>
     /// Идентификатор фотографии
@@ -101,11 +103,11 @@ type
     /// <summary>
     /// Идентификатор владельца фотографии
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Идентификатор пользователя, загрузившего фото (если фотография размещена в сообществе). Для фотографий, размещенных от имени сообщества, user_id = 100.
     /// </summary>
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     /// <summary>
     /// Текст описания фотографии
     /// </summary>
@@ -130,6 +132,8 @@ type
     property CanComment: Integer read FCan_comment write FCan_comment;
     property CanRepost: Integer read FCan_repost write FCan_repost;
     property Comments: TVkCommentsInfo read FComments write FComments;
+    property Lat: Extended read FLat write FLat;
+    property Long: Extended read FLong write FLong;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     property Tags: TVkCounterEntity read FTags write FTags;

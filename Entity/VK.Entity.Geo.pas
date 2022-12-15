@@ -25,6 +25,8 @@ type
     FCheckins: Integer;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FUpdated: TDateTime;
+    Ftotal_checkins: Integer;
+    FIs_deleted: Boolean;
   public
     /// <summary>
     /// Идентификатор места
@@ -34,6 +36,10 @@ type
     /// Число отметок в этом месте
     /// </summary>
     property Checkins: Integer read FCheckins write FCheckins;
+    /// <summary>
+    /// Число отметок в этом месте
+    /// </summary>
+    property TotalCheckins: Integer read Ftotal_checkins write Ftotal_checkins;
     /// <summary>
     /// Название места
     /// </summary>
@@ -47,7 +53,7 @@ type
     /// </summary>
     property Longitude: Extended read FLongitude write FLongitude;
     /// <summary>
-    /// Тип места
+    /// Тип места (point, ...)
     /// </summary>
     property &Type: Integer read FType write FType;
     /// <summary>
@@ -70,6 +76,7 @@ type
     /// Иконка места, URL изображения
     /// </summary>
     property Icon: string read FIcon write FIcon;
+    property IsDeleted: Boolean read FIs_deleted write FIs_deleted;
     /// <summary>
     /// Адрес места
     /// </summary>

@@ -37,6 +37,82 @@ type
     property DashSep: string read FDash_sep write FDash_sep;
   end;
 
+  TVkVideoAdsParams = class
+  private
+    FContent_id: string;
+    FDuration: Int64;
+    FGroupId: Int64;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FIs_xz_video: Boolean;
+    FLang: Integer;
+    FPl: Int64;
+    FPuid1: Integer;
+    FPuid10: Integer;
+    FPuid12: Integer;
+    FPuid13: Integer;
+    FPuid14: Integer;
+    FPuid15: Integer;
+    FPuid18: Integer;
+    FPuid2: Integer;
+    FPuid21: Integer;
+    FPuid3: Integer;
+    FPuid5: Integer;
+    FPuid6: Integer;
+    FPuid7: Integer;
+    FPuid9: Integer;
+    FSign: string;
+    FVideo_id: string;
+    FVk_catid: Int64;
+    FVk_id: Int64;
+  public
+    property ContentId: string read FContent_id write FContent_id;
+    property Duration: Int64 read FDuration write FDuration;
+    property GroupId: Int64 read FGroupId write FGroupId;
+    property IsXzVideo: Boolean read FIs_xz_video write FIs_xz_video;
+    property Lang: Integer read FLang write FLang;
+    property Pl: Int64 read FPl write FPl;
+    property PUID1: Integer read FPuid1 write FPuid1;
+    property PUID10: Integer read FPuid10 write FPuid10;
+    property PUID12: Integer read FPuid12 write FPuid12;
+    property PUID13: Integer read FPuid13 write FPuid13;
+    property PUID14: Integer read FPuid14 write FPuid14;
+    property PUID15: Integer read FPuid15 write FPuid15;
+    property PUID18: Integer read FPuid18 write FPuid18;
+    property PUID2: Integer read FPuid2 write FPuid2;
+    property PUID21: Integer read FPuid21 write FPuid21;
+    property PUID3: Integer read FPuid3 write FPuid3;
+    property PUID5: Integer read FPuid5 write FPuid5;
+    property PUID6: Integer read FPuid6 write FPuid6;
+    property PUID7: Integer read FPuid7 write FPuid7;
+    property PUID9: Integer read FPuid9 write FPuid9;
+    property Sign: string read FSign write FSign;
+    property VideoId: string read FVideo_id write FVideo_id;
+    property VkCatId: Int64 read FVk_catid write FVk_catid;
+    property VkId: Int64 read FVk_id write FVk_id;
+  end;
+
+  TVkVideoAds = class(TVkEntity)
+  private
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_play: Boolean;
+    FMidroll_percents: TArray<Extended>;
+    FParams: TVkVideoAdsParams;
+    FSections: TArray<string>;
+    FSlot_id: Int64;
+    FTimeout: Extended;
+  public
+    property CanPlay: Boolean read FCan_play write FCan_play;
+    property MidrollPercents: TArray<Extended> read FMidroll_percents write FMidroll_percents;
+    property Params: TVkVideoAdsParams read FParams write FParams;
+    /// <summary>
+    /// ("preroll", "midroll", "postroll", ...)
+    /// </summary>
+    property Sections: TArray<string> read FSections write FSections;
+    property SlotId: Int64 read FSlot_id write FSlot_id;
+    property Timeout: Extended read FTimeout write FTimeout;
+    destructor Destroy; override;
+  end;
+
   TVkVideoImage = class(TVkSize)
   private
     FWith_padding: Integer;
@@ -141,6 +217,7 @@ type
     FTimeline_thumbs: TVkTimelineThumbs;
     FCan_download: integer;
     FOv_id: string;
+    FAds: TVkVideoAds;
   public
     /// <summary>
     /// Ключ доступа к объекту
@@ -154,6 +231,7 @@ type
     /// Дата добавления видеозаписи пользователем или группой
     /// </summary>
     property AddingDate: TDateTime read FAdding_date write FAdding_date;
+    property Ads: TVkVideoAds read FAds write FAds;
     /// <summary>
     /// Баланс донатов в прямой трансляции
     /// </summary>
@@ -377,6 +455,8 @@ begin
     FLikes.Free;
   if Assigned(FReposts) then
     FReposts.Free;
+  if Assigned(FAds) then
+    FAds.Free;
   if Assigned(FTimeline_thumbs) then
     FTimeline_thumbs.Free;
   inherited;
@@ -401,6 +481,15 @@ begin
   TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
   if Assigned(FPrivacy) then
     FPrivacy.Free;
+  inherited;
+end;
+
+{ TVkVideoAds }
+
+destructor TVkVideoAds.Destroy;
+begin
+  if Assigned(FParams) then
+    FParams.Free;
   inherited;
 end;
 
