@@ -1,0 +1,77 @@
+object FrameAttachmentReplyMessage: TFrameAttachmentReplyMessage
+  Margins.Top = 5.000000000000000000
+  Margins.Bottom = 7.000000000000000000
+  Size.Width = 514.000000000000000000
+  Size.Height = 37.000000000000000000
+  Size.PlatformDefault = False
+  OnMouseEnter = FrameMouseEnter
+  OnMouseLeave = FrameMouseLeave
+  object LineLeft: TLine
+    Align = Left
+    HitTest = False
+    LineType = Left
+    Size.Width = 2.000000000000000000
+    Size.Height = 37.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Color = xFF454545
+    Stroke.Thickness = 2.000000000000000000
+  end
+  object LayoutContent: TLayout
+    Align = Client
+    Padding.Left = 10.000000000000000000
+    Size.Width = 512.000000000000000000
+    Size.Height = 37.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object RectangleImage: TRectangle
+      Align = Left
+      Fill.Color = xFF747474
+      HitTest = False
+      Margins.Top = 3.000000000000000000
+      Margins.Right = 8.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 3.000000000000000000
+      Size.Width = 34.000000000000000000
+      Size.Height = 34.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 4.000000000000000000
+      YRadius = 4.000000000000000000
+    end
+    object LayoutText: TLayout
+      Align = Client
+      Size.Width = 460.000000000000000000
+      Size.Height = 37.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object LabelTitle: TLabel
+        Align = Top
+        StyledSettings = []
+        Size.Width = 460.000000000000000000
+        Size.Height = 19.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = xFFE1E3E6
+        TextSettings.WordWrap = False
+        Text = #1048#1084#1103' '#1086#1090#1087#1088#1072#1074#1080#1090#1077#1083#1103
+        TabOrder = 2
+      end
+      object LabelText: TLabel
+        Align = Top
+        StyledSettings = [Style]
+        Position.Y = 19.000000000000000000
+        Size.Width = 460.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.FontColor = xFFE1E3E6
+        TextSettings.WordWrap = False
+        Text = #1058#1077#1082#1089#1090' '#1089#1086#1086#1073#1097#1077#1085#1080#1103
+        TabOrder = 1
+      end
+    end
+  end
+end

@@ -60,10 +60,11 @@ begin
   Height := 100;
   FImageUrl := '';
   for var Image in Video.Image do
-    if Image.Width > 100 then
+    if Image.Height >= 400 then
     begin
       FImageUrl := Image.Url;
       Width := Height * (Image.Width / Image.Height);
+      Break;
     end;
   if FImageUrl.IsEmpty and (Length(Video.Image) > 0) then
   begin

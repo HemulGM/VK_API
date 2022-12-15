@@ -26,6 +26,8 @@ type
   private
     class var
       FInstance: TPreview;
+    class var
+      FManager: TMessageManager;
   private
     FWorker: ITask;
     FLocalPath: string;
@@ -49,13 +51,15 @@ type
     procedure Log(Value: string);
     property OnLog: TOnLog read FOnLog write SetOnLog;
     class function Instance: TPreview;
+    class constructor Create;
     class destructor Destroy;
   end;
 
 implementation
 
 uses
-  FMX.Forms,{$IFDEF MSWINDOWS} Winapi.Windows, {$ELSE} Posix.SysStat, {$ENDIF} System.Net.URLClient;
+  FMX.Forms, {$IFDEF MSWINDOWS} Winapi.Windows, {$ELSE} Posix.SysStat, {$ENDIF}
+  System.Net.URLClient, System.Hash, System.NetEncoding;
 
 { TPreview }
 
@@ -75,12 +79,16 @@ end;
 
 class destructor TPreview.Destroy;
 begin
+  if Assigned(FManager) then
+    FManager.Free;
   if Assigned(FInstance) then
     FInstance.Free;
 end;
 
 destructor TPreview.Destroy;
 begin
+  FWorker.Cancel;
+  TTask.WaitForAll(FWorker);
   LockLoaded.Free;
   FQueue.Free;
   inherited;
@@ -98,6 +106,11 @@ begin
   end;
 end;
 
+class constructor TPreview.Create;
+begin
+  FManager := TMessageManager.Create;
+end;
+
 procedure TPreview.SetOnLog(const Value: TOnLog);
 begin
   FOnLog := Value;
@@ -107,7 +120,7 @@ procedure TPreview.Subscribe(Url: string; CallBack: TMessageListenerMethod);
 begin
   if Url.IsEmpty then
     Exit;
-  TMessageManager.DefaultManager.SubscribeToMessage(TMessagePreview, CallBack);
+  FManager.SubscribeToMessage(TMessagePreview, CallBack);
   TTask.Run(
     procedure
     begin
@@ -146,25 +159,18 @@ end;
 
 procedure TPreview.Unsubscribe(const AListenerMethod: TMessageListenerMethod);
 begin
-  TMessageManager.DefaultManager.Unsubscribe(TMessagePreview, AListenerMethod);
+  FManager.Unsubscribe(TMessagePreview, AListenerMethod);
 end;
 
 function TPreview.ParseUrlFileName(const Url: string): string;
 begin
-  try
-    var UrlEnc := TURI.Create(Url);
-    var Items := UrlEnc.Path.Split(['/']);
-    if Length(Items) > 0 then
-      Result := Items[High(Items)]
-    else
-      Result := '';
-    if Length(UrlEnc.Params) > 0 then
-      for var Param in UrlEnc.Params do
-        Result := Result + Param.Name + Param.Value
+  //Result := '';
 
-  except
-    Result := '';
-  end;
+  Result := THashSHA2.GetHashString(TNetEncoding.Base64.Encode(Url));
+  {for var C in TNetEncoding.Base64.Encode(Url) do
+    if 'abcdefghijklmnopqrstuvwxyz'.Contains(string(C).ToLower) then
+      Result := Result + C;
+  Result := Result.Substring(0, 100);}
 end;
 
 function TPreview.GetFileName(const Url: string; out FileName: string; out Stream: TFileStream): Boolean;
@@ -204,7 +210,7 @@ begin
       Data: TPreviewData;
     begin
       Data := TPreviewData.Create(AUrl, AFileName);
-      TMessageManager.DefaultManager.SendMessage(Self, TMessagePreview.Create(Data), True);
+      FManager.SendMessage(Self, TMessagePreview.Create(Data), True);
     end);
 end;
 
@@ -227,7 +233,7 @@ var
 begin
   HTTP := THTTPClient.Create;
   try
-    while not Application.Terminated do
+    while (not Application.Terminated) and (TTask.CurrentTask.Status <> TTaskStatus.Canceled) do
     try
       with FQueue.LockList do
       try

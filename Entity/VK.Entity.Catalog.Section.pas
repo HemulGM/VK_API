@@ -28,14 +28,14 @@ type
   TVkCatalogLink = class(TVkEntity)
   private
     FId: string;
-    FImage: TArray<TVkImage>;
+    FImage: TArray<TVkSize>;
     FMeta: TVkLinkMeta;
     FSubtitle: string;
     FTitle: string;
     FUrl: string;
   public
     property Id: string read FId write FId;
-    property Image: TArray<TVkImage> read FImage write FImage;
+    property Image: TArray<TVkSize> read FImage write FImage;
     property Meta: TVkLinkMeta read FMeta write FMeta;
     property Subtitle: string read FSubtitle write FSubtitle;
     property Title: string read FTitle write FTitle;
@@ -70,7 +70,7 @@ uses
 
 destructor TVkCatalogLink.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FImage);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FImage);
   if Assigned(FMeta) then
     FMeta.Free;
   inherited;

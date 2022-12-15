@@ -20,6 +20,10 @@ type
   TListBoxLoading = class(TListBoxItem)
   end;
 
+  {$IFDEF DEBUG_ADAPTIVE}
+    {$DEFINE ANDROID}
+  {$ENDIF}
+
   TFormMain = class(TForm)
     LayoutClient: TLayout;
     HorzScrollBoxContent: THorzScrollBox;
@@ -79,7 +83,6 @@ type
     procedure VKLogin(Sender: TObject);
     procedure LabelChatsModeClick(Sender: TObject);
     procedure ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
-    procedure FormDestroy(Sender: TObject);
     procedure ButtonReloginClick(Sender: TObject);
     procedure VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure ListBoxChatsApplyStyleLookup(Sender: TObject);
@@ -97,7 +100,10 @@ type
     FLoadingItem: TListBoxLoading;
     procedure FOnReadyAvatar(const Sender: TObject; const M: TMessage);
     procedure FOnChatItemClick(Sender: TObject);
+   {$IFDEF ANDROID}
     procedure FOnChatItemTap(Sender: TObject; const Point: TPointF);
+    procedure FOnBackAdaptive(Sender: TObject);
+    {$ENDIF}
     procedure LoadConversationsAsync;
     procedure CreateChatItem(Chat: TVkConversationItem; Data: TVkConversationItems);
     procedure SetUnreadOnly(const Value: Boolean);
@@ -112,9 +118,9 @@ type
     procedure DoErrorLogin;
     procedure CreateLoadingItem;
     procedure ClearChatList;
-    procedure FOnBackAdaptive(Sender: TObject);
   public
     property UnreadOnly: Boolean read FUnreadOnly write SetUnreadOnly;
+    destructor Destroy; override;
   end;
 
 var
@@ -137,14 +143,34 @@ begin
   LoadChat(Item.ConversationId);
 end;
 
+{$IFDEF ANDROID}
 procedure TFormMain.FOnChatItemTap(Sender: TObject; const Point: TPointF);
 begin
   FOnChatItemClick(Sender);
 end;
 
+procedure TFormMain.FOnBackAdaptive(Sender: TObject);
+begin
+  if LayoutChats.Visible then
+  begin
+    LayoutChats.Visible := False;
+    LayoutChat.Visible := True;
+  end
+  else
+  begin
+    LayoutChats.Visible := True;
+    LayoutChat.Visible := False;
+  end;
+end;
+{$ENDIF}
+
 procedure TFormMain.FOnLog(Sender: TObject; Value: string);
 begin
-  Memo1.Lines.Add(Value);
+  TThread.Queue(nil,
+    procedure
+    begin
+      Memo1.Lines.Add(Value);
+    end);
 end;
 
 procedure TFormMain.FOnReadyAvatar(const Sender: TObject; const M: TMessage);
@@ -167,9 +193,8 @@ procedure TFormMain.Login;
 begin
   try
     VK.Login;
-  finally
-    if not VK.IsLogin then
-      TThread.Queue(nil, DoErrorLogin);
+  except
+    TThread.Queue(nil, DoErrorLogin);
   end;
 end;
 
@@ -180,6 +205,9 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  {$IFDEF DEBUG_ADAPTIVE}
+  Width := 500;
+  {$ENDIF}
   {$IFDEF ANDROID}
   ListBoxChats.ShowScrollBars := False;
   RectangleBG.Visible := False;
@@ -188,7 +216,6 @@ begin
   RectangleFooter.Sides := [];
   RectangleFooter.Corners := [];
   ListBoxChats.Margins.Left := 0;
-  //LayoutClient.Align := TAlignLayout.Client;
   LayoutAdaptive.Visible := True;
   HorzScrollBoxContent.Visible := False;
   LayoutChat.Visible := False;
@@ -220,12 +247,6 @@ begin
   //LoadDone;
 end;
 
-procedure TFormMain.FormDestroy(Sender: TObject);
-begin
-  TPreview.Instance.Unsubscribe(FOnReadyAvatar);
-  FChats.Free;
-end;
-
 procedure TFormMain.FormResize(Sender: TObject);
 begin
   LayoutClient.Width := Max(Min(1000, ClientWidth), 800) - 40;
@@ -242,7 +263,11 @@ begin
   {$IFNDEF ANDROID}
   ListItem.OnClick := FOnChatItemClick;
   {$ELSE}
+    {$IFDEF DEBUG_ADAPTIVE}
+  ListItem.OnClick := FOnChatItemClick;
+    {$ELSE}
   ListItem.OnTap := FOnChatItemTap;
+    {$ENDIF}
   {$ENDIF}
   //ListItem.ApplyStyle;
 end;
@@ -286,7 +311,6 @@ end;
 
 procedure TFormMain.ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
-  //
   if Assigned(FLoadingItem) then
     LayoutChatLoadingAni.Position.Y := -(NewViewportPosition.Y - FLoadingItem.Position.Y)
   else
@@ -309,20 +333,6 @@ begin
       Sleep(2000);
       Login;
     end);
-end;
-
-procedure TFormMain.FOnBackAdaptive(Sender: TObject);
-begin
-  if LayoutChats.Visible then
-  begin
-    LayoutChats.Visible := False;
-    LayoutChat.Visible := True;
-  end
-  else
-  begin
-    LayoutChats.Visible := True;
-    LayoutChat.Visible := False;
-  end;
 end;
 
 function TFormMain.CreateChat(PeerId: TVkPeerId): TFrameChat;
@@ -417,6 +427,7 @@ end;
 
 procedure TFormMain.ClearChatList;
 begin
+  FLoadingItem := nil;
   ListBoxChats.Clear;
   CreateLoadingItem;
 end;
@@ -467,6 +478,17 @@ begin
     end);
   Token := AToken;
   TokenExpiry := ATokenExpiry;
+end;
+
+destructor TFormMain.Destroy;
+begin
+  Hide;
+  TThread.RemoveQueuedEvents(nil);
+  while VK.Handler.Executing do
+    Application.ProcessMessages;
+  TPreview.Instance.Unsubscribe(FOnReadyAvatar);
+  FChats.Free;
+  inherited;
 end;
 
 procedure TFormMain.DoErrorLogin;

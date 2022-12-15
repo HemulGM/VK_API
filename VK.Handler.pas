@@ -312,14 +312,14 @@ begin
     // Если это первый запрос, то сохраняем метку
     if FRequests = 1 then
       FStartRequest := TThread.GetTickCount;
-    // Если уже 3 запроса было, то ждём до конца секунды FStartRequest
-    if FRequests > RequestLimit then
-    begin
-      FRequests := 0;
-      WaitTime(1300 - Int64(TThread.GetTickCount - FStartRequest));
-    end;
   finally
     TMonitor.Exit(FQueueLock);
+  end;
+  // Если уже 3 запроса было, то ждём до конца секунды FStartRequest
+  if FRequests > RequestLimit then
+  begin
+    FRequests := 0;
+    WaitTime(1300 - Int64(TThread.GetTickCount - FStartRequest));
   end;
 end;
 
@@ -327,6 +327,9 @@ function TVkHandler.FExecute(Request: TRESTRequest; IsRepeat: Boolean): TRespons
 begin
   Result.Success := False;
   WaitForQueue;
+  //if  then
+
+
   if FLogging then
     FLog(Request.GetFullRequestURL);
   Request.Execute;

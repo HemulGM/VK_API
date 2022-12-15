@@ -45,14 +45,14 @@ type
   TVkCatalogPlaceholder = class
   private
     FButtons: TArray<TVkCatalogButton>;
-    FIcons: TArray<TVkImage>;
+    FIcons: TArray<TVkSize>;
     FId: string;
     FImage_mode: string;
     FText: string;
     FTitle: string;
   public
     property Buttons: TArray<TVkCatalogButton> read FButtons write FButtons;
-    property Icons: TArray<TVkImage> read FIcons write FIcons;
+    property Icons: TArray<TVkSize> read FIcons write FIcons;
     property Id: string read FId write FId;
     property ImageMode: string read FImage_mode write FImage_mode;
     property Text: string read FText write FText;
@@ -169,7 +169,7 @@ end;
 destructor TVkCatalogPlaceholder.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCatalogButton>(FButtons);
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FIcons);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FIcons);
   inherited;
 end;
 

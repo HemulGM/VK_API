@@ -11,13 +11,13 @@ uses
 type
   TVkGroupSubject = TVkBasicObject;
 
-  TVkCoverImages = TVkEntityList<TVkImage>;
+  TVkCoverImages = TVkEntityList<TVkSize>;
 
   TVkCover = class
   private
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FEnabled: Boolean;
-    FImages: TArray<TVkImage>;
+    FImages: TArray<TVkSize>;
   public
     /// <summary>
     /// Информация о том, включена ли обложка
@@ -26,7 +26,7 @@ type
     /// <summary>
     /// Копии изображений обложки
     /// </summary>
-    property Images: TArray<TVkImage> read FImages write FImages;
+    property Images: TArray<TVkSize> read FImages write FImages;
     destructor Destroy; override;
   end;
 
@@ -567,7 +567,7 @@ end;
 
 destructor TVkCover.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FImages);
   inherited;
 end;
 

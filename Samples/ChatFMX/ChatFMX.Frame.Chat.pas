@@ -21,6 +21,10 @@ type
     procedure SetText(const Value: string); override;
   end;
 
+  {$IFDEF DEBUG_ADAPTIVE}
+    {$DEFINE ANDROID}
+  {$ENDIF}
+
   TFrameChat = class(TFrame)
     LayoutClient: TLayout;
     RectangleHead: TRectangle;
@@ -239,12 +243,13 @@ procedure TFrameChat.EndOfChat;
 begin
   if FLoading then
     Exit;
-  FLoading := True;
   if not FOffsetEnd then
   begin
+    FLoading := True;
     Inc(FOffset, 20);
     TTask.Run(LoadConversationAsync);
   end;
+  FrameLoadingMesages.Visible := not FOffsetEnd;
 end;
 
 procedure TFrameChat.LayoutFooterBottomResize(Sender: TObject);
@@ -256,7 +261,8 @@ procedure TFrameChat.LayoutMessageListResize(Sender: TObject);
 begin
   var Sz: Single := 0;
   for var Control in LayoutMessageList.Controls do
-    Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
+    if Control.IsVisible then
+      Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
   LayoutMessageList.Height := Sz + 10;
   FrameLoadingMesages.Visible := LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height;
 end;
@@ -362,8 +368,8 @@ begin
     LayoutMessageList.InsertObject(0, Frame);
     with Frame do
     begin
-      Fill(Item, History);
       Align := TAlignLayout.Top;
+      Fill(Item, History, IsCanWrtie);
       LayoutMessageList.RecalcSize;
       Align := TAlignLayout.Bottom;
       OnSelectedChanged := FOnMessageSelected;
@@ -375,8 +381,8 @@ begin
     LayoutMessageList.InsertObject(0, Frame);
     with Frame do
     begin
-      Fill(Item, History);
       Align := TAlignLayout.Top;
+      Fill(Item, History);
       LayoutMessageList.RecalcSize;
       Align := TAlignLayout.Bottom;
     end;
@@ -410,7 +416,7 @@ begin
         for var Item in Items.Items do
           CreateMessageItem(Item, Items);
         VertScrollBoxMessagesResize(nil);
-        LayoutMessageList.Opacity := 1;
+        LayoutMessageList.Visible := True;
         FLoading := False;
         FrameLoadingMesages.Visible := not FOffsetEnd;
         if FOffsetEnd then
@@ -532,7 +538,7 @@ begin
         else if LastSeen <> 0 then
           LabelInfo.Text := 'был(а) в сети ' + HumanDateTime(LastSeen, True)
         else
-          LabelInfo.Text := 'был(а) в сети недавно';
+          LabelInfo.Text := '';
       end;
     ctGroup:
       begin
@@ -545,7 +551,7 @@ end;
 procedure TFrameChat.VertScrollBoxMessagesResize(Sender: TObject);
 begin
   if LayoutMessageList.Width <> VertScrollBoxMessages.Width then
-    LayoutMessageList.Width := VertScrollBoxMessages.ClientWidth;
+    LayoutMessageList.Width := VertScrollBoxMessages.ClientWidth - 1;
   LayoutMessageList.Position.Y := VertScrollBoxMessages.Height - LayoutMessageList.Height;
 end;
 
@@ -595,7 +601,7 @@ begin
         procedure
         begin
           UpdateInfo(Items.Items[0], Items);
-          LayoutHead.Opacity := 1;
+          LayoutHead.Visible := True;
         end);
     end;
   finally
@@ -639,11 +645,11 @@ begin
   end;
   LayoutMessageList.Position.Y := 0;
   LayoutMessageList.Height := VertScrollBoxMessages.Height;
-  LayoutMessageList.Opacity := 0;
+  LayoutMessageList.Visible := False;
 
   LabelTitle.Text := 'Загрузка...';
   LabelInfo.Text := '';
-  LayoutHead.Opacity := 0;
+  LayoutHead.Visible := False;
   LayoutMobileIndicate.Visible := False;
   LayoutMuteIndicate.Visible := False;
 
@@ -782,6 +788,7 @@ procedure TFrameChat.SetOnBack(const Value: TNotifyEvent);
 begin
   FOnBack := Value;
   ButtonBack.Visible := Assigned(FOnBack);
+  ButtonBack.Repaint;
 end;
 
 procedure TFrameChat.SetTitle(const Value: string);

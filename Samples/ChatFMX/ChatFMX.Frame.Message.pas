@@ -8,9 +8,16 @@ uses
   FMX.Layouts, FMX.Objects, FMX.Controls.Presentation, FMX.Memo.Types,
   FMX.ScrollBox, FMX.Memo, VK.Entity.Message, VK.Entity.PushSettings, VK.API,
   VK.Entity.Conversation, FMX.Memo.Style, System.Messaging, FMX.Ani,
-  VK.Entity.Media, VK.Types, ChatFMX.Frame.Attachment.AudioMessage;
+  VK.Entity.Media, VK.Types, ChatFMX.Frame.Attachment.AudioMessage,
+  ChatFMX.Frame.Attachment.Audio, ChatFMX.Frame.Attachment.Document,
+  VK.Entity.Geo, ChatFMX.Frame.Attachment.Geo,
+  ChatFMX.Frame.Attachment.ReplyMessage;
 
 type
+  {$IFDEF DEBUG_ADAPTIVE}
+    {$DEFINE ANDROID}
+  {$ENDIF}
+
   TFrameMessage = class(TFrame)
     LayoutLeft: TLayout;
     RectangleBG: TRectangle;
@@ -42,6 +49,12 @@ type
     Image4: TImage;
     Image5: TImage;
     Image6: TImage;
+    LayoutSelectedIcon: TLayout;
+    LayoutUpdated: TLayout;
+    LabelUpdated: TLabel;
+    LabelGiftFrom: TLabel;
+    RectangleGiftBG: TRectangle;
+    LayoutFwdMessages: TLayout;
     procedure MemoTextChange(Sender: TObject);
     procedure MemoTextResize(Sender: TObject);
     procedure FrameResize(Sender: TObject);
@@ -49,11 +62,12 @@ type
     procedure FrameMouseLeave(Sender: TObject);
     procedure LabelFromMouseEnter(Sender: TObject);
     procedure LabelFromMouseLeave(Sender: TObject);
-    procedure CircleAvatarClick(Sender: TObject);
     procedure FrameMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure MemoTextMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure MemoTextExit(Sender: TObject);
     procedure MemoTextMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure FlowLayoutMediaResize(Sender: TObject);
+    procedure LayoutFwdMessagesResize(Sender: TObject);
   private
     FVK: TCustomVK;
     FText: string;
@@ -69,6 +83,9 @@ type
     FWasSelectedText: Boolean;
     FOnSelectedChanged: TNotifyEvent;
     FDate: TDateTime;
+    FUpdateTime: TDateTime;
+    FIsGift: Boolean;
+    FCanAnswer: Boolean;
     procedure SetText(const Value: string);
     procedure SetFromText(const Value: string);
     procedure SetImageUrl(const Value: string);
@@ -87,10 +104,19 @@ type
     procedure CreateSticker(Items: TVkAttachmentArray);
     procedure CreateVideos(Items: TVkAttachmentArray);
     procedure SetDate(const Value: TDateTime);
+    procedure CreateAudios(Items: TVkAttachmentArray);
+    procedure CreateDocs(Items: TVkAttachmentArray);
+    procedure CreateGeo(Value: TVkGeo);
+    procedure SetUpdateTime(const Value: TDateTime);
+    procedure CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
+    procedure SetIsGift(const Value: Boolean);
+    procedure CreateGift(Items: TVkAttachmentArray; Msg: TVkMessage);
+    procedure SetCanAnswer(const Value: Boolean);
+    procedure CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkMessageHistory);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
-    procedure Fill(Item: TVkMessage; Data: TVkMessageHistory);
+    procedure Fill(Item: TVkMessage; Data: TVkMessageHistory; ACanAnswer: Boolean);
     property Text: string read FText write SetText;
     property FromText: string read FFromText write SetFromText;
     property ImageUrl: string read FImageUrl write SetImageUrl;
@@ -102,6 +128,9 @@ type
     property IsSelected: Boolean read FIsSelected write SetIsSelected;
     property OnSelectedChanged: TNotifyEvent read FOnSelectedChanged write SetOnSelectedChanged;
     property Date: TDateTime read FDate write SetDate;
+    property UpdateTime: TDateTime read FUpdateTime write SetUpdateTime;
+    property IsGift: Boolean read FIsGift write SetIsGift;
+    property ChatCanAnswer: Boolean read FCanAnswer write SetCanAnswer;
   end;
 
 implementation
@@ -109,14 +138,10 @@ implementation
 uses
   System.Math, System.DateUtils, VK.Entity.Profile, VK.Entity.Group,
   ChatFMX.PreviewManager, ChatFMX.Frame.Attachment.Photo, ChatFMX.Utils,
-  ChatFMX.Frame.Attachment.Sticker, ChatFMX.Frame.Attachment.Video;
+  ChatFMX.Frame.Attachment.Sticker, ChatFMX.Frame.Attachment.Video,
+  ChatFMX.Frame.Attachment.Gift, ChatFMX.Frame.Attachment.Message;
 
 {$R *.fmx}
-
-procedure TFrameMessage.CircleAvatarClick(Sender: TObject);
-begin
-  //
-end;
 
 procedure TFrameMessage.ClearMedia;
 begin
@@ -132,16 +157,38 @@ end;
 
 procedure TFrameMessage.RecalcMedia;
 begin
-  FlowLayoutMedia.RecalcSize;
   var H: Single := 0;
   for var Control in FlowLayoutMedia.Controls do
+  begin
+    if (Control.Width > FlowLayoutMedia.Width) or
+      ((FlowLayoutMedia.ControlsCount = 1) and (
+      (FlowLayoutMedia.Controls[0] is TFrameAttachmentPhoto) or
+      (FlowLayoutMedia.Controls[0] is TFrameAttachmentVideo)))
+      then
+    begin
+      var D := Control.Height / Control.Width;
+      Control.Width := FlowLayoutMedia.Width;
+      Control.Height := Control.Width * D;
+    end;
     H := Max(Control.Position.Y + Control.Height, H);
-  FlowLayoutMedia.Height := H;
+  end;
+  if FlowLayoutMedia.Height <> H then
+  begin
+    FlowLayoutMedia.Height := H;
+    FrameResize(nil);
+  end;
 end;
 
 constructor TFrameMessage.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
+  {$IFDEF ANDROID}
+  LayoutSelectedIcon.Visible := False;
+  LayoutLeft.Width := 51;
+  LayoutRight.Visible := False;
+  RectangleUnread.Margins.Right := 0;
+  CircleAvatar.Margins.Right := 7;
+  {$ENDIF}
   Name := '';
   FVK := AVK;
   RectangleBG.Visible := False;
@@ -150,6 +197,8 @@ begin
   MemoText.DisableDisappear := True;
   MouseFrame := False;
   IsSelected := False;
+  IsGift := False;
+  LayoutFwdMessages.Visible := False;
   ClearMedia;
 end;
 
@@ -159,8 +208,9 @@ begin
   inherited;
 end;
 
-procedure TFrameMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory);
+procedure TFrameMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory; ACanAnswer: Boolean);
 begin
+  ChatCanAnswer := ACanAnswer;
   Text := Item.Text;
   Date := Item.Date;
   ImageUrl := '';
@@ -168,6 +218,7 @@ begin
   IsCanEdit := HoursBetween(Now, Item.Date) < 24;
   IsImportant := Item.Important;
   IsUnread := False;
+  UpdateTime := Item.UpdateTime;
 
   var P2P: Boolean := False;
   if Length(Data.Conversations) > 0 then
@@ -197,27 +248,82 @@ begin
     end;
   end;
 
+  if Assigned(Item.ReplyMessage) then
+    CreateReplyMessage(Item.ReplyMessage, Data);
+
   if Length(Item.Attachments) > 0 then
   begin
     CreatePhotos(Item.Attachments);
     CreateVideos(Item.Attachments);
+    CreateAudios(Item.Attachments);
+    CreateDocs(Item.Attachments);
     CreateAutioMessages(Item.Attachments);
     CreateSticker(Item.Attachments);
+    CreateGift(Item.Attachments, Item);
+    RecalcMedia;
   end;
+
+  if Assigned(Item.Geo) then
+    CreateGeo(Item.Geo);
+
+  if Length(Item.FwdMessages) > 0 then
+    CreateFwdMessages(Item.FwdMessages, Data);
+
+  RecalcSize;
+end;
+
+procedure TFrameMessage.CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkMessageHistory);
+begin
+  for var Item in Items do
+  begin
+    var Frame := TFrameAttachmentMessage.Create(LayoutFwdMessages, FVK);
+    Frame.Parent := LayoutFwdMessages;
+    Frame.Align := TAlignLayout.Top;
+    Frame.Fill(Item, Data, ChatCanAnswer);
+  end;
+  LayoutFwdMessages.Visible := True;
+  LayoutFwdMessages.RecalcSize;
+end;
+
+procedure TFrameMessage.CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
+begin
+  var Frame := TFrameAttachmentReplyMessage.Create(LayoutClient, FVK);
+  Frame.Parent := LayoutClient;
+  Frame.Align := TAlignLayout.MostTop;
+  Frame.Fill(Item, Data);
+end;
+
+procedure TFrameMessage.FlowLayoutMediaResize(Sender: TObject);
+begin
+  RecalcMedia;
+end;
+
+procedure TFrameMessage.CreateGeo(Value: TVkGeo);
+begin
+  var Frame := TFrameAttachmentGeo.Create(LayoutClient, FVK);
+  Frame.Parent := LayoutClient;
+  Frame.Position.Y := 10000;
+  Frame.Align := TAlignLayout.Top;
+  Frame.Fill(Value);
 end;
 
 procedure TFrameMessage.CreatePhotos(Items: TVkAttachmentArray);
 begin
   for var Item in Items do
+  begin
     if Item.&Type = TVkAttachmentType.Photo then
     begin
       var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, FVK);
       Frame.Parent := FlowLayoutMedia;
       Frame.Fill(Item.Photo);
-      //Frame.Height := 80;
-      //Frame.Width := 100;
     end;
-  RecalcMedia;
+    if (Item.&Type = TVkAttachmentType.Doc) and (Assigned(Item.Doc.Preview)) then
+    begin
+      var Frame := TFrameAttachmentDocument.Create(FlowLayoutMedia, FVK);
+      Frame.Parent := FlowLayoutMedia;
+      Frame.Fill(Item.Doc, True);
+    end;
+  end;
 end;
 
 procedure TFrameMessage.CreateVideos(Items: TVkAttachmentArray);
@@ -228,10 +334,21 @@ begin
       var Frame := TFrameAttachmentVideo.Create(FlowLayoutMedia, FVK);
       Frame.Parent := FlowLayoutMedia;
       Frame.Fill(Item.Video);
-      //Frame.Height := 80;
-      //Frame.Width := 100;
     end;
-  RecalcMedia;
+end;
+
+procedure TFrameMessage.CreateGift(Items: TVkAttachmentArray; Msg: TVkMessage);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Gift then
+    begin
+      IsGift := True;
+      var Frame := TFrameAttachmentGift.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Gift, Msg, ChatCanAnswer);
+    end;
 end;
 
 procedure TFrameMessage.CreateSticker(Items: TVkAttachmentArray);
@@ -244,7 +361,6 @@ begin
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
       Frame.Fill(Item.Sticker);
-      //Frame.Height := 147;
     end;
 end;
 
@@ -258,7 +374,32 @@ begin
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
       Frame.Fill(Item.AudioMessage);
-      //Frame.Height := 36;
+    end;
+end;
+
+procedure TFrameMessage.CreateAudios(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Audio then
+    begin
+      var Frame := TFrameAttachmentAudio.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Audio);
+    end;
+end;
+
+procedure TFrameMessage.CreateDocs(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if (Item.&Type = TVkAttachmentType.Doc) and (not Assigned(Item.Doc.Preview)) then
+    begin
+      var Frame := TFrameAttachmentDocument.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Doc, False);
     end;
 end;
 
@@ -274,13 +415,16 @@ end;
 
 procedure TFrameMessage.FrameMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
+  {$IFNDEF ANDROID}
   MemoText.SelLength := 0;
   IsSelected := not IsSelected;
+  {$ENDIF}
 end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
 begin
   var Sz: Single := LayoutContent.Padding.Top + LayoutContent.Padding.Bottom;
+  RecalcMedia;
   for var Control in LayoutClient.Controls do
     if Control.IsVisible then
       Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
@@ -305,6 +449,15 @@ begin
   Control.TextSettings.Font.Style := Control.TextSettings.Font.Style - [TFontStyle.fsUnderline];
 end;
 
+procedure TFrameMessage.LayoutFwdMessagesResize(Sender: TObject);
+begin
+  var H: Single := 0;
+  for var Control in LayoutFwdMessages.Controls do
+    H := Max(Control.Position.Y + Control.Height, H);
+  LayoutFwdMessages.Height := H;
+  FrameResize(nil);
+end;
+
 procedure TFrameMessage.MemoTextChange(Sender: TObject);
 begin
   MemoText.Height := MemoText.ContentSize.Size.Height + 5;
@@ -325,12 +478,19 @@ procedure TFrameMessage.MemoTextMouseUp(Sender: TObject; Button: TMouseButton; S
 begin
   if (MemoText.SelLength > 0) or FWasSelectedText then
     Exit;
+  {$IFNDEF ANDROID}
   IsSelected := not IsSelected;
+  {$ENDIF}
 end;
 
 procedure TFrameMessage.MemoTextResize(Sender: TObject);
 begin
   MemoTextChange(Sender);
+end;
+
+procedure TFrameMessage.SetCanAnswer(const Value: Boolean);
+begin
+  FCanAnswer := Value;
 end;
 
 procedure TFrameMessage.SetDate(const Value: TDateTime);
@@ -358,6 +518,50 @@ end;
 procedure TFrameMessage.SetIsCanEdit(const Value: Boolean);
 begin
   FIsCanEdit := Value;
+end;
+
+procedure TFrameMessage.SetIsGift(const Value: Boolean);
+begin
+  FIsGift := Value;
+  MemoText.Visible := not FIsGift;
+  LabelGiftFrom.Visible := FIsGift;
+  if FIsGift then
+  begin
+    PathSelected.Fill.Color := $FFe3d3ac;
+    LabelFrom.FontColor := TAlphaColorRec.White;
+    LabelTime.FontColor := $FFE3D3AC;
+
+    PathAnswer.Fill.Color := $99FFFFFF;
+    ColorAnimationAnswer.StartValue := $99FFFFFF;
+    ColorAnimationAnswer.StopValue := $EEFFFFFF;
+
+    PathStar.Fill.Color := $99FFFFFF;
+    ColorAnimationStar.StartValue := $99FFFFFF;
+    ColorAnimationStar.StopValue := $EEFFFFFF;
+
+    PathEdit.Fill.Color := $99FFFFFF;
+    ColorAnimationEdit.StartValue := $99FFFFFF;
+    ColorAnimationEdit.StopValue := $EEFFFFFF;
+  end
+  else
+  begin
+    PathSelected.Fill.Color := $FF71AAEB;
+    LabelFrom.FontColor := $FF71AAEB;
+    LabelTime.FontColor := $FF828282;
+
+    PathAnswer.Fill.Color := $FF5B5B5B;
+    ColorAnimationAnswer.StartValue := $FF5B5B5B;
+    ColorAnimationAnswer.StopValue := $FF6A6A6A;
+
+    PathStar.Fill.Color := $FF5B5B5B;
+    ColorAnimationStar.StartValue := $FF5B5B5B;
+    ColorAnimationStar.StopValue := $FF6A6A6A;
+
+    PathEdit.Fill.Color := $FF5B5B5B;
+    ColorAnimationEdit.StartValue := $FF5B5B5B;
+    ColorAnimationEdit.StopValue := $FF6A6A6A;
+  end;
+  RectangleGiftBG.Visible := FIsGift;
 end;
 
 procedure TFrameMessage.SetIsImportant(const Value: Boolean);
@@ -413,7 +617,7 @@ procedure TFrameMessage.SetMouseFrame(const Value: Boolean);
 begin
   FMouseFrame := Value;
   PathSelected.Visible := FMouseFrame or IsSelected;
-  LayoutAnswer.Visible := (not IsSelfMessage) and FMouseFrame;
+  LayoutAnswer.Visible := (not IsSelfMessage) and FMouseFrame and ChatCanAnswer;
   LayoutEdit.Visible := (IsSelfMessage and IsCanEdit) and FMouseFrame;
   if not IsImportant then
     LayoutFavorite.Visible := FMouseFrame;
@@ -454,6 +658,18 @@ begin
     (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
     (MemoText.Presentation as TStyledMemo).PrepareForPaint;
   end;
+end;
+
+procedure TFrameMessage.SetUpdateTime(const Value: TDateTime);
+begin
+  FUpdateTime := Value;
+  if FUpdateTime > 0 then
+  begin
+    LayoutUpdated.Visible := True;
+    LabelUpdated.Hint := 'изменено ' + HumanDateTime(FUpdateTime, True);
+  end
+  else
+    LayoutUpdated.Visible := False;
 end;
 
 end.

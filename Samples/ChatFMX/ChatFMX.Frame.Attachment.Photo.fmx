@@ -2,6 +2,7 @@ object FrameAttachmentPhoto: TFrameAttachmentPhoto
   Size.Width = 320.000000000000000000
   Size.Height = 240.000000000000000000
   Size.PlatformDefault = False
+  OnResize = FrameResize
   object Image: TImage
     MultiResBitmap = <
       item
@@ -10,5 +11,6 @@ object FrameAttachmentPhoto: TFrameAttachmentPhoto
     Size.Width = 320.000000000000000000
     Size.Height = 240.000000000000000000
     Size.PlatformDefault = False
+    WrapMode = Stretch
   end
 end

@@ -11,10 +11,10 @@ type
   TVkAudioArtistPhoto = class(TVkEntity)
   private
     FType: string;
-    FPhoto: TArray<TVkImage>;
+    FPhoto: TArray<TVkSize>;
   public
     property &Type: string read FType write FType;
-    property Photo: TArray<TVkImage> read FPhoto write FPhoto;
+    property Photo: TArray<TVkSize> read FPhoto write FPhoto;
     destructor Destroy; override;
   end;
 
@@ -22,7 +22,7 @@ type
   private
     FDomain: string;
     FName: string;
-    FPhoto: TArray<TVkImage>;
+    FPhoto: TArray<TVkSize>;
     FId: string;
     FPages: TArray<Integer>;
     FGroups: TArray<TVkGroup>;
@@ -42,7 +42,7 @@ type
     /// Имя артиста/название группы
     /// </summary>
     property Name: string read FName write FName;
-    property Photo: TArray<TVkImage> read FPhoto write FPhoto;
+    property Photo: TArray<TVkSize> read FPhoto write FPhoto;
     property Photos: TArray<TVkAudioArtistPhoto> read FPhotos write FPhotos;
     property Pages: TArray<Integer> read FPages write FPages;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
@@ -306,7 +306,7 @@ end;
 
 destructor TVkAudioArtist.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FPhoto);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FPhoto);
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   TArrayHelp.FreeArrayOfObject<TVkAudioArtistPhoto>(FPhotos);
   inherited;
@@ -316,7 +316,7 @@ end;
 
 destructor TVkAudioArtistPhoto.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FPhoto);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FPhoto);
   inherited;
 end;
 

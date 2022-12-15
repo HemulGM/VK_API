@@ -1,0 +1,264 @@
+object FrameAttachmentAudio: TFrameAttachmentAudio
+  Margins.Top = 6.000000000000000000
+  Size.Width = 427.000000000000000000
+  Size.Height = 40.000000000000000000
+  Size.PlatformDefault = False
+  OnMouseEnter = FrameMouseEnter
+  OnMouseLeave = FrameMouseLeave
+  object RectangleOver: TRectangle
+    Align = Contents
+    Fill.Color = x14FFFFFF
+    HitTest = False
+    Size.Width = 427.000000000000000000
+    Size.Height = 40.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Kind = None
+    XRadius = 8.000000000000000000
+    YRadius = 8.000000000000000000
+  end
+  object LayoutActions: TLayout
+    Align = Right
+    Margins.Left = 15.000000000000000000
+    Margins.Right = 12.000000000000000000
+    Position.X = 363.000000000000000000
+    Size.Width = 52.000000000000000000
+    Size.Height = 40.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object ButtonPlayNext: TButton
+      Align = Right
+      Images = DataModuleRes.ImageListSVG
+      ImageIndex = 14
+      Margins.Right = 4.000000000000000000
+      Position.X = -18.000000000000000000
+      Size.Width = 20.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'button_small'
+      TabOrder = 2
+      Text = 'ButtonPlayNext'
+      OnMouseEnter = FrameMouseEnter
+      OnMouseLeave = FrameMouseLeave
+    end
+    object ButtonOptions: TButton
+      Align = Right
+      Images = DataModuleRes.ImageListSVG
+      ImageIndex = 15
+      Position.X = 6.000000000000000000
+      Size.Width = 20.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'button_small'
+      TabOrder = 1
+      Text = 'Button1'
+      OnMouseEnter = FrameMouseEnter
+      OnMouseLeave = FrameMouseLeave
+    end
+    object LabelTime: TLabel
+      Align = Right
+      AutoSize = True
+      StyledSettings = [Style]
+      Position.X = 26.000000000000000000
+      Size.Width = 26.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 13.000000000000000000
+      TextSettings.FontColor = xFF828282
+      TextSettings.WordWrap = False
+      Text = '2:01'
+      TabOrder = 0
+    end
+    object LayoutVolume: TLayout
+      Align = Bottom
+      HitTest = True
+      Margins.Bottom = 4.000000000000000000
+      Position.Y = 24.000000000000000000
+      Size.Width = 52.000000000000000000
+      Size.Height = 12.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+      OnMouseEnter = LayoutVolumeMouseEnter
+      OnMouseLeave = LayoutVolumeMouseLeave
+      object RectangleVolume: TRectangle
+        Align = Client
+        Fill.Color = xFF555555
+        HitTest = False
+        Margins.Top = 3.000000000000000000
+        Margins.Bottom = 7.000000000000000000
+        Size.Width = 52.000000000000000000
+        Size.Height = 2.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+        object RectangleVolumePos: TRectangle
+          Align = Left
+          Fill.Color = claWhite
+          HitTest = False
+          Size.Width = 30.000000000000000000
+          Size.Height = 2.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          object CircleVolumePos: TCircle
+            Align = Right
+            Fill.Color = claWhite
+            HitTest = False
+            Margins.Top = -4.000000000000000000
+            Margins.Right = -4.000000000000000000
+            Margins.Bottom = -4.000000000000000000
+            Position.X = 25.000000000000000000
+            Position.Y = -4.000000000000000000
+            Size.Width = 9.000000000000000000
+            Size.Height = 10.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+          end
+        end
+      end
+    end
+  end
+  object LayoutControl: TLayout
+    Align = Left
+    Size.Width = 40.000000000000000000
+    Size.Height = 40.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object CircleControl: TCircle
+      Align = Center
+      Fill.Color = xFF71AAEB
+      Size.Width = 24.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      OnClick = CircleControlClick
+      OnMouseEnter = FrameMouseEnter
+      OnMouseLeave = FrameMouseLeave
+      object PathControl: TPath
+        Align = Center
+        Data.Path = {
+          0400000000000000000020400000003F01000000000020400000184101000000
+          000018410000A04003000000000020400000003F}
+        Fill.Color = claWhite
+        Locked = True
+        HitTest = False
+        Margins.Left = 2.000000000000000000
+        Size.Width = 11.000000000000000000
+        Size.Height = 10.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+        WrapMode = Fit
+      end
+    end
+  end
+  object LayoutTrackInfo: TLayout
+    Align = Client
+    Size.Width = 308.000000000000000000
+    Size.Height = 40.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 3
+    object LabelArtist: TLabel
+      Align = Left
+      AutoSize = True
+      StyledSettings = []
+      HitTest = True
+      Margins.Top = 2.000000000000000000
+      Margins.Bottom = 2.000000000000000000
+      Position.Y = 2.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 13.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = xFF71AAEB
+      TextSettings.WordWrap = False
+      Text = 'Fl'#1105'ur'
+      TabOrder = 1
+      OnMouseEnter = LabelArtistMouseEnter
+      OnMouseLeave = LabelArtistMouseLeave
+      OnResize = LabelArtistResize
+    end
+    object LabelDef: TLabel
+      Align = Left
+      AutoSize = True
+      StyledSettings = [Style]
+      Margins.Top = 2.000000000000000000
+      Margins.Bottom = 2.000000000000000000
+      Position.X = 30.000000000000000000
+      Position.Y = 2.000000000000000000
+      Size.Width = 17.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 13.000000000000000000
+      TextSettings.FontColor = xFFE1E3E6
+      TextSettings.WordWrap = False
+      Text = ' '#8212' '
+      TabOrder = 2
+    end
+    object LabelTitle: TLabel
+      Align = Client
+      StyledSettings = []
+      HitTest = True
+      Margins.Top = 2.000000000000000000
+      Margins.Bottom = 2.000000000000000000
+      Size.Width = 261.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 13.000000000000000000
+      TextSettings.FontColor = xFFE1E3E6
+      TextSettings.WordWrap = False
+      Text = #1044#1072', '#1101#1090#1086' '#1090#1072#1082
+      TabOrder = 0
+      OnMouseEnter = LabelArtistMouseEnter
+      OnMouseLeave = LabelArtistMouseLeave
+    end
+    object LayoutTrackBar: TLayout
+      Align = Bottom
+      HitTest = True
+      Margins.Bottom = 4.000000000000000000
+      Position.Y = 24.000000000000000000
+      Size.Width = 308.000000000000000000
+      Size.Height = 12.000000000000000000
+      Size.PlatformDefault = False
+      Visible = False
+      TabOrder = 3
+      OnMouseEnter = RectangleTrackFillMouseEnter
+      OnMouseLeave = RectangleTrackFillMouseLeave
+      object RectangleTrackFill: TRectangle
+        Align = Client
+        Fill.Color = xFF555555
+        HitTest = False
+        Margins.Top = 3.000000000000000000
+        Margins.Bottom = 7.000000000000000000
+        Size.Width = 308.000000000000000000
+        Size.Height = 2.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+        object RectangleTrackPosition: TRectangle
+          Align = Left
+          Fill.Color = claWhite
+          HitTest = False
+          Size.Width = 40.000000000000000000
+          Size.Height = 2.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          object CirclePos: TCircle
+            Align = Right
+            Fill.Color = claWhite
+            HitTest = False
+            Margins.Top = -4.000000000000000000
+            Margins.Right = -4.000000000000000000
+            Margins.Bottom = -4.000000000000000000
+            Position.X = 35.000000000000000000
+            Position.Y = -4.000000000000000000
+            Size.Width = 9.000000000000000000
+            Size.Height = 10.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+          end
+        end
+      end
+    end
+  end
+end

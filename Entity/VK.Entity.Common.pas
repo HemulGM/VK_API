@@ -3,7 +3,7 @@ unit VK.Entity.Common;
 interface
 
 uses
-  System.SysUtils, System.Json, Rest.Json;
+  System.SysUtils, System.Json, Rest.Json, System.Types;
 
 type
   TVkEntity = class(TInterfacedObject)
@@ -98,26 +98,6 @@ type
     property Liked: Integer read FLiked write FLiked;
   end;
 
-  TVkImage = class(TVkEntity)
-  private
-    FHeight: Integer;
-    FUrl: string;
-    FWidth: Integer;
-  public
-    /// <summary>
-    /// URL копии
-    /// </summary>
-    property Url: string read FUrl write FUrl;
-    /// <summary>
-    /// Высота
-    /// </summary>
-    property Height: Integer read FHeight write FHeight;
-    /// <summary>
-    /// Ширина
-    /// </summary>
-    property Width: Integer read FWidth write FWidth;
-  end;
-
   {$REGION 'Возможные значения поля Type'}
   {
     s — пропорциональная копия изображения с максимальной стороной 75px;
@@ -188,6 +168,10 @@ type
     /// Получить элемент с максимальным размером (макс. по сумме размерностей W + H)
     /// </summary>
     function GetSizeMaxSum: TVkSize;
+    function GetSizeFromHeight(const Height: Integer): TVkSize;
+    function GetSizeFromWidth(const Width: Integer): TVkSize;
+    function GetMaxSizeOrZero: TSize;
+    function GetSizeUrlOrEmpty(const Size: Integer = 50): string;
   end;
 
   TVkChatPhoto = class(TVkEntity)
@@ -267,6 +251,17 @@ begin
       Exit(Self[i]);
 end;
 
+function TVkSizesHelper.GetMaxSizeOrZero: TSize;
+begin
+  if Length(Self) > 0 then
+  begin
+    var Item := Self[High(Self)];
+    Result := TSize.Create(Item.Width, Item.Height);
+  end
+  else
+    Result := TSize.Create(0, 0);
+end;
+
 function TVkSizesHelper.GetSize(Value: Char; Higher: Boolean): TVkSize;
 begin
   Result := Get(Value);
@@ -276,6 +271,26 @@ begin
     Result := GetSizeMin(Value)
   else
     Result := GetSizeMax(Value);
+end;
+
+function TVkSizesHelper.GetSizeFromHeight(const Height: Integer): TVkSize;
+begin
+  Result := nil;
+  for var Item in Self do
+    if Item.Height >= Height then
+      Exit(Item);
+  if Length(Self) > 0 then
+    Result := Self[High(Self)];
+end;
+
+function TVkSizesHelper.GetSizeFromWidth(const Width: Integer): TVkSize;
+begin
+  Result := nil;
+  for var Item in Self do
+    if Item.Width >= Width then
+      Exit(Item);
+  if Length(Self) > 0 then
+    Result := Self[High(Self)];
 end;
 
 function TVkSizesHelper.GetSizeMax(const From: Char): TVkSize;
@@ -312,6 +327,20 @@ begin
     if Assigned(Result) then
       Exit;
   end;
+end;
+
+function TVkSizesHelper.GetSizeUrlOrEmpty(const Size: Integer): string;
+begin
+  var Item := GetSizeFromHeight(Size);
+  if Assigned(Item) then
+  begin
+    if not Item.Url.IsEmpty then
+      Result := Item.Url
+    else
+      Result := Item.Src;
+  end
+  else
+    Result := '';
 end;
 
 { TVkEntity }

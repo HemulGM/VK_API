@@ -183,7 +183,7 @@ type
     /// </summary>
     property Event: TVkEvent read FEvent write FEvent;
     destructor Destroy; override;
-    function GetPreviewUrl: string;
+    function GetPreviewUrl(const Size: Integer = 50): string;
   end;
 
   TVkAttachmentHistoryItem = class(TVkEntity)
@@ -605,19 +605,27 @@ begin
   inherited;
 end;
 
-function TVkAttachment.GetPreviewUrl: string;
+function TVkAttachment.GetPreviewUrl(const Size: Integer): string;
 begin
   case&Type of
     TVkAttachmentType.Photo:
-      Exit(Self.FPhoto.Sizes[4].Url);
+      Exit(Self.FPhoto.Sizes.GetSizeUrlOrEmpty(Size));
     TVkAttachmentType.Video:
-      Exit(Self.FVideo.Image[4].Url);
+      begin
+        for var Image in Self.FVideo.Image do
+          if Image.Height >= Size then
+            Exit(Image.Url);
+        if Length(Self.FVideo.Image) > 0 then
+          Exit(Self.FVideo.Image[High(Self.FVideo.Image)].Url)
+        else
+          Exit('');
+      end;
     TVkAttachmentType.Audio:
       Exit('');
     TVkAttachmentType.Doc:
       Exit('');
     TVkAttachmentType.Link:
-      Exit('');
+      Exit(Self.FLink.PreviewUrl);
     TVkAttachmentType.Market:
       Exit('');
     TVkAttachmentType.MarketAlbum:
@@ -627,9 +635,9 @@ begin
     TVkAttachmentType.WallReply:
       Exit('');
     TVkAttachmentType.Sticker:
-      Exit(Self.FSticker.Images[1].Url);
+      Exit(Self.FSticker.Images.GetSizeUrlOrEmpty(Size));
     TVkAttachmentType.Gift:
-      Exit('');
+      Exit(Self.FGift.Thumb96);
   else
     Result := '';
   end;

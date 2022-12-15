@@ -37,7 +37,7 @@ type
     property DashSep: string read FDash_sep write FDash_sep;
   end;
 
-  TVkVideoImage = class(TVkImage)
+  TVkVideoImage = class(TVkSize)
   private
     FWith_padding: Integer;
   public
@@ -123,7 +123,7 @@ type
     FLive: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FUpcoming: Boolean;
-    FFirstFrame: TArray<TVkImage>;
+    FFirstFrame: TArray<TVkSize>;
     FWidth: Integer;
     FHeight: Integer;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -223,7 +223,7 @@ type
     /// <summary>
     /// Изображение первого кадра
     /// </summary>
-    property FirstFrame: TArray<TVkImage> read FFirstFrame write FFirstFrame;
+    property FirstFrame: TArray<TVkSize> read FFirstFrame write FFirstFrame;
     /// <summary>
     /// Высота видео
     /// </summary>
@@ -370,7 +370,7 @@ uses
 destructor TVkVideo.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkVideoImage>(FImage);
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FFirstFrame);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FFirstFrame);
   if Assigned(FFiles) then
     FFiles.Free;
   if Assigned(FLikes) then

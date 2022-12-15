@@ -18,7 +18,14 @@ uses
   ChatFMX.Frame.Attachment.Sticker in 'ChatFMX.Frame.Attachment.Sticker.pas' {FrameAttachmentSticker: TFrame},
   ChatFMX.Frame.Attachment.Video in 'ChatFMX.Frame.Attachment.Video.pas' {FrameAttachmentVideo},
   ChatFMX.Frame.MessageAction in 'ChatFMX.Frame.MessageAction.pas' {FrameMessageAction: TFrame},
-  ChatFMX.Frame.MessageDate in 'ChatFMX.Frame.MessageDate.pas' {FrameMessageDate: TFrame};
+  ChatFMX.Frame.MessageDate in 'ChatFMX.Frame.MessageDate.pas' {FrameMessageDate: TFrame},
+  ChatFMX.Frame.Attachment.Audio in 'ChatFMX.Frame.Attachment.Audio.pas' {FrameAttachmentAudio},
+  ChatFMX.Frame.Attachment.Document in 'ChatFMX.Frame.Attachment.Document.pas' {FrameAttachmentDocument},
+  ChatFMX.Frame.Attachment.Geo in 'ChatFMX.Frame.Attachment.Geo.pas' {FrameAttachmentGeo},
+  ChatFMX.Frame.Attachment.ReplyMessage in 'ChatFMX.Frame.Attachment.ReplyMessage.pas' {FrameAttachmentReplyMessage: TFrame},
+  ChatFMX.Frame.Attachment.Gift in 'ChatFMX.Frame.Attachment.Gift.pas' {FrameAttachmentGift},
+  ChatFMX.Frame.Attachment.Message in 'ChatFMX.Frame.Attachment.Message.pas' {FrameAttachmentMessage: TFrame},
+  ChatFMX.Frame.Attachment.Messages in 'ChatFMX.Frame.Attachment.Messages.pas' {FrameAttachmentMessages};
 
 {$R *.res}
 
