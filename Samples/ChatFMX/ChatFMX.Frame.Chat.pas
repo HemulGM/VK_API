@@ -12,6 +12,10 @@ uses
   ChatFMX.Frame.Loading, ChatFMX.Frame.MessageAction, ChatFMX.Frame.MessageDate;
 
 type
+  TLayout = class(FMX.Layouts.TLayout)
+
+  end;
+
   TChatType = (ctChat, ctUser, ctGroup);
 
   THeadMode = (hmNormal, hmSelection);
@@ -260,6 +264,7 @@ end;
 
 procedure TFrameChat.LayoutMessageListResize(Sender: TObject);
 begin
+  LayoutMessageList.Realign;
   var Sz: Single := 0;
   for var Control in LayoutMessageList.Controls do
     if Control.IsVisible then

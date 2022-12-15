@@ -530,7 +530,7 @@ end;
 procedure TFrameMessage.SetFromText(const Value: string);
 begin
   FFromText := Value;
-  LabelFrom.Text := FFromText + ' ' + Height.ToString;
+  LabelFrom.Text := FFromText;
 end;
 
 procedure TFrameMessage.SetImageUrl(const Value: string);
