@@ -10,6 +10,7 @@ Account | 100
 Ads | 0
 AppWidgets | 0
 Apps | 20
+Asr | 100
 Audio | 79
 Auth | 100
 Board | 100
