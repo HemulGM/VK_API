@@ -1,0 +1,176 @@
+object FrameAttachmentLink: TFrameAttachmentLink
+  Margins.Top = 5.000000000000000000
+  Margins.Bottom = 5.000000000000000000
+  Size.Width = 415.000000000000000000
+  Size.Height = 270.000000000000000000
+  Size.PlatformDefault = False
+  OnMouseEnter = FrameMouseEnter
+  OnMouseLeave = FrameMouseLeave
+  object Rectangle1: TRectangle
+    Align = Contents
+    Fill.Color = xFF222222
+    HitTest = False
+    Size.Width = 415.000000000000000000
+    Size.Height = 270.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Kind = None
+  end
+  object LayoutPreview: TLayout
+    Align = Client
+    Size.Width = 415.000000000000000000
+    Size.Height = 270.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object RectangleImage: TRectangle
+      Align = Client
+      Corners = [TopLeft, TopRight]
+      Fill.Bitmap.WrapMode = Tile
+      Fill.Kind = Bitmap
+      HitTest = False
+      Size.Width = 415.000000000000000000
+      Size.Height = 206.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 2.000000000000000000
+      YRadius = 2.000000000000000000
+      object LayoutActions: TLayout
+        Align = Top
+        Margins.Left = 12.000000000000000000
+        Margins.Top = 12.000000000000000000
+        Margins.Right = 12.000000000000000000
+        Margins.Bottom = 12.000000000000000000
+        Position.X = 12.000000000000000000
+        Position.Y = 12.000000000000000000
+        Size.Width = 391.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        object ButtonFavorite: TButton
+          Align = Right
+          Hint = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1074' '#1079#1072#1082#1083#1072#1076#1082#1080
+          Images = DataModuleRes.ImageListSVG
+          ImageIndex = 16
+          Position.X = 367.000000000000000000
+          Size.Width = 24.000000000000000000
+          Size.Height = 24.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'button_small'
+          TabOrder = 0
+          Text = 'ButtonFavorite'
+          ParentShowHint = False
+          ShowHint = True
+        end
+      end
+    end
+    object RectangleText: TRectangle
+      Align = Bottom
+      Corners = [BottomLeft, BottomRight]
+      Fill.Color = x0BFFFFFF
+      HitTest = False
+      Padding.Left = 15.000000000000000000
+      Padding.Top = 10.000000000000000000
+      Padding.Right = 15.000000000000000000
+      Padding.Bottom = 11.000000000000000000
+      Position.Y = 206.000000000000000000
+      Sides = [Top]
+      Size.Width = 415.000000000000000000
+      Size.Height = 64.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = x29FFFFFF
+      XRadius = 2.000000000000000000
+      YRadius = 2.000000000000000000
+      object LabelTitle: TLabel
+        Align = Client
+        StyledSettings = [Style]
+        Margins.Bottom = 7.000000000000000000
+        Size.Width = 385.000000000000000000
+        Size.Height = 19.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 16.000000000000000000
+        TextSettings.FontColor = xFFE1E3E6
+        Text = 'GitHub - HemulGM/VK_API: VK API Wrapper'
+        TabOrder = 1
+      end
+      object LabelUrl: TLabel
+        Align = Bottom
+        StyledSettings = [Style]
+        Position.X = 15.000000000000000000
+        Position.Y = 36.000000000000000000
+        Size.Width = 385.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.FontColor = xFF828282
+        Text = 'github.com'
+        TabOrder = 0
+      end
+    end
+    object RectangleFrame: TRectangle
+      Align = Contents
+      Fill.Kind = None
+      HitTest = False
+      Size.Width = 415.000000000000000000
+      Size.Height = 270.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = x29FFFFFF
+      XRadius = 2.000000000000000000
+      YRadius = 2.000000000000000000
+    end
+  end
+  object LayoutShort: TLayout
+    Align = Client
+    Size.Width = 415.000000000000000000
+    Size.Height = 270.000000000000000000
+    Size.PlatformDefault = False
+    Visible = False
+    TabOrder = 1
+    object LayoutText: TLayout
+      Align = Client
+      Margins.Left = 10.000000000000000000
+      Size.Width = 403.000000000000000000
+      Size.Height = 270.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object LabelShortTitle: TLabel
+        Align = Top
+        StyledSettings = []
+        Size.Width = 403.000000000000000000
+        Size.Height = 19.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 12.500000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = xFF71AAEB
+        TextSettings.WordWrap = False
+        Text = 'Google '#1055#1077#1088#1077#1074#1086#1076#1095#1080#1082
+        TabOrder = 2
+      end
+      object LabelShortUrl: TLabel
+        Align = Top
+        StyledSettings = [Style]
+        Position.Y = 19.000000000000000000
+        Size.Width = 403.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.FontColor = xFF939393
+        TextSettings.WordWrap = False
+        Text = 'translate.google.ru'
+        TabOrder = 1
+      end
+    end
+    object LineLeft: TLine
+      Align = MostLeft
+      HitTest = False
+      LineType = Left
+      Size.Width = 2.000000000000000000
+      Size.Height = 270.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = xFF454545
+      Stroke.Thickness = 2.000000000000000000
+    end
+  end
+end

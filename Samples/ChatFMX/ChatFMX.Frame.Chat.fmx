@@ -550,13 +550,13 @@ object FrameChat: TFrameChat
           Position.X = 3.000000000000000000
           Position.Y = 11.000000000000000000
           Size.Width = 641.000000000000000000
-          Size.Height = 544.000000000000000000
+          Size.Height = 510.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 40
           OnResize = LayoutMessageListResize
           object Layout1: TLayout
             Align = Bottom
-            Position.Y = 98.000000000000000000
+            Position.Y = 64.000000000000000000
             Size.Width = 641.000000000000000000
             Size.Height = 25.000000000000000000
             Size.PlatformDefault = False
@@ -577,7 +577,7 @@ object FrameChat: TFrameChat
           object Layout11: TLayout
             Align = Bottom
             Margins.Top = 10.000000000000000000
-            Position.Y = 431.000000000000000000
+            Position.Y = 397.000000000000000000
             Size.Width = 641.000000000000000000
             Size.Height = 79.000000000000000000
             Size.PlatformDefault = False
@@ -789,7 +789,7 @@ object FrameChat: TFrameChat
           end
           object Layout2: TLayout
             Align = Bottom
-            Position.Y = 396.000000000000000000
+            Position.Y = 362.000000000000000000
             Size.Width = 641.000000000000000000
             Size.Height = 25.000000000000000000
             Size.PlatformDefault = False
@@ -810,7 +810,7 @@ object FrameChat: TFrameChat
           object Layout6: TLayout
             Align = Bottom
             Margins.Top = 10.000000000000000000
-            Position.Y = 133.000000000000000000
+            Position.Y = 99.000000000000000000
             Size.Width = 641.000000000000000000
             Size.Height = 263.000000000000000000
             Size.PlatformDefault = False
@@ -1031,8 +1031,7 @@ object FrameChat: TFrameChat
           end
           object LayoutActivity: TLayout
             Align = MostBottom
-            Locked = True
-            Position.Y = 510.000000000000000000
+            Position.Y = 476.000000000000000000
             Size.Width = 641.000000000000000000
             Size.Height = 34.000000000000000000
             Size.PlatformDefault = False
@@ -1094,7 +1093,6 @@ object FrameChat: TFrameChat
           end
           object LayoutLoading: TLayout
             Align = MostTop
-            Locked = True
             Size.Width = 641.000000000000000000
             Size.Height = 34.000000000000000000
             Size.PlatformDefault = False

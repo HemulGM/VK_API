@@ -67,7 +67,7 @@ end;
 
 procedure TFrameAttachmentReplyMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory);
 begin
-  Text := Item.Text;
+  Text := ParseMention(Item.Text);
   Title := '';
   ImageUrl := '';
   IsAttachmentText := False;

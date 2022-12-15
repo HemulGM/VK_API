@@ -300,6 +300,25 @@ object DataModuleRes: TDataModuleRes
           '5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="currentColor"></' +
           'path></svg>'
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+          end>
+        IconName = 'Item 16'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" v' +
+          'iewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.55 4.7a.6.6 ' +
+          '0 0 0-1.1 0L9.83 8.6a.9.9 0 0 1-.77.55l-4.13.26a.6.6 0 0 0-.35 1' +
+          '.05l3.26 2.86a.9.9 0 0 1 .29.9l-.94 3.84a.6.6 0 0 0 .89.66l3.47-' +
+          '2a.9.9 0 0 1 .9 0l3.47 2a.6.6 0 0 0 .88-.66l-.93-3.85a.9.9 0 0 1' +
+          ' .29-.89l3.26-2.86a.6.6 0 0 0-.35-1.05l-4.13-.26a.9.9 0 0 1-.77-' +
+          '.56l-1.62-3.9ZM9.78 4a2.4 2.4 0 0 1 4.44 0l1.4 3.39 3.56.23a2.4 ' +
+          '2.4 0 0 1 1.43 4.2l-2.86 2.5.8 3.32a2.4 2.4 0 0 1-3.53 2.64L12 1' +
+          '8.54l-3.02 1.74a2.4 2.4 0 0 1-3.54-2.64l.8-3.32-2.85-2.5a2.4 2.4' +
+          ' 0 0 1 1.43-4.2l3.56-.23L9.78 4Z" clip-rule="evenodd"></path></s' +
+          'vg>'
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
@@ -426,6 +445,14 @@ object DataModuleRes: TDataModuleRes
         Layers = <
           item
             Name = 'Item 15'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 16'
             SourceRect.Right = 120.000000000000000000
             SourceRect.Bottom = 120.000000000000000000
           end>

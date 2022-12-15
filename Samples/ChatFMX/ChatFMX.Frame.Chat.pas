@@ -170,6 +170,7 @@ type
     procedure SetIsNeedAddToFriends(const Value: Boolean);
     procedure SetIsCanWrtie(const Value: Boolean);
     procedure SetOnBack(const Value: TNotifyEvent);
+    procedure AppendHistory(Items: TVkMessageHistory);
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
@@ -264,7 +265,7 @@ begin
     if Control.IsVisible then
       Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
   LayoutMessageList.Height := Sz + 10;
-  FrameLoadingMesages.Visible := LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height;
+  FrameLoadingMesages.Visible := (LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height) and (not FOffsetEnd);
 end;
 
 procedure TFrameChat.LayoutUnselClick(Sender: TObject);
@@ -395,6 +396,18 @@ begin
   inherited;
 end;
 
+procedure TFrameChat.AppendHistory(Items: TVkMessageHistory);
+begin
+  for var Item in Items.Items do
+    CreateMessageItem(Item, Items);
+  if FOffsetEnd then
+    InsertDateLastMessage(GetMessageDate(GetLastMessage));
+  LayoutMessageList.Visible := True;
+  VertScrollBoxMessagesResize(nil);
+  LayoutMessageListResize(nil);
+  VertScrollBoxMessagesResize(nil);
+end;
+
 procedure TFrameChat.LoadConversationAsync;
 var
   Items: TVkMessageHistory;
@@ -413,14 +426,8 @@ begin
     TThread.Synchronize(nil,
       procedure
       begin
-        for var Item in Items.Items do
-          CreateMessageItem(Item, Items);
-        VertScrollBoxMessagesResize(nil);
-        LayoutMessageList.Visible := True;
+        AppendHistory(Items);
         FLoading := False;
-        FrameLoadingMesages.Visible := not FOffsetEnd;
-        if FOffsetEnd then
-          InsertDateLastMessage(GetMessageDate(GetLastMessage));
       end);
   finally
     Items.Free;

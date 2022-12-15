@@ -1,9 +1,9 @@
 object FormMain: TFormMain
   Left = 0
   Top = 0
-  Caption = 'VK Messanger'
+  Caption = 'VK Messenger'
   ClientHeight = 660
-  ClientWidth = 1048
+  ClientWidth = 1043
   Fill.Color = xFF141414
   Fill.Kind = Solid
   Position = ScreenCenter
@@ -16,28 +16,28 @@ object FormMain: TFormMain
   DesignerMasterStyle = 0
   object HorzScrollBoxContent: THorzScrollBox
     Align = Client
-    Size.Width = 1048.000000000000000000
+    Size.Width = 1043.000000000000000000
     Size.Height = 611.000000000000000000
     Size.PlatformDefault = False
     StyleLookup = 'HorzScrollBox1Style1'
     TabOrder = 0
-    Viewport.Width = 1036.000000000000000000
+    Viewport.Width = 1031.000000000000000000
     Viewport.Height = 611.000000000000000000
     object LayoutClient: TLayout
       Align = HorzCenter
       ClipChildren = True
       Margins.Top = 20.000000000000000000
       Margins.Bottom = 20.000000000000000000
-      Position.X = 103.000000000000000000
+      Position.X = 65.000000000000000000
       Position.Y = 20.000000000000000000
-      Size.Width = 829.000000000000000000
+      Size.Width = 900.000000000000000000
       Size.Height = 571.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
       object RectangleBG: TRectangle
         Align = Contents
         Fill.Color = xFF222222
-        Size.Width = 829.000000000000000000
+        Size.Width = 900.000000000000000000
         Size.Height = 571.000000000000000000
         Size.PlatformDefault = False
         Stroke.Color = xFF424242
@@ -47,8 +47,8 @@ object FormMain: TFormMain
       object LayoutChat: TLayout
         Align = Right
         ClipChildren = True
-        Position.X = 248.000000000000000000
-        Size.Width = 581.000000000000000000
+        Position.X = 306.000000000000000000
+        Size.Width = 594.000000000000000000
         Size.Height = 571.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
@@ -63,7 +63,7 @@ object FormMain: TFormMain
         end
         object LayoutNoChat: TLayout
           Align = Contents
-          Size.Width = 581.000000000000000000
+          Size.Width = 594.000000000000000000
           Size.Height = 571.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 1
@@ -151,7 +151,7 @@ object FormMain: TFormMain
         object LayoutChatFrames: TLayout
           Align = Contents
           Margins.Left = 1.000000000000000000
-          Size.Width = 580.000000000000000000
+          Size.Width = 593.000000000000000000
           Size.Height = 571.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 2
@@ -159,14 +159,14 @@ object FormMain: TFormMain
       end
       object LayoutChats: TLayout
         Align = Client
-        Size.Width = 248.000000000000000000
+        Size.Width = 306.000000000000000000
         Size.Height = 571.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
         object ListBoxChats: TListBox
           Align = Client
           Margins.Left = 1.000000000000000000
-          Size.Width = 247.000000000000000000
+          Size.Width = 305.000000000000000000
           Size.Height = 477.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'listboxstyle_clear'
@@ -178,11 +178,11 @@ object FormMain: TFormMain
           DefaultItemStyles.ItemStyle = ''
           DefaultItemStyles.GroupHeaderStyle = ''
           DefaultItemStyles.GroupFooterStyle = ''
-          Viewport.Width = 235.000000000000000000
+          Viewport.Width = 293.000000000000000000
           Viewport.Height = 477.000000000000000000
           object ListBoxItem1: TListBoxItem
             ItemData.Detail = 'sdfsdf'
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -191,7 +191,7 @@ object FormMain: TFormMain
           end
           object ListBoxItem2: TListBoxItem
             Position.Y = 63.000000000000000000
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -201,7 +201,7 @@ object FormMain: TFormMain
           object ListBoxItem3: TListBoxItem
             ItemData.Detail = #1072#1099#1074#1072#1099#1074#1072
             Position.Y = 126.000000000000000000
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -210,7 +210,7 @@ object FormMain: TFormMain
           end
           object ListBoxItem4: TListBoxItem
             Position.Y = 189.000000000000000000
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -219,7 +219,7 @@ object FormMain: TFormMain
           end
           object ListBoxItem5: TListBoxItem
             Position.Y = 252.000000000000000000
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -228,7 +228,7 @@ object FormMain: TFormMain
           end
           object ListBoxItem6: TListBoxItem
             Position.Y = 315.000000000000000000
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -237,7 +237,7 @@ object FormMain: TFormMain
           end
           object ListBoxItem7: TListBoxItem
             Position.Y = 378.000000000000000000
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -246,7 +246,7 @@ object FormMain: TFormMain
           end
           object ListBoxItem8: TListBoxItem
             Position.Y = 441.000000000000000000
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -255,7 +255,7 @@ object FormMain: TFormMain
           end
           object ListBoxItem9: TListBoxItem
             Position.Y = 504.000000000000000000
-            Size.Width = 235.000000000000000000
+            Size.Width = 293.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'item_chat'
@@ -268,7 +268,7 @@ object FormMain: TFormMain
           Corners = [TopLeft]
           Fill.Color = xFF222222
           Sides = [Top, Left, Bottom]
-          Size.Width = 248.000000000000000000
+          Size.Width = 306.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
           Stroke.Color = xFF424242
@@ -284,7 +284,7 @@ object FormMain: TFormMain
             Margins.Left = 5.000000000000000000
             Margins.Top = 5.000000000000000000
             Margins.Bottom = 5.000000000000000000
-            Size.Width = 135.000000000000000000
+            Size.Width = 193.000000000000000000
             Size.Height = 38.000000000000000000
             Size.PlatformDefault = False
             TextPrompt = #1055#1086#1080#1089#1082
@@ -295,7 +295,7 @@ object FormMain: TFormMain
             Cursor = crHandPoint
             Images = DataModuleRes.ImageListSVG
             ImageIndex = 0
-            Position.X = 140.000000000000000000
+            Position.X = 198.000000000000000000
             Size.Width = 36.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -308,7 +308,7 @@ object FormMain: TFormMain
             Cursor = crHandPoint
             Images = DataModuleRes.ImageListSVG
             ImageIndex = 1
-            Position.X = 176.000000000000000000
+            Position.X = 234.000000000000000000
             Size.Width = 36.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -321,7 +321,7 @@ object FormMain: TFormMain
             Cursor = crHandPoint
             Images = DataModuleRes.ImageListSVG
             ImageIndex = 2
-            Position.X = 212.000000000000000000
+            Position.X = 270.000000000000000000
             Size.Width = 36.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -336,7 +336,7 @@ object FormMain: TFormMain
           Fill.Color = xFF222222
           Position.Y = 525.000000000000000000
           Sides = [Top, Left, Bottom]
-          Size.Width = 248.000000000000000000
+          Size.Width = 306.000000000000000000
           Size.Height = 46.000000000000000000
           Size.PlatformDefault = False
           Stroke.Color = xFF424242
@@ -370,25 +370,25 @@ object FormMain: TFormMain
         object LayoutChatsLoading: TLayout
           Align = Client
           ClipChildren = True
-          Size.Width = 248.000000000000000000
+          Size.Width = 306.000000000000000000
           Size.Height = 477.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 2
           object LayoutChatLoadingAni: TLayout
             Align = Horizontal
             Position.Y = 464.000000000000000000
-            Size.Width = 248.000000000000000000
+            Size.Width = 306.000000000000000000
             Size.Height = 63.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 0
             inline FrameLoading1: TFrameLoading
               Align = Client
-              Size.Width = 248.000000000000000000
+              Size.Width = 306.000000000000000000
               Size.Height = 63.000000000000000000
               Size.PlatformDefault = False
               inherited LayoutAni: TLayout
                 Align = Client
-                Size.Width = 248.000000000000000000
+                Size.Width = 306.000000000000000000
                 Size.Height = 63.000000000000000000
               end
             end
@@ -1283,7 +1283,7 @@ object FormMain: TFormMain
   end
   object LayoutHeader: TLayout
     Align = MostTop
-    Size.Width = 1048.000000000000000000
+    Size.Width = 1043.000000000000000000
     Size.Height = 49.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 3
@@ -1293,14 +1293,14 @@ object FormMain: TFormMain
       Padding.Left = 23.500000000000000000
       Padding.Right = 23.500000000000000000
       Sides = [Bottom]
-      Size.Width = 1048.000000000000000000
+      Size.Width = 1043.000000000000000000
       Size.Height = 49.000000000000000000
       Size.PlatformDefault = False
       Stroke.Color = xFF292929
       object CircleAvatar: TCircle
         Align = Right
         Fill.Color = xFF393939
-        Position.X = 992.500000000000000000
+        Position.X = 987.500000000000000000
         Size.Width = 32.000000000000000000
         Size.Height = 49.000000000000000000
         Size.PlatformDefault = False

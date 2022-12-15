@@ -1,18 +1,9 @@
-object FrameAttachmentMessage: TFrameAttachmentMessage
+object FrameAttachmentWall: TFrameAttachmentWall
   HitTest = False
   Size.Width = 581.000000000000000000
-  Size.Height = 284.000000000000000000
+  Size.Height = 559.000000000000000000
   Size.PlatformDefault = False
   OnResize = FrameResize
-  object Rectangle1: TRectangle
-    Align = Contents
-    Fill.Color = xFF5F5B9B
-    Size.Width = 581.000000000000000000
-    Size.Height = 559.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Color = claWhite
-    Visible = False
-  end
   object LayoutContent: TLayout
     Align = Client
     Padding.Left = 4.000000000000000000
@@ -20,13 +11,13 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
     Padding.Right = 4.000000000000000000
     Padding.Bottom = 4.000000000000000000
     Size.Width = 579.000000000000000000
-    Size.Height = 284.000000000000000000
+    Size.Height = 559.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
     object LayoutClient: TLayout
       Align = Client
       Size.Width = 571.000000000000000000
-      Size.Height = 276.000000000000000000
+      Size.Height = 551.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
       object MemoText: TMemo
@@ -60,9 +51,10 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
         Align = Top
         ClipChildren = True
         HitTest = False
-        Position.Y = 89.000000000000000000
+        Margins.Top = 4.000000000000000000
+        Position.Y = 93.000000000000000000
         Size.Width = 571.000000000000000000
-        Size.Height = 57.000000000000000000
+        Size.Height = 72.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
         Justify = Left
@@ -71,29 +63,52 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
         HorizontalGap = 5.000000000000000000
         VerticalGap = 5.000000000000000000
       end
-      object LayoutUpdated: TLayout
+      object LayoutAutor: TLayout
         Align = MostBottom
-        Position.Y = 256.000000000000000000
+        Position.Y = 531.000000000000000000
         Size.Width = 571.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 3
-        object LabelUpdated: TLabel
+        object LabelAutor: TLabel
           Align = Left
           AutoSize = True
           StyledSettings = [Style]
           HitTest = True
-          Size.Width = 35.000000000000000000
+          Margins.Left = 7.000000000000000000
+          Position.X = 15.000000000000000000
+          Size.Width = 67.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 13.000000000000000000
-          TextSettings.FontColor = xFF656565
+          TextSettings.FontColor = xFF71AAEB
           TextSettings.WordWrap = False
-          Text = '('#1088#1077#1076'.)'
+          Text = #1040#1083#1077#1082#1089#1072#1085#1076#1088
           ParentShowHint = False
           ShowHint = True
           TabOrder = 0
+        end
+        object Path1: TPath
+          Align = MostLeft
+          Data.Path = {
+            1D000000000000000000C04100005143020000000000DC410000514302000000
+            0000E04100005243020000000000E04100805343020000000000E04100005443
+            020000000000E04100005443020000000000D84100005443010000000000A841
+            00005443020000000000A04100005443020000000000A0410000544302000000
+            0000A04100805343020000000000A04100005243020000000000A44100005143
+            020000000000C04100005143030000000000C04100005143000000000000C041
+            00005043020000003333B74100005043020000000000B04148E14E4302000000
+            0000B04100804D43020000000000B041B81E4C43020000003333B74100004B43
+            020000000000C04100004B4302000000CDCCC84100004B43020000000000D041
+            B81E4C43020000000000D04100804D43020000000000D04148E14E4302000000
+            CDCCC84100005043020000000000C04100005043030000000000C04100005043}
+          Fill.Color = xFF828282
+          Size.Width = 8.000000000000000000
+          Size.Height = 20.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          WrapMode = Fit
         end
       end
       object LayoutHead: TLayout
@@ -244,7 +259,7 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
     HitTest = False
     LineType = Left
     Size.Width = 2.000000000000000000
-    Size.Height = 284.000000000000000000
+    Size.Height = 559.000000000000000000
     Size.PlatformDefault = False
     Stroke.Color = xFF454545
     Stroke.Thickness = 2.000000000000000000

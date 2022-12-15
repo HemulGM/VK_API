@@ -25,7 +25,9 @@ uses
   ChatFMX.Frame.Attachment.ReplyMessage in 'ChatFMX.Frame.Attachment.ReplyMessage.pas' {FrameAttachmentReplyMessage: TFrame},
   ChatFMX.Frame.Attachment.Gift in 'ChatFMX.Frame.Attachment.Gift.pas' {FrameAttachmentGift},
   ChatFMX.Frame.Attachment.Message in 'ChatFMX.Frame.Attachment.Message.pas' {FrameAttachmentMessage: TFrame},
-  ChatFMX.Frame.Attachment.Messages in 'ChatFMX.Frame.Attachment.Messages.pas' {FrameAttachmentMessages};
+  ChatFMX.Frame.Attachment.Messages in 'ChatFMX.Frame.Attachment.Messages.pas' {FrameAttachmentMessages},
+  ChatFMX.Frame.Attachment.Link in 'ChatFMX.Frame.Attachment.Link.pas' {FrameAttachmentLink: TFrame},
+  ChatFMX.Frame.Attachment.Wall in 'ChatFMX.Frame.Attachment.Wall.pas' {FrameAttachmentWall};
 
 {$R *.res}
 

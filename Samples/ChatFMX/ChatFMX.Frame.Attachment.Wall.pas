@@ -1,4 +1,4 @@
-﻿unit ChatFMX.Frame.Attachment.Message;
+﻿unit ChatFMX.Frame.Attachment.Wall;
 
 interface
 
@@ -8,24 +8,25 @@ uses
   FMX.Controls.Presentation, FMX.Layouts, FMX.Memo.Types, FMX.Objects, FMX.Ani,
   FMX.ScrollBox, FMX.Memo, VK.API, VK.Entity.Message, VK.Entity.Conversation,
   ChatFMX.Frame.Attachment.Photo, ChatFMX.Frame.Attachment.Video,
-  System.Messaging;
+  System.Messaging, VK.Entity.Media, ChatFMX.Frame.Attachment.Document,
+  ChatFMX.Frame.Attachment.Audio, ChatFMX.Frame.Attachment.AudioMessage;
 
 type
-  TFrameAttachmentMessage = class(TFrame)
+  TFrameAttachmentWall = class(TFrame)
     LayoutContent: TLayout;
     LayoutClient: TLayout;
     MemoText: TMemo;
     FlowLayoutMedia: TFlowLayout;
-    LayoutUpdated: TLayout;
-    LabelUpdated: TLabel;
+    LayoutAutor: TLayout;
+    LabelAutor: TLabel;
     LayoutHead: TLayout;
     CircleAvatar: TCircle;
     LayoutFrom: TLayout;
     LabelFrom: TLabel;
     LayoutDetails: TLayout;
     LabelTime: TLabel;
-    Rectangle1: TRectangle;
     LineLeft: TLine;
+    Path1: TPath;
     procedure FrameResize(Sender: TObject);
     procedure MemoTextResize(Sender: TObject);
     procedure MemoTextChange(Sender: TObject);
@@ -35,30 +36,29 @@ type
     FImageFile: string;
     FText: string;
     FVK: TCustomVK;
-    FCanAnswer: Boolean;
     FDate: TDateTime;
-    FUpdateTime: TDateTime;
+    FAutor: string;
     procedure SetFromText(const Value: string);
     procedure SetImageUrl(const Value: string);
     procedure SetText(const Value: string);
     procedure ClearMedia;
     procedure RecalcMedia;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
-    procedure SetCanAnswer(const Value: Boolean);
     procedure SetDate(const Value: TDateTime);
-    procedure SetUpdateTime(const Value: TDateTime);
-    procedure CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
-    procedure CreateFwdMessages(Items: TArray<TVkMessage>; Item: TVkMessage; Data: TVkMessageHistory);
+    procedure SetAutor(const Value: string);
+    procedure CreatePhotos(Items: TVkAttachmentArray);
+    procedure CreateVideos(Items: TVkAttachmentArray);
+    procedure CreateAudios(Items: TVkAttachmentArray);
+    procedure CreateDocs(Items: TVkAttachmentArray);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
-    procedure Fill(Item: TVkMessage; Data: TVkMessageHistory; ACanAnswer: Boolean);
+    procedure Fill(Item: TVkPost; Data: TVkMessageHistory);
     property Text: string read FText write SetText;
     property Date: TDateTime read FDate write SetDate;
     property FromText: string read FFromText write SetFromText;
     property ImageUrl: string read FImageUrl write SetImageUrl;
-    property ChatCanAnswer: Boolean read FCanAnswer write SetCanAnswer;
-    property UpdateTime: TDateTime read FUpdateTime write SetUpdateTime;
+    property Autor: string read FAutor write SetAutor;
   end;
 
 implementation
@@ -72,7 +72,7 @@ uses
 
 { TFrameAttachmentMessage }
 
-constructor TFrameAttachmentMessage.Create(AOwner: TComponent; AVK: TCustomVK);
+constructor TFrameAttachmentWall.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
   Name := '';
@@ -85,7 +85,7 @@ begin
   ClearMedia;
 end;
 
-procedure TFrameAttachmentMessage.ClearMedia;
+procedure TFrameAttachmentWall.ClearMedia;
 begin
   FlowLayoutMedia.BeginUpdate;
   try
@@ -97,7 +97,7 @@ begin
   RecalcMedia;
 end;
 
-procedure TFrameAttachmentMessage.RecalcMedia;
+procedure TFrameAttachmentWall.RecalcMedia;
 begin
   var H: Single := 0;
   for var Control in FlowLayoutMedia.Controls do
@@ -121,13 +121,13 @@ begin
   end;
 end;
 
-destructor TFrameAttachmentMessage.Destroy;
+destructor TFrameAttachmentWall.Destroy;
 begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
   inherited;
 end;
 
-procedure TFrameAttachmentMessage.FOnReadyImage(const Sender: TObject; const M: TMessage);
+procedure TFrameAttachmentWall.FOnReadyImage(const Sender: TObject; const M: TMessage);
 var
   Data: TMessagePreview absolute M;
 begin
@@ -147,7 +147,7 @@ begin
   end;
 end;
 
-procedure TFrameAttachmentMessage.FrameResize(Sender: TObject);
+procedure TFrameAttachmentWall.FrameResize(Sender: TObject);
 begin
   var Sz: Single := LayoutContent.Padding.Top + LayoutContent.Padding.Bottom;
   RecalcMedia;
@@ -156,15 +156,15 @@ begin
     if Control.IsVisible then
       Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
   Sz := Max(Sz, LayoutHead.Height);
-  if Height <> Floor(Sz) then
+  if Height <> Sz then
   begin
-    Height := Floor(Sz);
+    Height := Sz;
     if Assigned(ParentControl) then
       ParentControl.RecalcSize;
   end;
 end;
 
-procedure TFrameAttachmentMessage.MemoTextChange(Sender: TObject);
+procedure TFrameAttachmentWall.MemoTextChange(Sender: TObject);
 begin
   var H := MemoText.ContentSize.Size.Height + 5;
   if H <> MemoText.Height then
@@ -174,33 +174,24 @@ begin
   end;
 end;
 
-procedure TFrameAttachmentMessage.MemoTextResize(Sender: TObject);
+procedure TFrameAttachmentWall.MemoTextResize(Sender: TObject);
 begin
   MemoTextChange(Sender);
 end;
 
-procedure TFrameAttachmentMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory; ACanAnswer: Boolean);
+procedure TFrameAttachmentWall.Fill(Item: TVkPost; Data: TVkMessageHistory);
 begin
-  ChatCanAnswer := ACanAnswer;
-  Text := ParseMention(Item.Text);
+  Text := Item.Text;
   Date := Item.Date;
   ImageUrl := '';
-  UpdateTime := Item.UpdateTime;
+  Autor := '';
 
-  var P2P: Boolean := False;
-  if Length(Data.Conversations) > 0 then
-  begin
-    P2P := Data.Conversations[0].IsUser;
-  end;
   if PeerIdIsUser(Item.FromId) then
   begin
     var User: TVkProfile;
     if Data.GetProfileById(Item.FromId, User) then
     begin
-      if P2P then
-        FromText := User.FirstName
-      else
-        FromText := User.FullName;
+      FromText := User.FullName;
       ImageUrl := User.Photo50;
     end;
   end
@@ -214,67 +205,120 @@ begin
     end;
   end;
 
-  if Assigned(Item.ReplyMessage) then
-    CreateReplyMessage(Item.ReplyMessage, Data);
-  {
+  if PeerIdIsUser(Item.SignerId) then
+  begin
+    var User: TVkProfile;
+    if Data.GetProfileById(Item.SignerId, User) then
+    begin
+      Autor := User.FullName;
+    end;
+  end
+  else
+  begin
+    var Group: TVkGroup;
+    if Data.GetGroupById(Item.SignerId, Group) then
+    begin
+      Autor := Group.Name;
+    end;
+  end;
+
   if Length(Item.Attachments) > 0 then
   begin
     CreatePhotos(Item.Attachments);
     CreateVideos(Item.Attachments);
     CreateAudios(Item.Attachments);
     CreateDocs(Item.Attachments);
-    CreateAutioMessages(Item.Attachments);
-    CreateSticker(Item.Attachments);
-    CreateGift(Item.Attachments, Item);
     RecalcMedia;
   end;
-
+       {
   if Assigned(Item.Geo) then
     CreateGeo(Item.Geo); }
-
-  if Length(Item.FwdMessages) > 0 then
-    CreateFwdMessages(Item.FwdMessages, Item, Data);
 
   RecalcSize;
 end;
 
-procedure TFrameAttachmentMessage.CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
+procedure TFrameAttachmentWall.CreateDocs(Items: TVkAttachmentArray);
 begin
-  var Frame := TFrameAttachmentMessages.Create(LayoutClient, FVK);
-  Frame.Parent := LayoutClient;
-  Frame.Position.Y := 10000;
-  Frame.Align := TAlignLayout.Top;
-  Frame.Fill(1, Item.Id, False);
+  for var Item in Items do
+    if (Item.&Type = TVkAttachmentType.Doc) and (not Assigned(Item.Doc.Preview)) then
+    begin
+      var Frame := TFrameAttachmentDocument.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Doc, False);
+    end;
 end;
 
-procedure TFrameAttachmentMessage.CreateFwdMessages(Items: TArray<TVkMessage>; Item: TVkMessage; Data: TVkMessageHistory);
+procedure TFrameAttachmentWall.CreateAudios(Items: TVkAttachmentArray);
 begin
-  var Frame := TFrameAttachmentMessages.Create(LayoutClient, FVK);
-  Frame.Parent := LayoutClient;
-  Frame.Position.Y := 10000;
-  Frame.Align := TAlignLayout.Top;
-  Frame.Fill(Length(Items), Item.Id, True);
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Audio then
+    begin
+      var Frame := TFrameAttachmentAudio.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Audio);
+    end;
 end;
 
-procedure TFrameAttachmentMessage.SetCanAnswer(const Value: Boolean);
+procedure TFrameAttachmentWall.CreateVideos(Items: TVkAttachmentArray);
 begin
-  FCanAnswer := Value;
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Video then
+    begin
+      var Frame := TFrameAttachmentVideo.Create(FlowLayoutMedia, FVK);
+      Frame.Parent := FlowLayoutMedia;
+      Frame.Fill(Item.Video);
+    end;
 end;
 
-procedure TFrameAttachmentMessage.SetDate(const Value: TDateTime);
+procedure TFrameAttachmentWall.CreatePhotos(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+  begin
+    if Item.&Type = TVkAttachmentType.Photo then
+    begin
+      var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, FVK);
+      Frame.Parent := FlowLayoutMedia;
+      Frame.Fill(Item.Photo);
+    end;
+    if (Item.&Type = TVkAttachmentType.Doc) and (Assigned(Item.Doc.Preview)) then
+    begin
+      var Frame := TFrameAttachmentDocument.Create(FlowLayoutMedia, FVK);
+      Frame.Parent := FlowLayoutMedia;
+      Frame.Fill(Item.Doc, True);
+    end;
+  end;
+end;
+
+procedure TFrameAttachmentWall.SetAutor(const Value: string);
+begin
+  FAutor := Value;
+  if not FAutor.IsEmpty then
+  begin
+    LayoutAutor.Visible := True;
+    LabelAutor.Text := FAutor;
+  end
+  else
+    LayoutAutor.Visible := False;
+end;
+
+procedure TFrameAttachmentWall.SetDate(const Value: TDateTime);
 begin
   FDate := Value;
   LabelTime.Text := FormatDateTime('HH:nn', FDate);
   LabelTime.Hint := FormatDateTime('c', FDate);
 end;
 
-procedure TFrameAttachmentMessage.SetFromText(const Value: string);
+procedure TFrameAttachmentWall.SetFromText(const Value: string);
 begin
   FFromText := Value;
   LabelFrom.Text := FFromText;
 end;
 
-procedure TFrameAttachmentMessage.SetImageUrl(const Value: string);
+procedure TFrameAttachmentWall.SetImageUrl(const Value: string);
 begin
   FImageUrl := Value;
   if not FImageUrl.IsEmpty then
@@ -283,7 +327,7 @@ begin
     CircleAvatar.Fill.Kind := TBrushKind.Solid;
 end;
 
-procedure TFrameAttachmentMessage.SetText(const Value: string);
+procedure TFrameAttachmentWall.SetText(const Value: string);
 begin
   FText := ParseMention(Value);
   MemoText.Visible := not FText.IsEmpty;
@@ -293,18 +337,6 @@ begin
     (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
     (MemoText.Presentation as TStyledMemo).PrepareForPaint;
   end;
-end;
-
-procedure TFrameAttachmentMessage.SetUpdateTime(const Value: TDateTime);
-begin
-  FUpdateTime := Value;
-  if FUpdateTime > 0 then
-  begin
-    LayoutUpdated.Visible := True;
-    LabelUpdated.Hint := 'изменено ' + HumanDateTime(FUpdateTime, True);
-  end
-  else
-    LayoutUpdated.Visible := False;
 end;
 
 end.

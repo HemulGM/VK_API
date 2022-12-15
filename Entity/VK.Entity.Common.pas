@@ -274,22 +274,40 @@ begin
 end;
 
 function TVkSizesHelper.GetSizeFromHeight(const Height: Integer): TVkSize;
+var
+  D: Integer;
 begin
   Result := nil;
+  D := -1;
   for var Item in Self do
     if Item.Height >= Height then
-      Exit(Item);
-  if Length(Self) > 0 then
+    begin
+      if (D = -1) or (Item.Height - Height < D) then
+      begin
+        D := Height - Item.Height;
+        Result := Item;
+      end;
+    end;
+  if (not Assigned(Result)) and (Length(Self) > 0) then
     Result := Self[High(Self)];
 end;
 
 function TVkSizesHelper.GetSizeFromWidth(const Width: Integer): TVkSize;
+var
+  D: Integer;
 begin
   Result := nil;
+  D := -1;
   for var Item in Self do
     if Item.Width >= Width then
-      Exit(Item);
-  if Length(Self) > 0 then
+    begin
+      if (D = -1) or (Item.Width - Width < D) then
+      begin
+        D := Width - Item.Width;
+        Result := Item;
+      end;
+    end;
+  if (not Assigned(Result)) and (Length(Self) > 0) then
     Result := Self[High(Self)];
 end;
 

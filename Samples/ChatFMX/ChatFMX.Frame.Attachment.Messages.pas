@@ -25,6 +25,9 @@ type
 
 implementation
 
+uses
+  ChatFMX.Utils;
+
 {$R *.fmx}
 
 constructor TFrameAttachmentMessages.Create(AOwner: TComponent; AVK: TCustomVK);
@@ -37,7 +40,7 @@ end;
 procedure TFrameAttachmentMessages.Fill(const Count: Integer; const RootMessage: Integer; Fwd: Boolean);
 begin
   if Fwd then
-    Title := Count.ToString + 'пересланных сообщения'
+    Title := Count.ToString + ' ' + WordOfCount(Count, ['пересланное', 'пересланных', 'пересланных']) + ' ' + WordOfCount(Count, ['сообщение', 'сообщения', 'сообщений'])
   else
     Title := 'в ответ на сообщение';
 end;

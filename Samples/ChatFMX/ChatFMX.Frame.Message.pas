@@ -43,12 +43,6 @@ type
     RectangleUnread: TRectangle;
     LayoutContent: TLayout;
     FlowLayoutMedia: TFlowLayout;
-    Image1: TImage;
-    Image2: TImage;
-    Image3: TImage;
-    Image4: TImage;
-    Image5: TImage;
-    Image6: TImage;
     LayoutSelectedIcon: TLayout;
     LayoutUpdated: TLayout;
     LabelUpdated: TLabel;
@@ -100,7 +94,7 @@ type
     procedure CreatePhotos(Items: TVkAttachmentArray);
     procedure ClearMedia;
     procedure RecalcMedia;
-    procedure CreateAutioMessages(Items: TVkAttachmentArray);
+    procedure CreateAutioMessages(Items: TVkAttachmentArray; Msg: TVkMessage);
     procedure CreateSticker(Items: TVkAttachmentArray);
     procedure CreateVideos(Items: TVkAttachmentArray);
     procedure SetDate(const Value: TDateTime);
@@ -113,6 +107,8 @@ type
     procedure CreateGift(Items: TVkAttachmentArray; Msg: TVkMessage);
     procedure SetCanAnswer(const Value: Boolean);
     procedure CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkMessageHistory);
+    procedure CreateLinks(Items: TVkAttachmentArray);
+    procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
@@ -139,7 +135,8 @@ uses
   System.Math, System.DateUtils, VK.Entity.Profile, VK.Entity.Group,
   ChatFMX.PreviewManager, ChatFMX.Frame.Attachment.Photo, ChatFMX.Utils,
   ChatFMX.Frame.Attachment.Sticker, ChatFMX.Frame.Attachment.Video,
-  ChatFMX.Frame.Attachment.Gift, ChatFMX.Frame.Attachment.Message;
+  ChatFMX.Frame.Attachment.Gift, ChatFMX.Frame.Attachment.Message,
+  ChatFMX.Frame.Attachment.Link, ChatFMX.Frame.Attachment.Wall;
 
 {$R *.fmx}
 
@@ -197,6 +194,7 @@ begin
   MemoText.DisableDisappear := True;
   MouseFrame := False;
   IsSelected := False;
+  Text := '';
   IsGift := False;
   LayoutFwdMessages.Visible := False;
   ClearMedia;
@@ -219,6 +217,7 @@ begin
   IsImportant := Item.Important;
   IsUnread := False;
   UpdateTime := Item.UpdateTime;
+  IsGift := False;
 
   var P2P: Boolean := False;
   if Length(Data.Conversations) > 0 then
@@ -257,9 +256,11 @@ begin
     CreateVideos(Item.Attachments);
     CreateAudios(Item.Attachments);
     CreateDocs(Item.Attachments);
-    CreateAutioMessages(Item.Attachments);
+    CreateAutioMessages(Item.Attachments, Item);
     CreateSticker(Item.Attachments);
     CreateGift(Item.Attachments, Item);
+    CreateLinks(Item.Attachments);
+    CreatePosts(Item.Attachments, Data);
     RecalcMedia;
   end;
 
@@ -270,6 +271,19 @@ begin
     CreateFwdMessages(Item.FwdMessages, Data);
 
   RecalcSize;
+end;
+
+procedure TFrameMessage.CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Wall then
+    begin
+      var Frame := TFrameAttachmentWall.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Wall, Data);
+    end;
 end;
 
 procedure TFrameMessage.CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkMessageHistory);
@@ -364,7 +378,7 @@ begin
     end;
 end;
 
-procedure TFrameMessage.CreateAutioMessages(Items: TVkAttachmentArray);
+procedure TFrameMessage.CreateAutioMessages(Items: TVkAttachmentArray; Msg: TVkMessage);
 begin
   for var Item in Items do
     if Item.&Type = TVkAttachmentType.AudioMessage then
@@ -373,7 +387,7 @@ begin
       Frame.Parent := LayoutClient;
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
-      Frame.Fill(Item.AudioMessage);
+      Frame.Fill(Item.AudioMessage, Msg.WasListened);
     end;
 end;
 
@@ -387,6 +401,19 @@ begin
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
       Frame.Fill(Item.Audio);
+    end;
+end;
+
+procedure TFrameMessage.CreateLinks(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Link then
+    begin
+      var Frame := TFrameAttachmentLink.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Link);
     end;
 end;
 
@@ -429,8 +456,8 @@ begin
     if Control.IsVisible then
       Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
   Sz := Max(Sz, 60);
-  if Height <> Sz then
-    Height := Sz;
+  if Height <> Floor(Sz) then
+    Height := Floor(Sz);
   if Assigned(ParentControl) then
     ParentControl.RecalcSize;
 end;
@@ -503,7 +530,7 @@ end;
 procedure TFrameMessage.SetFromText(const Value: string);
 begin
   FFromText := Value;
-  LabelFrom.Text := FFromText;
+  LabelFrom.Text := FFromText + ' ' + Height.ToString;
 end;
 
 procedure TFrameMessage.SetImageUrl(const Value: string);
@@ -652,9 +679,9 @@ procedure TFrameMessage.SetText(const Value: string);
 begin
   FText := ParseMention(Value);
   MemoText.Visible := not FText.IsEmpty;
+  MemoText.Text := FText;
   if not FText.IsEmpty then
   begin
-    MemoText.Text := FText;
     (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
     (MemoText.Presentation as TStyledMemo).PrepareForPaint;
   end;

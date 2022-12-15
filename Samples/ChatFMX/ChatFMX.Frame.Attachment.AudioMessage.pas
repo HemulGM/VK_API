@@ -15,6 +15,8 @@ type
     CircleControl: TCircle;
     PathControl: TPath;
     PaintBoxWave: TPaintBox;
+    Layout1: TLayout;
+    CircleListened: TCircle;
     procedure PaintBoxWavePaint(Sender: TObject; Canvas: TCanvas);
     procedure CircleControlClick(Sender: TObject);
     procedure PaintBoxWaveResize(Sender: TObject);
@@ -27,6 +29,7 @@ type
     FIsPause: Boolean;
     FDurationPlayed: Int64;
     FDrawWave: TArray<Single>;
+    FWasListened: Boolean;
     procedure SetIsPlay(const Value: Boolean);
     procedure SetWave(const Value: TArray<Integer>);
     procedure SetDuration(const Value: Int64);
@@ -34,14 +37,16 @@ type
     procedure SetDurationPlayed(const Value: Int64);
     procedure UpdateTime;
     procedure CalcWave;
+    procedure SetWasListened(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
-    procedure Fill(AudioMessage: TVkAudioMessage);
+    procedure Fill(AudioMessage: TVkAudioMessage; Listened: Boolean);
     property IsPlay: Boolean read FIsPlay write SetIsPlay;
     property IsPause: Boolean read FIsPause write SetIsPause;
     property Wave: TArray<Integer> read FWave write SetWave;
     property Duration: Int64 read FDuration write SetDuration;
     property DurationPlayed: Int64 read FDurationPlayed write SetDurationPlayed;
+    property WasListened: Boolean read FWasListened write SetWasListened;
   end;
 
 const
@@ -68,8 +73,9 @@ begin
   Name := '';
 end;
 
-procedure TFrameAttachmentAudioMessage.Fill(AudioMessage: TVkAudioMessage);
+procedure TFrameAttachmentAudioMessage.Fill(AudioMessage: TVkAudioMessage; Listened: Boolean);
 begin
+  WasListened := Listened;
   Wave := AudioMessage.WaveForm;
   Duration := AudioMessage.Duration;
   DurationPlayed := Duration div 2;
@@ -119,39 +125,84 @@ begin
   end;
 end;
 
+procedure LargestTriangleThreeBuckets(const Data: TArray<Integer>; Threshold: Integer; var Output: TArray<Single>);
+begin
+  var Count := Length(Data);
+
+  if ((Threshold >= Count) or (Threshold = 0)) then
+    Exit;
+
+  SetLength(Output, Threshold);
+
+  var OutIndex: Integer := 1;
+  var Every: Single :=(Count - 2) / (Threshold - 2);
+  var Index: Integer := 0;  // Initially a is the first point in the triangle
+  var NextIndex: Integer := 0;
+  var MaxAreaPoint: Integer := 0;
+  var MaxArea: Single;
+  var Area: Single;
+  Output[0] := Data[0]; // Always add the first point
+
+  for var i := 0 to Threshold - 2 - 1 do
+  begin
+    var AvgX: Single := 0;
+    var AvgY: Single := 0;
+    var AvgRangeStart: Integer := Floor((i + 1) * Every) + 1;
+    var AvgRangeEnd: Integer := Floor((i + 2) * Every) + 1;
+
+    if AvgRangeEnd >= Count then
+      AvgRangeEnd := Count;
+
+    var AvgRangeLength: Integer := AvgRangeEnd - AvgRangeStart;
+
+    for var m := AvgRangeStart to AvgRangeEnd - 1 do
+    begin
+      AvgX := AvgX + m;
+      AvgY := AvgY + Data[m];
+    end;
+
+    AvgX := AvgX / AvgRangeLength;
+    AvgY := AvgY / AvgRangeLength;
+
+    // Get the range for this bucket
+    var RangeOffs: Integer := Floor((i + 0) * Every) + 1;
+    var RangeTo: Integer := Floor((i + 1) * Every) + 1;
+
+    // Point a (Reference data point of previous bucket)
+    var PointX: Single := Index;
+    var PointY: Single := Data[Index];
+    MaxArea := NegInfinity;
+
+    for var n := RangeOffs to RangeTo - 1 do
+    begin
+      Area := Abs((PointX - AvgX) * (Data[n] - PointY) - (PointX - n) * (AvgY - PointY)) * 0.5;
+      if (Area > MaxArea) then
+      begin
+        MaxArea := Area;
+        MaxAreaPoint := Data[n];
+        NextIndex := n;
+      end;
+    end;
+
+    Output[OutIndex] := MaxAreaPoint;
+    Inc(OutIndex);
+    Index := NextIndex;
+  end;
+
+  Output[OutIndex] := Data[Count - 1];
+end;
+
 procedure TFrameAttachmentAudioMessage.CalcWave;
 begin
   var Cnt := Length(FWave);
   if Cnt <= 0 then
     Exit;
+
   var NCnt :=(Trunc(PaintBoxWave.Width) + 1) div 3;
   if NCnt <= 0 then
     Exit;
-  var AvgValue := Cnt div NCnt;
-  if AvgValue <= 0 then
-    Exit;
-  SetLength(FDrawWave, NCnt);
-  for var i := Low(FDrawWave) to High(FDrawWave) do
-    FDrawWave[i] := -1;
-  var NIdx := -1;
-  var MidCnt := -1;
-  for var w := Low(FWave) to High(FWave) do
-  begin
-    if (w = 0) or (w mod AvgValue = 0) then
-    begin
-      if MidCnt <> -1 then
-        FDrawWave[NIdx] := FDrawWave[NIdx] / MidCnt;
-      Inc(NIdx);
-      MidCnt := 0;
-    end;
-    if NIdx > High(FDrawWave) then
-      Exit;
-    Inc(MidCnt);
-    if FDrawWave[NIdx] = -1 then
-      FDrawWave[NIdx] := FWave[w]
-    else
-      FDrawWave[NIdx] := FDrawWave[NIdx] + FWave[w];
-  end;
+
+  LargestTriangleThreeBuckets(FWave, NCnt, FDrawWave);
 end;
 
 procedure TFrameAttachmentAudioMessage.PaintBoxWaveResize(Sender: TObject);
@@ -191,6 +242,12 @@ begin
     LabelTime.Text := SecondsToMinFormat(FDuration)
   else
     LabelTime.Text := SecondsToMinFormat(FDurationPlayed - FDuration);
+end;
+
+procedure TFrameAttachmentAudioMessage.SetWasListened(const Value: Boolean);
+begin
+  FWasListened := Value;
+  CircleListened.Visible := not FWasListened;
 end;
 
 procedure TFrameAttachmentAudioMessage.SetWave(const Value: TArray<Integer>);
