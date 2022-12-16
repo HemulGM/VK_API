@@ -27,7 +27,10 @@ uses
   ChatFMX.Frame.Attachment.Message in 'ChatFMX.Frame.Attachment.Message.pas' {FrameAttachmentMessage: TFrame},
   ChatFMX.Frame.Attachment.Messages in 'ChatFMX.Frame.Attachment.Messages.pas' {FrameAttachmentMessages},
   ChatFMX.Frame.Attachment.Link in 'ChatFMX.Frame.Attachment.Link.pas' {FrameAttachmentLink: TFrame},
-  ChatFMX.Frame.Attachment.Wall in 'ChatFMX.Frame.Attachment.Wall.pas' {FrameAttachmentWall};
+  ChatFMX.Frame.Attachment.Wall in 'ChatFMX.Frame.Attachment.Wall.pas' {FrameAttachmentWall},
+  ChatFMX.Frame.Attachment.Call in 'ChatFMX.Frame.Attachment.Call.pas' {FrameAttachmentCall: TFrame},
+  ChatFMX.Frame.Attachment in 'ChatFMX.Frame.Attachment.pas' {FrameAttachment: TFrame},
+  ChatFMX.Frame.Attachment.WallFwd in 'ChatFMX.Frame.Attachment.WallFwd.pas' {FrameAttachmentWallFwd: TFrame};
 
 {$R *.res}
 

@@ -6,10 +6,11 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   VK.API, FMX.Objects, VK.Types, System.Messaging, VK.Entity.Video, FMX.Layouts,
-  FMX.Controls.Presentation, VK.Entity.Gift, VK.Entity.Message;
+  FMX.Controls.Presentation, VK.Entity.Gift, VK.Entity.Message,
+  ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentGift = class(TFrame)
+  TFrameAttachmentGift = class(TFrameAttachment)
     LayoutCaption: TLayout;
     PathGift: TPath;
     LabelGift: TLabel;
@@ -27,17 +28,20 @@ type
     procedure LabelTextResize(Sender: TObject);
     procedure FrameResize(Sender: TObject);
   private
-    FVK: TCustomVK;
     FImageUrl: string;
     FImageFile: string;
     FStickersProductId: Integer;
+    FIsMini: Boolean;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure SetStickersProductId(const Value: Integer);
+    procedure SetIsMini(const Value: Boolean);
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    procedure SetVisibility(const Value: Boolean); override;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
     procedure Fill(Gift: TVkGift; Msg: TVkMessage; CanAnswer: Boolean);
     property StickersProductId: Integer read FStickersProductId write SetStickersProductId;
+    property IsMini: Boolean read FIsMini write SetIsMini;
   end;
 
 implementation
@@ -50,11 +54,24 @@ uses
 
 { TFrameAttachmentPhoto }
 
+procedure TFrameAttachmentGift.SetVisibility(const Value: Boolean);
+begin
+  inherited;
+  if Value then
+  begin
+    if not FImageUrl.IsEmpty then
+      TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+  end
+  else
+  begin
+    RectangleGift.Fill.Bitmap.Bitmap := nil;
+  end;
+end;
+
 constructor TFrameAttachmentGift.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  FVK := AVK;
-  Name := '';
+  inherited;
+  IsMini := False;
 end;
 
 destructor TFrameAttachmentGift.Destroy;
@@ -69,12 +86,9 @@ begin
   LabelText.Visible := not LabelText.Text.IsEmpty;
   FImageUrl := Gift.Thumb256;
   StickersProductId := Gift.StickersProductId;
-  RectangleMy.Visible := Msg.FromId <> FVK.UserId;
-  RectangleMore.Visible := CanAnswer and (Msg.FromId = FVK.UserId);
-  RectangleSend.Visible := CanAnswer and (Msg.FromId <> FVK.UserId);
-
-  if not FImageUrl.IsEmpty then
-    TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+  RectangleMy.Visible := Msg.FromId <> VK.UserId;
+  RectangleMore.Visible := CanAnswer and (Msg.FromId = VK.UserId);
+  RectangleSend.Visible := CanAnswer and (Msg.FromId <> VK.UserId);
 end;
 
 procedure TFrameAttachmentGift.FOnReadyImage(const Sender: TObject; const M: TMessage);
@@ -111,6 +125,28 @@ end;
 procedure TFrameAttachmentGift.LabelTextResize(Sender: TObject);
 begin
   FrameResize(nil);
+end;
+
+procedure TFrameAttachmentGift.SetIsMini(const Value: Boolean);
+begin
+  FIsMini := Value;
+  LayoutCaption.Visible := not FIsMini;
+  case FIsMini of
+    True:
+      begin
+        RectangleGift.Align := TAlignLayout.Left;
+        Height := 360;
+        FlowLayoutButtons.Justify := TFlowJustify.Left;
+        FlowLayoutButtons.JustifyLastLine := TFlowJustify.Left;
+      end;
+    False:
+      begin
+        RectangleGift.Align := TAlignLayout.Center;
+        Height := 410;
+        FlowLayoutButtons.Justify := TFlowJustify.Center;
+        FlowLayoutButtons.JustifyLastLine := TFlowJustify.Center;
+      end;
+  end;
 end;
 
 procedure TFrameAttachmentGift.SetStickersProductId(const Value: Integer);

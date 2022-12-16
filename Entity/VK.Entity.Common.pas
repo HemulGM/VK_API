@@ -284,7 +284,7 @@ begin
     begin
       if (D = -1) or (Item.Height - Height < D) then
       begin
-        D := Height - Item.Height;
+        D := Item.Height - Height;
         Result := Item;
       end;
     end;
@@ -303,7 +303,7 @@ begin
     begin
       if (D = -1) or (Item.Width - Width < D) then
       begin
-        D := Width - Item.Width;
+        D := Item.Width - Width;
         Result := Item;
       end;
     end;

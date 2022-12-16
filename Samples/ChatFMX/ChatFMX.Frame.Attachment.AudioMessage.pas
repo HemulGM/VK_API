@@ -6,10 +6,10 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, FMX.Layouts, VK.API,
-  VK.Entity.AudioMessage;
+  VK.Entity.AudioMessage, ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentAudioMessage = class(TFrame)
+  TFrameAttachmentAudioMessage = class(TFrameAttachment)
     LabelTime: TLabel;
     LayoutControl: TLayout;
     CircleControl: TCircle;
@@ -22,7 +22,6 @@ type
     procedure PaintBoxWaveResize(Sender: TObject);
   private
     FIsPlay: Boolean;
-    FVK: TCustomVK;
     FWave: TArray<Integer>;
     FWaveMax: Integer;
     FDuration: Int64;
@@ -39,7 +38,7 @@ type
     procedure CalcWave;
     procedure SetWasListened(const Value: Boolean);
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     procedure Fill(AudioMessage: TVkAudioMessage; Listened: Boolean);
     property IsPlay: Boolean read FIsPlay write SetIsPlay;
     property IsPause: Boolean read FIsPause write SetIsPause;
@@ -68,9 +67,7 @@ end;
 
 constructor TFrameAttachmentAudioMessage.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  FVK := AVK;
-  Name := '';
+  inherited;
 end;
 
 procedure TFrameAttachmentAudioMessage.Fill(AudioMessage: TVkAudioMessage; Listened: Boolean);

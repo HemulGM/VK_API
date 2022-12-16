@@ -584,6 +584,13 @@ type
     function ToString: string; overload; inline;
   end;
 
+  TVkCallState = (CanceledByInitiator, Reached, CanceledByReceiver);
+
+  TVkCallStateHelper = record helper for TVkCallState
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkCallState; static;
+  end;
+
   TVkLang = (Auto = -1, RU = 0, UK = 1, BE = 2, EN = 3, ES = 4,   //
     FI = 5, DE = 6, IT = 7);
 
@@ -1587,6 +1594,7 @@ const
   VkGroupMarketState: array[TVkGroupMarketState] of string = ('none', 'basic', 'advanced');
   VkAsrState: array[TVkAsrState] of string = ('processing', 'finished', 'internal_error', 'transcoding_error', 'recognition_error');
   VkAsrModel: array[TVkAsrModel] of string = ('neutral', 'spontaneous');
+  VkCallState: array[TVkCallState] of string = ('canceled_by_initiator', 'reached', 'canceled_by_receiver');
 
 function NormalizePeerId(Value: TVkPeerId): TVkPeerId;
 
@@ -3279,6 +3287,18 @@ end;
 function TVkAsrModelHelper.ToString: string;
 begin
   Result := VkAsrModel[Self];
+end;
+
+{ TVkCallStateHelper }
+
+class function TVkCallStateHelper.Create(const Value: string): TVkCallState;
+begin
+  Result := TVkCallState(IndexStr(Value, VkCallState));
+end;
+
+function TVkCallStateHelper.ToString: string;
+begin
+  Result := VkCallState[Self];
 end;
 
 end.

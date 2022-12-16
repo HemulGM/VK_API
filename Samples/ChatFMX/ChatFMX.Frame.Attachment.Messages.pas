@@ -6,19 +6,18 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, FMX.Layouts, VK.API, VK.Entity.Doc,
-  VK.Types, System.Messaging;
+  VK.Types, System.Messaging, ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentMessages = class(TFrame)
+  TFrameAttachmentMessages = class(TFrameAttachment)
     LabelTitle: TLabel;
     procedure LabelTitleMouseLeave(Sender: TObject);
     procedure LabelTitleMouseEnter(Sender: TObject);
   private
-    FVK: TCustomVK;
     FTitle: string;
     procedure SetTitle(const Value: string);
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     procedure Fill(const Count: Integer; const RootMessage: Integer; Fwd: Boolean);
     property Title: string read FTitle write SetTitle;
   end;
@@ -32,9 +31,7 @@ uses
 
 constructor TFrameAttachmentMessages.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  FVK := AVK;
-  Name := '';
+  inherited;
 end;
 
 procedure TFrameAttachmentMessages.Fill(const Count: Integer; const RootMessage: Integer; Fwd: Boolean);

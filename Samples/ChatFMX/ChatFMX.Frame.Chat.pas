@@ -13,7 +13,6 @@ uses
 
 type
   TLayout = class(FMX.Layouts.TLayout)
-
   end;
 
   TChatType = (ctChat, ctUser, ctGroup);
@@ -175,6 +174,7 @@ type
     procedure SetIsCanWrtie(const Value: Boolean);
     procedure SetOnBack(const Value: TNotifyEvent);
     procedure AppendHistory(Items: TVkMessageHistory);
+    procedure CalcDisappear;
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
@@ -200,7 +200,7 @@ type
   end;
 
 implementation
-
+                                   
 uses
   System.Threading, System.DateUtils, VK.Messages, VK.Entity.Profile,
   VK.Entity.Group, ChatFMX.PreviewManager, System.Math, ChatFMX.Utils,
@@ -267,8 +267,8 @@ begin
   LayoutMessageList.Realign;
   var Sz: Single := 0;
   for var Control in LayoutMessageList.Controls do
-    if Control.IsVisible then
-      Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
+      if Control.IsVisible then
+        Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
   LayoutMessageList.Height := Sz + 10;
   FrameLoadingMesages.Visible := (LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height) and (not FOffsetEnd);
 end;
@@ -421,7 +421,7 @@ begin
   Params.Extended;
   Params.Offset(FOffset);
   Params.Count(20);
-  Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified,
+  Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified, TVkProfileField.Sex,
     TVkProfileField.FirstNameAcc, TVkProfileField.LastNameAcc], [TVkGroupField.Verified]);
   Params.PeerId(FConversationId);
   if VK.Messages.GetHistory(Items, Params) then
@@ -567,8 +567,28 @@ begin
   LayoutMessageList.Position.Y := VertScrollBoxMessages.Height - LayoutMessageList.Height;
 end;
 
+procedure TFrameChat.CalcDisappear;
+begin
+  var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
+  var Offset := Abs(VertScrollBoxMessages.ViewportPosition.Y - Content.Top);
+  var ViewHeight := VertScrollBoxMessages.Height;
+  var ContentHeight := LayoutMessageList.Height;
+
+  var ATop := Offset;
+  var ABottom := ATop + Min(ViewHeight, ContentHeight);
+
+  for var Control in LayoutMessageList.Controls do
+    if Control is TFrameMessage then
+    begin
+      var Vis := ((Control.BoundsRect.Bottom > ATop) and (Control.BoundsRect.Top < ABottom)) or
+        ((Control.BoundsRect.Top < ABottom) and (Control.BoundsRect.Bottom > ATop));
+      (Control as TFrameMessage).Visibility := Vis;
+    end;
+end;
+
 procedure TFrameChat.VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
+  CalcDisappear;
   var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
   if Abs(NewViewportPosition.Y - Content.Top) < 500 then
     EndOfChat;

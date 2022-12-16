@@ -1,8 +1,7 @@
-object FrameAttachmentAudio: TFrameAttachmentAudio
+inherited FrameAttachmentAudio: TFrameAttachmentAudio
   Margins.Top = 6.000000000000000000
   Size.Width = 427.000000000000000000
   Size.Height = 40.000000000000000000
-  Size.PlatformDefault = False
   OnMouseEnter = FrameMouseEnter
   OnMouseLeave = FrameMouseLeave
   object RectangleOver: TRectangle

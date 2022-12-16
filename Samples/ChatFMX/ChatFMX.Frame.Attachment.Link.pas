@@ -6,13 +6,13 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Controls.Presentation, ChatFMX.DM.Res, FMX.Layouts, VK.API,
-  VK.Entity.Link, System.Messaging;
+  VK.Entity.Link, System.Messaging, ChatFMX.Frame.Attachment, FMX.Effects,
+  FMX.Ani;
 
 type
-  TFrameAttachmentLink = class(TFrame)
+  TFrameAttachmentLink = class(TFrameAttachment)
     RectangleFrame: TRectangle;
     RectangleText: TRectangle;
-    ButtonFavorite: TButton;
     LayoutActions: TLayout;
     LabelTitle: TLabel;
     LabelUrl: TLabel;
@@ -24,18 +24,25 @@ type
     LineLeft: TLine;
     RectangleImage: TRectangle;
     Rectangle1: TRectangle;
+    Rectangle2: TRectangle;
+    PathStar: TPath;
+    ShadowEffectStar: TShadowEffect;
+    FloatAnimationStarShadow: TFloatAnimation;
+    LayoutFavorite: TLayout;
     procedure FrameMouseEnter(Sender: TObject);
     procedure FrameMouseLeave(Sender: TObject);
   private
-    FVK: TCustomVK;
     FImageUrl: string;
     FImageFile: string;
     FUrl: string;
+    FIsFavorite: Boolean;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
+    procedure SetIsFavorite(const Value: Boolean);
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
     procedure Fill(Item: TVkLink);
+    property IsFavorite: Boolean read FIsFavorite write SetIsFavorite;
   end;
 
 implementation
@@ -49,9 +56,7 @@ uses
 
 constructor TFrameAttachmentLink.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  FVK := AVK;
-  Name := '';
+  inherited;
   Rectangle1.Visible := False;
 end;
 
@@ -64,6 +69,7 @@ end;
 procedure TFrameAttachmentLink.Fill(Item: TVkLink);
 begin
   FUrl := Item.Url;
+  IsFavorite := Item.IsFavorite;
   if not Assigned(Item.Photo) then
   begin
     Height := 40;
@@ -79,7 +85,8 @@ begin
     LayoutShort.Visible := False;
     LabelTitle.Text := Item.Title;
     LabelUrl.Text := Item.Caption;
-    FImageUrl := Item.Photo.Sizes.GetSizeUrlOrEmpty(130);
+
+    FImageUrl := Item.Photo.Sizes.GetSizeUrlOrEmpty(300);
     if not FImageUrl.IsEmpty then
       TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
   end;
@@ -115,6 +122,23 @@ procedure TFrameAttachmentLink.FrameMouseLeave(Sender: TObject);
 begin
   LabelTitle.Font.Style := LabelTitle.Font.Style - [TFontStyle.fsUnderline];
   LabelShortTitle.Font.Style := LabelShortTitle.Font.Style - [TFontStyle.fsUnderline];
+end;
+
+procedure TFrameAttachmentLink.SetIsFavorite(const Value: Boolean);
+begin
+  FIsFavorite := Value;
+  if FIsFavorite then
+  begin
+    PathStar.Fill.Kind := TBrushKind.Solid;
+    PathStar.Fill.Color := TAlphaColorRec.White;
+    PathStar.Stroke.Kind := TBrushKind.None;
+  end
+  else
+  begin
+    PathStar.Fill.Kind := TBrushKind.None;
+    PathStar.Stroke.Kind := TBrushKind.Solid;
+    PathStar.Stroke.Color := TAlphaColorRec.White;
+  end;
 end;
 
 end.

@@ -9,10 +9,11 @@ uses
   FMX.ScrollBox, FMX.Memo, VK.API, VK.Entity.Message, VK.Entity.Conversation,
   ChatFMX.Frame.Attachment.Photo, ChatFMX.Frame.Attachment.Video,
   System.Messaging, VK.Entity.Media, ChatFMX.Frame.Attachment.Document,
-  ChatFMX.Frame.Attachment.Audio, ChatFMX.Frame.Attachment.AudioMessage;
+  ChatFMX.Frame.Attachment.Audio, ChatFMX.Frame.Attachment.AudioMessage,
+  ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentWall = class(TFrame)
+  TFrameAttachmentWall = class(TFrameAttachment)
     LayoutContent: TLayout;
     LayoutClient: TLayout;
     MemoText: TMemo;
@@ -27,15 +28,21 @@ type
     LabelTime: TLabel;
     LineLeft: TLine;
     Path1: TPath;
+    LayoutDeleted: TLayout;
+    RectangleDeleted: TRectangle;
+    LayoutDeletedContent: TLayout;
+    PathDeleted: TPath;
+    LabelDeleteReason: TLabel;
     procedure FrameResize(Sender: TObject);
     procedure MemoTextResize(Sender: TObject);
     procedure MemoTextChange(Sender: TObject);
+    procedure LabelFromMouseEnter(Sender: TObject);
+    procedure LabelFromMouseLeave(Sender: TObject);
   private
     FFromText: string;
     FImageUrl: string;
     FImageFile: string;
     FText: string;
-    FVK: TCustomVK;
     FDate: TDateTime;
     FAutor: string;
     procedure SetFromText(const Value: string);
@@ -50,8 +57,12 @@ type
     procedure CreateVideos(Items: TVkAttachmentArray);
     procedure CreateAudios(Items: TVkAttachmentArray);
     procedure CreateDocs(Items: TVkAttachmentArray);
+    procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure CreateLinks(Items: TVkAttachmentArray);
+    procedure CreateCopyHistory(Items: TArray<TVkPost>; Data: TVkMessageHistory);
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    procedure SetVisibility(const Value: Boolean); override;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
     procedure Fill(Item: TVkPost; Data: TVkMessageHistory);
     property Text: string read FText write SetText;
@@ -66,17 +77,27 @@ implementation
 uses
   System.Math, FMX.Memo.Style, ChatFMX.PreviewManager, VK.Types,
   VK.Entity.Profile, VK.Entity.Group, ChatFMX.Utils,
-  ChatFMX.Frame.Attachment.Messages;
+  ChatFMX.Frame.Attachment.Messages, ChatFMX.Frame.Attachment.Link,
+  ChatFMX.Frame.Attachment.WallFwd;
 
 {$R *.fmx}
 
 { TFrameAttachmentMessage }
 
+procedure TFrameAttachmentWall.SetVisibility(const Value: Boolean);
+begin
+  inherited;
+  for var Control in LayoutClient.Controls do
+    if Control is TFrameAttachment then
+      (Control as TFrameAttachment).SetVisibility(Value);
+  for var Control in FlowLayoutMedia.Controls do
+    if Control is TFrameAttachment then
+      (Control as TFrameAttachment).SetVisibility(Value);
+end;
+
 constructor TFrameAttachmentWall.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  Name := '';
-  FVK := AVK;
+  inherited;
   {$IFDEF ANDROID}
   CircleAvatar.Margins.Right := 7;
   {$ENDIF}
@@ -164,6 +185,20 @@ begin
   end;
 end;
 
+procedure TFrameAttachmentWall.LabelFromMouseEnter(Sender: TObject);
+var
+  Control: TLabel absolute Sender;
+begin
+  Control.TextSettings.Font.Style := Control.TextSettings.Font.Style + [TFontStyle.fsUnderline];
+end;
+
+procedure TFrameAttachmentWall.LabelFromMouseLeave(Sender: TObject);
+var
+  Control: TLabel absolute Sender;
+begin
+  Control.TextSettings.Font.Style := Control.TextSettings.Font.Style - [TFontStyle.fsUnderline];
+end;
+
 procedure TFrameAttachmentWall.MemoTextChange(Sender: TObject);
 begin
   var H := MemoText.ContentSize.Size.Height + 5;
@@ -183,8 +218,10 @@ procedure TFrameAttachmentWall.Fill(Item: TVkPost; Data: TVkMessageHistory);
 begin
   Text := Item.Text;
   Date := Item.Date;
+  FromText := Item.FromId.ToString;
   ImageUrl := '';
   Autor := '';
+  LayoutDeleted.Visible := False;
 
   if PeerIdIsUser(Item.FromId) then
   begin
@@ -203,6 +240,15 @@ begin
       FromText := Group.Name;
       ImageUrl := Group.Photo50;
     end;
+  end;
+
+  if Item.IsDeleted then
+  begin
+    LayoutDeleted.Visible := True;
+    LabelDeleteReason.Text := Item.DeletedReason;
+    Text := '';
+    RecalcSize;
+    Exit;
   end;
 
   if PeerIdIsUser(Item.SignerId) then
@@ -228,8 +274,13 @@ begin
     CreateVideos(Item.Attachments);
     CreateAudios(Item.Attachments);
     CreateDocs(Item.Attachments);
+    CreateLinks(Item.Attachments);
+    CreatePosts(Item.Attachments, Data);
     RecalcMedia;
   end;
+
+  if Length(Item.CopyHistory) > 0 then
+    CreateCopyHistory(Item.CopyHistory, Data);
        {
   if Assigned(Item.Geo) then
     CreateGeo(Item.Geo); }
@@ -237,12 +288,50 @@ begin
   RecalcSize;
 end;
 
+procedure TFrameAttachmentWall.CreateCopyHistory(Items: TArray<TVkPost>; Data: TVkMessageHistory);
+begin
+  for var Item in Items do
+  begin
+    var Frame := TFrameAttachmentWall.Create(LayoutClient, VK);
+    Frame.Parent := LayoutClient;
+    Frame.Position.Y := 10000;
+    Frame.Align := TAlignLayout.Top;
+    Frame.Fill(Item, Data);
+  end;
+end;
+
+procedure TFrameAttachmentWall.CreateLinks(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Link then
+    begin
+      var Frame := TFrameAttachmentLink.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Link);
+    end;
+end;
+
+procedure TFrameAttachmentWall.CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Wall then
+    begin
+      var Frame := TFrameAttachmentWall.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Wall, Data);
+    end;
+end;
+
 procedure TFrameAttachmentWall.CreateDocs(Items: TVkAttachmentArray);
 begin
   for var Item in Items do
     if (Item.&Type = TVkAttachmentType.Doc) and (not Assigned(Item.Doc.Preview)) then
     begin
-      var Frame := TFrameAttachmentDocument.Create(LayoutClient, FVK);
+      var Frame := TFrameAttachmentDocument.Create(LayoutClient, VK);
       Frame.Parent := LayoutClient;
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
@@ -255,7 +344,7 @@ begin
   for var Item in Items do
     if Item.&Type = TVkAttachmentType.Audio then
     begin
-      var Frame := TFrameAttachmentAudio.Create(LayoutClient, FVK);
+      var Frame := TFrameAttachmentAudio.Create(LayoutClient, VK);
       Frame.Parent := LayoutClient;
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
@@ -268,7 +357,7 @@ begin
   for var Item in Items do
     if Item.&Type = TVkAttachmentType.Video then
     begin
-      var Frame := TFrameAttachmentVideo.Create(FlowLayoutMedia, FVK);
+      var Frame := TFrameAttachmentVideo.Create(FlowLayoutMedia, VK);
       Frame.Parent := FlowLayoutMedia;
       Frame.Fill(Item.Video);
     end;
@@ -280,13 +369,13 @@ begin
   begin
     if Item.&Type = TVkAttachmentType.Photo then
     begin
-      var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, FVK);
+      var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, VK);
       Frame.Parent := FlowLayoutMedia;
       Frame.Fill(Item.Photo);
     end;
     if (Item.&Type = TVkAttachmentType.Doc) and (Assigned(Item.Doc.Preview)) then
     begin
-      var Frame := TFrameAttachmentDocument.Create(FlowLayoutMedia, FVK);
+      var Frame := TFrameAttachmentDocument.Create(FlowLayoutMedia, VK);
       Frame.Parent := FlowLayoutMedia;
       Frame.Fill(Item.Doc, True);
     end;

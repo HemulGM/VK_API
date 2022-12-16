@@ -1,9 +1,9 @@
-object FrameAttachmentReplyMessage: TFrameAttachmentReplyMessage
+inherited FrameAttachmentReplyMessage: TFrameAttachmentReplyMessage
   Margins.Top = 5.000000000000000000
   Margins.Bottom = 7.000000000000000000
   Size.Width = 514.000000000000000000
   Size.Height = 37.000000000000000000
-  Size.PlatformDefault = False
+  OnClick = FrameClick
   OnMouseEnter = FrameMouseEnter
   OnMouseLeave = FrameMouseLeave
   object LineLeft: TLine

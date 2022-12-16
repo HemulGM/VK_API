@@ -9,6 +9,8 @@ function AttachmentToText(const Value: TVkAttachmentType): string;
 
 function WordOfCount(const Count: Integer; const Words: TArrayOfString): string;
 
+function WordOfSex(const Sex: TVkSex; const Words: TArrayOfString): string;
+
 function HumanDateTime(Value: TDateTime; ShowTime: Boolean = False): string;
 
 function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;
@@ -54,6 +56,18 @@ begin
       Exit(Words[1]);
     '5', '6', '7', '8', '9', '0':
       Exit(Words[2]);
+  end;
+end;
+
+function WordOfSex(const Sex: TVkSex; const Words: TArrayOfString): string;
+begin
+  if Length(Words) < 2 then
+    Exit('');
+  case Sex of
+    TVkSex.None, TVkSex.Male:
+      Result := Words[0];
+    TVkSex.Female:
+      Result := Words[1];
   end;
 end;
 

@@ -1,21 +1,20 @@
-object FrameAttachmentVideo: TFrameAttachmentVideo
+inherited FrameAttachmentVideo: TFrameAttachmentVideo
   Size.Width = 320.000000000000000000
   Size.Height = 240.000000000000000000
-  Size.PlatformDefault = False
   object Image: TImage
     MultiResBitmap = <
       item
       end>
     Align = Client
     Size.Width = 320.000000000000000000
-    Size.Height = 240.000000000000000000
+    Size.Height = 200.000000000000000000
     Size.PlatformDefault = False
     WrapMode = Stretch
   end
   object LayoutInfo: TLayout
     Align = Client
     Size.Width = 320.000000000000000000
-    Size.Height = 240.000000000000000000
+    Size.Height = 200.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
     object LayoutInfoB: TLayout
@@ -25,7 +24,7 @@ object FrameAttachmentVideo: TFrameAttachmentVideo
       Margins.Right = 8.000000000000000000
       Margins.Bottom = 8.000000000000000000
       Position.X = 8.000000000000000000
-      Position.Y = 209.000000000000000000
+      Position.Y = 169.000000000000000000
       Size.Width = 304.000000000000000000
       Size.Height = 23.000000000000000000
       Size.PlatformDefault = False
@@ -80,6 +79,101 @@ object FrameAttachmentVideo: TFrameAttachmentVideo
           WrapMode = Fit
         end
       end
+    end
+    object LayoutPlay: TLayout
+      Align = Contents
+      Size.Width = 320.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object CirclePlay: TCircle
+        Align = Center
+        Cursor = crHandPoint
+        Fill.Color = x7F000000
+        Size.Width = 50.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+        object ImagePlay: TImage
+          MultiResBitmap.Height = 24
+          MultiResBitmap.Width = 17
+          MultiResBitmap = <
+            item
+              Width = 17
+              Height = 24
+              PNG = {
+                89504E470D0A1A0A0000000D49484452000000110000001808060000001C6216
+                32000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                011749444154384FA5943D6EC24010856D9A24654A3A84C2159228B4DC058902
+                855B2004520E140909424D0702A5A549991FAAC4E633F384838CCD7AF9A4A719
+                EFCE7BBB76E1208AA26A1CC7B7C12510B2419FA84D58A8E572603C40D02BA5A6
+                2D77CC9E42D017EAD0BADFCAAC59081A53EA1A2BC62CA721E81B75698B6F65E3
+                C510344177B264D1DC5908F941CFB41559536CC41D82DE504376437BA520648B
+                7AB4762B5BF683A029A516260FFB344FB0BF673F52793EBC4392B7412FB42DDF
+                0FBB464D8B03AD3B81F10F8DD08DEC86F6CF8271859E643B4633B9E8F421EDB5
+                2C596CF4349897E851A3F968FE088CBF68409B7FFA7FCC968279811EB4ED86BC
+                FBD3297DEA95B6DCC134437374AFA5F270BADF1FFE4010EC0094B1EE27A2F7B9
+                E60000000049454E44AE426082}
+              FileName = 'D:\Projects\VK_API\Samples\ChatFMX\Res\video_play_small.png'
+            end>
+          Align = Client
+          HitTest = False
+          Margins.Left = 4.000000000000000000
+          Size.Width = 46.000000000000000000
+          Size.Height = 50.000000000000000000
+          Size.PlatformDefault = False
+          WrapMode = Center
+        end
+        object ColorAnimationOverPlay: TColorAnimation
+          Duration = 0.200000002980232200
+          PropertyName = 'Fill.Color'
+          StartValue = x7F000000
+          StopValue = xA0000000
+          Trigger = 'IsMouseOver=true'
+          TriggerInverse = 'IsMouseOver=false'
+        end
+      end
+    end
+  end
+  object LayoutCaption: TLayout
+    Align = Bottom
+    HitTest = True
+    Padding.Top = 4.000000000000000000
+    Position.Y = 200.000000000000000000
+    Size.Width = 320.000000000000000000
+    Size.Height = 40.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    OnMouseEnter = LayoutCaptionMouseEnter
+    OnMouseLeave = LayoutCaptionMouseLeave
+    object LabelCaption: TLabel
+      Align = Top
+      StyledSettings = []
+      Position.Y = 4.000000000000000000
+      Size.Width = 320.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 12.500000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = xFF71AAEB
+      TextSettings.WordWrap = False
+      Text = #1053#1072#1079#1074#1072#1085#1080#1077' '#1074#1080#1076#1077#1086
+      TabOrder = 2
+    end
+    object LabelViews: TLabel
+      Align = Top
+      StyledSettings = [Style]
+      Position.Y = 23.000000000000000000
+      Size.Width = 320.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 13.000000000000000000
+      TextSettings.FontColor = xFF828282
+      TextSettings.WordWrap = False
+      Text = '1 '#1087#1088#1086#1089#1084#1086#1090#1088
+      TabOrder = 1
     end
   end
 end

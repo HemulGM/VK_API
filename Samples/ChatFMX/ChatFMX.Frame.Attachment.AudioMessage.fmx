@@ -1,4 +1,4 @@
-object FrameAttachmentAudioMessage: TFrameAttachmentAudioMessage
+inherited FrameAttachmentAudioMessage: TFrameAttachmentAudioMessage
   HitTest = False
   Padding.Left = 10.000000000000000000
   Padding.Top = 6.000000000000000000
@@ -6,7 +6,6 @@ object FrameAttachmentAudioMessage: TFrameAttachmentAudioMessage
   Padding.Bottom = 6.000000000000000000
   Size.Width = 407.000000000000000000
   Size.Height = 36.000000000000000000
-  Size.PlatformDefault = False
   object LabelTime: TLabel
     Align = Right
     AutoSize = True

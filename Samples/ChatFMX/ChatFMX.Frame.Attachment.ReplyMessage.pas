@@ -6,10 +6,10 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Controls.Presentation, VK.API, VK.Entity.Message,
-  VK.Entity.Conversation, System.Messaging;
+  VK.Entity.Conversation, System.Messaging, ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentReplyMessage = class(TFrame)
+  TFrameAttachmentReplyMessage = class(TFrameAttachment)
     LineLeft: TLine;
     RectangleImage: TRectangle;
     LayoutContent: TLayout;
@@ -18,29 +18,32 @@ type
     LabelText: TLabel;
     procedure FrameMouseEnter(Sender: TObject);
     procedure FrameMouseLeave(Sender: TObject);
+    procedure FrameClick(Sender: TObject);
   private
     FActive: Boolean;
-    FVK: TCustomVK;
     FTitle: string;
     FText: string;
     FImageUrl: string;
     FImageFile: string;
     FIsAttachmentText: Boolean;
+    FOnSelect: TNotifyEvent;
     procedure SetActive(const Value: Boolean);
     procedure SetText(const Value: string);
     procedure SetTitle(const Value: string);
     procedure SetImageUrl(const Value: string);
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure SetIsAttachmentText(const Value: Boolean);
+    procedure SetOnSelect(const Value: TNotifyEvent);
   public
     property Active: Boolean read FActive write SetActive;
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
     procedure Fill(Item: TVkMessage; Data: TVkMessageHistory);
     property Text: string read FText write SetText;
     property Title: string read FTitle write SetTitle;
     property ImageUrl: string read FImageUrl write SetImageUrl;
     property IsAttachmentText: Boolean read FIsAttachmentText write SetIsAttachmentText;
+    property OnSelect: TNotifyEvent read FOnSelect write SetOnSelect;
   end;
 
 implementation
@@ -53,9 +56,7 @@ uses
 
 constructor TFrameAttachmentReplyMessage.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  Name := '';
-  FVK := AVK;
+  inherited;
   ImageUrl := '';
 end;
 
@@ -93,6 +94,12 @@ begin
   begin
     ImageUrl := Item.Attachments[0].GetPreviewUrl(50);
   end;
+end;
+
+procedure TFrameAttachmentReplyMessage.FrameClick(Sender: TObject);
+begin
+  if Assigned(OnSelect) then
+    OnSelect(Self);
 end;
 
 procedure TFrameAttachmentReplyMessage.FrameMouseEnter(Sender: TObject);
@@ -133,6 +140,11 @@ begin
     LabelText.FontColor := $FF71AAEB
   else
     LabelText.FontColor := $FFE1E3E6;
+end;
+
+procedure TFrameAttachmentReplyMessage.SetOnSelect(const Value: TNotifyEvent);
+begin
+  FOnSelect := Value;
 end;
 
 procedure TFrameAttachmentReplyMessage.FOnReadyImage(const Sender: TObject; const M: TMessage);

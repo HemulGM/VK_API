@@ -6,10 +6,10 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, FMX.Layouts, VK.API, VK.Entity.Doc,
-  VK.Types, System.Messaging;
+  VK.Types, System.Messaging, Skia, Skia.FMX, ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentDocument = class(TFrame)
+  TFrameAttachmentDocument = class(TFrameAttachment)
     LabelSize: TLabel;
     ImageIcon: TImage;
     LayoutContent: TLayout;
@@ -21,33 +21,44 @@ type
     RectangleSize: TRectangle;
     LabelTypeSize: TLabel;
     RectangleOver: TRectangle;
+    AnimatedImageGIF: TSkAnimatedImage;
+    AniIndicatorGif: TAniIndicator;
     procedure LabelTitleMouseLeave(Sender: TObject);
     procedure LabelTitleMouseEnter(Sender: TObject);
     procedure LabelTypeSizeResize(Sender: TObject);
+    procedure ImagePreviewClick(Sender: TObject);
+    procedure AnimatedImageGIFClick(Sender: TObject);
   private
-    FVK: TCustomVK;
     FTitle: string;
     FDocSize: string;
     FDocType: TVkDocumentType;
     FModePreview: Boolean;
     FImageUrl: string;
     FImageFile: string;
+    FImageUrlGif: string;
+    FImageFileGif: string;
     FExt: string;
+    FPreviewSize: TSizeF;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
+    procedure FOnReadyImageGif(const Sender: TObject; const M: TMessage);
     procedure SetTitle(const Value: string);
     procedure SetDocSize(const Value: string);
     procedure SetDocType(const Value: TVkDocumentType);
     procedure SetModePreview(const Value: Boolean);
     procedure SetExt(const Value: string);
     procedure UpdatePreviewSize;
+    procedure SetPreviewSize(const Value: TSizeF);
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    procedure SetVisibility(const Value: Boolean); override;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
+    destructor Destroy; override;
     procedure Fill(Document: TVkDocument; AsPreview: Boolean);
     property Title: string read FTitle write SetTitle;
     property DocSize: string read FDocSize write SetDocSize;
     property DocType: TVkDocumentType read FDocType write SetDocType;
     property ModePreview: Boolean read FModePreview write SetModePreview;
     property Ext: string read FExt write SetExt;
+    property PreviewSize: TSizeF read FPreviewSize write SetPreviewSize;
   end;
 
 var
@@ -80,13 +91,42 @@ uses
 
 {$R *.fmx}
 
+procedure TFrameAttachmentDocument.SetVisibility(const Value: Boolean);
+begin
+  inherited;
+  if Value then
+  begin
+    AnimatedImageGIF.Visible := False;
+    ImagePreview.Visible := True;
+    AnimatedImageGIF.Source.Data := [];
+    if (not FImageUrl.IsEmpty) and (ImagePreview.Bitmap.IsEmpty) then
+      TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+  end
+  else
+  begin
+    AnimatedImageGIF.Source.Data := [];
+    ImagePreview.Bitmap := nil;
+  end;
+end;
+
+procedure TFrameAttachmentDocument.AnimatedImageGIFClick(Sender: TObject);
+begin
+  AnimatedImageGIF.Visible := False;
+  ImagePreview.Visible := True;
+end;
+
 constructor TFrameAttachmentDocument.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  FVK := AVK;
-  Name := '';
+  inherited;
   ImageIcon.BitmapMargins.Rect := IconAudio;
   ModePreview := False;
+end;
+
+destructor TFrameAttachmentDocument.Destroy;
+begin
+  TPreview.Instance.Unsubscribe(FOnReadyImageGif);
+  TPreview.Instance.Unsubscribe(FOnReadyImage);
+  inherited;
 end;
 
 procedure TFrameAttachmentDocument.Fill(Document: TVkDocument; AsPreview: Boolean);
@@ -94,6 +134,8 @@ begin
   ModePreview := AsPreview;
   FImageUrl := '';
   DocSize := Document.SizeStr;
+  if Document.Ext.ToLower = 'gif' then
+    FImageUrlGif := Document.Url;
   if AsPreview then
   begin
     Ext := Document.Ext;
@@ -105,8 +147,8 @@ begin
         Height := 100;
         Width := Height * (Size.Width / Size.Height);
         FImageUrl := Size.Src;
-        if not FImageUrl.IsEmpty then
-          TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+        //if not FImageUrl.IsEmpty then
+        //  TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
       end;
     end;
   end
@@ -115,6 +157,7 @@ begin
     Title := Document.Title;
     DocType := Document.&Type;
   end;
+  PreviewSize := TSizeF.Create(Width, Height);
 end;
 
 procedure TFrameAttachmentDocument.FOnReadyImage(const Sender: TObject; const M: TMessage);
@@ -127,17 +170,57 @@ begin
   FImageFile := Data.Value.FileName;
   if FImageFile.IsEmpty then
   begin
-    //CircleAvatar.Fill.Kind := TBrushKind.Solid;
     ImagePreview.Bitmap := nil;
   end
   else
   try
     ImagePreview.Bitmap.LoadFromFile(FImageFile);
-    //CircleAvatar.Fill.Kind := TBrushKind.Bitmap;
-    //CircleAvatar.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
   except
     ImagePreview.Bitmap := nil;
-    //CircleAvatar.Fill.Kind := TBrushKind.Solid;
+  end;
+end;
+
+procedure TFrameAttachmentDocument.FOnReadyImageGif(const Sender: TObject; const M: TMessage);
+var
+  Data: TMessagePreview absolute M;
+begin
+  if Data.Value.Url <> FImageUrlGif then
+    Exit;
+  TPreview.Instance.Unsubscribe(FOnReadyImageGif);
+  FImageFileGif := Data.Value.FileName;
+  if FImageFileGif.IsEmpty then
+  begin
+    AnimatedImageGIF.Visible := False;
+    ImagePreview.Visible := True;
+  end
+  else
+  try
+    AnimatedImageGIF.LoadFromFile(FImageFileGif);
+    ImagePreview.Visible := False;
+  except
+    AnimatedImageGIF.Visible := False;
+    ImagePreview.Visible := True;
+  end;
+  AniIndicatorGif.Visible := False;
+end;
+
+procedure TFrameAttachmentDocument.ImagePreviewClick(Sender: TObject);
+begin
+  if Ext.ToLower = 'gif' then
+  begin
+    if not FImageUrlGif.IsEmpty then
+      if AnimatedImageGIF.Visible then
+      begin
+        AnimatedImageGIF.Visible := False;
+        ImagePreview.Visible := True;
+      end
+      else
+      begin
+        ImagePreview.Visible := True;
+        AnimatedImageGIF.Visible := True;
+        AniIndicatorGif.Visible := True;
+        TPreview.Instance.Subscribe(FImageUrlGif, FOnReadyImageGif);
+      end;
   end;
 end;
 
@@ -213,6 +296,11 @@ begin
     Padding.Top := 4;
     Height := 32;
   end;
+end;
+
+procedure TFrameAttachmentDocument.SetPreviewSize(const Value: TSizeF);
+begin
+  FPreviewSize := Value;
 end;
 
 procedure TFrameAttachmentDocument.SetTitle(const Value: string);

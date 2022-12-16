@@ -340,6 +340,31 @@ type
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
   end;
 
+  TVkPostFrom = class(TVkObject)
+  private
+    FName: string;
+    FPhoto_100: string;
+    FPhoto_200: string;
+    FPhoto_50: string;
+    FScreen_name: string;
+    FType: string;
+    FFirst_name: string;
+    FLast_name: string;
+    FCan_access_closed: Boolean;
+  public
+    //page
+    property Name: string read FName write FName;
+    property Photo100: string read FPhoto_100 write FPhoto_100;
+    property Photo200: string read FPhoto_200 write FPhoto_200;
+    property Photo50: string read FPhoto_50 write FPhoto_50;
+    property ScreenName: string read FScreen_name write FScreen_name;
+    // user
+    property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
+    property FirstName: string read FFirst_name write FFirst_name;
+    property LastName: string read FLast_name write FLast_name;
+    property &Type: string read FType write FType;
+  end;
+
   /// <summary>
   /// Объект, описывающий запись на стене пользователя или сообщества
   /// </summary>
@@ -387,8 +412,11 @@ type
     FIs_archived: Boolean;
     FShort_text_rate: Extended;
     FHash: string;
-    FFrom: TVkGroup;
+    FFrom: TVkPostFrom;
     FCarousel_offset: Integer;
+    FIs_deleted: Boolean;
+    FDeleted_reason: string;
+    FDeleted_details: string;
   public
     /// <summary>
     /// Идентификатор записи
@@ -440,6 +468,14 @@ type
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
+    /// Причина удаления записи (IsDeleted)
+    /// </summary>
+    property DeletedReason: string read FDeleted_reason write FDeleted_reason;
+    /// <summary>
+    /// Информация об удалении записи (IsDeleted)
+    /// </summary>
+    property DeletedDetails: string read FDeleted_details write FDeleted_details;
+    /// <summary>
     /// Информация о записи VK Donut
     /// </summary>
     property Donut: TVkDonut read FDonut write FDonut;
@@ -450,7 +486,7 @@ type
     /// <summary>
     /// Откуда запись
     /// </summary>
-    property From: TVkGroup read FFrom write FFrom;
+    property From: TVkPostFrom read FFrom write FFrom;
     /// <summary>
     /// Идентификатор автора записи (от чьего имени опубликована запись)
     /// </summary>
@@ -467,6 +503,10 @@ type
     /// Архивная запись
     /// </summary>
     property IsArchived: Boolean read FIs_archived write FIs_archived;
+    /// <summary>
+    /// Запись удалена
+    /// </summary>
+    property IsDeleted: Boolean read FIs_deleted write FIs_deleted;
     /// <summary>
     /// True, если объект добавлен в закладки у текущего пользователя.
     /// </summary>

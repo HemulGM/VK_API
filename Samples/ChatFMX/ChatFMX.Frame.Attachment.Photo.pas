@@ -5,25 +5,24 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  VK.API, VK.Entity.Photo, FMX.Objects, VK.Types, System.Messaging;
+  VK.API, VK.Entity.Photo, FMX.Objects, VK.Types, System.Messaging,
+  ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentPhoto = class(TFrame)
+  TFrameAttachmentPhoto = class(TFrameAttachment)
     Image: TImage;
     procedure FrameResize(Sender: TObject);
+    procedure ImageClick(Sender: TObject);
   private
-    FVK: TCustomVK;
     FImageUrl: string;
     FImageFile: string;
     FWasImage: Boolean;
     FMaxWidth: Integer;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure SetMaxWidth(const Value: Integer);
-  protected
-    procedure Disappear; override;
-    procedure Paint; override;
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    procedure SetVisibility(const Value: Boolean); override;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
     procedure Fill(Photo: TVkPhoto);
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth;
@@ -40,22 +39,14 @@ uses
 
 constructor TFrameAttachmentPhoto.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
+  inherited;
   FWasImage := False;
-  FVK := AVK;
-  Name := '';
 end;
 
 destructor TFrameAttachmentPhoto.Destroy;
 begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
   inherited;
-end;
-
-procedure TFrameAttachmentPhoto.Disappear;
-begin
-  inherited;
-  Image.Bitmap := nil;
 end;
 
 procedure TFrameAttachmentPhoto.Fill(Photo: TVkPhoto);
@@ -75,8 +66,8 @@ begin
     if Size.Height < Height then
       Height := Width * (Size.Height / Size.Width);
     FImageUrl := Size.Url;
-    if not FImageUrl.IsEmpty then
-      TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+    //if not FImageUrl.IsEmpty then
+    //  TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
   end
   else
     Width := 80;
@@ -113,16 +104,28 @@ begin
     Width := MaxWidth;
 end;
 
-procedure TFrameAttachmentPhoto.Paint;
+procedure TFrameAttachmentPhoto.ImageClick(Sender: TObject);
 begin
-  inherited;
-  if FWasImage and (Image.Bitmap.IsEmpty) then
-    TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+  //
 end;
 
 procedure TFrameAttachmentPhoto.SetMaxWidth(const Value: Integer);
 begin
   FMaxWidth := Value;
+end;
+
+procedure TFrameAttachmentPhoto.SetVisibility(const Value: Boolean);
+begin
+  inherited;
+  if Value then
+  begin
+    if (not FImageUrl.IsEmpty) and (Image.Bitmap.IsEmpty) then
+      TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+  end
+  else
+  begin
+    Image.Bitmap := nil;
+  end;
 end;
 
 end.

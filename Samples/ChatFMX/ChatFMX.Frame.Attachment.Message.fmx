@@ -1,8 +1,8 @@
-object FrameAttachmentMessage: TFrameAttachmentMessage
+inherited FrameAttachmentMessage: TFrameAttachmentMessage
   HitTest = False
   Size.Width = 581.000000000000000000
   Size.Height = 284.000000000000000000
-  Size.PlatformDefault = False
+  OnMouseUp = FrameMouseUp
   OnResize = FrameResize
   object Rectangle1: TRectangle
     Align = Contents
@@ -45,7 +45,8 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
         Cursor = crDefault
         DisableFocusEffect = True
         EnabledScroll = False
-        Position.Y = 36.000000000000000000
+        Margins.Top = 4.000000000000000000
+        Position.Y = 40.000000000000000000
         Size.Width = 571.000000000000000000
         Size.Height = 53.000000000000000000
         Size.PlatformDefault = False
@@ -53,6 +54,8 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
         TabOrder = 1
         TabStop = False
         OnResize = MemoTextResize
+        OnMouseDown = MemoTextMouseDown
+        OnMouseUp = MemoTextMouseUp
         Viewport.Width = 571.000000000000000000
         Viewport.Height = 53.000000000000000000
       end
@@ -60,7 +63,8 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
         Align = Top
         ClipChildren = True
         HitTest = False
-        Position.Y = 89.000000000000000000
+        Margins.Top = 4.000000000000000000
+        Position.Y = 97.000000000000000000
         Size.Width = 571.000000000000000000
         Size.Height = 57.000000000000000000
         Size.PlatformDefault = False
@@ -113,7 +117,7 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
             51A929A8ED4CA056FF71EC3F1D07141925ED8C3A35A525FC7070A8346869363F
             DB8896FC78EF7ACFE60436C97B9BF7DEEE4666CC6726B3E79C5D76EF3DF7DCFB
             EEB9F7804516596491FF6704BFA68DB6B636ED0A462A74CDAC9312E55293A51A
-            B07A0232E7BAA1DF419FF1EBC6BF3221464DA05798E29210B86098DAE94F61C5
+            B07A023267D4D0EFA0CFE4E8C6BF3221464DA05798E29210B86098DAE94F61C5
             F94824A2CCE9232D0EA04EBF9F31B85133B0C3D4C4231A4401BFE50A13725033
             E5EBA68E570B270BDE48873352EA8058C7F591ED806C57A35CCCE694A07A7E59
             35776FA1B1E297A97444CA1CD014F9F6664D18FB01ED5E36A509F36D29C433C7
@@ -175,7 +179,7 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
             9B97679229908E27A9088887EAF7571905F74953367ACA22E781BE93BE9BF6F6
             A9EA3C91B2088827964469C33554992121BFE0B5D6804E72E83083F2794A696F
             FBFF32630539838A13A6EEE76357D4A5B18B4ABAAB9BBEAEA24B0B3AB79F3ABA
-            BE440798748647C758E9E8F4228B2CB2C8223180FF025316B7AF1DC937770000
+            BE440798748647C758E9E8F4228B2CB2C8223180FF024F02B7AF281927AB0000
             000049454E44AE426082}
           Fill.Bitmap.WrapMode = TileStretch
           Fill.Kind = Bitmap
@@ -205,10 +209,12 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
             TextSettings.Font.Family = 'Roboto'
             TextSettings.Font.Size = 12.500000000000000000
             TextSettings.Font.StyleExt = {00070000000000000004000000}
-            TextSettings.FontColor = xFF71AAEB
+            TextSettings.FontColor = xFFE1E3E6
             TextSettings.WordWrap = False
             Text = #1041#1086#1090' '#1047#1072#1085#1091#1076#1072
             TabOrder = 0
+            OnMouseEnter = LabelFromMouseEnter
+            OnMouseLeave = LabelFromMouseLeave
           end
         end
         object LayoutDetails: TLayout
@@ -234,6 +240,8 @@ object FrameAttachmentMessage: TFrameAttachmentMessage
             ParentShowHint = False
             ShowHint = True
             TabOrder = 2
+            OnMouseEnter = LabelFromMouseEnter
+            OnMouseLeave = LabelFromMouseLeave
           end
         end
       end

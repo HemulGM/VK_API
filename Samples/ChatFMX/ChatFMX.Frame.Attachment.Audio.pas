@@ -6,10 +6,11 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, FMX.Layouts, VK.API,
-  VK.Entity.AudioMessage, VK.Entity.Audio, ChatFMX.DM.Res;
+  VK.Entity.AudioMessage, VK.Entity.Audio, ChatFMX.DM.Res,
+  ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentAudio = class(TFrame)
+  TFrameAttachmentAudio = class(TFrameAttachment)
     LayoutControl: TLayout;
     CircleControl: TCircle;
     PathControl: TPath;
@@ -42,7 +43,6 @@ type
     procedure LayoutVolumeMouseLeave(Sender: TObject);
   private
     FIsPlay: Boolean;
-    FVK: TCustomVK;
     FDuration: Int64;
     FIsPause: Boolean;
     FDurationPlayed: Int64;
@@ -62,7 +62,7 @@ type
     procedure UpdateControls;
     property MouseFrame: Boolean read FMouseFrame write SetMouseFrame;
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     procedure Fill(Audio: TVkAudio);
     property IsPlay: Boolean read FIsPlay write SetIsPlay;
     property IsPause: Boolean read FIsPause write SetIsPause;
@@ -92,9 +92,7 @@ end;
 
 constructor TFrameAttachmentAudio.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  FVK := AVK;
-  Name := '';
+  inherited;
   CirclePos.Visible := False;
   CircleVolumePos.Visible := False;
   MouseFrame := False;

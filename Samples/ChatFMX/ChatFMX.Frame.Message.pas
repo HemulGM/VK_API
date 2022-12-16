@@ -80,6 +80,9 @@ type
     FUpdateTime: TDateTime;
     FIsGift: Boolean;
     FCanAnswer: Boolean;
+    FFromSex: TVkSex;
+    FVisibility: Boolean;
+    procedure FOnAttachSelect(Sender: TObject);
     procedure SetText(const Value: string);
     procedure SetFromText(const Value: string);
     procedure SetImageUrl(const Value: string);
@@ -109,6 +112,10 @@ type
     procedure CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkMessageHistory);
     procedure CreateLinks(Items: TVkAttachmentArray);
     procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure SetFromSex(const Value: TVkSex);
+    procedure CreateCalls(Items: TVkAttachmentArray);
+    procedure SetVisibility(const Value: Boolean);
+    procedure BroadcastVisible(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
@@ -127,6 +134,8 @@ type
     property UpdateTime: TDateTime read FUpdateTime write SetUpdateTime;
     property IsGift: Boolean read FIsGift write SetIsGift;
     property ChatCanAnswer: Boolean read FCanAnswer write SetCanAnswer;
+    property FromSex: TVkSex read FFromSex write SetFromSex;
+    property Visibility: Boolean read FVisibility write SetVisibility;
   end;
 
 implementation
@@ -136,9 +145,23 @@ uses
   ChatFMX.PreviewManager, ChatFMX.Frame.Attachment.Photo, ChatFMX.Utils,
   ChatFMX.Frame.Attachment.Sticker, ChatFMX.Frame.Attachment.Video,
   ChatFMX.Frame.Attachment.Gift, ChatFMX.Frame.Attachment.Message,
-  ChatFMX.Frame.Attachment.Link, ChatFMX.Frame.Attachment.Wall;
+  ChatFMX.Frame.Attachment.Link, ChatFMX.Frame.Attachment.Wall,
+  ChatFMX.Frame.Attachment.Call, ChatFMX.Frame.Attachment;
 
 {$R *.fmx}
+
+procedure TFrameMessage.BroadcastVisible(const Value: Boolean);
+begin
+  for var Control in LayoutClient.Controls do
+    if Control is TFrameAttachment then
+      (Control as TFrameAttachment).SetVisibility(Value);
+  for var Control in FlowLayoutMedia.Controls do
+    if Control is TFrameAttachment then
+      (Control as TFrameAttachment).SetVisibility(Value);
+  for var Control in LayoutFwdMessages.Controls do
+    if Control is TFrameAttachment then
+      (Control as TFrameAttachment).SetVisibility(Value);
+end;
 
 procedure TFrameMessage.ClearMedia;
 begin
@@ -155,20 +178,34 @@ end;
 procedure TFrameMessage.RecalcMedia;
 begin
   var H: Single := 0;
-  for var Control in FlowLayoutMedia.Controls do
+  if ((FlowLayoutMedia.ControlsCount = 1) and (
+    (FlowLayoutMedia.Controls[0] is TFrameAttachmentPhoto) or
+    (FlowLayoutMedia.Controls[0] is TFrameAttachmentVideo))) then
   begin
-    if (Control.Width > FlowLayoutMedia.Width) or
-      ((FlowLayoutMedia.ControlsCount = 1) and (
-      (FlowLayoutMedia.Controls[0] is TFrameAttachmentPhoto) or
-      (FlowLayoutMedia.Controls[0] is TFrameAttachmentVideo)))
-      then
+    var Control := FlowLayoutMedia.Controls[0];
+    var D := Control.Height / Control.Width;
+    Control.Width := FlowLayoutMedia.Width;
+    if (Control is TFrameAttachmentVideo) and (not (Control as TFrameAttachmentVideo).ShowCaption) then
     begin
-      var D := Control.Height / Control.Width;
-      Control.Width := FlowLayoutMedia.Width;
+      (Control as TFrameAttachmentVideo).ShowCaption := True;
+      Control.Height := Control.Width * D +
+        (Control as TFrameAttachmentVideo).LayoutCaption.Height;
+    end
+    else
       Control.Height := Control.Width * D;
-    end;
     H := Max(Control.Position.Y + Control.Height, H);
-  end;
+  end
+  else
+    for var Control in FlowLayoutMedia.Controls do
+    begin
+      if Control.Width > FlowLayoutMedia.Width then
+      begin
+        var D := Control.Height / Control.Width;
+        Control.Width := FlowLayoutMedia.Width;
+        Control.Height := Control.Width * D;
+      end;
+      H := Max(Control.Position.Y + Control.Height, H);
+    end;
   if FlowLayoutMedia.Height <> H then
   begin
     FlowLayoutMedia.Height := H;
@@ -179,6 +216,7 @@ end;
 constructor TFrameMessage.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
+  FVisibility := False;
   {$IFDEF ANDROID}
   LayoutSelectedIcon.Visible := False;
   LayoutLeft.Width := 51;
@@ -234,6 +272,7 @@ begin
         FromText := User.FirstName
       else
         FromText := User.FullName;
+      FromSex := User.Sex;
       ImageUrl := User.Photo50;
     end;
   end
@@ -261,6 +300,7 @@ begin
     CreateGift(Item.Attachments, Item);
     CreateLinks(Item.Attachments);
     CreatePosts(Item.Attachments, Data);
+    CreateCalls(Item.Attachments);
     RecalcMedia;
   end;
 
@@ -291,9 +331,11 @@ begin
   for var Item in Items do
   begin
     var Frame := TFrameAttachmentMessage.Create(LayoutFwdMessages, FVK);
+    Frame.OnSelect := FOnAttachSelect;
     Frame.Parent := LayoutFwdMessages;
+    Frame.Position.Y := 10000;
     Frame.Align := TAlignLayout.Top;
-    Frame.Fill(Item, Data, ChatCanAnswer);
+    Frame.Fill(Item, Data, ChatCanAnswer, True);
   end;
   LayoutFwdMessages.Visible := True;
   LayoutFwdMessages.RecalcSize;
@@ -302,6 +344,7 @@ end;
 procedure TFrameMessage.CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
 begin
   var Frame := TFrameAttachmentReplyMessage.Create(LayoutClient, FVK);
+  Frame.OnSelect := FOnAttachSelect;
   Frame.Parent := LayoutClient;
   Frame.Align := TAlignLayout.MostTop;
   Frame.Fill(Item, Data);
@@ -430,6 +473,19 @@ begin
     end;
 end;
 
+procedure TFrameMessage.CreateCalls(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Call then
+    begin
+      var Frame := TFrameAttachmentCall.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Call);
+    end;
+end;
+
 procedure TFrameMessage.FrameMouseEnter(Sender: TObject);
 begin
   MouseFrame := True;
@@ -506,7 +562,8 @@ begin
   if (MemoText.SelLength > 0) or FWasSelectedText then
     Exit;
   {$IFNDEF ANDROID}
-  IsSelected := not IsSelected;
+  //IsSelected := not IsSelected;
+  FrameMouseUp(Sender, Button, Shift, X, Y);
   {$ENDIF}
 end;
 
@@ -525,6 +582,12 @@ begin
   FDate := Value;
   LabelTime.Text := FormatDateTime('HH:nn', FDate);
   LabelTime.Hint := FormatDateTime('c', FDate);
+end;
+
+procedure TFrameMessage.SetFromSex(const Value: TVkSex);
+begin
+  FFromSex := Value;
+  LabelGiftFrom.Text := WordOfSex(FFromSex, ['отправил', 'отправила']) + ' подарок';
 end;
 
 procedure TFrameMessage.SetFromText(const Value: string);
@@ -655,6 +718,11 @@ begin
   FOnSelectedChanged := Value;
 end;
 
+procedure TFrameMessage.FOnAttachSelect(Sender: TObject);
+begin
+  IsSelected := not IsSelected;
+end;
+
 procedure TFrameMessage.FOnReadyImage(const Sender: TObject; const M: TMessage);
 var
   Data: TMessagePreview absolute M;
@@ -697,6 +765,18 @@ begin
   end
   else
     LayoutUpdated.Visible := False;
+end;
+
+procedure TFrameMessage.SetVisibility(const Value: Boolean);
+begin
+  if FVisibility = Value then
+    Exit;
+  FVisibility := Value;
+  if FVisibility then
+    Opacity := 1
+  else
+    Opacity := 0;
+  BroadcastVisible(FVisibility);
 end;
 
 end.

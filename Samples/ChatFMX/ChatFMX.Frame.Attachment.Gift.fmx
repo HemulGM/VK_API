@@ -1,9 +1,8 @@
-object FrameAttachmentGift: TFrameAttachmentGift
+inherited FrameAttachmentGift: TFrameAttachmentGift
   HitTest = False
   Padding.Top = 21.000000000000000000
   Size.Width = 459.000000000000000000
-  Size.Height = 431.000000000000000000
-  Size.PlatformDefault = False
+  Size.Height = 410.000000000000000000
   OnResize = FrameResize
   object Rectangle1: TRectangle
     Align = Contents
@@ -15,7 +14,7 @@ object FrameAttachmentGift: TFrameAttachmentGift
     Visible = False
   end
   object LayoutCaption: TLayout
-    Align = Top
+    Align = MostTop
     Margins.Top = 24.000000000000000000
     Position.Y = 301.000000000000000000
     Size.Width = 459.000000000000000000
@@ -249,7 +248,7 @@ object FrameAttachmentGift: TFrameAttachmentGift
     end
   end
   object LayoutGift: TLayout
-    Align = Top
+    Align = MostTop
     Position.Y = 21.000000000000000000
     Size.Width = 459.000000000000000000
     Size.Height = 256.000000000000000000

@@ -6,22 +6,22 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, VK.API, VK.Entity.Sticker, System.Messaging, Skia, Skia.FMX,
-  FMX.Effects, FMX.Filter.Effects;
+  FMX.Effects, FMX.Filter.Effects, ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentSticker = class(TFrame)
+  TFrameAttachmentSticker = class(TFrameAttachment)
     ImageSticker: TImage;
     AnimatedImageSticker: TSkAnimatedImage;
     ShadowEffect1: TShadowEffect;
     procedure AnimatedImageStickerMouseEnter(Sender: TObject);
   private
-    FVK: TCustomVK;
     FImageUrl, FImageFile: string;
     FAnimImageUrl, FAnimImageFile: string;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure FOnReadyImageAnim(const Sender: TObject; const M: TMessage);
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    procedure SetVisibility(const Value: Boolean); override;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
     procedure Fill(Sticker: TVkSticker);
   end;
@@ -35,6 +35,25 @@ uses
 
 { TFrameAttachmentSticker }
 
+procedure TFrameAttachmentSticker.SetVisibility(const Value: Boolean);
+begin
+  inherited;
+  ImageSticker.Visible := False;
+  AnimatedImageSticker.Visible := False;
+  if Value then
+  begin
+    if FAnimImageUrl.IsEmpty then
+      TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage)
+    else
+      TPreview.Instance.Subscribe(FAnimImageUrl, FOnReadyImageAnim);
+  end
+  else
+  begin
+    ImageSticker.Bitmap := nil;
+    AnimatedImageSticker.Source.Data := [];
+  end;
+end;
+
 procedure TFrameAttachmentSticker.AnimatedImageStickerMouseEnter(Sender: TObject);
 begin
   if not AnimatedImageSticker.RunningAnimation then
@@ -43,9 +62,7 @@ end;
 
 constructor TFrameAttachmentSticker.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  FVK := AVK;
-  Name := '';
+  inherited;
   ImageSticker.Visible := False;
   AnimatedImageSticker.Visible := False;
 end;
@@ -53,6 +70,7 @@ end;
 destructor TFrameAttachmentSticker.Destroy;
 begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
+  TPreview.Instance.Unsubscribe(FOnReadyImageAnim);
   inherited;
 end;
 
@@ -61,12 +79,12 @@ begin
   if Sticker.AnimationUrl.IsEmpty then
   begin
     FImageUrl := Sticker.Images[High(Sticker.Images)].Url;
-    TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+    //TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
   end
   else
   begin
     FAnimImageUrl := Sticker.AnimationUrl;
-    TPreview.Instance.Subscribe(FAnimImageUrl, FOnReadyImageAnim);
+    //TPreview.Instance.Subscribe(FAnimImageUrl, FOnReadyImageAnim);
   end;
 end;
 

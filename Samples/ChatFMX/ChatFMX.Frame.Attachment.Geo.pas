@@ -5,18 +5,18 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  VK.API, FMX.Objects, VK.Types, System.Messaging, VK.Entity.Geo;
+  VK.API, FMX.Objects, VK.Types, System.Messaging, VK.Entity.Geo,
+  ChatFMX.Frame.Attachment;
 
 type
-  TFrameAttachmentGeo = class(TFrame)
+  TFrameAttachmentGeo = class(TFrameAttachment)
     RectangleMap: TRectangle;
   private
-    FVK: TCustomVK;
     FImageUrl: string;
     FImageFile: string;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
   public
-    constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
+    constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
     procedure Fill(Geo: TVkGeo);
   end;
@@ -32,9 +32,7 @@ uses
 
 constructor TFrameAttachmentGeo.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
-  inherited Create(AOwner);
-  FVK := AVK;
-  Name := '';
+  inherited;
 end;
 
 destructor TFrameAttachmentGeo.Destroy;
