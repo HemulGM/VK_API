@@ -4,10 +4,11 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Audio,
-  VK.Entity.Album, VK.Entity.Group, VK.Entity.Playlist, VK.Entity.Catalog;
+  VK.Entity.Album, VK.Entity.Group, VK.Entity.Playlist, VK.Entity.Catalog,
+  VK.Entity.Photo;
 
 type
-  TVkCatalogThumb = class(TVkThumb)
+  TVkCatalogThumb = class(TVkPhoto)
   private
     FId: string;
   public

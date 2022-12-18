@@ -30,7 +30,10 @@ uses
   ChatFMX.Frame.Attachment.Wall in 'ChatFMX.Frame.Attachment.Wall.pas' {FrameAttachmentWall},
   ChatFMX.Frame.Attachment.Call in 'ChatFMX.Frame.Attachment.Call.pas' {FrameAttachmentCall: TFrame},
   ChatFMX.Frame.Attachment in 'ChatFMX.Frame.Attachment.pas' {FrameAttachment: TFrame},
-  ChatFMX.Frame.Attachment.WallFwd in 'ChatFMX.Frame.Attachment.WallFwd.pas' {FrameAttachmentWallFwd: TFrame};
+  ChatFMX.Frame.Attachment.WallFwd in 'ChatFMX.Frame.Attachment.WallFwd.pas' {FrameAttachmentWallFwd: TFrame},
+  ChatFMX.Frame.Attachment.Album in 'ChatFMX.Frame.Attachment.Album.pas' {FrameAttachmentAlbum},
+  ChatFMX.Frame.Attachment.Market in 'ChatFMX.Frame.Attachment.Market.pas' {FrameAttachmentMarket},
+  ChatFMX.Frame.Attachment.Money in 'ChatFMX.Frame.Attachment.Money.pas' {FrameAttachmentMoney};
 
 {$R *.res}
 

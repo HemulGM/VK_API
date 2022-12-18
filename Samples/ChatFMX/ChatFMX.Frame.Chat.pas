@@ -109,6 +109,10 @@ type
     ImageWarning: TImage;
     LabelWarningText: TLabel;
     ButtonBack: TButton;
+    LayoutBottomHints: TLayout;
+    CircleToDown: TCircle;
+    Path3: TPath;
+    ColorAnimationToDown: TColorAnimation;
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
@@ -116,6 +120,7 @@ type
     procedure LayoutFooterBottomResize(Sender: TObject);
     procedure VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure ButtonBackClick(Sender: TObject);
+    procedure CircleToDownClick(Sender: TObject);
   private
     FConversationId: TVkPeerId;
     FVK: TCustomVK;
@@ -175,7 +180,11 @@ type
     procedure SetOnBack(const Value: TNotifyEvent);
     procedure AppendHistory(Items: TVkMessageHistory);
     procedure CalcDisappear;
+    procedure ShowHints;
+    procedure HideHints;
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
+  protected
+    procedure SetVisible(const Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
@@ -200,7 +209,7 @@ type
   end;
 
 implementation
-                                   
+
 uses
   System.Threading, System.DateUtils, VK.Messages, VK.Entity.Profile,
   VK.Entity.Group, ChatFMX.PreviewManager, System.Math, ChatFMX.Utils,
@@ -267,8 +276,8 @@ begin
   LayoutMessageList.Realign;
   var Sz: Single := 0;
   for var Control in LayoutMessageList.Controls do
-      if Control.IsVisible then
-        Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
+    if Control.IsVisible then
+      Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
   LayoutMessageList.Height := Sz + 10;
   FrameLoadingMesages.Visible := (LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height) and (not FOffsetEnd);
 end;
@@ -569,21 +578,49 @@ end;
 
 procedure TFrameChat.CalcDisappear;
 begin
-  var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
-  var Offset := Abs(VertScrollBoxMessages.ViewportPosition.Y - Content.Top);
-  var ViewHeight := VertScrollBoxMessages.Height;
-  var ContentHeight := LayoutMessageList.Height;
+  if Visible then
+  begin
+    var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
+    var Offset := Abs(VertScrollBoxMessages.ViewportPosition.Y - Content.Top);
+    var ViewHeight := VertScrollBoxMessages.Height;
+    var ContentHeight := LayoutMessageList.Height;
 
-  var ATop := Offset;
-  var ABottom := ATop + Min(ViewHeight, ContentHeight);
+    var ATop := Offset;
+    var ABottom := ATop + Min(ViewHeight, ContentHeight);
 
-  for var Control in LayoutMessageList.Controls do
-    if Control is TFrameMessage then
-    begin
-      var Vis := ((Control.BoundsRect.Bottom > ATop) and (Control.BoundsRect.Top < ABottom)) or
-        ((Control.BoundsRect.Top < ABottom) and (Control.BoundsRect.Bottom > ATop));
-      (Control as TFrameMessage).Visibility := Vis;
-    end;
+    for var Control in LayoutMessageList.Controls do
+      if Control is TFrameMessage then
+      begin
+        var Vis :=((Control.BoundsRect.Bottom > ATop) and (Control.BoundsRect.Top < ABottom)) or
+          ((Control.BoundsRect.Top < ABottom) and (Control.BoundsRect.Bottom > ATop));
+        (Control as TFrameMessage).Visibility := Vis;
+      end;
+  end
+  else
+  begin
+    for var Control in LayoutMessageList.Controls do
+      if Control is TFrameMessage then
+        (Control as TFrameMessage).Visibility := False;
+  end;
+end;
+
+procedure TFrameChat.CircleToDownClick(Sender: TObject);
+begin
+  VertScrollBoxMessages.ViewportPosition := TPointF.Create(0, 0);
+end;
+
+procedure TFrameChat.ShowHints;
+begin
+  if CircleToDown.Opacity = 0 then
+  begin
+    TAnimator.AnimateFloat(CircleToDown, 'Opacity', 1);
+    CircleToDown.Fill.Color := $FF292929;
+  end;
+end;
+
+procedure TFrameChat.HideHints;
+begin
+  TAnimator.AnimateFloat(CircleToDown, 'Opacity', 0);
 end;
 
 procedure TFrameChat.VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
@@ -592,6 +629,10 @@ begin
   var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
   if Abs(NewViewportPosition.Y - Content.Top) < 500 then
     EndOfChat;
+  if NewViewportPosition.Y = 0 then
+    HideHints
+  else
+    ShowHints;
 end;
 
 procedure TFrameChat.FOnReadyImage(const Sender: TObject; const M: TMessage);
@@ -833,6 +874,12 @@ procedure TFrameChat.SetVerified(const Value: Boolean);
 begin
   FVerified := Value;
   LayoutVerified.Visible := FVerified;
+end;
+
+procedure TFrameChat.SetVisible(const Value: Boolean);
+begin
+  inherited;
+  CalcDisappear;
 end;
 
 procedure TFrameChat.SetVK(const Value: TCustomVK);

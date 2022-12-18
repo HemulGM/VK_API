@@ -346,7 +346,7 @@ begin
   Result.OnBack := FOnBackAdaptive;
   {$ENDIF}
   FChats.Add(Result);
-  if FChats.Count > 5 then
+  if FChats.Count > 30 then
   begin
     var Frame := FChats[0];
     FChats.Delete(0);
@@ -358,7 +358,6 @@ procedure TFormMain.ShowChat(Frame: TFrameChat);
 begin
   for var Control in LayoutChatFrames.Controls do
     Control.Visible := Control = Frame;
-
   Frame.RecalcSize;
   {$IFDEF ANDROID}
   LayoutChats.Visible := False;

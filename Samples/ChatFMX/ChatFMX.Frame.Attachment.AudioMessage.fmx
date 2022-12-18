@@ -1,5 +1,5 @@
 inherited FrameAttachmentAudioMessage: TFrameAttachmentAudioMessage
-  HitTest = False
+  HitTest = True
   Padding.Left = 10.000000000000000000
   Padding.Top = 6.000000000000000000
   Padding.Right = 10.000000000000000000

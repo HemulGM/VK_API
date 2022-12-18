@@ -227,7 +227,7 @@ type
   TVkAttachmentType = (Unknown, Photo, Video, Audio, Doc, Link, Market,       //
     MarketAlbum, Wall, WallReply, Sticker, Gift, Call, AudioMessage,          //
     PostedPhoto, Graffiti, Note, App, Poll, Page, Album, PhotosList,          //
-    PrettyCards, Event, MoneyTransfer);
+    PrettyCards, Event, MoneyTransfer, MoneyRequest);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToString: string; inline;
@@ -1481,7 +1481,7 @@ const
   VkPlatformsType: array[TVkPlatform] of string = ('', 'mobile', 'ios', 'ios', 'android', 'winphone', 'windows', 'web');
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video', 'audio', 'doc', 'link', 'market',
     'market_album', 'wall', 'wall_reply', 'sticker', 'gift', 'call', 'audio_message', 'posted_photo', 'graffiti',
-    'note', 'app', 'poll', 'page', 'album', 'photos_list', 'pretty_cards', 'event', 'money_transfer');
+    'note', 'app', 'poll', 'page', 'album', 'photos_list', 'pretty_cards', 'event', 'money_transfer', 'money_request');
   VkPeerType: array[TVkPeerType] of string = ('', 'user', 'chat', 'group', 'email');
   VkNameCase: array[TVkNameCase] of string = ('nom', 'gen', 'dat', 'acc', 'ins', 'abl');
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo', 'audio', 'video', 'note', 'market',

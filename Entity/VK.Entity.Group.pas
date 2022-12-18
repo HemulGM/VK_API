@@ -120,7 +120,7 @@ type
     FCurrency_text: string;
     FPrice_max: Integer;
     FContact_id: Integer;
-    FCurrency: TVkProductCurrency;
+    FCurrency: TVkCurrencyInfo;
     FType: string;
   public
     /// <summary>
@@ -146,7 +146,7 @@ type
     /// <summary>
     /// Информация о валюте
     /// </summary>
-    property Currency: TVkProductCurrency read FCurrency write FCurrency;
+    property Currency: TVkCurrencyInfo read FCurrency write FCurrency;
     property Name: string read FName write FName;
     /// <summary>
     /// Информация о типе магазина (basic и advanced)

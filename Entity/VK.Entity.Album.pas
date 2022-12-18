@@ -13,9 +13,9 @@ type
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FCreated: TDateTime;
     FDescription: string;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FSize: Integer;
-    FThumb: TVkThumb;
+    FThumb: TVkPhoto;
     FTitle: string;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FUpdated: TDateTime;
@@ -51,7 +51,7 @@ type
     /// <summary>
     /// Идентификатор владельца альбома
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property PrivacyComment: TVkPrivacy read FPrivacy_comment write FPrivacy_comment;
     property PrivacyView: TVkPrivacy read FPrivacy_view write FPrivacy_view;
     /// <summary>
@@ -62,7 +62,7 @@ type
     /// <summary>
     /// Обложка альбома, объект photo
     /// </summary>
-    property Thumb: TVkThumb read FThumb write FThumb;
+    property Thumb: TVkPhoto read FThumb write FThumb;
     property ThumbId: integer read FThumb_id write FThumb_id;
     property ThumbIsLast: Boolean read FThumb_is_last write FThumb_is_last;
     property ThumbSrc: string read FThumb_src write FThumb_src;

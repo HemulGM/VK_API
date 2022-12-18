@@ -537,7 +537,7 @@ object FrameChat: TFrameChat
       Size.PlatformDefault = False
       Stroke.Kind = None
       object VertScrollBoxMessages: TVertScrollBox
-        Align = Client
+        Align = Contents
         Size.Width = 685.000000000000000000
         Size.Height = 430.000000000000000000
         Size.PlatformDefault = False
@@ -1123,6 +1123,55 @@ object FrameChat: TFrameChat
                 end
               end
             end
+          end
+        end
+      end
+      object LayoutBottomHints: TLayout
+        Align = Bottom
+        Margins.Bottom = 12.000000000000000000
+        Position.Y = 368.000000000000000000
+        Size.Width = 685.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        object CircleToDown: TCircle
+          Align = Right
+          Cursor = crHandPoint
+          Fill.Color = xFF292929
+          Margins.Right = 12.000000000000000000
+          Position.X = 633.000000000000000000
+          Size.Width = 40.000000000000000000
+          Size.Height = 50.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Color = xFF424242
+          OnClick = CircleToDownClick
+          object Path3: TPath
+            Align = Center
+            Data.Path = {
+              140000000000000085EBD13F68916D3E02000000E3A59B3F24DBF9BD02000000
+              90C2153F701283BD0200000068916D3EEC51B83E02000000E0CEF7BD3AB4483F
+              02000000701283BDB81EB53F02000000EC51B83ED34DE23F010000001F85CB40
+              7593D840020000005A64D740C976E24002000000D7A3E840C976E24002000000
+              E27AF4407593D84001000000713D5A41D44DE23F0200000025066141F5FDB43F
+              02000000B7F361413BB4483F02000000BB495C41F051B83E02000000BF9F5641
+              581283BD02000000448B4C4110DBF9BD0200000090C2454171916D3E01000000
+              0100E040365E96400300000085EBD13F68916D3E}
+            Fill.Color = xFF656565
+            Locked = True
+            HitTest = False
+            Margins.Top = 2.000000000000000000
+            Size.Width = 14.000000000000000000
+            Size.Height = 7.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+          end
+          object ColorAnimationToDown: TColorAnimation
+            Duration = 0.200000002980232200
+            PropertyName = 'Fill.Color'
+            StartValue = xFF292929
+            StopValue = xFF3B3B3B
+            Trigger = 'IsMouseOver=true'
+            TriggerInverse = 'IsMouseOver=false'
           end
         end
       end

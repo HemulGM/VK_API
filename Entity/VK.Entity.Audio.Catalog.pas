@@ -3,8 +3,10 @@ unit VK.Entity.Audio.Catalog;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Common, VK.Entity.Group,
-  VK.Entity.Profile, VK.Entity.Catalog.Section, VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
+  Generics.Collections, Rest.Json, VK.Entity.Audio, VK.Entity.Playlist,
+  VK.Entity.Common, VK.Entity.Group, VK.Entity.Profile,
+  VK.Entity.Catalog.Section, VK.Entity.Common.List,
+  VK.Entity.Common.ExtendedList, VK.Entity.Photo;
 
 type
   TVkAudioCatalogItem = class(TVkEntityList<TVkCatalogLink>)
@@ -14,7 +16,7 @@ type
     FNext_from: string;
     FSource: string;
     FSubtitle: string;
-    FThumbs: TArray<TVkThumb>;
+    FThumbs: TArray<TVkPhoto>;
     FTitle: string;
     FType: string;
     FPlaylists: TArray<TVkAudioPlaylist>;
@@ -25,9 +27,9 @@ type
     property Playlists: TArray<TVkAudioPlaylist> read FPlaylists write FPlaylists;
     property Source: string read FSource write FSource;
     property Subtitle: string read FSubtitle write FSubtitle;
-    property Thumbs: TArray<TVkThumb> read FThumbs write FThumbs;
+    property Thumbs: TArray<TVkPhoto> read FThumbs write FThumbs;
     property Title: string read FTitle write FTitle;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     destructor Destroy; override;
   end;
 
@@ -43,7 +45,7 @@ uses
 destructor TVkAudioCatalogItem.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkAudio>(FAudios);
-  TArrayHelp.FreeArrayOfObject<TVkThumb>(FThumbs);
+  TArrayHelp.FreeArrayOfObject<TVkPhoto>(FThumbs);
   TArrayHelp.FreeArrayOfObject<TVkAudioPlaylist>(FPlaylists);
   inherited;
 end;

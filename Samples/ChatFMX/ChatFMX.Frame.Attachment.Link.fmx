@@ -1,4 +1,5 @@
 inherited FrameAttachmentLink: TFrameAttachmentLink
+  HitTest = True
   Margins.Top = 5.000000000000000000
   Margins.Bottom = 5.000000000000000000
   Size.Width = 415.000000000000000000
@@ -33,66 +34,6 @@ inherited FrameAttachmentLink: TFrameAttachmentLink
       Stroke.Kind = None
       XRadius = 2.000000000000000000
       YRadius = 2.000000000000000000
-      object LayoutActions: TLayout
-        Align = Top
-        Margins.Left = 12.000000000000000000
-        Margins.Top = 12.000000000000000000
-        Margins.Right = 12.000000000000000000
-        Margins.Bottom = 12.000000000000000000
-        Position.X = 12.000000000000000000
-        Position.Y = 12.000000000000000000
-        Size.Width = 391.000000000000000000
-        Size.Height = 24.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 0
-        object LayoutFavorite: TLayout
-          Align = Right
-          HitTest = True
-          Position.X = 367.000000000000000000
-          Size.Width = 24.000000000000000000
-          Size.Height = 24.000000000000000000
-          Size.PlatformDefault = False
-          TabOrder = 0
-          object PathStar: TPath
-            Align = Client
-            Data.Path = {
-              1B00000000000000A470754114AE074101000000F6289E415C8F0E4102000000
-              E27AAA41C2F5104102000000EC51AE41C2F5284102000000CDCCA441CDCC3841
-              010000003E0A894148E16641010000002A5C93413E0A99410200000053B89641
-              2A5CA54102000000F7288C4148E1AC410200000090C28141A470A54101000000
-              000040419A998D4101000000AE47F940A470A54102000000295CCF40CDCCAC41
-              02000000B81EA540A470A5410200000048E1B2403E0A9941010000000AD7DB40
-              49E166410100000099995940CECC384102000000CCCC0C40CECC284102000000
-              1E852B40CECC104102000000295C87405D8F0E41010000005C8F0A4115AE0741
-              010000008FC2294154B87E4002000000295C3341BA1E254002000000E17A4C41
-              BA1E254002000000703D564154B87E4001000000A370754115AE074103000000
-              A470754114AE0741}
-            Fill.Color = claWhite
-            HitTest = False
-            Size.Width = 24.000000000000000000
-            Size.Height = 24.000000000000000000
-            Size.PlatformDefault = False
-            Stroke.Kind = None
-            Stroke.Thickness = 2.000000000000000000
-            WrapMode = Original
-          end
-          object ShadowEffectStar: TShadowEffect
-            Distance = 0.000099999997473788
-            Direction = 45.000000000000000000
-            Softness = 0.100000001490116100
-            Opacity = 0.400000005960464400
-            ShadowColor = claBlack
-            object FloatAnimationStarShadow: TFloatAnimation
-              Duration = 0.200000002980232200
-              PropertyName = 'Softness'
-              StartValue = 0.100000001490116100
-              StopValue = 0.300000011920929000
-              Trigger = 'IsMouseOver=true'
-              TriggerInverse = 'IsMouseOver=false'
-            end
-          end
-        end
-      end
     end
     object RectangleText: TRectangle
       Align = Bottom
@@ -360,6 +301,66 @@ inherited FrameAttachmentLink: TFrameAttachmentLink
       Stroke.Color = x29FFFFFF
       XRadius = 2.000000000000000000
       YRadius = 2.000000000000000000
+      object LayoutActions: TLayout
+        Align = Top
+        Margins.Left = 12.000000000000000000
+        Margins.Top = 12.000000000000000000
+        Margins.Right = 12.000000000000000000
+        Margins.Bottom = 12.000000000000000000
+        Position.X = 12.000000000000000000
+        Position.Y = 12.000000000000000000
+        Size.Width = 391.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        object LayoutFavorite: TLayout
+          Align = Right
+          HitTest = True
+          Position.X = 367.000000000000000000
+          Size.Width = 24.000000000000000000
+          Size.Height = 24.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object PathStar: TPath
+            Align = Client
+            Data.Path = {
+              1B00000000000000A470754114AE074101000000F6289E415C8F0E4102000000
+              E27AAA41C2F5104102000000EC51AE41C2F5284102000000CDCCA441CDCC3841
+              010000003E0A894148E16641010000002A5C93413E0A99410200000053B89641
+              2A5CA54102000000F7288C4148E1AC410200000090C28141A470A54101000000
+              000040419A998D4101000000AE47F940A470A54102000000295CCF40CDCCAC41
+              02000000B81EA540A470A5410200000048E1B2403E0A9941010000000AD7DB40
+              49E166410100000099995940CECC384102000000CCCC0C40CECC284102000000
+              1E852B40CECC104102000000295C87405D8F0E41010000005C8F0A4115AE0741
+              010000008FC2294154B87E4002000000295C3341BA1E254002000000E17A4C41
+              BA1E254002000000703D564154B87E4001000000A370754115AE074103000000
+              A470754114AE0741}
+            Fill.Color = claWhite
+            HitTest = False
+            Size.Width = 24.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            Stroke.Thickness = 2.000000000000000000
+            WrapMode = Original
+          end
+          object ShadowEffectStar: TShadowEffect
+            Distance = 0.000099999997473788
+            Direction = 45.000000000000000000
+            Softness = 0.100000001490116100
+            Opacity = 0.400000005960464500
+            ShadowColor = claBlack
+            object FloatAnimationStarShadow: TFloatAnimation
+              Duration = 0.200000002980232200
+              PropertyName = 'Softness'
+              StartValue = 0.100000001490116100
+              StopValue = 0.300000011920929000
+              Trigger = 'IsMouseOver=true'
+              TriggerInverse = 'IsMouseOver=false'
+            end
+          end
+        end
+      end
     end
   end
   object LayoutShort: TLayout

@@ -67,6 +67,9 @@ type
     procedure CreateSticker(Items: TVkAttachmentArray);
     procedure CreateGeo(Value: TVkGeo);
     procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory; Fwd: Boolean);
+    procedure CreateAlbums(Items: TVkAttachmentArray);
+    procedure CreateMarket(Items: TVkAttachmentArray);
+    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
   public
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
@@ -90,7 +93,9 @@ uses
   ChatFMX.Frame.Attachment.Gift, ChatFMX.Frame.Attachment.Sticker,
   ChatFMX.Frame.Attachment.AudioMessage, ChatFMX.Frame.Attachment.Audio,
   ChatFMX.Frame.Attachment.Link, ChatFMX.Frame.Attachment.Geo,
-  ChatFMX.Frame.Attachment.Wall, ChatFMX.Frame.Attachment.WallFwd;
+  ChatFMX.Frame.Attachment.Wall, ChatFMX.Frame.Attachment.WallFwd,
+  ChatFMX.Frame.Attachment.Album, ChatFMX.Frame.Attachment.Market,
+  ChatFMX.Frame.Attachment.Money;
 
 {$R *.fmx}
 
@@ -297,12 +302,15 @@ begin
     CreatePhotos(Item.Attachments);
     CreateVideos(Item.Attachments);
     CreateAudios(Item.Attachments);
+    CreateAlbums(Item.Attachments);
     CreateDocs(Item.Attachments);
     CreateAutioMessages(Item.Attachments, Item);
     CreateSticker(Item.Attachments);
     CreateGift(Item.Attachments, Item);
     CreateLinks(Item.Attachments);
+    CreateMarket(Item.Attachments);
     CreatePosts(Item.Attachments, Data, Fwd);
+    CreateMoney(Item.Attachments, Data);
     RecalcMedia;
   end;
 
@@ -313,6 +321,50 @@ begin
     CreateFwdMessages(Item.FwdMessages, Item, Data);
 
   RecalcSize;
+end;
+
+procedure TFrameAttachmentMessage.CreateAlbums(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Album then
+    begin
+      var Frame := TFrameAttachmentAlbum.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Album);
+    end;
+end;
+
+procedure TFrameAttachmentMessage.CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+begin
+  for var Item in Items do
+    if Item.&Type in [TVkAttachmentType.MoneyTransfer, TVkAttachmentType.MoneyRequest] then
+    begin
+      var Frame := TFrameAttachmentMoney.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      case Item.&Type of
+        TVkAttachmentType.MoneyTransfer:
+          Frame.Fill(Item.MoneyTransfer, Data);
+        TVkAttachmentType.MoneyRequest:
+          Frame.Fill(Item.MoneyRequest, Data);
+      end;
+    end;
+end;
+
+procedure TFrameAttachmentMessage.CreateMarket(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Market then
+    begin
+      var Frame := TFrameAttachmentMarket.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Market);
+    end;
 end;
 
 procedure TFrameAttachmentMessage.CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory; Fwd: Boolean);
@@ -483,7 +535,7 @@ end;
 procedure TFrameAttachmentMessage.SetDate(const Value: TDateTime);
 begin
   FDate := Value;
-  LabelTime.Text := FormatDateTime('HH:nn', FDate);
+  LabelTime.Text := HumanDateTime(FDate, True, True);
   LabelTime.Hint := FormatDateTime('c', FDate);
 end;
 

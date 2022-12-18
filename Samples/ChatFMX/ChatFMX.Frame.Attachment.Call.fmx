@@ -1,4 +1,5 @@
 inherited FrameAttachmentCall: TFrameAttachmentCall
+  HitTest = True
   Size.Width = 515.000000000000000000
   Size.Height = 56.000000000000000000
   object RectangleBG: TRectangle

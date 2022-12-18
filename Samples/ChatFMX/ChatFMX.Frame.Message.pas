@@ -18,6 +18,8 @@ type
     {$DEFINE ANDROID}
   {$ENDIF}
 
+  TMessageSubType = (stNone, stGift, stMoneyTransfer, stMoneyRequest);
+
   TFrameMessage = class(TFrame)
     LayoutLeft: TLayout;
     RectangleBG: TRectangle;
@@ -46,7 +48,7 @@ type
     LayoutSelectedIcon: TLayout;
     LayoutUpdated: TLayout;
     LabelUpdated: TLabel;
-    LabelGiftFrom: TLabel;
+    LabelMessageType: TLabel;
     RectangleGiftBG: TRectangle;
     LayoutFwdMessages: TLayout;
     procedure MemoTextChange(Sender: TObject);
@@ -82,6 +84,7 @@ type
     FCanAnswer: Boolean;
     FFromSex: TVkSex;
     FVisibility: Boolean;
+    FMessageSubType: TMessageSubType;
     procedure FOnAttachSelect(Sender: TObject);
     procedure SetText(const Value: string);
     procedure SetFromText(const Value: string);
@@ -116,6 +119,12 @@ type
     procedure CreateCalls(Items: TVkAttachmentArray);
     procedure SetVisibility(const Value: Boolean);
     procedure BroadcastVisible(const Value: Boolean);
+    procedure CreateAlbums(Items: TVkAttachmentArray);
+    procedure CreateMarket(Items: TVkAttachmentArray);
+    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure SetMessageSubType(const Value: TMessageSubType);
+    procedure UpdateSubType;
+    procedure UpdateImportant;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
@@ -136,6 +145,7 @@ type
     property ChatCanAnswer: Boolean read FCanAnswer write SetCanAnswer;
     property FromSex: TVkSex read FFromSex write SetFromSex;
     property Visibility: Boolean read FVisibility write SetVisibility;
+    property MessageSubType: TMessageSubType read FMessageSubType write SetMessageSubType;
   end;
 
 implementation
@@ -146,7 +156,9 @@ uses
   ChatFMX.Frame.Attachment.Sticker, ChatFMX.Frame.Attachment.Video,
   ChatFMX.Frame.Attachment.Gift, ChatFMX.Frame.Attachment.Message,
   ChatFMX.Frame.Attachment.Link, ChatFMX.Frame.Attachment.Wall,
-  ChatFMX.Frame.Attachment.Call, ChatFMX.Frame.Attachment;
+  ChatFMX.Frame.Attachment.Call, ChatFMX.Frame.Attachment,
+  ChatFMX.Frame.Attachment.Album, ChatFMX.Frame.Attachment.Market,
+  ChatFMX.Frame.Attachment.Money;
 
 {$R *.fmx}
 
@@ -216,6 +228,7 @@ end;
 constructor TFrameMessage.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
+  MessageSubType := stNone;
   FVisibility := False;
   {$IFDEF ANDROID}
   LayoutSelectedIcon.Visible := False;
@@ -294,6 +307,7 @@ begin
     CreatePhotos(Item.Attachments);
     CreateVideos(Item.Attachments);
     CreateAudios(Item.Attachments);
+    CreateAlbums(Item.Attachments);
     CreateDocs(Item.Attachments);
     CreateAutioMessages(Item.Attachments, Item);
     CreateSticker(Item.Attachments);
@@ -301,6 +315,8 @@ begin
     CreateLinks(Item.Attachments);
     CreatePosts(Item.Attachments, Data);
     CreateCalls(Item.Attachments);
+    CreateMarket(Item.Attachments);
+    CreateMoney(Item.Attachments, Data);
     RecalcMedia;
   end;
 
@@ -323,6 +339,56 @@ begin
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
       Frame.Fill(Item.Wall, Data);
+    end;
+end;
+
+procedure TFrameMessage.CreateAlbums(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Album then
+    begin
+      var Frame := TFrameAttachmentAlbum.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Album);
+    end;
+end;
+
+procedure TFrameMessage.CreateMarket(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Market then
+    begin
+      var Frame := TFrameAttachmentMarket.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Market);
+    end;
+end;
+
+procedure TFrameMessage.CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+begin
+  for var Item in Items do
+    if Item.&Type in [TVkAttachmentType.MoneyTransfer, TVkAttachmentType.MoneyRequest] then
+    begin
+      var Frame := TFrameAttachmentMoney.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      case Item.&Type of
+        TVkAttachmentType.MoneyTransfer:
+          begin
+            Frame.Fill(Item.MoneyTransfer, Data);
+            MessageSubType := stMoneyTransfer;
+          end;
+        TVkAttachmentType.MoneyRequest:
+          begin
+            Frame.Fill(Item.MoneyRequest, Data);
+            MessageSubType := stMoneyRequest;
+          end;
+      end;
     end;
 end;
 
@@ -587,7 +653,7 @@ end;
 procedure TFrameMessage.SetFromSex(const Value: TVkSex);
 begin
   FFromSex := Value;
-  LabelGiftFrom.Text := WordOfSex(FFromSex, ['отправил', 'отправила']) + ' подарок';
+  UpdateSubType;
 end;
 
 procedure TFrameMessage.SetFromText(const Value: string);
@@ -614,9 +680,9 @@ procedure TFrameMessage.SetIsGift(const Value: Boolean);
 begin
   FIsGift := Value;
   MemoText.Visible := not FIsGift;
-  LabelGiftFrom.Visible := FIsGift;
   if FIsGift then
   begin
+    MessageSubType := stGift;
     PathSelected.Fill.Color := $FFe3d3ac;
     LabelFrom.FontColor := TAlphaColorRec.White;
     LabelTime.FontColor := $FFE3D3AC;
@@ -624,10 +690,6 @@ begin
     PathAnswer.Fill.Color := $99FFFFFF;
     ColorAnimationAnswer.StartValue := $99FFFFFF;
     ColorAnimationAnswer.StopValue := $EEFFFFFF;
-
-    PathStar.Fill.Color := $99FFFFFF;
-    ColorAnimationStar.StartValue := $99FFFFFF;
-    ColorAnimationStar.StopValue := $EEFFFFFF;
 
     PathEdit.Fill.Color := $99FFFFFF;
     ColorAnimationEdit.StartValue := $99FFFFFF;
@@ -643,33 +705,53 @@ begin
     ColorAnimationAnswer.StartValue := $FF5B5B5B;
     ColorAnimationAnswer.StopValue := $FF6A6A6A;
 
-    PathStar.Fill.Color := $FF5B5B5B;
-    ColorAnimationStar.StartValue := $FF5B5B5B;
-    ColorAnimationStar.StopValue := $FF6A6A6A;
-
     PathEdit.Fill.Color := $FF5B5B5B;
     ColorAnimationEdit.StartValue := $FF5B5B5B;
     ColorAnimationEdit.StopValue := $FF6A6A6A;
   end;
   RectangleGiftBG.Visible := FIsGift;
+  UpdateImportant;
+end;
+
+procedure TFrameMessage.UpdateImportant;
+begin
+  if FIsImportant then
+  begin
+    if FIsGift then
+    begin
+      PathStar.Fill.Color := $FF5B5B5B;
+      ColorAnimationStar.StartValue := $FF5B5B5B;
+      ColorAnimationStar.StopValue := $FF6A6A6A;
+    end
+    else
+    begin
+      ColorAnimationStar.StartValue := $FF71AAEB;
+      ColorAnimationStar.StopValue := $FF71AAEB;
+      PathStar.Fill.Color := $FF71AAEB;
+    end;
+  end
+  else
+  begin
+    if FIsGift then
+    begin
+      PathStar.Fill.Color := $99FFFFFF;
+      ColorAnimationStar.StartValue := $99FFFFFF;
+      ColorAnimationStar.StopValue := $EEFFFFFF;
+    end
+    else
+    begin
+      ColorAnimationStar.StartValue := $FF5B5B5B;
+      ColorAnimationStar.StopValue := $FF6A6A6A;
+      PathStar.Fill.Color := $FF5B5B5B;
+    end;
+  end;
+  LayoutFavorite.Visible := FIsImportant;
 end;
 
 procedure TFrameMessage.SetIsImportant(const Value: Boolean);
 begin
   FIsImportant := Value;
-  if FIsImportant then
-  begin
-    PathStar.Fill.Color := $FF71AAEB;
-    ColorAnimationStar.StartValue := $FF71AAEB;
-    ColorAnimationStar.StopValue := $FF71AAEB;
-  end
-  else
-  begin
-    PathStar.Fill.Color := $FF5B5B5B;
-    ColorAnimationStar.StartValue := $FF5B5B5B;
-    ColorAnimationStar.StopValue := $FF6A6A6A;
-  end;
-  LayoutFavorite.Visible := FIsImportant;
+  UpdateImportant;
 end;
 
 procedure TFrameMessage.SetIsSelected(const Value: Boolean);
@@ -701,6 +783,34 @@ procedure TFrameMessage.SetIsUnread(const Value: Boolean);
 begin
   FIsUnread := Value;
   RectangleUnread.Visible := FIsUnread;
+end;
+
+procedure TFrameMessage.UpdateSubType;
+begin
+  LabelMessageType.Visible := MessageSubType <> stNone;
+  case MessageSubType of
+    stGift:
+      begin
+        LabelMessageType.Text := WordOfSex(FFromSex, ['отправил', 'отправила']) + ' подарок';
+        LabelMessageType.FontColor := $FFFFFFFF;
+      end;
+    stMoneyTransfer:
+      begin
+        LabelMessageType.Text := WordOfSex(FFromSex, ['перевёл', 'перевела']) + ' деньги';
+        LabelMessageType.FontColor := $FF939393;
+      end;
+    stMoneyRequest:
+      begin
+        LabelMessageType.Text := WordOfSex(FFromSex, ['отправил', 'отправила']) + ' запрос на перевод';
+        LabelMessageType.FontColor := $FF939393;
+      end;
+  end;
+end;
+
+procedure TFrameMessage.SetMessageSubType(const Value: TMessageSubType);
+begin
+  FMessageSubType := Value;
+  UpdateSubType;
 end;
 
 procedure TFrameMessage.SetMouseFrame(const Value: Boolean);

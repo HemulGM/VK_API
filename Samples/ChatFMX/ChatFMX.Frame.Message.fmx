@@ -108,12 +108,11 @@ object FrameMessage: TFrameMessage
           OnMouseEnter = LabelFromMouseEnter
           OnMouseLeave = LabelFromMouseLeave
         end
-        object LabelGiftFrom: TLabel
+        object LabelMessageType: TLabel
           Align = MostLeft
           AutoSize = True
           Cursor = crHandPoint
           StyledSettings = []
-          HitTest = True
           Margins.Right = 6.000000000000000000
           Position.X = 74.000000000000000000
           Size.Width = 105.000000000000000000
@@ -126,8 +125,6 @@ object FrameMessage: TFrameMessage
           ParentShowHint = False
           ShowHint = True
           TabOrder = 1
-          OnMouseEnter = LabelFromMouseEnter
-          OnMouseLeave = LabelFromMouseLeave
         end
       end
       object MemoText: TMemo

@@ -1,4 +1,5 @@
 inherited FrameAttachmentAudio: TFrameAttachmentAudio
+  HitTest = True
   Margins.Top = 6.000000000000000000
   Size.Width = 427.000000000000000000
   Size.Height = 40.000000000000000000

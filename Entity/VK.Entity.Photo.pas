@@ -105,7 +105,8 @@ type
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Идентификатор пользователя, загрузившего фото (если фотография размещена в сообществе). Для фотографий, размещенных от имени сообщества, user_id = 100.
+    /// Идентификатор пользователя, загрузившего фото (если фотография размещена в сообществе).
+    /// Для фотографий, размещенных от имени сообщества, UserId = 100.
     /// </summary>
     property UserId: TVkPeerId read FUser_id write FUser_id;
     /// <summary>

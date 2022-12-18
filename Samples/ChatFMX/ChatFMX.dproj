@@ -387,6 +387,15 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.Album.pas">
+            <Form>FrameAttachmentAlbum</Form>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.Market.pas">
+            <Form>FrameAttachmentMarket</Form>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.Money.pas">
+            <Form>FrameAttachmentMoney</Form>
+        </DCCReference>
         <RcItem Include="Res\im_favorites_100.png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>im_favorites_100</ResourceId>
@@ -394,6 +403,14 @@
         <RcItem Include="Res\msg_warning.png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>msg_warning</ResourceId>
+        </RcItem>
+        <RcItem Include="Res\payment_request_snippet.png">
+            <ResourceType>RCDATA</ResourceType>
+            <ResourceId>payment_request_snippet</ResourceId>
+        </RcItem>
+        <RcItem Include="Res\payment_snippet.png">
+            <ResourceType>RCDATA</ResourceType>
+            <ResourceId>payment_snippet</ResourceId>
         </RcItem>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -512,6 +529,12 @@
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_24x24.png" Configuration="Debug" Class="Android_NotificationIcon24">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Res\payment_request_snippet.png" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -852,6 +875,12 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_192x192.png" Configuration="Debug" Class="Android_LauncherIcon192"/>
+                <DeployFile LocalName="Res\payment_snippet.png" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Configuration="Debug" Class="Android_LauncherIcon36"/>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Configuration="Debug" Class="Android_NotificationIcon48"/>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Configuration="Release" Class="Android_LauncherIcon96">

@@ -4,7 +4,7 @@ interface
 
 uses
   Generics.Collections, REST.Json.Interceptors, REST.JsonReflect,
-  VK.Entity.Audio, VK.Entity.Common, VK.Entity.Common.List;
+  VK.Entity.Audio, VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo;
 
 type
   TVkAudioOriginal = class
@@ -33,7 +33,7 @@ type
     FMain_artists: TArray<TVkAudioArtist>;
     FOriginal: TVkAudioOriginal;
     FOwner_id: Integer;
-    FPhoto: TVkThumb;
+    FPhoto: TVkPhoto;
     FPlays: Integer;
     FTitle: string;
     FType: Integer;
@@ -55,7 +55,7 @@ type
     property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
     property Original: TVkAudioOriginal read FOriginal write FOriginal;
     property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Photo: TVkThumb read FPhoto write FPhoto;
+    property Photo: TVkPhoto read FPhoto write FPhoto;
     property Plays: Integer read FPlays write FPlays;
     property Title: string read FTitle write FTitle;
     property UpdateTime: TDateTime read FUpdate_time write FUpdate_time;

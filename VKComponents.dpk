@@ -194,7 +194,8 @@ contains
   VK.Ads in 'Controllers\VK.Ads.pas',
   VK.Entity.Ads in 'Entity\VK.Entity.Ads.pas',
   VK.Asr in 'Controllers\VK.Asr.pas',
-  VK.Entity.Asr in 'Entity\VK.Entity.Asr.pas';
+  VK.Entity.Asr in 'Entity\VK.Entity.Asr.pas',
+  VK.Entity.MoneyRequest in 'Entity\VK.Entity.MoneyRequest.pas';
 
 end.
 

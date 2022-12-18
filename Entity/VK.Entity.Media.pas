@@ -11,7 +11,8 @@ uses
   VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
   VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Info,
   VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
-  VK.Wrap.Interceptors, VK.Entity.MoneyTransfer, VK.Entity.Geo;
+  VK.Wrap.Interceptors, VK.Entity.MoneyTransfer, VK.Entity.MoneyRequest,
+  VK.Entity.Geo;
 
 type
   TVkAttachment = class;
@@ -84,6 +85,7 @@ type
     FEvent: TVkEvent;
     FCall: TVkCall;
     FMoney_transfer: TVkMoneyTransfer;
+    FMoney_request: TVkMoneyRequest;
   public
     property &Type: TVkAttachmentType read FType write FType;
     /// <summary>
@@ -166,6 +168,10 @@ type
     /// Денежный перевод
     /// </summary>
     property MoneyTransfer: TVkMoneyTransfer read FMoney_transfer write FMoney_transfer;
+    /// <summary>
+    /// Запрос на денежный перевод
+    /// </summary>
+    property MoneyRequest: TVkMoneyRequest read FMoney_request write FMoney_request;
     /// <summary>
     /// Альбом с фотографиями
     /// </summary>
@@ -370,13 +376,13 @@ type
   /// </summary>
   TVkPost = class(TVkObject, IAttachment)
   private
-    FOwner_id: Integer;
-    FFrom_id: Integer;
-    FCreated_by: Integer;
+    FOwner_id: TVkPeerId;
+    FFrom_id: TVkPeerId;
+    FCreated_by: TVkPeerId;
     [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FText: string;
-    FReply_owner_id: Integer;
+    FReply_owner_id: TVkPeerId;
     FReply_post_id: Integer;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FFriends_only: Boolean;
@@ -388,7 +394,7 @@ type
     FPost_source: TVkPostSource;
     FAttachments: TVkAttachmentArray;
     FGeo: TVkGeoWall;
-    FSigner_id: Integer;
+    FSigner_id: TVkPeerId;
     FCopy_history: TArray<TVkPost>;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_pin: Boolean;
@@ -402,7 +408,7 @@ type
     FMarked_as_ads: Boolean;
     FIs_favorite: Boolean;
     FPostponed_id: Integer;
-    FTo_id: Integer;
+    FTo_id: TVkPeerId;
     FAccess_key: string;
     FCopyright: TVkCopyright;
     FDonut: TVkDonut;
@@ -462,7 +468,7 @@ type
     /// <summary>
     /// Идентификатор администратора, который опубликовал запись (возвращается только для сообществ при запросе с ключом доступа администратора). Возвращается в записях, опубликованных менее 24 часов назад.
     /// </summary>
-    property CreatedBy: Integer read FCreated_by write FCreated_by;
+    property CreatedBy: TVkPeerId read FCreated_by write FCreated_by;
     /// <summary>
     /// Время публикации записи
     /// </summary>
@@ -490,7 +496,7 @@ type
     /// <summary>
     /// Идентификатор автора записи (от чьего имени опубликована запись)
     /// </summary>
-    property FromId: Integer read FFrom_id write FFrom_id;
+    property FromId: TVkPeerId read FFrom_id write FFrom_id;
     /// <summary>
     /// Информация о местоположении
     /// </summary>
@@ -526,7 +532,7 @@ type
     /// <summary>
     /// Идентификатор владельца стены, на которой размещена запись. В версиях API ниже 5.7 это поле называется ToId
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Идентификатор отложенной записи. Это поле возвращается тогда, когда запись стояла на таймере
     /// </summary>
@@ -542,7 +548,7 @@ type
     /// <summary>
     /// Идентификатор владельца записи, в ответ на которую была оставлена текущая
     /// </summary>
-    property ReplyOwnerId: Integer read FReply_owner_id write FReply_owner_id;
+    property ReplyOwnerId: TVkPeerId read FReply_owner_id write FReply_owner_id;
     /// <summary>
     /// Идентификатор записи, в ответ на которую была оставлена текущая
     /// </summary>
@@ -554,7 +560,7 @@ type
     /// <summary>
     /// Идентификатор автора, если запись была опубликована от имени сообщества и подписана пользователем
     /// </summary>
-    property SignerId: Integer read FSigner_id write FSigner_id;
+    property SignerId: TVkPeerId read FSigner_id write FSigner_id;
     /// <summary>
     /// [Получено экспериментальным путём]
     /// </summary>
@@ -566,7 +572,7 @@ type
     /// <summary>
     /// Идентификатор владельца стены, на которой размещена запись (API ниже 5.7)
     /// </summary>
-    property ToId: Integer read FTo_id write FTo_id;
+    property ToId: TVkPeerId read FTo_id write FTo_id;
     /// <summary>
     /// Тип записи, может принимать следующие значения: post, copy, reply, postpone, suggest.
     /// </summary>
@@ -643,6 +649,8 @@ begin
     FPage.Free;
   if Assigned(FMoney_transfer) then
     FMoney_transfer.Free;
+  if Assigned(FMoney_request) then
+    FMoney_request.Free;
   if Assigned(FAlbum) then
     FAlbum.Free;
   if Assigned(FPretty_cards) then

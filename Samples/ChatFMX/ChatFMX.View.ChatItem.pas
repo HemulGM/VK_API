@@ -367,6 +367,8 @@ begin
   else
     StylesData['detail.TextSettings.FontColor'] := $FF898989;
   StylesData['detail_sel.StartValue'] := StylesData['detail.TextSettings.FontColor'].AsInteger;
+  if ItemData.Detail.IsEmpty then
+    ItemData.Detail := 'Пустое сообщение';
 end;
 
 procedure TListBoxItemChat.SetText(const Value: string);

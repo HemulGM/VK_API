@@ -1,5 +1,4 @@
 inherited FrameAttachmentMessages: TFrameAttachmentMessages
-  HitTest = False
   Margins.Top = 8.000000000000000000
   Size.Width = 354.000000000000000000
   Size.Height = 18.000000000000000000

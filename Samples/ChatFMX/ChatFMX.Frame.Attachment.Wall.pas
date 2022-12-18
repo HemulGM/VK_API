@@ -10,7 +10,7 @@ uses
   ChatFMX.Frame.Attachment.Photo, ChatFMX.Frame.Attachment.Video,
   System.Messaging, VK.Entity.Media, ChatFMX.Frame.Attachment.Document,
   ChatFMX.Frame.Attachment.Audio, ChatFMX.Frame.Attachment.AudioMessage,
-  ChatFMX.Frame.Attachment;
+  ChatFMX.Frame.Attachment, VK.Entity.Geo;
 
 type
   TFrameAttachmentWall = class(TFrameAttachment)
@@ -60,6 +60,10 @@ type
     procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
     procedure CreateLinks(Items: TVkAttachmentArray);
     procedure CreateCopyHistory(Items: TArray<TVkPost>; Data: TVkMessageHistory);
+    procedure CreateAlbums(Items: TVkAttachmentArray);
+    procedure CreateMarket(Items: TVkAttachmentArray);
+    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure CreateGeo(Value: TVkGeoWall);
   public
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
@@ -78,7 +82,9 @@ uses
   System.Math, FMX.Memo.Style, ChatFMX.PreviewManager, VK.Types,
   VK.Entity.Profile, VK.Entity.Group, ChatFMX.Utils,
   ChatFMX.Frame.Attachment.Messages, ChatFMX.Frame.Attachment.Link,
-  ChatFMX.Frame.Attachment.WallFwd;
+  ChatFMX.Frame.Attachment.WallFwd, ChatFMX.Frame.Attachment.Album,
+  ChatFMX.Frame.Attachment.Market, ChatFMX.Frame.Attachment.Money,
+  ChatFMX.Frame.Attachment.Geo;
 
 {$R *.fmx}
 
@@ -273,19 +279,31 @@ begin
     CreatePhotos(Item.Attachments);
     CreateVideos(Item.Attachments);
     CreateAudios(Item.Attachments);
+    CreateAlbums(Item.Attachments);
     CreateDocs(Item.Attachments);
     CreateLinks(Item.Attachments);
     CreatePosts(Item.Attachments, Data);
+    CreateMarket(Item.Attachments);
+    CreateMoney(Item.Attachments, Data);
     RecalcMedia;
   end;
 
   if Length(Item.CopyHistory) > 0 then
     CreateCopyHistory(Item.CopyHistory, Data);
-       {
+
   if Assigned(Item.Geo) then
-    CreateGeo(Item.Geo); }
+    CreateGeo(Item.Geo);
 
   RecalcSize;
+end;
+
+procedure TFrameAttachmentWall.CreateGeo(Value: TVkGeoWall);
+begin
+  var Frame := TFrameAttachmentGeo.Create(LayoutClient, VK);
+  Frame.Parent := LayoutClient;
+  Frame.Position.Y := 10000;
+  Frame.Align := TAlignLayout.Top;
+  Frame.Fill(Value);
 end;
 
 procedure TFrameAttachmentWall.CreateCopyHistory(Items: TArray<TVkPost>; Data: TVkMessageHistory);
@@ -363,6 +381,50 @@ begin
     end;
 end;
 
+procedure TFrameAttachmentWall.CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+begin
+  for var Item in Items do
+    if Item.&Type in [TVkAttachmentType.MoneyTransfer, TVkAttachmentType.MoneyRequest] then
+    begin
+      var Frame := TFrameAttachmentMoney.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      case Item.&Type of
+        TVkAttachmentType.MoneyTransfer:
+          Frame.Fill(Item.MoneyTransfer, Data);
+        TVkAttachmentType.MoneyRequest:
+          Frame.Fill(Item.MoneyRequest, Data);
+      end;
+    end;
+end;
+
+procedure TFrameAttachmentWall.CreateMarket(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Market then
+    begin
+      var Frame := TFrameAttachmentMarket.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Market);
+    end;
+end;
+
+procedure TFrameAttachmentWall.CreateAlbums(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Album then
+    begin
+      var Frame := TFrameAttachmentAlbum.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Album);
+    end;
+end;
+
 procedure TFrameAttachmentWall.CreatePhotos(Items: TVkAttachmentArray);
 begin
   for var Item in Items do
@@ -397,7 +459,7 @@ end;
 procedure TFrameAttachmentWall.SetDate(const Value: TDateTime);
 begin
   FDate := Value;
-  LabelTime.Text := FormatDateTime('HH:nn', FDate);
+  LabelTime.Text := HumanDateTime(FDate, True, True);
   LabelTime.Hint := FormatDateTime('c', FDate);
 end;
 

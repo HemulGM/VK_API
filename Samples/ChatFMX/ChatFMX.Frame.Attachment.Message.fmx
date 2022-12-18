@@ -1,5 +1,4 @@
 inherited FrameAttachmentMessage: TFrameAttachmentMessage
-  HitTest = False
   Size.Width = 581.000000000000000000
   Size.Height = 284.000000000000000000
   OnMouseUp = FrameMouseUp

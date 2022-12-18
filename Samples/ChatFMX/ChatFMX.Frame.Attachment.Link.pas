@@ -76,7 +76,10 @@ begin
     LayoutPreview.Visible := False;
     LayoutShort.Visible := True;
     LabelShortTitle.Text := Item.Title;
-    LabelShortUrl.Text := Item.Caption;
+    if not Item.Caption.IsEmpty then
+      LabelShortUrl.Text := Item.Caption
+    else
+      LabelShortUrl.Text := Item.Url;
   end
   else
   begin
@@ -84,7 +87,10 @@ begin
     LayoutPreview.Visible := True;
     LayoutShort.Visible := False;
     LabelTitle.Text := Item.Title;
-    LabelUrl.Text := Item.Caption;
+    if not Item.Caption.IsEmpty then
+      LabelUrl.Text := Item.Caption
+    else
+      LabelUrl.Text := Item.Url;
 
     FImageUrl := Item.Photo.Sizes.GetSizeUrlOrEmpty(300);
     if not FImageUrl.IsEmpty then

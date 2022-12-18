@@ -1,4 +1,4 @@
-﻿unit ChatFMX.Frame.Attachment.Photo;
+﻿unit ChatFMX.Frame.Attachment.Album;
 
 interface
 
@@ -6,13 +6,24 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   VK.API, VK.Entity.Photo, FMX.Objects, VK.Types, System.Messaging,
-  ChatFMX.Frame.Attachment;
+  ChatFMX.Frame.Attachment, Vk.Entity.Album, FMX.Layouts,
+  FMX.Controls.Presentation, FMX.Ani;
 
 type
-  TFrameAttachmentPhoto = class(TFrameAttachment)
+  TFrameAttachmentAlbum = class(TFrameAttachment)
     Image: TImage;
+    LayoutDescription: TLayout;
+    LayoutTitle: TLayout;
+    LabelTitle: TLabel;
+    LabelCount: TLabel;
+    Rectangle1: TRectangle;
+    LayoutDescAni: TLayout;
+    LabelDesc: TLabel;
+    Rectangle2: TRectangle;
     procedure FrameResize(Sender: TObject);
     procedure ImageClick(Sender: TObject);
+    procedure ImageMouseEnter(Sender: TObject);
+    procedure ImageMouseLeave(Sender: TObject);
   private
     FImageUrl: string;
     FImageFile: string;
@@ -24,7 +35,7 @@ type
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
-    procedure Fill(Photo: TVkPhoto);
+    procedure Fill(Album: TVkPhotoAlbum);
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth;
   end;
 
@@ -35,44 +46,49 @@ uses
 
 {$R *.fmx}
 
-{ TFrameAttachmentPhoto }
+{ TFrameAttachmentAlbum }
 
-constructor TFrameAttachmentPhoto.Create(AOwner: TComponent; AVK: TCustomVK);
+constructor TFrameAttachmentAlbum.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited;
   FWasImage := False;
 end;
 
-destructor TFrameAttachmentPhoto.Destroy;
+destructor TFrameAttachmentAlbum.Destroy;
 begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
   inherited;
 end;
 
-procedure TFrameAttachmentPhoto.Fill(Photo: TVkPhoto);
-var
-  PhotoUrl: string;
+procedure TFrameAttachmentAlbum.Fill(Album: TVkPhotoAlbum);
 begin
-  MaxWidth := Photo.Sizes.GetMaxSizeOrZero.Width;
+  Height := 250;
+  LabelTitle.Text := Album.Title;
+  LabelCount.Text := Album.Size.ToString;
+  LabelDesc.Text := Album.Description;
+  var Sizes: TVkSizes;
+  if Assigned(Album.Thumb) then
+    Sizes := Album.Thumb.Sizes
+  else
+    Sizes := Album.Sizes;
+
+  MaxWidth := Sizes.GetMaxSizeOrZero.Width;
   if MaxWidth <= 0 then
     MaxWidth := 1000;
-  PhotoUrl := Photo.ToStringId;
-  Height := 100;
-  var Size := Photo.Sizes.GetSizeFromHeight(400);
+
+  var Size := Sizes.GetSizeFromHeight(400);
   if Assigned(Size) then
   begin
     Width := Height * (Size.Width / Size.Height);
     if Size.Height < Height then
       Height := Width * (Size.Height / Size.Width);
     FImageUrl := Size.Url;
-    //if not FImageUrl.IsEmpty then
-    //  TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
   end
   else
     Width := 80;
 end;
 
-procedure TFrameAttachmentPhoto.FOnReadyImage(const Sender: TObject; const M: TMessage);
+procedure TFrameAttachmentAlbum.FOnReadyImage(const Sender: TObject; const M: TMessage);
 var
   Data: TMessagePreview absolute M;
 begin
@@ -81,39 +97,49 @@ begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
   FImageFile := Data.Value.FileName;
   if FImageFile.IsEmpty then
-  begin
-    //CircleAvatar.Fill.Kind := TBrushKind.Solid;
-    Image.Bitmap := nil;
-  end
+    Image.Bitmap := nil
   else
   try
     Image.Bitmap.LoadFromFile(FImageFile);
     FWasImage := True;
-    //CircleAvatar.Fill.Kind := TBrushKind.Bitmap;
-    //CircleAvatar.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
   except
     Image.Bitmap := nil;
-    //CircleAvatar.Fill.Kind := TBrushKind.Solid;
   end;
 end;
 
-procedure TFrameAttachmentPhoto.FrameResize(Sender: TObject);
+procedure TFrameAttachmentAlbum.FrameResize(Sender: TObject);
 begin
   if Width > MaxWidth then
     Width := MaxWidth;
 end;
 
-procedure TFrameAttachmentPhoto.ImageClick(Sender: TObject);
+procedure TFrameAttachmentAlbum.ImageClick(Sender: TObject);
 begin
   //
 end;
 
-procedure TFrameAttachmentPhoto.SetMaxWidth(const Value: Integer);
+procedure TFrameAttachmentAlbum.ImageMouseEnter(Sender: TObject);
+begin
+  if LabelDesc.Text.IsEmpty then
+    Exit;
+  LayoutDescAni.Height := LabelDesc.Height + 9;
+  LayoutDescAni.Margins.Bottom := -LayoutDescAni.Height;
+  TAnimator.AnimateFloat(LayoutDescAni, 'Margins.Bottom', 0);
+end;
+
+procedure TFrameAttachmentAlbum.ImageMouseLeave(Sender: TObject);
+begin
+  if LabelDesc.Text.IsEmpty then
+    Exit;
+  TAnimator.AnimateFloat(LayoutDescAni, 'Margins.Bottom', -LayoutDescAni.Height);
+end;
+
+procedure TFrameAttachmentAlbum.SetMaxWidth(const Value: Integer);
 begin
   FMaxWidth := Value;
 end;
 
-procedure TFrameAttachmentPhoto.SetVisibility(const Value: Boolean);
+procedure TFrameAttachmentAlbum.SetVisibility(const Value: Boolean);
 begin
   inherited;
   if Value then

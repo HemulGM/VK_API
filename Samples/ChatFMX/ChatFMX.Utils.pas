@@ -11,7 +11,7 @@ function WordOfCount(const Count: Integer; const Words: TArrayOfString): string;
 
 function WordOfSex(const Sex: TVkSex; const Words: TArrayOfString): string;
 
-function HumanDateTime(Value: TDateTime; ShowTime: Boolean = False): string;
+function HumanDateTime(Value: TDateTime; ShowTime: Boolean = False; ShortDate: Boolean = False): string;
 
 function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;
 
@@ -20,7 +20,7 @@ function ParseMention(const Value: string): string;
 implementation
 
 uses
-  System.DateUtils, System.RegularExpressions;
+  System.DateUtils, System.StrUtils, System.RegularExpressions;
 
 function ParseMention(const Value: string): string;
 const
@@ -71,48 +71,48 @@ begin
   end;
 end;
 
-function MonthTextOf(Value: TDateTime): string;
+function MonthTextOf(Value: TDateTime; Short: Boolean): string;
 begin
   case MonthOf(Value) of
     1:
-      Result := 'января';
+      Result := IfThen(Short, 'янв', 'января');
     2:
-      Result := 'февраля';
+      Result := IfThen(Short, 'фев', 'февраля');
     3:
-      Result := 'марта';
+      Result := IfThen(Short, 'мар', 'марта');
     4:
-      Result := 'апреля';
+      Result := IfThen(Short, 'апр', 'апреля');
     5:
-      Result := 'мая';
+      Result := IfThen(Short, 'мая', 'мая');
     6:
-      Result := 'июня';
+      Result := IfThen(Short, 'июн', 'июня');
     7:
-      Result := 'июля';
+      Result := IfThen(Short, 'июл', 'июля');
     8:
-      Result := 'августа';
+      Result := IfThen(Short, 'авг', 'августа');
     9:
-      Result := 'сентября';
+      Result := IfThen(Short, 'сен', 'сентября');
     10:
-      Result := 'октября';
+      Result := IfThen(Short, 'окт', 'октября');
     11:
-      Result := 'ноября';
+      Result := IfThen(Short, 'ноя', 'ноября');
     12:
-      Result := 'декабря';
+      Result := IfThen(Short, 'дек', 'декабря');
   else
     Result := '?????';
   end;
 end;
 
-function HumanDateTime(Value: TDateTime; ShowTime: Boolean): string;
+function HumanDateTime(Value: TDateTime; ShowTime: Boolean; ShortDate: Boolean): string;
 begin
   if IsSameDay(Value, Today) then
     Result := 'сегодня'
   else if IsSameDay(Value, Yesterday) then
     Result := 'вчера'
   else if YearOf(Value) = YearOf(Now) then
-    Result := FormatDateTime('d ' + MonthTextOf(Value), Value)
+    Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate), Value)
   else
-    Result := FormatDateTime('d ' + MonthTextOf(Value) + ' YYYY', Value);
+    Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate) + ' YYYY', Value);
   if ShowTime then
   begin
     Result := Result + ' в ' + FormatDateTime('H:nn', Value);

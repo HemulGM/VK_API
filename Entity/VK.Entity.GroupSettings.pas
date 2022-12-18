@@ -102,7 +102,7 @@ type
     FComments_enabled: Boolean;
     FContact_id: Integer;
     FCountry_ids: TArray<Integer>;
-    FCurrency: TVkProductCurrency;
+    FCurrency: TVkCurrencyInfo;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FEnabled: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -113,7 +113,7 @@ type
     property CommentsEnabled: Boolean read FComments_enabled write FComments_enabled;
     property ContactId: Integer read FContact_id write FContact_id;
     property CountryIds: TArray<Integer> read FCountry_ids write FCountry_ids;
-    property Currency: TVkProductCurrency read FCurrency write FCurrency;
+    property Currency: TVkCurrencyInfo read FCurrency write FCurrency;
     property CanMessage: Boolean read FCan_message write FCan_message;
     property Enabled: Boolean read FEnabled write FEnabled;
     property &Type: string read FType write FType;

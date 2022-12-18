@@ -18,7 +18,8 @@ type
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
-    procedure Fill(Geo: TVkGeo);
+    procedure Fill(Geo: TVkGeo); overload;
+    procedure Fill(Geo: TVkGeoWall); overload;
   end;
 
 implementation
@@ -53,6 +54,18 @@ begin
     Long := Geo.Coordinates.Longitude.ToString.Replace(',', '.');
     FImageUrl :=
       'https://static-maps.yandex.ru/1.x/?ll=' + Long + ',' + Lat + '&size=340,127&z=12&lang=ru_RU&l=map&pt=' + Long + ',' + Lat + ',vkbkm';
+    TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+  end;
+end;
+
+procedure TFrameAttachmentGeo.Fill(Geo: TVkGeoWall);
+begin
+  if Assigned(Geo.Place) then
+    RectangleMap.Hint := Geo.Place.Title;
+  if not Geo.Coordinates.IsEmpty then
+  begin
+    FImageUrl :=
+      'https://static-maps.yandex.ru/1.x/?ll=' + Geo.Coordinates + '&size=340,127&z=12&lang=ru_RU&l=map&pt=' + Geo.Coordinates + ',vkbkm';
     TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
   end;
 end;
