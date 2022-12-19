@@ -396,6 +396,24 @@
         <DCCReference Include="ChatFMX.Frame.Attachment.Money.pas">
             <Form>FrameAttachmentMoney</Form>
         </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Window.pas">
+            <Form>FrameWindow</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Window.Photo.pas">
+            <Form>FrameWindowPhoto</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.Graffiti.pas">
+            <Form>FrameAttachmentGraffiti</Form>
+        </DCCReference>
+        <DCCReference Include="ChatFMX.Frame.Attachment.Poll.pas">
+            <Form>FrameAttachmentPoll</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <RcItem Include="Res\im_favorites_100.png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>im_favorites_100</ResourceId>
@@ -411,6 +429,10 @@
         <RcItem Include="Res\payment_snippet.png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>payment_snippet</ResourceId>
+        </RcItem>
+        <RcItem Include="Res\pv_layer_controls.png">
+            <ResourceType>RCDATA</ResourceType>
+            <ResourceId>pv_layer_controls</ResourceId>
         </RcItem>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -693,8 +715,6 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Configuration="Debug" Class="Android_LauncherIcon72"/>
-                <DeployFile LocalName="Android\Debug\AndroidManifest.xml" Configuration="Debug" Class="ProjectAndroidManifest"/>
                 <DeployFile LocalName="Android\Release\AndroidManifest.xml" Configuration="Release" Class="ProjectAndroidManifest">
                     <Platform Name="Android">
                         <Overwrite>true</Overwrite>
@@ -706,6 +726,8 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Configuration="Debug" Class="Android_LauncherIcon72"/>
+                <DeployFile LocalName="Android\Debug\AndroidManifest.xml" Configuration="Debug" Class="ProjectAndroidManifest"/>
                 <DeployFile LocalName="Res\msg_warning.png" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Android">
                         <RemoteDir>.\assets\internal\</RemoteDir>
@@ -903,6 +925,12 @@
                 <DeployFile LocalName="Res\msg_warning.png" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Android">
                         <RemoteDir>.\assets\internal\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Res\pv_layer_controls.png" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

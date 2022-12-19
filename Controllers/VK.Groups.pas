@@ -1246,7 +1246,7 @@ type
     /// <summary>
     ///  ¬озвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
-    function GetById(var Items: TVkGroups; GroupId: Int64; Fields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Item: TVkGroup; GroupId: Int64; Fields: TVkGroupFields = []): Boolean; overload;
     /// <summary>
     ///  ¬озвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
@@ -1537,9 +1537,23 @@ begin
   Result := Handler.Execute('groups.getBanned', Params.List).GetObject(Items);
 end;
 
-function TGroupsController.GetById(var Items: TVkGroups; GroupId: Int64; Fields: TVkGroupFields): Boolean;
+function TGroupsController.GetById(var Item: TVkGroup; GroupId: Int64; Fields: TVkGroupFields): Boolean;
+var
+  Items: TVkGroups;
 begin
   Result := GetById(Items, [GroupId], Fields);
+  if Result then
+  try
+    if Length(Items.Groups) > 0 then
+    begin
+      Item := Items.Groups[0];
+      Items.Groups[0] := nil;
+    end
+    else
+      Result := False;
+  finally
+    Items.Free;
+  end;
 end;
 
 function TGroupsController.GetCallbackConfirmationCode(var Code: string; GroupId: Int64): Boolean;
@@ -1584,7 +1598,7 @@ begin
   Result := Handler.Execute('groups.getById', [
     ['group_ids', GroupId],
     ['fields', Fields.ToString]]).
-    GetObjects(Items);
+    GetObject(Items);
 end;
 
 function TGroupsController.GetById(var Items: TVkGroups; GroupIds: TIdList; Fields: TVkGroupFields): Boolean;
@@ -1592,7 +1606,7 @@ begin
   Result := Handler.Execute('groups.getById', [
     ['group_ids', GroupIds.ToString],
     ['fields', Fields.ToString]]).
-    GetObjects(Items);
+    GetObject(Items);
 end;
 
 function TGroupsController.GetAddresses(var Item: TVkGroupAddresses; Params: TParams): Boolean;

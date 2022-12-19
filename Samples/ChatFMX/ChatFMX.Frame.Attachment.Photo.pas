@@ -12,20 +12,22 @@ type
   TFrameAttachmentPhoto = class(TFrameAttachment)
     Image: TImage;
     procedure FrameResize(Sender: TObject);
-    procedure ImageClick(Sender: TObject);
   private
     FImageUrl: string;
     FImageFile: string;
     FWasImage: Boolean;
     FMaxWidth: Integer;
+    FId: string;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure SetMaxWidth(const Value: Integer);
+    procedure SetId(const Value: string);
   public
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
     procedure Fill(Photo: TVkPhoto);
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth;
+    property Id: string read FId write SetId;
   end;
 
 implementation
@@ -50,13 +52,11 @@ begin
 end;
 
 procedure TFrameAttachmentPhoto.Fill(Photo: TVkPhoto);
-var
-  PhotoUrl: string;
 begin
+  Id := Photo.ToStringId;
   MaxWidth := Photo.Sizes.GetMaxSizeOrZero.Width;
   if MaxWidth <= 0 then
     MaxWidth := 1000;
-  PhotoUrl := Photo.ToStringId;
   Height := 100;
   var Size := Photo.Sizes.GetSizeFromHeight(400);
   if Assigned(Size) then
@@ -65,8 +65,6 @@ begin
     if Size.Height < Height then
       Height := Width * (Size.Height / Size.Width);
     FImageUrl := Size.Url;
-    //if not FImageUrl.IsEmpty then
-    //  TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
   end
   else
     Width := 80;
@@ -81,19 +79,13 @@ begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
   FImageFile := Data.Value.FileName;
   if FImageFile.IsEmpty then
-  begin
-    //CircleAvatar.Fill.Kind := TBrushKind.Solid;
-    Image.Bitmap := nil;
-  end
+    Image.Bitmap := nil
   else
   try
     Image.Bitmap.LoadFromFile(FImageFile);
     FWasImage := True;
-    //CircleAvatar.Fill.Kind := TBrushKind.Bitmap;
-    //CircleAvatar.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
   except
     Image.Bitmap := nil;
-    //CircleAvatar.Fill.Kind := TBrushKind.Solid;
   end;
 end;
 
@@ -103,9 +95,9 @@ begin
     Width := MaxWidth;
 end;
 
-procedure TFrameAttachmentPhoto.ImageClick(Sender: TObject);
+procedure TFrameAttachmentPhoto.SetId(const Value: string);
 begin
-  //
+  FId := Value;
 end;
 
 procedure TFrameAttachmentPhoto.SetMaxWidth(const Value: Integer);
@@ -122,9 +114,7 @@ begin
       TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
   end
   else
-  begin
     Image.Bitmap := nil;
-  end;
 end;
 
 end.

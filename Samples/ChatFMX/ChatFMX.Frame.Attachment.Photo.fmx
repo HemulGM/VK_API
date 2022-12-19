@@ -1,4 +1,5 @@
 inherited FrameAttachmentPhoto: TFrameAttachmentPhoto
+  HitTest = True
   Size.Width = 320.000000000000000000
   Size.Height = 240.000000000000000000
   OnResize = FrameResize
@@ -7,10 +8,10 @@ inherited FrameAttachmentPhoto: TFrameAttachmentPhoto
       item
       end>
     Align = Client
+    HitTest = False
     Size.Width = 320.000000000000000000
     Size.Height = 240.000000000000000000
     Size.PlatformDefault = False
     WrapMode = Stretch
-    OnClick = ImageClick
   end
 end

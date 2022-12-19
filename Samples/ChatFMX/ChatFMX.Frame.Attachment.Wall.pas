@@ -64,6 +64,9 @@ type
     procedure CreateMarket(Items: TVkAttachmentArray);
     procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
     procedure CreateGeo(Value: TVkGeoWall);
+    procedure FOnPhotosClick(Sender: TObject);
+    function CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
+    procedure CreateGraffiti(Items: TVkAttachmentArray);
   public
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
@@ -84,7 +87,8 @@ uses
   ChatFMX.Frame.Attachment.Messages, ChatFMX.Frame.Attachment.Link,
   ChatFMX.Frame.Attachment.WallFwd, ChatFMX.Frame.Attachment.Album,
   ChatFMX.Frame.Attachment.Market, ChatFMX.Frame.Attachment.Money,
-  ChatFMX.Frame.Attachment.Geo;
+  ChatFMX.Frame.Attachment.Geo, ChatFMX.Frame.Window.Photo,
+  ChatFMX.Frame.Attachment.Graffiti;
 
 {$R *.fmx}
 
@@ -285,6 +289,7 @@ begin
     CreatePosts(Item.Attachments, Data);
     CreateMarket(Item.Attachments);
     CreateMoney(Item.Attachments, Data);
+    CreateGraffiti(Item.Attachments);
     RecalcMedia;
   end;
 
@@ -433,6 +438,7 @@ begin
     begin
       var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, VK);
       Frame.Parent := FlowLayoutMedia;
+      Frame.OnClick := FOnPhotosClick;
       Frame.Fill(Item.Photo);
     end;
     if (Item.&Type = TVkAttachmentType.Doc) and (Assigned(Item.Doc.Preview)) then
@@ -442,6 +448,61 @@ begin
       Frame.Fill(Item.Doc, True);
     end;
   end;
+end;
+
+procedure TFrameAttachmentWall.FOnPhotosClick(Sender: TObject);
+var
+  Frame: TFrameAttachmentPhoto absolute Sender;
+begin
+  if not (Sender is TFrameAttachmentPhoto) then
+    Exit;
+
+  var Items: TArray<string>;
+  var CurrentIndex: Integer;
+  if CollectPhotosFrom(Frame.Id, Items, CurrentIndex) then
+  begin
+    var Form := Application.MainForm;
+    with TFrameWindowPhoto.Create(Form, VK) do
+    begin
+      Parent := Form;
+      Align := TAlignLayout.Contents;
+      Fill(Items, CurrentIndex);
+      ShowFrame;
+    end;
+  end;
+end;
+
+procedure TFrameAttachmentWall.CreateGraffiti(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Graffiti then
+    begin
+      var Frame := TFrameAttachmentGraffiti.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Graffiti);
+    end;
+end;
+
+function TFrameAttachmentWall.CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
+begin
+  SetLength(Items, FlowLayoutMedia.ControlsCount);
+  Index := 0;
+  if Length(Items) <= 0 then
+    Exit(False);
+  var i := 0;
+  for var Control in FlowLayoutMedia.Controls do
+    if Control is TFrameAttachmentPhoto then
+    begin
+      var Id :=(Control as TFrameAttachmentPhoto).Id;
+      Items[i] := Id;
+      if Id = PhotoId then
+        Index := i;
+      Inc(i);
+    end;
+  SetLength(Items, i);
+  Result := True;
 end;
 
 procedure TFrameAttachmentWall.SetAutor(const Value: string);

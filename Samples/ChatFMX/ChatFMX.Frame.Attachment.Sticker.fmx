@@ -1,5 +1,4 @@
 inherited FrameAttachmentSticker: TFrameAttachmentSticker
-  HitTest = False
   Padding.Left = 7.000000000000000000
   Padding.Top = 9.000000000000000000
   Padding.Right = 7.000000000000000000

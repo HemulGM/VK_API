@@ -14,7 +14,8 @@ type
     FId: Int64;
     procedure SetVK(const Value: TCustomVK);
     procedure SetId(const Value: Int64);
-
+  protected
+    FVisibility: Boolean;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce; virtual;
     property VK: TCustomVK read FVK write SetVK;
@@ -42,7 +43,7 @@ end;
 
 procedure TFrameAttachment.SetVisibility(const Value: Boolean);
 begin
-  //
+  FVisibility := Value;
 end;
 
 procedure TFrameAttachment.SetVK(const Value: TCustomVK);

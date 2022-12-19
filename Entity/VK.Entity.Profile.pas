@@ -4,9 +4,9 @@ interface
 
 uses
   Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  REST.Json.Types, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Database.Cities,
+  REST.Json.Types, VK.Entity.Common, VK.Entity.Database.Cities,
   VK.Entity.Database.Countries, VK.Types, VK.Entity.Counters,
-  VK.Wrap.Interceptors, VK.Entity.Audio, VK.Entity.Common.List;
+  VK.Wrap.Interceptors, VK.Entity.Audio, VK.Entity.Common.List, VK.Entity.Photo;
 
 type
   TVkProfile = class;

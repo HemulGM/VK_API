@@ -77,15 +77,9 @@ end;
 procedure TFrameAttachmentSticker.Fill(Sticker: TVkSticker);
 begin
   if Sticker.AnimationUrl.IsEmpty then
-  begin
-    FImageUrl := Sticker.Images[High(Sticker.Images)].Url;
-    //TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
-  end
+    FImageUrl := Sticker.Images[High(Sticker.Images)].Url
   else
-  begin
     FAnimImageUrl := Sticker.AnimationUrl;
-    //TPreview.Instance.Subscribe(FAnimImageUrl, FOnReadyImageAnim);
-  end;
 end;
 
 procedure TFrameAttachmentSticker.FOnReadyImage(const Sender: TObject; const M: TMessage);

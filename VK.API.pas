@@ -92,6 +92,7 @@ type
     FStories: TStoriesController;
     FUserId: Integer;
     FUserName: string;
+    FUserPhoto50: string;
     FUserPhoto100: string;
     FUsers: TUsersController;
     FUseServiceKeyOnly: Boolean;
@@ -138,7 +139,8 @@ type
     procedure SetRequestLimit(const Value: Integer);
     function GetRequestLimit: Integer;
     function GetUserName: string;
-    function GetUserPhoto: string;
+    function GetUserPhoto100: string;
+    function GetUserPhoto50: string;
   public
     constructor Create(const AToken: string); reintroduce; overload;
     constructor Create(AOwner: TComponent); overload; override;
@@ -407,7 +409,11 @@ type
     /// <summary>
     /// Фото пользователя (будет запрошено, если не сохранено)
     /// </summary>
-    property UserPhoto100: string read GetUserPhoto;
+    property UserPhoto50: string read GetUserPhoto50;
+    /// <summary>
+    /// Фото пользователя (будет запрошено, если не сохранено)
+    /// </summary>
+    property UserPhoto100: string read GetUserPhoto100;
     /// <summary>
     /// Событие, которое происходит, если токен успешно получен и успешно пройдена проверка авторизации
     /// </summary>
@@ -787,11 +793,12 @@ function TCustomVK.LoadUserInfo: Boolean;
 var
   User: TVkProfile;
 begin
-  Result := Users.Get(User, [TVkProfileField.Photo100]);
+  Result := Users.Get(User, [TVkProfileField.Photo50, TVkProfileField.Photo100]);
   if Result then
   try
     FUserId := User.Id;
     FUserName := User.FullName;
+    FUserPhoto50 := User.Photo50;
     FUserPhoto100 := User.Photo100;
   finally
     User.Free;
@@ -1164,10 +1171,18 @@ begin
     Result := '';
 end;
 
-function TCustomVK.GetUserPhoto: string;
+function TCustomVK.GetUserPhoto100: string;
 begin
   if (FUserId > 0) or LoadUserInfo then
     Result := FUserPhoto100
+  else
+    Result := '';
+end;
+
+function TCustomVK.GetUserPhoto50: string;
+begin
+  if (FUserId > 0) or LoadUserInfo then
+    Result := FUserPhoto50
   else
     Result := '';
 end;

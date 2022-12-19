@@ -1015,7 +1015,7 @@ type
   end;
 
   TMessagesController = class(TVkController)
-  public    
+  public
     /// <summary>
     /// Отправить сообщение.
     function SendAudioMessage(const PeerId: Integer; const FileName: string): Boolean;
@@ -1321,7 +1321,8 @@ type
 implementation
 
 uses
-  VK.API, VK.CommonUtils, System.DateUtils, VK.Entity.Photo, VK.Entity.Call, VK.Entity.Doc.Save;
+  VK.API, VK.CommonUtils, System.DateUtils, VK.Entity.Photo, VK.Entity.Call,
+  VK.Entity.Doc.Save, VK.Entity.Common.ExtendedList;
 
 { TMessagesController }
 

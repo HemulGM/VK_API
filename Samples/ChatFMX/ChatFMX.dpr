@@ -33,7 +33,11 @@ uses
   ChatFMX.Frame.Attachment.WallFwd in 'ChatFMX.Frame.Attachment.WallFwd.pas' {FrameAttachmentWallFwd: TFrame},
   ChatFMX.Frame.Attachment.Album in 'ChatFMX.Frame.Attachment.Album.pas' {FrameAttachmentAlbum},
   ChatFMX.Frame.Attachment.Market in 'ChatFMX.Frame.Attachment.Market.pas' {FrameAttachmentMarket},
-  ChatFMX.Frame.Attachment.Money in 'ChatFMX.Frame.Attachment.Money.pas' {FrameAttachmentMoney};
+  ChatFMX.Frame.Attachment.Money in 'ChatFMX.Frame.Attachment.Money.pas' {FrameAttachmentMoney},
+  ChatFMX.Frame.Window in 'ChatFMX.Frame.Window.pas' {FrameWindow: TFrame},
+  ChatFMX.Frame.Window.Photo in 'ChatFMX.Frame.Window.Photo.pas' {FrameWindowPhoto: TFrame},
+  ChatFMX.Frame.Attachment.Graffiti in 'ChatFMX.Frame.Attachment.Graffiti.pas' {FrameAttachmentGraffiti},
+  ChatFMX.Frame.Attachment.Poll in 'ChatFMX.Frame.Attachment.Poll.pas' {FrameAttachmentPoll: TFrame};
 
 {$R *.res}
 

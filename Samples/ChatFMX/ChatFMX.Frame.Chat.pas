@@ -182,6 +182,7 @@ type
     procedure CalcDisappear;
     procedure ShowHints;
     procedure HideHints;
+    procedure ErrorLoading;
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   protected
     procedure SetVisible(const Value: Boolean); override;
@@ -433,19 +434,34 @@ begin
   Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified, TVkProfileField.Sex,
     TVkProfileField.FirstNameAcc, TVkProfileField.LastNameAcc], [TVkGroupField.Verified]);
   Params.PeerId(FConversationId);
-  if VK.Messages.GetHistory(Items, Params) then
   try
-    if Length(Items.Items) < 20 then
-      FOffsetEnd := True;
+    if VK.Messages.GetHistory(Items, Params) then
+    try
+      if Length(Items.Items) < 20 then
+        FOffsetEnd := True;
+      TThread.Synchronize(nil,
+        procedure
+        begin
+          AppendHistory(Items);
+          FLoading := False;
+        end);
+    finally
+      Items.Free;
+    end;
+  except
     TThread.Synchronize(nil,
       procedure
       begin
-        AppendHistory(Items);
         FLoading := False;
+        Dec(FOffset, 20);
+        ErrorLoading;
       end);
-  finally
-    Items.Free;
   end;
+end;
+
+procedure TFrameChat.ErrorLoading;
+begin
+
 end;
 
 procedure TFrameChat.UpdateInfo(Info: TVkConversation; Data: TVkConversations);
@@ -606,7 +622,9 @@ end;
 
 procedure TFrameChat.CircleToDownClick(Sender: TObject);
 begin
-  VertScrollBoxMessages.ViewportPosition := TPointF.Create(0, 0);
+  var Pos := VertScrollBoxMessages.Content.ScrollBox.ContentBounds.Bottom - VertScrollBoxMessages.Height;
+  VertScrollBoxMessages.ViewportPosition := TPointF.Create(0, Pos - Min(Abs(VertScrollBoxMessages.ViewportPosition.Y), 200));
+  FChatScroll.ScrollDown;
 end;
 
 procedure TFrameChat.ShowHints;

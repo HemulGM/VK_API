@@ -20,6 +20,7 @@ type
     LayoutDescAni: TLayout;
     LabelDesc: TLabel;
     Rectangle2: TRectangle;
+    Rectangle3: TRectangle;
     procedure FrameResize(Sender: TObject);
     procedure ImageClick(Sender: TObject);
     procedure ImageMouseEnter(Sender: TObject);
@@ -42,7 +43,8 @@ type
 implementation
 
 uses
-  ChatFMX.PreviewManager, System.Threading, VK.Photos, VK.Entity.Common;
+  ChatFMX.PreviewManager, System.Threading, VK.Photos, VK.Entity.Common,
+  System.Math, ChatFMX.Utils;
 
 {$R *.fmx}
 
@@ -122,8 +124,9 @@ procedure TFrameAttachmentAlbum.ImageMouseEnter(Sender: TObject);
 begin
   if LabelDesc.Text.IsEmpty then
     Exit;
-  LayoutDescAni.Height := LabelDesc.Height + 9;
+  LayoutDescAni.Height := Min(LabelDesc.Height, Height - 70) + 9;
   LayoutDescAni.Margins.Bottom := -LayoutDescAni.Height;
+  TAnimator.DetachPropertyAnimation(LayoutDescAni, 'Margins.Bottom');
   TAnimator.AnimateFloat(LayoutDescAni, 'Margins.Bottom', 0);
 end;
 
@@ -131,6 +134,7 @@ procedure TFrameAttachmentAlbum.ImageMouseLeave(Sender: TObject);
 begin
   if LabelDesc.Text.IsEmpty then
     Exit;
+  TAnimator.DetachPropertyAnimation(LayoutDescAni, 'Margins.Bottom');
   TAnimator.AnimateFloat(LayoutDescAni, 'Margins.Bottom', -LayoutDescAni.Height);
 end;
 

@@ -4,9 +4,10 @@ interface
 
 uses
   System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Types,
-  VK.Entity.Photo, REST.JsonReflect, REST.Json.Interceptors, VK.Entity.Market,
+  REST.JsonReflect, REST.Json.Interceptors, VK.Entity.Market,
   VK.Entity.Group.Counters, VK.Wrap.Interceptors, VK.Entity.Database.Cities,
-  VK.Entity.Database.Countries, VK.Entity.Common.List, VK.Entity.Geo;
+  VK.Entity.Database.Countries, VK.Entity.Common.List, VK.Entity.Geo,
+  VK.Entity.Photo;
 
 type
   TVkGroupSubject = TVkBasicObject;
@@ -500,7 +501,13 @@ type
     destructor Destroy; override;
   end;
 
-  TVkGroups = TVkObjectList<TVkGroup>;
+  TVkGroups = class(TVkEntity)
+  private
+    FGroups: TArray<TVkGroup>;
+  public
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    destructor Destroy; override;
+  end;
 
   TVkGroupTag = class(TVkObject)
   private
@@ -577,6 +584,14 @@ destructor TVkLike.Destroy;
 begin
   if Assigned(FFriends) then
     FFriends.Free;
+  inherited;
+end;
+
+{ TVkGroups }
+
+destructor TVkGroups.Destroy;
+begin
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   inherited;
 end;
 

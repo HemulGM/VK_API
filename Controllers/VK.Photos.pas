@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.Generics.Collections, System.Classes,
   VK.Controller, VK.Types, VK.Entity.Album, REST.Json, VK.Entity.Photo.Upload,
-  VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common;
+  VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common, VK.Entity.Common.ExtendedList;
 
 type
   TVkParamsPhotosGetAll = record

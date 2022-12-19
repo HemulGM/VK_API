@@ -11,18 +11,18 @@ type
   TVkPollFriends = class(TVkObject)
   end;
 
-  TVkPollPoints = class
+  TVkPollPoints = class(TVkEntity)
   private
     FColor: string;
-    FPosition: Integer;
+    FPosition: Extended;
   public
     property Color: string read FColor write FColor;
-    property Position: Integer read FPosition write FPosition;
+    property Position: Extended read FPosition write FPosition;
   end;
 
   TVkPollBackground = class(TVkBasicObject)
   private
-    FAngle: Integer;
+    FAngle: Extended;
     FColor: string;
     FPoints: TArray<TVkPollPoints>;
     FType: string;
@@ -38,7 +38,7 @@ type
     /// <summary>
     /// (для type = gradient) угол градиента по оси X
     /// </summary>
-    property Angle: Integer read FAngle write FAngle;
+    property Angle: Extended read FAngle write FAngle;
     /// <summary>
     /// HEX-код замещающего цвета (без #)
     /// </summary>
@@ -59,6 +59,23 @@ type
     /// (для type = tile) высота плитки паттерна
     /// </summary>
     property Height: Integer read FHeight write FHeight;
+    /// <summary>
+    /// (для type = tile) изображение плитки паттерна. Массив объектов изображений.
+    /// </summary>
+    property Images: TArray<TVkSize> read FImages write FImages;
+    destructor Destroy; override;
+  end;
+
+  TVkPollPhoto = class(TVkObject)
+  private
+    FColor: string;
+    FImages: TArray<TVkSize>;
+  public
+    property Id;
+    /// <summary>
+    /// HEX-код замещающего цвета (без #)
+    /// </summary>
+    property Color: string read FColor write FColor;
     /// <summary>
     /// (для type = tile) изображение плитки паттерна. Массив объектов изображений.
     /// </summary>
@@ -95,9 +112,9 @@ type
   TVkPoll = class(TVkObject, IAttachment)
   private
     FAnonymous: Boolean;
-    FAnswer_ids: TArray<Integer>;
+    FAnswer_ids: TArray<TVkPeerId>;
     FAnswers: TArray<TVkPollAnswer>;
-    FAuthor_id: Integer;
+    FAuthor_id: TVkPeerId;
     FBackground: TVkPollBackground;
     FCan_edit: Boolean;
     FCan_report: Boolean;
@@ -110,15 +127,16 @@ type
     FEnd_date: TDateTime;
     FIs_board: Boolean;
     FMultiple: Boolean;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FQuestion: string;
     FVotes: Integer;
-    FPhoto: TVkPhoto;
+    FPhoto: TVkPollPhoto;
     FFriends: TArray<TVkPollFriends>;
     FDisable_unvote: Boolean;
     FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
     FAccess_key: string;
+    FEmbed_hash: string;
   public
     /// <summary>
     /// Идентификатор опроса для получения информации о нем через метод polls.getById.
@@ -131,7 +149,7 @@ type
     /// <summary>
     /// Идентификатор владельца опроса
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Дата создания
     /// </summary>
@@ -159,7 +177,7 @@ type
     /// <summary>
     /// Идентификаторы вариантов ответа, выбранных текущим пользователем.
     /// </summary>
-    property AnswerIds: TArray<Integer> read FAnswer_ids write FAnswer_ids;
+    property AnswerIds: TArray<TVkPeerId> read FAnswer_ids write FAnswer_ids;
     /// <summary>
     /// Дата завершения опроса. 0, если опрос бессрочный.
     /// </summary>
@@ -191,11 +209,11 @@ type
     /// <summary>
     /// Идентификатор автора опроса
     /// </summary>
-    property AuthorId: Integer read FAuthor_id write FAuthor_id;
+    property AuthorId: TVkPeerId read FAuthor_id write FAuthor_id;
     /// <summary>
     /// Фотография — фон сниппета опроса
     /// </summary>
-    property Photo: TVkPhoto read FPhoto write FPhoto;
+    property Photo: TVkPollPhoto read FPhoto write FPhoto;
     /// <summary>
     /// Фон сниппета опроса
     /// </summary>
@@ -205,6 +223,7 @@ type
     /// </summary>
     property Friends: TArray<TVkPollFriends> read FFriends write FFriends;
     property DisableUnvote: Boolean read FDisable_unvote write FDisable_unvote;
+    property EmbedHash: string read FEmbed_hash write FEmbed_hash;
     //Extended
     property Profiles: TArray<TVkProfile> read FProfiles write FProfiles;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
@@ -254,6 +273,14 @@ end;
 function TVkPoll.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Poll(OwnerId, Id, AccessKey);
+end;
+
+{ TVkPollPhoto }
+
+destructor TVkPollPhoto.Destroy;
+begin
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FImages);
+  inherited;
 end;
 
 end.

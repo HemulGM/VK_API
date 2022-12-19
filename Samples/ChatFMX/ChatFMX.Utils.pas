@@ -3,7 +3,12 @@
 interface
 
 uses
-  VK.Types, System.SysUtils, VK.Entity.Message;
+  VK.Types, System.SysUtils, VK.Entity.Message, FMX.Ani, FMX.Types;
+
+type
+  TAnimatorHelper = class helper for TAnimator
+    class procedure DetachPropertyAnimation(const Target: TFmxObject; const APropertyName: string);
+  end;
 
 function AttachmentToText(const Value: TVkAttachmentType): string;
 
@@ -205,6 +210,28 @@ begin
       Result := 'Денежный перевод';
   else
     Result := '';
+  end;
+end;
+
+{ TAnimatorHelper }
+
+class procedure TAnimatorHelper.DetachPropertyAnimation(const Target: TFmxObject; const APropertyName: string);
+var
+  I: Integer;
+begin
+  I := Target.ChildrenCount - 1;
+  while I >= 0 do
+  begin
+    if (Target.Children[I] is TCustomPropertyAnimation) and
+      (CompareText(TCustomPropertyAnimation(Target.Children[I]).PropertyName, APropertyName) = 0) then
+    begin
+      var Anim := TFloatAnimation(Target.Children[I]);
+      Anim.Parent := nil;
+      Anim.Stop;
+    end;
+    if I > Target.ChildrenCount then
+      I := Target.ChildrenCount;
+    Dec(I);
   end;
 end;
 

@@ -125,6 +125,10 @@ type
     procedure SetMessageSubType(const Value: TMessageSubType);
     procedure UpdateSubType;
     procedure UpdateImportant;
+    procedure FOnPhotosClick(Sender: TObject);
+    function CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
+    procedure CreateGraffiti(Items: TVkAttachmentArray);
+    procedure CreatePoll(Items: TVkAttachmentArray);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
@@ -158,7 +162,8 @@ uses
   ChatFMX.Frame.Attachment.Link, ChatFMX.Frame.Attachment.Wall,
   ChatFMX.Frame.Attachment.Call, ChatFMX.Frame.Attachment,
   ChatFMX.Frame.Attachment.Album, ChatFMX.Frame.Attachment.Market,
-  ChatFMX.Frame.Attachment.Money;
+  ChatFMX.Frame.Attachment.Money, ChatFMX.Frame.Window.Photo,
+  ChatFMX.Frame.Attachment.Graffiti, ChatFMX.Frame.Attachment.Poll;
 
 {$R *.fmx}
 
@@ -317,6 +322,8 @@ begin
     CreateCalls(Item.Attachments);
     CreateMarket(Item.Attachments);
     CreateMoney(Item.Attachments, Data);
+    CreateGraffiti(Item.Attachments);
+    CreatePoll(Item.Attachments);
     RecalcMedia;
   end;
 
@@ -365,6 +372,32 @@ begin
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
       Frame.Fill(Item.Market);
+    end;
+end;
+
+procedure TFrameMessage.CreateGraffiti(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Graffiti then
+    begin
+      var Frame := TFrameAttachmentGraffiti.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Graffiti);
+    end;
+end;
+
+procedure TFrameMessage.CreatePoll(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Poll then
+    begin
+      var Frame := TFrameAttachmentPoll.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Poll);
     end;
 end;
 
@@ -430,6 +463,48 @@ begin
   Frame.Fill(Value);
 end;
 
+function TFrameMessage.CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
+begin
+  SetLength(Items, FlowLayoutMedia.ControlsCount);
+  Index := 0;
+  if Length(Items) <= 0 then
+    Exit(False);
+  var i := 0;
+  for var Control in FlowLayoutMedia.Controls do
+    if Control is TFrameAttachmentPhoto then
+    begin
+      var Id :=(Control as TFrameAttachmentPhoto).Id;
+      Items[i] := Id;
+      if Id = PhotoId then
+        Index := i;
+      Inc(i);
+    end;
+  SetLength(Items, i);
+  Result := True;
+end;
+
+procedure TFrameMessage.FOnPhotosClick(Sender: TObject);
+var
+  Frame: TFrameAttachmentPhoto absolute Sender;
+begin
+  if not (Sender is TFrameAttachmentPhoto) then
+    Exit;
+
+  var Items: TArray<string>;
+  var CurrentIndex: Integer;
+  if CollectPhotosFrom(Frame.Id, Items, CurrentIndex) then
+  begin
+    var Form := Application.MainForm;
+    with TFrameWindowPhoto.Create(Form, FVK) do
+    begin
+      Parent := Form;
+      Align := TAlignLayout.Contents;
+      Fill(Items, CurrentIndex);
+      ShowFrame;
+    end;
+  end;
+end;
+
 procedure TFrameMessage.CreatePhotos(Items: TVkAttachmentArray);
 begin
   for var Item in Items do
@@ -438,6 +513,7 @@ begin
     begin
       var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, FVK);
       Frame.Parent := FlowLayoutMedia;
+      Frame.OnClick := FOnPhotosClick;
       Frame.Fill(Item.Photo);
     end;
     if (Item.&Type = TVkAttachmentType.Doc) and (Assigned(Item.Doc.Preview)) then

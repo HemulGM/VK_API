@@ -40,26 +40,12 @@ inherited FrameAttachmentAlbum: TFrameAttachmentAlbum
         Size.Height = 64.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
-        object Rectangle2: TRectangle
+        object Rectangle3: TRectangle
           Align = Contents
-          Fill.Kind = Gradient
-          Fill.Gradient.Points = <
-            item
-              Color = x78000000
-              Offset = 0.285714298486709600
-            end
-            item
-              Color = claNull
-              Offset = 1.000000000000000000
-            end>
-          Fill.Gradient.StartPosition.X = 0.500000000000000000
-          Fill.Gradient.StartPosition.Y = 1.000000000000000000
-          Fill.Gradient.StopPosition.X = 0.499999970197677600
-          Fill.Gradient.StopPosition.Y = 0.000000000000000000
+          Fill.Color = x78000000
           HitTest = False
-          Margins.Top = -59.000000000000000000
           Size.Width = 320.000000000000000000
-          Size.Height = 123.000000000000000000
+          Size.Height = 64.000000000000000000
           Size.PlatformDefault = False
           Stroke.Kind = None
         end
@@ -90,6 +76,28 @@ inherited FrameAttachmentAlbum: TFrameAttachmentAlbum
         Size.Height = 59.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
+        object Rectangle2: TRectangle
+          Align = Contents
+          Fill.Kind = Gradient
+          Fill.Gradient.Points = <
+            item
+              Color = x78000000
+              Offset = 0.285714298486709600
+            end
+            item
+              Color = claNull
+              Offset = 1.000000000000000000
+            end>
+          Fill.Gradient.StartPosition.X = 0.500000000000000000
+          Fill.Gradient.StartPosition.Y = 1.000000000000000000
+          Fill.Gradient.StopPosition.X = 0.499999970197677600
+          Fill.Gradient.StopPosition.Y = 0.000000000000000000
+          HitTest = False
+          Size.Width = 320.000000000000000000
+          Size.Height = 59.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+        end
         object LabelTitle: TLabel
           Align = Client
           StyledSettings = []
