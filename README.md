@@ -285,7 +285,7 @@ VKAPI.Walk(
 ```
 
 Пример чата-клиента
-![FMX VK Messager](https://github.com/HemulGM/VK_API/blob/master/res/screen1.PNG)
+![FMX VK Messager](https://github.com/HemulGM/VK_API/blob/master/Samples/ChatFMX/Res/screen1.png)
   
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbLTY2MDExNDI1Miw5MzcyNjYxMzQsMzQ1Mj
