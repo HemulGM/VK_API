@@ -3,25 +3,25 @@ unit VK.Entity.Group.Ban;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  Generics.Collections, VK.Wrap.Interceptors, REST.JsonReflect, Rest.Json,
   VK.Entity.Profile, VK.Entity.Group, VK.Types, VK.Entity.Common,
   VK.Entity.Common.List;
 
 type
   TVkGroupBanInfo = class
   private
-    FAdmin_id: Integer;
+    FAdmin_id: TVkPeerId;
     FComment: string;
     FComment_visible: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FEnd_date: TDateTime;
     FReason: Integer;
     function GetReason: TVkUserBlockReason;
     procedure SetReason(const Value: TVkUserBlockReason);
   public
-    property AdminId: Integer read FAdmin_id write FAdmin_id;
+    property AdminId: TVkPeerId read FAdmin_id write FAdmin_id;
     property Comment: string read FComment write FComment;
     property CommentVisible: Boolean read FComment_visible write FComment_visible;
     property Date: TDateTime read FDate write FDate;

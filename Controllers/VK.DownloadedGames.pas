@@ -14,7 +14,7 @@ type
     /// <summary>
     /// Возвращает информацию о том, куплено ли приложение
     /// </summary>
-    function GetPaidStatus(var IsPaid: Boolean; UserId: Integer = 0): Boolean;
+    function GetPaidStatus(var IsPaid: Boolean; UserId: TVkPeerId = 0): Boolean;
   end;
 
 implementation
@@ -24,7 +24,7 @@ uses
 
 { TDownloadedGamesController }
 
-function TDownloadedGamesController.GetPaidStatus(var IsPaid: Boolean; UserId: Integer): Boolean;
+function TDownloadedGamesController.GetPaidStatus(var IsPaid: Boolean; UserId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('downloadedGames.getPaidStatus', ['user_id', UserId.ToString]).GetValue('is_paid', IsPaid);
 end;

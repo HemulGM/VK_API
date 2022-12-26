@@ -3,7 +3,7 @@ unit VK.Entity.Poll;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Wrap.Interceptors,
   VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common,
   VK.Entity.Common.List, VK.Types;
 
@@ -87,7 +87,7 @@ type
 
   TVkPollAnswer = class(TVkObject)
   private
-    FRate: Integer;
+    FRate: Extended;
     FText: string;
     FVotes: Integer;
   public
@@ -96,9 +96,9 @@ type
     /// </summary>
     property Id;
     /// <summary>
-    /// Рейтинг ответа
+    /// Рейтинг ответа (%)
     /// </summary>
-    property Rate: Integer read FRate write FRate;
+    property Rate: Extended read FRate write FRate;
     /// <summary>
     /// Текст ответа
     /// </summary>
@@ -107,6 +107,12 @@ type
     /// Число проголосовавших за этот ответ
     /// </summary>
     property Votes: Integer read FVotes write FVotes;
+  end;
+
+  TVkPollAnswers = TArray<TVkPollAnswer>;
+
+  TVkPollAnswersHelper = record helper for TVkPollAnswers
+    function Contains(AnswerId: Int64): Boolean;
   end;
 
   TVkPoll = class(TVkObject, IAttachment)
@@ -121,9 +127,9 @@ type
     FCan_share: Boolean;
     FCan_vote: Boolean;
     FClosed: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FCreated: TDateTime;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FEnd_date: TDateTime;
     FIs_board: Boolean;
     FMultiple: Boolean;
@@ -281,6 +287,16 @@ destructor TVkPollPhoto.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkSize>(FImages);
   inherited;
+end;
+
+{ TVkPollAnswersHelper }
+
+function TVkPollAnswersHelper.Contains(AnswerId: Int64): Boolean;
+begin
+  for var Item in Self do
+    if Item.Id = AnswerId then
+      Exit(True);
+  Result := False;
 end;
 
 end.

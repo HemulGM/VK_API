@@ -10,14 +10,14 @@ type
   private
     FAccess_key: string;
     FDescription: string;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FTitle: string;
     FUpload_url: string;
     FVideo_id: Integer;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     property Description: string read FDescription write FDescription;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property Title: string read FTitle write FTitle;
     property UploadUrl: string read FUpload_url write FUpload_url;
     property VideoId: Integer read FVideo_id write FVideo_id;
@@ -25,7 +25,7 @@ type
 
   TVkVideoUploadResponse = class(TVkEntity, IAttachment)
   private
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FVideo_hash: string;
     FSize: Int64;
     FVideo_id: Integer;
@@ -34,7 +34,7 @@ type
     property AccessKey: string read FAccess_key write FAccess_key;
     property VideoHash: string read FVideo_hash write FVideo_hash;
     property Size: Int64 read FSize write FSize;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property VideoId: Integer read FVideo_id write FVideo_id;
     function ToAttachment: TAttachment;
   end;

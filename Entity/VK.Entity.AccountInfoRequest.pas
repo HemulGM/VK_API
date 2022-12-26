@@ -15,7 +15,7 @@ type
   public
     property Changed: Integer read FChanged write FChanged;
     property FirstName: string read FFirst_name write FFirst_name;
-    property Last_name: string read FLast_name write FLast_name;
+    property LastName: string read FLast_name write FLast_name;
     property Status: string read FStatus write FStatus;
   end;
 

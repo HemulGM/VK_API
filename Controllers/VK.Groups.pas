@@ -18,7 +18,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsGetMembers; overload;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsGetMembers; overload;
     /// <summary>
     /// Короткое имя сообщества
     /// </summary>
@@ -30,7 +30,7 @@ type
     /// <summary>
     /// Список дополнительных полей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): TVkParamsGroupsGetMembers;
+    function Fields(const Value: TVkExtendedFields): TVkParamsGroupsGetMembers;
     /// <summary>
     /// Количество участников сообщества, информацию о которых необходимо получить (максимальное значение 1000)
     /// </summary>
@@ -50,7 +50,7 @@ type
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    function UserId(const Value: Int64): TVkParamsGroupsGet;
+    function UserId(const Value: TVkPeerId): TVkParamsGroupsGet;
     /// <summary>
     /// Список фильтров сообществ, которые необходимо вернуть
     /// </summary>
@@ -58,7 +58,7 @@ type
     /// <summary>
     /// Список дополнительных полей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkGroupFields): TVkParamsGroupsGet; overload;
+    function Fields(const Value: TVkExtendedFields): TVkParamsGroupsGet; overload;
     /// <summary>
     /// Количество сообществ, информацию о которых нужно вернуть (максимальное значение 1000)
     /// </summary>
@@ -74,7 +74,7 @@ type
     /// <summary>
     /// Идентификатор сообщества.
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsIsMember; overload;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsIsMember; overload;
     /// <summary>
     /// Короткое имя сообщества.
     /// </summary>
@@ -86,11 +86,11 @@ type
     /// <summary>
     /// Идентификатор пользователя.
     /// </summary>
-    function UserId(const Value: Int64): TVkParamsGroupsIsMember;
+    function UserId(const Value: TVkPeerId): TVkParamsGroupsIsMember;
     /// <summary>
     /// Идентификаторы пользователей, не более 500.
     /// </summary>
-    function UserIds(const Value: TIdList): TVkParamsGroupsIsMember;
+    function UserIds(const Value: TVkPeerIds): TVkParamsGroupsIsMember;
   end;
 
   TVkParamsGroupsAddAddress = record
@@ -98,7 +98,7 @@ type
     /// <summary>
     /// идентификатор сообщества, в которое добавляется адрес
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsAddAddress;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsAddAddress;
     /// <summary>
     /// заголовок адреса (максимальная длина 255)
     /// </summary>
@@ -159,11 +159,11 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsBan;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsBan;
     /// <summary>
     /// Идентификатор пользователя или сообщества, которое будет добавлено в черный список
     /// </summary>
-    function OwnerId(const Value: Int64): TVkParamsGroupsBan;
+    function OwnerId(const Value: TVkPeerId): TVkParamsGroupsBan;
     /// <summary>
     /// Дата завершения срока действия бана.
     /// Максимальный возможный срок окончания бана, который можно указать, — один год с его начала.
@@ -252,7 +252,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsEdit;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsEdit;
     /// <summary>
     /// Название сообщества
     /// </summary>
@@ -438,11 +438,11 @@ type
     /// <summary>
     /// Идентификатор сообщества (указывается без знака «минус»).
     /// </summary>
-    function GroupId(const Value: Cardinal): TVkParamsGroupsEditManager;
+    function GroupId(const Value: UInt64): TVkParamsGroupsEditManager;
     /// <summary>
     /// Идентификатор пользователя, чьи полномочия в сообществе нужно изменить
     /// </summary>
-    function UserId(const Value: Int64): TVkParamsGroupsEditManager;
+    function UserId(const Value: TVkPeerId): TVkParamsGroupsEditManager;
     /// <summary>
     /// Уровень полномочий
     /// Если параметр не задан, с пользователя user_id снимаются полномочия руководителя
@@ -471,7 +471,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Cardinal): TVkParamsGroupsGetAddresses;
+    function GroupId(const Value: UInt64): TVkParamsGroupsGetAddresses;
     /// <summary>
     /// Перечисленные через запятую идентификаторы адресов, информацию о которых необходимо вернуть
     /// </summary>
@@ -507,7 +507,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsGetBanned;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsGetBanned;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества черного списка
     /// </summary>
@@ -519,7 +519,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей и сообществ, которые необходимо вернуть
     /// </summary>
-    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsGroupsGetBanned; overload;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsGroupsGetBanned; overload;
     /// <summary>
     /// Идентификатор пользователя или сообщества из чёрного списка, информацию о котором нужно получить
     /// </summary>
@@ -531,7 +531,7 @@ type
     /// <summary>
     /// Идентификатор группы, список приглашенных в которую пользователей нужно вернуть
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsGetInvitedUsers;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
     /// Смещение, необходимое для выборки определённого подмножества пользователей
     /// </summary>
@@ -543,7 +543,7 @@ type
     /// <summary>
     /// Список дополнительных полей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields = []): TVkParamsGroupsGetInvitedUsers;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
@@ -597,7 +597,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsSetCallbackSettings;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
     /// Версия Callback API
     /// </summary>
@@ -821,7 +821,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsSetLongpollSettings;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
     /// True — включить Bots Long Poll, False — отключить
     /// </summary>
@@ -1056,7 +1056,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Int64): TVkParamsGroupsSetSettings;
+    function GroupId(const Value: TVkPeerId): TVkParamsGroupsSetSettings;
     /// <summary>
     /// Сообщения сообщества
     /// </summary>
@@ -1098,15 +1098,15 @@ type
     /// <summary>
     /// Включает статус «онлайн» в сообществе
     /// </summary>
-    function EnableOnline(GroupId: Cardinal): Boolean;
+    function EnableOnline(GroupId: TVkPeerId): Boolean;
     /// <summary>
     /// Выключает статус «онлайн» в сообществе
     /// </summary>
-    function DisableOnline(GroupId: Cardinal): Boolean;
+    function DisableOnline(GroupId: TVkPeerId): Boolean;
     /// <summary>
     /// Получает информацию о статусе «онлайн» в сообществе
     /// </summary>
-    function GetOnlineStatus(var Value: TVkGroupStatus; GroupId: Cardinal): Boolean;
+    function GetOnlineStatus(var Value: TVkGroupStatus; GroupId: TVkPeerId): Boolean;
     /// <summary>
     /// Возвращает список сообществ указанного пользователя
     /// </summary>
@@ -1130,25 +1130,25 @@ type
     /// <summary>
     ///  Позволяет покинуть сообщество или отклонить приглашение в сообщество
     /// </summary>
-    function Leave(GroupId: Int64): Boolean;
+    function Leave(GroupId: TVkPeerId): Boolean;
     /// <summary>
     ///  Данный метод позволяет вступить в группу, публичную страницу, а также подтвердить участие во встрече.
     ///  NotSure - опциональный параметр, учитываемый, если GroupId принадлежит встрече.
     ///  True — Возможно пойду. False — Точно пойду
     /// </summary>
-    function Join(GroupId: Int64; NotSure: Boolean = False): Boolean;
+    function Join(GroupId: TVkPeerId; NotSure: Boolean = False): Boolean;
     /// <summary>
     ///  Позволяет приглашать друзей в группу
     /// </summary>
-    function Invite(GroupId, UserId: Int64): Boolean;
+    function Invite(GroupId, UserId: TVkPeerId): Boolean;
     /// <summary>
     ///  Позволяет исключить пользователя из группы или отклонить заявку на вступление
     /// </summary>
-    function RemoveUser(GroupId, UserId: Int64): Boolean;
+    function RemoveUser(GroupId, UserId: TVkPeerId): Boolean;
     /// <summary>
     ///  Позволяет одобрить заявку в группу от пользователя
     /// </summary>
-    function ApproveRequest(GroupId, UserId: Int64): Boolean;
+    function ApproveRequest(GroupId, UserId: TVkPeerId): Boolean;
     /// <summary>
     ///  Позволяет добавить адрес в сообщество.
     ///  Список адресов может быть получен методом groups.getAddresses
@@ -1162,11 +1162,11 @@ type
     /// <summary>
     ///  Добавляет сервер для Callback API в сообщество
     /// </summary>
-    function AddCallbackServer(var ServerId: Int64; GroupId: Int64; Url, Title: string; SecretKey: string): Boolean;
+    function AddCallbackServer(var ServerId: Int64; GroupId: TVkPeerId; Url, Title: string; SecretKey: string): Boolean;
     /// <summary>
     ///  Позволяет добавлять ссылки в сообщество
     /// </summary>
-    function AddLink(var Item: TVkGroupLink; GroupId: Int64; Link: string; Text: string = ''): Boolean;
+    function AddLink(var Item: TVkGroupLink; GroupId: TVkPeerId; Link: string; Text: string = ''): Boolean;
     /// <summary>
     ///  Добавляет пользователя или группу в черный список сообщества
     /// </summary>
@@ -1186,15 +1186,15 @@ type
     /// <summary>
     ///  Удаляет адрес сообщества
     /// </summary>
-    function DeleteAddress(GroupId, AddressId: Int64): Boolean;
+    function DeleteAddress(GroupId: TVkPeerId; AddressId: Int64): Boolean;
     /// <summary>
     ///  Удаляет сервер для Callback API из сообщества
     /// </summary>
-    function DeleteCallbackServer(GroupId, ServerId: Int64): Boolean;
+    function DeleteCallbackServer(GroupId: TVkPeerId; ServerId: Int64): Boolean;
     /// <summary>
     ///  Позволяет удалить ссылки из сообщества
     /// </summary>
-    function DeleteLink(GroupId, LinkId: Int64): Boolean;
+    function DeleteLink(GroupId: TVkPeerId; LinkId: Int64): Boolean;
     /// <summary>
     ///  Редактирует сообщество
     /// </summary>
@@ -1214,11 +1214,11 @@ type
     /// <summary>
     ///  Редактирует данные сервера для Callback API в сообществе
     /// </summary>
-    function EditCallbackServer(GroupId: Int64; ServerId: Int64; Url, Title: string; SecretKey: string): Boolean;
+    function EditCallbackServer(GroupId: TVkPeerId; ServerId: Int64; Url, Title: string; SecretKey: string): Boolean;
     /// <summary>
     ///  Позволяет редактировать ссылки в сообществе
     /// </summary>
-    function EditLink(GroupId: Int64; Link: string; Text: string = ''): Boolean;
+    function EditLink(GroupId: TVkPeerId; Link: string; Text: string = ''): Boolean;
     /// <summary>
     ///  Позволяет назначить/разжаловать руководителя в сообществе или изменить уровень его полномочий
     /// </summary>
@@ -1242,27 +1242,27 @@ type
     /// <summary>
     ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
-    function GetById(var Items: TVkGroups; GroupIds: TIdList; Fields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Items: TVkGroups; GroupIds: TVkPeerIds; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
     ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
-    function GetById(var Item: TVkGroup; GroupId: Int64; Fields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Item: TVkGroup; GroupId: TVkPeerId; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
     ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
     /// </summary>
-    function GetById(var Items: TVkGroups; GroupId: string; Fields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Items: TVkGroups; GroupId: string; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
     ///  Позволяет получить строку, необходимую для подтверждения адреса сервера в Callback API
     /// </summary>
-    function GetCallbackConfirmationCode(var Code: string; GroupId: Int64): Boolean;
+    function GetCallbackConfirmationCode(var Code: string; GroupId: TVkPeerId): Boolean;
     /// <summary>
     ///  Получает информацию о серверах для Callback API в сообществе
     /// </summary>
-    function GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Int64; ServerIds: TIdList = []): Boolean;
+    function GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: TVkPeerId; ServerIds: TIdList = []): Boolean;
     /// <summary>
     ///  Позволяет получить настройки уведомлений Callback API для сообщества
     /// </summary>
-    function GetCallbackSettings(var Items: TVkCallbackSettings; GroupId: Int64; ServerId: Int64): Boolean;
+    function GetCallbackSettings(var Items: TVkCallbackSettings; GroupId: TVkPeerId; ServerId: Int64): Boolean;
     /// <summary>
     ///  Возвращает список сообществ выбранной категории каталога
     /// </summary>
@@ -1282,27 +1282,27 @@ type
     /// <summary>
     ///  Возвращает данные для подключения к Bots Longpoll API
     /// </summary>
-    function GetLongPollServer(var Item: TVkLongpollData; GroupId: Int64): Boolean;
+    function GetLongPollServer(var Item: TVkLongpollData; GroupId: TVkPeerId): Boolean;
     /// <summary>
     ///  Получает настройки Bots Longpoll API для сообщества
     /// </summary>
-    function GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Int64): Boolean;
+    function GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: TVkPeerId): Boolean;
     /// <summary>
     ///  Возвращает список заявок на вступление в сообщество
     /// </summary>
-    function GetRequests(var Items: TVkProfiles; GroupId: Int64; Fields: TVkProfileFields = [TVkProfileField.Domain]; Count: Int64 = 20; Offset: Int64 = 0): Boolean; overload;
+    function GetRequests(var Items: TVkProfiles; GroupId: TVkPeerId; Fields: TVkExtendedFields = [TVkExtendedField.Domain]; Count: Int64 = 20; Offset: Int64 = 0): Boolean; overload;
     /// <summary>
     ///  Возвращает список заявок на вступление в сообщество
     /// </summary>
-    function GetRequestsIds(var Items: TVkIdList; GroupId: Int64; Count: Int64 = 20; Offset: Int64 = 0): Boolean; overload;
+    function GetRequestsIds(var Items: TVkIdList; GroupId: TVkPeerId; Count: Int64 = 20; Offset: Int64 = 0): Boolean; overload;
     /// <summary>
     ///  Позволяет получать данные, необходимые для отображения страницы редактирования данных сообщества
     /// </summary>
-    function GetSettings(var Item: TVkGroupSettings; GroupId: Int64): Boolean;
+    function GetSettings(var Item: TVkGroupSettings; GroupId: TVkPeerId): Boolean;
     /// <summary>
     ///  Возвращает список тегов сообщества
     /// </summary>
-    function GetTagList(var Items: TVkGroupTags; GroupId: Int64): Boolean;
+    function GetTagList(var Items: TVkGroupTags; GroupId: TVkPeerId): Boolean;
     /// <summary>
     ///  Возвращает настройки прав для ключа доступа сообщества
     /// </summary>
@@ -1310,7 +1310,7 @@ type
     /// <summary>
     ///  Позволяет менять местоположение ссылки в списке
     /// </summary>
-    function ReorderLink(GroupId, LinkId: Int64; After: Int64): Boolean;
+    function ReorderLink(GroupId: TVkPeerId; LinkId: Int64; After: Int64): Boolean;
     /// <summary>
     ///  Осуществляет поиск сообществ по заданной подстроке
     /// </summary>
@@ -1342,35 +1342,35 @@ type
     /// <summary>
     ///  Позволяет создать или отредактировать заметку о пользователе в рамках переписки пользователя с сообществом
     /// </summary>
-    function SetUserNote(GroupId, UserId: Int64; Note: string): Boolean;
+    function SetUserNote(GroupId, UserId: TVkPeerId; Note: string): Boolean;
     /// <summary>
     ///  Позволяет добавить новый тег в сообщество
     /// </summary>
-    function TagAdd(GroupId: Int64; TagName: string; TagColor: TVkGroupTagColor): Boolean;
+    function TagAdd(GroupId: TVkPeerId; TagName: string; TagColor: TVkGroupTagColor): Boolean;
     /// <summary>
     ///  Позволяет "привязывать" и "отвязывать" теги сообщества к беседам
     /// </summary>
-    function TagBind(GroupId: Int64; TagId, UserId: Int64; Act: TVkGroupTagAct): Boolean;
+    function TagBind(GroupId: TVkPeerId; TagId: Int64; UserId: TVkPeerId; Act: TVkGroupTagAct): Boolean;
     /// <summary>
     ///  Позволяет удалить тег сообщества
     /// </summary>
-    function TagDelete(GroupId, TagId: Int64): Boolean;
+    function TagDelete(GroupId: TVkPeerId; TagId: Int64): Boolean;
     /// <summary>
     ///  Позволяет переименовать существующий тег
     /// </summary>
-    function TagUpdate(GroupId, TagId: Int64; const TagName: string): Boolean;
+    function TagUpdate(GroupId: TVkPeerId; TagId: Int64; const TagName: string): Boolean;
     /// <summary>
     ///  Переключает функционал раздела «Товаров» в выбранной группе.
     /// </summary>
-    function ToggleMarket(GroupId: Int64; State: TVkGroupMarketState; Params: TParams): Boolean; overload;
+    function ToggleMarket(GroupId: TVkPeerId; State: TVkGroupMarketState; Params: TParams): Boolean; overload;
     /// <summary>
     ///  Переключает функционал раздела «Товаров» в выбранной группе.
     /// </summary>
-    function ToggleMarket(GroupId: Int64; State: TVkGroupMarketState; Params: TVkParamsToggleMarket): Boolean; overload;
+    function ToggleMarket(GroupId: TVkPeerId; State: TVkGroupMarketState; Params: TVkParamsToggleMarket): Boolean; overload;
     /// <summary>
     ///  Убирает пользователя или группу из черного списка сообщества
     /// </summary>
-    function Unban(GroupId, OwnerId: Int64): Boolean;
+    function Unban(GroupId, OwnerId: TVkPeerId): Boolean;
   end;
 
 implementation
@@ -1390,7 +1390,7 @@ begin
   Result := AddAddress(Item, Params.List);
 end;
 
-function TGroupsController.AddCallbackServer(var ServerId: Int64; GroupId: Int64; Url, Title, SecretKey: string): Boolean;
+function TGroupsController.AddCallbackServer(var ServerId: Int64; GroupId: TVkPeerId; Url, Title, SecretKey: string): Boolean;
 begin
   Result := Handler.Execute('groups.addCallbackServer', [
     ['group_id', GroupId.ToString],
@@ -1400,7 +1400,7 @@ begin
     GetValue('server_id', ServerId);
 end;
 
-function TGroupsController.AddLink(var Item: TVkGroupLink; GroupId: Int64; Link, Text: string): Boolean;
+function TGroupsController.AddLink(var Item: TVkGroupLink; GroupId: TVkPeerId; Link, Text: string): Boolean;
 begin
   Result := Handler.Execute('groups.addLink', [
     ['GroupId', GroupId.ToString],
@@ -1409,7 +1409,7 @@ begin
     GetObject(Item);
 end;
 
-function TGroupsController.ApproveRequest(GroupId, UserId: Int64): Boolean;
+function TGroupsController.ApproveRequest(GroupId, UserId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.approveRequest', [
     ['group_id', GroupId.ToString],
@@ -1437,7 +1437,7 @@ begin
   Result := Handler.Execute('groups.ban', Params).ResponseIsTrue;
 end;
 
-function TGroupsController.DeleteAddress(GroupId, AddressId: Int64): Boolean;
+function TGroupsController.DeleteAddress(GroupId: TVkPeerId; AddressId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.deleteAddress', [
     ['group_id', GroupId.ToString],
@@ -1445,7 +1445,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.DeleteCallbackServer(GroupId, ServerId: Int64): Boolean;
+function TGroupsController.DeleteCallbackServer(GroupId: TVkPeerId; ServerId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.deleteCallbackServer', [
     ['group_id', GroupId.ToString],
@@ -1453,7 +1453,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.DeleteLink(GroupId, LinkId: Int64): Boolean;
+function TGroupsController.DeleteLink(GroupId: TVkPeerId; LinkId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.deleteLink', [
     ['group_id', GroupId.ToString],
@@ -1461,7 +1461,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.DisableOnline(GroupId: Cardinal): Boolean;
+function TGroupsController.DisableOnline(GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.disableOnline', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
@@ -1482,7 +1482,7 @@ begin
   Result := EditAddress(Item, Params.List);
 end;
 
-function TGroupsController.EditCallbackServer(GroupId, ServerId: Int64; Url, Title, SecretKey: string): Boolean;
+function TGroupsController.EditCallbackServer(GroupId: TVkPeerId; ServerId: Int64; Url, Title, SecretKey: string): Boolean;
 begin
   Result := Handler.Execute('groups.editCallbackServer', [
     ['group_id', GroupId.ToString],
@@ -1493,7 +1493,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.EditLink(GroupId: Int64; Link, Text: string): Boolean;
+function TGroupsController.EditLink(GroupId: TVkPeerId; Link, Text: string): Boolean;
 begin
   Result := Handler.Execute('groups.editLink', [
     ['GroupId', GroupId.ToString],
@@ -1517,7 +1517,7 @@ begin
   Result := Handler.Execute('groups.editAddress', Params).ResponseIsTrue;
 end;
 
-function TGroupsController.EnableOnline(GroupId: Cardinal): Boolean;
+function TGroupsController.EnableOnline(GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.enableOnline', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
@@ -1537,7 +1537,7 @@ begin
   Result := Handler.Execute('groups.getBanned', Params.List).GetObject(Items);
 end;
 
-function TGroupsController.GetById(var Item: TVkGroup; GroupId: Int64; Fields: TVkGroupFields): Boolean;
+function TGroupsController.GetById(var Item: TVkGroup; GroupId: TVkPeerId; Fields: TVkExtendedFields): Boolean;
 var
   Items: TVkGroups;
 begin
@@ -1556,12 +1556,12 @@ begin
   end;
 end;
 
-function TGroupsController.GetCallbackConfirmationCode(var Code: string; GroupId: Int64): Boolean;
+function TGroupsController.GetCallbackConfirmationCode(var Code: string; GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.getCallbackConfirmationCode', ['group_id', GroupId.ToString]).GetValue('code', Code);
 end;
 
-function TGroupsController.GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: Int64; ServerIds: TIdList): Boolean;
+function TGroupsController.GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: TVkPeerId; ServerIds: TIdList): Boolean;
 begin
   Result := Handler.Execute('groups.getCallbackServers', [
     ['group_id', GroupId.ToString],
@@ -1569,7 +1569,7 @@ begin
     GetObject(Items);
 end;
 
-function TGroupsController.GetCallbackSettings(var Items: TVkCallbackSettings; GroupId, ServerId: Int64): Boolean;
+function TGroupsController.GetCallbackSettings(var Items: TVkCallbackSettings; GroupId: TVkPeerId; ServerId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.getCallbackSettings', [
     ['group_id', GroupId.ToString],
@@ -1593,7 +1593,7 @@ begin
     GetObject(Items);
 end;
 
-function TGroupsController.GetById(var Items: TVkGroups; GroupId: string; Fields: TVkGroupFields): Boolean;
+function TGroupsController.GetById(var Items: TVkGroups; GroupId: string; Fields: TVkExtendedFields): Boolean;
 begin
   Result := Handler.Execute('groups.getById', [
     ['group_ids', GroupId],
@@ -1601,7 +1601,7 @@ begin
     GetObject(Items);
 end;
 
-function TGroupsController.GetById(var Items: TVkGroups; GroupIds: TIdList; Fields: TVkGroupFields): Boolean;
+function TGroupsController.GetById(var Items: TVkGroups; GroupIds: TVkPeerIds; Fields: TVkExtendedFields): Boolean;
 begin
   Result := Handler.Execute('groups.getById', [
     ['group_ids', GroupIds.ToString],
@@ -1640,12 +1640,12 @@ begin
     GetObject(Items);
 end;
 
-function TGroupsController.GetLongPollServer(var Item: TVkLongpollData; GroupId: Int64): Boolean;
+function TGroupsController.GetLongPollServer(var Item: TVkLongpollData; GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.getLongPollServer', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
 
-function TGroupsController.GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: Int64): Boolean;
+function TGroupsController.GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.getLongPollSettings', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
@@ -1653,7 +1653,7 @@ end;
 function TGroupsController.GetMembers(var Items: TVkProfiles; Params: TVkParamsGroupsGetMembers): Boolean;
 begin
   if not Params.List.KeyExists('fields') then
-    Params.Fields([TVkProfileField.Domain]);
+    Params.Fields([TVkExtendedField.Domain]);
   Result := GetMembers(Items, Params.List);
 end;
 
@@ -1668,12 +1668,12 @@ begin
   Result := Handler.Execute('groups.getMembers', Params.List).GetObject(Items);
 end;
 
-function TGroupsController.GetOnlineStatus(var Value: TVkGroupStatus; GroupId: Cardinal): Boolean;
+function TGroupsController.GetOnlineStatus(var Value: TVkGroupStatus; GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.getOnlineStatus', ['group_id', GroupId.ToString]).GetObject(Value);
 end;
 
-function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: Int64; Fields: TVkProfileFields; Count, Offset: Int64): Boolean;
+function TGroupsController.GetRequests(var Items: TVkProfiles; GroupId: TVkPeerId; Fields: TVkExtendedFields; Count, Offset: Int64): Boolean;
 var
   Params: TParams;
 begin
@@ -1681,12 +1681,12 @@ begin
   Params.Add('count', Count);
   Params.Add('offset', Offset);
   if Fields = [] then
-    Fields := [TVkProfileField.Domain];
+    Fields := [TVkExtendedField.Domain];
   Params.Add('fields', Fields.ToString);
   Result := Handler.Execute('groups.getRequests', Params).GetObject(Items);
 end;
 
-function TGroupsController.GetRequestsIds(var Items: TVkIdList; GroupId, Count, Offset: Int64): Boolean;
+function TGroupsController.GetRequestsIds(var Items: TVkIdList; GroupId: TVkPeerId; Count, Offset: Int64): Boolean;
 var
   Params: TParams;
 begin
@@ -1696,12 +1696,12 @@ begin
   Result := Handler.Execute('groups.getRequests', Params).GetObject(Items);
 end;
 
-function TGroupsController.GetSettings(var Item: TVkGroupSettings; GroupId: Int64): Boolean;
+function TGroupsController.GetSettings(var Item: TVkGroupSettings; GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.getSettings', ['group_id', GroupId.ToString]).GetObject(Item);
 end;
 
-function TGroupsController.GetTagList(var Items: TVkGroupTags; GroupId: Int64): Boolean;
+function TGroupsController.GetTagList(var Items: TVkGroupTags; GroupId: TVkPeerId): Boolean;
 begin
   with Handler.Execute('groups.getTagList', ['group_id', GroupId.ToString]) do
   begin
@@ -1723,7 +1723,7 @@ begin
   Result := Handler.Execute('groups.getTokenPermissions').GetObject(Items);
 end;
 
-function TGroupsController.Invite(GroupId, UserId: Int64): Boolean;
+function TGroupsController.Invite(GroupId, UserId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.invite', [
     ['group_id', GroupId.ToString],
@@ -1736,7 +1736,7 @@ begin
   Result := IsMember(Items, Params.List);
 end;
 
-function TGroupsController.Join(GroupId: Int64; NotSure: Boolean): Boolean;
+function TGroupsController.Join(GroupId: TVkPeerId; NotSure: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -1746,12 +1746,12 @@ begin
   Result := Handler.Execute('groups.join', Params).ResponseIsTrue;
 end;
 
-function TGroupsController.Leave(GroupId: Int64): Boolean;
+function TGroupsController.Leave(GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.leave', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
 
-function TGroupsController.RemoveUser(GroupId, UserId: Int64): Boolean;
+function TGroupsController.RemoveUser(GroupId, UserId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.removeUser', [
     ['group_id', GroupId.ToString],
@@ -1759,7 +1759,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.ReorderLink(GroupId, LinkId, After: Int64): Boolean;
+function TGroupsController.ReorderLink(GroupId: TVkPeerId; LinkId, After: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.reorderLink', [
     ['group_id', GroupId.ToString],
@@ -1793,7 +1793,7 @@ begin
   Result := Handler.Execute('groups.setSettings', Params.List).ResponseIsTrue;
 end;
 
-function TGroupsController.SetUserNote(GroupId, UserId: Int64; Note: string): Boolean;
+function TGroupsController.SetUserNote(GroupId, UserId: TVkPeerId; Note: string): Boolean;
 begin
   Result := Handler.Execute('groups.setLongPollSettings', [
     ['group_id', GroupId.ToString],
@@ -1802,7 +1802,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagAdd(GroupId: Int64; TagName: string; TagColor: TVkGroupTagColor): Boolean;
+function TGroupsController.TagAdd(GroupId: TVkPeerId; TagName: string; TagColor: TVkGroupTagColor): Boolean;
 begin
   Result := Handler.Execute('groups.tagAdd', [
     ['group_id', GroupId.ToString],
@@ -1811,7 +1811,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagBind(GroupId, TagId, UserId: Int64; Act: TVkGroupTagAct): Boolean;
+function TGroupsController.TagBind(GroupId: TVkPeerId; TagId: Int64; UserId: TVkPeerId; Act: TVkGroupTagAct): Boolean;
 begin
   Result := Handler.Execute('groups.tagBind', [
     ['group_id', GroupId.ToString],
@@ -1821,7 +1821,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagDelete(GroupId, TagId: Int64): Boolean;
+function TGroupsController.TagDelete(GroupId: TVkPeerId; TagId: Int64): Boolean;
 begin
   Result := Handler.Execute('groups.tagDelete', [
     ['group_id', GroupId.ToString],
@@ -1829,7 +1829,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.TagUpdate(GroupId, TagId: Int64; const TagName: string): Boolean;
+function TGroupsController.TagUpdate(GroupId: TVkPeerId; TagId: Int64; const TagName: string): Boolean;
 begin
   Result := Handler.Execute('groups.tagUpdate', [
     ['group_id', GroupId.ToString],
@@ -1838,19 +1838,19 @@ begin
     ResponseIsTrue;
 end;
 
-function TGroupsController.ToggleMarket(GroupId: Int64; State: TVkGroupMarketState; Params: TVkParamsToggleMarket): Boolean;
+function TGroupsController.ToggleMarket(GroupId: TVkPeerId; State: TVkGroupMarketState; Params: TVkParamsToggleMarket): Boolean;
 begin
   Result := Handler.Execute('groups.toggleMarket', Params.List).ResponseIsTrue;
 end;
 
-function TGroupsController.ToggleMarket(GroupId: Int64; State: TVkGroupMarketState; Params: TParams): Boolean;
+function TGroupsController.ToggleMarket(GroupId: TVkPeerId; State: TVkGroupMarketState; Params: TParams): Boolean;
 begin
   Params.Add('group_id', GroupId);
   Params.Add('state', State.ToString);
   Result := Handler.Execute('groups.toggleMarket', Params).ResponseIsTrue;
 end;
 
-function TGroupsController.Unban(GroupId, OwnerId: Int64): Boolean;
+function TGroupsController.Unban(GroupId, OwnerId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('groups.unban', [
     ['group_id', GroupId.ToString],
@@ -1881,7 +1881,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetMembers.Fields(const Value: TVkProfileFields): TVkParamsGroupsGetMembers;
+function TVkParamsGroupsGetMembers.Fields(const Value: TVkExtendedFields): TVkParamsGroupsGetMembers;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -1899,7 +1899,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetMembers.GroupId(const Value: Int64): TVkParamsGroupsGetMembers;
+function TVkParamsGroupsGetMembers.GroupId(const Value: TVkPeerId): TVkParamsGroupsGetMembers;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -1925,7 +1925,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGet.Fields(const Value: TVkGroupFields): TVkParamsGroupsGet;
+function TVkParamsGroupsGet.Fields(const Value: TVkExtendedFields): TVkParamsGroupsGet;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -1943,7 +1943,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGet.UserId(const Value: Int64): TVkParamsGroupsGet;
+function TVkParamsGroupsGet.UserId(const Value: TVkPeerId): TVkParamsGroupsGet;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -1957,7 +1957,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsIsMember.GroupId(const Value: Int64): TVkParamsGroupsIsMember;
+function TVkParamsGroupsIsMember.GroupId(const Value: TVkPeerId): TVkParamsGroupsIsMember;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -1969,13 +1969,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsIsMember.UserId(const Value: Int64): TVkParamsGroupsIsMember;
+function TVkParamsGroupsIsMember.UserId(const Value: TVkPeerId): TVkParamsGroupsIsMember;
 begin
   List.Add('user_ids', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsIsMember.UserIds(const Value: TIdList): TVkParamsGroupsIsMember;
+function TVkParamsGroupsIsMember.UserIds(const Value: TVkPeerIds): TVkParamsGroupsIsMember;
 begin
   List.Add('user_ids', Value);
   Result := Self;
@@ -2007,7 +2007,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsAddAddress.GroupId(const Value: Int64): TVkParamsGroupsAddAddress;
+function TVkParamsGroupsAddAddress.GroupId(const Value: TVkPeerId): TVkParamsGroupsAddAddress;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2081,13 +2081,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsBan.GroupId(const Value: Int64): TVkParamsGroupsBan;
+function TVkParamsGroupsBan.GroupId(const Value: TVkPeerId): TVkParamsGroupsBan;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsGroupsBan.OwnerId(const Value: Int64): TVkParamsGroupsBan;
+function TVkParamsGroupsBan.OwnerId(const Value: TVkPeerId): TVkParamsGroupsBan;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2223,7 +2223,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEdit.GroupId(const Value: Int64): TVkParamsGroupsEdit;
+function TVkParamsGroupsEdit.GroupId(const Value: TVkPeerId): TVkParamsGroupsEdit;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2423,7 +2423,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEditManager.GroupId(const Value: Cardinal): TVkParamsGroupsEditManager;
+function TVkParamsGroupsEditManager.GroupId(const Value: UInt64): TVkParamsGroupsEditManager;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2441,7 +2441,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsEditManager.UserId(const Value: Int64): TVkParamsGroupsEditManager;
+function TVkParamsGroupsEditManager.UserId(const Value: TVkPeerId): TVkParamsGroupsEditManager;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -2473,7 +2473,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetAddresses.GroupId(const Value: Cardinal): TVkParamsGroupsGetAddresses;
+function TVkParamsGroupsGetAddresses.GroupId(const Value: UInt64): TVkParamsGroupsGetAddresses;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2505,13 +2505,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetBanned.Fields(GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsGroupsGetBanned;
+function TVkParamsGroupsGetBanned.Fields(const Value: TVkExtendedFields): TVkParamsGroupsGetBanned;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
-function TVkParamsGroupsGetBanned.GroupId(const Value: Int64): TVkParamsGroupsGetBanned;
+function TVkParamsGroupsGetBanned.GroupId(const Value: TVkPeerId): TVkParamsGroupsGetBanned;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2537,13 +2537,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsGetInvitedUsers.Fields(const Value: TVkProfileFields): TVkParamsGroupsGetInvitedUsers;
+function TVkParamsGroupsGetInvitedUsers.Fields(const Value: TVkExtendedFields): TVkParamsGroupsGetInvitedUsers;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
-function TVkParamsGroupsGetInvitedUsers.GroupId(const Value: Int64): TVkParamsGroupsGetInvitedUsers;
+function TVkParamsGroupsGetInvitedUsers.GroupId(const Value: TVkPeerId): TVkParamsGroupsGetInvitedUsers;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2709,7 +2709,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsSetCallbackSettings.GroupId(const Value: Int64): TVkParamsGroupsSetCallbackSettings;
+function TVkParamsGroupsSetCallbackSettings.GroupId(const Value: TVkPeerId): TVkParamsGroupsSetCallbackSettings;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -3048,7 +3048,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsSetLongpollSettings.GroupId(const Value: Int64): TVkParamsGroupsSetLongpollSettings;
+function TVkParamsGroupsSetLongpollSettings.GroupId(const Value: TVkPeerId): TVkParamsGroupsSetLongpollSettings;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -3302,7 +3302,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsGroupsSetSettings.GroupId(const Value: Int64): TVkParamsGroupsSetSettings;
+function TVkParamsGroupsSetSettings.GroupId(const Value: TVkPeerId): TVkParamsGroupsSetSettings;
 begin
   List.Add('group_id', Value);
   Result := Self;

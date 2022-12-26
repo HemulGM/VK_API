@@ -3,16 +3,16 @@ unit VK.Entity.Note;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, VK.Wrap.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Entity.Common.List, VK.Types;
 
 type
   TVkNote = class(TVkObject)
   private
     FComments: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FRead_comments: Integer;
     FTitle: string;
     FView_url: string;
@@ -33,7 +33,7 @@ type
     /// <summary>
     /// Идентификатор владельца заметки
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Количество комментариев
     /// </summary>
@@ -67,20 +67,20 @@ type
 
   TVkNoteComment = class(TVkObject)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FMessage: string;
     FNid: Integer;
-    FOid: Integer;
-    FReply_to: Integer;
-    FUid: Integer;
+    FOid: TVkPeerId;
+    FReply_to: TVkPeerId;
+    FUid: TVkPeerId;
   public
     property Date: TDateTime read FDate write FDate;
     property Message: string read FMessage write FMessage;
     property NoteId: Integer read FNid write FNid;
-    property OwnerId: Integer read FOid write FOid;
-    property ReplyTo: Integer read FReply_to write FReply_to;
-    property UserId: Integer read FUid write FUid;
+    property OwnerId: TVkPeerId read FOid write FOid;
+    property ReplyTo: TVkPeerId read FReply_to write FReply_to;
+    property UserId: TVkPeerId read FUid write FUid;
   end;
 
   TVkNoteComments = TVkEntityList<TVkNoteComment>;

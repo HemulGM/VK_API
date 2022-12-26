@@ -28,7 +28,7 @@ type
     /// <summary>
     /// ƒополнительные пол€ профилей и сообществ дл€ получени€
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsSearch;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsSearch;
     /// <summary>
     /// True Ч к результатам поиска добавл€ютс€ результаты глобального поиска по всем пользовател€м и группам
     /// </summary>
@@ -105,9 +105,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsSearch;
+function TVkParamsSearch.Fields(Value: TVkExtendedFields): TVkParamsSearch;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 

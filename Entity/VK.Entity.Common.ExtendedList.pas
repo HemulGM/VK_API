@@ -8,10 +8,16 @@ uses
   VK.Entity.Photo;
 
 type
+  IExtended = interface
+    ['{CD673BC9-1E4C-4963-A300-1900905401E5}']
+    function GetProfileById(const Id: TVkPeerId; out Profile: TVkProfile): Boolean;
+    function GetGroupById(const Id: TVkPeerId; out Group: TVkGroup): Boolean;
+  end;
+
   /// <summary>
   /// Базовый класс список со списком профилей и групп (с освобождением элементов списка)
   /// </summary>
-  TVkEntityExtendedList<T: TVkEntity> = class(TVkEntityList<T>)
+  TVkEntityExtendedList<T: TVkEntity> = class(TVkEntityList<T>, IExtended)
   protected
     FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;

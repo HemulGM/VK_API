@@ -5,8 +5,8 @@ interface
 uses
   Generics.Collections, Rest.Json, VK.Entity.Message, VK.Entity.Common,
   VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group, VK.Types,
-  VK.Entity.Common.ExtendedList, REST.JsonReflect, REST.Json.Interceptors,
-  VK.Wrap.Interceptors, VK.Entity.Keyboard;
+  VK.Entity.Common.ExtendedList, REST.JsonReflect, VK.Wrap.Interceptors,
+  VK.Entity.Keyboard;
 
 type
   TVkChatAccess = class(TVkEntity)
@@ -89,7 +89,7 @@ type
     FActive_ids: TArray<TVkPeerId>;
     FAdmin_ids: TArray<TVkPeerId>;
     FMembers_count: Integer;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPhoto: TVkChatPhoto;
     FPinned_message: TVkMessage;
     [JsonReflectAttribute(ctString, rtString, TChatStateInterceptor)]
@@ -102,7 +102,7 @@ type
     FFriends_count: Integer;
   public
     property ACL: TVkChatAccess read FAcl write FAcl;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property AdminIds: TArray<TVkPeerId> read FAdmin_ids write FAdmin_ids;
     property Permissions: TVkChatPermissions read FPermissions write FPermissions;
     property IsDisappearing: Boolean read FIs_disappearing write FIs_disappearing;
@@ -192,7 +192,7 @@ type
   private
     FDisabled_forever: Boolean;
     FNo_sound: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDisabled_until: TDateTime;
     FDisabled_mass_mentions: Boolean;
     FDisabled_mentions: Boolean;
@@ -221,10 +221,10 @@ type
     FIs_marked_unread: Boolean;
     FPush_settings: TVkChatPushSettings;
     FCurrent_keyboard: TVkKeyboard;
-    FMentions: TArrayOfInteger;
+    FMentions: TVkPeerIds;
     FMention_cmids: TArrayOfInteger;
     FExpire_cmids: TArrayOfInteger;
-  public  
+  public
     FLast_conversation_message_id: Int64;
     //[JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_new: Boolean;
@@ -296,7 +296,7 @@ type
     /// True, если диалог помечен как неотвеченный (только для сообщений сообществ).
     /// </summary>
     property Unanswered: Boolean read FUnanswered write FUnanswered;
-    property Mentions: TArrayOfInteger read FMentions write FMentions;
+    property Mentions: TVkPeerIds read FMentions write FMentions;
     property MentionCmids: TArrayOfInteger read FMention_cmids write FMention_cmids;
     property ExpireCmids: TArrayOfInteger read FExpire_cmids write FExpire_cmids;
     property IsGroup: Boolean read GetIsGroup;
@@ -352,18 +352,18 @@ type
 
   TVkConversationMember = class(TVkEntity)
   private
-    FInvited_By: Integer;
+    FInvited_By: TVkPeerId;
     FIs_Admin: Boolean;
     FIs_Owner: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FJoin_Date: TDateTime;
-    FMember_Id: Integer;
+    FMember_Id: TVkPeerid;
   public
-    property InvitedBy: Integer read FInvited_By write FInvited_By;
+    property InvitedBy: TVkPeerId read FInvited_By write FInvited_By;
     property IsAdmin: Boolean read FIs_Admin write FIs_Admin;
     property IsOwner: Boolean read FIs_Owner write FIs_Owner;
     property JoinDate: TDateTime read FJoin_Date write FJoin_Date;
-    property MemberId: Integer read FMember_Id write FMember_Id;
+    property MemberId: TVkPeerId read FMember_Id write FMember_Id;
   end;
 
   TVkConversationMembers = TVkEntityExtendedList<TVkConversationMember>;

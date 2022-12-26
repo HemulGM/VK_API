@@ -10,7 +10,7 @@ uses
   FMX.Effects, FMX.Filter.Effects, ChatFMX.DM.Res, VK.API, VK.Components,
   VK.Entity.Conversation, System.Messaging, VK.Types,
   System.Generics.Collections, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo,
-  ChatFMX.Frame.Loading;
+  ChatFMX.Frame.Loading, VK.UserEvents, VK.Entity.Common.ExtendedList;
 
 type
   TChats = class(TList<TFrameChat>)
@@ -77,6 +77,7 @@ type
     FrameLoading1: TFrameLoading;
     Memo1: TMemo;
     LayoutAdaptive: TLayout;
+    UserEvents: TVkUserEvents;
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
@@ -88,6 +89,11 @@ type
     procedure ListBoxChatsApplyStyleLookup(Sender: TObject);
     procedure Path3Click(Sender: TObject);
     procedure VKLog(Sender: TObject; const Value: string);
+    procedure UserEventsUserOffline(Sender: TObject; UserId: TVkPeerId; InactiveUser: Boolean; TimeStamp: TDateTime);
+    procedure UserEventsUserOnline(Sender: TObject; UserId: TVkPeerId; VkPlatform: TVkPlatform; TimeStamp: TDateTime);
+    procedure UserEventsNewMessage(Sender: TObject; MessageData: TMessageData);
+    procedure UserEventsEditMessage(Sender: TObject; MessageData: TMessageData);
+    procedure UserEventsReadMessages(Sender: TObject; Incoming: Boolean; PeerId, LocalId: TVkPeerId);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -105,7 +111,7 @@ type
     procedure FOnBackAdaptive(Sender: TObject);
     {$ENDIF}
     procedure LoadConversationsAsync;
-    procedure CreateChatItem(Chat: TVkConversationItem; Data: TVkConversationItems);
+    procedure CreateChatItem(Chat: TVkConversationItem; Data: IExtended);
     procedure SetUnreadOnly(const Value: Boolean);
     procedure FOnLog(Sender: TObject; Value: string);
     procedure EndOfChats;
@@ -129,9 +135,9 @@ var
 implementation
 
 uses
-  System.Math, System.Threading, VK.FMX.OAuth2, System.IOUtils, VK.Clients,
-  ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager, FMX.Ani,
-  HGM.FMX.SmoothScroll;
+  System.Math, System.Threading, VK.Errors, VK.FMX.OAuth2, System.IOUtils,
+  VK.Clients, ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager,
+  FMX.Ani, HGM.FMX.SmoothScroll, ChatFMX.Events;
 
 {$R *.fmx}
 
@@ -252,7 +258,7 @@ begin
   LayoutClient.Width := Max(Min(1000, ClientWidth), 800) - 40;
 end;
 
-procedure TFormMain.CreateChatItem(Chat: TVkConversationItem; Data: TVkConversationItems);
+procedure TFormMain.CreateChatItem(Chat: TVkConversationItem; Data: IExtended);
 var
   ListItem: TListBoxItemChat;
 begin
@@ -365,6 +371,31 @@ begin
   {$ENDIF}
 end;
 
+procedure TFormMain.UserEventsEditMessage(Sender: TObject; MessageData: TMessageData);
+begin
+  Event.Send(TEventEditMessage.Create(MessageData));
+end;
+
+procedure TFormMain.UserEventsNewMessage(Sender: TObject; MessageData: TMessageData);
+begin
+  Event.Send(TEventNewMessage.Create(MessageData));
+end;
+
+procedure TFormMain.UserEventsReadMessages(Sender: TObject; Incoming: Boolean; PeerId, LocalId: TVkPeerId);
+begin
+  Event.Send(TEventReadMessages.Create(Incoming, PeerId, LocalId));
+end;
+
+procedure TFormMain.UserEventsUserOffline(Sender: TObject; UserId: TVkPeerId; InactiveUser: Boolean; TimeStamp: TDateTime);
+begin
+  Event.Send(TEventUserStatus.Create(UserId, False));
+end;
+
+procedure TFormMain.UserEventsUserOnline(Sender: TObject; UserId: TVkPeerId; VkPlatform: TVkPlatform; TimeStamp: TDateTime);
+begin
+  Event.Send(TEventUserStatus.Create(UserId, False, VkPlatform));
+end;
+
 procedure TFormMain.LoadChat(PeerId: TVkPeerId);
 var
   Frame: TFrameChat;
@@ -383,13 +414,14 @@ begin
   Params.Offset(FListChatsOffset);
   Params.Count(20);
   Params.Fields(
-    [TVkProfileField.Photo50, TVkProfileField.Verified, TVkProfileField.OnlineInfo,
-    TVkProfileField.FirstNameAcc, TVkProfileField.LastNameAcc]);
+    [TVkExtendedField.Photo50, TVkExtendedField.Verified, TVkExtendedField.OnlineInfo,
+    TVkExtendedField.FirstNameAcc, TVkExtendedField.LastNameAcc]);
   if FUnreadOnly then
     Params.Filter(TVkConversationFilter.Unread);
   try
     if VK.Messages.GetConversations(Items, Params) then
-    try
+    begin
+      var Extended: IExtended := Items;
       if Length(Items.Items) < 20 then
         FListChatsOffsetEnd := True;
       TThread.Synchronize(nil,
@@ -398,7 +430,7 @@ begin
           ListBoxChats.BeginUpdate;
           try
             for var Item in Items.Items do
-              CreateChatItem(Item, Items);
+              CreateChatItem(Item, Extended);
             if FListChatsOffsetEnd then
             begin
               LayoutChatLoadingAni.Position.Y := -LayoutChatLoadingAni.Height;
@@ -412,8 +444,6 @@ begin
           end;
           FLoading := False;
         end);
-    finally
-      Items.Free;
     end;
   except
     Dec(FListChatsOffset);
@@ -517,7 +547,15 @@ end;
 
 procedure TFormMain.VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
-  if not VK.IsLogin then
+  if Code = VK_ERROR_INVALID_TOKEN then
+  begin
+    FToken := '';
+    VK.Token := '';
+    VK.Token := '';
+    TTask.Run(Login);
+    Exit;
+  end
+  else if not VK.IsLogin then
     DoErrorLogin;
 end;
 
@@ -551,6 +589,7 @@ begin
           Caption := 'VK Messenger [' + VK.UserName + ']';
         end);
       LoadConversationsAsync;
+      UserEvents.Start;
       Sleep(500);
       TThread.Queue(nil,
         procedure
@@ -562,7 +601,11 @@ end;
 
 procedure TFormMain.VKLog(Sender: TObject; const Value: string);
 begin
-  Memo1.Lines.Add(Value);
+  TThread.Queue(nil,
+    procedure
+    begin
+      Memo1.Lines.Add(Value);
+    end);
 end;
 
 procedure TFormMain.VKLogin(Sender: TObject);

@@ -10,7 +10,7 @@ uses
   ChatFMX.Frame.Attachment.Photo, ChatFMX.Frame.Attachment.Video,
   System.Messaging, VK.Entity.Media, ChatFMX.Frame.Attachment.Document,
   ChatFMX.Frame.Attachment.Audio, ChatFMX.Frame.Attachment.AudioMessage,
-  ChatFMX.Frame.Attachment, VK.Entity.Geo;
+  ChatFMX.Frame.Attachment, VK.Entity.Geo, VK.Entity.Common.ExtendedList;
 
 type
   TFrameAttachmentWall = class(TFrameAttachment)
@@ -57,12 +57,12 @@ type
     procedure CreateVideos(Items: TVkAttachmentArray);
     procedure CreateAudios(Items: TVkAttachmentArray);
     procedure CreateDocs(Items: TVkAttachmentArray);
-    procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
     procedure CreateLinks(Items: TVkAttachmentArray);
-    procedure CreateCopyHistory(Items: TArray<TVkPost>; Data: TVkMessageHistory);
+    procedure CreateCopyHistory(Items: TArray<TVkPost>; Data: TVkEntityExtendedList<TVkMessage>);
     procedure CreateAlbums(Items: TVkAttachmentArray);
     procedure CreateMarket(Items: TVkAttachmentArray);
-    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
     procedure CreateGeo(Value: TVkGeoWall);
     procedure FOnPhotosClick(Sender: TObject);
     function CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
@@ -71,7 +71,7 @@ type
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
-    procedure Fill(Item: TVkPost; Data: TVkMessageHistory);
+    procedure Fill(Item: TVkPost; Data: TVkEntityExtendedList<TVkMessage>);
     property Text: string read FText write SetText;
     property Date: TDateTime read FDate write SetDate;
     property FromText: string read FFromText write SetFromText;
@@ -224,7 +224,7 @@ begin
   MemoTextChange(Sender);
 end;
 
-procedure TFrameAttachmentWall.Fill(Item: TVkPost; Data: TVkMessageHistory);
+procedure TFrameAttachmentWall.Fill(Item: TVkPost; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   Text := Item.Text;
   Date := Item.Date;
@@ -311,7 +311,7 @@ begin
   Frame.Fill(Value);
 end;
 
-procedure TFrameAttachmentWall.CreateCopyHistory(Items: TArray<TVkPost>; Data: TVkMessageHistory);
+procedure TFrameAttachmentWall.CreateCopyHistory(Items: TArray<TVkPost>; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   for var Item in Items do
   begin
@@ -336,7 +336,7 @@ begin
     end;
 end;
 
-procedure TFrameAttachmentWall.CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+procedure TFrameAttachmentWall.CreatePosts(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   for var Item in Items do
     if Item.&Type = TVkAttachmentType.Wall then
@@ -386,7 +386,7 @@ begin
     end;
 end;
 
-procedure TFrameAttachmentWall.CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+procedure TFrameAttachmentWall.CreateMoney(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   for var Item in Items do
     if Item.&Type in [TVkAttachmentType.MoneyTransfer, TVkAttachmentType.MoneyRequest] then

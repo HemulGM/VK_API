@@ -3,16 +3,16 @@ unit VK.Entity.Market.Album;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, Rest.Json,
+  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List, VK.Types;
 
 type
   TVkMarketAlbum = class(TVkObject)
   private
     FCount: Integer;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FTitle: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUpdated_time: TDateTime;
     FPhoto: TVkPhoto;
     FAccess_key: string;
@@ -24,7 +24,7 @@ type
     /// <summary>
     /// Идентификатор владельца подборки.
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Ключ доступа
     /// </summary>

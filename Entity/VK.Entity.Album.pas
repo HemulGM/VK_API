@@ -3,21 +3,21 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Common.List,
-  VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Photo,
+  VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Common.List, VK.Types,
+  VK.Wrap.Interceptors;
 
 type
   TVkPhotoAlbum = class(TVkObject, IAttachment)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FCreated: TDateTime;
     FDescription: string;
     FOwner_id: TVkPeerId;
     FSize: Integer;
     FThumb: TVkPhoto;
     FTitle: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUpdated: TDateTime;
     FThumb_id: integer;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]

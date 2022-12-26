@@ -3,17 +3,16 @@
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Media, VK.Types, VK.Entity.Keyboard,
-  VK.Entity.ClientInfo, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Wrap.Interceptors,
-  VK.Entity.Geo;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Common,
+  VK.Entity.Media, VK.Types, VK.Entity.Keyboard, VK.Entity.ClientInfo,
+  VK.Entity.Profile, VK.Entity.Group, VK.Entity.Common.List,
+  VK.Entity.Common.ExtendedList, VK.Wrap.Interceptors, VK.Entity.Geo;
 
 type
   TVkLastActivity = class(TVkEntity)
   private
     FOnline: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTime: TDateTime;
   public
     property Online: Boolean read FOnline write FOnline;
@@ -25,17 +24,17 @@ type
     FConversation_message_ids: TArray<Integer>;
     FIs_reply: Boolean;
     FMessage_ids: TArray<Integer>;
-    FOwner_id: Integer;
-    FPeer_id: Integer;
+    FOwner_id: TVkPeerId;
+    FPeer_id: TVkPeerId;
   public
     /// <summary>
     /// Идентификатор места, из которого необходимо переслать сообщения
     /// </summary>
-    property PeerId: Integer read FPeer_id write FPeer_id;
+    property PeerId: TVkPeerId read FPeer_id write FPeer_id;
     /// <summary>
     /// Владелец сообщений. Стоит передавать, если вы хотите переслать сообщения из сообщества в диалог
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Массив ConversationMessageId сообщений, которые необходимо переслать. В массив ConversationMessageIds можно передать сообщения:
     /// - находящиеся в личном диалоге с ботом;
@@ -58,13 +57,13 @@ type
   TVkMessageSendResponse = class(TVkEntity)
   private
     FMessage_id: Integer;
-    FPeer_id: Integer;
+    FPeer_id: TVkPeerId;
     FError: string;
   public
     /// <summary>
     /// Идентификатор назначения
     /// </summary>
-    property PeerId: Integer read FPeer_id write FPeer_id;
+    property PeerId: TVkPeerId read FPeer_id write FPeer_id;
     /// <summary>
     /// Идентификатор сообщения
     /// </summary>
@@ -102,7 +101,7 @@ type
     [JsonReflectAttribute(ctString, rtString, TMessageActionTypeInterceptor)]
     FType: TVkMessageActionType;
     FEmail: string;
-    FMember_id: integer;
+    FMember_id: TVkPeerId;
     FPhoto: TVkChatPhoto;
     FStyle: string;
   public
@@ -119,7 +118,7 @@ type
     /// (для служебных сообщений с type = chat_invite_user или chat_kick_user).
     /// Идентификатор пользователя, который закрепил/открепил сообщение для action = chat_pin_message или chat_unpin_message
     /// </summary>
-    property MemberId: integer read FMember_id write FMember_id;
+    property MemberId: TVkPeerId read FMember_id write FMember_id;
     /// <summary>
     /// Email, который пригласили или исключили (для служебных сообщений с type = chat_invite_user или chat_kick_user и отрицательным member_id)
     /// </summary>
@@ -139,13 +138,13 @@ type
   private
     FConversation_message_id: Integer;
     FType: string;
-    FOwner_id: Integer;
-    FPeer_id: Integer;
+    FOwner_id: TVkPeerId;
+    FPeer_id: TVkPeerId;
     FUrl: string;
   public
     property &Type: string read FType write FType; // 'message', 'url'
-    property PeerId: Integer read FPeer_id write FPeer_id;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property PeerId: TVkPeerId read FPeer_id write FPeer_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property ConversationMessageId: Integer read FConversation_message_id write FConversation_message_id;
     property Url: string read FUrl write FUrl;
     function ToJSON: string;
@@ -155,15 +154,15 @@ type
   private
     FAttachments: TVkAttachmentArray;
     FConversation_message_id: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
-    FFrom_id: Integer;
+    FFrom_id: TVkPeerId;
     FFwd_messages: TArray<TVkMessage>;
     FImportant: Boolean;
     FIs_hidden: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FOut: Boolean;
-    FPeer_id: Integer;
+    FPeer_id: TVkPeerId;
     FRandom_id: Integer;
     FText: string;
     FRef: string;
@@ -178,9 +177,9 @@ type
     FAdmin_author_id: TVkPeerId;
     FIs_cropped: Boolean;
     FMembers_count: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUpdate_time: TDateTime;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FPinned_at: TDateTime;
     FMessage_tag: string;
     function GetPayloadButton: TVkPayloadButton;
@@ -197,11 +196,11 @@ type
     /// <summary>
     /// Идентификатор назначения
     /// </summary>
-    property PeerId: Integer read FPeer_id write FPeer_id;
+    property PeerId: TVkPeerId read FPeer_id write FPeer_id;
     /// <summary>
     /// Идентификатор отправителя
     /// </summary>
-    property FromId: Integer read FFrom_id write FFrom_id;
+    property FromId: TVkPeerId read FFrom_id write FFrom_id;
     /// <summary>
     /// Текст сообщения
     /// </summary>

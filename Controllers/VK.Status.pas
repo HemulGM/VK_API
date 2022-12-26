@@ -13,14 +13,14 @@ type
     /// </summary>
     /// <param name="Text">текст нового статуса</param>
     /// <param name="GroupId">идентификатор сообщества, в котором будет установлен статус. По умолчанию статус устанавливается текущему пользователю</param>
-    function &Set(Text: string; GroupId: Integer = -1): Boolean; overload;
+    function &Set(Text: string; GroupId: TVkPeerId = -1): Boolean; overload;
     /// <summary>
     /// Получает текст статуса пользователя или сообщества.
     /// </summary>
     /// <param name="Status">Возвращается статус (текст и аудио, если есть)</param>
     /// <param name="Id">идентификатор пользователя или сообщества, информацию о статусе которого нужно получить</param>
     /// <param name="IsGroup">если нужно получить статус сообщества</param>
-    function Get(var Status: TVkStatus; Id: Integer = -1; IsGroup: Boolean = False): Boolean;
+    function Get(var Status: TVkStatus; Id: TVkPeerId = -1; IsGroup: Boolean = False): Boolean;
   end;
 
 implementation
@@ -30,7 +30,7 @@ uses
 
 { TStatusController }
 
-function TStatusController.Get(var Status: TVkStatus; Id: Integer; IsGroup: Boolean): Boolean;
+function TStatusController.Get(var Status: TVkStatus; Id: TVkPeerId; IsGroup: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -41,7 +41,7 @@ begin
   Result := Handler.Execute('status.get', Params).GetObject(Status);
 end;
 
-function TStatusController.&Set(Text: string; GroupId: Integer = -1): Boolean;
+function TStatusController.&Set(Text: string; GroupId: TVkPeerId = -1): Boolean;
 var
   Params: TParams;
 begin

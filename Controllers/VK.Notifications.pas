@@ -38,7 +38,7 @@ type
     /// <summary>
     /// Список идентификаторов пользователей, которым нужно отправить уведомление (максимум 100 идентификаторов)
     /// </summary>
-    function UserIds(const Value: TIdList): TVkParamsNotificationsSendMessage;
+    function UserIds(const Value: TVkPeerIds): TVkParamsNotificationsSendMessage;
     /// <summary>
     /// Текст уведомления (максимальная длина 254)
     /// </summary>
@@ -50,7 +50,7 @@ type
     /// <summary>
     /// Ид сообщества
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsNotificationsSendMessage;
+    function GroupId(const Value: TVkPeerId): TVkParamsNotificationsSendMessage;
     /// <summary>
     /// Уникальный (в привязке к API_ID и ID отправителя) идентификатор, предназначенный для предотвращения повторной отправки одинакового сообщения.
     /// Заданный RandomId используется для проверки уникальности уведомления в течение часа после отправки
@@ -156,7 +156,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNotificationsSendMessage.GroupId(const Value: Integer): TVkParamsNotificationsSendMessage;
+function TVkParamsNotificationsSendMessage.GroupId(const Value: TVkPeerId): TVkParamsNotificationsSendMessage;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -174,7 +174,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNotificationsSendMessage.UserIds(const Value: TIdList): TVkParamsNotificationsSendMessage;
+function TVkParamsNotificationsSendMessage.UserIds(const Value: TVkPeerIds): TVkParamsNotificationsSendMessage;
 begin
   List.Add('user_ids', Value);
   Result := Self;

@@ -3,7 +3,7 @@ unit VK.Entity.Photo.Upload;
 interface
 
 uses
-  VK.Entity.Common;
+  VK.Entity.Common, VK.Types;
 
 type
   TVkPhotoUploadResponse = class(TVkEntity)
@@ -21,13 +21,13 @@ type
   private
     FAlbum_id: Integer;
     FUpload_url: string;
-    FUser_id: Integer;
-    FGroup_id: Integer;
+    FUser_id: TVkPeerId;
+    FGroup_id: TVkPeerId;
   public
     property AlbumId: Integer read FAlbum_id write FAlbum_id;
     property UploadUrl: string read FUpload_url write FUpload_url;
-    property UserId: Integer read FUser_id write FUser_id;
-    property GroupId: Integer read FGroup_id write FGroup_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
+    property GroupId: TVkPeerId read FGroup_id write FGroup_id;
   end;
 
 implementation

@@ -3,16 +3,16 @@
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
-  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note,
-  VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Call, VK.Entity.Market.Album, VK.Entity.Info,
-  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Donut,
-  VK.Wrap.Interceptors, VK.Entity.MoneyTransfer, VK.Entity.MoneyRequest,
-  VK.Entity.Geo;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Common,
+  VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker,
+  VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio,
+  VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp,
+  VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard,
+  VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
+  VK.Entity.Market.Album, VK.Entity.Info, VK.Entity.Common.List,
+  VK.Entity.Common.ExtendedList, VK.Entity.Donut, VK.Wrap.Interceptors,
+  VK.Entity.MoneyTransfer, VK.Entity.MoneyRequest, VK.Entity.Geo,
+  VK.Entity.Playlist;
 
 type
   TVkAttachment = class;
@@ -86,6 +86,7 @@ type
     FCall: TVkCall;
     FMoney_transfer: TVkMoneyTransfer;
     FMoney_request: TVkMoneyRequest;
+    FAudio_playlist: TVkAudioPlaylist;
   public
     property &Type: TVkAttachmentType read FType write FType;
     /// <summary>
@@ -188,6 +189,10 @@ type
     /// Встреча
     /// </summary>
     property Event: TVkEvent read FEvent write FEvent;
+    /// <summary>
+    /// Аудио-плейлист
+    /// </summary>
+    property AudioPlaylist: TVkAudioPlaylist read FAudio_playlist write FAudio_playlist;
     destructor Destroy; override;
     function GetPreviewUrl(const Size: Integer = 50): string;
   end;
@@ -196,11 +201,11 @@ type
   private
     FAttachment: TVkAttachment;
     FMessage_id: Integer;
-    FFrom_id: Integer;
+    FFrom_id: TVkPeerId;
   public
     property Attachment: TVkAttachment read FAttachment write FAttachment;
     property MessageId: Integer read FMessage_id write FMessage_id;
-    property FromId: Integer read FFrom_id write FFrom_id;
+    property FromId: TVkPeerId read FFrom_id write FFrom_id;
     destructor Destroy; override;
   end;
 
@@ -224,15 +229,15 @@ type
   /// </summary>
   TVkComment = class(TVkObject, IAttachment)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
-    FFrom_id: Integer;
+    FFrom_id: TVkPeerId;
     FPost_id: Integer;
-    FPost_owner_id: Integer;
+    FPost_owner_id: TVkPeerId;
     FReply_to_comment: Integer;
-    FReply_to_user: Integer;
+    FReply_to_user: TVkPeerId;
     FText: string;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FAttachments: TVkAttachmentArray;
     FDeleted: Boolean;
     FParents_stack: TArray<Integer>;
@@ -261,7 +266,7 @@ type
     /// <summary>
     /// Идентификатор автора комментария
     /// </summary>
-    property FromId: Integer read FFrom_id write FFrom_id;
+    property FromId: TVkPeerId read FFrom_id write FFrom_id;
     /// <summary>
     ///  Идентификатор фотографии, к которой был оставлен комментарий
     /// </summary>
@@ -273,8 +278,8 @@ type
     /// <summary>
     /// Идентификатор владельца стены, на которой оставлен комментарий
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property PostOwnerId: Integer read FPost_owner_id write FPost_owner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
+    property PostOwnerId: TVkPeerId read FPost_owner_id write FPost_owner_id;
     /// <summary>
     /// Идентификатор комментария, в ответ на который оставлен текущий (если применимо)
     /// </summary>
@@ -282,7 +287,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, в ответ которому оставлен текущий комментарий (если применимо)
     /// </summary>
-    property ReplyToUser: Integer read FReply_to_user write FReply_to_user;
+    property ReplyToUser: TVkPeerId read FReply_to_user write FReply_to_user;
     /// <summary>
     /// Текст комментария
     /// </summary>
@@ -379,7 +384,7 @@ type
     FOwner_id: TVkPeerId;
     FFrom_id: TVkPeerId;
     FCreated_by: TVkPeerId;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FText: string;
     FReply_owner_id: TVkPeerId;
@@ -657,6 +662,8 @@ begin
     FPretty_cards.Free;
   if Assigned(FEvent) then
     FEvent.Free;
+  if Assigned(FAudio_playlist) then
+    FAudio_playlist.Free;
   inherited;
 end;
 

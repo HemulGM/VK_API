@@ -12,7 +12,7 @@ type
     /// <summary>
     /// Идентификатор владельца вики-страницы
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPagesGet;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPagesGet;
     /// <summary>
     /// Идентификатор вики-страницы
     /// </summary>
@@ -48,11 +48,11 @@ type
     /// <summary>
     /// Идентификатор сообщества, которому принадлежит вики-страница
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPagesGetVersion;
+    function GroupId(const Value: TVkPeerId): TVkParamsPagesGetVersion;
     /// <summary>
     /// Идентификатор пользователя, который создал страницу
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsPagesGetVersion;
+    function UserId(const Value: TVkPeerId): TVkParamsPagesGetVersion;
     /// <summary>
     /// Определяет, требуется ли в ответе html-представление вики-страницы
     /// </summary>
@@ -72,11 +72,11 @@ type
     /// <summary>
     /// Идентификатор сообщества, которому принадлежит вики-страница
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPagesSave;
+    function GroupId(const Value: TVkPeerId): TVkParamsPagesSave;
     /// <summary>
     /// Идентификатор пользователя, создавшего вики-страницу
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsPagesSave;
+    function UserId(const Value: TVkPeerId): TVkParamsPagesSave;
     /// <summary>
     /// Название вики-страницы
     /// </summary>
@@ -92,11 +92,11 @@ type
     /// <summary>
     /// Идентификатор сообщества, которому принадлежит вики-страница
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPagesSaveAccess;
+    function GroupId(const Value: TVkPeerId): TVkParamsPagesSaveAccess;
     /// <summary>
     /// Идентификатор пользователя, создавшего вики-страницу
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsPagesSaveAccess;
+    function UserId(const Value: TVkPeerId): TVkParamsPagesSaveAccess;
     /// <summary>
     /// Значение настройки доступа на чтение
     /// </summary>
@@ -128,11 +128,11 @@ type
     /// <summary>
     /// Возвращает список всех старых версий вики-страницы.
     /// </summary>
-    function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: Integer = 0; UserId: Integer = 0): Boolean; overload;
+    function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: TVkPeerId = 0; UserId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список вики-страниц в группе.
     /// </summary>
-    function GetTitles(var Items: TVkPages; const GroupId: Integer = 0): Boolean; overload;
+    function GetTitles(var Items: TVkPages; const GroupId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает текст одной из старых версий страницы.
     /// </summary>
@@ -140,7 +140,7 @@ type
     /// <summary>
     /// Возвращает html-представление вики-разметки.
     /// </summary>
-    function ParseWiki(var Html: string; const Text: string; const GroupId: Integer = 0): Boolean;
+    function ParseWiki(var Html: string; const Text: string; const GroupId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Сохраняет текст вики-страницы.
     /// </summary>
@@ -174,7 +174,7 @@ begin
   Result := Get(Item, Params.List);
 end;
 
-function TPagesController.GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId, UserId: Integer): Boolean;
+function TPagesController.GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId, UserId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -186,7 +186,7 @@ begin
   Result := Handler.Execute('pages.getHistory', Params).GetObject(Items);
 end;
 
-function TPagesController.GetTitles(var Items: TVkPages; const GroupId: Integer): Boolean;
+function TPagesController.GetTitles(var Items: TVkPages; const GroupId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -200,7 +200,7 @@ begin
   Result := Handler.Execute('pages.getVersion', Params.List).GetObject(Item);
 end;
 
-function TPagesController.ParseWiki(var Html: string; const Text: string; const GroupId: Integer): Boolean;
+function TPagesController.ParseWiki(var Html: string; const Text: string; const GroupId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -221,7 +221,7 @@ end;
 
 { TVkParamsPagesGet }
 
-function TVkParamsPagesGet.OwnerId(const Value: Integer): TVkParamsPagesGet;
+function TVkParamsPagesGet.OwnerId(const Value: TVkPeerId): TVkParamsPagesGet;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -271,13 +271,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPagesGetVersion.GroupId(const Value: Integer): TVkParamsPagesGetVersion;
+function TVkParamsPagesGetVersion.GroupId(const Value: TVkPeerId): TVkParamsPagesGetVersion;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsPagesGetVersion.UserId(const Value: Integer): TVkParamsPagesGetVersion;
+function TVkParamsPagesGetVersion.UserId(const Value: TVkPeerId): TVkParamsPagesGetVersion;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -303,13 +303,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPagesSave.GroupId(const Value: Integer): TVkParamsPagesSave;
+function TVkParamsPagesSave.GroupId(const Value: TVkPeerId): TVkParamsPagesSave;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsPagesSave.UserId(const Value: Integer): TVkParamsPagesSave;
+function TVkParamsPagesSave.UserId(const Value: TVkPeerId): TVkParamsPagesSave;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -329,13 +329,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPagesSaveAccess.GroupId(const Value: Integer): TVkParamsPagesSaveAccess;
+function TVkParamsPagesSaveAccess.GroupId(const Value: TVkPeerId): TVkParamsPagesSaveAccess;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsPagesSaveAccess.UserId(const Value: Integer): TVkParamsPagesSaveAccess;
+function TVkParamsPagesSaveAccess.UserId(const Value: TVkPeerId): TVkParamsPagesSaveAccess;
 begin
   List.Add('user_id', Value);
   Result := Self;

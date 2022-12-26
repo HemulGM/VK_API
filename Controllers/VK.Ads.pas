@@ -35,7 +35,7 @@ type
     /// <summary>
     /// Список дополнительных полей, которые необходимо вернуть для профилей пользователей и групп
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsAppsGet;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsAppsGet;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователей
     /// </summary>
@@ -97,9 +97,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsAppsGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsAppsGet;
+function TVkParamsAppsGet.Fields(Value: TVkExtendedFields): TVkParamsAppsGet;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 

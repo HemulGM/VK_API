@@ -19,7 +19,7 @@ type
     /// Если параметр не задан, то считается, что он равен либо идентификатору текущего пользователя,
     /// либо идентификатору текущего приложения (если Type равен Sitepage)
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsLikesGetList;
+    function OwnerId(const Value: TVkPeerId): TVkParamsLikesGetList;
     /// <summary>
     /// Идентификатор Like-объекта. Если type равен Sitepage, то параметр ItemId может содержать
     /// значение параметра PageId, используемый при инициализации виджета «Мне нравится»
@@ -72,15 +72,15 @@ type
     /// <summary>
     /// Получает список пользователей, которые добавили заданный объект в свой список Мне нравится
     /// </summary>
-    function Add(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string = ''): Boolean; overload;
+    function Add(var Items: Integer; &Type: TVkItemType; OwnerId: TVkPeerId; ItemId: Integer; AccessKey: string = ''): Boolean; overload;
     /// <summary>
     /// Удаляет указанный объект из списка Мне нравится текущего пользователя
     /// </summary>
-    function Delete(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string = ''): Boolean; overload;
+    function Delete(var Items: Integer; &Type: TVkItemType; OwnerId: TVkPeerId; ItemId: Integer; AccessKey: string = ''): Boolean; overload;
     /// <summary>
     /// Проверяет, находится ли объект в списке Мне нравится заданного пользователя.
     /// </summary>
-    function IsLiked(var Item: TVkLiked; UserId: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer): Boolean; overload;
+    function IsLiked(var Item: TVkLiked; UserId: TVkPeerId; &Type: TVkItemType; OwnerId: TVkPeerId; ItemId: Integer): Boolean; overload;
   end;
 
 implementation
@@ -90,7 +90,7 @@ uses
 
 { TLikesController }
 
-function TLikesController.Add(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
+function TLikesController.Add(var Items: Integer; &Type: TVkItemType; OwnerId: TVkPeerId; ItemId: Integer; AccessKey: string): Boolean;
 begin
   Result := Handler.Execute('likes.add', [
     ['type', &Type.ToString],
@@ -100,7 +100,7 @@ begin
     ResponseAsInt(Items);
 end;
 
-function TLikesController.Delete(var Items: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer; AccessKey: string): Boolean;
+function TLikesController.Delete(var Items: Integer; &Type: TVkItemType; OwnerId: TVkPeerId; ItemId: Integer; AccessKey: string): Boolean;
 begin
   Result := Handler.Execute('likes.delete', [
     ['type', &Type.ToString],
@@ -120,7 +120,7 @@ begin
   Result := Handler.Execute('likes.getList', Params.List.Add('extended', False)).GetObject(Items);
 end;
 
-function TLikesController.IsLiked(var Item: TVkLiked; UserId: Integer; &Type: TVkItemType; OwnerId, ItemId: Integer): Boolean;
+function TLikesController.IsLiked(var Item: TVkLiked; UserId: TVkPeerId; &Type: TVkItemType; OwnerId: TVkPeerId; ItemId: Integer): Boolean;
 begin
   Result := Handler.Execute('likes.isLiked', [
     ['type', &Type.ToString],
@@ -176,7 +176,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsLikesGetList.OwnerId(const Value: Integer): TVkParamsLikesGetList;
+function TVkParamsLikesGetList.OwnerId(const Value: TVkPeerId): TVkParamsLikesGetList;
 begin
   List.Add('owner_id', Value);
   Result := Self;

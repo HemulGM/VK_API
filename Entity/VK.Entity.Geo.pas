@@ -3,8 +3,8 @@ unit VK.Entity.Geo;
 interface
 
 uses
-  Generics.Collections, System.Json, REST.JsonReflect, REST.Json.Interceptors,
-  Rest.Json, REST.Json.Types, VK.Entity.Common, VK.Wrap.Interceptors;
+  Generics.Collections, System.Json, REST.JsonReflect, Rest.Json,
+  REST.Json.Types, VK.Entity.Common, VK.Wrap.Interceptors;
 
 type
   /// <summary>
@@ -17,13 +17,13 @@ type
     FTitle: string;
     FLatitude: Extended;
     FLongitude: Extended;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FCreated: TDateTime;
     FIcon: string;
     FType: Integer;
     FAddress: string;
     FCheckins: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUpdated: TDateTime;
     Ftotal_checkins: Integer;
     FIs_deleted: Boolean;

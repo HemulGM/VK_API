@@ -460,6 +460,7 @@ object FrameChat: TFrameChat
                 TabOrder = 6
                 Text = 'ButtonCall'
                 Visible = False
+                OnClick = ButtonSendClick
               end
             end
           end
@@ -514,8 +515,8 @@ object FrameChat: TFrameChat
             object LabelTextHint: TLabel
               Align = Client
               StyledSettings = [Style]
-              Size.Width = 508.000000000000000000
-              Size.Height = 120.000000000000000000
+              Size.Width = 50.000000000000000000
+              Size.Height = 50.000000000000000000
               Size.PlatformDefault = False
               TextSettings.Font.Family = 'Roboto'
               TextSettings.Font.Size = 13.000000000000000000
@@ -544,7 +545,7 @@ object FrameChat: TFrameChat
         TabOrder = 0
         OnResize = VertScrollBoxMessagesResize
         OnViewportPositionChange = VertScrollBoxMessagesViewportPositionChange
-        Viewport.Width = 669.000000000000000000
+        Viewport.Width = 685.000000000000000000
         Viewport.Height = 430.000000000000000000
         object LayoutMessageList: TLayout
           Position.X = 3.000000000000000000

@@ -3,7 +3,7 @@
 interface
 
 uses
-  REST.Json, REST.JsonReflect, REST.Json.Interceptors, VK.Entity.Profile,
+  REST.Json, REST.JsonReflect, VK.Wrap.Interceptors, VK.Entity.Profile,
   VK.Entity.Group, VK.Entity.Common;
 
 type
@@ -57,7 +57,7 @@ type
   TVkDonutSubscription = class(TVkEntity)
   private
     FAmount: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FNext_Payment_Date: TDateTime;
     FOwner_Id: Integer;
     FStatus: string;

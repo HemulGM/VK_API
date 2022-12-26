@@ -3,9 +3,9 @@ unit VK.Entity.Market;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Photo, VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Photo,
+  VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List, VK.Types,
+  VK.Wrap.Interceptors;
 
 type
   TVkMarketSection = class(TVkBasicObject)
@@ -115,7 +115,7 @@ type
     [JsonReflectAttribute(ctString, rtString, TProductAvailabilityInterceptor)]
     FAvailability: TVkProductAvailability;
     FCategory: TVkProductCategory;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDescription: string;
     FExternal_id: string;

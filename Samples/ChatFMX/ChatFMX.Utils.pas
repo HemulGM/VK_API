@@ -18,6 +18,8 @@ function WordOfSex(const Sex: TVkSex; const Words: TArrayOfString): string;
 
 function HumanDateTime(Value: TDateTime; ShowTime: Boolean = False; ShortDate: Boolean = False): string;
 
+function HumanDateTimeSimple(Value: TDateTime; ShowTime: Boolean = False; ShortDate: Boolean = False): string;
+
 function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;
 
 function ParseMention(const Value: string): string;
@@ -119,9 +121,17 @@ begin
   else
     Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate) + ' YYYY', Value);
   if ShowTime then
-  begin
     Result := Result + ' в ' + FormatDateTime('H:nn', Value);
-  end;
+end;
+
+function HumanDateTimeSimple(Value: TDateTime; ShowTime: Boolean; ShortDate: Boolean): string;
+begin
+  if YearOf(Value) = YearOf(Now) then
+    Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate), Value)
+  else
+    Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate) + ' YYYY', Value);
+  if ShowTime then
+    Result := Result + ', ' + FormatDateTime('H:nn', Value);
 end;
 
 function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;

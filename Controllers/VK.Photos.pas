@@ -5,7 +5,8 @@ interface
 uses
   System.SysUtils, System.Types, System.Generics.Collections, System.Classes,
   VK.Controller, VK.Types, VK.Entity.Album, REST.Json, VK.Entity.Photo.Upload,
-  VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common, VK.Entity.Common.ExtendedList;
+  VK.Entity.Photo, VK.Entity.Media, VK.Entity.Group, VK.Entity.Common,
+  VK.Entity.Common.ExtendedList;
 
 type
   TVkParamsPhotosGetAll = record
@@ -13,7 +14,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, фотографии которого нужно получить
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosGetAll;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosGetAll;
     /// <summary>
     /// True — возвращать расширенную информацию о фотографиях
     /// </summary>
@@ -114,7 +115,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежат альбомы
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsAlbumsGet;
+    function OwnerId(const Value: TVkPeerId): TVkParamsAlbumsGet;
     /// <summary>
     /// Перечисленные через запятую идентификаторы альбомов (не более 1000)
     /// </summary>
@@ -155,7 +156,7 @@ type
     /// <summary>
     /// Идентификатор сообщества, в котором создаётся альбом
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPhotosCreateAlbum;
+    function GroupId(const Value: TVkPeerId): TVkParamsPhotosCreateAlbum;
     /// <summary>
     /// Текст описания альбома
     /// </summary>
@@ -199,7 +200,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежат альбомы
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosEditAlbum;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosEditAlbum;
     /// <summary>
     /// Настройки приватности просмотра альбома в специальном формате
     /// </summary>
@@ -227,7 +228,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит фотография
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosCreateComment;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosCreateComment;
     /// <summary>
     /// Идентификатор фотографии
     /// </summary>
@@ -270,7 +271,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит фотография
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosEdit;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosEdit;
     /// <summary>
     /// Идентификатор фотографии
     /// </summary>
@@ -310,7 +311,7 @@ type
     /// <summary>
     /// Идентификатор сообщества, в которое необходимо сохранить фотографии
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPhotosSave;
+    function GroupId(const Value: TVkPeerId): TVkParamsPhotosSave;
     /// <summary>
     /// Параметр, возвращаемый в результате загрузки фотографий на сервер
     /// </summary>
@@ -342,7 +343,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит фотография
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosEditComment;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosEditComment;
     /// <summary>
     /// Идентификатор комментария
     /// </summary>
@@ -363,11 +364,11 @@ type
     /// <summary>
     /// Идентификатор пользователя, количество альбомов которого необходимо получить
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsPhotosGetAlbumsCount;
+    function UserId(const Value: TVkPeerId): TVkParamsPhotosGetAlbumsCount;
     /// <summary>
     /// Идентификатор сообщества, количество альбомов которого необходимо получить
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPhotosGetAlbumsCount;
+    function GroupId(const Value: TVkPeerId): TVkParamsPhotosGetAlbumsCount;
   end;
 
   TVkParamsPhotosGetAllComments = record
@@ -375,7 +376,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежат фотографии
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosGetAllComments;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosGetAllComments;
     /// <summary>
     /// Идентификатор альбома. Если параметр не задан, то считается, что необходимо получить комментарии ко всем альбомам пользователя или сообщества
     /// </summary>
@@ -401,7 +402,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит фотография
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosGetComments;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosGetComments;
     /// <summary>
     /// Идентификатор фотографии
     /// </summary>
@@ -438,7 +439,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): TVkParamsPhotosGetComments;
+    function Fields(const Value: TVkExtendedFields): TVkParamsPhotosGetComments;
   end;
 
   TVkParamsPhotosGetMarketUploadServer = record
@@ -446,7 +447,7 @@ type
     /// <summary>
     /// Идентификатор сообщества, для которого необходимо загрузить фотографию товара
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPhotosGetMarketUploadServer;
+    function GroupId(const Value: TVkPeerId): TVkParamsPhotosGetMarketUploadServer;
     /// <summary>
     /// Является ли фотография обложкой товара (True — фотография для обложки, False — дополнительная фотография)
     /// </summary>
@@ -466,7 +467,7 @@ type
     /// <summary>
     /// идентификатор пользователя, список фотографий для которого нужно получить
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsPhotosGetUserPhotos;
+    function UserId(const Value: TVkPeerId): TVkParamsPhotosGetUserPhotos;
     /// <summary>
     /// True — будут возвращены дополнительные поля likes, comments, tags, can_comment.
     /// Поля comments и tags содержат только количество объектов. По умолчанию данные поля не возвращается
@@ -491,7 +492,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит альбом
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosReorderAlbums;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosReorderAlbums;
     /// <summary>
     /// Идентификатор альбома
     /// </summary>
@@ -511,7 +512,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит фотография
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPhotosReorderPhotos;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPhotosReorderPhotos;
     /// <summary>
     /// Идентификатор фотографии
     /// </summary>
@@ -531,7 +532,7 @@ type
     /// <summary>
     /// Иентификатор группы, для которой нужно загрузить фотографию
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPhotosSaveMarketPhoto;
+    function GroupId(const Value: TVkPeerId): TVkParamsPhotosSaveMarketPhoto;
     /// <summary>
     /// Праметр, возвращаемый в результате загрузки фотографии на сервер
     /// </summary>
@@ -561,11 +562,11 @@ type
     /// <summary>
     /// Идентификатор пользователя, на стену которого нужно сохранить фотографию
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsPhotosSaveWallPhoto;
+    function UserId(const Value: TVkPeerId): TVkParamsPhotosSaveWallPhoto;
     /// <summary>
     /// Идентификатор сообщества, на стену которого нужно сохранить фотографию
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsPhotosSaveWallPhoto;
+    function GroupId(const Value: TVkPeerId): TVkParamsPhotosSaveWallPhoto;
     /// <summary>
     /// Параметр, возвращаемый в результате загрузки фотографии на сервер
     /// </summary>
@@ -637,7 +638,7 @@ type
     /// <summary>
     /// Подтверждает отметку на фотографии.
     /// </summary>
-    function СonfirmTag(PhotoId, TagId: Integer; OwnerId: Integer = 0): Boolean;
+    function СonfirmTag(PhotoId, TagId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Подтверждает отметки.
     /// </summary>
@@ -645,7 +646,7 @@ type
     /// <summary>
     /// Позволяет скопировать фотографию в альбом "Сохраненные фотографии"
     /// </summary>
-    function Copy(var Id: Integer; OwnerId, PhotoId: Integer; AccessKey: string = ''): Boolean;
+    function Copy(var Id: Integer; OwnerId: TVkPeerId; PhotoId: Integer; AccessKey: string = ''): Boolean;
     /// <summary>
     /// Создает пустой альбом для фотографий.
     /// </summary>
@@ -670,15 +671,15 @@ type
     /// <summary>
     /// Удаление фотографии на сайте.
     /// </summary>
-    function Delete(OwnerId, PhotoId: Integer): Boolean;
+    function Delete(OwnerId: TVkPeerId; PhotoId: Integer): Boolean;
     /// <summary>
     /// Удаляет указанный альбом для фотографий у текущего пользователя
     /// </summary>
-    function DeleteAlbum(AlbumId: Integer; GroupId: Integer = 0): Boolean;
+    function DeleteAlbum(AlbumId: Integer; GroupId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Удаляет комментарий к фотографии.
     /// </summary>
-    function DeleteComment(OwnerId, CommentId: Integer): Boolean;
+    function DeleteComment(OwnerId: TVkPeerId; CommentId: Integer): Boolean;
     /// <summary>
     /// Редактирует описание или геометку у фотографии.
     /// </summary>
@@ -763,7 +764,7 @@ type
     /// Возвращает адрес сервера для загрузки фотографии подборки товаров в сообществе.
     /// Минимальный размер фотографии — 1280x720 пикселей.
     /// </summary>
-    function GetMarketAlbumUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
+    function GetMarketAlbumUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean;
     /// <summary>
     /// Возвращает адрес сервера для загрузки фотографии товара.
     /// </summary>
@@ -775,11 +776,11 @@ type
     /// <summary>
     /// Возвращает адрес сервера для загрузки фотографии в личное сообщение.
     /// </summary>
-    function GetMessagesUploadServer(var UploadUrl: string; PeerId: Integer = 0): Boolean; overload;
+    function GetMessagesUploadServer(var UploadUrl: string; PeerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает адрес сервера для загрузки фотографии в личное сообщение.
     /// </summary>
-    function GetMessagesUploadServer(var Upload: TVkPhotoGetUploadResponse; PeerId: Integer = 0): Boolean; overload;
+    function GetMessagesUploadServer(var Upload: TVkPhotoGetUploadResponse; PeerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список фотографий, на которых есть непросмотренные отметки.
     /// </summary>
@@ -787,23 +788,23 @@ type
     /// <summary>
     /// Получает адрес для загрузки обложки сообщества.
     /// </summary>
-    function GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer; CropLeft: TPoint; CropRight: TPoint): Boolean; overload;
+    function GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: TVkPeerId; CropLeft: TPoint; CropRight: TPoint): Boolean; overload;
     /// <summary>
     /// Получает адрес для загрузки обложки сообщества.
     /// </summary>
-    function GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer): Boolean; overload;
+    function GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean; overload;
     /// <summary>
     /// Возвращает адрес сервера для загрузки главной фотографии на страницу пользователя или сообщества.
     /// </summary>
-    function GetOwnerPhotoUploadServer(var UploadUrl: string; OwnerId: Integer = 0): Boolean; overload;
+    function GetOwnerPhotoUploadServer(var UploadUrl: string; OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список отметок на фотографии.
     /// </summary>
-    function GetTags(var Items: TVkPhotoTags; PhotoId: Integer; OwnerId: Integer = 0; AccessKey: string = ''): Boolean;
+    function GetTags(var Items: TVkPhotoTags; PhotoId: Integer; OwnerId: TVkPeerId = 0; AccessKey: string = ''): Boolean;
     /// <summary>
     /// Возвращает адрес сервера для загрузки фотографий.
     /// </summary>
-    function GetUploadServer(var UploadData: TVkPhotoGetUploadResponse; AlbumId: Integer = 0; GroupId: Integer = 0): Boolean;
+    function GetUploadServer(var UploadData: TVkPhotoGetUploadResponse; AlbumId: Integer = 0; GroupId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Возвращает список фотографий, на которых отмечен пользователь.
     /// </summary>
@@ -815,23 +816,23 @@ type
     /// <summary>
     /// Возвращает адрес сервера для загрузки фотографии на стену пользователя или сообщества.
     /// </summary>
-    function GetWallUploadServer(var UploadData: TVkPhotoGetUploadResponse; GroupId: Integer = 0): Boolean;
+    function GetWallUploadServer(var UploadData: TVkPhotoGetUploadResponse; GroupId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Делает фотографию обложкой альбома.
     /// </summary>
-    function MakeCover(PhotoId, AlbumId: Integer; OwnerId: Integer = 0): Boolean;
+    function MakeCover(PhotoId, AlbumId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Переносит фотографию из одного альбома в другой.
     /// </summary>
-    function Move(PhotoId, TargetAlbumId: Integer; OwnerId: Integer = 0): Boolean;
+    function Move(PhotoId, TargetAlbumId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Добавляет отметку на фотографию.
     /// </summary>
-    function PutTag(var TagId: Integer; PhotoId, UserId: Integer; Left, Right: TPoint; OwnerId: Integer = 0): Boolean;
+    function PutTag(var TagId: Integer; PhotoId: Integer; UserId: TVkPeerId; Left, Right: TPoint; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Удаляет отметку с фотографии.
     /// </summary>
-    function RemoveTag(PhotoId, TagId: Integer; OwnerId: Integer = 0): Boolean;
+    function RemoveTag(PhotoId, TagId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Меняет порядок альбома в списке альбомов пользователя.
     /// </summary>
@@ -843,19 +844,19 @@ type
     /// <summary>
     /// Позволяет пожаловаться на фотографию.
     /// </summary>
-    function Report(OwnerId, PhotoId: Integer; Reason: TVkMediaReportReason): Boolean;
+    function Report(OwnerId: TVkPeerId; PhotoId: Integer; Reason: TVkMediaReportReason): Boolean;
     /// <summary>
     /// Позволяет пожаловаться на комментарий к фотографии.
     /// </summary>
-    function ReportComment(OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
+    function ReportComment(OwnerId: TVkPeerId; CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
     /// <summary>
     /// Восстанавливает удаленную фотографию.
     /// </summary>
-    function Restore(PhotoId: Integer; OwnerId: Integer = 0): Boolean;
+    function Restore(PhotoId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Восстанавливает удаленный комментарий к фотографии.
     /// </summary>
-    function RestoreComment(CommentId: Integer; OwnerId: Integer = 0): Boolean;
+    function RestoreComment(CommentId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Сохраняет фотографии после успешной загрузки.
     /// </summary>
@@ -867,7 +868,7 @@ type
     /// <summary>
     /// Сохраняет фотографии после успешной загрузки на URI, полученный методом photos.getMarketAlbumUploadServer.
     /// </summary>
-    function SaveMarketAlbumPhoto(var Items: TVkPhotos; GroupId: Integer; Photo, Server, Hash: string): Boolean;
+    function SaveMarketAlbumPhoto(var Items: TVkPhotos; GroupId: TVkPeerId; Photo, Server, Hash: string): Boolean;
     /// <summary>
     /// Сохраняет фотографии после успешной загрузки на URI, полученный методом photos.getMarketUploadServer.
     /// </summary>
@@ -927,15 +928,15 @@ type
     /// <summary>
     /// Загрузки фотографии для отправки в сообщении
     /// </summary>
-    function UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of string): Boolean; overload;
+    function UploadForMessage(var Photos: TVkPhotos; const PeerId: TVkPeerId; const FileNames: array of string): Boolean; overload;
     /// <summary>
     /// Загрузки фотографии для отправки в сообщении
     /// </summary>
-    function UploadForMessage(var Photos: TAttachmentArray; const PeerId: Integer; const FileNames: array of string): Boolean; overload;
+    function UploadForMessage(var Photos: TAttachmentArray; const PeerId: TVkPeerId; const FileNames: array of string): Boolean; overload;
     /// <summary>
     /// Загрузки фотографии для отправки в сообщении
     /// </summary>
-    function UploadForMessage(var Photos: TAttachmentArray; const PeerId: Integer; const FileName: string; Stream: TStream): Boolean; overload;
+    function UploadForMessage(var Photos: TAttachmentArray; const PeerId: TVkPeerId; const FileName: string; Stream: TStream): Boolean; overload;
     /// <summary>
     /// Загрузки фотографии для публикации на стену пользователя или сообщества
     /// </summary>
@@ -947,7 +948,7 @@ type
     /// <summary>
     /// Загрузки фотографии для публикации на стену пользователя
     /// </summary>
-    function UploadForUserWall(var Photos: TVkPhotos; const UserId: Integer; const FileNames: array of string): Boolean;
+    function UploadForUserWall(var Photos: TVkPhotos; const UserId: TVkPeerId; const FileNames: array of string): Boolean;
   end;
 
 implementation
@@ -1013,7 +1014,7 @@ begin
   end;
 end;
 
-function TPhotosController.GetMessagesUploadServer(var UploadUrl: string; PeerId: Integer): Boolean;
+function TPhotosController.GetMessagesUploadServer(var UploadUrl: string; PeerId: TVkPeerId): Boolean;
 var
   Upload: TVkPhotoGetUploadResponse;
 begin
@@ -1058,7 +1059,7 @@ begin
   Result := Handler.Execute('photos.confirmTag', ['tags', Tags.ToString]).ResponseIsTrue;
 end;
 
-function TPhotosController.Copy(var Id: Integer; OwnerId, PhotoId: Integer; AccessKey: string): Boolean;
+function TPhotosController.Copy(var Id: Integer; OwnerId: TVkPeerId; PhotoId: Integer; AccessKey: string): Boolean;
 begin
   Result := Handler.Execute('photos.confirmTag', [
     ['owner_id', OwnerId.ToString],
@@ -1082,12 +1083,12 @@ begin
   Result := Handler.Execute('photos.declineTags').ResponseIsTrue;
 end;
 
-function TPhotosController.Delete(OwnerId, PhotoId: Integer): Boolean;
+function TPhotosController.Delete(OwnerId: TVkPeerId; PhotoId: Integer): Boolean;
 begin
   Result := Handler.Execute('photos.delete', [['owner_id', OwnerId.ToString], ['photo_id', PhotoId.ToString]]).ResponseIsTrue;
 end;
 
-function TPhotosController.DeleteAlbum(AlbumId, GroupId: Integer): Boolean;
+function TPhotosController.DeleteAlbum(AlbumId: Integer; GroupId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1097,7 +1098,7 @@ begin
   Result := Handler.Execute('photos.deleteAlbum', Params).ResponseIsTrue;
 end;
 
-function TPhotosController.DeleteComment(OwnerId, CommentId: Integer): Boolean;
+function TPhotosController.DeleteComment(OwnerId: TVkPeerId; CommentId: Integer): Boolean;
 begin
   Result := Handler.Execute('photos.deleteComment', [
     ['owner_id', OwnerId.ToString],
@@ -1214,7 +1215,7 @@ begin
   Result := Handler.Execute('photos.getComments', Params).GetObject(Items);
 end;
 
-function TPhotosController.GetMarketAlbumUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
+function TPhotosController.GetMarketAlbumUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean;
 var
   Item: TVkPhotoGetUploadResponse;
 begin
@@ -1265,7 +1266,7 @@ begin
   end;
 end;
 
-function TPhotosController.GetMessagesUploadServer(var Upload: TVkPhotoGetUploadResponse; PeerId: Integer): Boolean;
+function TPhotosController.GetMessagesUploadServer(var Upload: TVkPhotoGetUploadResponse; PeerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1283,12 +1284,12 @@ begin
   Result := Handler.Execute('photos.getNewTags', Params).GetObject(Items);
 end;
 
-function TPhotosController.GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
+function TPhotosController.GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean;
 begin
   Result := GetOwnerCoverPhotoUploadServer(UploadUrl, GroupId, TPoint.Zero, TPoint.Zero);
 end;
 
-function TPhotosController.GetOwnerPhotoUploadServer(var UploadUrl: string; OwnerId: Integer): Boolean;
+function TPhotosController.GetOwnerPhotoUploadServer(var UploadUrl: string; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
   Item: TVkPhotoGetUploadResponse;
@@ -1313,7 +1314,7 @@ begin
   end;
 end;
 
-function TPhotosController.GetTags(var Items: TVkPhotoTags; PhotoId, OwnerId: Integer; AccessKey: string): Boolean;
+function TPhotosController.GetTags(var Items: TVkPhotoTags; PhotoId: Integer; OwnerId: TVkPeerId; AccessKey: string): Boolean;
 var
   Params: TParams;
 begin
@@ -1324,7 +1325,7 @@ begin
   Result := Handler.Execute('photos.getTags', Params).GetObject(Items);
 end;
 
-function TPhotosController.GetUploadServer(var UploadData: TVkPhotoGetUploadResponse; AlbumId, GroupId: Integer): Boolean;
+function TPhotosController.GetUploadServer(var UploadData: TVkPhotoGetUploadResponse; AlbumId: Integer; GroupId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1340,7 +1341,7 @@ begin
   Result := GetUserPhotos(Items, Params.List);
 end;
 
-function TPhotosController.GetWallUploadServer(var UploadData: TVkPhotoGetUploadResponse; GroupId: Integer): Boolean;
+function TPhotosController.GetWallUploadServer(var UploadData: TVkPhotoGetUploadResponse; GroupId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1349,7 +1350,7 @@ begin
   Result := Handler.Execute('photos.getWallUploadServer', Params).GetObject(UploadData);
 end;
 
-function TPhotosController.MakeCover(PhotoId, AlbumId, OwnerId: Integer): Boolean;
+function TPhotosController.MakeCover(PhotoId, AlbumId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1360,7 +1361,7 @@ begin
   Result := Handler.Execute('photos.makeCover', Params).ResponseIsTrue;
 end;
 
-function TPhotosController.Move(PhotoId, TargetAlbumId, OwnerId: Integer): Boolean;
+function TPhotosController.Move(PhotoId, TargetAlbumId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1371,7 +1372,7 @@ begin
   Result := Handler.Execute('photos.move', Params).ResponseIsTrue;
 end;
 
-function TPhotosController.PutTag(var TagId: Integer; PhotoId, UserId: Integer; Left, Right: TPoint; OwnerId: Integer): Boolean;
+function TPhotosController.PutTag(var TagId: Integer; PhotoId: Integer; UserId: TVkPeerId; Left, Right: TPoint; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1386,7 +1387,7 @@ begin
   Result := Handler.Execute('photos.putTag', Params).ResponseAsInt(TagId);
 end;
 
-function TPhotosController.RemoveTag(PhotoId, TagId, OwnerId: Integer): Boolean;
+function TPhotosController.RemoveTag(PhotoId, TagId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1407,7 +1408,7 @@ begin
   Result := Handler.Execute('photos.reorderPhotos', Params.List).ResponseIsTrue;
 end;
 
-function TPhotosController.Report(OwnerId, PhotoId: Integer; Reason: TVkMediaReportReason): Boolean;
+function TPhotosController.Report(OwnerId: TVkPeerId; PhotoId: Integer; Reason: TVkMediaReportReason): Boolean;
 begin
   Result := Handler.Execute('photos.report', [
     ['owner_id', OwnerId.ToString],
@@ -1416,7 +1417,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TPhotosController.ReportComment(OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
+function TPhotosController.ReportComment(OwnerId: TVkPeerId; CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
 begin
   Result := Handler.Execute('photos.reportComment', [
     ['owner_id', OwnerId.ToString],
@@ -1425,7 +1426,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TPhotosController.Restore(PhotoId, OwnerId: Integer): Boolean;
+function TPhotosController.Restore(PhotoId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1435,7 +1436,7 @@ begin
   Result := Handler.Execute('photos.restore', Params).ResponseIsTrue;
 end;
 
-function TPhotosController.RestoreComment(CommentId, OwnerId: Integer): Boolean;
+function TPhotosController.RestoreComment(CommentId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1450,7 +1451,7 @@ begin
   Result := Handler.Execute('photos.getUserPhotos', Params).GetObject(Items);
 end;
 
-function TPhotosController.GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: Integer; CropLeft, CropRight: TPoint): Boolean;
+function TPhotosController.GetOwnerCoverPhotoUploadServer(var UploadUrl: string; GroupId: TVkPeerId; CropLeft, CropRight: TPoint): Boolean;
 var
   Params: TParams;
   Item: TVkPhotoGetUploadResponse;
@@ -1489,7 +1490,7 @@ begin
   Result := Handler.ExecutePost('photos.save', Params).GetObjects(Items);
 end;
 
-function TPhotosController.SaveMarketAlbumPhoto(var Items: TVkPhotos; GroupId: Integer; Photo, Server, Hash: string): Boolean;
+function TPhotosController.SaveMarketAlbumPhoto(var Items: TVkPhotos; GroupId: TVkPeerId; Photo, Server, Hash: string): Boolean;
 var
   Params: TParams;
 begin
@@ -1584,7 +1585,7 @@ begin
   Result := UploadForWall(Photos, FileNames, SaveParams, GroupId);
 end;
 
-function TPhotosController.UploadForMessage(var Photos: TAttachmentArray; const PeerId: Integer; const FileName: string; Stream: TStream): Boolean;
+function TPhotosController.UploadForMessage(var Photos: TAttachmentArray; const PeerId: TVkPeerId; const FileName: string; Stream: TStream): Boolean;
 var
   Items: TVkPhotos;
 var
@@ -1610,7 +1611,7 @@ begin
   end;
 end;
 
-function TPhotosController.UploadForMessage(var Photos: TAttachmentArray; const PeerId: Integer; const FileNames: array of string): Boolean;
+function TPhotosController.UploadForMessage(var Photos: TAttachmentArray; const PeerId: TVkPeerId; const FileNames: array of string): Boolean;
 var
   Items: TVkPhotos;
 begin
@@ -1622,7 +1623,7 @@ begin
   end;
 end;
 
-function TPhotosController.UploadForMessage(var Photos: TVkPhotos; const PeerId: Integer; const FileNames: array of string): Boolean;
+function TPhotosController.UploadForMessage(var Photos: TVkPhotos; const PeerId: TVkPeerId; const FileNames: array of string): Boolean;
 var
   Url: string;
   Response: TVkPhotoUploadResponse;
@@ -1641,7 +1642,7 @@ begin
   end;
 end;
 
-function TPhotosController.UploadForUserWall(var Photos: TVkPhotos; const UserId: Integer; const FileNames: array of string): Boolean;
+function TPhotosController.UploadForUserWall(var Photos: TVkPhotos; const UserId: TVkPeerId; const FileNames: array of string): Boolean;
 var
   SaveParams: TVkParamsPhotosSaveWallPhoto;
 begin
@@ -1695,7 +1696,7 @@ begin
   Result := SaveMessagesPhoto(Items, Data.Server, Data.Photo, Data.Hash);
 end;
 
-function TPhotosController.СonfirmTag(PhotoId, TagId, OwnerId: Integer): Boolean;
+function TPhotosController.СonfirmTag(PhotoId, TagId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1738,7 +1739,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosGetAll.OwnerId(const Value: Integer): TVkParamsPhotosGetAll;
+function TVkParamsPhotosGetAll.OwnerId(const Value: TVkPeerId): TVkParamsPhotosGetAll;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1794,7 +1795,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsAlbumsGet.OwnerId(const Value: Integer): TVkParamsAlbumsGet;
+function TVkParamsAlbumsGet.OwnerId(const Value: TVkPeerId): TVkParamsAlbumsGet;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1900,7 +1901,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosCreateAlbum.GroupId(const Value: Integer): TVkParamsPhotosCreateAlbum;
+function TVkParamsPhotosCreateAlbum.GroupId(const Value: TVkPeerId): TVkParamsPhotosCreateAlbum;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -1962,7 +1963,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosCreateComment.OwnerId(const Value: Integer): TVkParamsPhotosCreateComment;
+function TVkParamsPhotosCreateComment.OwnerId(const Value: TVkPeerId): TVkParamsPhotosCreateComment;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2018,7 +2019,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosEdit.OwnerId(const Value: Integer): TVkParamsPhotosEdit;
+function TVkParamsPhotosEdit.OwnerId(const Value: TVkPeerId): TVkParamsPhotosEdit;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2056,7 +2057,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosEditAlbum.OwnerId(const Value: Integer): TVkParamsPhotosEditAlbum;
+function TVkParamsPhotosEditAlbum.OwnerId(const Value: TVkPeerId): TVkParamsPhotosEditAlbum;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2106,7 +2107,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosEditComment.OwnerId(const Value: Integer): TVkParamsPhotosEditComment;
+function TVkParamsPhotosEditComment.OwnerId(const Value: TVkPeerId): TVkParamsPhotosEditComment;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2114,13 +2115,13 @@ end;
 
 { TVkParamsPhotosGetAlbumsCount }
 
-function TVkParamsPhotosGetAlbumsCount.GroupId(const Value: Integer): TVkParamsPhotosGetAlbumsCount;
+function TVkParamsPhotosGetAlbumsCount.GroupId(const Value: TVkPeerId): TVkParamsPhotosGetAlbumsCount;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsPhotosGetAlbumsCount.UserId(const Value: Integer): TVkParamsPhotosGetAlbumsCount;
+function TVkParamsPhotosGetAlbumsCount.UserId(const Value: TVkPeerId): TVkParamsPhotosGetAlbumsCount;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -2152,7 +2153,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosGetAllComments.OwnerId(const Value: Integer): TVkParamsPhotosGetAllComments;
+function TVkParamsPhotosGetAllComments.OwnerId(const Value: TVkPeerId): TVkParamsPhotosGetAllComments;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2178,7 +2179,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosGetComments.Fields(const Value: TVkProfileFields): TVkParamsPhotosGetComments;
+function TVkParamsPhotosGetComments.Fields(const Value: TVkExtendedFields): TVkParamsPhotosGetComments;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -2196,7 +2197,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosGetComments.OwnerId(const Value: Integer): TVkParamsPhotosGetComments;
+function TVkParamsPhotosGetComments.OwnerId(const Value: TVkPeerId): TVkParamsPhotosGetComments;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -2234,7 +2235,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosGetMarketUploadServer.GroupId(const Value: Integer): TVkParamsPhotosGetMarketUploadServer;
+function TVkParamsPhotosGetMarketUploadServer.GroupId(const Value: TVkPeerId): TVkParamsPhotosGetMarketUploadServer;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2272,7 +2273,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosGetUserPhotos.UserId(const Value: Integer): TVkParamsPhotosGetUserPhotos;
+function TVkParamsPhotosGetUserPhotos.UserId(const Value: TVkPeerId): TVkParamsPhotosGetUserPhotos;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -2298,7 +2299,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosReorderAlbums.OwnerId(const Value: Integer): TVkParamsPhotosReorderAlbums;
+function TVkParamsPhotosReorderAlbums.OwnerId(const Value: TVkPeerId): TVkParamsPhotosReorderAlbums;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2318,7 +2319,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosReorderPhotos.OwnerId(const Value: Integer): TVkParamsPhotosReorderPhotos;
+function TVkParamsPhotosReorderPhotos.OwnerId(const Value: TVkPeerId): TVkParamsPhotosReorderPhotos;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -2344,7 +2345,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosSave.GroupId(const Value: Integer): TVkParamsPhotosSave;
+function TVkParamsPhotosSave.GroupId(const Value: TVkPeerId): TVkParamsPhotosSave;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2394,7 +2395,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosSaveMarketPhoto.GroupId(const Value: Integer): TVkParamsPhotosSaveMarketPhoto;
+function TVkParamsPhotosSaveMarketPhoto.GroupId(const Value: TVkPeerId): TVkParamsPhotosSaveMarketPhoto;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2426,7 +2427,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosSaveWallPhoto.GroupId(const Value: Integer): TVkParamsPhotosSaveWallPhoto;
+function TVkParamsPhotosSaveWallPhoto.GroupId(const Value: TVkPeerId): TVkParamsPhotosSaveWallPhoto;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -2462,7 +2463,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPhotosSaveWallPhoto.UserId(const Value: Integer): TVkParamsPhotosSaveWallPhoto;
+function TVkParamsPhotosSaveWallPhoto.UserId(const Value: TVkPeerId): TVkParamsPhotosSaveWallPhoto;
 begin
   List.Add('user_id', Value);
   Result := Self;

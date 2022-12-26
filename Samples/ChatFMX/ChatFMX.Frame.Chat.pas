@@ -7,11 +7,13 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Layouts, FMX.ListBox, FMX.Objects, FMX.Controls.Presentation,
   ChatFMX.DM.Res, FMX.Edit, VK.Types, VK.API, FMX.ImgList, VK.Entity.Message,
-  VK.Entity.Conversation, System.Messaging, ChatFMX.Frame.Message,
-  HGM.FMX.SmoothScroll, FMX.Ani, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo,
-  ChatFMX.Frame.Loading, ChatFMX.Frame.MessageAction, ChatFMX.Frame.MessageDate;
+  VK.Entity.Conversation, System.Messaging, HGM.FMX.SmoothScroll, FMX.Ani,
+  FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, ChatFMX.Frame.Loading,
+  VK.Entity.Common.ExtendedList;
 
 type
+  TFrameChat = class;
+
   TLayout = class(FMX.Layouts.TLayout)
   end;
 
@@ -22,6 +24,14 @@ type
   TButton = class(FMX.StdCtrls.TButton)
   protected
     procedure SetText(const Value: string); override;
+  end;
+
+  TOnPreviewChatChanged = procedure(Chat: TFrameChat) of object;
+
+  TChatInfo = record
+    IsCanWrite: Boolean;
+    IsP2P: Boolean;
+    OutRead: Int64;
   end;
 
   {$IFDEF DEBUG_ADAPTIVE}
@@ -121,6 +131,7 @@ type
     procedure VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure ButtonBackClick(Sender: TObject);
     procedure CircleToDownClick(Sender: TObject);
+    procedure ButtonSendClick(Sender: TObject);
   private
     FConversationId: TVkPeerId;
     FVK: TCustomVK;
@@ -146,17 +157,21 @@ type
     FIsCanWrtie: Boolean;
     FNotAllowedReason: TVkConversationDisableReason;
     FOnBack: TNotifyEvent;
+    FIsUser: Boolean;
+    FOutRead: Int64;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
     procedure EndOfChat;
     procedure LoadConversationAsync;
     procedure LoadConversationInfoAsync;
-    procedure CreateMessageItem(const Item: TVkMessage; History: TVkMessageHistory);
+    procedure CreateMessageItem(const Item: TVkMessage; AData: TVkEntityExtendedList<TVkMessage>; ToTop: Boolean);
     procedure UpdateInfo(Info: TVkConversation; Data: TVkConversations);
     procedure SetIsMuted(const Value: Boolean);
     procedure SetTitle(const Value: string);
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
+    procedure FOnNewMessage(const Sender: TObject; const M: TMessage);
+    procedure FOnEditMessage(const Sender: TObject; const M: TMessage);
     procedure SetChatType(const Value: TChatType);
     procedure SetMemberCount(const Value: Integer);
     procedure UpdateInfoText;
@@ -183,6 +198,10 @@ type
     procedure ShowHints;
     procedure HideHints;
     procedure ErrorLoading;
+    procedure AppendMessage(Items: TVkMessages);
+    function GetChatInfo: TChatInfo;
+    procedure SetIsUser(const Value: Boolean);
+    procedure SetOutRead(const Value: Int64);
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   protected
     procedure SetVisible(const Value: Boolean); override;
@@ -206,7 +225,10 @@ type
     property Verified: Boolean read FVerified write SetVerified;
     property IsNeedAddToFriends: Boolean read FIsNeedAddToFriends write SetIsNeedAddToFriends;
     property IsCanWrtie: Boolean read FIsCanWrtie write SetIsCanWrtie;
+    property IsUser: Boolean read FIsUser write SetIsUser;
     property OnBack: TNotifyEvent read FOnBack write SetOnBack;
+    property ChatInfo: TChatInfo read GetChatInfo;
+    property OutRead: Int64 read FOutRead write SetOutRead;
   end;
 
 implementation
@@ -214,7 +236,8 @@ implementation
 uses
   System.Threading, System.DateUtils, VK.Messages, VK.Entity.Profile,
   VK.Entity.Group, ChatFMX.PreviewManager, System.Math, ChatFMX.Utils,
-  HGM.FMX.Image;
+  HGM.FMX.Image, ChatFMX.Frame.MessageAction, ChatFMX.Frame.MessageDate,
+  ChatFMX.Frame.Message, ChatFMX.Events;
 
 {$R *.fmx}
 
@@ -224,6 +247,19 @@ procedure TFrameChat.ButtonBackClick(Sender: TObject);
 begin
   if Assigned(FOnBack) then
     FOnBack(Self);
+end;
+
+procedure TFrameChat.ButtonSendClick(Sender: TObject);
+begin
+  var NewMessage := VK.Messages.New;
+  NewMessage.PeerId(ConversationId);
+  if not MemoText.Text.IsEmpty then
+  begin
+    NewMessage.Message(MemoText.Text);
+    MemoText.Text := '';
+    MemoText.SetFocus;
+  end;
+  NewMessage.Send;
 end;
 
 constructor TFrameChat.Create(AOwner: TComponent; AVK: TCustomVK);
@@ -288,12 +324,6 @@ begin
   UnselectAll;
 end;
 
-procedure TFrameChat.Load(const PeerId: TVkPeerId);
-begin
-  FConversationId := PeerId;
-  ReloadAsync;
-end;
-
 function TFrameChat.SelectedCount: Integer;
 begin
   Result := 0;
@@ -333,9 +363,64 @@ begin
   end;
 end;
 
+procedure TFrameChat.FOnEditMessage(const Sender: TObject; const M: TMessage);
+begin
+
+end;
+
+procedure TFrameChat.FOnNewMessage(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventNewMessage absolute M;
+  MessageId: Int64;
+begin
+  if Event.Data.PeerId <> NormalizePeerId(FConversationId) then
+    Exit;
+  MessageId := Event.Data.MessageId;
+  TTask.Run(
+    procedure
+    var
+      Items: TVkMessages;
+      Params: TVkParamsMessageGet;
+    begin
+      Params.MessageId(MessageId);
+      Params.Extended;
+      Params.Fields([TVkExtendedField.Photo50, TVkExtendedField.Verified, TVkExtendedField.Sex,
+        TVkExtendedField.FirstNameAcc, TVkExtendedField.LastNameAcc]);
+      if VK.Messages.GetById(Items, Params) then
+      try
+        if Length(Items.Items) < 20 then
+          FOffsetEnd := True;
+        TThread.Synchronize(nil,
+          procedure
+          begin
+            AppendMessage(Items);
+          end);
+      finally
+        Items.Free;
+      end;
+    end);
+end;
+
+procedure TFrameChat.AppendMessage(Items: TVkMessages);
+begin
+  for var Item in Items.Items do
+    CreateMessageItem(Item, Items, False);
+
+  VertScrollBoxMessagesResize(nil);
+  LayoutMessageListResize(nil);
+  VertScrollBoxMessagesResize(nil);
+end;
+
 procedure TFrameChat.FOnMessageSelected(Sender: TObject);
 begin
   UpdateSelection(SelectedCount);
+end;
+
+function TFrameChat.GetChatInfo: TChatInfo;
+begin
+  Result.IsCanWrite := IsCanWrtie;
+  Result.IsP2P := IsUser;
+  Result.OutRead := OutRead;
 end;
 
 function TFrameChat.GetLastMessage: TFrame;
@@ -371,50 +456,73 @@ begin
   end;
 end;
 
-procedure TFrameChat.CreateMessageItem(const Item: TVkMessage; History: TVkMessageHistory);
+procedure TFrameChat.CreateMessageItem(const Item: TVkMessage; AData: TVkEntityExtendedList<TVkMessage>; ToTop: Boolean);
 begin
-  var LastDate := GetMessageDate(GetLastMessage);
-  if LastDate > 0 then
-    if not IsSameDay(Item.Date, LastDate) then
-      InsertDateLastMessage(LastDate);
+  if ToTop then
+  begin
+    var LastDate := GetMessageDate(GetLastMessage);
+    if LastDate > 0 then
+      if not IsSameDay(Item.Date, LastDate) then
+        InsertDateLastMessage(LastDate);
+  end;
 
   if not Assigned(Item.Action) then
   begin
     var Frame := TFrameMessage.Create(LayoutMessageList, FVK);
-    LayoutMessageList.InsertObject(0, Frame);
-    with Frame do
+    if ToTop then
     begin
-      Align := TAlignLayout.Top;
-      Fill(Item, History, IsCanWrtie);
-      LayoutMessageList.RecalcSize;
-      Align := TAlignLayout.Bottom;
-      OnSelectedChanged := FOnMessageSelected;
+      Frame.Align := TAlignLayout.Top;
+      LayoutMessageList.InsertObject(0, Frame);
+    end
+    else
+    begin
+      Frame.Align := TAlignLayout.MostBottom;
+      LayoutMessageList.AddObject(Frame);
     end;
+    Frame.Fill(Item, AData, ChatInfo);
+    LayoutMessageList.RecalcSize;
+    Frame.Align := TAlignLayout.Bottom;
+    Frame.OnSelectedChanged := FOnMessageSelected;
   end
   else
   begin
     var Frame := TFrameMessageAction.Create(LayoutMessageList, FVK);
-    LayoutMessageList.InsertObject(0, Frame);
-    with Frame do
+    if ToTop then
     begin
-      Align := TAlignLayout.Top;
-      Fill(Item, History);
-      LayoutMessageList.RecalcSize;
-      Align := TAlignLayout.Bottom;
+      Frame.Align := TAlignLayout.Top;
+      LayoutMessageList.InsertObject(0, Frame);
+    end
+    else
+    begin
+      Frame.Align := TAlignLayout.MostBottom;
+      LayoutMessageList.AddObject(Frame);
     end;
+    Frame.Fill(Item, AData, ChatInfo);
+    LayoutMessageList.RecalcSize;
+    Frame.Align := TAlignLayout.Bottom;
   end;
+end;
+
+procedure TFrameChat.Load(const PeerId: TVkPeerId);
+begin
+  FConversationId := PeerId;
+  Event.Subscribe(TEventNewMessage, FOnNewMessage);
+  Event.Subscribe(TEventEditMessage, FOnEditMessage);
+  ReloadAsync;
 end;
 
 destructor TFrameChat.Destroy;
 begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
+  TPreview.Instance.Unsubscribe(FOnNewMessage);
+  TPreview.Instance.Unsubscribe(FOnEditMessage);
   inherited;
 end;
 
 procedure TFrameChat.AppendHistory(Items: TVkMessageHistory);
 begin
   for var Item in Items.Items do
-    CreateMessageItem(Item, Items);
+    CreateMessageItem(Item, Items, True);
   if FOffsetEnd then
     InsertDateLastMessage(GetMessageDate(GetLastMessage));
   LayoutMessageList.Visible := True;
@@ -431,8 +539,8 @@ begin
   Params.Extended;
   Params.Offset(FOffset);
   Params.Count(20);
-  Params.Fields([TVkProfileField.Photo50, TVkProfileField.Verified, TVkProfileField.Sex,
-    TVkProfileField.FirstNameAcc, TVkProfileField.LastNameAcc], [TVkGroupField.Verified]);
+  Params.Fields([TVkExtendedField.Photo50, TVkExtendedField.Verified, TVkExtendedField.Sex,
+    TVkExtendedField.FirstNameAcc, TVkExtendedField.LastNameAcc]);
   Params.PeerId(FConversationId);
   try
     if VK.Messages.GetHistory(Items, Params) then
@@ -483,6 +591,9 @@ begin
   end
   else
     IsCanWrtie := True;
+
+  IsUser := Info.IsUser;
+  OutRead := Info.OutRead;
 
   if Assigned(Info.PushSettings) then
   begin
@@ -680,10 +791,10 @@ var
 begin
   Params.PeerId(FConversationId);
   Params.Extended;
-  Params.Fields([TVkGroupField.Verified, TVkGroupField.Photo50],
-    [TVkProfileField.OnlineInfo, TVkProfileField.FirstNameAcc,
-    TVkProfileField.IsFriend, TVkProfileField.CanSendFriendRequest,
-    TVkProfileField.CanWritePrivateMessage]);
+  Params.Fields(
+    [TVkExtendedField.OnlineInfo, TVkExtendedField.FirstNameAcc,
+    TVkExtendedField.IsFriend, TVkExtendedField.CanSendFriendRequest,
+    TVkExtendedField.CanWritePrivateMessage, TVkExtendedField.Verified, TVkExtendedField.Photo50]);
   if VK.Messages.GetConversationsById(Items, Params) then
   try
     if Length(Items.Items) > 0 then
@@ -863,6 +974,11 @@ begin
   UpdateInfoText;
 end;
 
+procedure TFrameChat.SetIsUser(const Value: Boolean);
+begin
+  FIsUser := Value;
+end;
+
 procedure TFrameChat.SetLastSeen(const Value: TDateTime);
 begin
   FLastSeen := Value;
@@ -880,6 +996,11 @@ begin
   FOnBack := Value;
   ButtonBack.Visible := Assigned(FOnBack);
   ButtonBack.Repaint;
+end;
+
+procedure TFrameChat.SetOutRead(const Value: Int64);
+begin
+  FOutRead := Value;
 end;
 
 procedure TFrameChat.SetTitle(const Value: string);

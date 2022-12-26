@@ -3,10 +3,10 @@ unit VK.Entity.Stories;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, Rest.Json,
   VK.Entity.Common, VK.Entity.Photo, VK.Entity.Profile, VK.Entity.Video,
   VK.Entity.Group, VK.Entity.Link, VK.Entity.App, VK.Entity.Common.List,
-  VK.Entity.Common.ExtendedList;
+  VK.Entity.Common.ExtendedList, VK.Types;
 
 type
   TVkStoryReplies = class(TVkCounterEntity)
@@ -27,11 +27,11 @@ type
     FCan_reply: Boolean;
     FCan_see: Boolean;
     FCan_share: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FExpires_at: TDateTime;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPhoto: TVkPhoto;
     FReplies: TVkStoryReplies;
     FTrack_code: string;
@@ -68,7 +68,7 @@ type
     property MuteReply: Boolean read FMute_reply write FMute_reply;
     property NeedMute: Boolean read FNeed_mute write FNeed_mute;
     property NoSound: Boolean read FNo_sound write FNo_sound;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property PreloadingEnabled: Boolean read FPreloading_enabled write FPreloading_enabled;
     property Replies: TVkStoryReplies read FReplies write FReplies;
     property Seen: Integer read FSeen write FSeen;

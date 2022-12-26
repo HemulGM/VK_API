@@ -3,7 +3,8 @@ unit VK.Entity.Login;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Common;
+  Generics.Collections, VK.Wrap.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Common, VK.Types;
 
 type
   TVkLoginInfo = class(TVkEntity)
@@ -14,9 +15,9 @@ type
     FRedirect_uri: string;
     FValidation_sid: string;
     FValidation_type: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FExpires_in: TDateTime;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     FAccess_token: string;
     FCaptcha_img: string;
     FCaptcha_sid: string;
@@ -29,7 +30,7 @@ type
     property ValidationType: string read FValidation_type write FValidation_type;
     property AccessToken: string read FAccess_token write FAccess_token;
     property ExpiresIn: TDateTime read FExpires_in write FExpires_in;
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     property CaptchaImg: string read FCaptcha_img write FCaptcha_img;
     property CaptchaSid: string read FCaptcha_sid write FCaptcha_sid;
   end;

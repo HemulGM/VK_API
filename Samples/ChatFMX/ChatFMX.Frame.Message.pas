@@ -11,7 +11,8 @@ uses
   VK.Entity.Media, VK.Types, ChatFMX.Frame.Attachment.AudioMessage,
   ChatFMX.Frame.Attachment.Audio, ChatFMX.Frame.Attachment.Document,
   VK.Entity.Geo, ChatFMX.Frame.Attachment.Geo,
-  ChatFMX.Frame.Attachment.ReplyMessage;
+  ChatFMX.Frame.Attachment.ReplyMessage, VK.Entity.Common.ExtendedList,
+  ChatFMX.Frame.Chat;
 
 type
   {$IFDEF DEBUG_ADAPTIVE}
@@ -85,6 +86,7 @@ type
     FFromSex: TVkSex;
     FVisibility: Boolean;
     FMessageSubType: TMessageSubType;
+    FChatInfo: TChatInfo;
     procedure FOnAttachSelect(Sender: TObject);
     procedure SetText(const Value: string);
     procedure SetFromText(const Value: string);
@@ -108,20 +110,20 @@ type
     procedure CreateDocs(Items: TVkAttachmentArray);
     procedure CreateGeo(Value: TVkGeo);
     procedure SetUpdateTime(const Value: TDateTime);
-    procedure CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
+    procedure CreateReplyMessage(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
     procedure SetIsGift(const Value: Boolean);
     procedure CreateGift(Items: TVkAttachmentArray; Msg: TVkMessage);
     procedure SetCanAnswer(const Value: Boolean);
-    procedure CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkMessageHistory);
+    procedure CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkEntityExtendedList<TVkMessage>);
     procedure CreateLinks(Items: TVkAttachmentArray);
-    procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
     procedure SetFromSex(const Value: TVkSex);
     procedure CreateCalls(Items: TVkAttachmentArray);
     procedure SetVisibility(const Value: Boolean);
     procedure BroadcastVisible(const Value: Boolean);
     procedure CreateAlbums(Items: TVkAttachmentArray);
     procedure CreateMarket(Items: TVkAttachmentArray);
-    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
     procedure SetMessageSubType(const Value: TMessageSubType);
     procedure UpdateSubType;
     procedure UpdateImportant;
@@ -129,10 +131,12 @@ type
     function CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
     procedure CreateGraffiti(Items: TVkAttachmentArray);
     procedure CreatePoll(Items: TVkAttachmentArray);
+    procedure SetChatInfo(const Value: TChatInfo);
+    procedure CreateAudioPlaylists(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
-    procedure Fill(Item: TVkMessage; Data: TVkMessageHistory; ACanAnswer: Boolean);
+    procedure Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; AChatInfo: TChatInfo);
     property Text: string read FText write SetText;
     property FromText: string read FFromText write SetFromText;
     property ImageUrl: string read FImageUrl write SetImageUrl;
@@ -150,6 +154,7 @@ type
     property FromSex: TVkSex read FFromSex write SetFromSex;
     property Visibility: Boolean read FVisibility write SetVisibility;
     property MessageSubType: TMessageSubType read FMessageSubType write SetMessageSubType;
+    property ChatInfo: TChatInfo read FChatInfo write SetChatInfo;
   end;
 
 implementation
@@ -163,7 +168,8 @@ uses
   ChatFMX.Frame.Attachment.Call, ChatFMX.Frame.Attachment,
   ChatFMX.Frame.Attachment.Album, ChatFMX.Frame.Attachment.Market,
   ChatFMX.Frame.Attachment.Money, ChatFMX.Frame.Window.Photo,
-  ChatFMX.Frame.Attachment.Graffiti, ChatFMX.Frame.Attachment.Poll;
+  ChatFMX.Frame.Attachment.Graffiti, ChatFMX.Frame.Attachment.Poll,
+  ChatFMX.Frame.Attachment.AudioPlaylist;
 
 {$R *.fmx}
 
@@ -262,9 +268,10 @@ begin
   inherited;
 end;
 
-procedure TFrameMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory; ACanAnswer: Boolean);
+procedure TFrameMessage.Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; AChatInfo: TChatInfo);
 begin
-  ChatCanAnswer := ACanAnswer;
+  ChatInfo := AChatInfo;
+  ChatCanAnswer := ChatInfo.IsCanWrite;
   Text := Item.Text;
   Date := Item.Date;
   ImageUrl := '';
@@ -275,12 +282,8 @@ begin
   UpdateTime := Item.UpdateTime;
   IsGift := False;
 
-  var P2P: Boolean := False;
-  if Length(Data.Conversations) > 0 then
-  begin
-    P2P := Data.Conversations[0].IsUser;
-    IsUnread := Item.Id > Data.Conversations[0].OutRead;
-  end;
+  var P2P := ChatInfo.IsP2P;
+  IsUnread := Item.Id > ChatInfo.OutRead;
   if PeerIdIsUser(Item.FromId) then
   begin
     var User: TVkProfile;
@@ -324,6 +327,7 @@ begin
     CreateMoney(Item.Attachments, Data);
     CreateGraffiti(Item.Attachments);
     CreatePoll(Item.Attachments);
+    CreateAudioPlaylists(Item.Attachments, Data);
     RecalcMedia;
   end;
 
@@ -336,7 +340,7 @@ begin
   RecalcSize;
 end;
 
-procedure TFrameMessage.CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+procedure TFrameMessage.CreatePosts(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   for var Item in Items do
     if Item.&Type = TVkAttachmentType.Wall then
@@ -346,6 +350,19 @@ begin
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
       Frame.Fill(Item.Wall, Data);
+    end;
+end;
+
+procedure TFrameMessage.CreateAudioPlaylists(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.AudioPlaylist then
+    begin
+      var Frame := TFrameAttachmentAudioPlaylist.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.AudioPlaylist, Data);
     end;
 end;
 
@@ -401,7 +418,7 @@ begin
     end;
 end;
 
-procedure TFrameMessage.CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+procedure TFrameMessage.CreateMoney(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   for var Item in Items do
     if Item.&Type in [TVkAttachmentType.MoneyTransfer, TVkAttachmentType.MoneyRequest] then
@@ -425,7 +442,7 @@ begin
     end;
 end;
 
-procedure TFrameMessage.CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkMessageHistory);
+procedure TFrameMessage.CreateFwdMessages(Items: TArray<TVkMessage>; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   for var Item in Items do
   begin
@@ -434,13 +451,13 @@ begin
     Frame.Parent := LayoutFwdMessages;
     Frame.Position.Y := 10000;
     Frame.Align := TAlignLayout.Top;
-    Frame.Fill(Item, Data, ChatCanAnswer, True);
+    Frame.Fill(Item, Data, ChatInfo, True);
   end;
   LayoutFwdMessages.Visible := True;
   LayoutFwdMessages.RecalcSize;
 end;
 
-procedure TFrameMessage.CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
+procedure TFrameMessage.CreateReplyMessage(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   var Frame := TFrameAttachmentReplyMessage.Create(LayoutClient, FVK);
   Frame.OnSelect := FOnAttachSelect;
@@ -717,6 +734,11 @@ end;
 procedure TFrameMessage.SetCanAnswer(const Value: Boolean);
 begin
   FCanAnswer := Value;
+end;
+
+procedure TFrameMessage.SetChatInfo(const Value: TChatInfo);
+begin
+  FChatInfo := Value;
 end;
 
 procedure TFrameMessage.SetDate(const Value: TDateTime);

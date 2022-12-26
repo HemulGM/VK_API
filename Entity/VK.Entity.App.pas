@@ -3,29 +3,29 @@ unit VK.Entity.App;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, Rest.Json,
   VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Common.ExtendedList;
+  VK.Entity.Common.ExtendedList, VK.Types;
 
 type
   TVkAppScreenshot = class(TVkObject)
   private
     FAlbum_id: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FHas_tags: Boolean;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FSizes: TArray<TVkSize>;
     FText: string;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
   public
     property AlbumId: Integer read FAlbum_id write FAlbum_id;
     property Date: TDateTime read FDate write FDate;
     property HasTags: Boolean read FHas_tags write FHas_tags;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property Sizes: TArray<TVkSize> read FSizes write FSizes;
     property Text: string read FText write FText;
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     destructor Destroy; override;
   end;
 
@@ -59,7 +59,7 @@ type
 
   TVkApp = class(TVkObject)
   private
-    FAuthor_owner_id: Integer;
+    FAuthor_owner_id: TVkPeerId;
     FAuthor_url: string;
     FBanner_1120: string;
     FBanner_560: string;
@@ -77,7 +77,7 @@ type
     FMembers_count: Integer;
     FMobile_controls_type: Integer;
     FMobile_view_support_type: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FPublished_date: TDateTime;
     FSection: string;
     FTitle: string;
@@ -87,17 +87,17 @@ type
     FScreen_name: string;
     FDescription: string;
     FIcon_16: string;
-    FFriends: TArray<Integer>;
+    FFriends: TArray<TVkPeerId>;
     FCatalog_position: Integer;
   public
     property Id;
-    property AuthorOwnerId: Integer read FAuthor_owner_id write FAuthor_owner_id;
+    property AuthorOwnerId: TVkPeerId read FAuthor_owner_id write FAuthor_owner_id;
     property AuthorUrl: string read FAuthor_url write FAuthor_url;
     property Banner1120: string read FBanner_1120 write FBanner_1120;
     property Banner560: string read FBanner_560 write FBanner_560;
     property CatalogPosition: Integer read FCatalog_position write FCatalog_position;
     property Description: string read FDescription write FDescription;
-    property Friends: TArray<Integer> read FFriends write FFriends;
+    property Friends: TArray<TVkPeerId> read FFriends write FFriends;
     property Genre: string read FGenre write FGenre;
     property GenreId: Integer read FGenre_id write FGenre_id;
     property HideTabbar: Boolean read FHide_tabbar write FHide_tabbar;
@@ -119,7 +119,7 @@ type
     property Screenshots: TArray<TVkAppScreenshot> read FScreenshots write FScreenshots;
     property Section: string read FSection write FSection;
     property Title: string read FTitle write FTitle;
-    property&Type: string read FType write FType;
+    property &Type: string read FType write FType;
     destructor Destroy; override;
   end;
 

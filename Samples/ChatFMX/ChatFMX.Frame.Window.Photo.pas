@@ -361,7 +361,7 @@ begin
       if Photo.OwnerId.IsUser then
       begin
         var User: TVkProfile;
-        if VK.Users.Get(User, Photo.OwnerId, [TVkProfileField.Photo50]) then
+        if VK.Users.Get(User, Photo.OwnerId, [TVkExtendedField.Photo50]) then
         try
           OwnerImageUrl := User.Photo50;
           OwnerText := User.FullName;
@@ -372,7 +372,7 @@ begin
       else
       begin
         var Group: TVkGroup;
-        if VK.Groups.GetById(Group, Abs(Photo.OwnerId), [TVkGroupField.Photo50]) then
+        if VK.Groups.GetById(Group, Abs(Photo.OwnerId), [TVkExtendedField.Photo50]) then
         try
           OwnerImageUrl := Group.Photo50;
           OwnerText := Group.Name;

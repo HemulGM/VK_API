@@ -41,7 +41,7 @@ type
     /// </summary>
     function Voice(const Value: Boolean): TVkParamsSignup;
     /// <summary>
-    /// Пол пользователя: 1 — женский, 2 — мужской. положительное число
+    /// Пол пользователя
     /// </summary>
     function Sex(const Value: TVkSex): TVkParamsSignup;
     /// <summary>

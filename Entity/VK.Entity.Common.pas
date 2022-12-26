@@ -39,6 +39,12 @@ type
     property Name: string read FName write FName;
   end;
 
+  TVkBasicObjects = TArray<TVkBasicObject>;
+
+  TVkBasicObjectsHelper = record helper for TVkBasicObjects
+    function ToStringNames: string;
+  end;
+
   //////////////////////////////////////////////////////////////////////////////
 
   TVkCopyright = class(TVkEntity)
@@ -405,6 +411,16 @@ end;
 function TVkEntity.ToJsonString: string;
 begin
   Result := TJson.ObjectToJsonString(Self);
+end;
+
+{ TVkBasicObjectsHelper }
+
+function TVkBasicObjectsHelper.ToStringNames: string;
+begin
+  Result := '';
+  for var Item in Self do
+    Result := Result + Item.Name + ', ';
+  Result := Result.Trim([',', ' ']);
 end;
 
 end.

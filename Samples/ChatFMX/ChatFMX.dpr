@@ -37,7 +37,9 @@ uses
   ChatFMX.Frame.Window in 'ChatFMX.Frame.Window.pas' {FrameWindow: TFrame},
   ChatFMX.Frame.Window.Photo in 'ChatFMX.Frame.Window.Photo.pas' {FrameWindowPhoto: TFrame},
   ChatFMX.Frame.Attachment.Graffiti in 'ChatFMX.Frame.Attachment.Graffiti.pas' {FrameAttachmentGraffiti},
-  ChatFMX.Frame.Attachment.Poll in 'ChatFMX.Frame.Attachment.Poll.pas' {FrameAttachmentPoll: TFrame};
+  ChatFMX.Frame.Attachment.Poll in 'ChatFMX.Frame.Attachment.Poll.pas' {FrameAttachmentPoll: TFrame},
+  ChatFMX.Events in 'ChatFMX.Events.pas',
+  ChatFMX.Frame.Attachment.AudioPlaylist in 'ChatFMX.Frame.Attachment.AudioPlaylist.pas' {FrameAttachmentAudioPlaylist};
 
 {$R *.res}
 

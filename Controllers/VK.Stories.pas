@@ -13,7 +13,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, истории которого необходимо получить
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsStoriesGet;
+    function OwnerId(const Value: TVkPeerId): TVkParamsStoriesGet;
     /// <summary>
     /// True — возвращать в ответе дополнительную информацию о профилях пользователей
     /// </summary>
@@ -21,7 +21,7 @@ type
     /// <summary>
     /// Список дополнительных полей для объектов User и Group, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsStoriesGet;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsStoriesGet;
   end;
 
   TVkParamsStoriesGetUploadServer = record
@@ -33,7 +33,7 @@ type
     /// <summary>
     /// Идентификаторы пользователей, которые будут видеть историю (для отправки в личном сообщении)
     /// </summary>
-    function UserIds(const Value: TIdList): TVkParamsStoriesGetUploadServer;
+    function UserIds(const Value: TVkPeerIds): TVkParamsStoriesGetUploadServer;
     /// <summary>
     /// Идентификатор истории, в ответ на которую создается новая
     /// </summary>
@@ -49,7 +49,7 @@ type
     /// <summary>
     /// Идентификатор сообщества, в которое должна быть загружена история (при работе с ключом доступа пользователя)
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsStoriesGetUploadServer;
+    function GroupId(const Value: TVkPeerId): TVkParamsStoriesGetUploadServer;
     /// <summary>
     /// Объект кликабельного стикера (данные в формате JSON)
     /// </summary>
@@ -65,7 +65,7 @@ type
     /// <summary>
     /// Идентификатор владельца истории
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsStoriesGetReplies;
+    function OwnerId(const Value: TVkPeerId): TVkParamsStoriesGetReplies;
     /// <summary>
     /// Идентификатор истории
     /// </summary>
@@ -81,7 +81,7 @@ type
     /// <summary>
     /// Дополнительные поля профилей и сообществ, которые необходимо вернуть в ответе
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsStoriesGetReplies;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsStoriesGetReplies;
   end;
 
   TVkParamsStoriesGetViewers = record
@@ -89,7 +89,7 @@ type
     /// <summary>
     /// Идентификатор владельца истории
     /// </summary>
-    function OwnerId(Value: Integer): TVkParamsStoriesGetViewers;
+    function OwnerId(Value: TVkPeerId): TVkParamsStoriesGetViewers;
     /// <summary>
     /// Идентификатор истории
     /// </summary>
@@ -133,7 +133,7 @@ type
     /// <summary>
     /// Идентификатор упомянутого в истории пользователя или сообщества
     /// </summary>
-    function MentionedId(Value: Integer): TVkParamsStoriesSearch;
+    function MentionedId(Value: TVkPeerId): TVkParamsStoriesSearch;
     /// <summary>
     /// Количество историй, информацию о которых необходимо вернуть
     /// </summary>
@@ -147,7 +147,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsStoriesSearch;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsStoriesSearch;
   end;
 
   TVkParamsStoriesSendInteraction = record
@@ -181,11 +181,11 @@ type
     /// <summary>
     /// Позволяет скрыть из ленты новостей истории от выбранных источников.
     /// </summary>
-    function BanOwner(const OwnersIds: TIdList): Boolean;
+    function BanOwner(const OwnersIds: TVkPeerIds): Boolean;
     /// <summary>
     /// Удаляет историю.
     /// </summary>
-    function Delete(const OwnerId, StoryId: Integer): Boolean;
+    function Delete(const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
     /// <summary>
     /// Возвращает истории, доступные для текущего пользователя.
     /// </summary>
@@ -197,15 +197,15 @@ type
     /// <summary>
     /// Возвращает истории, доступные для текущего пользователя.
     /// </summary>
-    function Get(var Items: TVkStoriesBlock; const OwnerId: Integer = 0): Boolean; overload;
+    function Get(var Items: TVkStoriesBlock; const OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список источников историй, скрытых из ленты текущего пользователя.
     /// </summary>
-    function GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean = False; ProfileFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Boolean; overload;
+    function GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean = False; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
     /// Возвращает истории, доступные для текущего пользователя.
     /// </summary>
-    function GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean = False; ProfileFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): Boolean; overload;
+    function GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean = False; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
     /// Позволяет получить адрес для загрузки истории с фотографией.
     /// </summary>
@@ -217,7 +217,7 @@ type
     /// <summary>
     /// Возвращает статистику истории.
     /// </summary>
-    function GetStats(var Items: TVkStoryStat; const OwnerId, StoryId: Integer): Boolean;
+    function GetStats(var Items: TVkStoryStat; const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
     /// <summary>
     /// Позволяет получить адрес для загрузки видеозаписи в историю.
     /// </summary>
@@ -229,11 +229,11 @@ type
     /// <summary>
     /// Скрывает все ответы автора за последние сутки на истории текущего пользователя.
     /// </summary>
-    function HideAllReplies(const OwnerId, GroupId: Integer): Boolean;
+    function HideAllReplies(const OwnerId, GroupId: TVkPeerId): Boolean;
     /// <summary>
     /// Скрывает ответ на историю.
     /// </summary>
-    function HideReply(const OwnerId, StoryId: Integer): Boolean;
+    function HideReply(const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
     /// <summary>
     /// Сохраняет историю. В upload_results нужно передать строку, которую возвращает stories.getPhotoUploadServer или stories.getVideoUploadServer
     /// </summary>
@@ -264,17 +264,17 @@ uses
 
 { TStoriesController }
 
-function TStoriesController.BanOwner(const OwnersIds: TIdList): Boolean;
+function TStoriesController.BanOwner(const OwnersIds: TVkPeerIds): Boolean;
 begin
   Result := Handler.Execute('stories.banOwner', ['owners_ids', OwnersIds.ToString]).ResponseIsTrue;
 end;
 
-function TStoriesController.Delete(const OwnerId, StoryId: Integer): Boolean;
+function TStoriesController.Delete(const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
 begin
   Result := Handler.Execute('stories.delete', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).ResponseIsTrue;
 end;
 
-function TStoriesController.Get(var Items: TVkStoriesBlock; const OwnerId: Integer): Boolean;
+function TStoriesController.Get(var Items: TVkStoriesBlock; const OwnerId: TVkPeerId): Boolean;
 var
   Params: TVkParamsStoriesGet;
 begin
@@ -283,24 +283,24 @@ begin
   Result := Get(Items, Params.List);
 end;
 
-function TStoriesController.GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean; ProfileFields: TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
+function TStoriesController.GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean; Fields: TVkExtendedFields): Boolean;
 var
   Params: TParams;
 begin
   Params.Add('extended', Extended);
-  if (ProfileFields <> []) or (GroupFields <> []) then
-    Params.Add('fields', [ProfileFields.ToString, GroupFields.ToString]);
+  if Fields <> [] then
+    Params.Add('fields', Fields.ToString);
   Result := Handler.Execute('stories.getBanned', Params).GetObject<TVkStoriesBanned>(Items);
 end;
 
-function TStoriesController.GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean; ProfileFields: TVkProfileFields; GroupFields: TVkGroupFields): Boolean;
+function TStoriesController.GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean; Fields: TVkExtendedFields): Boolean;
 var
   Params: TParams;
 begin
   Params.Add('stories', Stories);
   Params.Add('extended', Extended);
-  if (ProfileFields <> []) or (GroupFields <> []) then
-    Params.Add('fields', [ProfileFields.ToString, GroupFields.ToString]);
+  if Fields <> [] then
+    Params.Add('fields', Fields.ToString);
   Result := Handler.Execute('stories.getById', Params).GetObject<TVkStoryItems>(Items);
 end;
 
@@ -314,7 +314,7 @@ begin
   Result := Handler.Execute('stories.getReplies', Params.List).GetObject(Items);
 end;
 
-function TStoriesController.GetStats(var Items: TVkStoryStat; const OwnerId, StoryId: Integer): Boolean;
+function TStoriesController.GetStats(var Items: TVkStoryStat; const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
 begin
   Result := Handler.Execute('stories.getStats', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).GetObject(Items);
 end;
@@ -329,12 +329,12 @@ begin
   Result := Handler.Execute('stories.getViewers', Params.List).GetObject<TVkStoryViews>(Items);
 end;
 
-function TStoriesController.HideAllReplies(const OwnerId, GroupId: Integer): Boolean;
+function TStoriesController.HideAllReplies(const OwnerId, GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('stories.hideAllReplies', [['owner_id', OwnerId.ToString], ['group_id', GroupId.ToString]]).ResponseIsTrue;
 end;
 
-function TStoriesController.HideReply(const OwnerId, StoryId: Integer): Boolean;
+function TStoriesController.HideReply(const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
 begin
   Result := Handler.Execute('stories.hideReply', [['owner_id', OwnerId.ToString], ['story_id', StoryId.ToString]]).ResponseIsTrue;
 end;
@@ -382,13 +382,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsStoriesGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsStoriesGet;
+function TVkParamsStoriesGet.Fields(Value: TVkExtendedFields): TVkParamsStoriesGet;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
-function TVkParamsStoriesGet.OwnerId(const Value: Integer): TVkParamsStoriesGet;
+function TVkParamsStoriesGet.OwnerId(const Value: TVkPeerId): TVkParamsStoriesGet;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -402,7 +402,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.UserIds(const Value: TIdList): TVkParamsStoriesGetUploadServer;
+function TVkParamsStoriesGetUploadServer.UserIds(const Value: TVkPeerIds): TVkParamsStoriesGetUploadServer;
 begin
   List.Add('user_ids', Value);
   Result := Self;
@@ -432,7 +432,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsStoriesGetUploadServer.GroupId(const Value: Integer): TVkParamsStoriesGetUploadServer;
+function TVkParamsStoriesGetUploadServer.GroupId(const Value: TVkPeerId): TVkParamsStoriesGetUploadServer;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -446,7 +446,7 @@ end;
 
 { TVkParamsStoriesGetReplies }
 
-function TVkParamsStoriesGetReplies.OwnerId(const Value: Integer): TVkParamsStoriesGetReplies;
+function TVkParamsStoriesGetReplies.OwnerId(const Value: TVkPeerId): TVkParamsStoriesGetReplies;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -470,15 +470,15 @@ begin
   Result := Self;
 end;
 
-function TVkParamsStoriesGetReplies.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsStoriesGetReplies;
+function TVkParamsStoriesGetReplies.Fields(Value: TVkExtendedFields): TVkParamsStoriesGetReplies;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
 { TVkParamsStoriesGetViewers }
 
-function TVkParamsStoriesGetViewers.OwnerId(Value: Integer): TVkParamsStoriesGetViewers;
+function TVkParamsStoriesGetViewers.OwnerId(Value: TVkPeerId): TVkParamsStoriesGetViewers;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -540,7 +540,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsStoriesSearch.MentionedId(Value: Integer): TVkParamsStoriesSearch;
+function TVkParamsStoriesSearch.MentionedId(Value: TVkPeerId): TVkParamsStoriesSearch;
 begin
   List.Add('mentioned_id', Value);
   Result := Self;
@@ -558,9 +558,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsStoriesSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsStoriesSearch;
+function TVkParamsStoriesSearch.Fields(Value: TVkExtendedFields): TVkParamsStoriesSearch;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 

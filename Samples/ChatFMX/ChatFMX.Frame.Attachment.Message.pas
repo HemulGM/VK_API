@@ -8,7 +8,8 @@ uses
   FMX.Controls.Presentation, FMX.Layouts, FMX.Memo.Types, FMX.Objects, FMX.Ani,
   FMX.ScrollBox, FMX.Memo, VK.API, VK.Entity.Message, VK.Entity.Conversation,
   ChatFMX.Frame.Attachment.Photo, ChatFMX.Frame.Attachment.Video,
-  System.Messaging, VK.Entity.Media, VK.Entity.Geo, ChatFMX.Frame.Attachment;
+  System.Messaging, VK.Entity.Media, VK.Entity.Geo, ChatFMX.Frame.Attachment,
+  VK.Entity.Common.ExtendedList, ChatFMX.Frame.Chat;
 
 type
   TFrameAttachmentMessage = class(TFrameAttachment)
@@ -53,8 +54,8 @@ type
     procedure SetCanAnswer(const Value: Boolean);
     procedure SetDate(const Value: TDateTime);
     procedure SetUpdateTime(const Value: TDateTime);
-    procedure CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
-    procedure CreateFwdMessages(Items: TArray<TVkMessage>; Item: TVkMessage; Data: TVkMessageHistory);
+    procedure CreateReplyMessage(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
+    procedure CreateFwdMessages(Items: TArray<TVkMessage>; Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
     procedure DoSelect;
     procedure SetOnSelect(const Value: TNotifyEvent);
     procedure CreatePhotos(Items: TVkAttachmentArray);
@@ -66,10 +67,10 @@ type
     procedure CreateLinks(Items: TVkAttachmentArray);
     procedure CreateSticker(Items: TVkAttachmentArray);
     procedure CreateGeo(Value: TVkGeo);
-    procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory; Fwd: Boolean);
+    procedure CreatePosts(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>; Fwd: Boolean);
     procedure CreateAlbums(Items: TVkAttachmentArray);
     procedure CreateMarket(Items: TVkAttachmentArray);
-    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+    procedure CreateMoney(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
     function CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
     procedure FOnPhotosClick(Sender: TObject);
     procedure CreateGraffiti(Items: TVkAttachmentArray);
@@ -77,7 +78,7 @@ type
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
-    procedure Fill(Item: TVkMessage; Data: TVkMessageHistory; ACanAnswer, Fwd: Boolean);
+    procedure Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; AChatInfo: TChatInfo; Fwd: Boolean);
     property Text: string read FText write SetText;
     property Date: TDateTime read FDate write SetDate;
     property FromText: string read FFromText write SetFromText;
@@ -305,19 +306,15 @@ begin
   MemoTextChange(Sender);
 end;
 
-procedure TFrameAttachmentMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory; ACanAnswer, Fwd: Boolean);
+procedure TFrameAttachmentMessage.Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; AChatInfo: TChatInfo; Fwd: Boolean);
 begin
-  ChatCanAnswer := ACanAnswer;
+  ChatCanAnswer := AChatInfo.IsCanWrite;
   Text := ParseMention(Item.Text);
   Date := Item.Date;
   ImageUrl := '';
   UpdateTime := Item.UpdateTime;
 
-  var P2P: Boolean := False;
-  if Length(Data.Conversations) > 0 then
-  begin
-    P2P := Data.Conversations[0].IsUser;
-  end;
+  var P2P := AChatInfo.IsP2P;
   if PeerIdIsUser(Item.FromId) then
   begin
     var User: TVkProfile;
@@ -383,7 +380,7 @@ begin
     end;
 end;
 
-procedure TFrameAttachmentMessage.CreateMoney(Items: TVkAttachmentArray; Data: TVkMessageHistory);
+procedure TFrameAttachmentMessage.CreateMoney(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   for var Item in Items do
     if Item.&Type in [TVkAttachmentType.MoneyTransfer, TVkAttachmentType.MoneyRequest] then
@@ -414,7 +411,7 @@ begin
     end;
 end;
 
-procedure TFrameAttachmentMessage.CreatePosts(Items: TVkAttachmentArray; Data: TVkMessageHistory; Fwd: Boolean);
+procedure TFrameAttachmentMessage.CreatePosts(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>; Fwd: Boolean);
 begin
   for var Item in Items do
     if Item.&Type = TVkAttachmentType.Wall then
@@ -570,7 +567,7 @@ begin
     end;
 end;
 
-procedure TFrameAttachmentMessage.CreateReplyMessage(Item: TVkMessage; Data: TVkMessageHistory);
+procedure TFrameAttachmentMessage.CreateReplyMessage(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   var Frame := TFrameAttachmentMessages.Create(LayoutClient, VK);
   Frame.Parent := LayoutClient;
@@ -579,7 +576,7 @@ begin
   Frame.Fill(1, Item.Id, False);
 end;
 
-procedure TFrameAttachmentMessage.CreateFwdMessages(Items: TArray<TVkMessage>; Item: TVkMessage; Data: TVkMessageHistory);
+procedure TFrameAttachmentMessage.CreateFwdMessages(Items: TArray<TVkMessage>; Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   var Frame := TFrameAttachmentMessages.Create(LayoutClient, VK);
   Frame.Parent := LayoutClient;

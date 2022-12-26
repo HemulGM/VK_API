@@ -4,12 +4,12 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Podcast.Episode, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Common, VK.Entity.Common.List;
+  VK.Entity.Group, VK.Entity.Common, VK.Entity.Common.List, VK.Types;
 
 type
   TVkPodcast = class(TVkEntity)
   private
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FOwner_title: string;
     FUrl: string;
     FOwner_name: string;
@@ -17,7 +17,7 @@ type
     FTitle: string;
     FOwner_url: string;
   public
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property OwnerTitle: string read FOwner_title write FOwner_title;
     property OwnerName: string read FOwner_name write FOwner_name;
     property Title: string read FTitle write FTitle;

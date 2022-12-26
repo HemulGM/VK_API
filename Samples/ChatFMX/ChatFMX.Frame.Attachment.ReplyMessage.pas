@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Controls.Presentation, VK.API, VK.Entity.Message,
-  VK.Entity.Conversation, System.Messaging, ChatFMX.Frame.Attachment;
+  VK.Entity.Conversation, System.Messaging, ChatFMX.Frame.Attachment,
+  VK.Entity.Common.ExtendedList;
 
 type
   TFrameAttachmentReplyMessage = class(TFrameAttachment)
@@ -38,7 +39,7 @@ type
     property Active: Boolean read FActive write SetActive;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
-    procedure Fill(Item: TVkMessage; Data: TVkMessageHistory);
+    procedure Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
     property Text: string read FText write SetText;
     property Title: string read FTitle write SetTitle;
     property ImageUrl: string read FImageUrl write SetImageUrl;
@@ -66,7 +67,7 @@ begin
   inherited;
 end;
 
-procedure TFrameAttachmentReplyMessage.Fill(Item: TVkMessage; Data: TVkMessageHistory);
+procedure TFrameAttachmentReplyMessage.Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   Text := ParseMention(Item.Text);
   Title := '';

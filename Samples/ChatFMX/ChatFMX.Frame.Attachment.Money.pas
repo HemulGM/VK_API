@@ -8,7 +8,7 @@ uses
   FMX.Objects, FMX.Controls.Presentation, ChatFMX.DM.Res, FMX.Layouts, VK.API,
   System.Messaging, ChatFMX.Frame.Attachment, FMX.Effects, FMX.Ani,
   VK.Entity.Market, VK.Entity.MoneyTransfer, VK.Entity.MoneyRequest,
-  VK.Entity.Conversation;
+  VK.Entity.Conversation, VK.Entity.Common.ExtendedList, VK.Entity.Message;
 
 type
   TFrameAttachmentMoney = class(TFrameAttachment)
@@ -24,8 +24,8 @@ type
   private
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
-    procedure Fill(Item: TVkMoneyTransfer; Data: TVkMessageHistory); overload;
-    procedure Fill(Item: TVkMoneyRequest; Data: TVkMessageHistory); overload;
+    procedure Fill(Item: TVkMoneyTransfer; Data: TVkEntityExtendedList<TVkMessage>); overload;
+    procedure Fill(Item: TVkMoneyRequest; Data: TVkEntityExtendedList<TVkMessage>); overload;
   end;
 
 implementation
@@ -44,7 +44,7 @@ begin
   Rectangle1.Visible := False;
 end;
 
-procedure TFrameAttachmentMoney.Fill(Item: TVkMoneyTransfer; Data: TVkMessageHistory);
+procedure TFrameAttachmentMoney.Fill(Item: TVkMoneyTransfer; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   if Assigned(Item.Amount) then
     LabelAmount.Text := Item.Amount.Text
@@ -74,7 +74,7 @@ begin
   RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
 end;
 
-procedure TFrameAttachmentMoney.Fill(Item: TVkMoneyRequest; Data: TVkMessageHistory);
+procedure TFrameAttachmentMoney.Fill(Item: TVkMoneyRequest; Data: TVkEntityExtendedList<TVkMessage>);
 begin
   if Assigned(Item.Amount) then
     LabelAmount.Text := Item.Amount.Text

@@ -93,6 +93,7 @@ type
     FUserId: Integer;
     FUserName: string;
     FUserPhoto50: string;
+    FUserSex: TVkSex;
     FUserPhoto100: string;
     FUsers: TUsersController;
     FUseServiceKeyOnly: Boolean;
@@ -141,6 +142,7 @@ type
     function GetUserName: string;
     function GetUserPhoto100: string;
     function GetUserPhoto50: string;
+    function GetUserSex: TVkSex;
   public
     constructor Create(const AToken: string); reintroduce; overload;
     constructor Create(AOwner: TComponent); overload; override;
@@ -414,6 +416,10 @@ type
     /// Фото пользователя (будет запрошено, если не сохранено)
     /// </summary>
     property UserPhoto100: string read GetUserPhoto100;
+    /// <summary>
+    /// Пол пользователя (будет запрошено, если не сохранено)
+    /// </summary>
+    property UserSex: TVkSex read GetUserSex;
     /// <summary>
     /// Событие, которое происходит, если токен успешно получен и успешно пройдена проверка авторизации
     /// </summary>
@@ -793,13 +799,14 @@ function TCustomVK.LoadUserInfo: Boolean;
 var
   User: TVkProfile;
 begin
-  Result := Users.Get(User, [TVkProfileField.Photo50, TVkProfileField.Photo100]);
+  Result := Users.Get(User, [TVkExtendedField.Photo50, TVkExtendedField.Photo100, TVkExtendedField.Sex]);
   if Result then
   try
     FUserId := User.Id;
     FUserName := User.FullName;
     FUserPhoto50 := User.Photo50;
     FUserPhoto100 := User.Photo100;
+    FUserSex := User.Sex;
   finally
     User.Free;
   end;
@@ -1185,6 +1192,14 @@ begin
     Result := FUserPhoto50
   else
     Result := '';
+end;
+
+function TCustomVK.GetUserSex: TVkSex;
+begin
+  if (FUserId > 0) or LoadUserInfo then
+    Result := FUserSex
+  else
+    Result := TVkSex.None;
 end;
 
 procedure TCustomVK.SetPermissions(const Value: TVkPermissions);

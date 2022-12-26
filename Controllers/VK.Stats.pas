@@ -12,7 +12,7 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function GroupId(const Value: Cardinal): TVkParamsStatsGet;
+    function GroupId(const Value: TVkPeerId): TVkParamsStatsGet;
     /// <summary>
     /// Идентификатор приложения
     /// </summary>
@@ -105,7 +105,7 @@ end;
 
 { TVkParamsStatsGet }
 
-function TVkParamsStatsGet.GroupId(const Value: Cardinal): TVkParamsStatsGet;
+function TVkParamsStatsGet.GroupId(const Value: TVkPeerId): TVkParamsStatsGet;
 begin
   List.Add('group_id', Value);
   Result := Self;

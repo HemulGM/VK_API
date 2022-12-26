@@ -3,8 +3,8 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Info, VK.Types, VK.Entity.Common.List, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Common,
+  VK.Entity.Info, VK.Types, VK.Entity.Common.List, VK.Wrap.Interceptors;
 
 type
   TVkOwnerPhoto = class(TVkEntity)
@@ -26,11 +26,11 @@ type
 
   TVkPhotoTag = class(TVkObject)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FPlacer_id: Integer;
     FTagged_name: string;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     FViewed: Boolean;
     FX: Integer;
     FX2: Integer;
@@ -40,7 +40,7 @@ type
     property Date: TDateTime read FDate write FDate;
     property PlacerId: Integer read FPlacer_id write FPlacer_id;
     property TaggedName: string read FTagged_name write FTagged_name;
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     property Viewed: Boolean read FViewed write FViewed;
     property X: Integer read FX write FX;
     property X2: Integer read FX2 write FX2;
@@ -66,7 +66,7 @@ type
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_repost: Boolean;
     FComments: TVkCommentsInfo;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FLikes: TVkLikesInfo;
     FOwner_id: TVkPeerId;
@@ -85,7 +85,7 @@ type
     FPhoto_2560: string;
     FPhoto_130: string;
     FHas_tags: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTag_created: TDateTime;
     FPlacer_id: Int64;
     FTag_id: Int64;
@@ -208,7 +208,7 @@ type
 
   TVkPostedPhoto = class(TVkObject)
   private
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPhoto_130: string;
     FPhoto_604: string;
     FAccess_key: string;
@@ -220,7 +220,7 @@ type
     /// <summary>
     /// Идентификатор владельца фотографии
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Ключ доступа
     /// </summary>

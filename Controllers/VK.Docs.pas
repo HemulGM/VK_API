@@ -13,7 +13,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежат документы.
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsDocsGet;
+    function OwnerId(const Value: TVkPeerId): TVkParamsDocsGet;
     /// <summary>
     /// Фильтр по типу документа.
     /// </summary>
@@ -60,7 +60,7 @@ type
   public    /// <summary>
     /// Получает адрес сервера для загрузки документа в личное сообщение.
     /// </summary>
-    function GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: Integer): Boolean; overload;
+    function GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: TVkPeerId): Boolean; overload;
     /// <summary>
     /// ППолучает адрес сервера для загрузки документа в личное сообщение.
     /// </summary>
@@ -72,7 +72,7 @@ type
     /// <summary>
     /// Сохраняет аудиосообщение
     /// </summary>
-    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: Integer = 0; ReturnTags: Boolean = False): Boolean;
+    function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: TVkPeerId = 0; ReturnTags: Boolean = False): Boolean;
     /// <summary>
     /// Возвращает расширенную информацию о документах пользователя или сообщества.
     /// </summary>
@@ -88,27 +88,27 @@ type
     /// <summary>
     /// Копирует документ в документы текущего пользователя.
     /// </summary>
-    function Add(var Id: Integer; OwnerId, DocId: Integer; AccessKey: string): Boolean; overload;
+    function Add(var Id: Integer; OwnerId: TVkPeerId; DocId: Integer; AccessKey: string): Boolean; overload;
     /// <summary>
     /// Удаляет документ пользователя или группы.
     /// </summary>
-    function Delete(OwnerId, DocId: Integer): Boolean; overload;
+    function Delete(OwnerId: TVkPeerId; DocId: Integer): Boolean; overload;
     /// <summary>
     /// Редактирует документ пользователя или группы.
     /// </summary>
-    function Edit(OwnerId, DocId: Integer; Title: string; Tags: TArrayOfString = []): Boolean; overload;
+    function Edit(OwnerId: TVkPeerId; DocId: Integer; Title: string; Tags: TArrayOfString = []): Boolean; overload;
     /// <summary>
     /// Возвращает доступные для пользователя типы документов.
     /// </summary>
-    function GetTypes(var Items: TVkDocTypes; OwnerId: Integer): Boolean; overload;
+    function GetTypes(var Items: TVkDocTypes; OwnerId: TVkPeerId): Boolean; overload;
     /// <summary>
     /// Возвращает адрес сервера для загрузки документов.
     /// </summary>
-    function GetUploadServer(var UploadUrl: string; GroupId: Integer): Boolean; overload;
+    function GetUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean; overload;
     /// <summary>
     /// Возвращает адрес сервера для загрузки документов в папку Отправленные, для последующей отправки документа на стену или личным сообщением.
     /// </summary>
-    function GetWallUploadServer(var UploadUrl: string; GroupId: Integer): Boolean; overload;
+    function GetWallUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean; overload;
     /// <summary>
     /// Возвращает результаты поиска по документам.
     /// </summary>
@@ -122,7 +122,7 @@ uses
 
 { TDocController }
 
-function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: Integer): Boolean;
+function TDocController.GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -142,7 +142,7 @@ begin
   Result := Handler.Execute('docs.get', Params).GetObject(Items);
 end;
 
-function TDocController.Add(var Id: Integer; OwnerId, DocId: Integer; AccessKey: string): Boolean;
+function TDocController.Add(var Id: Integer; OwnerId: TVkPeerId; DocId: Integer; AccessKey: string): Boolean;
 var
   Params: TParams;
 begin
@@ -153,12 +153,12 @@ begin
   Result := Handler.Execute('docs.Add', Params).ResponseAsInt(Id);
 end;
 
-function TDocController.Delete(OwnerId, DocId: Integer): Boolean;
+function TDocController.Delete(OwnerId: TVkPeerId; DocId: Integer): Boolean;
 begin
   Result := Handler.Execute('docs.delete', [['doc_id', DocId.ToString], ['owner_id', OwnerId.ToString]]).ResponseIsTrue;
 end;
 
-function TDocController.Edit(OwnerId, DocId: Integer; Title: string; Tags: TArrayOfString): Boolean;
+function TDocController.Edit(OwnerId: TVkPeerId; DocId: Integer; Title: string; Tags: TArrayOfString): Boolean;
 var
   Params: TParams;
 begin
@@ -195,17 +195,17 @@ begin
   Result := Handler.Execute('docs.getMessagesUploadServer', Params).GetValue('upload_url', UploadUrl);
 end;
 
-function TDocController.GetTypes(var Items: TVkDocTypes; OwnerId: Integer): Boolean;
+function TDocController.GetTypes(var Items: TVkDocTypes; OwnerId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('docs.getTypes', ['owner_id', OwnerId.ToString]).GetObject(Items);
 end;
 
-function TDocController.GetUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
+function TDocController.GetUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('docs.getUploadServer', ['group_id', GroupId.ToString]).GetValue('upload_url', UploadUrl);
 end;
 
-function TDocController.GetWallUploadServer(var UploadUrl: string; GroupId: Integer): Boolean;
+function TDocController.GetWallUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('docs.getWallUploadServer', ['group_id', GroupId.ToString]).GetValue('upload_url', UploadUrl);
 end;
@@ -222,7 +222,7 @@ begin
   Result := Handler.Execute('docs.save', Params).GetObject(Doc);
 end;
 
-function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: Integer; ReturnTags: Boolean): Boolean;
+function TDocController.SaveAudioMessage(var Doc: TVkDocSaved; FileName, Title, Tags: string; PeerId: TVkPeerId; ReturnTags: Boolean): Boolean;
 var
   Url, Response: string;
 begin
@@ -253,7 +253,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsDocsGet.OwnerId(const Value: Integer): TVkParamsDocsGet;
+function TVkParamsDocsGet.OwnerId(const Value: TVkPeerId): TVkParamsDocsGet;
 begin
   List.Add('owner_id', Value);
   Result := Self;

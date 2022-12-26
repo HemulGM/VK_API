@@ -13,6 +13,7 @@ type
     procedure RectangleBackgroundClick(Sender: TObject);
   private
     FVK: TCustomVK;
+    FHidding: Boolean;
     procedure SetVK(const Value: TCustomVK);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
@@ -30,6 +31,7 @@ implementation
 constructor TFrameWindow.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
+  FHidding := False;
   Name := '';
   Visible := False;
   FVK := AVK;
@@ -37,6 +39,9 @@ end;
 
 procedure TFrameWindow.HideFrame;
 begin
+  if FHidding then
+    Exit;
+  FHidding := True;
   TAnimator.AnimateFloatWait(Self, 'Opacity', 0);
   Visible := False;
   TThread.ForceQueue(nil, Free);

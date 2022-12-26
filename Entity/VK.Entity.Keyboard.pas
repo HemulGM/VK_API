@@ -13,7 +13,7 @@ type
     FHash: string;
     FLabel: string;
     FPayload: string;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     [JsonReflectAttribute(ctString, rtString, TKeyboardActionTypeInterceptor)]
     FType: TVkKeyboardActionType;
     FLink: string;
@@ -23,7 +23,7 @@ type
     property Link: string read FLink write FLink;
     property Payload: string read FPayload write FPayload;
     property &Label: string read FLabel write FLabel;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property &Type: TVkKeyboardActionType read FType write FType;
   end;
 

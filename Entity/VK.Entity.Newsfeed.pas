@@ -3,26 +3,26 @@ unit VK.Entity.Newsfeed;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Common, VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage,
-  VK.Entity.Sticker, VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc,
-  VK.Entity.Audio, VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note,
-  VK.Entity.OldApp, VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album,
-  VK.Entity.PrettyCard, VK.Types, VK.Entity.Event, VK.Entity.Profile,
-  VK.Entity.Group, VK.Entity.Call, VK.Entity.Media, VK.Entity.Info,
-  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Entity.Geo,
-  VK.Wrap.Interceptors, VK.Entity.Donut;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Common,
+  VK.Entity.Photo, VK.Entity.Link, VK.Entity.AudioMessage, VK.Entity.Sticker,
+  VK.Entity.Gift, VK.Entity.Market, VK.Entity.Doc, VK.Entity.Audio,
+  VK.Entity.Video, VK.Entity.Graffiti, VK.Entity.Note, VK.Entity.OldApp,
+  VK.Entity.Poll, VK.Entity.Page, VK.Entity.Album, VK.Entity.PrettyCard,
+  VK.Types, VK.Entity.Event, VK.Entity.Profile, VK.Entity.Group, VK.Entity.Call,
+  VK.Entity.Media, VK.Entity.Info, VK.Entity.Common.List,
+  VK.Entity.Common.ExtendedList, VK.Entity.Geo, VK.Wrap.Interceptors,
+  VK.Entity.Donut;
 
 type
   TVkNewsItem = class(TVkObject)
   private
-    FOwner_id: Integer;
-    FFrom_id: Integer;
-    FCreated_by: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FOwner_id: TVkPeerId;
+    FFrom_id: TVkPeerId;
+    FCreated_by: TVkPeerId;
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FText: string;
-    FReply_owner_id: Integer;
+    FReply_owner_id: TVkPeerId;
     FReply_post_id: Integer;
     FFriends_only: Boolean;
     FComments: TVkCommentsInfo;
@@ -33,7 +33,7 @@ type
     FPost_source: TVkPostSource;
     FAttachments: TVkAttachmentArray;
     FGeo: TVkGeo;
-    FSigner_id: Integer;
+    FSigner_id: TVkPeerId;
     FCopy_history: TArray<TVkPost>;
     FCan_pin: Boolean;
     FCan_delete: Boolean;
@@ -42,7 +42,7 @@ type
     FMarked_as_ads: Boolean;
     FIs_favorite: Boolean;
     FPostponed_id: Integer;
-    FTo_id: Integer;
+    FTo_id: TVkPeerId;
     FPost_id: Integer;
     FCan_set_category: Boolean;
     [JsonReflectAttribute(ctString, rtString, TNewsfeedTypeInterceptor)]
@@ -62,29 +62,29 @@ type
     property Comments: TVkCommentsInfo read FComments write FComments;
     property CopyHistory: TArray<TVkPost> read FCopy_history write FCopy_history;
     property Copyright: TVkCopyright read FCopyright write FCopyright;
-    property CreatedBy: Integer read FCreated_by write FCreated_by;
+    property CreatedBy: TVkPeerId read FCreated_by write FCreated_by;
     property Date: TDateTime read FDate write FDate;
     property Donut: TVkDonut read FDonut write FDonut;
     property FriendsOnly: Boolean read FFriends_only write FFriends_only;
-    property FromId: Integer read FFrom_id write FFrom_id;
+    property FromId: TVkPeerId read FFrom_id write FFrom_id;
     property Geo: TVkGeo read FGeo write FGeo;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property IsPinned: Boolean read FIs_pinned write FIs_pinned;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property MarkedAsAds: Boolean read FMarked_as_ads write FMarked_as_ads;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property Photos: TVkPhotos read FPhotos write FPhotos;
     property PostId: Integer read FPost_id write FPost_id;
     property PostponedId: Integer read FPostponed_id write FPostponed_id;
     property PostSource: TVkPostSource read FPost_source write FPost_source;
     property PostType: string read FPost_type write FPost_type;
-    property ReplyOwnerId: Integer read FReply_owner_id write FReply_owner_id;
+    property ReplyOwnerId: TVkPeerId read FReply_owner_id write FReply_owner_id;
     property ReplyPostId: Integer read FReply_post_id write FReply_post_id;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
-    property SignerId: Integer read FSigner_id write FSigner_id;
+    property SignerId: TVkPeerId read FSigner_id write FSigner_id;
     property SourceId: Integer read FSource_id write FSource_id;
     property Text: string read FText write FText;
-    property ToId: Integer read FTo_id write FTo_id;
+    property ToId: TVkPeerId read FTo_id write FTo_id;
     property Views: TVkViewsInfo read FViews write FViews;
     property &Type: TVkNewsfeedType read FType write FType;
     destructor Destroy; override;
@@ -103,11 +103,11 @@ type
 
   TVkNewsfeedBannedIds = class(TVkEntity)
   private
-    FGroups: TArray<Integer>;
-    FMembers: TArray<Integer>;
+    FGroups: TVkPeerIds;
+    FMembers: TVkPeerIds;
   public
-    property Groups: TArray<Integer> read FGroups write FGroups;
-    property Members: TArray<Integer> read FMembers write FMembers;
+    property Groups: TVkPeerIds read FGroups write FGroups;
+    property Members: TVkPeerIds read FMembers write FMembers;
   end;
 
   TVkNewsfeedBanned = class(TVkEntity)

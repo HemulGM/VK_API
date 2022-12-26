@@ -11,11 +11,11 @@ type
   private
     FTitle: string;
     FFrom: string;
-    FMentions: TArray<integer>;
+    FMentions: TArray<TVkPeerId>;
   public
     property Title: string read FTitle write FTitle;
     property From: string read FFrom write FFrom;
-    property Mentions: TArray<integer> read FMentions write FMentions;
+    property Mentions: TArray<TVkPeerId> read FMentions write FMentions;
 
     //property MarkedUsers: TArray<integer> read FMarked_users write FMarked_users;
     function ToJsonString: string;
@@ -90,7 +90,7 @@ type
   TMessageData = record
     MessageId: Integer;
     Flags: TVkMessageFlags;
-    PeerId: Integer;
+    PeerId: TVkPeerId;
     TimeStamp: TDateTime;
     Text: string;
     Info: TVkMessageInfo;
@@ -102,18 +102,18 @@ type
   TMessageChangeData = record
     MessageId: Integer;
     Flags: TVkMessageFlags;
-    PeerId: Integer;
+    PeerId: TVkPeerId;
     ChangeType: TVkFlagsChangeType;
   end;
 
   TDialogChangeData = record
-    PeerId: Integer;
+    PeerId: TVkPeerId;
     Flags: TVkDialogFlags;
     ChangeType: TVkFlagsChangeType;
   end;
 
   TEventExtraFields = record
-    PeerId: integer; // идентификатор назначения. Для пользователя: id пользователя. Для групповой беседы: 2000000000 + id беседы. Для сообщества: -id сообщества либо id сообщества + 1000000000 (для version = 0).
+    PeerId: TVkPeerId; // идентификатор назначения. Для пользователя: id пользователя. Для групповой беседы: 2000000000 + id беседы. Для сообщества: -id сообщества либо id сообщества + 1000000000 (для version = 0).
     TimeStamp: integer; // время отправки сообщения в Unixtime;
     Text: string; // текст сообщения;
     Info: TVkMessageInfo;
@@ -122,14 +122,16 @@ type
   end;
 
   TChatTypingData = record
-    UserIds: TIdList;
-    PeerId, TotalCount: Integer;
+    UserIds: TVkPeerIds;
+    PeerId: TVkPeerId;
+    TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
 
   TChatRecordingData = record
-    UserIds: TIdList;
-    PeerId, TotalCount: Integer;
+    UserIds: TVkPeerIds;
+    PeerId: TVkPeerId;
+    TotalCount: Integer;
     TimeStamp: TDateTime;
   end;
 
@@ -141,25 +143,25 @@ type
 
   TOnChangeDialogFlags = procedure(Sender: TObject; DialogChangeData: TDialogChangeData) of object;
 
-  TOnUserOnline = procedure(Sender: TObject; UserId: Integer; VkPlatform: TVkPlatform; TimeStamp: TDateTime) of object;
+  TOnUserOnline = procedure(Sender: TObject; UserId: TVkPeerId; VkPlatform: TVkPlatform; TimeStamp: TDateTime) of object;
 
-  TOnUserOffline = procedure(Sender: TObject; UserId: Integer; InactiveUser: Boolean; TimeStamp: TDateTime) of object;
+  TOnUserOffline = procedure(Sender: TObject; UserId: TVkPeerId; InactiveUser: Boolean; TimeStamp: TDateTime) of object;
 
-  TOnReadMessages = procedure(Sender: TObject; Incoming: Boolean; PeerId, LocalId: Integer) of object;
+  TOnReadMessages = procedure(Sender: TObject; Incoming: Boolean; PeerId, LocalId: TVkPeerId) of object;
 
-  TOnRecoverOrDeleteMessages = procedure(Sender: TObject; PeerId, LocalId: Integer) of object;
+  TOnRecoverOrDeleteMessages = procedure(Sender: TObject; PeerId, LocalId: TVkPeerId) of object;
 
-  TOnChatChanged = procedure(Sender: TObject; const ChatId: Integer; IsSelf: Boolean) of object;
+  TOnChatChanged = procedure(Sender: TObject; const ChatId: Int64; IsSelf: Boolean) of object;
 
-  TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: Integer; TypeId: TVkChatChangeInfoType; Info: Integer) of object;
+  TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: TVkPeerId; TypeId: TVkChatChangeInfoType; Info: Integer) of object;
 
-  TOnUserTyping = procedure(Sender: TObject; UserId, ChatId: Integer) of object;
+  TOnUserTyping = procedure(Sender: TObject; UserId, ChatId: TVkPeerId) of object;
 
-  TOnUserCall = procedure(Sender: TObject; UserId, CallId: Integer) of object;
+  TOnUserCall = procedure(Sender: TObject; UserId, CallId: TVkPeerId) of object;
 
   TOnCountChange = procedure(Sender: TObject; Count: Integer) of object;
 
-  TOnNotifyChange = procedure(Sender: TObject; PeerId: Integer; Sound: Boolean; DisableUntil: Integer) of object;
+  TOnNotifyChange = procedure(Sender: TObject; PeerId: TVkPeerId; Sound: Boolean; DisableUntil: Integer) of object;
 
   TOnUsersTyping = procedure(Sender: TObject; Data: TChatTypingData) of object;
 
@@ -192,24 +194,24 @@ type
     FVersion: string;
     FLogging: Boolean;
     function GetIsWork: Boolean;
-    procedure DoChangeDialogFlags(const PeerId: Integer; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer);
+    procedure DoChangeDialogFlags(const PeerId: TVkPeerId; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer);
     procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
-    procedure DoChatChanged(const ChatId: Integer; IsSelf: Boolean);
-    procedure DoChatChangeInfo(const PeerId, TypeId, Info: Integer);
+    procedure DoChatChanged(const ChatId: TVkPeerId; IsSelf: Boolean);
+    procedure DoChatChangeInfo(const PeerId: TVkPeerId; TypeId, Info: Integer);
     procedure DoCountChange(const Count: Integer);
-    procedure DoDeleteMessages(const PeerId, LocalId: Integer);
+    procedure DoDeleteMessages(const PeerId, LocalId: TVkPeerId);
     procedure DoEditMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
     procedure DoNewMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
-    procedure DoNotifyChange(const PeerId, Sound, DisabledUntil: Integer);
-    procedure DoReadMessages(const Incoming: Boolean; PeerId, LocalId: Integer);
-    procedure DoRecoverMessages(const PeerId, LocalId: Integer);
+    procedure DoNotifyChange(const PeerId: TVkPeerId; Sound, DisabledUntil: Integer);
+    procedure DoReadMessages(const Incoming: Boolean; PeerId, LocalId: TVkPeerId);
+    procedure DoRecoverMessages(const PeerId, LocalId: TVkPeerId);
     procedure DoUnhandledEvents(const JSON: TJSONValue);
-    procedure DoUserCall(const UserId, CallId: Integer);
-    procedure DoUsersRecording(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
-    procedure DoUserStateChange(IsOnline: Boolean; UserId, Extra, TimeStamp: Integer);
-    procedure DoUsersTyping(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
-    procedure DoUserTyping(const UserId, ChatId: Integer);
+    procedure DoUserCall(const UserId, CallId: TVkPeerId);
+    procedure DoUsersRecording(const UserId: TVkPeerIds; PeerId: TVkPeerId; TotalCount, Ts: Integer);
+    procedure DoUserStateChange(IsOnline: Boolean; UserId: TVkPeerId; Extra, TimeStamp: Integer);
+    procedure DoUsersTyping(const UserId: TVkPeerIds; PeerId: TVkPeerId; TotalCount, Ts: Integer);
+    procedure DoUserTyping(const UserId, ChatId: TVkPeerId);
     procedure FOnError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure FOnLongPollUpdate(Sender: TObject; GroupID: string; Update: TJSONValue);
     procedure SetLogging(const Value: Boolean);
@@ -286,7 +288,7 @@ var
   EventType, A1, A2, A3: Integer;
   i: Integer;
   ExtraFields: TEventExtraFields;
-  UserIds: TIdList;
+  UserIds: TVkPeerIds;
   Arr: TJSONArray;
 
   procedure DoRaiseProcessing;
@@ -310,7 +312,7 @@ begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
-          ExtraFields.PeerId := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
+          ExtraFields.PeerId := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<TVkPeerId>);
           if TJSONArray(Update).Count > 4 then
           begin
             ExtraFields.TimeStamp := TJSONArray(Update).Items[4].GetValue<Integer>;
@@ -342,7 +344,7 @@ begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
-          ExtraFields.PeerId := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<Integer>);
+          ExtraFields.PeerId := NormalizePeerId(TJSONArray(Update).Items[3].GetValue<TVkPeerId>);
           ExtraFields.TimeStamp := TJSONArray(Update).Items[4].GetValue<Integer>;
           ExtraFields.Text := TJSONArray(Update).Items[5].GetValue<string>;
         except
@@ -353,8 +355,8 @@ begin
     6, 7: //Прочтение сообщений
       begin
         try
-          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
-          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
+          A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<TVkPeerId>);
         except
           DoRaiseProcessing;
         end;
@@ -364,7 +366,7 @@ begin
       begin
         try
           A1 := -TJSONArray(Update).Items[1].GetValue<Integer>;
-          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+          A2 := TJSONArray(Update).Items[2].GetValue<TVkPeerId>;
           A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         except
           DoRaiseProcessing;
@@ -374,7 +376,7 @@ begin
     10, 11, 12: //Изменение флагов диалога
       begin
         try
-          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
         except
           DoRaiseProcessing;
@@ -391,8 +393,8 @@ begin
     13, 14: //Удаление/восставноление сообщений
       begin
         try
-          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
-          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
+          A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<TVkPeerId>);
         except
           DoRaiseProcessing;
         end;
@@ -406,7 +408,7 @@ begin
     51: //Один из параметров (состав, тема) беседы $chat_id были изменены. $self — 1 или 0 (вызваны ли изменения самим пользователем).
       begin
         try
-          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+          A1 := TJSONArray(Update).Items[1].GetValue<TVkPeerId>;
           if TJSONArray(Update).Count > 2 then
             A2 := TJSONArray(Update).Items[2].GetValue<Integer>
           else
@@ -420,7 +422,7 @@ begin
       begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
-          A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Integer>);
+          A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<TVkPeerId>);
           A3 := TJSONArray(Update).Items[3].GetValue<Integer>;
         except
           DoRaiseProcessing;
@@ -430,9 +432,9 @@ begin
     61, 62: //Пользователь набирает текст в диалоге/чате
       begin
         try
-          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
+          A1 := TJSONArray(Update).Items[1].GetValue<TVkPeerId>;
           if EventType = 62 then
-            A2 := TJSONArray(Update).Items[2].GetValue<Integer>
+            A2 := TJSONArray(Update).Items[2].GetValue<TVkPeerId>
           else
             A2 := A1;
         except
@@ -443,12 +445,12 @@ begin
     63, 64: //Пользователи в беседе набирают текст или записывают аудио
       begin
         try
-          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
           Arr := TJSONArray(TJSONArray(Update).Items[2]);
           SetLength(UserIds, Arr.Count);
           for i := 0 to Pred(Arr.Count) do
           begin
-            UserIds[i] := Arr.Items[i].GetValue<Integer>;
+            UserIds[i] := Arr.Items[i].GetValue<TVkPeerId>;
           end;
           A2 := TJSONArray(Update).Items[3].GetValue<Integer>;
           A3 := TJSONArray(Update).Items[4].GetValue<Integer>;
@@ -465,8 +467,8 @@ begin
     70: //Пользователь $user_id совершил звонок с идентификатором $call_id.
       begin
         try
-          A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
-          A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
+          A1 := TJSONArray(Update).Items[1].GetValue<TVkPeerId>;
+          A2 := TJSONArray(Update).Items[2].GetValue<TVkPeerId>;
         except
           DoRaiseProcessing;
         end;
@@ -486,7 +488,7 @@ begin
          //$disabled_until — выключение оповещений на необходимый срок (-1: навсегда, ''0
       begin
         try
-          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<Integer>);
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
           A2 := TJSONArray(Update).Items[2].GetValue<Integer>;
           if TJSONArray(Update).Count > 3 then
             A3 := TJSONArray(Update).Items[3].GetValue<Integer>
@@ -577,13 +579,13 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoChatChanged(const ChatId: Integer; IsSelf: Boolean);
+procedure TCustomUserEvents.DoChatChanged(const ChatId: TVkPeerId; IsSelf: Boolean);
 begin
   if Assigned(FOnChatChanged) then
     FOnChatChanged(Self, ChatId, IsSelf);
 end;
 
-procedure TCustomUserEvents.DoChatChangeInfo(const PeerId, TypeId, Info: Integer);
+procedure TCustomUserEvents.DoChatChangeInfo(const PeerId: TVkPeerId; TypeId, Info: Integer);
 begin
   if Assigned(FOnChatChangeInfo) then
     FOnChatChangeInfo(Self, PeerId, TVkChatChangeInfoType(TypeId), Info);
@@ -613,19 +615,19 @@ begin
     ExtraFields.Info.Free;
 end;
 
-procedure TCustomUserEvents.DoReadMessages(const Incoming: Boolean; PeerId, LocalId: Integer);
+procedure TCustomUserEvents.DoReadMessages(const Incoming: Boolean; PeerId, LocalId: TVkPeerId);
 begin
   if Assigned(FOnReadMessages) then
     FOnReadMessages(Self, Incoming, PeerId, LocalId);
 end;
 
-procedure TCustomUserEvents.DoRecoverMessages(const PeerId, LocalId: Integer);
+procedure TCustomUserEvents.DoRecoverMessages(const PeerId, LocalId: TVkPeerId);
 begin
   if Assigned(FOnRecoverMessages) then
     FOnRecoverMessages(Self, PeerId, LocalId);
 end;
 
-procedure TCustomUserEvents.DoDeleteMessages(const PeerId, LocalId: Integer);
+procedure TCustomUserEvents.DoDeleteMessages(const PeerId, LocalId: TVkPeerId);
 begin
   if Assigned(FOnDeleteMessages) then
     FOnDeleteMessages(Self, PeerId, LocalId);
@@ -656,7 +658,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoUserCall(const UserId, CallId: Integer);
+procedure TCustomUserEvents.DoUserCall(const UserId, CallId: TVkPeerId);
 begin
   if Assigned(FOnUserCall) then
     FOnUserCall(Self, UserId, CallId);
@@ -668,13 +670,13 @@ begin
     FOnCountChange(Self, Count);
 end;
 
-procedure TCustomUserEvents.DoNotifyChange(const PeerId, Sound, DisabledUntil: Integer);
+procedure TCustomUserEvents.DoNotifyChange(const PeerId: TVkPeerId; Sound, DisabledUntil: Integer);
 begin
   if Assigned(FOnNotifyChange) then
     FOnNotifyChange(Self, PeerId, Sound = 1, DisabledUntil);
 end;
 
-procedure TCustomUserEvents.DoUsersRecording(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
+procedure TCustomUserEvents.DoUsersRecording(const UserId: TVkPeerIds; PeerId: TVkPeerId; TotalCount, Ts: Integer);
 var
   Data: TChatRecordingData;
 begin
@@ -688,7 +690,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoUserStateChange(IsOnline: Boolean; UserId, Extra, TimeStamp: Integer);
+procedure TCustomUserEvents.DoUserStateChange(IsOnline: Boolean; UserId: TVkPeerId; Extra, TimeStamp: Integer);
 var
   VkPlatform: TVkPlatform;
   InactiveUser: Boolean;
@@ -716,7 +718,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoUsersTyping(const UserId: TIdList; PeerId, TotalCount, Ts: Integer);
+procedure TCustomUserEvents.DoUsersTyping(const UserId: TVkPeerIds; PeerId: TVkPeerId; TotalCount, Ts: Integer);
 var
   Data: TChatTypingData;
 begin
@@ -730,7 +732,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoUserTyping(const UserId, ChatId: Integer);
+procedure TCustomUserEvents.DoUserTyping(const UserId, ChatId: TVkPeerId);
 begin
   if Assigned(FOnUserTyping) then
   begin
@@ -738,7 +740,7 @@ begin
   end;
 end;
 
-procedure TCustomUserEvents.DoChangeDialogFlags(const PeerId: Integer; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer);
+procedure TCustomUserEvents.DoChangeDialogFlags(const PeerId: TVkPeerId; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer);
 var
   DialogChangeData: TDialogChangeData;
 begin

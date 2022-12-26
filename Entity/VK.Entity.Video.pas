@@ -3,9 +3,9 @@ unit VK.Entity.Video;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Common.List, VK.Entity.Info,
-  VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Common,
+  VK.Entity.Privacy, VK.Entity.Common.List, VK.Entity.Info, VK.Types,
+  VK.Wrap.Interceptors;
 
 type
   TVkVideoFiles = class(TVkEntity)
@@ -41,7 +41,7 @@ type
   private
     FContent_id: string;
     FDuration: Int64;
-    FGroupId: Int64;
+    FGroupId: TVkPeerId;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_xz_video: Boolean;
     FLang: Integer;
@@ -67,7 +67,7 @@ type
   public
     property ContentId: string read FContent_id write FContent_id;
     property Duration: Int64 read FDuration write FDuration;
-    property GroupId: Int64 read FGroupId write FGroupId;
+    property GroupId: TVkPeerId read FGroupId write FGroupId;
     property IsXzVideo: Boolean read FIs_xz_video write FIs_xz_video;
     property Lang: Integer read FLang write FLang;
     property Pl: Int64 read FPl write FPl;
@@ -162,7 +162,7 @@ type
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_subscribe: Boolean;
     FComments: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDescription: string;
     FDuration: Int64;
@@ -171,7 +171,7 @@ type
     FIs_favorite: Boolean;
     FLikes: TVkLikesInfo;
     FLocal_views: Integer;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPlatform: string;
     FPlayer: string;
     FReposts: TVkRepostsInfo;
@@ -189,7 +189,7 @@ type
     Fphoto_320: string;
     Ffirst_frame_1280: string;
     Fphoto_130: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FAdding_date: TDateTime;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_private: Boolean;
@@ -204,7 +204,7 @@ type
     FHeight: Integer;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FRepeat: Boolean;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FConverting: Boolean;
     FIs_subscribed: Boolean;
@@ -350,7 +350,7 @@ type
     /// <summary>
     /// Идентификатор владельца видеозаписи
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property Photo130: string read Fphoto_130 write Fphoto_130;
     property Photo320: string read Fphoto_320 write Fphoto_320;
     property Photo640: string read Fphoto_640 write Fphoto_640;
@@ -392,7 +392,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, загрузившего видео, если оно было загружено в группу одним из участников
     /// </summary>
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     /// <summary>
     /// Количество просмотров видеозаписи
     /// </summary>
@@ -421,15 +421,15 @@ type
   private
     FCount: Integer;
     FImage: TArray<TVkVideoImage>;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPrivacy: TVkPrivacy;
     FTitle: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUpdated_time: TDateTime;
   public
     property Count: Integer read FCount write FCount;
     property Image: TArray<TVkVideoImage> read FImage write FImage;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property Privacy: TVkPrivacy read FPrivacy write FPrivacy;
     property Title: string read FTitle write FTitle;
     property UpdatedTime: TDateTime read FUpdated_time write FUpdated_time;

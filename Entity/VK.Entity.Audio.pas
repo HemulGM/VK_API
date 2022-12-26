@@ -3,10 +3,9 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors,
-  System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types,
-  VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.Group,
-  VK.Entity.Photo;
+  Generics.Collections, REST.JsonReflect, System.SysUtils, Rest.Json,
+  System.Json, VK.Entity.Common, VK.Types, VK.Entity.Common.List,
+  VK.Wrap.Interceptors, VK.Entity.Group, VK.Entity.Photo;
 
 type
   TVkAudioArtistPhoto = class(TVkEntity)
@@ -29,7 +28,7 @@ type
     FGroups: TArray<TVkGroup>;
     FPhotos: TArray<TVkAudioArtistPhoto>;
     FIs_followed: Boolean;
-    FCan_followed: Boolean;
+    FCan_follow: Boolean;
   public
     /// <summary>
     /// Идентификатор артиста/группы
@@ -48,7 +47,7 @@ type
     property Pages: TArray<Int64> read FPages write FPages;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property IsFollowed: Boolean read FIs_followed write FIs_followed;
-    property CanFollowed: Boolean read FCan_followed write FCan_followed;
+    property CanFollow: Boolean read FCan_follow write FCan_follow;
     destructor Destroy; override;
   end;
 
@@ -95,7 +94,7 @@ type
     FAds: TVkAudioAds;
     FAlbum: TVkAudioAlbum;
     FArtist: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDuration: Integer;
     [JsonReflectAttribute(ctString, rtString, TAudioGenreInterceptor)]

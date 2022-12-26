@@ -14,7 +14,7 @@ type
     /// <summary>
     /// список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsNewsfeedBanned;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsNewsfeedBanned;
     /// <summary>
     /// падеж для склонения имени и фамилии пользователя
     /// </summary>
@@ -67,7 +67,7 @@ type
     /// <summary>
     /// Список дополнительных полей для профилей и групп, которые необходимо вернуть
     /// </summary>
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsNewsfeedGet;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsNewsfeedGet;
     /// <summary>
     /// [Нет описания]
     /// </summary>
@@ -83,7 +83,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields = []): TVkParamsNewsfeedGetComments;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsNewsfeedGetComments;
     /// <summary>
     /// Указывает, какое максимальное число новостей следует возвращать, но не более 100.
     /// Для автоподгрузки Вы можете использовать возвращаемый данным методом параметр NewOffset.
@@ -121,7 +121,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsNewsfeedGetMentions;
+    function OwnerId(const Value: TVkPeerId): TVkParamsNewsfeedGetMentions;
     /// <summary>
     /// Количество возвращаемых записей. Максимальное значение параметра 50
     /// </summary>
@@ -149,7 +149,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields = []): TVkParamsNewsfeedGetRecommended;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsNewsfeedGetRecommended;
     /// <summary>
     /// Указывает, какое максимальное число новостей следует возвращать, но не более 100
     /// </summary>
@@ -184,7 +184,7 @@ type
     /// <summary>
     /// Список дополнительных полей для профилей и групп, которые необходимо вернуть
     /// </summary>
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsNewsfeedSearch;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsNewsfeedSearch;
     /// <summary>
     /// Указывает, какое максимальное число записей следует возвращать.
     /// Обратите внимание — даже при использовании параметра Offset для получения информации
@@ -281,7 +281,7 @@ type
     /// <summary>
     /// Позволяет скрыть объект из ленты новостей.
     /// </summary>
-    function IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer): Boolean;
+    function IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId: TVkPeerId; ItemId: Integer): Boolean;
     /// <summary>
     /// Метод позволяет создавать или редактировать пользовательские списки для просмотра новостей.
     /// </summary>
@@ -301,11 +301,11 @@ type
     /// <summary>
     /// Позволяет вернуть ранее скрытый объект в ленту новостей.
     /// </summary>
-    function UnignoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer; TrackCode: string = ''): Boolean;
+    function UnignoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId: TVkPeerId; ItemId: Integer; TrackCode: string = ''): Boolean;
     /// <summary>
     /// Отписывает текущего пользователя от комментариев к заданному объекту.
     /// </summary>
-    function Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId, ItemId: Integer): Boolean;
+    function Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId: TVkPeerId; ItemId: Integer): Boolean;
   end;
 
 implementation
@@ -385,7 +385,7 @@ begin
     GetObject(Items);
 end;
 
-function TNewsfeedController.IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer): Boolean;
+function TNewsfeedController.IgnoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId: TVkPeerId; ItemId: Integer): Boolean;
 begin
   Result := Handler.Execute('newsfeed.ignoreItem', [
     ['type', ItemType.ToString],
@@ -420,7 +420,7 @@ begin
   Result := Search(Items, Params.List);
 end;
 
-function TNewsfeedController.UnignoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId, ItemId: Integer; TrackCode: string): Boolean;
+function TNewsfeedController.UnignoreItem(ItemType: TVkNewsfeedIgnoreType; OwnerId: TVkPeerId; ItemId: Integer; TrackCode: string): Boolean;
 var
   Params: TParams;
 begin
@@ -432,7 +432,7 @@ begin
   Result := Handler.Execute('newsfeed.unignoreItem', Params).ResponseIsTrue;
 end;
 
-function TNewsfeedController.Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId, ItemId: Integer): Boolean;
+function TNewsfeedController.Unsubscribe(ItemType: TVkNewsfeedCommentsType; OwnerId: TVkPeerId; ItemId: Integer): Boolean;
 begin
   Result := Handler.Execute('newsfeed.unsubscribe', [
     ['type', ItemType.ToString],
@@ -494,9 +494,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNewsfeedGet.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsNewsfeedGet;
+function TVkParamsNewsfeedGet.Fields(const Value: TVkExtendedFields): TVkParamsNewsfeedGet;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
@@ -550,9 +550,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNewsfeedBanned.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsNewsfeedBanned;
+function TVkParamsNewsfeedBanned.Fields(const Value: TVkExtendedFields): TVkParamsNewsfeedBanned;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
@@ -576,7 +576,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNewsfeedGetComments.Fields(const Value: TVkProfileFields): TVkParamsNewsfeedGetComments;
+function TVkParamsNewsfeedGetComments.Fields(const Value: TVkExtendedFields): TVkParamsNewsfeedGetComments;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -632,7 +632,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNewsfeedGetMentions.OwnerId(const Value: Integer): TVkParamsNewsfeedGetMentions;
+function TVkParamsNewsfeedGetMentions.OwnerId(const Value: TVkPeerId): TVkParamsNewsfeedGetMentions;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -658,7 +658,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNewsfeedGetRecommended.Fields(const Value: TVkProfileFields): TVkParamsNewsfeedGetRecommended;
+function TVkParamsNewsfeedGetRecommended.Fields(const Value: TVkExtendedFields): TVkParamsNewsfeedGetRecommended;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -702,9 +702,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNewsfeedSearch.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsNewsfeedSearch;
+function TVkParamsNewsfeedSearch.Fields(const Value: TVkExtendedFields): TVkParamsNewsfeedSearch;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 

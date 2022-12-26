@@ -3,15 +3,17 @@ unit VK.Entity.Search;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Profile, VK.Entity.Group,
-  VK.Entity.Common, VK.Entity.Common.List;
+  Generics.Collections, Rest.Json, REST.JsonReflect, VK.Wrap.Interceptors,
+  VK.Entity.Profile, VK.Types, VK.Entity.Group, VK.Entity.Common,
+  VK.Entity.Common.List;
 
 type
   TVkSearchItem = class(TVkEntity)
   private
     FDescription: string;
     FProfile: TVkProfile;
-    FSection: string;
+    [JsonReflectAttribute(ctString, rtString, TSearchSectionInterceptor)]
+    FSection: TVkSearchSection;
     FType: string;
     FGroup: TVkGroup;
     FGlobal: Boolean;
@@ -19,18 +21,7 @@ type
     property Description: string read FDescription write FDescription;
     property Profile: TVkProfile read FProfile write FProfile;
     property Group: TVkGroup read FGroup write FGroup;
-    /// <summary>
-    /// ¬озможные значени€ дл€ сообществ:
-    /// groups Ч группы;
-    /// events Ч меропри€ти€;
-    /// publics Ч публичные страницы.
-    /// ¬озможные значени€ дл€ профилей:
-    /// correspondents Ч собеседники по переписке;
-    /// people Ч попул€рные пользователи;
-    /// friends Ч друзь€;
-    /// mutual_friends Ч пользователи, имеющие общих друзей с текущим.
-    /// </summary>
-    property Section: string read FSection write FSection;
+    property Section: TVkSearchSection read FSection write FSection;
     /// <summary>
     /// ѕоле возвращаетс€, если объект был найден в глобальном поиске, всегда содержит 1
     /// </summary>

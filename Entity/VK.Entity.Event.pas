@@ -3,26 +3,27 @@ unit VK.Entity.Event;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, REST.Json.Interceptors, Rest.Json, VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, Rest.Json,
+  VK.Entity.Common, VK.Types;
 
 type
   TVkEvent = class(TVkObject)
   private
     FAddress: string;
     FButton_text: string;
-    FFriends: TArray<Integer>;
+    FFriends: TArray<TVkPeerId>;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_favorite: Boolean;
     FMember_status: Integer;
     FText: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTime: TDateTime;
     FAccess_key: string;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     property Address: string read FAddress write FAddress;
     property ButtonText: string read FButton_text write FButton_text;
-    property Friends: TArray<Integer> read FFriends write FFriends;
+    property Friends: TArray<TVkPeerId> read FFriends write FFriends;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     {1 -- точно идёт;
       2 -- возможно пойдёт;

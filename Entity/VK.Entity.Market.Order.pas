@@ -3,9 +3,9 @@ unit VK.Entity.Market.Order;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Market, VK.Entity.Photo,
-  VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, VK.Entity.Common,
+  VK.Entity.Common.List, VK.Entity.Market, VK.Entity.Photo, VK.Types,
+  VK.Wrap.Interceptors;
 
 type
   TVkOrderRecipient = class
@@ -50,13 +50,13 @@ type
 
   TVkOrderSeller = class(TVkEntity)
   private
-    FContact_Id: Integer;
-    FGroup_Id: Integer;
+    FContact_Id: TVkPeerId;
+    FGroup_Id: TVkPeerId;
     FName: string;
     FTitle: string;
   public
-    property ContactId: Integer read FContact_Id write FContact_Id;
-    property GroupId: Integer read FGroup_Id write FGroup_Id;
+    property ContactId: TVkPeerId read FContact_Id write FContact_Id;
+    property GroupId: TVkPeerId read FGroup_Id write FGroup_Id;
     property Name: string read FName write FName;
     property Title: string read FTitle write FTitle;
   end;
@@ -64,25 +64,25 @@ type
   TVkOrder = class(TVkObject)
   private
     FComment: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDelivery: TVkOrderDelivery;
     FDisplay_order_id: string;
-    FGroup_id: Integer;
+    FGroup_id: TVkPeerId;
     FItems_count: Integer;
     FPreview_order_items: TArray<TVkProduct>;
     FRecipient: TVkOrderRecipient;
     [JsonReflectAttribute(ctString, rtString, TOrderStatusInterceptor)]
     FStatus: TVkOrderStatus;
     FTotal_price: TVkProductPrice;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     FMerchant_comment: string;
     FPayment: TVkOrderPayment;
     FSeller: TVkOrderSeller;
     FTags: TArray<TVkOrderTag>;
   public
-    property GroupId: Integer read FGroup_id write FGroup_id;
-    property UserId: Integer read FUser_id write FUser_id;
+    property GroupId: TVkPeerId read FGroup_id write FGroup_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     property Date: TDateTime read FDate write FDate;
     property Status: TVkOrderStatus read FStatus write FStatus;
     property ItemsCount: Integer read FItems_count write FItems_count;

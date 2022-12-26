@@ -3,7 +3,7 @@ unit VK.Entity.MoneyTransfer;
 interface
 
 uses
-  VK.Entity.Common, VK.Types, REST.JsonReflect, REST.Json.Interceptors;
+  VK.Entity.Common, VK.Types, REST.JsonReflect, VK.Wrap.Interceptors;
 
 type
   TVkMoneyTransfer = class(TVkEntity)
@@ -11,7 +11,7 @@ type
     FAmount: TVkMoneyAmount;
     FBy_Phone: Boolean;
     FComment: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FFrom_Id: TVkPeerId;
     FId: Integer;
