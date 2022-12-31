@@ -11,16 +11,19 @@ type
   TFrameMessageDate = class(TFrame)
     LabelText: TLabel;
   private
+    FDate: TDateTime;
+    procedure SetDate(const Value: TDateTime);
     { Private declarations }
   public
     procedure Fill(Date: TDateTime);
     constructor Create(AOwner: TComponent); override;
+    property Date: TDateTime read FDate write SetDate;
   end;
 
 implementation
 
 uses
-  ChatFMX.Utils;
+  ChatFMX.Utils, System.DateUtils;
 
 {$R *.fmx}
 
@@ -34,7 +37,12 @@ end;
 
 procedure TFrameMessageDate.Fill(Date: TDateTime);
 begin
-  LabelText.Text := HumanDateTime(Date);
+  LabelText.Text := HumanDateTime(IncSecond(Date));
+end;
+
+procedure TFrameMessageDate.SetDate(const Value: TDateTime);
+begin
+  FDate := Value;
 end;
 
 end.

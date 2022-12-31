@@ -34,8 +34,8 @@ inherited FrameAttachmentWall: TFrameAttachmentWall
         Cursor = crDefault
         DisableFocusEffect = True
         EnabledScroll = False
-        Margins.Top = 4.000000000000000000
-        Position.Y = 40.000000000000000000
+        Margins.Top = 2.000000000000000000
+        Position.Y = 38.000000000000000000
         Size.Width = 571.000000000000000000
         Size.Height = 53.000000000000000000
         Size.PlatformDefault = False
@@ -51,7 +51,7 @@ inherited FrameAttachmentWall: TFrameAttachmentWall
         ClipChildren = True
         HitTest = False
         Margins.Top = 4.000000000000000000
-        Position.Y = 97.000000000000000000
+        Position.Y = 95.000000000000000000
         Size.Width = 571.000000000000000000
         Size.Height = 72.000000000000000000
         Size.PlatformDefault = False
@@ -258,7 +258,7 @@ inherited FrameAttachmentWall: TFrameAttachmentWall
       object LayoutDeleted: TLayout
         Align = Top
         Margins.Top = 4.000000000000000000
-        Position.Y = 173.000000000000000000
+        Position.Y = 171.000000000000000000
         Size.Width = 571.000000000000000000
         Size.Height = 164.000000000000000000
         Size.PlatformDefault = False

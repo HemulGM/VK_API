@@ -12,7 +12,7 @@ uses
   ChatFMX.Frame.Attachment.Audio, ChatFMX.Frame.Attachment.Document,
   VK.Entity.Geo, ChatFMX.Frame.Attachment.Geo,
   ChatFMX.Frame.Attachment.ReplyMessage, VK.Entity.Common.ExtendedList,
-  ChatFMX.Frame.Chat;
+  VK.Entity.Keyboard, ChatFMX.Classes, System.Threading;
 
 type
   {$IFDEF DEBUG_ADAPTIVE}
@@ -52,6 +52,9 @@ type
     LabelMessageType: TLabel;
     RectangleGiftBG: TRectangle;
     LayoutFwdMessages: TLayout;
+    LayoutDeleted: TLayout;
+    LabelMesDeleted: TLabel;
+    LabelRestoreMessage: TLabel;
     procedure MemoTextChange(Sender: TObject);
     procedure MemoTextResize(Sender: TObject);
     procedure FrameResize(Sender: TObject);
@@ -65,6 +68,7 @@ type
     procedure MemoTextMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure FlowLayoutMediaResize(Sender: TObject);
     procedure LayoutFwdMessagesResize(Sender: TObject);
+    procedure LabelRestoreMessageClick(Sender: TObject);
   private
     FVK: TCustomVK;
     FText: string;
@@ -87,6 +91,10 @@ type
     FVisibility: Boolean;
     FMessageSubType: TMessageSubType;
     FChatInfo: TChatInfo;
+    FMessageId: Int64;
+    FIsPinned: Boolean;
+    FIsDeleted: Boolean;
+    FConversationMessageId: Int64;
     procedure FOnAttachSelect(Sender: TObject);
     procedure SetText(const Value: string);
     procedure SetFromText(const Value: string);
@@ -133,6 +141,10 @@ type
     procedure CreatePoll(Items: TVkAttachmentArray);
     procedure SetChatInfo(const Value: TChatInfo);
     procedure CreateAudioPlaylists(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
+    procedure CreateKeyborad(Keyboard: TVkKeyboard);
+    procedure SetIsPinned(const Value: Boolean);
+    procedure SetIsDeleted(const Value: Boolean);
+    procedure CreateStories(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
@@ -155,6 +167,11 @@ type
     property Visibility: Boolean read FVisibility write SetVisibility;
     property MessageSubType: TMessageSubType read FMessageSubType write SetMessageSubType;
     property ChatInfo: TChatInfo read FChatInfo write SetChatInfo;
+    property IsPinned: Boolean read FIsPinned write SetIsPinned;
+    property MessageId: Int64 read FMessageId;
+    property ConversationMessageId: Int64 read FConversationMessageId;
+    property IsDeleted: Boolean read FIsDeleted write SetIsDeleted;
+    procedure UpdateFlags(ChangeType: TVkFlagsChangeType; Flags: TVkMessageFlags);
   end;
 
 implementation
@@ -169,7 +186,8 @@ uses
   ChatFMX.Frame.Attachment.Album, ChatFMX.Frame.Attachment.Market,
   ChatFMX.Frame.Attachment.Money, ChatFMX.Frame.Window.Photo,
   ChatFMX.Frame.Attachment.Graffiti, ChatFMX.Frame.Attachment.Poll,
-  ChatFMX.Frame.Attachment.AudioPlaylist;
+  ChatFMX.Frame.Attachment.AudioPlaylist, ChatFMX.Frame.Attachment.Keyboard,
+  ChatFMX.Frame.Attachment.Story;
 
 {$R *.fmx}
 
@@ -258,6 +276,8 @@ begin
   IsSelected := False;
   Text := '';
   IsGift := False;
+  FIsDeleted := False;
+  LayoutDeleted.Visible := False;
   LayoutFwdMessages.Visible := False;
   ClearMedia;
 end;
@@ -270,6 +290,9 @@ end;
 
 procedure TFrameMessage.Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; AChatInfo: TChatInfo);
 begin
+  FMessageId := Item.Id;
+  FConversationMessageId := Item.ConversationMessageId;
+  IsPinned := Item.PinnedAt <> 0;
   ChatInfo := AChatInfo;
   ChatCanAnswer := ChatInfo.IsCanWrite;
   Text := Item.Text;
@@ -328,6 +351,7 @@ begin
     CreateGraffiti(Item.Attachments);
     CreatePoll(Item.Attachments);
     CreateAudioPlaylists(Item.Attachments, Data);
+    CreateStories(Item.Attachments, Data);
     RecalcMedia;
   end;
 
@@ -337,7 +361,20 @@ begin
   if Length(Item.FwdMessages) > 0 then
     CreateFwdMessages(Item.FwdMessages, Data);
 
+  if Assigned(Item.Keyboard) then
+    CreateKeyborad(Item.Keyboard);
+
   RecalcSize;
+end;
+
+procedure TFrameMessage.CreateKeyborad(Keyboard: TVkKeyboard);
+begin
+  var Frame := TFrameAttachmentKeyboard.Create(LayoutClient, FVK);
+  Frame.Parent := LayoutClient;
+  Frame.Position.Y := 10000;
+  Frame.Align := TAlignLayout.Top;
+  Frame.Fill(Keyboard);
+  Frame.PeerId := ChatInfo.PeerId;
 end;
 
 procedure TFrameMessage.CreatePosts(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
@@ -363,6 +400,19 @@ begin
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
       Frame.Fill(Item.AudioPlaylist, Data);
+    end;
+end;
+
+procedure TFrameMessage.CreateStories(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Story then
+    begin
+      var Frame := TFrameAttachmentStory.Create(LayoutClient, FVK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Story, Data);
     end;
 end;
 
@@ -454,6 +504,7 @@ begin
     Frame.Fill(Item, Data, ChatInfo, True);
   end;
   LayoutFwdMessages.Visible := True;
+  LayoutFwdMessages.Tag := 1;
   LayoutFwdMessages.RecalcSize;
 end;
 
@@ -665,16 +716,18 @@ end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
 begin
-  var Sz: Single := LayoutContent.Padding.Top + LayoutContent.Padding.Bottom;
+  var H: Single := LayoutContent.Padding.Top + LayoutContent.Padding.Bottom;
   RecalcMedia;
   for var Control in LayoutClient.Controls do
     if Control.IsVisible then
-      Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
-  Sz := Max(Sz, 60);
-  if Height <> Floor(Sz) then
-    Height := Floor(Sz);
-  if Assigned(ParentControl) then
-    ParentControl.RecalcSize;
+      H := H + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
+  H := Floor(Max(H, 52));
+  if Height <> H then
+  begin
+    Height := H;
+    if Assigned(ParentControl) then
+      ParentControl.RecalcSize;
+  end;
 end;
 
 procedure TFrameMessage.LabelFromMouseEnter(Sender: TObject);
@@ -691,6 +744,15 @@ begin
   Control.TextSettings.Font.Style := Control.TextSettings.Font.Style - [TFontStyle.fsUnderline];
 end;
 
+procedure TFrameMessage.LabelRestoreMessageClick(Sender: TObject);
+begin
+  TTask.Run(
+    procedure
+    begin
+      FVK.Messages.Restore(MessageId);
+    end);
+end;
+
 procedure TFrameMessage.LayoutFwdMessagesResize(Sender: TObject);
 begin
   var H: Single := 0;
@@ -702,7 +764,7 @@ end;
 
 procedure TFrameMessage.MemoTextChange(Sender: TObject);
 begin
-  MemoText.Height := MemoText.ContentSize.Size.Height + 5;
+  MemoText.Height := MemoText.ContentSize.Size.Height + 1;
   FrameResize(nil);
 end;
 
@@ -774,6 +836,31 @@ begin
   FIsCanEdit := Value;
 end;
 
+procedure TFrameMessage.SetIsDeleted(const Value: Boolean);
+begin
+  FIsDeleted := Value;
+  LayoutDeleted.Visible := FIsDeleted;
+  LabelMesDeleted.Text := 'Сообщение удалено.';
+  if FIsDeleted then
+  begin
+    IsSelected := False;
+    MouseFrame := False;
+  end;
+  for var Control in LayoutClient.Controls do
+    if (Control <> LayoutFrom) and (Control <> LayoutDeleted) then
+      if FIsDeleted then
+      begin
+        if Control.Visible then
+          Control.Tag := 1;
+        Control.Visible := False;
+      end
+      else
+      begin
+        Control.Visible := Control.Tag = 1;
+      end;
+  RecalcSize;
+end;
+
 procedure TFrameMessage.SetIsGift(const Value: Boolean);
 begin
   FIsGift := Value;
@@ -809,6 +896,51 @@ begin
   end;
   RectangleGiftBG.Visible := FIsGift;
   UpdateImportant;
+end;
+
+procedure TFrameMessage.UpdateFlags(ChangeType: TVkFlagsChangeType; Flags: TVkMessageFlags);
+begin
+  case ChangeType of
+    TVkFlagsChangeType.Replace:
+      begin
+        if (TVkMessageFlag.Deleted in Flags) or (TVkMessageFlag.DeleteForAll in Flags) then
+          IsDeleted := True;
+        if TVkMessageFlag.Spam in Flags then
+        begin
+          IsDeleted := True;
+          LabelMesDeleted.Text := 'Сообщение помечено как спам и удалено.';
+        end;
+        if TVkMessageFlag.Important in Flags then
+          IsImportant := True;
+        if TVkMessageFlag.Unread in Flags then
+          IsUnread := True;
+      end;
+    TVkFlagsChangeType.set:
+      begin
+        if (TVkMessageFlag.Deleted in Flags) or (TVkMessageFlag.DeleteForAll in Flags) then
+          IsDeleted := True;
+        if TVkMessageFlag.Spam in Flags then
+        begin
+          IsDeleted := True;
+          LabelMesDeleted.Text := 'Сообщение помечено как спам и удалено.';
+        end;
+        if TVkMessageFlag.Important in Flags then
+          IsImportant := True;
+        if TVkMessageFlag.Unread in Flags then
+          IsUnread := True;
+      end;
+    TVkFlagsChangeType.Reset:
+      begin
+        if (TVkMessageFlag.Deleted in Flags) or (TVkMessageFlag.DeleteForAll in Flags) then
+          IsDeleted := False;
+        if TVkMessageFlag.Spam in Flags then
+          IsDeleted := False;
+        if TVkMessageFlag.Important in Flags then
+          IsImportant := False;
+        if TVkMessageFlag.Unread in Flags then
+          IsUnread := False;
+      end;
+  end;
 end;
 
 procedure TFrameMessage.UpdateImportant;
@@ -852,10 +984,17 @@ begin
   UpdateImportant;
 end;
 
+procedure TFrameMessage.SetIsPinned(const Value: Boolean);
+begin
+  FIsPinned := Value;
+end;
+
 procedure TFrameMessage.SetIsSelected(const Value: Boolean);
 var
   Changed: Boolean;
 begin
+  if IsDeleted and Value then
+    Exit;
   Changed := FIsSelected <> Value;
   FIsSelected := Value;
   if FIsSelected then
@@ -913,6 +1052,8 @@ end;
 
 procedure TFrameMessage.SetMouseFrame(const Value: Boolean);
 begin
+  if IsDeleted and Value then
+    Exit;
   FMouseFrame := Value;
   PathSelected.Visible := FMouseFrame or IsSelected;
   LayoutAnswer.Visible := (not IsSelfMessage) and FMouseFrame and ChatCanAnswer;

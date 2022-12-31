@@ -47,7 +47,7 @@ type
     procedure Link(const Value: string);
     procedure Payload(const Value: string);
     procedure &Label(const Value: string);
-    procedure OwnerId(const Value: Integer);
+    procedure OwnerId(const Value: TVkPeerId);
     procedure &Type(const Value: TVkKeyboardActionType);
   end;
 
@@ -56,11 +56,11 @@ type
     FAction: TJSONObject;
     function GetAction: TJSONObject;
   public
-    class function CreateOpenLink(const Text, Link, Payload: string; Color: TVkKeyboardButtonColor): TVkKeyboardButtonConstruct;
-    class function CreateLocation(const Payload: string; Color: TVkKeyboardButtonColor): TVkKeyboardButtonConstruct;
-    class function CreateVKApps(const AppId: Integer; const Payload, Text, Hash: string; Color: TVkKeyboardButtonColor; OwnerId: Integer = 0): TVkKeyboardButtonConstruct;
+    class function CreateOpenLink(const Text, Link, Payload: string): TVkKeyboardButtonConstruct;
+    class function CreateLocation(const Payload: string): TVkKeyboardButtonConstruct;
+    class function CreateVKApps(const AppId: Integer; const Payload, Text, Hash: string; OwnerId: TVkPeerId = 0): TVkKeyboardButtonConstruct;
     class function CreateText(const Text, Payload: string; Color: TVkKeyboardButtonColor): TVkKeyboardButtonConstruct;
-    class function CreateVKPay(const Payload, Hash: string; Color: TVkKeyboardButtonColor): TVkKeyboardButtonConstruct;
+    class function CreateVKPay(const Payload, Hash: string): TVkKeyboardButtonConstruct;
     class function CreateCallback(const Text, Payload: string; Color: TVkKeyboardButtonColor): TVkKeyboardButtonConstruct;
     procedure Color(const Value: TVkKeyboardButtonColor);
     property Action: TJSONObject read GetAction;
@@ -95,14 +95,14 @@ type
     FButtons: TArray<TVkKeyboardButtons>;
     FOne_time: Boolean;
     FInline: Boolean;
-    FAuthor_id: Integer;
+    FAuthor_id: TVkPeerId;
   public
     function AddButtonLine: Integer;
     function AddButtonToLine(const Index: Integer; const Button: TVkKeyboardButton): Integer;
     property Buttons: TArray<TVkKeyboardButtons> read FButtons write FButtons;
     property OneTime: Boolean read FOne_time write FOne_time;
     property &Inline: Boolean read FInline write FInline;
-    property AuthorId: Integer read FAuthor_id write FAuthor_id;
+    property AuthorId: TVkPeerId read FAuthor_id write FAuthor_id;
     class function Construct: TVkKeyboardConstruct;
     destructor Destroy; override;
   end;
@@ -195,7 +195,6 @@ begin
   Result := TVkKeyboardButtonConstruct.Create;
   Result.Action.AddPair('type', TVkKeyboardActionType.Location.ToString);
   Result.Action.AddPair('payload', Payload);
-  Result.Color(Color);
 end;
 
 class function TVkKeyboardButtonConstruct.CreateOpenLink;
@@ -205,7 +204,6 @@ begin
   Result.Action.AddPair('label', Text);
   Result.Action.AddPair('payload', Payload);
   Result.Action.AddPair('link', Link);
-  Result.Color(Color);
 end;
 
 class function TVkKeyboardButtonConstruct.CreateVKApps;
@@ -217,7 +215,6 @@ begin
   Result.Action.AddPair('hash', Hash);
   Result.Action.AddPair('app_id', TJSONNumber.Create(AppId));
   Result.Action.AddPair('owner_id', TJSONNumber.Create(OwnerId));
-  Result.Color(Color);
 end;
 
 { TVkKeyboardConstruct }
@@ -304,7 +301,7 @@ begin
   Add('link', Value);
 end;
 
-procedure TVkKeyboardActionConstruct.OwnerId(const Value: Integer);
+procedure TVkKeyboardActionConstruct.OwnerId(const Value: TVkPeerId);
 begin
   Add('owner_id', Value);
 end;
@@ -327,3 +324,4 @@ begin
 end;
 
 end.
+

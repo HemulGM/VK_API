@@ -38,6 +38,7 @@ type
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
     destructor Destroy; override;
+    procedure SetVisibility(const Value: Boolean); override;
     procedure Fill(Item: TVkProduct);
     property IsFavorite: Boolean read FIsFavorite write SetIsFavorite;
   end;
@@ -64,6 +65,20 @@ begin
   inherited;
 end;
 
+procedure TFrameAttachmentMarket.SetVisibility(const Value: Boolean);
+begin
+  inherited;
+  if Value then
+  begin
+    if (not FImageUrl.IsEmpty) and (RectangleImage.Fill.Bitmap.Bitmap.IsEmpty) then
+      TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+  end
+  else
+  begin
+    RectangleImage.Fill.Bitmap.Bitmap := nil;
+  end;
+end;
+
 procedure TFrameAttachmentMarket.Fill(Item: TVkProduct);
 begin
   FUrl := Item.Url;
@@ -82,8 +97,6 @@ begin
   end;
 
   FImageUrl := Item.Thumb.GetSizeUrlOrEmpty(300);
-  if not FImageUrl.IsEmpty then
-    TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
 end;
 
 procedure TFrameAttachmentMarket.FOnReadyImage(const Sender: TObject; const M: TMessage);

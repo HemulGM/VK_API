@@ -27,10 +27,24 @@ type
 
   TEventEditMessage = class(TEventMessage);
 
-  TEventReadMessages = class(TMessage)
+  TEventActionMessage = class(TMessage)
+    PeerId: TVkPeerId;
+    LocalId: Int64;
+    constructor Create(APeerId: TVkPeerId; ALocalId: Int64); reintroduce;
+  end;
+
+  TEventReadMessages = class(TEventActionMessage)
     Incoming: Boolean;
-    PeerId, LocalId: TVkPeerId;
-    constructor Create(AIncoming: Boolean; APeerId, ALocalId: TVkPeerId); reintroduce;
+    constructor Create(AIncoming: Boolean; APeerId: TVkPeerId; ALocalId: Int64); reintroduce;
+  end;
+
+  TEventDeleteMessage = class(TEventActionMessage);
+
+  TEventRecoverMessage = class(TEventActionMessage);
+
+  TEventMessageChange = class(TMessage)
+    Data: TMessageChangeData;
+    constructor Create(MessageChangeData: TMessageChangeData); reintroduce;
   end;
 
   Event = class
@@ -109,12 +123,27 @@ end;
 
 { TEventReadMessages }
 
-constructor TEventReadMessages.Create(AIncoming: Boolean; APeerId, ALocalId: TVkPeerId);
+constructor TEventReadMessages.Create(AIncoming: Boolean; APeerId: TVkPeerId; ALocalId: Int64);
+begin
+  inherited Create(APeerId, ALocalId);
+  Incoming := AIncoming;
+end;
+
+{ TEventActionMessage }
+
+constructor TEventActionMessage.Create(APeerId: TVkPeerId; ALocalId: Int64);
 begin
   inherited Create;
-  Incoming := AIncoming;
   PeerId := APeerId;
   LocalId := ALocalId;
+end;
+
+{ TEventMessageChange }
+
+constructor TEventMessageChange.Create(MessageChangeData: TMessageChangeData);
+begin
+  inherited Create;
+  Data := MessageChangeData;
 end;
 
 end.

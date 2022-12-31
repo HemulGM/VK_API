@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  VK.API, FMX.Objects, FMX.Ani;
+  VK.API, FMX.Objects, FMX.Ani, ChatFMX.DM.Res;
 
 type
   TFrameWindow = class(TFrame)

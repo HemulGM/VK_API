@@ -139,7 +139,7 @@ begin
   Form.FProc := Proc;
   Form.FExecuteCompleted := False;
   Form.StyleBook := AStyleBook;
-  Form.ShowWithURL(Url, False);
+  Form.ShowWithURL(Url, {$IFDEF MSWINDOWS} True {$ELSE} False {$ENDIF});
 end;
 
 procedure TFormFMXOAuth2.BrowserDidFailLoadWithError(ASender: TObject);

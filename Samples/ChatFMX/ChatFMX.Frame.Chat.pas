@@ -9,15 +9,14 @@ uses
   ChatFMX.DM.Res, FMX.Edit, VK.Types, VK.API, FMX.ImgList, VK.Entity.Message,
   VK.Entity.Conversation, System.Messaging, HGM.FMX.SmoothScroll, FMX.Ani,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, ChatFMX.Frame.Loading,
-  VK.Entity.Common.ExtendedList;
+  VK.Entity.Common.ExtendedList, ChatFMX.Frame.Message, ChatFMX.Classes,
+  ChatFMX.Frame.Attachment.PinnedMessage;
 
 type
   TFrameChat = class;
 
   TLayout = class(FMX.Layouts.TLayout)
   end;
-
-  TChatType = (ctChat, ctUser, ctGroup);
 
   THeadMode = (hmNormal, hmSelection);
 
@@ -26,17 +25,19 @@ type
     procedure SetText(const Value: string); override;
   end;
 
+  TForEachMessage = reference to procedure(Item: TFrameMessage; var Break: Boolean);
+
   TOnPreviewChatChanged = procedure(Chat: TFrameChat) of object;
 
-  TChatInfo = record
-    IsCanWrite: Boolean;
-    IsP2P: Boolean;
-    OutRead: Int64;
+  TFrameMessages = TArray<TFrameMessage>;
+
+  TFrameMessagesHelper = record helper for TFrameMessages
+    function ToIds: TArrayOfInteger;
   end;
 
-  {$IFDEF DEBUG_ADAPTIVE}
-    {$DEFINE ANDROID}
-  {$ENDIF}
+{$IFDEF DEBUG_ADAPTIVE}
+{$DEFINE ANDROID}
+{$ENDIF}
 
   TFrameChat = class(TFrame)
     LayoutClient: TLayout;
@@ -57,28 +58,6 @@ type
     Path1: TPath;
     VertScrollBoxMessages: TVertScrollBox;
     LayoutMessageList: TLayout;
-    Layout1: TLayout;
-    Label1: TLabel;
-    Layout11: TLayout;
-    Layout12: TLayout;
-    Circle3: TCircle;
-    Layout13: TLayout;
-    Text7: TText;
-    Layout14: TLayout;
-    Text8: TText;
-    Text9: TText;
-    Layout15: TLayout;
-    Layout2: TLayout;
-    Label2: TLabel;
-    Layout6: TLayout;
-    Layout7: TLayout;
-    Circle2: TCircle;
-    Layout8: TLayout;
-    Text4: TText;
-    Layout9: TLayout;
-    Text5: TText;
-    Text6: TText;
-    Layout10: TLayout;
     LayoutHeadNormal: TLayout;
     LayoutSelection: TLayout;
     ButtonSelAsSPAM: TButton;
@@ -123,6 +102,14 @@ type
     CircleToDown: TCircle;
     Path3: TPath;
     ColorAnimationToDown: TColorAnimation;
+    RectanglePinnedMessage: TRectangle;
+    LayoutPinnedMessageClient: TLayout;
+    Layout2: TLayout;
+    PathUnpinMessage: TPath;
+    Layout6: TLayout;
+    Path5: TPath;
+    ButtonSelPin: TButton;
+    LayoutFooterTop: TLayout;
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
@@ -132,6 +119,13 @@ type
     procedure ButtonBackClick(Sender: TObject);
     procedure CircleToDownClick(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
+    procedure MemoTextKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure PathCloseAddToFriendsClick(Sender: TObject);
+    procedure PathUnpinMessageClick(Sender: TObject);
+    procedure ButtonSelPinClick(Sender: TObject);
+    procedure ButtonSelFavoriteClick(Sender: TObject);
+    procedure ButtonSelDeleteClick(Sender: TObject);
+    procedure ButtonSelAsSPAMClick(Sender: TObject);
   private
     FConversationId: TVkPeerId;
     FVK: TCustomVK;
@@ -159,19 +153,26 @@ type
     FOnBack: TNotifyEvent;
     FIsUser: Boolean;
     FOutRead: Int64;
+    FHavePinned: Boolean;
+    FPinnedMessage: TFrameAttachmentPinnedMessage;
+    FPinnedMessageId: Int64;
+    FIsCanPinMessage: Boolean;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
     procedure EndOfChat;
     procedure LoadConversationAsync;
     procedure LoadConversationInfoAsync;
-    procedure CreateMessageItem(const Item: TVkMessage; AData: TVkEntityExtendedList<TVkMessage>; ToTop: Boolean);
-    procedure UpdateInfo(Info: TVkConversation; Data: TVkConversations);
+    procedure CreateMessageItem(const Item: TVkMessage; AData: TVkEntityExtendedList<TVkMessage>; IsNew: Boolean);
+    procedure UpdateInfo(Info: TVkConversation; Data: IExtended);
     procedure SetIsMuted(const Value: Boolean);
     procedure SetTitle(const Value: string);
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure FOnNewMessage(const Sender: TObject; const M: TMessage);
     procedure FOnEditMessage(const Sender: TObject; const M: TMessage);
+    procedure FOnDeleteMessage(const Sender: TObject; const M: TMessage);
+    procedure FOnChangeMessage(const Sender: TObject; const M: TMessage);
+    procedure FOnReadMessage(const Sender: TObject; const M: TMessage);
     procedure SetChatType(const Value: TChatType);
     procedure SetMemberCount(const Value: Integer);
     procedure UpdateInfoText;
@@ -202,6 +203,18 @@ type
     function GetChatInfo: TChatInfo;
     procedure SetIsUser(const Value: Boolean);
     procedure SetOutRead(const Value: Int64);
+    procedure SendMessage;
+    procedure SetHavePinned(const Value: Boolean);
+    procedure CreatePinnedMessage(Item: TVkMessage; Data: IExtended);
+    function GetSelected: TArray<TFrameMessage>;
+    procedure UpdatePinMessage(const MessageId: Int64; IsLocalId: Boolean);
+    procedure DoAction(Action: TVkMessageAction);
+    procedure SetPinnedMessageId(const Value: Int64);
+    procedure SetIsCanPinMessage(const Value: Boolean);
+    procedure UpdatePinButton(const Count: Integer; const Selected: TArray<TFrameMessage>);
+    procedure UpdateFavoriteButton(const Count: Integer; const Selected: TArray<TFrameMessage>);
+    procedure UpdateReplyAnswerButton(const Count: Integer);
+    procedure ForEach(Proc: TForEachMessage);
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   protected
     procedure SetVisible(const Value: Boolean); override;
@@ -229,7 +242,17 @@ type
     property OnBack: TNotifyEvent read FOnBack write SetOnBack;
     property ChatInfo: TChatInfo read GetChatInfo;
     property OutRead: Int64 read FOutRead write SetOutRead;
+    property HavePinned: Boolean read FHavePinned write SetHavePinned;
+    property PinnedMessageId: Int64 read FPinnedMessageId write SetPinnedMessageId;
+    property IsCanPinMessage: Boolean read FIsCanPinMessage write SetIsCanPinMessage;
   end;
+
+const
+  ChatCountQuery = 40;
+  ImageIndexFavoriteOn = 22;
+  ImageIndexFavoriteOff = 9;
+  ImageIndexPinOn = 21;
+  ImageIndexPinOff = 20;
 
 implementation
 
@@ -237,11 +260,24 @@ uses
   System.Threading, System.DateUtils, VK.Messages, VK.Entity.Profile,
   VK.Entity.Group, ChatFMX.PreviewManager, System.Math, ChatFMX.Utils,
   HGM.FMX.Image, ChatFMX.Frame.MessageAction, ChatFMX.Frame.MessageDate,
-  ChatFMX.Frame.Message, ChatFMX.Events;
+  ChatFMX.Events;
 
 {$R *.fmx}
-
 { TFrameChat }
+
+function TFrameChat.GetSelected: TArray<TFrameMessage>;
+begin
+  var
+    Cnt := 0;
+  SetLength(Result, LayoutMessageList.ControlsCount);
+  for var Control in LayoutMessageList.Controls do
+    if (Control is TFrameMessage) and (Control as TFrameMessage).IsSelected then
+    begin
+      Result[Cnt] := Control as TFrameMessage;
+      Inc(Cnt);
+    end;
+  SetLength(Result, Cnt);
+end;
 
 procedure TFrameChat.ButtonBackClick(Sender: TObject);
 begin
@@ -249,9 +285,137 @@ begin
     FOnBack(Self);
 end;
 
+procedure TFrameChat.UpdatePinMessage(const MessageId: Int64; IsLocalId: Boolean);
+begin
+  TTask.Run(
+    procedure
+    var
+      Items: TVkMessages;
+      Params: TVkParamsMessageGet;
+      ParamsLocal: TVkParamsMessageGetByConvMesId;
+    begin
+      Items := nil;
+      if IsLocalId then
+      begin
+        ParamsLocal.PeerId(ConversationId);
+        ParamsLocal.ConversationMessageId(MessageId);
+        ParamsLocal.Extended;
+        VK.Messages.GetByConversationMessageId(Items, ParamsLocal);
+      end
+      else
+      begin
+        Params.MessageId(MessageId);
+        Params.Extended;
+        VK.Messages.GetById(Items, Params);
+      end;
+      if Assigned(Items) then
+      begin
+        var
+          Extended: IExtended := Items;
+        if Length(Items.Items) > 0 then
+          TThread.Synchronize(nil,
+            procedure
+            begin
+              CreatePinnedMessage(Items.Items[0], Extended);
+            end);
+      end;
+      Items := nil;
+    end);
+end;
+
+procedure TFrameChat.ButtonSelAsSPAMClick(Sender: TObject);
+begin
+  if SelectedCount <= 0 then
+    Exit;
+  var
+    Ids := GetSelected.ToIds;
+  TTask.Run(
+    procedure
+    begin
+      var
+        MessageIds: TVkMessageDelete;
+      if VK.Messages.Delete(MessageIds, Ids, 0, False, True) then
+        MessageIds.Free;
+    end);
+  UnselectAll;
+end;
+
+procedure TFrameChat.ButtonSelDeleteClick(Sender: TObject);
+begin
+  if SelectedCount <= 0 then
+    Exit;
+  var
+    Ids := GetSelected.ToIds;
+  TTask.Run(
+    procedure
+    begin
+      var
+        MessageIds: TVkMessageDelete;
+      if VK.Messages.Delete(MessageIds, Ids, 0, False, False) then
+        MessageIds.Free;
+    end);
+  UnselectAll;
+end;
+
+procedure TFrameChat.ButtonSelFavoriteClick(Sender: TObject);
+begin
+  if SelectedCount <= 0 then
+    Exit;
+  var
+    Ids := GetSelected.ToIds;
+  case ButtonSelFavorite.ImageIndex of
+    ImageIndexFavoriteOff:
+      TTask.Run(
+        procedure
+        begin
+          var
+            MessageIds: TIdList;
+          VK.Messages.MarkAsImportant(MessageIds, Ids, True);
+        end);
+    ImageIndexFavoriteOn:
+      TTask.Run(
+        procedure
+        begin
+          var
+            MessageIds: TIdList;
+          VK.Messages.MarkAsImportant(MessageIds, Ids, False);
+        end);
+  end;
+  UnselectAll;
+end;
+
+procedure TFrameChat.ButtonSelPinClick(Sender: TObject);
+begin
+  if SelectedCount <> 1 then
+    Exit;
+  var
+    Frame := GetSelected[0];
+  case ButtonSelPin.ImageIndex of
+    ImageIndexPinOff:
+      TTask.Run(
+        procedure
+        begin
+          VK.Messages.Pin(ConversationId, Frame.MessageId);
+        end);
+    ImageIndexPinOn:
+      TTask.Run(
+        procedure
+        begin
+          VK.Messages.Unpin(ConversationId);
+        end);
+  end;
+  UnselectAll;
+end;
+
 procedure TFrameChat.ButtonSendClick(Sender: TObject);
 begin
-  var NewMessage := VK.Messages.New;
+  SendMessage;
+end;
+
+procedure TFrameChat.SendMessage;
+begin
+  var
+    NewMessage := VK.Messages.New;
   NewMessage.PeerId(ConversationId);
   if not MemoText.Text.IsEmpty then
   begin
@@ -259,13 +423,25 @@ begin
     MemoText.Text := '';
     MemoText.SetFocus;
   end;
-  NewMessage.Send;
+  RectangleFooter.Enabled := False;
+  TTask.Run(
+    procedure
+    begin
+      NewMessage.Send;
+      TThread.Queue(nil,
+        procedure
+        begin
+          RectangleFooter.Enabled := True;
+        end);
+    end);
 end;
 
 constructor TFrameChat.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
-  {$IFDEF ANDROID}
+  FPinnedMessage := nil;
+  FPinnedMessageId := -1;
+{$IFDEF ANDROID}
   VertScrollBoxMessages.ShowScrollBars := False;
   RectangleChatBG.Margins.Right := 0;
   RectangleHead.Sides := [];
@@ -274,7 +450,7 @@ begin
   RectangleFooterBlock.Corners := [];
   RectangleFooter.Sides := [];
   RectangleFooter.Corners := [];
-  {$ENDIF}
+{$ENDIF}
   ButtonBack.Visible := False;
   FChatScroll := TSmoothScroll.CreateFor(VertScrollBoxMessages);
   FChatScroll.ScrollDelta := 2;
@@ -287,6 +463,7 @@ begin
   MemoText.PrepareForPaint;
   IsNeedAddToFriends := False;
   IsCanWrtie := True;
+  HavePinned := False;
   UpdateFooterSize;
 end;
 
@@ -297,7 +474,7 @@ begin
   if not FOffsetEnd then
   begin
     FLoading := True;
-    Inc(FOffset, 20);
+    Inc(FOffset, ChatCountQuery);
     TTask.Run(LoadConversationAsync);
   end;
   FrameLoadingMesages.Visible := not FOffsetEnd;
@@ -316,7 +493,66 @@ begin
     if Control.IsVisible then
       Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
   LayoutMessageList.Height := Sz + 10;
-  FrameLoadingMesages.Visible := (LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height) and (not FOffsetEnd);
+  FrameLoadingMesages.Visible :=
+    (LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height) and
+    (not FOffsetEnd);
+  {
+    LayoutMessageList.Sort(
+    function(Left, Right: TFmxObject): Integer
+    begin
+    var DL: TDateTime := 0;
+    if Left is TFrameMessageAction then
+    DL := (Left as TFrameMessageAction).Date
+    else if Left is TFrameMessage then
+    DL := (Left as TFrameMessage).Date
+    else if Left is TFrameMessageDate then
+    DL := (Left as TFrameMessageDate).Date;
+
+    var DR: TDateTime := 0;
+    if Right is TFrameMessageAction then
+    DR := (Right as TFrameMessageAction).Date
+    else if Right is TFrameMessage then
+    DR := (Right as TFrameMessage).Date
+    else if Right is TFrameMessageDate then
+    DR := (Right as TFrameMessageDate).Date;
+
+    Result := CompareDate(DL, DR);
+    end);
+    LayoutMessageList.FNeedAlign := True;
+    LayoutMessageList.Realign; }
+         {
+  LayoutMessageList.Sort(
+    function(Left, Right: TFMXObject): integer
+    begin
+      var DL: TDateTime := 0;
+      if Left is TFrameMessageAction then
+        DL := (Left as TFrameMessageAction).Date
+      else if Left is TFrameMessage then
+        DL := (Left as TFrameMessage).Date
+      else if Left is TFrameMessageDate then
+        DL := (Left as TFrameMessageDate).Date;
+
+      var DR: TDateTime := 0;
+      if Right is TFrameMessageAction then
+        DR := (Right as TFrameMessageAction).Date
+      else if Right is TFrameMessage then
+        DR := (Right as TFrameMessage).Date
+      else if Right is TFrameMessageDate then
+        DR := (Right as TFrameMessageDate).Date;
+
+      if DL < DR then
+      begin
+        (Left as TControl).Position.Y := (Right as TControl).Position.Y - (Left as TControl).Height - 1;
+        Result := -1
+      end
+      else if DL > DR then
+      begin
+        (Left as TControl).Position.Y := (Right as TControl).Position.Y + (Right as TControl).Height + 1;
+        Result := 1;
+      end
+      else
+        Result := 0;
+    end);  }
 end;
 
 procedure TFrameChat.LayoutUnselClick(Sender: TObject);
@@ -347,25 +583,134 @@ begin
   UpdateSelection(0);
 end;
 
+procedure TFrameChat.UpdatePinButton(const Count: Integer; const Selected: TArray<TFrameMessage>);
+begin
+  ButtonSelPin.Visible := FIsCanPinMessage and (Count = 1);
+  if ButtonSelPin.Visible then
+  begin
+    if Selected[0].MessageId = PinnedMessageId then
+      ButtonSelPin.ImageIndex := ImageIndexPinOn
+    else
+      ButtonSelPin.ImageIndex := ImageIndexPinOff;
+    ButtonSelPin.Align := TAlignLayout.Left;
+    ButtonSelPin.Align := TAlignLayout.Right;
+  end;
+end;
+
+procedure TFrameChat.UpdateFavoriteButton(const Count: Integer; const Selected: TArray<TFrameMessage>);
+begin
+  var
+    AllFavorite := True;
+  for var Item in Selected do
+    if not Item.IsImportant then
+    begin
+      AllFavorite := False;
+      Break;
+    end;
+  if AllFavorite then
+    ButtonSelFavorite.ImageIndex := ImageIndexFavoriteOn
+  else
+    ButtonSelFavorite.ImageIndex := ImageIndexFavoriteOff;
+end;
+
+procedure TFrameChat.UpdateReplyAnswerButton(const Count: Integer);
+begin
+  if Count > 1 then
+    ButtonSelAnswerReply.Text := 'Переслать сюда'
+  else
+    ButtonSelAnswerReply.Text := 'Ответить';
+end;
+
 procedure TFrameChat.UpdateSelection(const Count: Integer);
 begin
   if Count <= 0 then
     HeadMode := hmNormal
   else
-    HeadMode := hmSelection;
-  if HeadMode = hmSelection then
   begin
-    LabelSelCount.Text := Count.ToString + ' ' + WordOfCount(Count, ['сообщение', 'сообщения', 'сообщений']);
-    if Count > 1 then
-      ButtonSelAnswerReply.Text := 'Переслать сюда'
-    else
-      ButtonSelAnswerReply.Text := 'Ответить';
+    HeadMode := hmSelection;
+    var
+      Selected := GetSelected;
+    UpdatePinButton(Count, Selected);
+    UpdateFavoriteButton(Count, Selected);
+    UpdateReplyAnswerButton(Count);
+    LabelSelCount.Text := Count.ToString + ' ' +
+      WordOfCount(Count, ['сообщение', 'сообщения', 'сообщений']);
   end;
 end;
 
-procedure TFrameChat.FOnEditMessage(const Sender: TObject; const M: TMessage);
+procedure TFrameChat.ForEach(Proc: TForEachMessage);
 begin
+  var
+    DoBreak := False;
+  for var Control in LayoutMessageList.Controls do
+    if Control is TFrameMessage then
+    begin
+      Proc(Control as TFrameMessage, DoBreak);
+      if DoBreak then
+        Exit;
+    end;
+end;
 
+procedure TFrameChat.FOnChangeMessage(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventMessageChange absolute M;
+begin
+  if Event.Data.PeerId <> NormalizePeerId(FConversationId) then
+    Exit;
+  var
+    MessageId := Event.Data.MessageId;
+  ForEach(
+    procedure(Item: TFrameMessage; var Break: Boolean)
+    begin
+      if Item.MessageId = MessageId then
+      begin
+        Item.UpdateFlags(Event.Data.ChangeType, Event.Data.Flags);
+        Break := True;
+      end;
+    end);
+end;
+
+procedure TFrameChat.FOnDeleteMessage(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventDeleteMessage absolute M;
+  MessageId: Int64;
+begin
+  if Event.PeerId <> NormalizePeerId(FConversationId) then
+    Exit;
+  MessageId := Event.LocalId;
+  ForEach(
+    procedure(Item: TFrameMessage; var Break: Boolean)
+    begin
+      if Item.ConversationMessageId = MessageId then
+      begin
+        Item.IsDeleted := True;
+        Break := True;
+      end;
+    end);
+end;
+
+procedure TFrameChat.FOnReadMessage(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventReadMessages absolute M;
+  MessageId: Int64;
+begin
+  if Event.PeerId <> NormalizePeerId(FConversationId) then
+    Exit;
+  MessageId := Event.LocalId;
+  ForEach(
+    procedure(Item: TFrameMessage; var Break: Boolean)
+    begin
+      if Item.MessageId >= MessageId then
+        Item.IsUnread := False;
+    end);
+end;
+
+procedure TFrameChat.FOnEditMessage(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventEditMessage absolute M;
+begin
+  if Event.Data.PeerId <> NormalizePeerId(FConversationId) then
+    Exit;
 end;
 
 procedure TFrameChat.FOnNewMessage(const Sender: TObject; const M: TMessage);
@@ -384,12 +729,11 @@ begin
     begin
       Params.MessageId(MessageId);
       Params.Extended;
-      Params.Fields([TVkExtendedField.Photo50, TVkExtendedField.Verified, TVkExtendedField.Sex,
-        TVkExtendedField.FirstNameAcc, TVkExtendedField.LastNameAcc]);
+      Params.Fields([TVkExtendedField.Photo50, TVkExtendedField.Verified,
+        TVkExtendedField.Sex, TVkExtendedField.FirstNameAcc,
+        TVkExtendedField.LastNameAcc]);
       if VK.Messages.GetById(Items, Params) then
       try
-        if Length(Items.Items) < 20 then
-          FOffsetEnd := True;
         TThread.Synchronize(nil,
           procedure
           begin
@@ -404,7 +748,7 @@ end;
 procedure TFrameChat.AppendMessage(Items: TVkMessages);
 begin
   for var Item in Items.Items do
-    CreateMessageItem(Item, Items, False);
+    CreateMessageItem(Item, Items, True);
 
   VertScrollBoxMessagesResize(nil);
   LayoutMessageListResize(nil);
@@ -421,6 +765,7 @@ begin
   Result.IsCanWrite := IsCanWrtie;
   Result.IsP2P := IsUser;
   Result.OutRead := OutRead;
+  Result.PeerId := ConversationId;
 end;
 
 function TFrameChat.GetLastMessage: TFrame;
@@ -446,7 +791,8 @@ procedure TFrameChat.InsertDateLastMessage(LastDate: TDateTime);
 begin
   if LastDate > 0 then
   begin
-    var Frame := TFrameMessageDate.Create(LayoutMessageList);
+    var
+      Frame := TFrameMessageDate.Create(LayoutMessageList);
     LayoutMessageList.InsertObject(0, Frame);
     with Frame do
     begin
@@ -456,11 +802,12 @@ begin
   end;
 end;
 
-procedure TFrameChat.CreateMessageItem(const Item: TVkMessage; AData: TVkEntityExtendedList<TVkMessage>; ToTop: Boolean);
+procedure TFrameChat.CreateMessageItem(const Item: TVkMessage; AData: TVkEntityExtendedList<TVkMessage>; IsNew: Boolean);
 begin
-  if ToTop then
+  if not IsNew then
   begin
-    var LastDate := GetMessageDate(GetLastMessage);
+    var
+      LastDate := GetMessageDate(GetLastMessage);
     if LastDate > 0 then
       if not IsSameDay(Item.Date, LastDate) then
         InsertDateLastMessage(LastDate);
@@ -468,10 +815,11 @@ begin
 
   if not Assigned(Item.Action) then
   begin
-    var Frame := TFrameMessage.Create(LayoutMessageList, FVK);
-    if ToTop then
+    var
+      Frame := TFrameMessage.Create(LayoutMessageList, FVK);
+    if not IsNew then
     begin
-      Frame.Align := TAlignLayout.Top;
+      Frame.Align := TAlignLayout.MostTop;
       LayoutMessageList.InsertObject(0, Frame);
     end
     else
@@ -486,10 +834,14 @@ begin
   end
   else
   begin
-    var Frame := TFrameMessageAction.Create(LayoutMessageList, FVK);
-    if ToTop then
+    if IsNew then
+      DoAction(Item.Action);
+
+    var
+      Frame := TFrameMessageAction.Create(LayoutMessageList, FVK);
+    if not IsNew then
     begin
-      Frame.Align := TAlignLayout.Top;
+      Frame.Align := TAlignLayout.MostTop;
       LayoutMessageList.InsertObject(0, Frame);
     end
     else
@@ -503,11 +855,38 @@ begin
   end;
 end;
 
+procedure TFrameChat.DoAction(Action: TVkMessageAction);
+begin
+  case Action.&Type of
+    TVkMessageActionType.ChatPhotoUpdate:
+      TTask.Run(LoadConversationInfoAsync);
+    TVkMessageActionType.ChatPhotoRemove:
+      TTask.Run(LoadConversationInfoAsync);
+    TVkMessageActionType.ChatTitleUpdate:
+      Title := Action.Text;
+    TVkMessageActionType.ChatPinMessage:
+      UpdatePinMessage(Action.ConversationMessageId, True);
+    TVkMessageActionType.ChatUnpinMessage:
+      HavePinned := False;
+    TVkMessageActionType.ChatInviteUser:
+      MemberCount := MemberCount + 1;
+    TVkMessageActionType.ChatKickUser:
+      MemberCount := MemberCount - 1;
+    TVkMessageActionType.ChatInviteUserByLink:
+      MemberCount := MemberCount + 1;
+    TVkMessageActionType.ConversationStyleUpdate:
+      TTask.Run(LoadConversationInfoAsync);
+  end;
+end;
+
 procedure TFrameChat.Load(const PeerId: TVkPeerId);
 begin
   FConversationId := PeerId;
   Event.Subscribe(TEventNewMessage, FOnNewMessage);
   Event.Subscribe(TEventEditMessage, FOnEditMessage);
+  Event.Subscribe(TEventDeleteMessage, FOnDeleteMessage);
+  Event.Subscribe(TEventMessageChange, FOnChangeMessage);
+  Event.Subscribe(TEventReadMessages, FOnReadMessage);
   ReloadAsync;
 end;
 
@@ -516,13 +895,16 @@ begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
   TPreview.Instance.Unsubscribe(FOnNewMessage);
   TPreview.Instance.Unsubscribe(FOnEditMessage);
+  TPreview.Instance.Unsubscribe(FOnDeleteMessage);
+  TPreview.Instance.Unsubscribe(FOnChangeMessage);
+  TPreview.Instance.Unsubscribe(FOnReadMessage);
   inherited;
 end;
 
 procedure TFrameChat.AppendHistory(Items: TVkMessageHistory);
 begin
   for var Item in Items.Items do
-    CreateMessageItem(Item, Items, True);
+    CreateMessageItem(Item, Items, False);
   if FOffsetEnd then
     InsertDateLastMessage(GetMessageDate(GetLastMessage));
   LayoutMessageList.Visible := True;
@@ -538,14 +920,15 @@ var
 begin
   Params.Extended;
   Params.Offset(FOffset);
-  Params.Count(20);
-  Params.Fields([TVkExtendedField.Photo50, TVkExtendedField.Verified, TVkExtendedField.Sex,
-    TVkExtendedField.FirstNameAcc, TVkExtendedField.LastNameAcc]);
+  Params.Count(ChatCountQuery);
+  Params.Fields([TVkExtendedField.Photo50, TVkExtendedField.Verified,
+    TVkExtendedField.Sex, TVkExtendedField.FirstNameAcc,
+    TVkExtendedField.LastNameAcc]);
   Params.PeerId(FConversationId);
   try
     if VK.Messages.GetHistory(Items, Params) then
     try
-      if Length(Items.Items) < 20 then
+      if Length(Items.Items) < ChatCountQuery then
         FOffsetEnd := True;
       TThread.Synchronize(nil,
         procedure
@@ -561,7 +944,7 @@ begin
       procedure
       begin
         FLoading := False;
-        Dec(FOffset, 20);
+        Dec(FOffset, ChatCountQuery);
         ErrorLoading;
       end);
   end;
@@ -572,7 +955,21 @@ begin
 
 end;
 
-procedure TFrameChat.UpdateInfo(Info: TVkConversation; Data: TVkConversations);
+procedure TFrameChat.CreatePinnedMessage(Item: TVkMessage; Data: IExtended);
+begin
+  if Assigned(FPinnedMessage) then
+    FPinnedMessage.Free;
+  FPinnedMessageId := Item.Id;
+  FPinnedMessage := TFrameAttachmentPinnedMessage.Create
+    (LayoutPinnedMessageClient, FVK);
+  // FPinnedMessage.OnClick := FOnPinnedClick;
+  FPinnedMessage.Parent := LayoutPinnedMessageClient;
+  FPinnedMessage.Align := TAlignLayout.Client;
+  FPinnedMessage.Fill(Item, Data);
+  HavePinned := True;
+end;
+
+procedure TFrameChat.UpdateInfo(Info: TVkConversation; Data: IExtended);
 begin
   ImageUrl := '';
   Title := '';
@@ -582,6 +979,8 @@ begin
   CanCall := False;
   IsSelfChat := Info.Peer.Id = FVK.UserId;
   Verified := False;
+  HavePinned := False;
+  FIsCanPinMessage := False;
   LastSeen := 0;
   IsNeedAddToFriends := False;
   if Assigned(Info.CanWrite) then
@@ -603,7 +1002,9 @@ begin
   if IsSelfChat then
   begin
     try
-      var RS: TResourceStream := TResourceStream.Create(HInstance, 'im_favorites_100', RT_RCDATA);
+      var
+        RS: TResourceStream := TResourceStream.Create(HInstance,
+        'im_favorites_100', RT_RCDATA);
       try
         CircleImage.Fill.Bitmap.Bitmap.LoadFromStream(RS);
       finally
@@ -630,12 +1031,16 @@ begin
       MemberCount := Info.ChatSettings.MembersCount;
       if Assigned(Info.ChatSettings.ACL) then
         CanCall := Info.ChatSettings.ACL.CanCall;
+      if Assigned(Info.ChatSettings.PinnedMessage) then
+        CreatePinnedMessage(Info.ChatSettings.PinnedMessage, Data);
+      FIsCanPinMessage := True;
     end;
   end
   else if Info.IsUser then
   begin
     ChatType := ctUser;
-    var User: TVkProfile;
+    var
+      User: TVkProfile;
     if Data.GetProfileById(Info.Peer.Id, User) then
     begin
       Title := User.FullName;
@@ -654,7 +1059,8 @@ begin
   else if Info.IsGroup then
   begin
     ChatType := ctGroup;
-    var Group: TVkGroup;
+    var
+      Group: TVkGroup;
     if Data.GetGroupById(Info.Peer.Id, Group) then
     begin
       Title := Group.Name;
@@ -677,7 +1083,8 @@ begin
         if FMemberCount = 0 then
           LabelInfo.Text := ''
         else
-          LabelInfo.Text := FMemberCount.ToString + ' ' + WordOfCount(FMemberCount, ['участник', 'участника', 'участников']);
+          LabelInfo.Text := FMemberCount.ToString + ' ' +
+            WordOfCount(FMemberCount, ['участник', 'участника', 'участников']);
       end;
     ctUser:
       begin
@@ -700,26 +1107,36 @@ procedure TFrameChat.VertScrollBoxMessagesResize(Sender: TObject);
 begin
   if LayoutMessageList.Width <> VertScrollBoxMessages.Width then
     LayoutMessageList.Width := VertScrollBoxMessages.ClientWidth - 1;
-  LayoutMessageList.Position.Y := VertScrollBoxMessages.Height - LayoutMessageList.Height;
+  LayoutMessageList.Position.Y := VertScrollBoxMessages.Height -
+    LayoutMessageList.Height;
 end;
 
 procedure TFrameChat.CalcDisappear;
 begin
   if Visible then
   begin
-    var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
-    var Offset := Abs(VertScrollBoxMessages.ViewportPosition.Y - Content.Top);
-    var ViewHeight := VertScrollBoxMessages.Height;
-    var ContentHeight := LayoutMessageList.Height;
+    var
+      Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
+    var
+      Offset := Abs(VertScrollBoxMessages.ViewportPosition.Y - Content.Top);
+    var
+      ViewHeight := VertScrollBoxMessages.Height;
+    var
+      ContentHeight := LayoutMessageList.Height;
 
-    var ATop := Offset;
-    var ABottom := ATop + Min(ViewHeight, ContentHeight);
+    var
+      ATop := Offset;
+    var
+      ABottom := ATop + Min(ViewHeight, ContentHeight);
 
     for var Control in LayoutMessageList.Controls do
       if Control is TFrameMessage then
       begin
-        var Vis :=((Control.BoundsRect.Bottom > ATop) and (Control.BoundsRect.Top < ABottom)) or
-          ((Control.BoundsRect.Top < ABottom) and (Control.BoundsRect.Bottom > ATop));
+        var
+          Vis :=((Control.BoundsRect.Bottom > ATop) and
+          (Control.BoundsRect.Top < ABottom)) or
+          ((Control.BoundsRect.Top < ABottom) and
+          (Control.BoundsRect.Bottom > ATop));
         (Control as TFrameMessage).Visibility := Vis;
       end;
   end
@@ -733,8 +1150,12 @@ end;
 
 procedure TFrameChat.CircleToDownClick(Sender: TObject);
 begin
-  var Pos := VertScrollBoxMessages.Content.ScrollBox.ContentBounds.Bottom - VertScrollBoxMessages.Height;
-  VertScrollBoxMessages.ViewportPosition := TPointF.Create(0, Pos - Min(Abs(VertScrollBoxMessages.ViewportPosition.Y), 200));
+  var
+    Pos := VertScrollBoxMessages.Content.ScrollBox.ContentBounds.Bottom -
+    VertScrollBoxMessages.Height;
+  VertScrollBoxMessages.ViewportPosition :=
+    TPointF.Create(0,
+    Pos - Min(Abs(VertScrollBoxMessages.ViewportPosition.Y), 200));
   FChatScroll.ScrollDown;
 end;
 
@@ -755,7 +1176,8 @@ end;
 procedure TFrameChat.VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
   CalcDisappear;
-  var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
+  var
+    Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
   if Abs(NewViewportPosition.Y - Content.Top) < 500 then
     EndOfChat;
   if NewViewportPosition.Y = 0 then
@@ -791,23 +1213,21 @@ var
 begin
   Params.PeerId(FConversationId);
   Params.Extended;
-  Params.Fields(
-    [TVkExtendedField.OnlineInfo, TVkExtendedField.FirstNameAcc,
+  Params.Fields([TVkExtendedField.OnlineInfo, TVkExtendedField.FirstNameAcc,
     TVkExtendedField.IsFriend, TVkExtendedField.CanSendFriendRequest,
-    TVkExtendedField.CanWritePrivateMessage, TVkExtendedField.Verified, TVkExtendedField.Photo50]);
+    TVkExtendedField.CanWritePrivateMessage, TVkExtendedField.Verified,
+    TVkExtendedField.Photo50]);
   if VK.Messages.GetConversationsById(Items, Params) then
-  try
+  begin
+    var
+      Ext: IExtended := Items;
     if Length(Items.Items) > 0 then
-    begin
       TThread.Synchronize(nil,
         procedure
         begin
-          UpdateInfo(Items.Items[0], Items);
+          UpdateInfo(Items.Items[0], Ext);
           LayoutHead.Visible := True;
         end);
-    end;
-  finally
-    Items.Free;
   end;
 end;
 
@@ -819,16 +1239,47 @@ begin
   ButtonSend.Visible := not MemoText.Text.IsEmpty;
 end;
 
+procedure TFrameChat.MemoTextKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+begin
+  if (Key = vkReturn) and not (ssCtrl in Shift) then
+  begin
+    Key := 0;
+    TThread.ForceQueue(nil, SendMessage);
+  end;
+end;
+
+procedure TFrameChat.PathCloseAddToFriendsClick(Sender: TObject);
+begin
+  IsNeedAddToFriends := False;
+end;
+
+procedure TFrameChat.PathUnpinMessageClick(Sender: TObject);
+begin
+  TTask.Run(
+    procedure
+    begin
+      try
+        VK.Messages.Unpin(ConversationId);
+      except
+        TThread.Queue(nil,
+          procedure
+          begin
+            ShowMessage('Не удалось открепить сообщение');
+          end);
+      end;
+    end);
+end;
+
 procedure TFrameChat.UpdateFooterSize;
 var
   H: Single;
 begin
-  H :=
-    Max(36, Min(MemoText.ContentSize.Height + 20, 220)) +
-    RectangleMessage.Margins.Top +
-    RectangleMessage.Margins.Bottom;
+  H := Max(36, Min(MemoText.ContentSize.Height + 20, 220)) +
+    RectangleMessage.Margins.Top + RectangleMessage.Margins.Bottom;
   if LayoutFooterBottom.Visible then
     H := H + LayoutFooterBottom.Height;
+  if LayoutFooterTop.Visible then
+    H := H + LayoutFooterTop.Height;
   RectangleFooter.Height := H;
 end;
 
@@ -885,6 +1336,19 @@ begin
   FConversationId := Value;
 end;
 
+procedure TFrameChat.SetHavePinned(const Value: Boolean);
+begin
+  FHavePinned := Value;
+  if not FHavePinned then
+    if Assigned(FPinnedMessage) then
+    begin
+      FPinnedMessage.Free;
+      FPinnedMessage := nil;
+      FPinnedMessageId := -1;
+    end;
+  RectanglePinnedMessage.Visible := FHavePinned;
+end;
+
 procedure TFrameChat.SetHeadMode(const Value: THeadMode);
 begin
   FHeadMode := Value;
@@ -903,6 +1367,11 @@ begin
     CircleImage.Fill.Kind := TBrushKind.Solid;
 end;
 
+procedure TFrameChat.SetIsCanPinMessage(const Value: Boolean);
+begin
+  FIsCanPinMessage := Value;
+end;
+
 procedure TFrameChat.SetIsCanWrtie(const Value: Boolean);
 begin
   FIsCanWrtie := Value;
@@ -912,28 +1381,39 @@ begin
   begin
     ImageWarning.Bitmap.LoadFromResource('msg_warning');
   end;
-  var Reason: string := '';
+  var
+    Reason: string := '';
   case FNotAllowedReason of
-    TVkConversationDisableReason.UserBannedOrDeleted:
+    TVkConversationDisableReason.UserBannedOrDeleted
+    :
       Reason := 'Пользователь удалён.';
     TVkConversationDisableReason.UserBlacklisted:
-      Reason := 'Нельзя отправить сообщение пользователю, который в чёрном списке';
+      Reason :=
+        'Нельзя отправить сообщение пользователю, который в чёрном списке';
     TVkConversationDisableReason.UserDisableGroupsMessages:
-      Reason := 'Пользователь запретил сообщения от сообщества';
+      Reason :=
+        'Пользователь запретил сообщения от сообщества';
     TVkConversationDisableReason.UserPrivacy:
-      Reason := 'Вы не можете отправить сообщение этому пользователю, поскольку он ограничил круг лиц, которые могут присылать ему сообщения.';
+      Reason :=
+        'Вы не можете отправить сообщение этому пользователю, поскольку он ограничил круг лиц, которые могут присылать ему сообщения.';
     TVkConversationDisableReason.GroupDisableMessages:
-      Reason := 'Сообщество отключило сообщения.';
+      Reason :=
+        'Сообщество отключило сообщения.';
     TVkConversationDisableReason.GroupBannedMessages:
-      Reason := 'В сообществе заблокированы сообщения';
+      Reason :=
+        'В сообществе заблокированы сообщения';
     TVkConversationDisableReason.NoAccessChat:
-      Reason := 'Вы были исключены из этого чата.';
+      Reason :=
+        'Вы были исключены из этого чата.';
     TVkConversationDisableReason.NoAccessEMail:
-      Reason := 'Нет доступа к e-mail';
+      Reason :=
+        'Нет доступа к e-mail';
     TVkConversationDisableReason.NoAccessGroup:
-      Reason := 'Вы не можете отправить сообщение этому сообществу, поскольку оно ограничило круг лиц, которые могут присылать ему сообщения.';
+      Reason :=
+        'Вы не можете отправить сообщение этому сообществу, поскольку оно ограничило круг лиц, которые могут присылать ему сообщения.';
     TVkConversationDisableReason.Forbidden:
-      Reason := 'Отправка сообщений ограничена';
+      Reason :=
+        'Отправка сообщений ограничена';
   else
     Reason := 'Отправка сообщений ограничена';
   end;
@@ -958,7 +1438,8 @@ begin
   RectangleAddToFriends.Visible := FIsNeedAddToFriends;
   if FIsNeedAddToFriends then
   begin
-    LabelAddFriendHint.Text := 'Добавьте ' + FUserAccFirstName + ' в друзья и общайтесь чаще';
+    LabelAddFriendHint.Text := 'Добавьте ' + FUserAccFirstName +
+      ' в друзья и общайтесь чаще';
   end;
 end;
 
@@ -1003,6 +1484,11 @@ begin
   FOutRead := Value;
 end;
 
+procedure TFrameChat.SetPinnedMessageId(const Value: Int64);
+begin
+  FPinnedMessageId := Value;
+end;
+
 procedure TFrameChat.SetTitle(const Value: string);
 begin
   FTitle := Value;
@@ -1034,6 +1520,15 @@ begin
   if Tag = 15 then
     if Assigned(Canvas) then
       Width := Canvas.TextWidth(Value) + 35;
+end;
+
+{ TFrameMessagesHelper }
+
+function TFrameMessagesHelper.ToIds: TArrayOfInteger;
+begin
+  SetLength(Result, Length(Self));
+  for var i := Low(Self) to High(Self) do
+    Result[i] := Self[i].MessageId;
 end;
 
 end.

@@ -13,19 +13,37 @@ type
   private
     FNew: Integer;
   public
+    property Count;
     property New: Integer read FNew write FNew;
+  end;
+
+  TVkStoryClickableStickers = class(TVkEntity)
+  private
+    FOriginal_height: Integer;
+    FOriginal_width: Integer;
+  public
+    property OriginalHeight: Integer read FOriginal_height write FOriginal_height;
+    property OriginalWidth: Integer read FOriginal_width write FOriginal_width;
+    //property ClickableStickers: TArray<T> read FClickable_stickers write FClickable_stickers;
   end;
 
   TVkStory = class(TVkObject)
   private
     FAccess_key: string;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_ask: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_ask_anonymous: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_comment: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_hide: Boolean;
     FCan_like: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_reply: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_see: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_share: Boolean;
     [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
@@ -47,6 +65,9 @@ type
     FIs_ads: Boolean;
     FPreloading_enabled: Boolean;
     FVideo: TVkVideo;
+    FIs_expired: Boolean;
+    FReaction_set_id: string;
+    FClickable_stickers: TVkStoryClickableStickers;
   public
     property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
@@ -58,9 +79,11 @@ type
     property CanReply: Boolean read FCan_reply write FCan_reply;
     property CanSee: Boolean read FCan_see write FCan_see;
     property CanShare: Boolean read FCan_share write FCan_share;
+    property ClickableStickers: TVkStoryClickableStickers read FClickable_stickers write FClickable_stickers;
     property Date: TDateTime read FDate write FDate;
     property ExpiresAt: TDateTime read FExpires_at write FExpires_at;
     property IsAds: Boolean read FIs_ads write FIs_ads;
+    property IsExpired: Boolean read FIs_expired write FIs_expired;
     property IsOneTime: Boolean read FIs_one_time write FIs_one_time;
     property IsOwnerPinned: Boolean read FIs_owner_pinned write FIs_owner_pinned;
     property IsRestricted: Boolean read FIs_restricted write FIs_restricted;
@@ -70,9 +93,16 @@ type
     property NoSound: Boolean read FNo_sound write FNo_sound;
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property PreloadingEnabled: Boolean read FPreloading_enabled write FPreloading_enabled;
+    /// <summary>
+    /// reactions, ...
+    /// </summary>
+    property ReactionSetId: string read FReaction_set_id write FReaction_set_id;
     property Replies: TVkStoryReplies read FReplies write FReplies;
     property Seen: Integer read FSeen write FSeen;
     property TrackCode: string read FTrack_code write FTrack_code;
+    /// <summary>
+    /// photo, video, ...
+    /// </summary>
     property &Type: string read FType write FType;
     property Photo: TVkPhoto read FPhoto write FPhoto;
     property Video: TVkVideo read FVideo write FVideo;
@@ -130,6 +160,8 @@ begin
     FReplies.Free;
   if Assigned(FVideo) then
     FVideo.Free;
+  if Assigned(FClickable_stickers) then
+    FClickable_stickers.Free;
   inherited;
 end;
 

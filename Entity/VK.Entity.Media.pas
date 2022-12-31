@@ -12,7 +12,7 @@ uses
   VK.Entity.Market.Album, VK.Entity.Info, VK.Entity.Common.List,
   VK.Entity.Common.ExtendedList, VK.Entity.Donut, VK.Wrap.Interceptors,
   VK.Entity.MoneyTransfer, VK.Entity.MoneyRequest, VK.Entity.Geo,
-  VK.Entity.Playlist;
+  VK.Entity.Playlist, VK.Entity.Stories;
 
 type
   TVkAttachment = class;
@@ -87,6 +87,7 @@ type
     FMoney_transfer: TVkMoneyTransfer;
     FMoney_request: TVkMoneyRequest;
     FAudio_playlist: TVkAudioPlaylist;
+    FStory: TVkStory;
   public
     property &Type: TVkAttachmentType read FType write FType;
     /// <summary>
@@ -193,6 +194,10 @@ type
     /// Аудио-плейлист
     /// </summary>
     property AudioPlaylist: TVkAudioPlaylist read FAudio_playlist write FAudio_playlist;
+    /// <summary>
+    /// История
+    /// </summary>
+    property Story: TVkStory read FStory write FStory;
     destructor Destroy; override;
     function GetPreviewUrl(const Size: Integer = 50): string;
   end;
@@ -664,6 +669,8 @@ begin
     FEvent.Free;
   if Assigned(FAudio_playlist) then
     FAudio_playlist.Free;
+  if Assigned(FStory) then
+    FStory.Free;
   inherited;
 end;
 

@@ -39,7 +39,13 @@ uses
   ChatFMX.Frame.Attachment.Graffiti in 'ChatFMX.Frame.Attachment.Graffiti.pas' {FrameAttachmentGraffiti},
   ChatFMX.Frame.Attachment.Poll in 'ChatFMX.Frame.Attachment.Poll.pas' {FrameAttachmentPoll: TFrame},
   ChatFMX.Events in 'ChatFMX.Events.pas',
-  ChatFMX.Frame.Attachment.AudioPlaylist in 'ChatFMX.Frame.Attachment.AudioPlaylist.pas' {FrameAttachmentAudioPlaylist};
+  ChatFMX.Frame.Attachment.AudioPlaylist in 'ChatFMX.Frame.Attachment.AudioPlaylist.pas' {FrameAttachmentAudioPlaylist},
+  ChatFMX.Frame.Attachment.Keyboard in 'ChatFMX.Frame.Attachment.Keyboard.pas' {FrameAttachmentKeyboard: TFrame},
+  ChatFMX.Frame.Window.Geo in 'ChatFMX.Frame.Window.Geo.pas' {FrameWindowGeo: TFrame},
+  ChatFMX.Frame.Window.OpenLink in 'ChatFMX.Frame.Window.OpenLink.pas' {FrameWindowLink: TFrame},
+  ChatFMX.Frame.Attachment.PinnedMessage in 'ChatFMX.Frame.Attachment.PinnedMessage.pas' {FrameAttachmentPinnedMessage},
+  ChatFMX.Classes in 'ChatFMX.Classes.pas',
+  ChatFMX.Frame.Attachment.Story in 'ChatFMX.Frame.Attachment.Story.pas' {FrameAttachmentStory};
 
 {$R *.res}
 

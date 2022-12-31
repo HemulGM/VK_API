@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Controls.Presentation, VK.Entity.Message, VK.API,
-  VK.Entity.Conversation, VK.Entity.Common.ExtendedList, ChatFMX.Frame.Chat;
+  VK.Entity.Conversation, VK.Entity.Common.ExtendedList, ChatFMX.Frame.Chat,
+  ChatFMX.Classes;
 
 type
   TFrameMessageAction = class(TFrame)

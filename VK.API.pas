@@ -10,9 +10,11 @@ uses
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed,
   VK.Notifications, VK.Orders, Vk.Pages, VK.Polls, VK.Podcasts, VK.Search,
   VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
-  VK.Apps, VK.Clients, VK.Donut, VK.Streaming, VK.Ads, VK.Asr;
+  VK.Apps, VK.Clients, VK.Donut, VK.Streaming, VK.Ads, VK.Asr, System.Sensors;
 
 type
+  TOnNeedGeoLocation = procedure(Sender: TObject; var Coord: TLocationCoord2D) of object;
+
   TCustomVK = class(TComponent)
     type
       TVkProxy = class(TPersistent)
@@ -103,6 +105,7 @@ type
     FStreaming: TStreamingController;
     FAds: TAds;
     FAsr: TAsr;
+    FOnNeedGeoLocation: TOnNeedGeoLocation;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -143,6 +146,9 @@ type
     function GetUserPhoto100: string;
     function GetUserPhoto50: string;
     function GetUserSex: TVkSex;
+    function GetGeoLocation: TLocationCoord2D;
+    procedure SetOnNeedGeoLocation(const Value: TOnNeedGeoLocation);
+    procedure FOnAuthNeed(Sender: TObject; var AResult: Boolean);
   public
     constructor Create(const AToken: string); reintroduce; overload;
     constructor Create(AOwner: TComponent); overload; override;
@@ -486,6 +492,8 @@ type
     property Application: TVkApplicationData read GetApplication write SetApplication;
     property RequestLimit: Integer read GetRequestLimit write SetRequestLimit;
     function DownloadFile(const Url, FileName: string): Boolean;
+    property GeoLocation: TLocationCoord2D read GetGeoLocation;
+    property OnNeedGeoLocation: TOnNeedGeoLocation read FOnNeedGeoLocation write SetOnNeedGeoLocation;
   end;
 
   VKAPI = class(TCustomVK);
@@ -612,6 +620,7 @@ begin
   FHandler.Authenticator := FOAuth2Authenticator;
   FHandler.OnCaptcha := FAskCaptcha;
   FHandler.OnConfirm := FOnConfirm;
+  FHandler.OnAuth := FOnAuthNeed;
   //Defaults
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
@@ -763,6 +772,13 @@ begin
     //raise TVkE.Create('Error Message');
 { TODO -oHemulGM -c : Captcha 30.07.2021 23:08:35 }
 
+end;
+
+procedure TCustomVK.FOnAuthNeed(Sender: TObject; var AResult: Boolean);
+begin
+  Token := '';
+  TokenExpiry := 0;
+  AResult := Login;
 end;
 
 function TCustomVK.Execute(Code: string): TResponse;
@@ -1129,10 +1145,22 @@ begin
   FOnLogin := Value;
 end;
 
+procedure TCustomVK.SetOnNeedGeoLocation(const Value: TOnNeedGeoLocation);
+begin
+  FOnNeedGeoLocation := Value;
+end;
+
 function TCustomVK.GetApplication: TVkApplicationData;
 begin
   Result.AppId := AppID;
   Result.AppKey := AppKey;
+end;
+
+function TCustomVK.GetGeoLocation: TLocationCoord2D;
+begin
+  Result := TLocationCoord2D.Create(-1, -1);
+  if Assigned(FOnNeedGeoLocation) then
+    FOnNeedGeoLocation(Self, Result);
 end;
 
 function TCustomVK.GetIsWorking: Boolean;

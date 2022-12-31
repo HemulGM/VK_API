@@ -69,7 +69,7 @@ end;
 
 procedure TFrameAttachmentReplyMessage.Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>);
 begin
-  Text := ParseMention(Item.Text);
+  Text := ParseMention(PrepareForPreview(Item.Text));
   Title := '';
   ImageUrl := '';
   IsAttachmentText := False;
@@ -85,10 +85,20 @@ begin
     if Data.GetGroupById(Item.FromId, Group) then
       Title := Group.Name;
   end;
+  if Text.IsEmpty and (Length(Item.FwdMessages) > 0) then
+  begin
+    Text := Length(Item.FwdMessages).ToString + WordOfCount(Length(Item.FwdMessages), [' сообщение', ' сообщения', ' сообщенй']);
+    IsAttachmentText := True;
+  end;
   if Text.IsEmpty and (Length(Item.Attachments) > 0) then
   begin
     var Attachment := Item.Attachments[0];
     Text := AttachmentToText(Attachment.&Type);
+    IsAttachmentText := True;
+  end;
+  if Text.IsEmpty and Assigned(Item.Geo) then
+  begin
+    Text := 'Карта';
     IsAttachmentText := True;
   end;
   if Length(Item.Attachments) > 0 then

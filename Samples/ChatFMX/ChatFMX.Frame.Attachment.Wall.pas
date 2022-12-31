@@ -67,6 +67,9 @@ type
     procedure FOnPhotosClick(Sender: TObject);
     function CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
     procedure CreateGraffiti(Items: TVkAttachmentArray);
+    procedure CreateStories(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
+    procedure CreateAudioPlaylists(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
+    procedure CreatePoll(Items: TVkAttachmentArray);
   public
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
@@ -88,7 +91,8 @@ uses
   ChatFMX.Frame.Attachment.WallFwd, ChatFMX.Frame.Attachment.Album,
   ChatFMX.Frame.Attachment.Market, ChatFMX.Frame.Attachment.Money,
   ChatFMX.Frame.Attachment.Geo, ChatFMX.Frame.Window.Photo,
-  ChatFMX.Frame.Attachment.Graffiti;
+  ChatFMX.Frame.Attachment.Graffiti, ChatFMX.Frame.Attachment.Story,
+  ChatFMX.Frame.Attachment.Poll, ChatFMX.Frame.Attachment.AudioPlaylist;
 
 {$R *.fmx}
 
@@ -290,6 +294,9 @@ begin
     CreateMarket(Item.Attachments);
     CreateMoney(Item.Attachments, Data);
     CreateGraffiti(Item.Attachments);
+    CreatePoll(Item.Attachments);
+    CreateAudioPlaylists(Item.Attachments, Data);
+    CreateStories(Item.Attachments, Data);
     RecalcMedia;
   end;
 
@@ -300,6 +307,45 @@ begin
     CreateGeo(Item.Geo);
 
   RecalcSize;
+end;
+
+procedure TFrameAttachmentWall.CreatePoll(Items: TVkAttachmentArray);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Poll then
+    begin
+      var Frame := TFrameAttachmentPoll.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Poll);
+    end;
+end;
+
+procedure TFrameAttachmentWall.CreateAudioPlaylists(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.AudioPlaylist then
+    begin
+      var Frame := TFrameAttachmentAudioPlaylist.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.AudioPlaylist, Data);
+    end;
+end;
+
+procedure TFrameAttachmentWall.CreateStories(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
+begin
+  for var Item in Items do
+    if Item.&Type = TVkAttachmentType.Story then
+    begin
+      var Frame := TFrameAttachmentStory.Create(LayoutClient, VK);
+      Frame.Parent := LayoutClient;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Frame.Fill(Item.Story, Data);
+    end;
 end;
 
 procedure TFrameAttachmentWall.CreateGeo(Value: TVkGeoWall);

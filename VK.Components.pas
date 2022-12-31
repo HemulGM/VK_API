@@ -24,6 +24,7 @@ type
     property OnError;
     property OnLog;
     property OnLogin;
+    property OnNeedGeoLocation;
     property Permissions nodefault; // default 'groups,friends,wall,photos,video,docs,notes,market';
     property Proxy;
     property ServiceKey;  // default empty
@@ -39,6 +40,9 @@ type
     function GetActualVersion: string;
   published
     property ActualVersion: string read GetActualVersion;
+    /// <description>
+    /// События вызываются асинхронно (без синхронизации)
+    /// </description>
     property Async default False;
     property Logging default False;
     property OnChangeDialogFlags;

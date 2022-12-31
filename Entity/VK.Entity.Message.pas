@@ -104,6 +104,8 @@ type
     FMember_id: TVkPeerId;
     FPhoto: TVkChatPhoto;
     FStyle: string;
+    FMessage: string;
+    FConversation_message_id: Int64;
   public
     /// <summary>
     /// Название беседы (для служебных сообщений с type = chat_create или chat_title_update)
@@ -131,6 +133,14 @@ type
     /// Стиль чата
     /// </summary>
     property Style: string read FStyle write FStyle;
+    /// <summary>
+    /// Частичный текст сообщения (прикрепленного)
+    /// </summary>
+    property Message: string read FMessage write FMessage;
+    /// <summary>
+    /// Ид сообщения
+    /// </summary>
+    property ConversationMessageId: Int64 read FConversation_message_id write FConversation_message_id;
     destructor Destroy; override;
   end;
 

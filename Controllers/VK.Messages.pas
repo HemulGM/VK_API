@@ -1249,7 +1249,7 @@ type
     /// <summary>
     /// Помечает сообщения как важные либо снимает отметку.
     /// </summary>
-    function MarkAsImportant(var Item: Integer; MessageId: Integer; Important: Boolean): Boolean; overload;
+    function MarkAsImportant(var Item: Int64; MessageId: Int64; Important: Boolean): Boolean; overload;
     /// <summary>
     /// Помечает беседу как важную либо снимает отметку.
     /// </summary>
@@ -1692,7 +1692,7 @@ begin
   end;
 end;
 
-function TMessagesController.MarkAsImportant(var Item: Integer; MessageId: Integer; Important: Boolean): Boolean;
+function TMessagesController.MarkAsImportant(var Item: Int64; MessageId: Int64; Important: Boolean): Boolean;
 var
   Resp: TVkIdList;
 begin
@@ -2395,7 +2395,8 @@ end;
 
 function TVkParamsMessageSend.LatLong(const Lat, Long: Extended): TVkParamsMessageSend;
 begin
-  List.Add('lat', Lat).Add('long', Long);
+  List.Add('lat', Lat);
+  List.Add('long', Long);
   Result := Self;
 end;
 
@@ -2520,7 +2521,8 @@ end;
 
 function TVkParamsMessageSendIds.LatLong(const Lat, Long: Extended): TVkParamsMessageSendIds;
 begin
-  List.Add('lat', Lat).Add('long', Long);
+  List.Add('lat', Lat);
+  List.Add('long', Long);
   Result := Self;
 end;
 
@@ -2656,7 +2658,8 @@ end;
 
 function TVkParamsMessageEdit.LatLong(const Lat, Long: Extended): TVkParamsMessageEdit;
 begin
-  List.Add('lat', Lat).Add('long', Long);
+  List.Add('lat', Lat);
+  List.Add('long', Long);
   Result := Self;
 end;
 

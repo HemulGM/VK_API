@@ -242,7 +242,7 @@ type
   TVkAttachmentType = (Unknown, Photo, Video, Audio, Doc, Link, Market,       //
     MarketAlbum, Wall, WallReply, Sticker, Gift, Call, AudioMessage,          //
     PostedPhoto, Graffiti, Note, App, Poll, Page, Album, PhotosList,          //
-    PrettyCards, Event, MoneyTransfer, MoneyRequest, AudioPlaylist);
+    PrettyCards, Event, MoneyTransfer, MoneyRequest, AudioPlaylist, Story);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToString: string; inline;
@@ -1453,6 +1453,8 @@ type
 
   TOnCaptcha = procedure(Sender: TObject; const CaptchaURL: string; var Answer: string) of object;
 
+  TOnAuthNeeded = procedure(Sender: TObject; var AResult: Boolean) of object;
+
   TOnLog = procedure(Sender: TObject; const Value: string) of object;
 
   TOnVKError = procedure(Sender: TObject; E: Exception; Code: Integer; Text: string) of object;
@@ -1506,7 +1508,7 @@ const
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video', 'audio', 'doc', 'link', 'market',
     'market_album', 'wall', 'wall_reply', 'sticker', 'gift', 'call', 'audio_message', 'posted_photo', 'graffiti',
     'note', 'app', 'poll', 'page', 'album', 'photos_list', 'pretty_cards', 'event', 'money_transfer', 'money_request',
-    'audio_playlist');
+    'audio_playlist', 'story');
   VkPeerType: array[TVkPeerType] of string = ('', 'user', 'chat', 'group', 'email');
   VkNameCase: array[TVkNameCase] of string = ('nom', 'gen', 'dat', 'acc', 'ins', 'abl');
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo', 'audio', 'video', 'note', 'market',
@@ -2032,7 +2034,7 @@ end;
 
 function TParamsHelper.Add(Key: string; Value: Extended): TParams;
 begin
-  Result := AddParam([Key, Value.ToString]);
+  Result := AddParam([Key, Value.ToString.Replace(',', '.')]);
 end;
 
 function TParamsHelper.GetValue(Key: string): string;

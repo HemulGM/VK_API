@@ -72,3 +72,4 @@ Samples/Auth/Win32/Debug/keys.json
 Samples/Auth/Win32/Debug/token.tmp
 Samples/ChatFMX/Win32/Debug/token.tmp
 *.tmp
+*.zip

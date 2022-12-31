@@ -7,6 +7,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 24
           end>
         IconName = 'Item 0'
         SVGText = 
@@ -26,6 +27,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 24
           end>
         IconName = 'Item 1'
         SVGText = 
@@ -53,6 +55,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 24
           end>
         IconName = 'Item 2'
         SVGText = 
@@ -173,6 +176,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 16
           end>
         IconName = 'Item 9'
         SVGText = 
@@ -209,6 +213,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 16
           end>
         IconName = 'Item 10'
         SVGText = 
@@ -237,6 +242,7 @@ object DataModuleRes: TDataModuleRes
       item
         MultiResBitmap = <
           item
+            Size = 16
           end>
         IconName = 'Item 11'
         SVGText = 
@@ -358,30 +364,104 @@ object DataModuleRes: TDataModuleRes
           '42v4.2h-.9c-5.3 0-8.72 2.25-10.39 6.86 2.45-1.45 5.92-2.16 10.39' +
           '-2.16h.9v4.2l7.71-6.55z"/></svg>'
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+          end>
+        IconName = 'Item 19'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" v' +
+          'iewBox="0 0 24 24"><path d="M7.54 6.26a.9.9 0 0 0-1.28 1.28L10.7' +
+          '3 12l-4.47 4.46a.9.9 0 0 0 1.28 1.28L12 13.27l4.46 4.47a.9.9 0 1' +
+          ' 0 1.28-1.28L13.27 12l4.47-4.46a.9.9 0 1 0-1.28-1.28L12 10.73 7.' +
+          '54 6.26Z"></path></svg>'
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 16
+          end>
+        IconName = 'Item 20'
+        SVGText = 
+          '<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://ww' +
+          'w.w3.org/2000/svg"><g id="pin_outline_20__Icons" stroke="none" s' +
+          'troke-width="1" fill="none" fill-rule="evenodd"><g id="pin_outli' +
+          'ne_20__Icons-20/pin_outline_20"><g id="pin_outline_20__pin_outli' +
+          'ne_20"><path d="M0 0h20v20H0z"></path><path d="M11.33 2.6a.75.75' +
+          ' 0 0 1 1.27-.38l5.18 5.18a.75.75 0 0 1-.38 1.27l-1.54.3a.3.3 0 0' +
+          ' 0-.15.09l-2.47 2.46a.3.3 0 0 0-.08.19l-.3 3.86a1.01 1.01 0 0 1-' +
+          '1.72.63L8 13.07l-4.72 4.71a.75.75 0 0 1-1.13-.98l.07-.08L6.93 12' +
+          ' 3.8 8.87c-.37-.37-.4-.94-.09-1.34l.09-.1c.17-.17.4-.27.63-.29l3' +
+          '.86-.3a.3.3 0 0 0 .19-.08l2.46-2.46a.3.3 0 0 0 .08-.16Zm1.2 1.67' +
+          '-.03.17a1.8 1.8 0 0 1-.5.92L9.54 7.82c-.3.3-.7.49-1.13.52l-2.8.2' +
+          '2 5.83 5.83.22-2.8c.03-.37.17-.73.41-1.01l.11-.12L14.64 8c.26-.2' +
+          '5.58-.42.92-.5l.17-.03-3.2-3.2Z" id="pin_outline_20__Icon-Color"' +
+          ' fill="currentColor" fill-rule="nonzero"></path></g></g></g></sv' +
+          'g>'
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+          end>
+        IconName = 'Item 21'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" f' +
+          'ill="none" viewBox="0 0 20 20"><path fill="#71aaeb" d="M12.6 2.2' +
+          '2a.75.75 0 0 0-1.27.38l-.3 1.54a.3.3 0 0 1-.09.16L8.48 6.76a.3.3' +
+          ' 0 0 1-.19.08l-3.86.3a1.01 1.01 0 0 0-.63 1.73l2.96 2.96-4.47 4.' +
+          '46a1 1 0 0 0 1.42 1.42l4.46-4.47 2.97 2.96c.61.62 1.65.22 1.72-.' +
+          '63l.3-3.86a.3.3 0 0 1 .08-.19l2.47-2.46a.3.3 0 0 1 .15-.08l1.54-' +
+          '.31c.58-.12.8-.84.38-1.27L12.6 2.22Z"></path></svg>'
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+          end>
+        IconName = 'Item 22'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" f' +
+          'ill="none" viewBox="0 0 20 20"><path fill="currentColor" d="m7.2' +
+          '8 4.99-.52 1.2c-.04.1-.06.14-.09.17a.28.28 0 0 1-.09.07.62.62 0 ' +
+          '0 1-.17.04l-.75.1c-2.15.3-3.23.46-3.68.96a1.86 1.86 0 0 0-.44 1.' +
+          '61c.13.67.98 1.35 2.68 2.7l.27.23c.08.06.12.09.14.13a.28.28 0 0 ' +
+          '1 .04.11c.01.05 0 .1-.02.2l-.08.44c-.48 2.5-.71 3.75-.34 4.36a1.' +
+          '85 1.85 0 0 0 1.5.9c.72.02 1.7-.79 3.65-2.42l.34-.28c.1-.08.15-.' +
+          '12.2-.14a.28.28 0 0 1 .16 0c.06.02.11.06.21.14l.34.28c1.95 1.63 ' +
+          '2.93 2.44 3.65 2.41a1.85 1.85 0 0 0 1.5-.89c.37-.6.14-1.86-.34-4' +
+          '.36l-.08-.45c-.02-.1-.03-.14-.02-.19a.28.28 0 0 1 .04-.11.62.62 ' +
+          '0 0 1 .14-.13l.27-.22c1.7-1.36 2.55-2.04 2.68-2.7a1.86 1.86 0 0 ' +
+          '0-.44-1.62c-.45-.5-1.53-.65-3.68-.96l-.75-.1c-.09-.02-.13-.02-.1' +
+          '7-.04a.28.28 0 0 1-.1-.07l-.08-.16-.52-1.21c-.86-2-1.3-2.99-1.9-' +
+          '3.29a1.85 1.85 0 0 0-1.66 0C8.57 2 8.14 3 7.28 5Z"></path></svg>'
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
         Layers = <
           item
             Name = 'Item 0'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 1'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 2'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
@@ -428,24 +508,18 @@ object DataModuleRes: TDataModuleRes
         Layers = <
           item
             Name = 'Item 9'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 10'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 11'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
           end>
       end
       item
@@ -496,6 +570,36 @@ object DataModuleRes: TDataModuleRes
         Layers = <
           item
             Name = 'Item 18'
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 19'
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 20'
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 21'
+            SourceRect.Right = 32.000000000000000000
+            SourceRect.Bottom = 32.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 22'
             SourceRect.Right = 32.000000000000000000
             SourceRect.Bottom = 32.000000000000000000
           end>

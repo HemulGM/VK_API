@@ -42,6 +42,8 @@ type
     procedure SetIsHaveMention(const Value: Boolean);
     procedure SetVerified(const Value: Boolean);
     procedure FOnChangeMessage(const Sender: TObject; const M: TMessage);
+    procedure UpdatePinned;
+    procedure UpdateInfo;
   protected
     procedure SetText(const Value: string); override;
   public
@@ -156,7 +158,7 @@ begin
   IsSelfChat := Item.Conversation.Peer.Id = FVK.UserId;
   FConversationId := Item.Conversation.Peer.Id;
   UnreadCount := Item.Conversation.UnreadCount;
-  //IsPinned := Item.Conversation.ChatSettings
+  IsPinned := Item.Conversation.SortId.MajorId <> 0;
 
   Event.Subscribe(TEventUserStatus, FOnUserStatusChange);
   Event.Subscribe(TEventNewMessage, FOnChangeMessage);
@@ -261,10 +263,8 @@ procedure TListBoxItemChat.SetIsHaveMention(const Value: Boolean);
 begin
   FIsHaveMention := Value;
   StylesData['mention_layout.Visible'] := FIsHaveMention;
-  StylesData['info_bottom.Visible'] :=
-    StylesData['count_layout.Visible'].AsBoolean or
-    StylesData['unread.Visible'].AsBoolean or
-    StylesData['mention_layout.Visible'].AsBoolean;
+  UpdatePinned;
+  UpdateInfo;
 end;
 
 procedure TListBoxItemChat.SetIsMuted(const Value: Boolean);
@@ -291,9 +291,15 @@ begin
   StylesData['online_mobile.Visible'] := FIsOnline and FIsOnlineMobile;
 end;
 
+procedure TListBoxItemChat.UpdatePinned;
+begin
+  StylesData['pinned_layout.Visible'] := FIsPinned and (FUndreadCount = 0);
+end;
+
 procedure TListBoxItemChat.SetIsPinned(const Value: Boolean);
 begin
   FIsPinned := Value;
+  UpdatePinned;
 end;
 
 procedure TListBoxItemChat.SetIsSelfChat(const Value: Boolean);
@@ -315,7 +321,7 @@ end;
 
 procedure TListBoxItemChat.SetMessageText(const Value: string; IsAttach: Boolean);
 begin
-  ItemData.Detail := ParseMention(Value);
+  ItemData.Detail := ParseMention(PrepareForPreview(Value));
   if not IsSelected then
     if IsAttach then
       StylesData['detail.TextSettings.FontColor'] := $FF71AAEB
@@ -335,10 +341,17 @@ procedure TListBoxItemChat.SetUnanswered(const Value: Boolean);
 begin
   FUnanswered := Value;
   StylesData['unread.Visible'] := Value;
+  UpdatePinned;
+  UpdateInfo;
+end;
+
+procedure TListBoxItemChat.UpdateInfo;
+begin
   StylesData['info_bottom.Visible'] :=
     StylesData['count_layout.Visible'].AsBoolean or
     StylesData['unread.Visible'].AsBoolean or
-    StylesData['mention_layout.Visible'].AsBoolean;
+    StylesData['mention_layout.Visible'].AsBoolean or
+    StylesData['pinned_layout.Visible'].AsBoolean;
 end;
 
 procedure TListBoxItemChat.SetUndreadCount(const Value: Integer);
@@ -346,10 +359,8 @@ begin
   FUndreadCount := Value;
   StylesData['count_layout.Visible'] := Value > 0;
   StylesData['count'] := Value.ToString;
-  StylesData['info_bottom.Visible'] :=
-    StylesData['count_layout.Visible'].AsBoolean or
-    StylesData['unread.Visible'].AsBoolean or
-    StylesData['mention_layout.Visible'].AsBoolean;
+  UpdatePinned;
+  UpdateInfo;
 end;
 
 procedure TListBoxItemChat.SetVerified(const Value: Boolean);
@@ -418,7 +429,7 @@ begin
   end;
       // Текст последнего сообщения
   if not LastMessage.Text.IsEmpty then
-    SetMessageText(LastMessage.Text.Replace(#$A, ' ').Replace('  ', ' ', [rfReplaceAll]), False)
+    SetMessageText(LastMessage.Text, False)
       // Вложение
   else if Length(LastMessage.Attachments) > 0 then
   begin

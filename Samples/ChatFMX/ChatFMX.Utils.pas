@@ -3,7 +3,8 @@
 interface
 
 uses
-  VK.Types, System.SysUtils, VK.Entity.Message, FMX.Ani, FMX.Types;
+  VK.Types, System.SysUtils, VK.Entity.Message, FMX.Ani, FMX.Types, FMX.Controls,
+  System.Types;
 
 type
   TAnimatorHelper = class helper for TAnimator
@@ -16,23 +17,36 @@ function WordOfCount(const Count: Integer; const Words: TArrayOfString): string;
 
 function WordOfSex(const Sex: TVkSex; const Words: TArrayOfString): string;
 
+/// <summary>
+/// Пример: 2 авг 2022 в 14:32 / вчера в 9:15
+/// </summary>
 function HumanDateTime(Value: TDateTime; ShowTime: Boolean = False; ShortDate: Boolean = False): string;
 
+/// <summary>
+/// Пример: 2 авг 2022, 14:32
+/// </summary>
 function HumanDateTimeSimple(Value: TDateTime; ShowTime: Boolean = False; ShortDate: Boolean = False): string;
 
 function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;
 
 function ParseMention(const Value: string): string;
 
+function PrepareForPreview(const Value: string): string;
+
 implementation
 
 uses
   System.DateUtils, System.StrUtils, System.RegularExpressions;
 
+function PrepareForPreview(const Value: string): string;
+begin
+  Result := Value.Replace(#$A, ' ').Replace('  ', ' ', [rfReplaceAll]);
+end;
+
 function ParseMention(const Value: string): string;
 const
-  Pattern1 = '\[(\w+)\|(.+?)\]';
-  Pattern2 = '(@\w+)\ \((.+?)\)';
+  Pattern1 = '\[(.+?)\|(.+?)\]';
+  Pattern2 = '(@.+?)\ \((.+?)\)';
 begin
   Result := Value;
 
@@ -145,7 +159,11 @@ begin
     TVkMessageActionType.ChatCreate:
       Result := FromText + ' создал(а) чат «' + Value.Text + '»';
     TVkMessageActionType.ChatTitleUpdate:
-      Result := FromText + ' изменил(а) название чата';
+      begin
+        Result := FromText + ' изменил(а) название чата';
+        if not Value.Text.IsEmpty then
+          Result := Result + ' на «' + Value.Text + '»';
+      end;
     TVkMessageActionType.ChatInviteUser:
       if Value.MemberId = FromId then
         Result := FromText + ' вошел(ла) в чат'
@@ -157,9 +175,17 @@ begin
       else
         Result := FromText + ' исключил(а) ' + MemberText;
     TVkMessageActionType.ChatPinMessage:
-      Result := FromText + ' закрепил(а) сообщение';
+      begin
+        Result := FromText + ' закрепил(а) сообщение';
+        if not Value.Message.IsEmpty then
+          Result := Result + ' «' + Value.Message.Replace('  ', ' ', [rfReplaceAll]) + '»';
+      end;
     TVkMessageActionType.ChatUnpinMessage:
-      Result := FromText + ' открепил(а) сообщение';
+      begin
+        Result := FromText + ' открепил(а) сообщение';
+        if not Value.Message.IsEmpty then
+          Result := Result + ' «' + Value.Message.Replace('  ', ' ', [rfReplaceAll]) + '»';
+      end;
     TVkMessageActionType.ChatInviteUserByLink:
       Result := FromText + ' присоединился к чату по ссылке';
     TVkMessageActionType.ConversationStyleUpdate:
@@ -218,6 +244,8 @@ begin
       Result := 'Событие';
     TVkAttachmentType.MoneyTransfer:
       Result := 'Денежный перевод';
+    TVkAttachmentType.Story:
+      Result := 'История';
   else
     Result := '';
   end;

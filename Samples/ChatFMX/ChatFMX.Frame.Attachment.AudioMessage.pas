@@ -198,7 +198,10 @@ begin
   var NCnt :=(Trunc(PaintBoxWave.Width) + 1) div 3;
   if NCnt <= 0 then
     Exit;
-
+  if Cnt < NCnt then
+  begin
+    SetLength(FWave, NCnt);
+  end;
   LargestTriangleThreeBuckets(FWave, NCnt, FDrawWave);
 end;
 

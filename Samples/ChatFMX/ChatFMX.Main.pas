@@ -10,7 +10,8 @@ uses
   FMX.Effects, FMX.Filter.Effects, ChatFMX.DM.Res, VK.API, VK.Components,
   VK.Entity.Conversation, System.Messaging, VK.Types,
   System.Generics.Collections, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo,
-  ChatFMX.Frame.Loading, VK.UserEvents, VK.Entity.Common.ExtendedList;
+  ChatFMX.Frame.Loading, VK.UserEvents, VK.Entity.Common.ExtendedList,
+  System.Sensors;
 
 type
   TChats = class(TList<TFrameChat>)
@@ -93,7 +94,12 @@ type
     procedure UserEventsUserOnline(Sender: TObject; UserId: TVkPeerId; VkPlatform: TVkPlatform; TimeStamp: TDateTime);
     procedure UserEventsNewMessage(Sender: TObject; MessageData: TMessageData);
     procedure UserEventsEditMessage(Sender: TObject; MessageData: TMessageData);
-    procedure UserEventsReadMessages(Sender: TObject; Incoming: Boolean; PeerId, LocalId: TVkPeerId);
+    procedure UserEventsDeleteMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
+    procedure UserEventsReadMessages(Sender: TObject; Incoming: Boolean; PeerId: TVkPeerId; LocalId: Int64);
+    procedure UserEventsChangeMessageFlags(Sender: TObject; MessageChangeData: TMessageChangeData);
+    procedure UserEventsRecoverMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
+    procedure VKNeedGeoLocation(Sender: TObject; var Coord: TLocationCoord2D);
+    procedure LocationSensorLocationChanged(Sender: TObject; const OldLocation, NewLocation: TLocationCoord2D);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -104,6 +110,8 @@ type
     FListChatsOffsetEnd: Boolean;
     FChats: TChats;
     FLoadingItem: TListBoxLoading;
+    FAllowLocation: Boolean;
+    FLocation: TLocationCoord2D;
     procedure FOnReadyAvatar(const Sender: TObject; const M: TMessage);
     procedure FOnChatItemClick(Sender: TObject);
    {$IFDEF ANDROID}
@@ -230,6 +238,7 @@ begin
   LayoutChats.Align := TAlignLayout.Client;
   LayoutChat.Align := TAlignLayout.Client;
   {$ENDIF}
+  FAllowLocation := False;
   FLoading := True;
   FLoadingItem := nil;
   LayoutLoading.Visible := True;
@@ -371,6 +380,16 @@ begin
   {$ENDIF}
 end;
 
+procedure TFormMain.UserEventsChangeMessageFlags(Sender: TObject; MessageChangeData: TMessageChangeData);
+begin
+  Event.Send(TEventMessageChange.Create(MessageChangeData));
+end;
+
+procedure TFormMain.UserEventsDeleteMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
+begin
+  Event.Send(TEventDeleteMessage.Create(PeerId, LocalId));
+end;
+
 procedure TFormMain.UserEventsEditMessage(Sender: TObject; MessageData: TMessageData);
 begin
   Event.Send(TEventEditMessage.Create(MessageData));
@@ -381,9 +400,14 @@ begin
   Event.Send(TEventNewMessage.Create(MessageData));
 end;
 
-procedure TFormMain.UserEventsReadMessages(Sender: TObject; Incoming: Boolean; PeerId, LocalId: TVkPeerId);
+procedure TFormMain.UserEventsReadMessages(Sender: TObject; Incoming: Boolean; PeerId: TVkPeerId; LocalId: Int64);
 begin
   Event.Send(TEventReadMessages.Create(Incoming, PeerId, LocalId));
+end;
+
+procedure TFormMain.UserEventsRecoverMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
+begin
+  Event.Send(TEventRecoverMessage.Create(PeerId, LocalId));
 end;
 
 procedure TFormMain.UserEventsUserOffline(Sender: TObject; UserId: TVkPeerId; InactiveUser: Boolean; TimeStamp: TDateTime);
@@ -447,6 +471,8 @@ begin
     end;
   except
     Dec(FListChatsOffset);
+    if FListChatsOffset < 0 then
+      FListChatsOffset := 0;
     FLoading := False;
   end;
 end;
@@ -483,14 +509,11 @@ begin
 end;
 
 procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
-var
-  AToken: string;
-  ATokenExpiry: Int64;
 begin
-  TThread.Synchronize(nil,
-    procedure
-    begin
-      if FToken.IsEmpty then
+  if FToken.IsEmpty then
+  begin
+    TThread.Synchronize(nil,
+      procedure
       begin
         TFormFMXOAuth2.Execute(Url,
           procedure(Form: TFormFMXOAuth2)
@@ -501,19 +524,16 @@ begin
             if not FToken.IsEmpty then
               VK.Login
             else
-            begin
               DoErrorLogin;
-            end;
           end);
-      end
-      else
-      begin
-        AToken := FToken;
-        ATokenExpiry := FTokenExpiry;
-      end;
-    end);
-  Token := AToken;
-  TokenExpiry := ATokenExpiry;
+      end);
+  end
+  else
+  begin
+    Token := FToken;
+    TokenExpiry := FTokenExpiry;
+    ChangePasswordHash := FChangePasswordHash;
+  end;
 end;
 
 destructor TFormMain.Destroy;
@@ -551,7 +571,6 @@ begin
   begin
     FToken := '';
     VK.Token := '';
-    VK.Token := '';
     TTask.Run(Login);
     Exit;
   end
@@ -570,6 +589,12 @@ begin
   {$ELSE}
   LayoutAdaptive.Visible := True;
   {$ENDIF}
+end;
+
+procedure TFormMain.LocationSensorLocationChanged(Sender: TObject; const OldLocation, NewLocation: TLocationCoord2D);
+begin
+  FAllowLocation := True;
+  FLocation := NewLocation;
 end;
 
 procedure TFormMain.Reload;
@@ -616,6 +641,12 @@ begin
   //
   end;
   TThread.Queue(nil, Reload);
+end;
+
+procedure TFormMain.VKNeedGeoLocation(Sender: TObject; var Coord: TLocationCoord2D);
+begin
+  if FAllowLocation then
+    Coord := FLocation;
 end;
 
 { TChats }
