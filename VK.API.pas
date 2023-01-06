@@ -174,6 +174,10 @@ type
     /// </summary>
     function Login(ALogin, APassword: string; On2FA: TOn2FA = nil): Boolean; overload;
     /// <summary>
+    /// Очищает токен
+    /// </summary>
+    procedure Logout;
+    /// <summary>
     /// Генерировать событие лога
     /// </summary>
     procedure DoLog(Sender: TObject; Text: string);
@@ -977,6 +981,12 @@ begin
     on E: Exception do
       DoOnError(Self, E.Create(E.Message), ERROR_VK_AUTH, E.Message);
   end;
+end;
+
+procedure TCustomVK.Logout;
+begin
+  Token := '';
+  TokenExpiry := 0;
 end;
 
 function TCustomVK.GetOAuth2RequestURI: string;

@@ -1772,6 +1772,7 @@ object FormMain: TFormMain
         Size.Height = 49.000000000000000000
         Size.PlatformDefault = False
         Stroke.Kind = None
+        OnClick = CircleAvatarClick
       end
       object LayoutLogo: TLayout
         Align = Left
@@ -1921,24 +1922,24 @@ object FormMain: TFormMain
   end
   object LayoutLoading: TLayout
     Align = Contents
-    Size.Width = 800.000000000000000000
-    Size.Height = 710.000000000000000000
+    Size.Width = 1043.000000000000000000
+    Size.Height = 660.000000000000000000
     Size.PlatformDefault = False
     Visible = False
     TabOrder = 4
     object RectangleLoadBG: TRectangle
       Align = Client
       Fill.Color = xFF222222
-      Size.Width = 800.000000000000000000
-      Size.Height = 710.000000000000000000
+      Size.Width = 1043.000000000000000000
+      Size.Height = 660.000000000000000000
       Size.PlatformDefault = False
       Stroke.Kind = None
       object LayoutSplash: TLayout
         Align = Contents
-        Size.Width = 800.000000000000000000
-        Size.Height = 710.000000000000000000
+        Size.Width = 1043.000000000000000000
+        Size.Height = 660.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 2
+        TabOrder = 3
         object PathSplashLogo: TPath
           Align = Center
           Data.Path = {
@@ -1992,11 +1993,11 @@ object FormMain: TFormMain
       object LayoutError: TLayout
         Align = Bottom
         Margins.Bottom = 100.000000000000000000
-        Position.Y = 560.000000000000000000
-        Size.Width = 800.000000000000000000
+        Position.Y = 510.000000000000000000
+        Size.Width = 1043.000000000000000000
         Size.Height = 50.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 1
+        TabOrder = 2
         object Rectangle2: TRectangle
           Align = Center
           Fill.Color = xFF522E2E
@@ -2037,6 +2038,59 @@ object FormMain: TFormMain
             StyleLookup = 'button_simple'
             TabOrder = 1
             Text = #1055#1086#1074#1090#1086#1088#1080#1090#1100
+            OnClick = ButtonReloginClick
+          end
+        end
+      end
+      object LayoutLogin: TLayout
+        Align = Bottom
+        Margins.Bottom = 100.000000000000000000
+        Position.Y = 360.000000000000000000
+        Size.Width = 1043.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        Visible = False
+        TabOrder = 1
+        object Rectangle1: TRectangle
+          Align = Center
+          Fill.Color = xC83C3C3C
+          Padding.Left = 4.000000000000000000
+          Padding.Top = 4.000000000000000000
+          Padding.Right = 4.000000000000000000
+          Padding.Bottom = 4.000000000000000000
+          Size.Width = 296.000000000000000000
+          Size.Height = 42.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          XRadius = 8.000000000000000000
+          YRadius = 8.000000000000000000
+          object Label1: TLabel
+            Align = Left
+            AutoSize = True
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 14.000000000000000000
+            Position.Y = 4.000000000000000000
+            Size.Width = 148.000000000000000000
+            Size.Height = 34.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = claWhite
+            TextSettings.WordWrap = False
+            Text = #1042#1086#1081#1076#1080#1090#1077' '#1095#1077#1088#1077#1079' OAuth2'
+            TabOrder = 0
+          end
+          object ButtonLogin: TButton
+            Align = Right
+            Position.X = 191.000000000000000000
+            Position.Y = 4.000000000000000000
+            Size.Width = 101.000000000000000000
+            Size.Height = 34.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'button_simple'
+            TabOrder = 1
+            Text = #1042#1086#1081#1090#1080
             OnClick = ButtonReloginClick
           end
         end

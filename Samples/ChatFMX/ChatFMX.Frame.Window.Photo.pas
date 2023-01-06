@@ -329,8 +329,8 @@ begin
     W := H * A;
   end;
 
-  LayoutClient.Width := Max(W, 910);
-  LayoutClient.Height := Max(H, 510);
+  LayoutClient.Width := Max(Min(MaxW, LayoutClient.Width), Max(W, 910));
+  LayoutClient.Height := Max(Min(MaxH, LayoutClient.Height), Max(H, 510));
 end;
 
 procedure TFrameWindowPhoto.ShowPhoto(const Index: Integer);

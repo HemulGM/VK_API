@@ -14,7 +14,7 @@ uses
   System.Sensors;
 
 type
-  TChats = class(TList<TFrameChat>)
+  TChats = class(TObjectList<TFrameChat>)
     function FindChat(const PeerId: TVkPeerId; var Frame: TFrameChat): Boolean;
   end;
 
@@ -79,6 +79,10 @@ type
     Memo1: TMemo;
     LayoutAdaptive: TLayout;
     UserEvents: TVkUserEvents;
+    LayoutLogin: TLayout;
+    Rectangle1: TRectangle;
+    Label1: TLabel;
+    ButtonLogin: TButton;
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
@@ -100,6 +104,7 @@ type
     procedure UserEventsRecoverMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
     procedure VKNeedGeoLocation(Sender: TObject; var Coord: TLocationCoord2D);
     procedure LocationSensorLocationChanged(Sender: TObject; const OldLocation, NewLocation: TLocationCoord2D);
+    procedure CircleAvatarClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -132,6 +137,7 @@ type
     procedure DoErrorLogin;
     procedure CreateLoadingItem;
     procedure ClearChatList;
+    procedure Logout;
   public
     property UnreadOnly: Boolean read FUnreadOnly write SetUnreadOnly;
     destructor Destroy; override;
@@ -342,6 +348,7 @@ procedure TFormMain.ButtonReloginClick(Sender: TObject);
 begin
   PanelLoader.Visible := True;
   LayoutError.Visible := False;
+  LayoutLogin.Visible := False;
   TTask.Run(
     procedure
     begin
@@ -362,11 +369,7 @@ begin
   {$ENDIF}
   FChats.Add(Result);
   if FChats.Count > 30 then
-  begin
-    var Frame := FChats[0];
     FChats.Delete(0);
-    Frame.Free;
-  end;
 end;
 
 procedure TFormMain.ShowChat(Frame: TFrameChat);
@@ -487,6 +490,33 @@ begin
   ListBoxChats.AddObject(FLoadingItem);
 end;
 
+procedure TFormMain.CircleAvatarClick(Sender: TObject);
+begin
+  Logout;
+end;
+
+procedure TFormMain.Logout;
+begin
+  {$IFDEF MSWINDOWS}
+  DeleteCache('vk.com');
+  {$ENDIF}
+  VK.Logout;
+  UserEvents.Stop;
+  FChats.Clear;
+  ListBoxChats.Clear;
+  try
+    TFile.Delete('token.tmp');
+  except
+  end;
+  LayoutLoading.Opacity := 1;
+  LayoutLoading.Visible := True;
+  LayoutError.Visible := False;
+  PanelLoader.Visible := False;
+  HorzScrollBoxContent.Visible := False;
+  LayoutAdaptive.Visible := False;
+  LayoutLogin.Visible := True;
+end;
+
 procedure TFormMain.ClearChatList;
 begin
   FLoadingItem := nil;
@@ -553,10 +583,15 @@ begin
   begin
     FToken := '';
     VK.Token := '';
+    try
+      TFile.Delete('token.tmp');
+    except
+    end;
     LayoutError.Visible := False;
     TTask.Run(Login);
     Exit;
   end;
+  LayoutLogin.Visible := False;
   LayoutLoading.Opacity := 1;
   LayoutLoading.Visible := True;
   LayoutError.Visible := True;
@@ -638,7 +673,7 @@ begin
   try
     TFile.WriteAllText('token.tmp', VK.Token);
   except
-  //
+    //
   end;
   TThread.Queue(nil, Reload);
 end;

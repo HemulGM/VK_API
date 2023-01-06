@@ -510,6 +510,7 @@ object FrameMessage: TFrameMessage
             Size.PlatformDefault = False
             Stroke.Kind = None
             WrapMode = Fit
+            OnClick = PathStarClick
             OnMouseEnter = FrameMouseEnter
             OnMouseLeave = FrameMouseLeave
             object ColorAnimationStar: TColorAnimation

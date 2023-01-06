@@ -69,6 +69,7 @@ type
     procedure FlowLayoutMediaResize(Sender: TObject);
     procedure LayoutFwdMessagesResize(Sender: TObject);
     procedure LabelRestoreMessageClick(Sender: TObject);
+    procedure PathStarClick(Sender: TObject);
   private
     FVK: TCustomVK;
     FText: string;
@@ -791,6 +792,17 @@ end;
 procedure TFrameMessage.MemoTextResize(Sender: TObject);
 begin
   MemoTextChange(Sender);
+end;
+
+procedure TFrameMessage.PathStarClick(Sender: TObject);
+begin
+  var MsgId: Int64;
+  var Mark: Boolean := not IsImportant;
+  TTask.Run(
+    procedure
+    begin
+      FVK.Messages.MarkAsImportant(MsgId, MessageId, Mark);
+    end);
 end;
 
 procedure TFrameMessage.SetCanAnswer(const Value: Boolean);
