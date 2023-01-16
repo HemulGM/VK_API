@@ -1,0 +1,423 @@
+inherited FrameWindowPhoto: TFrameWindowPhoto
+  Padding.Left = 60.000000000000000000
+  Padding.Top = 40.000000000000000000
+  Padding.Right = 60.000000000000000000
+  Padding.Bottom = 40.000000000000000000
+  Size.Width = 947.000000000000000000
+  Size.Height = 663.000000000000000000
+  inherited RectangleBackground: TRectangle
+    Size.Width = 947.000000000000000000
+    Size.Height = 663.000000000000000000
+  end
+  object LayoutContent: TLayout
+    Align = Client
+    Size.Width = 827.000000000000000000
+    Size.Height = 583.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    OnResize = LayoutContentResize
+    object LayoutClient: TLayout
+      Align = Center
+      Size.Width = 818.000000000000000000
+      Size.Height = 512.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object RectangleBG: TRectangle
+        Align = Client
+        Fill.Color = xFF222222
+        Size.Width = 818.000000000000000000
+        Size.Height = 512.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+        XRadius = 12.000000000000000000
+        YRadius = 12.000000000000000000
+        object LayoutRight: TLayout
+          Align = MostRight
+          Position.X = 508.000000000000000000
+          Size.Width = 310.000000000000000000
+          Size.Height = 512.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object LayoutComment: TLayout
+            Align = Bottom
+            Position.Y = 462.000000000000000000
+            Size.Width = 310.000000000000000000
+            Size.Height = 50.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 2
+            object CircleUserImage: TCircle
+              Align = MostLeft
+              Fill.Color = xFF5B5B5B
+              Margins.Left = 20.000000000000000000
+              Position.X = 20.000000000000000000
+              Size.Width = 28.000000000000000000
+              Size.Height = 50.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Kind = None
+            end
+            object Memo1: TMemo
+              Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+              DataDetectorTypes = []
+              Align = Client
+              Size.Width = 262.000000000000000000
+              Size.Height = 50.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'memo_clear'
+              TabOrder = 1
+              Viewport.Width = 262.000000000000000000
+              Viewport.Height = 50.000000000000000000
+            end
+          end
+          object LayoutHead: TLayout
+            Align = Top
+            Padding.Left = 15.000000000000000000
+            Padding.Top = 13.000000000000000000
+            Padding.Right = 20.000000000000000000
+            Padding.Bottom = 11.000000000000000000
+            Size.Width = 310.000000000000000000
+            Size.Height = 64.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object RectangleHead: TRectangle
+              Align = Contents
+              Corners = [TopRight]
+              Fill.Color = xFF292929
+              Sides = [Bottom]
+              Size.Width = 310.000000000000000000
+              Size.Height = 64.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFF424242
+              XRadius = 12.000000000000000000
+              YRadius = 12.000000000000000000
+            end
+            object CircleOwnerImage: TCircle
+              Align = MostLeft
+              Fill.Color = xFF5B5B5B
+              Position.X = 15.000000000000000000
+              Position.Y = 13.000000000000000000
+              Size.Width = 40.000000000000000000
+              Size.Height = 40.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Kind = None
+            end
+            object LabelOwnerTitle: TLabel
+              Align = Top
+              StyledSettings = [Style]
+              Margins.Left = 10.000000000000000000
+              Margins.Top = 3.000000000000000000
+              Position.X = 65.000000000000000000
+              Position.Y = 16.000000000000000000
+              Size.Width = 225.000000000000000000
+              Size.Height = 15.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.Font.Family = 'Roboto'
+              TextSettings.Font.Size = 13.000000000000000000
+              TextSettings.FontColor = xFF71AAEB
+              TextSettings.WordWrap = False
+              Text = #1042#1083#1072#1076#1077#1083#1077#1094' '#1079#1072#1087#1080#1089#1080
+              TabOrder = 3
+            end
+            object LabelDate: TLabel
+              Align = Top
+              StyledSettings = [Style]
+              Margins.Left = 10.000000000000000000
+              Margins.Top = 4.000000000000000000
+              Position.X = 65.000000000000000000
+              Position.Y = 35.000000000000000000
+              Size.Width = 225.000000000000000000
+              Size.Height = 15.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.Font.Family = 'Roboto'
+              TextSettings.Font.Size = 13.000000000000000000
+              TextSettings.FontColor = xFF828282
+              TextSettings.WordWrap = False
+              Text = #1074#1095#1077#1088#1072' '#1074' 19:02'
+              TabOrder = 2
+            end
+          end
+          object LayoutActions: TLayout
+            Align = Top
+            Padding.Left = 15.000000000000000000
+            Padding.Right = 15.000000000000000000
+            Position.Y = 64.000000000000000000
+            Size.Width = 310.000000000000000000
+            Size.Height = 58.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object RectangleActionsBG: TRectangle
+              Align = Contents
+              Corners = [TopRight]
+              Fill.Color = xFF222222
+              Sides = [Bottom]
+              Size.Width = 310.000000000000000000
+              Size.Height = 58.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFF424242
+            end
+            object ButtonLike: TButton
+              Align = Left
+              Images = DataModuleRes.ImageListSVG
+              ImageIndex = 17
+              Position.X = 15.000000000000000000
+              Size.Width = 50.000000000000000000
+              Size.Height = 58.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'button_small_text'
+              TabOrder = 1
+              Text = '0'
+              OnApplyStyleLookup = ButtonLikeApplyStyleLookup
+            end
+            object ButtonShare: TButton
+              Align = Left
+              Images = DataModuleRes.ImageListSVG
+              ImageIndex = 18
+              Margins.Left = 21.000000000000000000
+              Position.X = 86.000000000000000000
+              Size.Width = 51.000000000000000000
+              Size.Height = 58.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'button_small_text'
+              TabOrder = 0
+              Text = '0'
+              OnApplyStyleLookup = ButtonLikeApplyStyleLookup
+            end
+          end
+        end
+        object LayoutFooter: TLayout
+          Align = Bottom
+          Position.Y = 462.000000000000000000
+          Size.Width = 508.000000000000000000
+          Size.Height = 50.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object LabelCount: TLabel
+            Align = Left
+            AutoSize = True
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 4.000000000000000000
+            Position.X = 10.000000000000000000
+            Position.Y = 4.000000000000000000
+            Size.Width = 43.000000000000000000
+            Size.Height = 46.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 13.000000000000000000
+            TextSettings.FontColor = xFFCCCCCC
+            TextSettings.WordWrap = False
+            Text = '1 '#1080#1079' 20'
+            TabOrder = 2
+          end
+        end
+        object Image: TImage
+          MultiResBitmap = <
+            item
+            end>
+          Align = Client
+          ClipChildren = True
+          Cursor = crHandPoint
+          Size.Width = 508.000000000000000000
+          Size.Height = 462.000000000000000000
+          Size.PlatformDefault = False
+          WrapMode = Place
+          OnClick = ImageClick
+        end
+        object LayoutControls: TLayout
+          Align = Client
+          Size.Width = 508.000000000000000000
+          Size.Height = 462.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 2
+          object LayoutBtnLeft: TLayout
+            Align = Left
+            Cursor = crHandPoint
+            HitTest = True
+            Opacity = 0.300000011920929000
+            Size.Width = 129.000000000000000000
+            Size.Height = 462.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            OnClick = LayoutBtnLeftClick
+            object Layout3: TLayout
+              Align = Left
+              Size.Width = 81.000000000000000000
+              Size.Height = 462.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 0
+              object Image1: TImage
+                MultiResBitmap.Height = 96
+                MultiResBitmap = <
+                  item
+                    Width = 22
+                    Height = 96
+                    PNG = {
+                      89504E470D0A1A0A0000000D494844520000001600000060080600000019CF82
+                      E7000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                      05DE494441546843ED985B4F5C55188641ACE7C395DE7808291DA00304428070
+                      0A2184D2D86282699A364DF0CE9B8AAD54BDEBA5568D557F843FC41F215AB9E0
+                      34830C2063D1D46869657C9FE5B7267B0F33ECC340E2056FF2B187F57DFB99B5
+                      D75E7BEDF54E4350FBFBFB57F7F6F6F23ADEB0A648A9F6A69D73D59A0E8A8292
+                      498573D65C53AAF9C0CA4B9C6BCD07454FAD8E42FDBBFF9EA50E881C35564E47
+                      0EBF4A15CCF9130CFEAEA5CAA2ADA226F2EA9C5458EE8D8E8FF57F79FCF84C5B
+                      005AF3AAAA4A27D02B0F78A4FFDF21F86C6D7CE181AB89259D48EF3CC8C93EF3
+                      45B567411C592F1D10F199364BD7D413764CA2921DD3AB62281E12F639FD50E8
+                      C4A3BF793AE1E8A79B0A8FFE0151C1F13CD22A4CBA08CD59391D3974114AB36C
+                      DEB073EA7B604E74A2FFA11AED98469CEB03B14EFB6868E24F4201E205C1B96F
+                      2886156D0A80BB8A54F2D0A7146D434343D773B9DCBDADADADDCECECEC276ACB
+                      2A9EB49AD80A42CF0A7AB3582C6EDA1A542A140AEB6ABFAC78C6EA622908CD0E
+                      0E0E7E1884A2E5E5E545E5AE289E53C41AE210747878785ED02DE3396938B63A
+                      3A3A6E2BDFA388050E423BAA41575757B75B5B5B3F537E5CF18A22722842D0D1
+                      D1D1F99D9D9D6DE33901CD64325F283FA5784DF182829BC7B9551509E5F25B5A
+                      5A3E571E28D3EE25C52945CDDE06A19D636363B76242A98F071D1F1FBFF5AB64
+                      3C27A0CDCDCD40CF291243BB6A4037EB824E4C4C7CB4BDBDBD633CA7B5B535A0
+                      779407FABA22128A425075B4125A30E8A4223694DE7237DB2627273F16B4683C
+                      274D29DFD320F4D0BBEF450193FA723E9F5F319ED3CACA0A509EA8F38A5853CA
+                      8B027ACC23784A9B8ED0098D8D8DA5A6A6A6BFF5F181E24FC543C53F8A7D45A4
+                      803EAFE81B1919F9544BE07DEBB0D3BAA447765EF976C5D30ADF9948F9A17855
+                      31353030F0B596C05DE33A6D6C6CE4DADBDBAF2B7F46116B2890BF792F2A18C7
+                      E9FEFEFE6F050FF55CFFE7B48201CF28226784174514BFAC785331DDD7D7F74D
+                      15783E299C5E1F80F7F6F6322C21F8E6E6663E9BCDBEAF7C5DF08BC005FBCDB8
+                      4EC0BBBABA80B75A7D3A784F4FCF01B8AE64FDD8E09A2DBF747777B3F3AF0F2E
+                      C85DCDF3D0235F018F3515ABC12FD482EB5E302CA71587BE9ABCAAC235B67735
+                      2C21B8D6959F95BBA488BDAFA805FF4AF0F2F24AAFD57E4D117B5F81AAC1DFEA
+                      ECECFC7271717155ABE2E6CCCC0C6FEB418503478E4540D4128C2197CB12DAA2
+                      E850D0FE93E207052BE15E12300AC2E9FDB376442CA97FD9713F291879384313
+                      DC59B2463FB663290DD8CB7F81678436DE273A7E056FDE91DE0C1E3D404C193E
+                      F3B21C5230F1F7144CF6D4F2F3318BF3C10149F770446AC366F1005013BCBA58
+                      E224B713E2AD606B4A4996A0803352FB59452A3843C0C27105E7635C279C110E
+                      4939FC5B62B807F7E07CD8581BD7093383A9513E31DC0F058E671C07846931AE
+                      5300CE4A161B4E01370FC783F399C20955C2F121981CE513C129E245C81ACB36
+                      6B0AF352392CF5C0298E84E3A494EFB4FA54F07398994A38A607F3A3FC91C043
+                      A63C00EFB2FAC4707C07F03B3827E33AE1AC3043CAD7059F3478C1B84EEA7835
+                      78A428F2B3A50CC74919D749F0228E4B79D616EA237B8D8270C6FCBCE0B77154
+                      C675C2712957FE85254EB779EBE29478ADE39C1EE0A47054FA5C96392E3AE097
+                      E258E2241C533B0E0A27651D75C269E1B894EF57E0C08047CAF7E40CCE090765
+                      3C272DB5BB382DE5F98901E7156B53E8A1194C8D2095D0FB382CE5A7158C3FCE
+                      2BF2E60165FA7868F9F77B041467A5FCDB0A36896C1623A75B088A99319E1350
+                      4C8FF2F4B4125AB3B71EDA8A79A984E2430C7A51910EAA9E85EE3E504C8EF2E9
+                      A0981576E8C673AA07CADDAC0AC5CC606A944F0425C1ABE934CEE710E805456C
+                      28A280497D09E7633C275D7E1187A45C6228F2AFFF6BC1DE0ABA8333527B6A28
+                      85CE532C2D2DEDE96599A1A7D3D3D3DF2D2C2C7CAFF61F15BF2BF0175881581B
+                      45BE19303DE1F5CF62CDC68413012E29FE50F0BB506C28F26082D50B17C411B1
+                      DBA4971C134111601F7E4838A2900BB2882D805EC12F411E9608F89F1A1AFE05
+                      586F869300E33A800000000049454E44AE426082}
+                    FileName = 'D:\Projects\VK_API\Samples\ChatFMX\Res\pv_layer_controls.png'
+                  end>
+                Align = Center
+                BitmapMargins.Top = -22.000000000000000000
+                BitmapMargins.Bottom = -37.000000000000000000
+                ClipChildren = True
+                HitTest = False
+                Size.Width = 22.000000000000000000
+                Size.Height = 36.000000000000000000
+                Size.PlatformDefault = False
+              end
+            end
+            object FloatAnimationLeftOp: TFloatAnimation
+              Duration = 0.200000002980232200
+              PropertyName = 'Opacity'
+              StartValue = 0.300000011920929000
+              StopValue = 1.000000000000000000
+              Trigger = 'IsMouseOver=true'
+              TriggerInverse = 'IsMouseOver=false'
+            end
+          end
+          object LayoutBtnRight: TLayout
+            Align = Client
+            Cursor = crHandPoint
+            HitTest = True
+            Opacity = 0.300000011920929000
+            Size.Width = 379.000000000000000000
+            Size.Height = 462.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            OnClick = LayoutBtnRightClick
+            object Layout4: TLayout
+              Align = Right
+              Position.X = 298.000000000000000000
+              Size.Width = 81.000000000000000000
+              Size.Height = 462.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 0
+              object Image2: TImage
+                MultiResBitmap.Height = 96
+                MultiResBitmap = <
+                  item
+                    Width = 22
+                    Height = 96
+                    PNG = {
+                      89504E470D0A1A0A0000000D494844520000001600000060080600000019CF82
+                      E7000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                      05D8494441546843ED985B4F5C55188641ACE7C395DE7808291DA01C02214038
+                      851042696C31C1344D9B2678E74DC556AADEF552ABC6567F843FC41F215AB9E0
+                      38C80C08144D8D32AD33BECFF25B933D27F66168E2056FF2B167D6F7ED67D65E
+                      7BEDB5D74B4350F97CFE6A2E974BEB78C39A42A5DA9B76CE556BAA140505930A
+                      E7ADB9A654F391951738D79A2B454FADAE707878A8AFF90F2C552172D458391D
+                      39FA2A5530EF4F30F8FB962A8AB6B29AD0AB735261B1373A3ED6F7E2F8F199B6
+                      00B4E65555954EA0571EF048DFDF23F86C6DFC60C5D544924EA4771E9423EC33
+                      3F547B164491F5D201119F69B3744D3D65C7382AD831B9CA86C2C93E271F0A9D
+                      78FC374F271CFF7453E1F13F202A78328F74824568DECA4317A124CBE60D3BA7
+                      BE07E64427FA1FAAD18E49C4B93E10EBB48F8626FEC414205E109CFB966244D1
+                      A60078A048240F7D46D1363C3C7C7D6363E3FEF6F6F6C6DCDCDC676AEB503C6D
+                      359115849E15F4E6DEDE5ED6D6A0422693D954FB65C5735617494168C7D0D0D0
+                      C741285A59595952EE8AE20545A4212E818E8C8C2C08BA6D3C270DC7766767E7
+                      6DE57B1591C041686735E8DADADA4E6B6BEB17CA4F285E53840E4509746C6C6C
+                      61777777C7784E4053A9D457CA4F2BDE50BCA4E0E6716E558542B9FC9696962F
+                      9507CAB47B45714A51B3B74168D7F8F8F8AD8850EAA3412726266EFD2619CF09
+                      68737333D0738AD8D0EE1AD06C5DD0C9C9C94F767676768DE7B4BEBE0EF48EF2
+                      40DF54844251183463D029456428BDE56EB64D4D4D7D2AE89EF19C34A57C4F83
+                      D023EFBE17054CEACBE9747AD5784EABABAB4079A2CE2B224D292F0AE8318FE0
+                      296D3A4A4E686C6C2C343535FDAD8F0F157F2A0E15FF28F28A50017D51D13F3A
+                      3AFA79369B7D601D76DA94F4C82E28DFAE7856E13B132A3F14AF2BA6070707EF
+                      6D6D6D1D18D749DF37DADBDBAF2B7F4611692890BF792F2B18C799818181EFB4
+                      BE96F45CDF37B482014F29426784174514BFAA785B31D3DFDFFF6D15783A2E9C
+                      5E57C0FBFAFAEE95C3750FD21D1D1D1F2A5F17FC2270C1F68DEB04BCBBBB1B78
+                      ABD52783F7F6F656C075259B4F0CAED9F26B4F4F0F3BFFFAE082DCD5ABBEE491
+                      2F83479A8AD5E0176AC1752F1896D38A235F4D5E55E11ADBBB1A9612B8D6955F
+                      94BBA488BCAFA805FF46F0E2F24AAFD57E4D11795F81AAC1DFE9EAEAFA7A6969
+                      694DAB6276767696B7F590C28143C722206A09C690CB65096D51742A68FF59F1
+                      A382953017078C82707AFFBC1D114BEA5F76CCC705230F6768823B4BD6E8C776
+                      2C24017BF91FF08C928DF7899EBC8237EF586F068F1E20A60C9F79590E2B98F8
+                      3905933DB1FC7CECC0F9E080A4FB3822B561B37800A8095E5D247192DB09F156
+                      B035A5204B90C119A9FDAC22119C2160E1B882F331AE13CE0887A41CFE2D36DC
+                      837B713E6CAC8DEB8499C1D4281F1BEE8702C7338103C2B418D7290067258B0C
+                      A7809B87E3C1F94CE384CAE1F8104C8EF2B1E014F122648D659B358D79291F96
+                      7AE01487C27152CA77597D22F839CC4C391CD383F951FE58E025A63C00EFB6FA
+                      D8707C07F03B3827E33A61823043CAD7059F3278C6B84E35E0A1A2C8CF96221C
+                      27655C279C168E4B79D616EA437B8D8270C6FCBCE0B77154C675C2712957FC0F
+                      4B946EF3D6C529F15AC7393DC449E1A8F4B928735C74C02FC591C44938A6761C
+                      144ECA3AEAA4ADD6031C97F2030A1C18F050F99E9CC139E1A08CE7A4EF07382D
+                      E5F91703CE2BD2A6D04353981AADD72550FC090E4BF91905E38FF30ABD794099
+                      3E1E5AFCFF3D028AB352FE5D059B44368BA1D3AD04AA31AC80627A94A7A7E5D0
+                      9ABDF5D056CC4B3954DFF70D7A51910CAA9E95DFFD7D4C8EF2C9A0981576E8C6
+                      73AA07CADDAC0AC5CC606A948F0525C1ABE934CEE708E805456428A280497D09
+                      E7633C275DFE1E0E49B9D850E45FFFD782BD15741767A4F6C4500A9DA7585E5E
+                      CEE96599A2A7333333DF2F2E2EFEA0F69F14BF2BF0175881481B457E19303DE1
+                      F5CF62CDC68413012E2BFE50F07FA1C850E4C104AB172E882362B7492F39C682
+                      22C03EFC907044252EC822B2007A057F0479582CE07F6A68F81781D686098E8C
+                      521F0000000049454E44AE426082}
+                    FileName = 'D:\Projects\VK_API\Samples\ChatFMX\Res\pv_layer_controls.png'
+                  end>
+                Align = Center
+                BitmapMargins.Top = -58.000000000000000000
+                ClipChildren = True
+                HitTest = False
+                Size.Width = 22.000000000000000000
+                Size.Height = 36.000000000000000000
+                Size.PlatformDefault = False
+              end
+            end
+            object FloatAnimationRightOp: TFloatAnimation
+              Duration = 0.200000002980232200
+              PropertyName = 'Opacity'
+              StartValue = 0.300000011920929000
+              StopValue = 1.000000000000000000
+              Trigger = 'IsMouseOver=true'
+              TriggerInverse = 'IsMouseOver=false'
+            end
+          end
+        end
+      end
+    end
+  end
+end

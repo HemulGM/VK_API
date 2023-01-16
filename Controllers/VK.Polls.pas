@@ -12,7 +12,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит опрос
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPollsAddVote;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPollsAddVote;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
@@ -49,7 +49,7 @@ type
     /// <summary>
     /// Если опрос будет добавлен в группу, необходимо передать отрицательный идентификатор группы. По умолчанию текущий пользователь
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPollsCreate;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPollsCreate;
     /// <summary>
     /// Список вариантов ответов
     /// Может быть не менее 1 и не более 10 вариантов ответа
@@ -78,7 +78,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит опрос
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPollsDeleteVote;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPollsDeleteVote;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
@@ -98,7 +98,7 @@ type
     /// <summary>
     /// Идентификатор владельца опроса
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPollsEdit;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPollsEdit;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
@@ -144,7 +144,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит опрос
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPollsGetById;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPollsGetById;
     /// <summary>
     /// True — опрос находится в обсуждении, False — опрос прикреплен к стене
     /// </summary>
@@ -164,7 +164,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей
     /// </summary>
-    function Fields(const Value: TVkProfileFields): TVkParamsPollsGetById;
+    function Fields(const Value: TVkExtendedFields): TVkParamsPollsGetById;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
@@ -176,7 +176,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, которому принадлежит опрос
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsPollsGetVoters;
+    function OwnerId(const Value: TVkPeerId): TVkParamsPollsGetVoters;
     /// <summary>
     /// Идентификатор опроса
     /// </summary>
@@ -209,7 +209,7 @@ type
     /// <summary>
     /// Перечисленные через запятую поля анкет, необходимые для получения
     /// </summary>
-    function Fields(const Value: TVkProfileFields): TVkParamsPollsGetVoters;
+    function Fields(const Value: TVkExtendedFields): TVkParamsPollsGetVoters;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
@@ -252,7 +252,7 @@ type
     /// <summary>
     /// Возвращает адрес сервера для загрузки фоновой фотографии в опрос.
     /// </summary>
-    function GetPhotoUploadServer(var UploadUrl: string; OwnerId: Integer = 0): Boolean;
+    function GetPhotoUploadServer(var UploadUrl: string; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Получает список идентификаторов пользователей, которые выбрали определенные варианты ответа в опросе.
     /// </summary>
@@ -307,7 +307,7 @@ begin
   Result := GetById(Item, Params);
 end;
 
-function TPollsController.GetPhotoUploadServer(var UploadUrl: string; OwnerId: Integer): Boolean;
+function TPollsController.GetPhotoUploadServer(var UploadUrl: string; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -344,7 +344,7 @@ end;
 
 { TVkParamsPollsAddVote }
 
-function TVkParamsPollsAddVote.OwnerId(const Value: Integer): TVkParamsPollsAddVote;
+function TVkParamsPollsAddVote.OwnerId(const Value: TVkPeerId): TVkParamsPollsAddVote;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -394,7 +394,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPollsCreate.OwnerId(const Value: Integer): TVkParamsPollsCreate;
+function TVkParamsPollsCreate.OwnerId(const Value: TVkPeerId): TVkParamsPollsCreate;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -444,7 +444,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPollsDeleteVote.OwnerId(const Value: Integer): TVkParamsPollsDeleteVote;
+function TVkParamsPollsDeleteVote.OwnerId(const Value: TVkPeerId): TVkParamsPollsDeleteVote;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -458,7 +458,7 @@ end;
 
 { TVkParamsPollsEdit }
 
-function TVkParamsPollsEdit.OwnerId(const Value: Integer): TVkParamsPollsEdit;
+function TVkParamsPollsEdit.OwnerId(const Value: TVkPeerId): TVkParamsPollsEdit;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -520,7 +520,7 @@ end;
 
 { TVkParamsPollsGetById }
 
-function TVkParamsPollsGetById.OwnerId(const Value: Integer): TVkParamsPollsGetById;
+function TVkParamsPollsGetById.OwnerId(const Value: TVkPeerId): TVkParamsPollsGetById;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -550,7 +550,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPollsGetById.Fields(const Value: TVkProfileFields): TVkParamsPollsGetById;
+function TVkParamsPollsGetById.Fields(const Value: TVkExtendedFields): TVkParamsPollsGetById;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -564,7 +564,7 @@ end;
 
 { TVkParamsPollsGetVoters }
 
-function TVkParamsPollsGetVoters.OwnerId(const Value: Integer): TVkParamsPollsGetVoters;
+function TVkParamsPollsGetVoters.OwnerId(const Value: TVkPeerId): TVkParamsPollsGetVoters;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -606,7 +606,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsPollsGetVoters.Fields(const Value: TVkProfileFields): TVkParamsPollsGetVoters;
+function TVkParamsPollsGetVoters.Fields(const Value: TVkExtendedFields): TVkParamsPollsGetVoters;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;

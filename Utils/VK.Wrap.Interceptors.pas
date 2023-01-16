@@ -233,10 +233,29 @@ type
     procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
   end;
 
+  TCallStateInterceptor = class(TEnumInterceptor<TVkCallState>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TVkUnixDateTimeInterceptor = class(TDateTimeInterceptor)
+  public
+    constructor Create(ADateTimeIsUTC: Boolean); reintroduce;
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
+  TSearchSectionInterceptor = class(TEnumInterceptor<TVkSearchSection>)
+  public
+    function StringConverter(Data: TObject; Field: string): string; override;
+    procedure StringReverter(Data: TObject; Field: string; Arg: string); override;
+  end;
+
 implementation
 
 uses
-  System.StrUtils;
+  System.StrUtils, System.DateUtils;
 
 { TEnumHelp }
 
@@ -583,6 +602,65 @@ end;
 procedure TAsrStateInterceptor.StringReverter(Data: TObject; Field, Arg: string);
 begin
   RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkAsrState.Create(Arg)));
+end;
+
+{ TCallStateInterceptor }
+
+function TCallStateInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkCallState>.ToString;
+end;
+
+procedure TCallStateInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkCallState.Create(Arg)));
+end;
+
+{ TVkUnixDateTimeInterceptor }
+
+constructor TVkUnixDateTimeInterceptor.Create(ADateTimeIsUTC: Boolean);
+begin
+  inherited Create(ADateTimeIsUTC);
+  ConverterType := ctString;
+  ReverterType := rtString;
+end;
+
+function TVkUnixDateTimeInterceptor.StringConverter(Data: TObject; Field: string): string;
+var
+  ctx: TRTTIContext;
+  date: TDateTime;
+begin
+  date := ctx.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TDateTime>;
+  if date = 0 then
+    Result := '0'
+  else
+    result := IntToStr(DateTimeToUnix(date, DateTimeIsUTC));
+end;
+
+procedure TVkUnixDateTimeInterceptor.StringReverter(Data: TObject; Field: string; Arg: string);
+var
+  ctx: TRTTIContext;
+  datetime: TDateTime;
+  unixdt: Int64;
+begin
+  unixdt := StrToIntDef(Arg, 0);
+  if unixdt = 0 then
+    datetime := 0
+  else
+    datetime := UnixToDateTime(unixdt, DateTimeIsUTC);
+  ctx.GetType(Data.ClassType).GetField(Field).SetValue(Data, datetime);
+end;
+
+{ TSearchSectionInterceptor }
+
+function TSearchSectionInterceptor.StringConverter(Data: TObject; Field: string): string;
+begin
+  Result := RTTI.GetType(Data.ClassType).GetField(Field).GetValue(Data).AsType<TVkSearchSection>.ToString;
+end;
+
+procedure TSearchSectionInterceptor.StringReverter(Data: TObject; Field, Arg: string);
+begin
+  RTTI.GetType(Data.ClassType).GetField(Field).SetValue(Data, TValue.From(TVkSearchSection.Create(Arg)));
 end;
 
 end.

@@ -3,8 +3,8 @@ unit VK.Wall;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller, VK.Types, System.JSON, VK.Entity.Media,
-  VK.Entity.Info;
+  System.SysUtils, System.Generics.Collections, REST.Client, VK.Controller,
+  VK.Types, System.JSON, VK.Entity.Media, VK.Entity.Info;
 
 type
   TVkParamsWallPost = record
@@ -70,7 +70,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, на стене которого должна быть опубликована запись
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallPost;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallPost;
     /// <summary>
     /// Идентификатор места, в котором отмечен пользователь
     /// </summary>
@@ -140,7 +140,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, на стене которого должна быть опубликована запись
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallEdit;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallEdit;
     /// <summary>
     /// Идентификатор места, в котором отмечен пользователь
     /// </summary>
@@ -176,7 +176,7 @@ type
     /// <summary>
     /// Идентификатор владельца стены (идентификатор сообщества нужно указывать со знаком «минус»)
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallEditAdsStealth;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallEditAdsStealth;
     /// <summary>
     /// Идентификатор записи
     /// </summary>
@@ -237,7 +237,7 @@ type
     /// Идентификатор видео. Одновременно может быть указан либо параметр LinkImage, либо параметр .
     /// Кроме того, параметр LinkVideo может быть указан только вместе с параметрами LinkButton, LinkTitle
     /// </summary>
-    function LinkVideo(OwnerId, MediaId: Integer): TVkParamsWallEditAdsStealth; overload;
+    function LinkVideo(OwnerId: TVkPeerId; MediaId: Integer): TVkParamsWallEditAdsStealth; overload;
   end;
 
   TVkParamsWallEditComment = record
@@ -245,7 +245,7 @@ type
     /// <summary>
     /// Идентификатор владельца стены
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallEditComment;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallEditComment;
     /// <summary>
     /// Идентификатор комментария, который необходимо отредактировать
     /// </summary>
@@ -270,7 +270,7 @@ type
     /// Идентификатор пользователя или сообщества, со стены которого
     /// необходимо получить записи (по умолчанию — текущий пользователь)
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallGet;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallGet;
     /// <summary>
     /// Короткий адрес пользователя или сообщества
     /// </summary>
@@ -296,7 +296,7 @@ type
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть.
     /// Обратите внимание, этот параметр учитывается только при Extended = True
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsWallGet;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsWallGet;
   end;
 
   TVkParamsWallGetById = record
@@ -323,7 +323,7 @@ type
     /// <summary>
     /// Список дополнительных полей для профилей и групп, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsWallGetById;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsWallGetById;
   end;
 
   TVkParamsWallGetComment = record
@@ -331,7 +331,7 @@ type
     /// <summary>
     /// Идентификатор владельца стены (для сообществ — со знаком «минус»)
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallGetComment;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallGetComment;
     /// <summary>
     /// Идентификатор комментария
     /// </summary>
@@ -344,7 +344,7 @@ type
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsWallGetComment;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsWallGetComment;
   end;
 
   TVkCommentCreateParams = record
@@ -356,7 +356,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества, на чьей стене находится запись, к которой необходимо добавить комментарий
     /// </summary>
-    function OwnerId(const Value: Integer): TVkCommentCreateParams;
+    function OwnerId(const Value: TVkPeerId): TVkCommentCreateParams;
     /// <summary>
     /// Текст комментария. Обязательный параметр, если не передан параметр attachments
     /// </summary>
@@ -395,7 +395,7 @@ type
     /// <summary>
     /// Идентификатор владельца страницы (пользователь или сообщество)
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallGetComments;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallGetComments;
     /// <summary>
     /// Идентификатор записи
     /// </summary>
@@ -432,7 +432,7 @@ type
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsWallGetComments;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsWallGetComments;
     /// <summary>
     /// Идентификатор комментария, ветку которого нужно получить
     /// </summary>
@@ -448,7 +448,7 @@ type
     /// <summary>
     /// Идентификатор владельца стены (идентификатор сообщества нужно указывать со знаком «минус»)
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallPostAdsStealth;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallPostAdsStealth;
     /// <summary>
     /// Текст записи
     /// </summary>
@@ -527,7 +527,7 @@ type
     /// Идентификатор сообщества, на стене которого будет размещена запись с объектом.
     /// Если не указан, запись будет размещена на стене текущего пользователя
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsWallRepost;
+    function GroupId(const Value: TVkPeerId): TVkParamsWallRepost;
     /// <summary>
     /// True — у записи, размещенной от имени сообщества, будет добавлена метка "это реклама", False — метки добавлено не будет. В сутки может быть опубликовано не более пяти рекламных записей, из которых не более трёх — вне Биржи ВКонтакте
     /// </summary>
@@ -544,7 +544,7 @@ type
     /// <summary>
     /// Идентификатор пользователя или сообщества
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsWallSearch;
+    function OwnerId(const Value: TVkPeerId): TVkParamsWallSearch;
     /// <summary>
     /// Короткий адрес пользователя или сообщества
     /// </summary>
@@ -573,7 +573,7 @@ type
     /// <summary>
     /// Список дополнительных полей для профилей и сообществ, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsWallSearch;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsWallSearch;
   end;
 
   TWallController = class(TVkController)
@@ -585,7 +585,7 @@ type
     /// <summary>
     /// Выключает комментирование записи.
     /// </summary>
-    function CloseComments(const OwnerId, PostId: Integer): Boolean;
+    function CloseComments(const OwnerId: TVkPeerId; PostId: Integer): Boolean;
     /// <summary>
     /// Добавляет комментарий к записи на стене.
     /// </summary>
@@ -597,15 +597,15 @@ type
     /// <summary>
     /// Добавляет комментарий к записи на стене.
     /// </summary>
-    function CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer = 0; Attachments: TAttachmentArray = []): Boolean; overload;
+    function CreateComment(const PostId: Integer; const Message: string; OwnerId: TVkPeerId = 0; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Удаляет запись со стены.
     /// </summary>
-    function Delete(const PostId: Integer; OwnerId: Integer = 0): Boolean;
+    function Delete(const PostId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Удаляет комментарий к записи на стене.
     /// </summary>
-    function DeleteComment(const CommentId: Integer; OwnerId: Integer = 0): Boolean;
+    function DeleteComment(const CommentId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Редактирует запись на стене.
     /// </summary>
@@ -628,7 +628,7 @@ type
     /// Возвращает список записей со стены пользователя или сообщества.
     /// 5000 вызовов в сутки.
     /// </summary>
-    function Get(var Items: TVkPosts; Offset, Count: Integer; OwnerId: Integer = 0): Boolean; overload;
+    function Get(var Items: TVkPosts; Offset, Count: Integer; OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает список записей со стен пользователей или сообществ по их идентификаторам.
     /// </summary>
@@ -653,16 +653,16 @@ type
     /// Позволяет получать список репостов заданной записи.
     /// Обратите внимание, получить список репостов можно только для записи, созданной текущим пользователем, или в сообществе, где текущий пользователь является администратором.
     /// </summary>
-    function GetReposts(var Items: TVkPosts; PostId: Integer; Offset: Integer = 0; Count: Integer = 0; OwnerId: Integer = 0): Boolean; overload;
+    function GetReposts(var Items: TVkPosts; PostId: Integer; Offset: Integer = 0; Count: Integer = 0; OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Включает комментирование записи
     /// Работает только с конкретными записями, комментирование которых было выключено с помощью wall.closeComments
     /// </summary>
-    function OpenComments(const OwnerId, PostId: Integer): Boolean; overload;
+    function OpenComments(const OwnerId: TVkPeerId; PostId: Integer): Boolean; overload;
     /// <summary>
     /// Закрепляет запись на стене (запись будет отображаться выше остальных).
     /// </summary>
-    function Pin(const PostId: Integer; const OwnerId: Integer = 0): Boolean; overload;
+    function Pin(const PostId: Integer; const OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Позволяет создать запись на стене, предложить запись на стене публичной страницы, опубликовать существующую отложенную запись.
     /// Чтобы создать предложенную запись, необходимо передать в owner_id идентификатор публичной страницы, в которой текущий пользователь не является руководителем.
@@ -680,13 +680,13 @@ type
     /// Чтобы создать предложенную запись, необходимо передать в owner_id идентификатор публичной страницы, в которой текущий пользователь не является руководителем.
     /// Для публикации предложенных и отложенных записей используйте параметр post_id, значение для которого можно получить методом wall.get с filter=suggests и postponed соответственно.
     /// </summary>
-    function Post(var PostId: Integer; Message: string; OwnerId: Integer; Attachments: TAttachmentArray = []): Boolean; overload;
+    function Post(var PostId: Integer; Message: string; OwnerId: TVkPeerId; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Позволяет создать запись на стене, предложить запись на стене публичной страницы, опубликовать существующую отложенную запись.
     /// Чтобы создать предложенную запись, необходимо передать в owner_id идентификатор публичной страницы, в которой текущий пользователь не является руководителем.
     /// Для публикации предложенных и отложенных записей используйте параметр post_id, значение для которого можно получить методом wall.get с filter=suggests и postponed соответственно.
     /// </summary>
-    function Post(const Message: string; OwnerId: Integer; Attachments: TAttachmentArray = []): Boolean; overload;
+    function Post(const Message: string; OwnerId: TVkPeerId; Attachments: TAttachmentArray = []): Boolean; overload;
     /// <summary>
     /// Позволяет создать запись на стене, предложить запись на стене публичной страницы, опубликовать существующую отложенную запись.
     /// Чтобы создать предложенную запись, необходимо передать в owner_id идентификатор публичной страницы, в которой текущий пользователь не является руководителем.
@@ -707,11 +707,11 @@ type
     /// <summary>
     /// Позволяет пожаловаться на комментарий к записи.
     /// </summary>
-    function ReportComment(const OwnerId, CommentId: Integer; Reason: TVkMediaReportReason = TVkMediaReportReason.Spam): Boolean; overload;
+    function ReportComment(const OwnerId: TVkPeerId; CommentId: Integer; Reason: TVkMediaReportReason = TVkMediaReportReason.Spam): Boolean; overload;
     /// <summary>
     /// Позволяет пожаловаться на запись.
     /// </summary>
-    function ReportPost(const OwnerId, PostId: Integer; Reason: TVkMediaReportReason = TVkMediaReportReason.Spam): Boolean; overload;
+    function ReportPost(const OwnerId: TVkPeerId; PostId: Integer; Reason: TVkMediaReportReason = TVkMediaReportReason.Spam): Boolean; overload;
     /// <summary>
     /// Позволяет пожаловаться на комментарий к записи.
     /// </summary>
@@ -723,11 +723,11 @@ type
     /// <summary>
     /// Восстанавливает удаленную запись на стене пользователя или сообщества.
     /// </summary>
-    function Restore(const PostId: Integer; const OwnerId: Integer = 0): Boolean; overload;
+    function Restore(const PostId: Integer; const OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Восстанавливает удаленный комментарий к записи на стене.
     /// </summary>
-    function RestoreComment(const CommentId: Integer; const OwnerId: Integer = 0): Boolean; overload;
+    function RestoreComment(const CommentId: Integer; const OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Позволяет искать записи на стене в соответствии с заданными критериями.
     /// 1000 вызовов в сутки
@@ -741,7 +741,7 @@ type
     /// <summary>
     /// Отменяет закрепление записи на стене.
     /// </summary>
-    function Unpin(const PostId: Integer; const OwnerId: Integer = 0): Boolean; overload;
+    function Unpin(const PostId: Integer; const OwnerId: TVkPeerId = 0): Boolean; overload;
   end;
 
 implementation
@@ -769,7 +769,7 @@ begin
   Result := Post(PostId, Message, Attachments);
 end;
 
-function TWallController.Post(const Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
+function TWallController.Post(const Message: string; OwnerId: TVkPeerId; Attachments: TAttachmentArray): Boolean;
 var
   PostId: Integer;
 begin
@@ -788,7 +788,7 @@ begin
   Result := Handler.Execute('wall.postAdsStealth', Params.List).GetValue('post_id', PostId);
 end;
 
-function TWallController.ReportComment(const OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
+function TWallController.ReportComment(const OwnerId: TVkPeerId; CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
 var
   Params: TParams;
 begin
@@ -798,7 +798,7 @@ begin
   Result := Handler.Execute('wall.reportComment', Params).ResponseIsTrue;
 end;
 
-function TWallController.ReportPost(const OwnerId, PostId: Integer; Reason: TVkMediaReportReason): Boolean;
+function TWallController.ReportPost(const OwnerId: TVkPeerId; PostId: Integer; Reason: TVkMediaReportReason): Boolean;
 var
   Params: TParams;
 begin
@@ -813,7 +813,7 @@ begin
   Result := Repost(Info, Params.List);
 end;
 
-function TWallController.Restore(const PostId, OwnerId: Integer): Boolean;
+function TWallController.Restore(const PostId: Integer; const OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -822,7 +822,7 @@ begin
   Result := Handler.Execute('wall.restore', Params).ResponseIsTrue;
 end;
 
-function TWallController.RestoreComment(const CommentId, OwnerId: Integer): Boolean;
+function TWallController.RestoreComment(const CommentId: Integer; const OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -836,7 +836,7 @@ begin
   Result := Search(Items, Params.List);
 end;
 
-function TWallController.Unpin(const PostId, OwnerId: Integer): Boolean;
+function TWallController.Unpin(const PostId: Integer; const OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -861,7 +861,7 @@ begin
   Result := Handler.Execute('wall.post', Params.List).GetValue('post_id', PostId);
 end;
 
-function TWallController.Post(var PostId: Integer; Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
+function TWallController.Post(var PostId: Integer; Message: string; OwnerId: TVkPeerId; Attachments: TAttachmentArray): Boolean;
 var
   Params: TVkParamsWallPost;
 begin
@@ -887,7 +887,7 @@ begin
     CommentInfo.Free;
 end;
 
-function TWallController.CloseComments(const OwnerId, PostId: Integer): Boolean;
+function TWallController.CloseComments(const OwnerId: TVkPeerId; PostId: Integer): Boolean;
 begin
   Result := Handler.Execute('wall.closeComments', [
     ['owner_id', OwnerId.ToString],
@@ -895,7 +895,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TWallController.CreateComment(const PostId: Integer; const Message: string; OwnerId: Integer; Attachments: TAttachmentArray): Boolean;
+function TWallController.CreateComment(const PostId: Integer; const Message: string; OwnerId: TVkPeerId; Attachments: TAttachmentArray): Boolean;
 var
   CommentInfo: TVkCommentInfo;
   Params: TVkCommentCreateParams;
@@ -911,7 +911,7 @@ begin
     CommentInfo.Free;
 end;
 
-function TWallController.Delete(const PostId: Integer; OwnerId: Integer): Boolean;
+function TWallController.Delete(const PostId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -921,7 +921,7 @@ begin
   Result := Handler.Execute('wall.delete', Params).ResponseIsTrue;
 end;
 
-function TWallController.DeleteComment(const CommentId: Integer; OwnerId: Integer): Boolean;
+function TWallController.DeleteComment(const CommentId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -946,7 +946,7 @@ begin
   Result := Handler.Execute('wall.editComment', Params.List).ResponseIsTrue;
 end;
 
-function TWallController.Get(var Items: TVkPosts; Offset, Count: Integer; OwnerId: Integer): Boolean;
+function TWallController.Get(var Items: TVkPosts; Offset, Count: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TVkParamsWallGet;
 begin
@@ -972,7 +972,7 @@ begin
   Result := GetComments(Items, Params.List);
 end;
 
-function TWallController.GetReposts(var Items: TVkPosts; PostId, Offset, Count, OwnerId: Integer): Boolean;
+function TWallController.GetReposts(var Items: TVkPosts; PostId, Offset, Count: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -986,7 +986,7 @@ begin
   Result := Handler.Execute('wall.getReposts', Params).GetObject(Items);
 end;
 
-function TWallController.OpenComments(const OwnerId, PostId: Integer): Boolean;
+function TWallController.OpenComments(const OwnerId: TVkPeerId; PostId: Integer): Boolean;
 begin
   Result := Handler.Execute('wall.openComments', [
     ['owner_id', OwnerId.ToString],
@@ -1009,7 +1009,7 @@ begin
   Result := Handler.Execute('wall.get', Params.List).GetObject(Items);
 end;
 
-function TWallController.Pin(const PostId, OwnerId: Integer): Boolean;
+function TWallController.Pin(const PostId: Integer; const OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -1098,7 +1098,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallPost.OwnerId(const Value: Integer): TVkParamsWallPost;
+function TVkParamsWallPost.OwnerId(const Value: TVkPeerId): TVkParamsWallPost;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1166,7 +1166,7 @@ begin
   Result := Self;
 end;
 
-function TVkCommentCreateParams.OwnerId(const Value: Integer): TVkCommentCreateParams;
+function TVkCommentCreateParams.OwnerId(const Value: TVkPeerId): TVkCommentCreateParams;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1210,9 +1210,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallGet.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsWallGet;
+function TVkParamsWallGet.Fields(Value: TVkExtendedFields): TVkParamsWallGet;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
@@ -1228,7 +1228,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallGet.OwnerId(const Value: Integer): TVkParamsWallGet;
+function TVkParamsWallGet.OwnerId(const Value: TVkPeerId): TVkParamsWallGet;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1236,7 +1236,7 @@ end;
 
 { TVkParamsWallEdit }
 
-function TVkParamsWallEdit.OwnerId(const Value: Integer): TVkParamsWallEdit;
+function TVkParamsWallEdit.OwnerId(const Value: TVkPeerId): TVkParamsWallEdit;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1340,7 +1340,7 @@ end;
 
 { TVkParamsWallEditAdsStealth }
 
-function TVkParamsWallEditAdsStealth.OwnerId(const Value: Integer): TVkParamsWallEditAdsStealth;
+function TVkParamsWallEditAdsStealth.OwnerId(const Value: TVkPeerId): TVkParamsWallEditAdsStealth;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1400,7 +1400,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallEditAdsStealth.LinkVideo(OwnerId, MediaId: Integer): TVkParamsWallEditAdsStealth;
+function TVkParamsWallEditAdsStealth.LinkVideo(OwnerId: TVkPeerId; MediaId: Integer): TVkParamsWallEditAdsStealth;
 begin
   List.Add('link_video', OwnerId.ToString + '_' + MediaId.ToString);
   Result := Self;
@@ -1420,7 +1420,7 @@ end;
 
 { TVkParamsWallEditComment }
 
-function TVkParamsWallEditComment.OwnerId(const Value: Integer): TVkParamsWallEditComment;
+function TVkParamsWallEditComment.OwnerId(const Value: TVkPeerId): TVkParamsWallEditComment;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1464,9 +1464,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallGetById.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsWallGetById;
+function TVkParamsWallGetById.Fields(Value: TVkExtendedFields): TVkParamsWallGetById;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
@@ -1490,13 +1490,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallGetComment.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsWallGetComment;
+function TVkParamsWallGetComment.Fields(Value: TVkExtendedFields): TVkParamsWallGetComment;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
-function TVkParamsWallGetComment.OwnerId(const Value: Integer): TVkParamsWallGetComment;
+function TVkParamsWallGetComment.OwnerId(const Value: TVkPeerId): TVkParamsWallGetComment;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1504,7 +1504,7 @@ end;
 
 { TVkParamsWallGetComments }
 
-function TVkParamsWallGetComments.OwnerId(const Value: Integer): TVkParamsWallGetComments;
+function TVkParamsWallGetComments.OwnerId(const Value: TVkPeerId): TVkParamsWallGetComments;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1558,9 +1558,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallGetComments.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsWallGetComments;
+function TVkParamsWallGetComments.Fields(const Value: TVkExtendedFields): TVkParamsWallGetComments;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
@@ -1578,7 +1578,7 @@ end;
 
 { TVkParamsWallPostAdsStealth }
 
-function TVkParamsWallPostAdsStealth.OwnerId(const Value: Integer): TVkParamsWallPostAdsStealth;
+function TVkParamsWallPostAdsStealth.OwnerId(const Value: TVkPeerId): TVkParamsWallPostAdsStealth;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1670,7 +1670,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallRepost.GroupId(const Value: Integer): TVkParamsWallRepost;
+function TVkParamsWallRepost.GroupId(const Value: TVkPeerId): TVkParamsWallRepost;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -1690,7 +1690,7 @@ end;
 
 { TVkParamsWallSearch }
 
-function TVkParamsWallSearch.OwnerId(const Value: Integer): TVkParamsWallSearch;
+function TVkParamsWallSearch.OwnerId(const Value: TVkPeerId): TVkParamsWallSearch;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1732,9 +1732,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsWallSearch.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsWallSearch;
+function TVkParamsWallSearch.Fields(const Value: TVkExtendedFields): TVkParamsWallSearch;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 

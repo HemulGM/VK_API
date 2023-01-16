@@ -156,7 +156,22 @@ const
   VK_GROUP_ID_START = 1000000000;
 
 type
+  TVkPeerId = type Int64;
+
+  TVkPeerIds = TArray<TVkPeerId>;
+
+  TVkPeerIdsHelper = record helper for TVkPeerIds
+    function ToString: string; overload;  {$IFNDEF DEBUG} inline; {$ENDIF}
+    function ToJson: string; overload;  {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Value: TVkPeerId): Integer;  {$IFNDEF DEBUG} inline; {$ENDIF}
+    procedure Delete(const Value: TVkPeerId);  {$IFNDEF DEBUG} inline; {$ENDIF}
+    function IsEmpty: Boolean; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Length: Integer; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function IndexOf(const Value: TVkPeerId): Integer; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Contains(const Value: TVkPeerId): Boolean; {$IFNDEF DEBUG} inline; {$ENDIF}
+  end;
   {$IFDEF OLD_VERSION}
+
   TArrayOfString = array of string;
 
   {$ELSE}
@@ -227,7 +242,7 @@ type
   TVkAttachmentType = (Unknown, Photo, Video, Audio, Doc, Link, Market,       //
     MarketAlbum, Wall, WallReply, Sticker, Gift, Call, AudioMessage,          //
     PostedPhoto, Graffiti, Note, App, Poll, Page, Album, PhotosList,          //
-    PrettyCards, Event, MoneyTransfer);
+    PrettyCards, Event, MoneyTransfer, MoneyRequest, AudioPlaylist, Story);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToString: string; inline;
@@ -286,6 +301,7 @@ type
     function Add(Key: string; Value: Boolean): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: TArrayOfString): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: TArrayOfInteger): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: TVkPeerIds): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: TAttachmentArray): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: TVkEntity): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: TAttachment): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
@@ -341,6 +357,25 @@ type
   TVkLiveStatusHelper = record helper for TVkLiveStatus
     function ToString: string; inline;
     class function Create(const Value: string): TVkLiveStatus; static;
+  end;
+
+  /// <summary>
+  /// ¬озможные значени€ дл€ сообществ:
+  /// Groups Ч группы;
+  /// Events Ч меропри€ти€;
+  /// Publics Ч публичные страницы.
+  ///
+  /// ¬озможные значени€ дл€ профилей:
+  /// Correspondents Ч собеседники по переписке;
+  /// People Ч попул€рные пользователи;
+  /// Friends Ч друзь€;
+  /// MutualFriends Ч пользователи, имеющие общих друзей с текущим.
+  /// </summary>
+  TVkSearchSection = (Groups, Events, Publics, Correspondents, People, Friends, MutualFriends);
+
+  TVkSearchSectionHelper = record helper for TVkSearchSection
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkSearchSection; static;
   end;
 
   TVkMonthlyTier = (Tier1, Tier2, Tier3, Tier4, Tier5, Tier6, Unlimited);
@@ -584,6 +619,13 @@ type
     function ToString: string; overload; inline;
   end;
 
+  TVkCallState = (CanceledByInitiator, Reached, CanceledByReceiver);
+
+  TVkCallStateHelper = record helper for TVkCallState
+    function ToString: string; inline;
+    class function Create(const Value: string): TVkCallState; static;
+  end;
+
   TVkLang = (Auto = -1, RU = 0, UK = 1, BE = 2, EN = 3, ES = 4,   //
     FI = 5, DE = 6, IT = 7);
 
@@ -659,7 +701,7 @@ type
     function ToString: string; inline;
   end;
 
-  TVkProfileField = (PhotoId, Verified, Sex, BirthDate, City, Country,           //
+  TVkExtendedField = (PhotoId, Verified, Sex, BirthDate, City, Country,           //
     HomeTown, HasPhoto, Photo50, Photo100, Photo200Orig, Photo200, Photo400Orig, //
     PhotoMax, PhotoMaxOrig, PhotoBig, PhotoMedium, Online, Lists, Domain,        //
     HasMobile, Contacts, Site, Education, Universities, Schools, Status,         //
@@ -672,19 +714,24 @@ type
     CanBeInvitedGroup, OnlineMobile, Counters, FirstNameNom, FirstNameGen,       //
     FirstNameDat, FirstNameAcc, FirstNameIns, FirstNameAbl, LastNameNom,         //
     LastNameGen, LastNameDat, LastNameAcc, LastNameIns, LastNameAbl,             //
-    WallDefault, OnlineInfo, CanCall);                                           //
+    WallDefault, OnlineInfo, CanCall,
+    // group only
+    Place, Description, WikiPage, MembersCount, StartDate, FinishDate,             //
+    Activity, Links, FixedPost, CanCreateTopic, Cover, Addresses,                //
+    AgeLimits, BanInfo, CanMessage, CanUploadDoc, CanUploadVideo,                //
+    IsMessagesBlocked);                                                          //
 
-  TVkProfileFieldHelper = record helper for TVkProfileField
+  TVkProfileFieldHelper = record helper for TVkExtendedField
     function ToString: string; inline;
   end;
 
-  TVkProfileFields = set of TVkProfileField;
+  TVkExtendedFields = set of TVkExtendedField;
 
-  TVkProfileFieldsHelper = record helper for TVkProfileFields
+  TVkExtendedFieldsHelper = record helper for TVkExtendedFields
   public
     function ToString: string; inline;
-    class function All: TVkProfileFields; static; inline;
-    class function AllForGroup: TVkProfileFields; static; inline;
+    class function All: TVkExtendedFields; static; inline;
+    class function AllForGroup: TVkExtendedFields; static; inline;
   end;
 
   /// <summary>
@@ -700,24 +747,6 @@ type
   end;
 
   TVkFriendAddInfo = (Success = 1, Approved = 2, Resended = 4);
-
-  TVkGroupField = (City, Country, Place, Description, WikiPage, MembersCount, //
-    Counters, StartDate, FinishDate, CanPost, CanSeeAllPosts, Activity,       //
-    Status, Contacts, Links, FixedPost, Verified, Site, CanCreateTopic,       //
-    Photo50, Photo100, Photo200, Cover, Addresses, AgeLimits, BanInfo,        //
-    CanMessage, CanUploadDoc, CanUploadVideo, CropPhoto, HasPhoto,            //
-    IsFavorite, IsHiddenFromFeed, IsMessagesBlocked);
-
-  TVkGroupFieldHelper = record helper for TVkGroupField
-    function ToString: string; inline;
-  end;
-
-  TVkGroupFields = set of TVkGroupField;
-
-  TVkGroupFieldsHelper = record helper for TVkGroupFields
-    function ToString: string; inline;
-    class function All: TVkGroupFields; static; inline;
-  end;
 
   TVkGroupAddressField = (Title, Address, AdditionalAddress, CountryId,       //
     CityId, MetroStationId, Latitude, Longitude, WorkInfoStatus, TimeOffset);
@@ -908,8 +937,12 @@ type
     Windows, Web);
 
   TVkPlatformHelper = record helper for TVkPlatform
+  private
+    function GetIsMobile: Boolean;
+  public
     function ToString: string; inline;
     class function Create(const Value: string): TVkPlatform; static;
+    property IsMobile: Boolean read GetIsMobile;
   end;
 
   /// <summary>
@@ -1404,8 +1437,6 @@ type
     destructor Destroy; override;
   end;
 
-  TVkPeerId = type Int64;
-
   TVkPeerHelper = record helper for TVkPeerId
     function IsChat: Boolean;
     function IsGroup: Boolean;
@@ -1421,6 +1452,8 @@ type
   TOnConfirm = procedure(Sender: TObject; Ans: string; var Accept: Boolean) of object;
 
   TOnCaptcha = procedure(Sender: TObject; const CaptchaURL: string; var Answer: string) of object;
+
+  TOnAuthNeeded = procedure(Sender: TObject; var AResult: Boolean) of object;
 
   TOnLog = procedure(Sender: TObject; const Value: string) of object;
 
@@ -1474,7 +1507,8 @@ const
   VkPlatformsType: array[TVkPlatform] of string = ('', 'mobile', 'ios', 'ios', 'android', 'winphone', 'windows', 'web');
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video', 'audio', 'doc', 'link', 'market',
     'market_album', 'wall', 'wall_reply', 'sticker', 'gift', 'call', 'audio_message', 'posted_photo', 'graffiti',
-    'note', 'app', 'poll', 'page', 'album', 'photos_list', 'pretty_cards', 'event', 'money_transfer');
+    'note', 'app', 'poll', 'page', 'album', 'photos_list', 'pretty_cards', 'event', 'money_transfer', 'money_request',
+    'audio_playlist', 'story');
   VkPeerType: array[TVkPeerType] of string = ('', 'user', 'chat', 'group', 'email');
   VkNameCase: array[TVkNameCase] of string = ('nom', 'gen', 'dat', 'acc', 'ins', 'abl');
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo', 'audio', 'video', 'note', 'market',
@@ -1484,7 +1518,7 @@ const
   VkPremissionStr: array[TVkPermission] of string = ('notify', 'friends', 'photos', 'audio', 'video', 'stories',
     'pages', 'status', 'notes', 'messages', 'wall', 'ads', 'offline', 'docs', 'groups', 'notifications', 'stats',
     'email', 'market', 'app_widget', 'manage');
-  VkProfileField: array[TVkProfileField] of string = (
+  VkProfileField: array[TVkExtendedField] of string = (
     'photo_id', 'verified', 'sex', 'bdate', 'city', 'country', 'home_town', 'has_photo', 'photo_50',
     'photo_100', 'photo_200_orig', 'photo_200', 'photo_400_orig', 'photo_max', 'photo_max_orig', 'photo_big',
     'photo_medium', 'online', 'lists', 'domain', 'has_mobile', 'contacts', 'site', 'education', 'universities',
@@ -1496,16 +1530,14 @@ const
     'friend_status', 'career', 'military', 'blacklisted', 'blacklisted_by_me', 'can_be_invited_group',
     'online_mobile', 'counters', 'first_name_nom', 'first_name_gen', 'first_name_dat', 'first_name_acc',
     'first_name_ins', 'first_name_abl', 'last_name_nom', 'last_name_gen', 'last_name_dat', 'last_name_acc',
-    'last_name_ins', 'last_name_abl', 'wall_default', 'online_info', 'can_call');
+    'last_name_ins', 'last_name_abl', 'wall_default', 'online_info', 'can_call', 'place', 'description',
+    'wiki_page', 'members_count', 'start_date', 'finish_date', 'activity',
+    'links', 'fixed_post', 'can_create_topic', 'cover', 'addresses', 'age_limits', 'ban_info',
+    'can_message', 'can_upload_doc', 'can_upload_video', 'is_messages_blocked');
   VKPostLinkButton: array[TVkPostLinkButton] of string = (
     'auto', 'app_join', 'app_game_join', 'open_url', 'open', 'more', 'call', 'book', 'enroll', 'register', 'buy',
     'buy_ticket', 'order', 'create', 'install', 'contact', 'fill', 'join_public', 'join_event', 'join', 'im',
     'im2', 'begin', 'get', 'watch', 'download', 'participate', 'play', 'apply', 'get_an_offer', 'to_write', 'reply');
-  VkGroupField: array[TVkGroupField] of string = ('city', 'country', 'place', 'description', 'wiki_page', 'members_count',
-    'counters', 'start_date', 'finish_date', 'can_post', 'can_see_all_posts', 'activity', 'status',
-    'contacts', 'links', 'fixed_post', 'verified', 'site', 'can_create_topic', 'photo_50', 'photo_100', 'photo_200',
-    'cover', 'addresses', 'age_limits', 'ban_info', 'can_message', 'can_upload_doc', 'can_upload_video',
-    'crop_photo', 'has_photo', 'is_favorite', 'is_hidden_from_feed', 'is_messages_blocked');
   VkGroupFilter: array[TVkGroupFilter] of string = ('admin', 'editor', 'moder', 'advertiser', 'groups', 'publics',
     'events', 'hasAddress');
   VkGroupRole: array[TVkGroupRole] of string = ('moderator', 'editor', 'administrator', 'advertiser');
@@ -1587,6 +1619,8 @@ const
   VkGroupMarketState: array[TVkGroupMarketState] of string = ('none', 'basic', 'advanced');
   VkAsrState: array[TVkAsrState] of string = ('processing', 'finished', 'internal_error', 'transcoding_error', 'recognition_error');
   VkAsrModel: array[TVkAsrModel] of string = ('neutral', 'spontaneous');
+  VkCallState: array[TVkCallState] of string = ('canceled_by_initiator', 'reached', 'canceled_by_receiver');
+  VkSearchSection: array[TVkSearchSection] of string = ('groups', 'events', 'publics', 'correspondents', 'people', 'friends', 'mutual_friends');
 
 function NormalizePeerId(Value: TVkPeerId): TVkPeerId;
 
@@ -1730,6 +1764,75 @@ begin
       TVkDialogFlag.Unanswered:
         Result := Result + 'Unanswered ';
     end;
+end;
+
+{ TVkPeerIdsHelper }
+
+function TVkPeerIdsHelper.Add(Value: TVkPeerId): Integer;
+begin
+  Result := System.Length(Self) + 1;
+  SetLength(Self, Result);
+  Self[Result - 1] := Value;
+end;
+
+function TVkPeerIdsHelper.Contains(const Value: TVkPeerId): Boolean;
+begin
+  Result := IndexOf(Value) >= 0;
+end;
+
+procedure TVkPeerIdsHelper.Delete(const Value: TVkPeerId);
+var
+  i: Integer;
+begin
+  i := IndexOf(Value);
+  if i >= 0 then
+    System.Delete(Self, i, 1);
+end;
+
+function TVkPeerIdsHelper.IndexOf(const Value: TVkPeerId): Integer;
+var
+  i: Integer;
+begin
+  for i := Low(Self) to High(Self) do
+    if Self[i] = Value then
+      Exit(i);
+  Result := -1;
+end;
+
+function TVkPeerIdsHelper.IsEmpty: Boolean;
+begin
+  Result := System.Length(Self) = 0;
+end;
+
+function TVkPeerIdsHelper.Length: Integer;
+begin
+  Result := System.Length(Self);
+end;
+
+function TVkPeerIdsHelper.ToJson: string;
+var
+  i: Integer;
+begin
+  Result := '[';
+  for i := Low(Self) to High(Self) do
+  begin
+    if i <> Low(Self) then
+      Result := Result + ',';
+    Result := Result + '"' + Self[i].ToString + '"';
+  end;
+  Result := Result + ']';
+end;
+
+function TVkPeerIdsHelper.ToString: string;
+var
+  i: Integer;
+begin
+  for i := Low(Self) to High(Self) do
+  begin
+    if i <> Low(Self) then
+      Result := Result + ',';
+    Result := Result + Self[i].ToString;
+  end;
 end;
 
 { TArrayOfIntegerHelper }
@@ -1931,7 +2034,7 @@ end;
 
 function TParamsHelper.Add(Key: string; Value: Extended): TParams;
 begin
-  Result := AddParam([Key, Value.ToString]);
+  Result := AddParam([Key, Value.ToString.Replace(',', '.')]);
 end;
 
 function TParamsHelper.GetValue(Key: string): string;
@@ -1960,6 +2063,11 @@ begin
 end;
 
 function TParamsHelper.Add(Key: string; Value: TAttachment): TParams;
+begin
+  Result := AddParam([Key, Value.ToString]);
+end;
+
+function TParamsHelper.Add(Key: string; Value: TVkPeerIds): TParams;
 begin
   Result := AddParam([Key, Value.ToString]);
 end;
@@ -2109,96 +2217,66 @@ begin
   Result.TrimRight([',']);
 end;
 
-{ TVkGroupFieldHelper }
+{ TVkExtendedFieldsHelper }
 
-function TVkGroupFieldHelper.ToString: string;
+class function TVkExtendedFieldsHelper.All: TVkExtendedFields;
 begin
-  Result := VkGroupField[Self];
+  Result := [TVkExtendedField.PhotoId, TVkExtendedField.Verified, TVkExtendedField.Sex,
+    TVkExtendedField.BirthDate, TVkExtendedField.City, TVkExtendedField.Country,
+    TVkExtendedField.HomeTown, TVkExtendedField.HasPhoto, TVkExtendedField.Photo50,
+    TVkExtendedField.Photo100, TVkExtendedField.Photo200Orig, TVkExtendedField.Photo200,
+    TVkExtendedField.Photo400Orig, TVkExtendedField.PhotoMax, TVkExtendedField.PhotoMaxOrig,
+    TVkExtendedField.Online, TVkExtendedField.Domain, TVkExtendedField.HasMobile,
+    TVkExtendedField.Contacts, TVkExtendedField.Site, TVkExtendedField.Education,
+    TVkExtendedField.Universities, TVkExtendedField.Schools, TVkExtendedField.Status,
+    TVkExtendedField.LastSeen, TVkExtendedField.FollowersCount, TVkExtendedField.CommonCount,
+    TVkExtendedField.Occupation, TVkExtendedField.Nickname, TVkExtendedField.Relatives,
+    TVkExtendedField.Relation, TVkExtendedField.Personal, TVkExtendedField.Connections,
+    TVkExtendedField.&Exports, TVkExtendedField.Activities, TVkExtendedField.Interests,
+    TVkExtendedField.Music, TVkExtendedField.Movies, TVkExtendedField.TV, TVkExtendedField.Books,
+    TVkExtendedField.Games, TVkExtendedField.About, TVkExtendedField.Quotes,
+    TVkExtendedField.CanPost, TVkExtendedField.CanSeeAllPosts, TVkExtendedField.CanSeeAudio,
+    TVkExtendedField.CanWritePrivateMessage, TVkExtendedField.CanSendFriendRequest,
+    TVkExtendedField.IsFavorite, TVkExtendedField.IsHiddenFromFeed, TVkExtendedField.TimeZone,
+    TVkExtendedField.ScreenName, TVkExtendedField.MaidenName, TVkExtendedField.CropPhoto,
+    TVkExtendedField.IsFriend, TVkExtendedField.FriendStatus, TVkExtendedField.Career,
+    TVkExtendedField.Military, TVkExtendedField.Blacklisted, TVkExtendedField.BlacklistedByMe,
+    TVkExtendedField.CanBeInvitedGroup, TVkExtendedField.OnlineMobile, TVkExtendedField.Counters,
+    TVkExtendedField.FirstNameNom, TVkExtendedField.FirstNameGen, TVkExtendedField.FirstNameDat,
+    TVkExtendedField.FirstNameAcc, TVkExtendedField.FirstNameIns, TVkExtendedField.FirstNameAbl,
+    TVkExtendedField.LastNameNom, TVkExtendedField.LastNameGen, TVkExtendedField.LastNameDat,
+    TVkExtendedField.LastNameAcc, TVkExtendedField.LastNameIns, TVkExtendedField.LastNameAbl,
+    TVkExtendedField.WallDefault];
 end;
 
-{ TVkGroupFieldsHelper }
-
-class function TVkGroupFieldsHelper.All: TVkGroupFields;
+class function TVkExtendedFieldsHelper.AllForGroup: TVkExtendedFields;
 begin
-  Result := [TVkGroupField.City, TVkGroupField.Country, TVkGroupField.Place,
-    TVkGroupField.Description, TVkGroupField.WikiPage, TVkGroupField.MembersCount,
-    TVkGroupField.Counters, TVkGroupField.StartDate, TVkGroupField.FinishDate,
-    TVkGroupField.CanPost, TVkGroupField.CanSeeAllPosts, TVkGroupField.Activity,
-    TVkGroupField.Status, TVkGroupField.Contacts, TVkGroupField.Links,
-    TVkGroupField.FixedPost, TVkGroupField.Verified, TVkGroupField.Site,
-    TVkGroupField.CanCreateTopic, TVkGroupField.Photo50, TVkGroupField.Photo100,
-    TVkGroupField.Photo200, TVkGroupField.Cover];
+  Result := [TVkExtendedField.PhotoId, TVkExtendedField.Verified, TVkExtendedField.Sex,
+    TVkExtendedField.BirthDate, TVkExtendedField.City, TVkExtendedField.Country,
+    TVkExtendedField.HomeTown, TVkExtendedField.HasPhoto, TVkExtendedField.Photo50,
+    TVkExtendedField.Photo100, TVkExtendedField.Photo200Orig, TVkExtendedField.Photo200,
+    TVkExtendedField.Photo400Orig, TVkExtendedField.PhotoMax, TVkExtendedField.PhotoMaxOrig,
+    TVkExtendedField.Online, TVkExtendedField.Domain, TVkExtendedField.HasMobile,
+    TVkExtendedField.Contacts, TVkExtendedField.Site, TVkExtendedField.Education,
+    TVkExtendedField.Universities, TVkExtendedField.Schools, TVkExtendedField.Status,
+    TVkExtendedField.LastSeen, TVkExtendedField.FollowersCount,
+    TVkExtendedField.Occupation, TVkExtendedField.Nickname, TVkExtendedField.Relatives,
+    TVkExtendedField.Relation, TVkExtendedField.Personal, TVkExtendedField.Connections,
+    TVkExtendedField.&Exports, TVkExtendedField.Activities, TVkExtendedField.Interests,
+    TVkExtendedField.Music, TVkExtendedField.Movies, TVkExtendedField.TV, TVkExtendedField.Books,
+    TVkExtendedField.Games, TVkExtendedField.About, TVkExtendedField.Quotes,
+    TVkExtendedField.CanPost, TVkExtendedField.CanSeeAllPosts, TVkExtendedField.CanSeeAudio,
+    TVkExtendedField.CanWritePrivateMessage, TVkExtendedField.CanSendFriendRequest,
+    TVkExtendedField.IsFavorite, TVkExtendedField.IsHiddenFromFeed, TVkExtendedField.TimeZone,
+    TVkExtendedField.ScreenName, TVkExtendedField.MaidenName, TVkExtendedField.CropPhoto,
+    TVkExtendedField.IsFriend, TVkExtendedField.FriendStatus, TVkExtendedField.Career,
+    TVkExtendedField.Military, TVkExtendedField.Blacklisted, TVkExtendedField.BlacklistedByMe,
+    TVkExtendedField.CanBeInvitedGroup, TVkExtendedField.OnlineMobile, TVkExtendedField.Counters];
 end;
 
-function TVkGroupFieldsHelper.ToString: string;
+function TVkExtendedFieldsHelper.ToString: string;
 var
-  Item: TVkGroupField;
-begin
-  for Item in Self do
-    Result := Result + Item.ToString + ',';
-  Result.TrimRight([',']);
-end;
-
-{ TVkProfileFieldsHelper }
-
-class function TVkProfileFieldsHelper.All: TVkProfileFields;
-begin
-  Result := [TVkProfileField.PhotoId, TVkProfileField.Verified, TVkProfileField.Sex,
-    TVkProfileField.BirthDate, TVkProfileField.City, TVkProfileField.Country,
-    TVkProfileField.HomeTown, TVkProfileField.HasPhoto, TVkProfileField.Photo50,
-    TVkProfileField.Photo100, TVkProfileField.Photo200Orig, TVkProfileField.Photo200,
-    TVkProfileField.Photo400Orig, TVkProfileField.PhotoMax, TVkProfileField.PhotoMaxOrig,
-    TVkProfileField.Online, TVkProfileField.Domain, TVkProfileField.HasMobile,
-    TVkProfileField.Contacts, TVkProfileField.Site, TVkProfileField.Education,
-    TVkProfileField.Universities, TVkProfileField.Schools, TVkProfileField.Status,
-    TVkProfileField.LastSeen, TVkProfileField.FollowersCount, TVkProfileField.CommonCount,
-    TVkProfileField.Occupation, TVkProfileField.Nickname, TVkProfileField.Relatives,
-    TVkProfileField.Relation, TVkProfileField.Personal, TVkProfileField.Connections,
-    TVkProfileField.&Exports, TVkProfileField.Activities, TVkProfileField.Interests,
-    TVkProfileField.Music, TVkProfileField.Movies, TVkProfileField.TV, TVkProfileField.Books,
-    TVkProfileField.Games, TVkProfileField.About, TVkProfileField.Quotes,
-    TVkProfileField.CanPost, TVkProfileField.CanSeeAllPosts, TVkProfileField.CanSeeAudio,
-    TVkProfileField.CanWritePrivateMessage, TVkProfileField.CanSendFriendRequest,
-    TVkProfileField.IsFavorite, TVkProfileField.IsHiddenFromFeed, TVkProfileField.TimeZone,
-    TVkProfileField.ScreenName, TVkProfileField.MaidenName, TVkProfileField.CropPhoto,
-    TVkProfileField.IsFriend, TVkProfileField.FriendStatus, TVkProfileField.Career,
-    TVkProfileField.Military, TVkProfileField.Blacklisted, TVkProfileField.BlacklistedByMe,
-    TVkProfileField.CanBeInvitedGroup, TVkProfileField.OnlineMobile, TVkProfileField.Counters,
-    TVkProfileField.FirstNameNom, TVkProfileField.FirstNameGen, TVkProfileField.FirstNameDat,
-    TVkProfileField.FirstNameAcc, TVkProfileField.FirstNameIns, TVkProfileField.FirstNameAbl,
-    TVkProfileField.LastNameNom, TVkProfileField.LastNameGen, TVkProfileField.LastNameDat,
-    TVkProfileField.LastNameAcc, TVkProfileField.LastNameIns, TVkProfileField.LastNameAbl,
-    TVkProfileField.WallDefault];
-end;
-
-class function TVkProfileFieldsHelper.AllForGroup: TVkProfileFields;
-begin
-  Result := [TVkProfileField.PhotoId, TVkProfileField.Verified, TVkProfileField.Sex,
-    TVkProfileField.BirthDate, TVkProfileField.City, TVkProfileField.Country,
-    TVkProfileField.HomeTown, TVkProfileField.HasPhoto, TVkProfileField.Photo50,
-    TVkProfileField.Photo100, TVkProfileField.Photo200Orig, TVkProfileField.Photo200,
-    TVkProfileField.Photo400Orig, TVkProfileField.PhotoMax, TVkProfileField.PhotoMaxOrig,
-    TVkProfileField.Online, TVkProfileField.Domain, TVkProfileField.HasMobile,
-    TVkProfileField.Contacts, TVkProfileField.Site, TVkProfileField.Education,
-    TVkProfileField.Universities, TVkProfileField.Schools, TVkProfileField.Status,
-    TVkProfileField.LastSeen, TVkProfileField.FollowersCount,
-    TVkProfileField.Occupation, TVkProfileField.Nickname, TVkProfileField.Relatives,
-    TVkProfileField.Relation, TVkProfileField.Personal, TVkProfileField.Connections,
-    TVkProfileField.&Exports, TVkProfileField.Activities, TVkProfileField.Interests,
-    TVkProfileField.Music, TVkProfileField.Movies, TVkProfileField.TV, TVkProfileField.Books,
-    TVkProfileField.Games, TVkProfileField.About, TVkProfileField.Quotes,
-    TVkProfileField.CanPost, TVkProfileField.CanSeeAllPosts, TVkProfileField.CanSeeAudio,
-    TVkProfileField.CanWritePrivateMessage, TVkProfileField.CanSendFriendRequest,
-    TVkProfileField.IsFavorite, TVkProfileField.IsHiddenFromFeed, TVkProfileField.TimeZone,
-    TVkProfileField.ScreenName, TVkProfileField.MaidenName, TVkProfileField.CropPhoto,
-    TVkProfileField.IsFriend, TVkProfileField.FriendStatus, TVkProfileField.Career,
-    TVkProfileField.Military, TVkProfileField.Blacklisted, TVkProfileField.BlacklistedByMe,
-    TVkProfileField.CanBeInvitedGroup, TVkProfileField.OnlineMobile, TVkProfileField.Counters];
-end;
-
-function TVkProfileFieldsHelper.ToString: string;
-var
-  Item: TVkProfileField;
+  Item: TVkExtendedField;
 begin
   for Item in Self do
     Result := Result + Item.ToString + ',';
@@ -2431,6 +2509,11 @@ end;
 class function TVkPlatformHelper.Create(const Value: string): TVkPlatform;
 begin
   Result := TVkPlatform(IndexStr(Value, VkPlatformsType));
+end;
+
+function TVkPlatformHelper.GetIsMobile: Boolean;
+begin
+  Result := Self in [TVkPlatform.Mobile, TVkPlatform.IPhone, TVkPlatform.IPad, TVkPlatform.Android, TVkPlatform.WindowsPhone];
 end;
 
 function TVkPlatformHelper.ToString: string;
@@ -3279,6 +3362,30 @@ end;
 function TVkAsrModelHelper.ToString: string;
 begin
   Result := VkAsrModel[Self];
+end;
+
+{ TVkCallStateHelper }
+
+class function TVkCallStateHelper.Create(const Value: string): TVkCallState;
+begin
+  Result := TVkCallState(IndexStr(Value, VkCallState));
+end;
+
+function TVkCallStateHelper.ToString: string;
+begin
+  Result := VkCallState[Self];
+end;
+
+{ TVkSearchSectionHelper }
+
+class function TVkSearchSectionHelper.Create(const Value: string): TVkSearchSection;
+begin
+  Result := TVkSearchSection(IndexStr(Value, VkSearchSection));
+end;
+
+function TVkSearchSectionHelper.ToString: string;
+begin
+  Result := VkSearchSection[Self];
 end;
 
 end.

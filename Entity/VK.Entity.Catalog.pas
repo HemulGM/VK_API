@@ -4,7 +4,8 @@ interface
 
 uses
   Generics.Collections, Rest.Json, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Group, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Profile;
+  VK.Entity.Group, VK.Entity.Audio, VK.Entity.Playlist, VK.Entity.Profile,
+  VK.Types;
 
 type
   TVkCatalogAction = class
@@ -23,7 +24,7 @@ type
   TVkCatalogButton = class(TVkEntity)
   private
     FAction: TVkCatalogAction;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FTitle: string;
     FBlock_id: string;
     FRef_data_type: string;
@@ -32,7 +33,7 @@ type
     FSection_id: string;
   public
     property Action: TVkCatalogAction read FAction write FAction;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property Title: string read FTitle write FTitle;
     property BlockId: string read FBlock_id write FBlock_id;
     property SectionId: string read FSection_id write FSection_id;
@@ -45,14 +46,14 @@ type
   TVkCatalogPlaceholder = class
   private
     FButtons: TArray<TVkCatalogButton>;
-    FIcons: TArray<TVkImage>;
+    FIcons: TArray<TVkSize>;
     FId: string;
     FImage_mode: string;
     FText: string;
     FTitle: string;
   public
     property Buttons: TArray<TVkCatalogButton> read FButtons write FButtons;
-    property Icons: TArray<TVkImage> read FIcons write FIcons;
+    property Icons: TArray<TVkSize> read FIcons write FIcons;
     property Id: string read FId write FId;
     property ImageMode: string read FImage_mode write FImage_mode;
     property Text: string read FText write FText;
@@ -63,13 +64,13 @@ type
   TVkCatalogLayout = class
   private
     FName: string;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FSubtitle: string;
     FTitle: string;
     FIs_editable: Integer;
   public
     property Name: string read FName write FName;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property SubTitle: string read FSubtitle write FSubtitle;
     property Title: string read FTitle write FTitle;
     property IsEditable: Integer read FIs_editable write FIs_editable;
@@ -169,7 +170,7 @@ end;
 destructor TVkCatalogPlaceholder.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkCatalogButton>(FButtons);
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FIcons);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FIcons);
   inherited;
 end;
 

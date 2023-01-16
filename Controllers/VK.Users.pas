@@ -13,7 +13,7 @@ type
     /// Перечисленные через запятую идентификаторы пользователей или их короткие имена (ScreenName).
     /// По умолчанию — идентификатор текущего пользователя
     /// </summary>
-    function UserIds(const Value: TIdList): TVkParamsUsersGet;
+    function UserIds(const Value: TVkPeerIds): TVkParamsUsersGet;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
@@ -21,7 +21,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): TVkParamsUsersGet; overload;
+    function Fields(const Value: TVkExtendedFields): TVkParamsUsersGet; overload;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
@@ -33,7 +33,7 @@ type
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsUsersGetFollowers;
+    function UserId(const Value: TVkPeerId): TVkParamsUsersGetFollowers;
     /// <summary>
     /// Количество подписчиков, информацию о которых нужно получить
     /// </summary>
@@ -49,7 +49,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): TVkParamsUsersGetFollowers; overload;
+    function Fields(const Value: TVkExtendedFields): TVkParamsUsersGetFollowers; overload;
     /// <summary>
     /// Падеж для склонения имени и фамилии пользователя
     /// </summary>
@@ -61,7 +61,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, подписки которого необходимо получить
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsUsersGetSubscriptions;
+    function UserId(const Value: TVkPeerId): TVkParamsUsersGetSubscriptions;
     /// <summary>
     /// True – возвращает объединенный список, содержащий объекты group и user вместе.
     /// False – возвращает список идентификаторов групп и пользователей отдельно. (по умолчанию)
@@ -80,7 +80,7 @@ type
     /// <summary>
     /// Список дополнительных полей для объектов User и Group, которые необходимо вернуть
     /// </summary>
-    function Fields(UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsUsersGetSubscriptions;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsUsersGetSubscriptions;
   end;
 
   TVkParamsUsersSearch = record
@@ -104,7 +104,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): TVkParamsUsersSearch;
+    function Fields(const Value: TVkExtendedFields): TVkParamsUsersSearch;
     /// <summary>
     /// Идентификатор города
     /// </summary>
@@ -208,7 +208,7 @@ type
     /// <summary>
     /// Идентификатор группы, среди пользователей которой необходимо проводить поиск
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsUsersSearch;
+    function GroupId(const Value: TVkPeerId): TVkParamsUsersSearch;
     /// <summary>
     /// Разделы среди которых нужно осуществить поиск
     /// </summary>
@@ -220,17 +220,17 @@ type
     /// Возвращает расширенную информацию о пользователях.
     /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
     /// </summary>
-    function Get(var Items: TVkProfiles; UserIds: TIdList; Fields: TVkProfileFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
+    function Get(var Items: TVkProfiles; UserIds: TVkPeerIds; Fields: TVkExtendedFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
     /// </summary>
-    function Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
+    function Get(var User: TVkProfile; UserId: TVkPeerId; Fields: TVkExtendedFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
     /// </summary>
-    function Get(var User: TVkProfile; Fields: TVkProfileFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
+    function Get(var User: TVkProfile; Fields: TVkExtendedFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
     /// Возвращает расширенную информацию о пользователях.
     /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
@@ -260,7 +260,7 @@ type
     /// <summary>
     /// Позволяет пожаловаться на пользователя.
     /// </summary>
-    function Report(UserId: Integer; Reason: TVkUserReport = TVkUserReport.Spam; Comment: string = ''): Boolean;
+    function Report(UserId: TVkPeerId; Reason: TVkUserReport = TVkUserReport.Spam; Comment: string = ''): Boolean;
     /// <summary>
     /// Возвращает список пользователей в соответствии с заданным критерием поиска.
     /// </summary>
@@ -278,7 +278,7 @@ uses
 
 { TUsersController }
 
-function TUsersController.Get(var User: TVkProfile; UserId: Integer; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var User: TVkProfile; UserId: TVkPeerId; Fields: TVkExtendedFields; NameCase: TVkNameCase): Boolean;
 var
   Params: TVkParamsUsersGet;
   Users: TVkProfiles;
@@ -313,7 +313,7 @@ begin
   end;
 end;
 
-function TUsersController.Get(var Items: TVkProfiles; UserIds: TIdList; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var Items: TVkProfiles; UserIds: TVkPeerIds; Fields: TVkExtendedFields; NameCase: TVkNameCase): Boolean;
 var
   Params: TParams;
 begin
@@ -335,7 +335,7 @@ begin
   Result := Get(Items, Params.List);
 end;
 
-function TUsersController.Get(var User: TVkProfile; Fields: TVkProfileFields; NameCase: TVkNameCase): Boolean;
+function TUsersController.Get(var User: TVkProfile; Fields: TVkExtendedFields; NameCase: TVkNameCase): Boolean;
 begin
   Result := Get(User, 0, Fields, NameCase);
 end;
@@ -350,7 +350,7 @@ begin
   Result := GetSubscriptions(Items, Params.List);
 end;
 
-function TUsersController.Report(UserId: Integer; Reason: TVkUserReport; Comment: string): Boolean;
+function TUsersController.Report(UserId: TVkPeerId; Reason: TVkUserReport; Comment: string): Boolean;
 var
   Params: TParams;
 begin
@@ -390,7 +390,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsUsersGet.Fields(const Value: TVkProfileFields): TVkParamsUsersGet;
+function TVkParamsUsersGet.Fields(const Value: TVkExtendedFields): TVkParamsUsersGet;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -402,7 +402,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsUsersGet.UserIds(const Value: TIdList): TVkParamsUsersGet;
+function TVkParamsUsersGet.UserIds(const Value: TVkPeerIds): TVkParamsUsersGet;
 begin
   List.Add('user_ids', Value);
   Result := Self;
@@ -422,7 +422,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsUsersGetFollowers.Fields(const Value: TVkProfileFields): TVkParamsUsersGetFollowers;
+function TVkParamsUsersGetFollowers.Fields(const Value: TVkExtendedFields): TVkParamsUsersGetFollowers;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -440,7 +440,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsUsersGetFollowers.UserId(const Value: Integer): TVkParamsUsersGetFollowers;
+function TVkParamsUsersGetFollowers.UserId(const Value: TVkPeerId): TVkParamsUsersGetFollowers;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -448,7 +448,7 @@ end;
 
 { TVkParamsUsersGetSubscriptions }
 
-function TVkParamsUsersGetSubscriptions.UserId(const Value: Integer): TVkParamsUsersGetSubscriptions;
+function TVkParamsUsersGetSubscriptions.UserId(const Value: TVkPeerId): TVkParamsUsersGetSubscriptions;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -472,9 +472,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsUsersGetSubscriptions.Fields(UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsUsersGetSubscriptions;
+function TVkParamsUsersGetSubscriptions.Fields(Value: TVkExtendedFields): TVkParamsUsersGetSubscriptions;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', [Value.ToString]);
   Result := Self;
 end;
 
@@ -504,7 +504,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsUsersSearch.Fields(const Value: TVkProfileFields): TVkParamsUsersSearch;
+function TVkParamsUsersSearch.Fields(const Value: TVkExtendedFields): TVkParamsUsersSearch;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -660,7 +660,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsUsersSearch.GroupId(const Value: Integer): TVkParamsUsersSearch;
+function TVkParamsUsersSearch.GroupId(const Value: TVkPeerId): TVkParamsUsersSearch;
 begin
   List.Add('group_id', Value);
   Result := Self;

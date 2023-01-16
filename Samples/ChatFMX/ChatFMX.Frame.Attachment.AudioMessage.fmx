@@ -1,12 +1,11 @@
-object FrameAttachmentAudioMessage: TFrameAttachmentAudioMessage
-  HitTest = False
+inherited FrameAttachmentAudioMessage: TFrameAttachmentAudioMessage
+  HitTest = True
   Padding.Left = 10.000000000000000000
   Padding.Top = 6.000000000000000000
   Padding.Right = 10.000000000000000000
   Padding.Bottom = 6.000000000000000000
   Size.Width = 407.000000000000000000
   Size.Height = 36.000000000000000000
-  Size.PlatformDefault = False
   object LabelTime: TLabel
     Align = Right
     AutoSize = True
@@ -39,6 +38,27 @@ object FrameAttachmentAudioMessage: TFrameAttachmentAudioMessage
       Size.PlatformDefault = False
       Stroke.Kind = None
       OnClick = CircleControlClick
+      object Layout1: TLayout
+        Align = Bottom
+        Margins.Right = -1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.Y = 14.000000000000000000
+        Size.Width = 25.000000000000000000
+        Size.Height = 9.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        object CircleListened: TCircle
+          Align = Right
+          Fill.Color = xFF71AAEB
+          HitTest = False
+          Position.X = 16.000000000000000000
+          Size.Width = 9.000000000000000000
+          Size.Height = 9.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Color = xFF222222
+          Stroke.Thickness = 2.000000000000000000
+        end
+      end
     end
     object PathControl: TPath
       Align = Center

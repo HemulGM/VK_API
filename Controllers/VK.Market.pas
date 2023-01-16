@@ -13,7 +13,7 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketAdd;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketAdd;
     /// <summary>
     /// Название товара. Ограничение по длине считается в кодировке cp1251 (минимальная длина 4, максимальная длина 100)
     /// </summary>
@@ -79,7 +79,7 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketCreateComment;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketCreateComment;
     /// <summary>
     /// Идентификатор товара
     /// </summary>
@@ -117,7 +117,7 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketEdit;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketEdit;
     /// <summary>
     /// Идентификатор товара
     /// </summary>
@@ -187,7 +187,7 @@ type
     /// <summary>
     /// Идентификатор владельца подборки
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketEditAlbum;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketEditAlbum;
     /// <summary>
     /// Идентификатор подборки
     /// </summary>
@@ -212,7 +212,7 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketEditComment;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketEditComment;
     /// <summary>
     /// Идентификатор комментария
     /// </summary>
@@ -233,7 +233,7 @@ type
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsMarketEditOrder;
+    function UserId(const Value: TVkPeerId): TVkParamsMarketEditOrder;
     /// <summary>
     /// Идентификатор заказа
     /// </summary>
@@ -285,7 +285,7 @@ type
     /// <summary>
     /// Идентификатор владельца товаров
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketGet;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketGet;
     /// <summary>
     /// Идентификатор подборки, товары из которой нужно вернуть
     /// </summary>
@@ -309,7 +309,7 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketGetComments;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketGetComments;
     /// <summary>
     /// Идентификатор товара
     /// </summary>
@@ -342,7 +342,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const UserFields: TVkProfileFields = []; GroupFields: TVkGroupFields = []): TVkParamsMarketGetComments;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsMarketGetComments;
   end;
 
   TVkParamsMarketReorderAlbums = record
@@ -350,7 +350,7 @@ type
     /// <summary>
     /// Идентификатор владельца альбомаы
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketReorderAlbums;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketReorderAlbums;
     /// <summary>
     /// Идентификатор подборки
     /// </summary>
@@ -370,7 +370,7 @@ type
     /// <summary>
     /// Идентификатор владельца товара
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketReorderItems;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketReorderItems;
     /// <summary>
     /// Идентификатор подборки, в которой находится товар. 0 — для сортировки общего списка товаров
     /// </summary>
@@ -394,7 +394,7 @@ type
     /// <summary>
     /// Идентификатор сообщества, которому принадлежат товары
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsMarketSearch;
+    function OwnerId(const Value: TVkPeerId): TVkParamsMarketSearch;
     /// <summary>
     /// Идентификатор подборки, товары из которой нужно вернуть
     /// </summary>
@@ -454,11 +454,11 @@ type
     /// <summary>
     /// Добавляет новую подборку с товарами.
     /// </summary>
-    function AddAlbum(var Id: Integer; OwnerId: Integer; Title: string; PhotoId: Integer = -1; MainAlbum: Boolean = False): Boolean;
+    function AddAlbum(var Id: Integer; OwnerId: TVkPeerId; Title: string; PhotoId: Integer = -1; MainAlbum: Boolean = False): Boolean;
     /// <summary>
     /// Добавляет товар в одну или несколько выбранных подборок.
     /// </summary>
-    function AddToAlbum(const OwnerId, ItemId: Integer; AlbumIds: TIdList): Boolean;
+    function AddToAlbum(const OwnerId: TVkPeerId; ItemId: Integer; AlbumIds: TIdList): Boolean;
     /// <summary>
     /// Создает новый комментарий к товару.
     /// </summary>
@@ -470,15 +470,15 @@ type
     /// <summary>
     /// Удаляет товар.
     /// </summary>
-    function Delete(const OwnerId, ItemId: Integer): Boolean;
+    function Delete(const OwnerId: TVkPeerId; ItemId: Integer): Boolean;
     /// <summary>
     /// Удаляет подборку с товарами.
     /// </summary>
-    function DeleteAlbum(const OwnerId, AlbumId: Integer): Boolean;
+    function DeleteAlbum(const OwnerId: TVkPeerId; AlbumId: Integer): Boolean;
     /// <summary>
     /// Удаляет комментарий к товару.
     /// </summary>
-    function DeleteComment(const OwnerId, CommentId: Integer): Boolean;
+    function DeleteComment(const OwnerId: TVkPeerId; CommentId: Integer): Boolean;
     /// <summary>
     /// Редактирует товар.
     /// </summary>
@@ -522,11 +522,11 @@ type
     /// <summary>
     /// Возвращает данные подборки с товарами.
     /// </summary>
-    function GetAlbumById(var Items: TVkMarketAlbums; const OwnerId: Integer; AlbumIds: TIdList): Boolean; overload;
+    function GetAlbumById(var Items: TVkMarketAlbums; const OwnerId: TVkPeerId; AlbumIds: TIdList): Boolean; overload;
     /// <summary>
     /// Возвращает список подборок с товарами.
     /// </summary>
-    function GetAlbums(var Items: TVkMarketAlbums; const OwnerId: Integer; Offset: Integer = 0; Count: Integer = 50): Boolean; overload;
+    function GetAlbums(var Items: TVkMarketAlbums; const OwnerId: TVkPeerId; Offset: Integer = 0; Count: Integer = 50): Boolean; overload;
     /// <summary>
     /// Возвращает информацию о товарах по идентификаторам.
     /// </summary>
@@ -546,15 +546,15 @@ type
     /// <summary>
     /// Возвращает заказы сообщества.
     /// </summary>
-    function GetGroupOrders(var Items: TVkOrders; GroupId: Integer; Offset: Integer = 0; Count: Integer = 10): Boolean; overload;
+    function GetGroupOrders(var Items: TVkOrders; GroupId: TVkPeerId; Offset: Integer = 0; Count: Integer = 10): Boolean; overload;
     /// <summary>
     /// Возвращает заказ по идентификатору.
     /// </summary>
-    function GetOrderById(var Item: TVkOrder; const OrderId: Integer; UserId: Integer = 0; Extended: Boolean = False): Boolean; overload;
+    function GetOrderById(var Item: TVkOrder; const OrderId: Integer; UserId: TVkPeerId = 0; Extended: Boolean = False): Boolean; overload;
     /// <summary>
     /// Возвращает товары в заказе.
     /// </summary>
-    function GetOrderItems(var Items: TVkProducts; const OrderId: Integer; UserId: Integer = 0; Offset: Integer = 0; Count: Integer = 50): Boolean; overload;
+    function GetOrderItems(var Items: TVkProducts; const OrderId: Integer; UserId: TVkPeerId = 0; Offset: Integer = 0; Count: Integer = 50): Boolean; overload;
     /// <summary>
     /// Возвращает заказы.
     /// </summary>
@@ -562,7 +562,7 @@ type
     /// <summary>
     /// Удаляет товар из одной или нескольких выбранных подборок.
     /// </summary>
-    function RemoveFromAlbum(const ItemId, OwnerId: Integer; AlbumIds: TIdList): Boolean; overload;
+    function RemoveFromAlbum(const ItemId: Integer; OwnerId: TVkPeerId; AlbumIds: TIdList): Boolean; overload;
     /// <summary>
     /// Изменяет положение подборки с товарами в списке.
     /// </summary>
@@ -574,19 +574,19 @@ type
     /// <summary>
     /// Позволяет отправить жалобу на товар.
     /// </summary>
-    function Report(const OwnerId, ItemId: Integer; Reason: TVkMediaReportReason): Boolean;
+    function Report(const OwnerId: TVkPeerId; ItemId: Integer; Reason: TVkMediaReportReason): Boolean;
     /// <summary>
     /// Позволяет оставить жалобу на комментарий к товару.
     /// </summary>
-    function ReportComment(const OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
+    function ReportComment(const OwnerId: TVkPeerId; CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
     /// <summary>
     /// Восстанавливает удаленный товар.
     /// </summary>
-    function Restore(const OwnerId, ItemId: Integer): Boolean;
+    function Restore(const OwnerId: TVkPeerId; ItemId: Integer): Boolean;
     /// <summary>
     /// Восстанавливает удаленный комментарий к товару.
     /// </summary>
-    function RestoreComment(const OwnerId, CommentId: Integer): Boolean;
+    function RestoreComment(const OwnerId: TVkPeerId; CommentId: Integer): Boolean;
     /// <summary>
     /// Ищет товары в каталоге сообщества.
     /// </summary>
@@ -634,7 +634,7 @@ begin
   Result := EditOrder(Params.List);
 end;
 
-function TMarketController.AddAlbum(var Id: Integer; OwnerId: Integer; Title: string; PhotoId: Integer; MainAlbum: Boolean): Boolean;
+function TMarketController.AddAlbum(var Id: Integer; OwnerId: TVkPeerId; Title: string; PhotoId: Integer; MainAlbum: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -646,7 +646,7 @@ begin
   Result := Handler.Execute('market.addAlbum', Params).ResponseAsInt(Id);
 end;
 
-function TMarketController.AddToAlbum(const OwnerId, ItemId: Integer; AlbumIds: TIdList): Boolean;
+function TMarketController.AddToAlbum(const OwnerId: TVkPeerId; ItemId: Integer; AlbumIds: TIdList): Boolean;
 var
   Params: TParams;
 begin
@@ -661,7 +661,7 @@ begin
   Result := Handler.Execute('market.add', Params).ResponseAsInt(Id);
 end;
 
-function TMarketController.Delete(const OwnerId, ItemId: Integer): Boolean;
+function TMarketController.Delete(const OwnerId: TVkPeerId; ItemId: Integer): Boolean;
 begin
   Result := Handler.Execute('market.delete', [
     ['owner_id', OwnerId.ToString],
@@ -669,7 +669,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TMarketController.DeleteAlbum(const OwnerId, AlbumId: Integer): Boolean;
+function TMarketController.DeleteAlbum(const OwnerId: TVkPeerId; AlbumId: Integer): Boolean;
 begin
   Result := Handler.Execute('market.deleteAlbum', [
     ['owner_id', OwnerId.ToString],
@@ -677,7 +677,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TMarketController.DeleteComment(const OwnerId, CommentId: Integer): Boolean;
+function TMarketController.DeleteComment(const OwnerId: TVkPeerId; CommentId: Integer): Boolean;
 begin
   Result := Handler.Execute('market.deleteComment', [
     ['owner_id', OwnerId.ToString],
@@ -720,7 +720,7 @@ begin
   Result := Handler.Execute('market.get', Params).GetObject(Items);
 end;
 
-function TMarketController.GetAlbumById(var Items: TVkMarketAlbums; const OwnerId: Integer; AlbumIds: TIdList): Boolean;
+function TMarketController.GetAlbumById(var Items: TVkMarketAlbums; const OwnerId: TVkPeerId; AlbumIds: TIdList): Boolean;
 begin
   Result := Handler.Execute('market.getAlbumById', [
     ['owner_id', OwnerId.ToString],
@@ -728,7 +728,7 @@ begin
     GetObject(Items);
 end;
 
-function TMarketController.GetAlbums(var Items: TVkMarketAlbums; const OwnerId: Integer; Offset, Count: Integer): Boolean;
+function TMarketController.GetAlbums(var Items: TVkMarketAlbums; const OwnerId: TVkPeerId; Offset, Count: Integer): Boolean;
 begin
   Result := Handler.Execute('market.getAlbums', [
     ['owner_id', OwnerId.ToString],
@@ -758,7 +758,7 @@ begin
   Result := GetComments(Items, Params.List);
 end;
 
-function TMarketController.GetGroupOrders(var Items: TVkOrders; GroupId, Offset, Count: Integer): Boolean;
+function TMarketController.GetGroupOrders(var Items: TVkOrders; GroupId: TVkPeerId; Offset, Count: Integer): Boolean;
 begin
   Result := Handler.Execute('market.getGroupOrders', [
     ['group_id', GroupId.ToString],
@@ -767,7 +767,7 @@ begin
     GetObject(Items);
 end;
 
-function TMarketController.GetOrderById(var Item: TVkOrder; const OrderId: Integer; UserId: Integer; Extended: Boolean): Boolean;
+function TMarketController.GetOrderById(var Item: TVkOrder; const OrderId: Integer; UserId: TVkPeerId; Extended: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -778,7 +778,7 @@ begin
   Result := Handler.Execute('market.getOrderById', Params).GetObject(Item);
 end;
 
-function TMarketController.GetOrderItems(var Items: TVkProducts; const OrderId: Integer; UserId, Offset, Count: Integer): Boolean;
+function TMarketController.GetOrderItems(var Items: TVkProducts; const OrderId: Integer; UserId: TVkPeerId; Offset, Count: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -800,7 +800,7 @@ begin
   Result := Handler.Execute('market.getOrders', Params).GetObject(Items);
 end;
 
-function TMarketController.RemoveFromAlbum(const ItemId, OwnerId: Integer; AlbumIds: TIdList): Boolean;
+function TMarketController.RemoveFromAlbum(const ItemId: Integer; OwnerId: TVkPeerId; AlbumIds: TIdList): Boolean;
 var
   Params: TParams;
 begin
@@ -820,7 +820,7 @@ begin
   Result := Handler.Execute('market.reorderItems', Params.List).ResponseIsTrue;
 end;
 
-function TMarketController.Report(const OwnerId, ItemId: Integer; Reason: TVkMediaReportReason): Boolean;
+function TMarketController.Report(const OwnerId: TVkPeerId; ItemId: Integer; Reason: TVkMediaReportReason): Boolean;
 var
   Params: TParams;
 begin
@@ -830,7 +830,7 @@ begin
   Result := Handler.Execute('market.report', Params).ResponseIsTrue;
 end;
 
-function TMarketController.ReportComment(const OwnerId, CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
+function TMarketController.ReportComment(const OwnerId: TVkPeerId; CommentId: Integer; Reason: TVkMediaReportReason): Boolean;
 var
   Params: TParams;
 begin
@@ -840,7 +840,7 @@ begin
   Result := Handler.Execute('market.reportComment', Params).ResponseIsTrue;
 end;
 
-function TMarketController.Restore(const OwnerId, ItemId: Integer): Boolean;
+function TMarketController.Restore(const OwnerId: TVkPeerId; ItemId: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -849,7 +849,7 @@ begin
   Result := Handler.Execute('market.restore', Params).ResponseIsTrue;
 end;
 
-function TMarketController.RestoreComment(const OwnerId, CommentId: Integer): Boolean;
+function TMarketController.RestoreComment(const OwnerId: TVkPeerId; CommentId: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -899,7 +899,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMarketGet.OwnerId(const Value: Integer): TVkParamsMarketGet;
+function TVkParamsMarketGet.OwnerId(const Value: TVkPeerId): TVkParamsMarketGet;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -907,7 +907,7 @@ end;
 
 { TVkParamsMarketAdd }
 
-function TVkParamsMarketAdd.OwnerId(const Value: Integer): TVkParamsMarketAdd;
+function TVkParamsMarketAdd.OwnerId(const Value: TVkPeerId): TVkParamsMarketAdd;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -999,7 +999,7 @@ end;
 
 { TVkParamsMarketCreateComment }
 
-function TVkParamsMarketCreateComment.OwnerId(const Value: Integer): TVkParamsMarketCreateComment;
+function TVkParamsMarketCreateComment.OwnerId(const Value: TVkPeerId): TVkParamsMarketCreateComment;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1049,7 +1049,7 @@ end;
 
 { TVkParamsMarketEdit }
 
-function TVkParamsMarketEdit.OwnerId(const Value: Integer): TVkParamsMarketEdit;
+function TVkParamsMarketEdit.OwnerId(const Value: TVkPeerId): TVkParamsMarketEdit;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1147,7 +1147,7 @@ end;
 
 { TVkParamsMarketEditAlbum }
 
-function TVkParamsMarketEditAlbum.OwnerId(const Value: Integer): TVkParamsMarketEditAlbum;
+function TVkParamsMarketEditAlbum.OwnerId(const Value: TVkPeerId): TVkParamsMarketEditAlbum;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1179,7 +1179,7 @@ end;
 
 { TVkParamsMarketEditComment }
 
-function TVkParamsMarketEditComment.OwnerId(const Value: Integer): TVkParamsMarketEditComment;
+function TVkParamsMarketEditComment.OwnerId(const Value: TVkPeerId): TVkParamsMarketEditComment;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1205,7 +1205,7 @@ end;
 
 { TVkParamsMarketEditOrder }
 
-function TVkParamsMarketEditOrder.UserId(const Value: Integer): TVkParamsMarketEditOrder;
+function TVkParamsMarketEditOrder.UserId(const Value: TVkPeerId): TVkParamsMarketEditOrder;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -1279,7 +1279,7 @@ end;
 
 { TVkParamsMarketGetComments }
 
-function TVkParamsMarketGetComments.OwnerId(const Value: Integer): TVkParamsMarketGetComments;
+function TVkParamsMarketGetComments.OwnerId(const Value: TVkPeerId): TVkParamsMarketGetComments;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1327,9 +1327,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMarketGetComments.Fields(const UserFields: TVkProfileFields; GroupFields: TVkGroupFields): TVkParamsMarketGetComments;
+function TVkParamsMarketGetComments.Fields(const Value: TVkExtendedFields): TVkParamsMarketGetComments;
 begin
-  List.Add('fields', [UserFields.ToString, GroupFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 
@@ -1353,7 +1353,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMarketReorderAlbums.OwnerId(const Value: Integer): TVkParamsMarketReorderAlbums;
+function TVkParamsMarketReorderAlbums.OwnerId(const Value: TVkPeerId): TVkParamsMarketReorderAlbums;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1385,7 +1385,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMarketReorderItems.OwnerId(const Value: Integer): TVkParamsMarketReorderItems;
+function TVkParamsMarketReorderItems.OwnerId(const Value: TVkPeerId): TVkParamsMarketReorderItems;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -1393,7 +1393,7 @@ end;
 
 { TVkParamsMarketSearch }
 
-function TVkParamsMarketSearch.OwnerId(const Value: Integer): TVkParamsMarketSearch;
+function TVkParamsMarketSearch.OwnerId(const Value: TVkPeerId): TVkParamsMarketSearch;
 begin
   List.Add('owner_id', Value);
   Result := Self;

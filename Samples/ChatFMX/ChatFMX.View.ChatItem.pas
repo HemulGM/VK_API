@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, FMX.ListBox, VK.API, VK.Entity.Conversation, System.Messaging,
   System.Classes, FMX.Objects, System.UITypes, VK.Types, System.Types,
-  FMX.StdCtrls, FMX.Types;
+  FMX.StdCtrls, FMX.Types, VK.Entity.Message, VK.Entity.Common.ExtendedList;
 
 type
   TListBoxItemChat = class(TListBoxItem)
@@ -27,6 +27,7 @@ type
     FIsHaveMention: Boolean;
     FVerified: Boolean;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
+    procedure FOnUserStatusChange(const Sender: TObject; const M: TMessage);
     procedure SetUndreadCount(const Value: Integer);
     procedure SetLastTime(const Value: TDateTime);
     procedure SetIsMuted(const Value: Boolean);
@@ -40,11 +41,14 @@ type
     procedure SetIsSelfChat(const Value: Boolean);
     procedure SetIsHaveMention(const Value: Boolean);
     procedure SetVerified(const Value: Boolean);
+    procedure FOnChangeMessage(const Sender: TObject; const M: TMessage);
+    procedure UpdatePinned;
+    procedure UpdateInfo;
   protected
     procedure SetText(const Value: string); override;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK);
-    procedure Fill(Item: TVkConversationItem; Data: TVkConversationItems);
+    procedure Fill(Item: TVkConversationItem; Data: IExtended);
     procedure ApplyStyle; override;
     property IsMuted: Boolean read FIsMuted write SetIsMuted;
     property UnreadCount: Integer read FUndreadCount write SetUndreadCount;
@@ -58,14 +62,16 @@ type
     property IsSelfChat: Boolean read FIsSelfChat write SetIsSelfChat;
     property IsHaveMention: Boolean read FIsHaveMention write SetIsHaveMention;
     property Verified: Boolean read FVerified write SetVerified;
+    procedure UpdateLastMessage(LastMessage: TVkMessage; Data: IExtended);
+    procedure Update(LastMessageId: Integer);
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  ChatFMX.PreviewManager, System.DateUtils, FMX.Graphics, VK.Entity.Group,
-  VK.Entity.Profile, ChatFMX.Utils;
+  ChatFMX.PreviewManager, System.Threading, System.DateUtils, FMX.Graphics,
+  VK.Entity.Group, VK.Entity.Profile, ChatFMX.Utils, ChatFMX.Events, VK.Messages;
 
 { TListBoxItemChat }
 
@@ -134,11 +140,14 @@ end;
 
 destructor TListBoxItemChat.Destroy;
 begin
+  Event.Unsubscribe(TEventUserStatus, FOnUserStatusChange);
+  Event.Unsubscribe(TEventNewMessage, FOnChangeMessage);
+  Event.Unsubscribe(TEventEditMessage, FOnChangeMessage);
   TPreview.Instance.Unsubscribe(FOnReadyImage);
   inherited;
 end;
 
-procedure TListBoxItemChat.Fill(Item: TVkConversationItem; Data: TVkConversationItems);
+procedure TListBoxItemChat.Fill(Item: TVkConversationItem; Data: IExtended);
 begin
   IsOnline := False;
   IsOnlineMobile := False;
@@ -149,87 +158,14 @@ begin
   IsSelfChat := Item.Conversation.Peer.Id = FVK.UserId;
   FConversationId := Item.Conversation.Peer.Id;
   UnreadCount := Item.Conversation.UnreadCount;
-  //IsPinned := Item.Conversation.ChatSettings
+  IsPinned := Item.Conversation.SortId.MajorId <> 0;
 
+  Event.Subscribe(TEventUserStatus, FOnUserStatusChange);
+  Event.Subscribe(TEventNewMessage, FOnChangeMessage);
+  Event.Subscribe(TEventEditMessage, FOnChangeMessage);
   if Assigned(Item.LastMessage) then
   begin
-    LastTime := Item.LastMessage.Date;
-    if Item.LastMessage.FromId = FVK.UserId then
-    begin
-      if not IsSelfChat then
-        FromText := 'Вы: ';
-    end
-    else
-    begin
-      if Item.Conversation.Peer.Id <> Item.LastMessage.FromId then
-      begin
-        if PeerIdIsUser(Item.LastMessage.FromId) then
-        begin
-          var User: TVkProfile;
-          if Data.GetProfileById(Item.LastMessage.FromId, User) then
-            FromText := User.FirstName + ': ';
-        end
-        else
-        begin
-          var Group: TVkGroup;
-          if Data.GetGroupById(Item.LastMessage.FromId, Group) then
-            FromText := Group.Name + ': ';
-        end;
-      end;
-    end;
-      // Текст последнего сообщения
-    if not Item.LastMessage.Text.IsEmpty then
-      SetMessageText(Item.LastMessage.Text.Replace(#$A, ' ').Replace('  ', ' ', [rfReplaceAll]), False)
-      // Вложение
-    else if Length(Item.LastMessage.Attachments) > 0 then
-    begin
-      var AttachText := AttachmentToText(Item.LastMessage.Attachments[0].&Type);
-      SetMessageText(AttachText, True);
-    end
-      // Действие
-    else if Assigned(Item.LastMessage.Action) then
-    begin
-      FromText := '';
-      var MemberText := '';
-
-      if PeerIdIsUser(Item.LastMessage.Action.MemberId) then
-      begin
-        var User: TVkProfile;
-        if Data.GetProfileById(Item.LastMessage.Action.MemberId, User) then
-          if User.FirstNameAcc.IsEmpty then
-            MemberText := User.FullName
-          else
-            MemberText := User.FullNameAcc;
-      end
-      else
-      begin
-        var Group: TVkGroup;
-        if Data.GetGroupById(Item.LastMessage.Action.MemberId, Group) then
-          MemberText := Group.Name;
-      end;
-
-      var ActionFromText := '';
-      if PeerIdIsUser(Item.LastMessage.FromId) then
-      begin
-        var User: TVkProfile;
-        if Data.GetProfileById(Item.LastMessage.FromId, User) then
-          ActionFromText := User.FullName;
-      end
-      else
-      begin
-        var Group: TVkGroup;
-        if Data.GetGroupById(Item.LastMessage.FromId, Group) then
-          ActionFromText := Group.Name;
-      end;
-
-      var ActionText := MessageActionToText(Item.LastMessage.Action, Item.LastMessage.FromId, ActionFromText, MemberText);
-      SetMessageText(ActionText, False);
-    end
-      // Пересланные сообщения
-    else if Length(Item.LastMessage.FwdMessages) > 0 then
-    begin
-      SetMessageText(Length(Item.LastMessage.FwdMessages).ToString + WordOfCount(Length(Item.LastMessage.FwdMessages), [' сообщение', ' сообщения', ' сообщений']), True);
-    end;
+    UpdateLastMessage(Item.LastMessage, Data);
   end;
 
   if Assigned(Item.Conversation.PushSettings) then
@@ -281,6 +217,15 @@ begin
   end;
 end;
 
+procedure TListBoxItemChat.FOnChangeMessage(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventNewMessage absolute M;
+begin
+  if Event.Data.PeerId <> NormalizePeerId(FConversationId) then
+    Exit;
+  Update(Event.Data.MessageId);
+end;
+
 procedure TListBoxItemChat.FOnReadyImage(const Sender: TObject; const M: TMessage);
 var
   Data: TMessagePreview absolute M;
@@ -290,6 +235,17 @@ begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
   FImageFile := Data.Value.FileName;
   NeedStyleLookup;
+end;
+
+procedure TListBoxItemChat.FOnUserStatusChange(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventUserStatus absolute M;
+begin
+  if Event.UserId = FConversationId then
+  begin
+    IsOnline := Event.IsOnline;
+    Self.IsOnlineMobile := IsOnline and Event.VkPlatform.IsMobile;
+  end;
 end;
 
 procedure TListBoxItemChat.SetConversationId(const Value: TVkPeerId);
@@ -307,10 +263,8 @@ procedure TListBoxItemChat.SetIsHaveMention(const Value: Boolean);
 begin
   FIsHaveMention := Value;
   StylesData['mention_layout.Visible'] := FIsHaveMention;
-  StylesData['info_bottom.Visible'] :=
-    StylesData['count_layout.Visible'].AsBoolean or
-    StylesData['unread.Visible'].AsBoolean or
-    StylesData['mention_layout.Visible'].AsBoolean;
+  UpdatePinned;
+  UpdateInfo;
 end;
 
 procedure TListBoxItemChat.SetIsMuted(const Value: Boolean);
@@ -337,9 +291,15 @@ begin
   StylesData['online_mobile.Visible'] := FIsOnline and FIsOnlineMobile;
 end;
 
+procedure TListBoxItemChat.UpdatePinned;
+begin
+  StylesData['pinned_layout.Visible'] := FIsPinned and (FUndreadCount = 0);
+end;
+
 procedure TListBoxItemChat.SetIsPinned(const Value: Boolean);
 begin
   FIsPinned := Value;
+  UpdatePinned;
 end;
 
 procedure TListBoxItemChat.SetIsSelfChat(const Value: Boolean);
@@ -361,12 +321,15 @@ end;
 
 procedure TListBoxItemChat.SetMessageText(const Value: string; IsAttach: Boolean);
 begin
-  ItemData.Detail := ParseMention(Value);
-  if IsAttach then
-    StylesData['detail.TextSettings.FontColor'] := $FF71AAEB
-  else
-    StylesData['detail.TextSettings.FontColor'] := $FF898989;
+  ItemData.Detail := ParseMention(PrepareForPreview(Value));
+  if not IsSelected then
+    if IsAttach then
+      StylesData['detail.TextSettings.FontColor'] := $FF71AAEB
+    else
+      StylesData['detail.TextSettings.FontColor'] := $FF898989;
   StylesData['detail_sel.StartValue'] := StylesData['detail.TextSettings.FontColor'].AsInteger;
+  if ItemData.Detail.IsEmpty then
+    ItemData.Detail := 'Пустое сообщение';
 end;
 
 procedure TListBoxItemChat.SetText(const Value: string);
@@ -378,10 +341,17 @@ procedure TListBoxItemChat.SetUnanswered(const Value: Boolean);
 begin
   FUnanswered := Value;
   StylesData['unread.Visible'] := Value;
+  UpdatePinned;
+  UpdateInfo;
+end;
+
+procedure TListBoxItemChat.UpdateInfo;
+begin
   StylesData['info_bottom.Visible'] :=
     StylesData['count_layout.Visible'].AsBoolean or
     StylesData['unread.Visible'].AsBoolean or
-    StylesData['mention_layout.Visible'].AsBoolean;
+    StylesData['mention_layout.Visible'].AsBoolean or
+    StylesData['pinned_layout.Visible'].AsBoolean;
 end;
 
 procedure TListBoxItemChat.SetUndreadCount(const Value: Integer);
@@ -389,16 +359,131 @@ begin
   FUndreadCount := Value;
   StylesData['count_layout.Visible'] := Value > 0;
   StylesData['count'] := Value.ToString;
-  StylesData['info_bottom.Visible'] :=
-    StylesData['count_layout.Visible'].AsBoolean or
-    StylesData['unread.Visible'].AsBoolean or
-    StylesData['mention_layout.Visible'].AsBoolean;
+  UpdatePinned;
+  UpdateInfo;
 end;
 
 procedure TListBoxItemChat.SetVerified(const Value: Boolean);
 begin
   FVerified := Value;
   StylesData['verified.Visible'] := FVerified;
+end;
+
+procedure TListBoxItemChat.Update(LastMessageId: Integer);
+begin
+  TTask.Run(
+    procedure
+    var
+      Params: TVkParamsMessageHistory;
+      Items: TVkMessageHistory;
+    begin
+      Params.PeerId(FConversationId);
+      Params.Count(1);
+      Params.Extended;
+      Params.Fields(
+        [TVkExtendedField.OnlineInfo, TVkExtendedField.FirstNameAcc,
+        TVkExtendedField.IsFriend, TVkExtendedField.CanSendFriendRequest,
+        TVkExtendedField.CanWritePrivateMessage,
+        TVkExtendedField.Verified, TVkExtendedField.Photo50]);
+      if FVK.Messages.GetHistory(Items, Params) then
+      begin
+        var Extended: IExtended := Items;
+        if Length(Items.Items) > 0 then
+        begin
+          TThread.Synchronize(nil,
+            procedure
+            begin
+              UpdateLastMessage(Items.Items[0], Extended);
+            end);
+        end;
+      end;
+    end);
+end;
+
+procedure TListBoxItemChat.UpdateLastMessage;
+begin
+  LastTime := LastMessage.Date;
+
+  if LastMessage.FromId = FVK.UserId then
+  begin
+    if not IsSelfChat then
+      FromText := 'Вы: ';
+  end
+  else
+  begin
+    if FConversationId <> LastMessage.FromId then
+    begin
+      if PeerIdIsUser(LastMessage.FromId) then
+      begin
+        var User: TVkProfile;
+        if Data.GetProfileById(LastMessage.FromId, User) then
+          FromText := User.FirstName + ': ';
+      end
+      else
+      begin
+        var Group: TVkGroup;
+        if Data.GetGroupById(LastMessage.FromId, Group) then
+          FromText := Group.Name + ': ';
+      end;
+    end;
+  end;
+      // Текст последнего сообщения
+  if not LastMessage.Text.IsEmpty then
+    SetMessageText(LastMessage.Text, False)
+      // Вложение
+  else if Length(LastMessage.Attachments) > 0 then
+  begin
+    var AttachText := AttachmentToText(LastMessage.Attachments[0].&Type);
+    SetMessageText(AttachText, True);
+  end
+      // Действие
+  else if Assigned(LastMessage.Action) then
+  begin
+    FromText := '';
+    var MemberText := '';
+
+    if PeerIdIsUser(LastMessage.Action.MemberId) then
+    begin
+      var User: TVkProfile;
+      if Data.GetProfileById(LastMessage.Action.MemberId, User) then
+        if User.FirstNameAcc.IsEmpty then
+          MemberText := User.FullName
+        else
+          MemberText := User.FullNameAcc;
+    end
+    else
+    begin
+      var Group: TVkGroup;
+      if Data.GetGroupById(LastMessage.Action.MemberId, Group) then
+        MemberText := Group.Name;
+    end;
+
+    var ActionFromText := '';
+    if PeerIdIsUser(LastMessage.FromId) then
+    begin
+      var User: TVkProfile;
+      if Data.GetProfileById(LastMessage.FromId, User) then
+        ActionFromText := User.FullName;
+    end
+    else
+    begin
+      var Group: TVkGroup;
+      if Data.GetGroupById(LastMessage.FromId, Group) then
+        ActionFromText := Group.Name;
+    end;
+
+    var ActionText := MessageActionToText(LastMessage.Action, LastMessage.FromId, ActionFromText, MemberText);
+    SetMessageText(ActionText, False);
+  end
+      // Пересланные сообщения
+  else if Length(LastMessage.FwdMessages) > 0 then
+  begin
+    SetMessageText(Length(LastMessage.FwdMessages).ToString + WordOfCount(Length(LastMessage.FwdMessages), [' сообщение', ' сообщения', ' сообщений']), True);
+  end
+  else if Assigned(LastMessage.Geo) then
+  begin
+    SetMessageText('Карта', True)
+  end;
 end;
 
 end.

@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Controls.Presentation, VK.Entity.Message, VK.API,
-  VK.Entity.Conversation;
+  VK.Entity.Conversation, VK.Entity.Common.ExtendedList, ChatFMX.Frame.Chat,
+  ChatFMX.Classes;
 
 type
   TFrameMessageAction = class(TFrame)
@@ -21,7 +22,7 @@ type
     procedure SetDate(const Value: TDateTime);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
-    procedure Fill(Item: TVkMessage; Data: TVkMessageHistory);
+    procedure Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; ChatInfo: TChatInfo);
     property Text: string read FText write SetText;
     property Date: TDateTime read FDate write SetDate;
   end;
@@ -40,13 +41,11 @@ begin
   Name := '';
 end;
 
-procedure TFrameMessageAction.Fill(Item: TVkMessage; Data: TVkMessageHistory);
+procedure TFrameMessageAction.Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; ChatInfo: TChatInfo);
 begin
   FFromText := 'Кто-то';
   FMemberText := '';
-  var P2P: Boolean := False;
-  if Length(Data.Conversations) > 0 then
-    P2P := Data.Conversations[0].IsUser;
+  var P2P := ChatInfo.IsP2P;
 
   if PeerIdIsUser(Item.FromId) then
   begin

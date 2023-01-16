@@ -1,0 +1,93 @@
+inherited FrameAttachmentCall: TFrameAttachmentCall
+  HitTest = True
+  Size.Width = 515.000000000000000000
+  Size.Height = 56.000000000000000000
+  object RectangleBG: TRectangle
+    Align = Client
+    Fill.Color = x0AFFFFFF
+    HitTest = False
+    Padding.Left = 16.000000000000000000
+    Padding.Top = 11.000000000000000000
+    Padding.Right = 16.000000000000000000
+    Padding.Bottom = 11.000000000000000000
+    Size.Width = 515.000000000000000000
+    Size.Height = 56.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Color = x29FFFFFF
+    XRadius = 4.000000000000000000
+    YRadius = 4.000000000000000000
+    object Layout1: TLayout
+      Align = Left
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 10.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 16.000000000000000000
+      Position.Y = 16.000000000000000000
+      Size.Width = 24.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object Path1: TPath
+        Align = Center
+        Data.Path = {
+          2A000000000000008FC26941F6286C410200000040C37E413393564102000000
+          0261904123905441020000007B149C411E85674101000000EC51A441AD477541
+          020000004DABAD41F9CC824102000000159AAE41C8019141020000006766A641
+          EB519A41020000001CEEA14171849F4102000000B09F9B4101C9A24102000000
+          CECC9441A370A34102000000B0477541C2F5A6410200000069663E41EB519A41
+          02000000CFCC044132337B41020000006B6696409899414102000000F4514840
+          5B8F0A4102000000EA7A6440CACCAC4002000000B9406940CC6F914002000000
+          9ABD8140D44170400200000058B89640C6CC4C40020000006CEDBB403F9E0B40
+          020000007781F44002111340020000005F8F0A419D705D4001000000E47A1841
+          11AE8F4002000000B4832B41316FBE4002000000C07F29416C45014102000000
+          0CD713416F3D164101000000F828084184EB214102000000C5F50441B71E2541
+          020000000200044184EB294102000000A670054184EB2D410200000092C20941
+          9899394102000000D9A31441EA51484102000000733D26418EC2594102000000
+          348232410685674102000000C06A414178AC72410200000079145241598F7A41
+          020000006F3D5641F3287C410200000046E15A413A0A7B410200000079145E41
+          07D77741010000008EC26941F2286C41030000008FC26941F6286C41}
+        Fill.Color = xFF71AAEB
+        HitTest = False
+        Size.Width = 18.000000000000000000
+        Size.Height = 18.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+        WrapMode = Fit
+      end
+    end
+    object LayoutContent: TLayout
+      Align = Client
+      Size.Width = 449.000000000000000000
+      Size.Height = 34.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object LabelDetail: TLabel
+        Align = Bottom
+        StyledSettings = [Style]
+        Margins.Top = 2.000000000000000000
+        Position.Y = 18.000000000000000000
+        Size.Width = 449.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 12.500000000000000000
+        TextSettings.FontColor = xFF828282
+        Text = #1047#1072#1074#1077#1088#1096#1105#1085' '#183' 39:51'
+        TabOrder = 1
+      end
+      object LabelTitle: TLabel
+        Align = Client
+        StyledSettings = []
+        Size.Width = 449.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 12.500000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = xFFE1E3E6
+        Text = #1048#1089#1093#1086#1076#1103#1097#1080#1081' '#1079#1074#1086#1085#1086#1082
+        TabOrder = 0
+      end
+    end
+  end
+end

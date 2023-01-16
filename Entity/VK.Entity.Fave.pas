@@ -3,10 +3,9 @@ unit VK.Entity.Fave;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Link, VK.Entity.Media, VK.Entity.Video, VK.Entity.Market,
-  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Common.List, VK.Types,
-  VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Link,
+  VK.Entity.Media, VK.Entity.Video, VK.Entity.Market, VK.Entity.Photo,
+  VK.Entity.Common, VK.Entity.Common.List, VK.Types, VK.Wrap.Interceptors;
 
 type
   TVkFaveTag = TVkBasicObject;
@@ -15,7 +14,7 @@ type
 
   TVkFave = class(TVkEntity)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FAdded_date: TDateTime;
     FSeen: Boolean;
     FTags: TArray<TVkFaveTag>;

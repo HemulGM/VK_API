@@ -192,7 +192,11 @@ begin
   begin
     try
       if FLogging then
+      try
         FHandler.Log(Self, Updates.Items[i].ToString);
+      except
+        //
+      end;
 
       FOnUpdate(Self, FGroupID, Updates.Items[i]);
     except
@@ -264,6 +268,7 @@ begin
   except
     Exit;
   end;
+  if Assigned(JSON) then
   try
     //Обновляем данные лонгпул сервера
     FLongPollData.TS := JSON.GetValue(VK_LP_FIELD_TS, '');

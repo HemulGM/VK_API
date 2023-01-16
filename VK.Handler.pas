@@ -54,10 +54,12 @@ type
     FUseServiceKeyOnly: Boolean;
     FOwner: TObject;
     FOnCaptcha: TOnCaptcha;
+    FOnAuth: TOnAuthNeeded;
     FExecuting: Integer;
     FLogging: Boolean;
     FLogResponse: Boolean;
     FCaptchaWait: Boolean;
+    FAuthWait: Boolean;
     FWaitCount: Integer;
     FRequestLimit: Integer;
     FQueueLock: TObject;
@@ -85,6 +87,7 @@ type
     destructor Destroy; override;
     procedure Log(Sender: TObject; const Text: string);
     function AskCaptcha(Sender: TObject; const CaptchaImg: string; var Answer: string): Boolean;
+    function DoLogin: Boolean;
     function ExecutePost(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Params: TParams): TResponse; overload;
     function Execute(Request: string; Param: TParam): TResponse; overload;
@@ -92,6 +95,7 @@ type
     function Execute(Request: TRESTRequest; FreeRequset: Boolean = False; IsRepeat: Boolean = False): TResponse; overload;
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
     property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
+    property OnAuth: TOnAuthNeeded read FOnAuth write FOnAuth;
     property OnLog: TOnLog read FOnLog write SetOnLog;
     property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
     property Owner: TObject read FOwner write SetOwner;
@@ -131,7 +135,7 @@ begin
   if MS <= 0 then
     Exit;
   Inc(FWaitCount);
-  while FCaptchaWait do
+  while FCaptchaWait or FAuthWait do
     Sleep(100);
   TS := TThread.GetTickCount;
   while (TS + MS > TThread.GetTickCount) do
@@ -228,6 +232,23 @@ begin
   end;
 end;
 
+function TVkHandler.DoLogin: Boolean;
+var
+  FRes: Boolean;
+begin
+  Result := False;
+  if Assigned(FOnAuth) then
+  begin
+    FRes := False;
+    Synchronize(
+      procedure
+      begin
+        FOnAuth(Self, FRes);
+      end);
+    Result := FRes;
+  end;
+end;
+
 constructor TVkHandler.Create(AOwner: TObject);
 begin
   inherited Create;
@@ -236,6 +257,7 @@ begin
   FRequestLimit := 3;
   FOwner := AOwner;
   FCaptchaWait := False;
+  FAuthWait := False;
   FExecuting := 0;
   FStartRequest := 0;
   FRequests := 0;
@@ -297,6 +319,7 @@ begin
     if not Waiting then
     begin
       FCaptchaWait := False;
+      FAuthWait := False;
     end;
     if FreeRequset then
       Request.Free;
@@ -312,14 +335,14 @@ begin
     // Если это первый запрос, то сохраняем метку
     if FRequests = 1 then
       FStartRequest := TThread.GetTickCount;
-    // Если уже 3 запроса было, то ждём до конца секунды FStartRequest
-    if FRequests > RequestLimit then
-    begin
-      FRequests := 0;
-      WaitTime(1300 - Int64(TThread.GetTickCount - FStartRequest));
-    end;
   finally
     TMonitor.Exit(FQueueLock);
+  end;
+  // Если уже 3 запроса было, то ждём до конца секунды FStartRequest
+  if FRequests > RequestLimit then
+  begin
+    FRequests := 0;
+    WaitTime(1300 - Int64(TThread.GetTickCount - FStartRequest));
   end;
 end;
 
@@ -355,7 +378,10 @@ begin
     end;
     case Result.Error.Code of
       VK_ERROR_INVALID_TOKEN:
-        raise TVkInvalidTokenException.Create(VKErrors.Get(Result.Error.Code), Result.Error.Code);
+        begin
+          if not DoLogin then
+            raise TVkInvalidTokenException.Create(VKErrors.Get(Result.Error.Code), Result.Error.Code);
+        end;
       VK_ERROR_TOO_MANY_SIMILAR_ACTIONS:
         raise TVkTooManySimilarActionException.Create(VKErrors.Get(Result.Error.Code), Result.Error.Code);
       VK_ERROR_CAPTCHA: // Капча
@@ -396,7 +422,6 @@ begin
       VK_ERROR_REQUESTLIMIT: // Превышено кол-во запросов в сек
         begin
           FLog(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests, RequestLimit, FStartRequest]));
-
           if not IsRepeat then
           begin
             WaitTime(2000);

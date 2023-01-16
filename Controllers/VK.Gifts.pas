@@ -12,7 +12,7 @@ type
     /// <summary>
     /// Возвращает список полученных подарков пользователя.
     /// </summary>
-    function Get(var Items: TVkGiftItems; UserId: Integer; Count: Integer = 10; Offset: Integer = 0): Boolean;
+    function Get(var Items: TVkGiftItems; UserId: TVkPeerId; Count: Integer = 10; Offset: Integer = 0): Boolean;
   end;
 
 implementation
@@ -22,7 +22,7 @@ uses
 
 { TGiftsController }
 
-function TGiftsController.Get(var Items: TVkGiftItems; UserId, Count, Offset: Integer): Boolean;
+function TGiftsController.Get(var Items: TVkGiftItems; UserId: TVkPeerId; Count, Offset: Integer): Boolean;
 var
   Params: TParams;
 begin

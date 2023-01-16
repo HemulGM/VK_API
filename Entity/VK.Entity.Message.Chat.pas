@@ -9,7 +9,7 @@ uses
 type
   TVkChat = class(TVkObject)
   private
-    FAdmin_id: Integer;
+    FAdmin_id: TVkPeerId;
     FIs_default_photo: Boolean;
     FMembers_count: Integer;
     FPhoto_100: string;
@@ -20,7 +20,7 @@ type
     FUsers: TArray<TVkProfile>;
   public
     property Id;
-    property AdminId: Integer read FAdmin_id write FAdmin_id;
+    property AdminId: TVkPeerId read FAdmin_id write FAdmin_id;
     property IsDefaultPhoto: Boolean read FIs_default_photo write FIs_default_photo;
     property MembersCount: Integer read FMembers_count write FMembers_count;
     property Photo100: string read FPhoto_100 write FPhoto_100;
@@ -58,15 +58,15 @@ type
 
   TVkChatPreviewInfo = class
   private
-    FAdmin_id: Integer;
-    FMembers: TArrayOfInteger;
+    FAdmin_id: TVkPeerId;
+    FMembers: TVkPeerIds;
     FTitle: string;
     FPhoto: TVkChatPhoto;
     FLocal_id: Integer;
   public
-    property AdminId: Integer read FAdmin_id write FAdmin_id;
+    property AdminId: TVkPeerId read FAdmin_id write FAdmin_id;
     property LocalId: Integer read FLocal_id write FLocal_id;
-    property Members: TArrayOfInteger read FMembers write FMembers;
+    property Members: TVkPeerIds read FMembers write FMembers;
     property Title: string read FTitle write FTitle;
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
   end;

@@ -1,0 +1,6 @@
+object FrameAttachment: TFrameAttachment
+  HitTest = False
+  Size.Width = 469.000000000000000000
+  Size.Height = 142.000000000000000000
+  Size.PlatformDefault = False
+end

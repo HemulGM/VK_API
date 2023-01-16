@@ -3,8 +3,8 @@ unit VK.Entity.Gift;
 interface
 
 uses
-  REST.JsonReflect, REST.Json.Interceptors, Rest.Json, VK.Entity.Common,
-  VK.Types, VK.Wrap.Interceptors, VK.Entity.Common.List;
+  REST.JsonReflect, Rest.Json, VK.Entity.Common, VK.Types, VK.Wrap.Interceptors,
+  VK.Entity.Common.List;
 
 type
   /// <summary>
@@ -41,9 +41,9 @@ type
 
   TVkGiftItem = class(TVkObject)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
-    FFrom_id: Integer;
+    FFrom_id: TVkPeerId;
     FGift: TVkGift;
     FGift_hash: string;
     FMessage: string;
@@ -66,7 +66,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, который отправил подарок, или 0, если отправитель скрыт
     /// </summary>
-    property FromId: Integer read FFrom_id write FFrom_id;
+    property FromId: TVkPeerId read FFrom_id write FFrom_id;
     /// <summary>
     /// Объект подарка
     /// </summary>

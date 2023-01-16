@@ -4,20 +4,20 @@ interface
 
 uses
   System.SysUtils, Generics.Collections, Rest.Json, VK.Entity.Common, VK.Types,
-  VK.Entity.Photo, REST.JsonReflect, REST.Json.Interceptors, VK.Entity.Market,
-  VK.Entity.Group.Counters, VK.Wrap.Interceptors, VK.Entity.Database.Cities,
-  VK.Entity.Database.Countries, VK.Entity.Common.List, VK.Entity.Geo;
+  REST.JsonReflect, VK.Entity.Market, VK.Entity.Group.Counters,
+  VK.Wrap.Interceptors, VK.Entity.Database.Cities, VK.Entity.Database.Countries,
+  VK.Entity.Common.List, VK.Entity.Geo, VK.Entity.Photo;
 
 type
   TVkGroupSubject = TVkBasicObject;
 
-  TVkCoverImages = TVkEntityList<TVkImage>;
+  TVkCoverImages = TVkEntityList<TVkSize>;
 
   TVkCover = class
   private
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FEnabled: Boolean;
-    FImages: TArray<TVkImage>;
+    FImages: TArray<TVkSize>;
   public
     /// <summary>
     /// Информация о том, включена ли обложка
@@ -26,7 +26,7 @@ type
     /// <summary>
     /// Копии изображений обложки
     /// </summary>
-    property Images: TArray<TVkImage> read FImages write FImages;
+    property Images: TArray<TVkSize> read FImages write FImages;
     destructor Destroy; override;
   end;
 
@@ -80,7 +80,7 @@ type
     FInvitation: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_recall: Boolean;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
   public
     /// <summary>
     /// Является ли пользователь участником сообщества
@@ -105,7 +105,7 @@ type
     /// <summary>
     /// Идентификатор пользователя.
     /// </summary>
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
   end;
 
   TVkGroupMemberStates = TVkEntityList<TVkGroupMemberState>;
@@ -119,8 +119,8 @@ type
     FPrice_min: Integer;
     FCurrency_text: string;
     FPrice_max: Integer;
-    FContact_id: Integer;
-    FCurrency: TVkProductCurrency;
+    FContact_id: TVkPeerId;
+    FCurrency: TVkCurrencyInfo;
     FType: string;
   public
     /// <summary>
@@ -142,11 +142,11 @@ type
     /// <summary>
     /// Идентификатор контактного лица для связи с продавцом. Возвращается отрицательное значение, если для связи с продавцом используются сообщения сообщества
     /// </summary>
-    property ContactId: Integer read FContact_id write FContact_id;
+    property ContactId: TVkPeerId read FContact_id write FContact_id;
     /// <summary>
     /// Информация о валюте
     /// </summary>
-    property Currency: TVkProductCurrency read FCurrency write FCurrency;
+    property Currency: TVkCurrencyInfo read FCurrency write FCurrency;
     property Name: string read FName write FName;
     /// <summary>
     /// Информация о типе магазина (basic и advanced)
@@ -188,7 +188,7 @@ type
 
   TVkBanInfo = class
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FEnd_date: TDateTime;
     FComment: string;
   public
@@ -207,12 +207,12 @@ type
     FEmail: string;
     FPhone: string;
     FDesc: string;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
   public
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     /// <summary>
     /// Должность
     /// </summary>
@@ -291,7 +291,7 @@ type
     FActivity: string;
     [JsonReflectAttribute(ctString, rtString, TDeactivatedInterceptor)]
     FDeactivated: TVkDeactivated;
-    FInvited_by: Integer;
+    FInvited_by: TVkPeerId;
     FAddresses: TVkAddresses;
     [JsonReflectAttribute(ctString, rtString, TAgeLimitsInterceptor)]
     FAge_limits: TVkAgeLimits;
@@ -435,7 +435,7 @@ type
     /// Идентификатор пользователя, который отправил приглашение в сообщество.
     /// Поле возвращается только для метода groups.getInvites.
     /// </summary>
-    property InvitedBy: Integer read FInvited_by write FInvited_by;
+    property InvitedBy: TVkPeerId read FInvited_by write FInvited_by;
     /// <summary>
     /// Информация о том, является ли текущий пользователь руководителем.
     /// </summary>
@@ -500,7 +500,15 @@ type
     destructor Destroy; override;
   end;
 
-  TVkGroups = TVkObjectList<TVkGroup>;
+  TVkGroups = class(TVkEntity)
+  private
+    FGroups: TArray<TVkGroup>;
+    function GetIsEmpty: Boolean;
+  public
+    property Groups: TArray<TVkGroup> read FGroups write FGroups;
+    property IsEmpty: Boolean read GetIsEmpty;
+    destructor Destroy; override;
+  end;
 
   TVkGroupTag = class(TVkObject)
   private
@@ -567,7 +575,7 @@ end;
 
 destructor TVkCover.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FImages);
   inherited;
 end;
 
@@ -578,6 +586,19 @@ begin
   if Assigned(FFriends) then
     FFriends.Free;
   inherited;
+end;
+
+{ TVkGroups }
+
+destructor TVkGroups.Destroy;
+begin
+  TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
+  inherited;
+end;
+
+function TVkGroups.GetIsEmpty: Boolean;
+begin
+  Result := Length(FGroups) = 0;
 end;
 
 end.

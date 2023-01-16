@@ -3,26 +3,27 @@ unit VK.Entity.Call;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Common,
+  VK.Wrap.Interceptors, VK.Types;
 
 type
   TVkCall = class(TVkEntity)
   private
-    FDuration: Integer;
-    FInitiator_id: Integer;
-    FReceiver_id: Integer;
-    FState: string;  //canceled_by_initiator, reached
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    FDuration: Int64;
+    FInitiator_id: TVkPeerId;
+    FReceiver_id: TVkPeerId;
+    [JsonReflectAttribute(ctString, rtString, TCallStateInterceptor)]
+    FState: TVkCallState;
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTime: TDateTime;
     FVideo: Boolean;
     FAccess_key: string;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
-    property Duration: Integer read FDuration write FDuration;
-    property InitiatorId: Integer read FInitiator_id write FInitiator_id;
-    property ReceiverId: Integer read FReceiver_id write FReceiver_id;
-    property State: string read FState write FState;
+    property Duration: Int64 read FDuration write FDuration;
+    property InitiatorId: TVkPeerId read FInitiator_id write FInitiator_id;
+    property ReceiverId: TVkPeerId read FReceiver_id write FReceiver_id;
+    property State: TVkCallState read FState write FState;
     property Time: TDateTime read FTime write FTime;
     property Video: Boolean read FVideo write FVideo;
   end;

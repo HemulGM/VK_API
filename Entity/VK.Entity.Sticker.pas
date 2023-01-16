@@ -8,8 +8,8 @@ uses
 type
   TVkSticker = class
   private
-    FImages: TArray<TVkImage>;
-    FImages_with_background: TArray<TVkImage>;
+    FImages: TVkSizes;
+    FImages_with_background: TVkSizes;
     FProduct_id: Integer;
     FSticker_id: Integer;
     FAccess_key: string;
@@ -24,11 +24,11 @@ type
     /// <summary>
     /// Изображения для стикера (с прозрачным фоном)
     /// </summary>
-    property Images: TArray<TVkImage> read FImages write FImages;
+    property Images: TVkSizes read FImages write FImages;
     /// <summary>
     /// Изображения для стикера (с непрозрачным фоном)
     /// </summary>
-    property ImagesWithBackground: TArray<TVkImage> read FImages_with_background write FImages_with_background;
+    property ImagesWithBackground: TVkSizes read FImages_with_background write FImages_with_background;
     /// <summary>
     /// Идентификатор набора
     /// </summary>
@@ -53,8 +53,8 @@ uses
 
 destructor TVkSticker.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages_with_background);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FImages);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FImages_with_background);
   inherited;
 end;
 

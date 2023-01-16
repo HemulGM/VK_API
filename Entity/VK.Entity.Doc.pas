@@ -3,9 +3,8 @@ unit VK.Entity.Doc;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  Vk.Types, VK.Entity.Common, VK.Entity.Common.List, VK.Wrap.Interceptors,
-  VK.Entity.AudioMessage;
+  Generics.Collections, REST.JsonReflect, Rest.Json, Vk.Types, VK.Entity.Common,
+  VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.AudioMessage;
 
 type
   TVkPreviewPhoto = class
@@ -43,7 +42,7 @@ type
   TVkDocument = class(TVkObject, IAttachment)
   private
     FAccess_key: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FExt: string;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]

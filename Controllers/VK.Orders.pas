@@ -11,7 +11,7 @@ type
     /// <summary>
     /// Отменяет подписку
     /// </summary>
-    function CancelSubscription(var Status: Boolean; const UserId, SubscriptionId: Integer; PendingCancel: Boolean = False): Boolean;
+    function CancelSubscription(var Status: Boolean; const UserId: TVkPeerId; SubscriptionId: Integer; PendingCancel: Boolean = False): Boolean;
     /// <summary>
     /// Изменяет состояние заказа
     /// </summary>
@@ -25,7 +25,7 @@ uses
 
 { TOrdersController }
 
-function TOrdersController.CancelSubscription(var Status: Boolean; const UserId, SubscriptionId: Integer; PendingCancel: Boolean): Boolean;
+function TOrdersController.CancelSubscription(var Status: Boolean; const UserId: TVkPeerId; SubscriptionId: Integer; PendingCancel: Boolean): Boolean;
 begin
   Result := Handler.Execute('orders.cancelSubscription', [
     ['user_id', UserId.ToString],

@@ -3,21 +3,21 @@ unit VK.Entity.Album;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Photo, VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Common.List,
-  VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Photo,
+  VK.Entity.Common, VK.Entity.Privacy, VK.Entity.Common.List, VK.Types,
+  VK.Wrap.Interceptors;
 
 type
   TVkPhotoAlbum = class(TVkObject, IAttachment)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FCreated: TDateTime;
     FDescription: string;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FSize: Integer;
-    FThumb: TVkThumb;
+    FThumb: TVkPhoto;
     FTitle: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUpdated: TDateTime;
     FThumb_id: integer;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -51,7 +51,7 @@ type
     /// <summary>
     /// Идентификатор владельца альбома
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property PrivacyComment: TVkPrivacy read FPrivacy_comment write FPrivacy_comment;
     property PrivacyView: TVkPrivacy read FPrivacy_view write FPrivacy_view;
     /// <summary>
@@ -62,7 +62,7 @@ type
     /// <summary>
     /// Обложка альбома, объект photo
     /// </summary>
-    property Thumb: TVkThumb read FThumb write FThumb;
+    property Thumb: TVkPhoto read FThumb write FThumb;
     property ThumbId: integer read FThumb_id write FThumb_id;
     property ThumbIsLast: Boolean read FThumb_is_last write FThumb_is_last;
     property ThumbSrc: string read FThumb_src write FThumb_src;

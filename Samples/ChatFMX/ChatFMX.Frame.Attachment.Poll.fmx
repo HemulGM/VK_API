@@ -1,0 +1,322 @@
+inherited FrameAttachmentPoll: TFrameAttachmentPoll
+  Padding.Top = 10.000000000000000000
+  Size.Width = 421.000000000000000000
+  Size.Height = 557.000000000000000000
+  object LayoutBG: TLayout
+    Align = Client
+    Size.Width = 421.000000000000000000
+    Size.Height = 547.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    object RectangleBackground: TRectangle
+      Align = Top
+      Fill.Kind = Gradient
+      Fill.Gradient.Points = <
+        item
+          Color = xFFF24973
+          Offset = 0.000000000000000000
+        end
+        item
+          Color = xFF3948E6
+          Offset = 1.000000000000000000
+        end>
+      Fill.Gradient.StopPosition.X = 1.000000000000000000
+      Size.Width = 421.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 8.000000000000000000
+      YRadius = 8.000000000000000000
+    end
+    object RectangleGradient: TRectangle
+      Align = Contents
+      Fill.Kind = Gradient
+      Fill.Gradient.Points = <
+        item
+          Color = x00707B8A
+          Offset = 0.000000000000000000
+        end
+        item
+          Color = xFF707B8A
+          Offset = 0.350931674242019700
+        end>
+      Size.Width = 421.000000000000000000
+      Size.Height = 547.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 8.000000000000000000
+      YRadius = 8.000000000000000000
+    end
+    object RectangleFrame: TRectangle
+      Align = Contents
+      Fill.Kind = None
+      Locked = True
+      HitTest = False
+      Size.Width = 421.000000000000000000
+      Size.Height = 547.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = x29FFFFFF
+      Visible = False
+      XRadius = 8.000000000000000000
+      YRadius = 8.000000000000000000
+    end
+  end
+  object LayoutClient: TLayout
+    Align = Client
+    Size.Width = 421.000000000000000000
+    Size.Height = 547.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object LayoutHead: TLayout
+      Align = Top
+      Padding.Left = 40.000000000000000000
+      Padding.Right = 40.000000000000000000
+      Size.Width = 421.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object LayoutText: TLayout
+        Align = Center
+        Size.Width = 303.000000000000000000
+        Size.Height = 147.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        object LabelSubtitle: TLabel
+          Align = Top
+          AutoSize = True
+          StyledSettings = [Style]
+          Position.Y = 70.000000000000000000
+          Size.Width = 303.000000000000000000
+          Size.Height = 17.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 14.000000000000000000
+          TextSettings.FontColor = xD6FFFFFF
+          TextSettings.HorzAlign = Center
+          Text = #1055#1091#1073#1083#1080#1095#1085#1099#1081' '#1086#1087#1088#1086#1089
+          TabOrder = 1
+        end
+        object LabelAuthor: TLabel
+          Align = Top
+          AutoSize = True
+          StyledSettings = [Style]
+          HitTest = True
+          Margins.Top = 12.000000000000000000
+          Margins.Bottom = 4.000000000000000000
+          Position.Y = 49.000000000000000000
+          Size.Width = 303.000000000000000000
+          Size.Height = 17.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 14.000000000000000000
+          TextSettings.FontColor = xD6FFFFFF
+          TextSettings.HorzAlign = Center
+          TextSettings.WordWrap = False
+          Text = #1040#1074#1090#1086#1088' '#1086#1087#1088#1086#1089#1072
+          TabOrder = 2
+        end
+        object LabelQuestion: TLabel
+          Align = Top
+          AutoSize = True
+          StyledSettings = []
+          Margins.Top = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 303.000000000000000000
+          Size.Height = 27.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 22.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.HorzAlign = Center
+          Text = #1058#1077#1082#1089#1090' '#1074#1086#1087#1088#1086#1089#1072' '#1086#1087#1088#1086#1089#1072'?'
+          TabOrder = 0
+        end
+      end
+      object LayoutOptions: TLayout
+        Anchors = [akTop, akRight]
+        Cursor = crHandPoint
+        HitTest = True
+        Position.X = 382.000000000000000000
+        Position.Y = 5.000000000000000000
+        Size.Width = 33.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        OnClick = LayoutOptionsClick
+        object Path1: TPath
+          Align = Center
+          Data.Path = {
+            2A00000000000000000040420000044302000000EC943B420000044302000000
+            00003842C51A034302000000000038420000024302000000000038423BE50043
+            02000000EC943B420000004302000000000040420000004302000000146B4442
+            0000004302000000000048423BE5004302000000000048420000024302000000
+            00004842C51A034302000000146B444200000443020000000000404200000443
+            03000000000040420000044300000000000024420000044302000000EC941F42
+            000004430200000000001C42C51A03430200000000001C420000024302000000
+            00001C423BE5004302000000EC941F4200000043020000000000244200000043
+            02000000146B2842000000430200000000002C423BE500430200000000002C42
+            000002430200000000002C42C51A034302000000146B28420000044302000000
+            0000244200000443030000000000244200000443000000000000084200000443
+            02000000EC940342000004430200000000000042C51A03430200000000000042
+            0000024302000000000000423BE5004302000000EC9403420000004302000000
+            000008420000004302000000146B0C420000004302000000000010423BE50043
+            0200000000001042000002430200000000001042C51A034302000000146B0C42
+            00000443020000000000084200000443030000000000084200000443}
+          Fill.Color = claWhite
+          Locked = True
+          HitTest = False
+          Size.Width = 18.000000000000000000
+          Size.Height = 4.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          WrapMode = Fit
+        end
+      end
+    end
+    object LayoutAnswers: TLayout
+      Align = Top
+      ClipChildren = True
+      Padding.Left = 20.000000000000000000
+      Padding.Right = 20.000000000000000000
+      Position.Y = 200.000000000000000000
+      Size.Width = 421.000000000000000000
+      Size.Height = 281.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object Button1: TButton
+        Align = Top
+        Margins.Top = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 20.000000000000000000
+        Position.Y = 5.000000000000000000
+        Size.Width = 381.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_vote_answer'
+        TabOrder = 6
+        Text = 'Button1'
+        TextSettings.HorzAlign = Leading
+      end
+      object Button2: TButton
+        Align = Top
+        Margins.Top = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 20.000000000000000000
+        Position.Y = 205.000000000000000000
+        Size.Width = 381.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_vote_answer'
+        TabOrder = 5
+        Text = 'Button1'
+        TextSettings.HorzAlign = Leading
+      end
+      object Button3: TButton
+        Align = Top
+        Margins.Top = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 20.000000000000000000
+        Position.Y = 125.000000000000000000
+        Size.Width = 381.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_vote_answer'
+        TabOrder = 3
+        Text = 'Button1'
+        TextSettings.HorzAlign = Leading
+      end
+      object Button4: TButton
+        Align = Top
+        Margins.Top = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 20.000000000000000000
+        Position.Y = 45.000000000000000000
+        Size.Width = 381.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_vote_answer'
+        TabOrder = 1
+        Text = 'Button1'
+        TextSettings.HorzAlign = Leading
+      end
+      object Button5: TButton
+        Align = Top
+        Margins.Top = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 20.000000000000000000
+        Position.Y = 245.000000000000000000
+        Size.Width = 381.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_vote_answer'
+        TabOrder = 4
+        Text = 'Button1'
+        TextSettings.HorzAlign = Leading
+      end
+      object Button6: TButton
+        Align = Top
+        Margins.Top = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 20.000000000000000000
+        Position.Y = 165.000000000000000000
+        Size.Width = 381.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_vote_answer'
+        TabOrder = 2
+        Text = 'Button1'
+        TextSettings.HorzAlign = Leading
+      end
+      object Button7: TButton
+        Align = Top
+        Margins.Top = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 20.000000000000000000
+        Position.Y = 85.000000000000000000
+        Size.Width = 381.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_vote_answer'
+        TabOrder = 0
+        Text = 'Button1'
+        TextSettings.HorzAlign = Leading
+      end
+    end
+    object LayoutFooter: TLayout
+      Align = Bottom
+      Position.Y = 491.000000000000000000
+      Size.Width = 421.000000000000000000
+      Size.Height = 56.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object LabelVotes: TLabel
+        Align = Center
+        AutoSize = True
+        StyledSettings = [Style]
+        Size.Width = 159.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 13.000000000000000000
+        TextSettings.FontColor = xD6FFFFFF
+        TextSettings.WordWrap = False
+        Text = #1055#1088#1086#1075#1086#1083#1086#1089#1086#1074#1072#1083#1080' n '#1095#1077#1083#1086#1074#1077#1082
+        TabOrder = 0
+      end
+      object ButtonVote: TButton
+        Align = Center
+        StyledSettings = [Family, Style]
+        Size.Width = 120.000000000000000000
+        Size.Height = 26.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_simple'
+        TabOrder = 1
+        Text = #1055#1088#1086#1075#1086#1083#1086#1089#1086#1074#1072#1090#1100
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 12.500000000000000000
+        OnClick = ButtonVoteClick
+      end
+    end
+  end
+end

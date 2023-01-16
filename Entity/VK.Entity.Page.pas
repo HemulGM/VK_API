@@ -3,29 +3,29 @@ unit VK.Entity.Page;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Common.List, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Common,
+  VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Types;
 
 type
   TVkPage = class(TVkObject)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FCreated: TDateTime;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FEdited: TDateTime;
-    FGroup_id: Integer;
+    FGroup_id: TVkPeerId;
     FParent2: string;
     FTitle: string;
     FView_url: string;
     FViews: integer;
     FWho_can_edit: Integer;
     FWho_can_view: Integer;
-    FCreator_id: Integer;
+    FCreator_id: TVkPeerId;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCurrent_user_can_edit: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCurrent_user_can_edit_access: Boolean;
-    FEditor_id: Integer;
+    FEditor_id: TVkPeerId;
     FParent: string;
     FSource: string;
     FHtml: string;
@@ -42,11 +42,11 @@ type
     /// <summary>
     /// Идентификатор группы, которой принадлежит вики-страница.
     /// </summary>
-    property GroupId: Integer read FGroup_id write FGroup_id;
+    property GroupId: TVkPeerId read FGroup_id write FGroup_id;
     /// <summary>
     /// Идентификатор создателя вики-страницы.
     /// </summary>
-    property CreatorId: Integer read FCreator_id write FCreator_id;
+    property CreatorId: TVkPeerId read FCreator_id write FCreator_id;
     /// <summary>
     /// Название вики-страницы.
     /// </summary>
@@ -84,7 +84,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, который редактировал вики-страницу последним
     /// </summary>
-    property EditorId: Integer read FEditor_id write FEditor_id;
+    property EditorId: TVkPeerId read FEditor_id write FEditor_id;
     /// <summary>
     /// Количество просмотров вики-страницы
     /// </summary>
@@ -115,7 +115,7 @@ type
 
   TVkPageVersion = class(TVkObject)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FEditor_id: Integer;
     FEditor_name: string;

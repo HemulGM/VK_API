@@ -3,8 +3,8 @@ unit VK.Entity.GroupSettings;
 interface
 
 uses
-  Generics.Collections, Rest.Json, REST.Json.Interceptors, VK.Entity.Common,
-  VK.Entity.Group, VK.Entity.Market, VK.Entity.Geo, VK.Types, REST.JsonReflect,
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Entity.Group,
+  VK.Entity.Market, VK.Entity.Geo, VK.Types, REST.JsonReflect,
   VK.Entity.Group.Categories, VK.Wrap.Interceptors, VK.Entity.Group.Youla;
 
 type
@@ -88,10 +88,10 @@ type
   TVkGroupSettingsChange = class(TVkEntity)
   private
     FChanges: TVkGroupChangeList;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
   public
     property Changes: TVkGroupChangeList read FChanges write FChanges;
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     destructor Destroy; override;
   end;
 
@@ -100,9 +100,9 @@ type
     FCity_ids: TArray<Integer>;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FComments_enabled: Boolean;
-    FContact_id: Integer;
+    FContact_id: TVkPeerId;
     FCountry_ids: TArray<Integer>;
-    FCurrency: TVkProductCurrency;
+    FCurrency: TVkCurrencyInfo;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FEnabled: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -111,9 +111,9 @@ type
   public
     property CityIds: TArray<Integer> read FCity_ids write FCity_ids;
     property CommentsEnabled: Boolean read FComments_enabled write FComments_enabled;
-    property ContactId: Integer read FContact_id write FContact_id;
+    property ContactId: TVkPeerId read FContact_id write FContact_id;
     property CountryIds: TArray<Integer> read FCountry_ids write FCountry_ids;
-    property Currency: TVkProductCurrency read FCurrency write FCurrency;
+    property Currency: TVkCurrencyInfo read FCurrency write FCurrency;
     property CanMessage: Boolean read FCan_message write FCan_message;
     property Enabled: Boolean read FEnabled write FEnabled;
     property &Type: string read FType write FType;
@@ -192,9 +192,9 @@ type
     FContacts: Boolean;
     FLinks: Boolean;
     FEvent_group_id: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FStart_date: TDateTime;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FFinish_date: TDateTime;
   public
     property Access: TVkGroupAccess read FAccess write FAccess;

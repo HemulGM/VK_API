@@ -3,15 +3,16 @@ unit VK.Entity.Graffiti;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Vk.Types, Rest.Json, VK.Entity.Common;
 
 type
   TVkGraffiti = class(TVkObject)
   private
-    FPhoto_604: string;
-    FOwner_id: integer;
-    FPhoto_130: string;
+    FOwner_id: TVkPeerId;
     FAccess_key: string;
+    FHeight: Integer;
+    FWidth: Integer;
+    FUrl: string;
   public
     /// <summary>
     /// Идентификатор граффити
@@ -24,15 +25,10 @@ type
     /// <summary>
     /// Идентификатор автора граффити
     /// </summary>
-    property OwnerId: integer read FOwner_id write FOwner_id;
-    /// <summary>
-    /// URL изображения для предпросмотра
-    /// </summary>
-    property Photo130: string read FPhoto_130 write FPhoto_130;
-    /// <summary>
-    /// URL полноразмерного изображения
-    /// </summary>
-    property Photo604: string read FPhoto_604 write FPhoto_604;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
+    property Height: Integer read FHeight write FHeight;
+    property Width: Integer read FWidth write FWidth;
+    property Url: string read FUrl write FUrl;
   end;
 
 implementation

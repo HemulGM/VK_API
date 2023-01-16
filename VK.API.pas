@@ -10,9 +10,11 @@ uses
   VK.Market, VK.Fave, VK.Notes, VK.Utils, VK.Video, VK.Gifts, VK.Newsfeed,
   VK.Notifications, VK.Orders, Vk.Pages, VK.Polls, VK.Podcasts, VK.Search,
   VK.Database, VK.Storage, VK.DownloadedGames, VK.Secure, VK.Stats, VK.Stories,
-  VK.Apps, VK.Clients, VK.Donut, VK.Streaming, VK.Ads, VK.Asr;
+  VK.Apps, VK.Clients, VK.Donut, VK.Streaming, VK.Ads, VK.Asr, System.Sensors;
 
 type
+  TOnNeedGeoLocation = procedure(Sender: TObject; var Coord: TLocationCoord2D) of object;
+
   TCustomVK = class(TComponent)
     type
       TVkProxy = class(TPersistent)
@@ -92,6 +94,8 @@ type
     FStories: TStoriesController;
     FUserId: Integer;
     FUserName: string;
+    FUserPhoto50: string;
+    FUserSex: TVkSex;
     FUserPhoto100: string;
     FUsers: TUsersController;
     FUseServiceKeyOnly: Boolean;
@@ -101,6 +105,7 @@ type
     FStreaming: TStreamingController;
     FAds: TAds;
     FAsr: TAsr;
+    FOnNeedGeoLocation: TOnNeedGeoLocation;
     function CheckAuth: Boolean;
     function DoOnError(Sender: TObject; E: Exception; Code: Integer; Text: string): Boolean;
     function GetIsWorking: Boolean;
@@ -138,7 +143,12 @@ type
     procedure SetRequestLimit(const Value: Integer);
     function GetRequestLimit: Integer;
     function GetUserName: string;
-    function GetUserPhoto: string;
+    function GetUserPhoto100: string;
+    function GetUserPhoto50: string;
+    function GetUserSex: TVkSex;
+    function GetGeoLocation: TLocationCoord2D;
+    procedure SetOnNeedGeoLocation(const Value: TOnNeedGeoLocation);
+    procedure FOnAuthNeed(Sender: TObject; var AResult: Boolean);
   public
     constructor Create(const AToken: string); reintroduce; overload;
     constructor Create(AOwner: TComponent); overload; override;
@@ -163,6 +173,10 @@ type
     /// <b>Ќе забывайте сохран€ть токен при закрытии приложени€</b>
     /// </summary>
     function Login(ALogin, APassword: string; On2FA: TOn2FA = nil): Boolean; overload;
+    /// <summary>
+    /// ќчищает токен
+    /// </summary>
+    procedure Logout;
     /// <summary>
     /// √енерировать событие лога
     /// </summary>
@@ -407,7 +421,15 @@ type
     /// <summary>
     /// ‘ото пользовател€ (будет запрошено, если не сохранено)
     /// </summary>
-    property UserPhoto100: string read GetUserPhoto;
+    property UserPhoto50: string read GetUserPhoto50;
+    /// <summary>
+    /// ‘ото пользовател€ (будет запрошено, если не сохранено)
+    /// </summary>
+    property UserPhoto100: string read GetUserPhoto100;
+    /// <summary>
+    /// ѕол пользовател€ (будет запрошено, если не сохранено)
+    /// </summary>
+    property UserSex: TVkSex read GetUserSex;
     /// <summary>
     /// —обытие, которое происходит, если токен успешно получен и успешно пройдена проверка авторизации
     /// </summary>
@@ -474,6 +496,8 @@ type
     property Application: TVkApplicationData read GetApplication write SetApplication;
     property RequestLimit: Integer read GetRequestLimit write SetRequestLimit;
     function DownloadFile(const Url, FileName: string): Boolean;
+    property GeoLocation: TLocationCoord2D read GetGeoLocation;
+    property OnNeedGeoLocation: TOnNeedGeoLocation read FOnNeedGeoLocation write SetOnNeedGeoLocation;
   end;
 
   VKAPI = class(TCustomVK);
@@ -600,6 +624,7 @@ begin
   FHandler.Authenticator := FOAuth2Authenticator;
   FHandler.OnCaptcha := FAskCaptcha;
   FHandler.OnConfirm := FOnConfirm;
+  FHandler.OnAuth := FOnAuthNeed;
   //Defaults
   EndPoint := 'https://oauth.vk.com/authorize';
   BaseURL := 'https://api.vk.com/method';
@@ -753,6 +778,13 @@ begin
 
 end;
 
+procedure TCustomVK.FOnAuthNeed(Sender: TObject; var AResult: Boolean);
+begin
+  Token := '';
+  TokenExpiry := 0;
+  AResult := Login;
+end;
+
 function TCustomVK.Execute(Code: string): TResponse;
 var
   ExecuteResponse: TResponse;
@@ -787,12 +819,14 @@ function TCustomVK.LoadUserInfo: Boolean;
 var
   User: TVkProfile;
 begin
-  Result := Users.Get(User, [TVkProfileField.Photo100]);
+  Result := Users.Get(User, [TVkExtendedField.Photo50, TVkExtendedField.Photo100, TVkExtendedField.Sex]);
   if Result then
   try
     FUserId := User.Id;
     FUserName := User.FullName;
+    FUserPhoto50 := User.Photo50;
     FUserPhoto100 := User.Photo100;
+    FUserSex := User.Sex;
   finally
     User.Free;
   end;
@@ -947,6 +981,12 @@ begin
     on E: Exception do
       DoOnError(Self, E.Create(E.Message), ERROR_VK_AUTH, E.Message);
   end;
+end;
+
+procedure TCustomVK.Logout;
+begin
+  Token := '';
+  TokenExpiry := 0;
 end;
 
 function TCustomVK.GetOAuth2RequestURI: string;
@@ -1115,10 +1155,22 @@ begin
   FOnLogin := Value;
 end;
 
+procedure TCustomVK.SetOnNeedGeoLocation(const Value: TOnNeedGeoLocation);
+begin
+  FOnNeedGeoLocation := Value;
+end;
+
 function TCustomVK.GetApplication: TVkApplicationData;
 begin
   Result.AppId := AppID;
   Result.AppKey := AppKey;
+end;
+
+function TCustomVK.GetGeoLocation: TLocationCoord2D;
+begin
+  Result := TLocationCoord2D.Create(-1, -1);
+  if Assigned(FOnNeedGeoLocation) then
+    FOnNeedGeoLocation(Self, Result);
 end;
 
 function TCustomVK.GetIsWorking: Boolean;
@@ -1164,12 +1216,28 @@ begin
     Result := '';
 end;
 
-function TCustomVK.GetUserPhoto: string;
+function TCustomVK.GetUserPhoto100: string;
 begin
   if (FUserId > 0) or LoadUserInfo then
     Result := FUserPhoto100
   else
     Result := '';
+end;
+
+function TCustomVK.GetUserPhoto50: string;
+begin
+  if (FUserId > 0) or LoadUserInfo then
+    Result := FUserPhoto50
+  else
+    Result := '';
+end;
+
+function TCustomVK.GetUserSex: TVkSex;
+begin
+  if (FUserId > 0) or LoadUserInfo then
+    Result := FUserSex
+  else
+    Result := TVkSex.None;
 end;
 
 procedure TCustomVK.SetPermissions(const Value: TVkPermissions);

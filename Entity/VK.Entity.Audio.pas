@@ -3,18 +3,18 @@ unit VK.Entity.Audio;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors,
-  System.SysUtils, Rest.Json, System.Json, VK.Entity.Common, VK.Types,
-  VK.Entity.Common.List, VK.Wrap.Interceptors, VK.Entity.Group;
+  Generics.Collections, REST.JsonReflect, System.SysUtils, Rest.Json,
+  System.Json, VK.Entity.Common, VK.Types, VK.Entity.Common.List,
+  VK.Wrap.Interceptors, VK.Entity.Group, VK.Entity.Photo;
 
 type
   TVkAudioArtistPhoto = class(TVkEntity)
   private
     FType: string;
-    FPhoto: TArray<TVkImage>;
+    FPhoto: TArray<TVkSize>;
   public
     property &Type: string read FType write FType;
-    property Photo: TArray<TVkImage> read FPhoto write FPhoto;
+    property Photo: TArray<TVkSize> read FPhoto write FPhoto;
     destructor Destroy; override;
   end;
 
@@ -22,13 +22,13 @@ type
   private
     FDomain: string;
     FName: string;
-    FPhoto: TArray<TVkImage>;
+    FPhoto: TArray<TVkSize>;
     FId: string;
-    FPages: TArray<Integer>;
+    FPages: TArray<Int64>;
     FGroups: TArray<TVkGroup>;
     FPhotos: TArray<TVkAudioArtistPhoto>;
     FIs_followed: Boolean;
-    FCan_followed: Boolean;
+    FCan_follow: Boolean;
   public
     /// <summary>
     /// Идентификатор артиста/группы
@@ -42,12 +42,12 @@ type
     /// Имя артиста/название группы
     /// </summary>
     property Name: string read FName write FName;
-    property Photo: TArray<TVkImage> read FPhoto write FPhoto;
+    property Photo: TArray<TVkSize> read FPhoto write FPhoto;
     property Photos: TArray<TVkAudioArtistPhoto> read FPhotos write FPhotos;
-    property Pages: TArray<Integer> read FPages write FPages;
+    property Pages: TArray<Int64> read FPages write FPages;
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     property IsFollowed: Boolean read FIs_followed write FIs_followed;
-    property CanFollowed: Boolean read FCan_followed write FCan_followed;
+    property CanFollow: Boolean read FCan_follow write FCan_follow;
     destructor Destroy; override;
   end;
 
@@ -56,14 +56,14 @@ type
   TVkAudioAlbum = class(TVkObject)
   private
     FAccess_key: string;
-    FOwner_id: Integer;
-    FThumb: TVkThumb;
+    FOwner_id: TVkPeerId;
+    FThumb: TVkPhoto;
     FTitle: string;
   public
     property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property Thumb: TVkThumb read FThumb write FThumb;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
+    property Thumb: TVkPhoto read FThumb write FThumb;
     property Title: string read FTitle write FTitle;
     destructor Destroy; override;
   end;
@@ -94,19 +94,19 @@ type
     FAds: TVkAudioAds;
     FAlbum: TVkAudioAlbum;
     FArtist: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDuration: Integer;
     [JsonReflectAttribute(ctString, rtString, TAudioGenreInterceptor)]
     FGenre_id: TVkAudioGenre;
     FIs_licensed: Boolean;
     FMain_artists: TArray<TVkAudioArtist>;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FTitle: string;
     FTrack_code: string;
     FUrl: string;
-    FLyrics_id: Integer;
-    FAlbum_id: Integer;
+    FLyrics_id: Int64;
+    FAlbum_id: Int64;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FNo_search: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -142,7 +142,7 @@ type
     /// <summary>
     /// Идентификатор альбома, в котором находится аудиозапись (если присвоен)
     /// </summary>
-    property AlbumId: Integer read FAlbum_id write FAlbum_id;
+    property AlbumId: Int64 read FAlbum_id write FAlbum_id;
     /// <summary>
     /// Исполнитель
     /// </summary>
@@ -194,7 +194,7 @@ type
     /// <summary>
     /// Идентификатор текста аудиозаписи (если доступно)
     /// </summary>
-    property LyricsId: Integer read FLyrics_id write FLyrics_id;
+    property LyricsId: Int64 read FLyrics_id write FLyrics_id;
     /// <summary>
     /// Список главных исполнителей
     /// </summary>
@@ -206,7 +206,7 @@ type
     /// <summary>
     /// Идентификатор владельца аудиозаписи
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Возможно ли использование этого трека в "Клипах"
     /// </summary>
@@ -241,8 +241,8 @@ type
   end;
 
   TVkAudioIndex = record
-    OwnerId: Integer;
-    AudioId: Integer;
+    OwnerId: TVkPeerId;
+    AudioId: Int64;
   end;
 
   TVkAudioIndexes = TArray<TVkAudioIndex>;
@@ -251,9 +251,9 @@ type
 
   TVkAudioInfo = class(TVkEntity)
   private
-    FAudio_id: Integer;
+    FAudio_id: Int64;
   public
-    property AudioId: Integer read FAudio_id write FAudio_id;
+    property AudioId: Int64 read FAudio_id write FAudio_id;
   end;
 
   TVkAudioInfoItems = TVkEntityList<TVkAudioInfo>;
@@ -306,7 +306,7 @@ end;
 
 destructor TVkAudioArtist.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FPhoto);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FPhoto);
   TArrayHelp.FreeArrayOfObject<TVkGroup>(FGroups);
   TArrayHelp.FreeArrayOfObject<TVkAudioArtistPhoto>(FPhotos);
   inherited;
@@ -316,7 +316,7 @@ end;
 
 destructor TVkAudioArtistPhoto.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FPhoto);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FPhoto);
   inherited;
 end;
 

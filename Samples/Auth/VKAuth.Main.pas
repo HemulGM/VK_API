@@ -275,7 +275,8 @@ uses
   VK.Entity.Storage, VK.Entity.Stories, VK.Entity.Podcast.Episode, VK.Auth,
   VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
   REST.Json, VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads,
-  VK.Entity.Message.Chat, VK.Entity.Board, VK.Board;
+  VK.Entity.Message.Chat, VK.Entity.Board, VK.Board,
+  VK.Entity.Common.ExtendedList;
 
 {$R *.dfm}
 
@@ -300,7 +301,7 @@ procedure TFormMain.Button12Click(Sender: TObject);
 var
   Users: TVkProfiles;
 begin
-  if VK1.Users.Get(Users, [286400863, 415730216, VK1.UserId], TVkProfileFields.AllForGroup) then
+  if VK1.Users.Get(Users, [286400863, 415730216, VK1.UserId], TVkExtendedFields.AllForGroup) then
   try
     for var User in Users.Items do
     begin
@@ -604,7 +605,7 @@ procedure TFormMain.ButtonFriendsGetClick(Sender: TObject);
 var
   Users: TVkProfiles;
 begin
-  if VK1.Friends.Get(Users, TVkProfileFields.All) then
+  if VK1.Friends.Get(Users, TVkExtendedFields.All) then
   try
     for var User in Users.Items do
       Memo1.Lines.Add(User.FullName);
@@ -710,10 +711,10 @@ procedure TFormMain.ButtonGroupsGetByIdClick(Sender: TObject);
 var
   Items: TVkGroups;
 begin
-  if Vk1.Groups.GetById(Items, '18cams', TVkGroupFields.All) then
+  if Vk1.Groups.GetById(Items, '18cams', TVkExtendedFields.All) then
   try
     if not Items.IsEmpty then
-      Memo1.Lines.Add(Items.Items[0].Name);
+      Memo1.Lines.Add(Items.Groups[0].Name);
   finally
     Items.Free;
   end;
@@ -724,10 +725,10 @@ var
   Items: TVkGroups;
   Params: TVkParamsGroupsGet;
 begin
-  if Vk1.Groups.Get(Items, Params.Fields(TVkGroupFields.All)) then
+  if Vk1.Groups.Get(Items, Params.Fields(TVkExtendedFields.All)) then
   try
     if not Items.IsEmpty then
-      Memo1.Lines.Add(Items.Items[0].Name);
+      Memo1.Lines.Add(Items.Groups[0].Name);
   finally
     Items.Free;
   end;
@@ -1004,7 +1005,7 @@ begin
     for var Item in Items.Items do
     begin
       Memo1.Lines.Add(Item.Description);
-      Memo1.Lines.Add(Item.Section);
+      Memo1.Lines.Add(Item.Section.ToString);
       Memo1.Lines.Add(Item.&Type);
     end;
   finally

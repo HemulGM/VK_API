@@ -3,16 +3,16 @@ unit VK.Entity.Privacy;
 interface
 
 uses
-  Generics.Collections, Rest.Json, VK.Entity.Common;
+  Generics.Collections, Rest.Json, VK.Entity.Common, VK.Types;
 
 type
   TVkPrivacyOwners = class
   private
-    FAllowed: TArray<Integer>;
-    FExcluded: TArray<Integer>;
+    FAllowed: TArray<TVkPeerId>;
+    FExcluded: TArray<TVkPeerId>;
   public
-    property Allowed: TArray<Integer> read FAllowed write FAllowed;
-    property Excluded: TArray<Integer> read FExcluded write FExcluded;
+    property Allowed: TArray<TVkPeerId> read FAllowed write FAllowed;
+    property Excluded: TArray<TVkPeerId> read FExcluded write FExcluded;
   end;
 
   TVkPrivacy = class(TVkEntity)

@@ -12,7 +12,7 @@ type
     /// <summary>
     /// Добавляет информацию о достижениях пользователя в приложении.
     /// </summary>
-    function AddAppEvent(const UserId: Integer; ActivityId: TAppActivity; Value: Integer): Boolean;
+    function AddAppEvent(const UserId: TVkPeerId; ActivityId: TAppActivity; Value: Integer): Boolean;
     /// <summary>
     /// Позволяет проверять валидность пользователя в IFrame, VK Mini Apps и Standalone-приложениях с помощью передаваемого в приложения параметра access_token.
     /// Обратите внимание, что для iFrame-приложений токен становится валидным только после запроса прав у пользователя и установки приложения.
@@ -31,7 +31,7 @@ uses
 
 { TSecureController }
 
-function TSecureController.AddAppEvent(const UserId: Integer; ActivityId: TAppActivity; Value: Integer): Boolean;
+function TSecureController.AddAppEvent(const UserId: TVkPeerId; ActivityId: TAppActivity; Value: Integer): Boolean;
 begin
   with Handler.Execute('secure.addAppEvent', [['user_id', UserId.ToString], ['activity_id', Ord(ActivityId).ToString], ['value', Value.ToString]]) do
     Result := ResponseIsTrue;

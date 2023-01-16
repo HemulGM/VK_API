@@ -3,27 +3,50 @@
 interface
 
 uses
-  VK.Types, System.SysUtils, VK.Entity.Message;
+  VK.Types, System.SysUtils, VK.Entity.Message, FMX.Ani, FMX.Types, FMX.Controls,
+  System.Types;
+
+type
+  TAnimatorHelper = class helper for TAnimator
+    class procedure DetachPropertyAnimation(const Target: TFmxObject; const APropertyName: string);
+  end;
 
 function AttachmentToText(const Value: TVkAttachmentType): string;
 
 function WordOfCount(const Count: Integer; const Words: TArrayOfString): string;
 
-function HumanDateTime(Value: TDateTime; ShowTime: Boolean = False): string;
+function WordOfSex(const Sex: TVkSex; const Words: TArrayOfString): string;
+
+/// <summary>
+/// Пример: 2 авг 2022 в 14:32 / вчера в 9:15
+/// </summary>
+function HumanDateTime(Value: TDateTime; ShowTime: Boolean = False; ShortDate: Boolean = False): string;
+
+/// <summary>
+/// Пример: 2 авг 2022, 14:32
+/// </summary>
+function HumanDateTimeSimple(Value: TDateTime; ShowTime: Boolean = False; ShortDate: Boolean = False): string;
 
 function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;
 
 function ParseMention(const Value: string): string;
 
+function PrepareForPreview(const Value: string): string;
+
 implementation
 
 uses
-  System.DateUtils, System.RegularExpressions;
+  System.DateUtils, System.StrUtils, System.RegularExpressions;
+
+function PrepareForPreview(const Value: string): string;
+begin
+  Result := Value.Replace(#$A, ' ').Replace('  ', ' ', [rfReplaceAll]);
+end;
 
 function ParseMention(const Value: string): string;
 const
-  Pattern1 = '\[(\w+)\|(.+?)\]';
-  Pattern2 = '(@\w+)\ \((.+?)\)';
+  Pattern1 = '\[(.+?)\|(.+?)\]';
+  Pattern2 = '(@.+?)\ \((.+?)\)';
 begin
   Result := Value;
 
@@ -57,52 +80,72 @@ begin
   end;
 end;
 
-function MonthTextOf(Value: TDateTime): string;
+function WordOfSex(const Sex: TVkSex; const Words: TArrayOfString): string;
+begin
+  if Length(Words) < 2 then
+    Exit('');
+  case Sex of
+    TVkSex.None, TVkSex.Male:
+      Result := Words[0];
+    TVkSex.Female:
+      Result := Words[1];
+  end;
+end;
+
+function MonthTextOf(Value: TDateTime; Short: Boolean): string;
 begin
   case MonthOf(Value) of
     1:
-      Result := 'января';
+      Result := IfThen(Short, 'янв', 'января');
     2:
-      Result := 'февраля';
+      Result := IfThen(Short, 'фев', 'февраля');
     3:
-      Result := 'марта';
+      Result := IfThen(Short, 'мар', 'марта');
     4:
-      Result := 'апреля';
+      Result := IfThen(Short, 'апр', 'апреля');
     5:
-      Result := 'мая';
+      Result := IfThen(Short, 'мая', 'мая');
     6:
-      Result := 'июня';
+      Result := IfThen(Short, 'июн', 'июня');
     7:
-      Result := 'июля';
+      Result := IfThen(Short, 'июл', 'июля');
     8:
-      Result := 'августа';
+      Result := IfThen(Short, 'авг', 'августа');
     9:
-      Result := 'сентября';
+      Result := IfThen(Short, 'сен', 'сентября');
     10:
-      Result := 'октября';
+      Result := IfThen(Short, 'окт', 'октября');
     11:
-      Result := 'ноября';
+      Result := IfThen(Short, 'ноя', 'ноября');
     12:
-      Result := 'декабря';
+      Result := IfThen(Short, 'дек', 'декабря');
   else
     Result := '?????';
   end;
 end;
 
-function HumanDateTime(Value: TDateTime; ShowTime: Boolean): string;
+function HumanDateTime(Value: TDateTime; ShowTime: Boolean; ShortDate: Boolean): string;
 begin
   if IsSameDay(Value, Today) then
     Result := 'сегодня'
   else if IsSameDay(Value, Yesterday) then
     Result := 'вчера'
   else if YearOf(Value) = YearOf(Now) then
-    Result := FormatDateTime('d ' + MonthTextOf(Value), Value)
+    Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate), Value)
   else
-    Result := FormatDateTime('d ' + MonthTextOf(Value) + ' YYYY', Value);
+    Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate) + ' YYYY', Value);
   if ShowTime then
-  begin
     Result := Result + ' в ' + FormatDateTime('H:nn', Value);
-  end;
+end;
+
+function HumanDateTimeSimple(Value: TDateTime; ShowTime: Boolean; ShortDate: Boolean): string;
+begin
+  if YearOf(Value) = YearOf(Now) then
+    Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate), Value)
+  else
+    Result := FormatDateTime('d ' + MonthTextOf(Value, ShortDate) + ' YYYY', Value);
+  if ShowTime then
+    Result := Result + ', ' + FormatDateTime('H:nn', Value);
 end;
 
 function MessageActionToText(const Value: TVkMessageAction; FromId: TVkPeerId; const FromText, MemberText: string): string;
@@ -116,7 +159,11 @@ begin
     TVkMessageActionType.ChatCreate:
       Result := FromText + ' создал(а) чат «' + Value.Text + '»';
     TVkMessageActionType.ChatTitleUpdate:
-      Result := FromText + ' изменил(а) название чата';
+      begin
+        Result := FromText + ' изменил(а) название чата';
+        if not Value.Text.IsEmpty then
+          Result := Result + ' на «' + Value.Text + '»';
+      end;
     TVkMessageActionType.ChatInviteUser:
       if Value.MemberId = FromId then
         Result := FromText + ' вошел(ла) в чат'
@@ -128,9 +175,17 @@ begin
       else
         Result := FromText + ' исключил(а) ' + MemberText;
     TVkMessageActionType.ChatPinMessage:
-      Result := FromText + ' закрепил(а) сообщение';
+      begin
+        Result := FromText + ' закрепил(а) сообщение';
+        if not Value.Message.IsEmpty then
+          Result := Result + ' «' + Value.Message.Replace('  ', ' ', [rfReplaceAll]) + '»';
+      end;
     TVkMessageActionType.ChatUnpinMessage:
-      Result := FromText + ' открепил(а) сообщение';
+      begin
+        Result := FromText + ' открепил(а) сообщение';
+        if not Value.Message.IsEmpty then
+          Result := Result + ' «' + Value.Message.Replace('  ', ' ', [rfReplaceAll]) + '»';
+      end;
     TVkMessageActionType.ChatInviteUserByLink:
       Result := FromText + ' присоединился к чату по ссылке';
     TVkMessageActionType.ConversationStyleUpdate:
@@ -189,8 +244,32 @@ begin
       Result := 'Событие';
     TVkAttachmentType.MoneyTransfer:
       Result := 'Денежный перевод';
+    TVkAttachmentType.Story:
+      Result := 'История';
   else
     Result := '';
+  end;
+end;
+
+{ TAnimatorHelper }
+
+class procedure TAnimatorHelper.DetachPropertyAnimation(const Target: TFmxObject; const APropertyName: string);
+var
+  I: Integer;
+begin
+  I := Target.ChildrenCount - 1;
+  while I >= 0 do
+  begin
+    if (Target.Children[I] is TCustomPropertyAnimation) and
+      (CompareText(TCustomPropertyAnimation(Target.Children[I]).PropertyName, APropertyName) = 0) then
+    begin
+      var Anim := TFloatAnimation(Target.Children[I]);
+      Anim.Parent := nil;
+      Anim.Stop;
+    end;
+    if I > Target.ChildrenCount then
+      I := Target.ChildrenCount;
+    Dec(I);
   end;
 end;
 

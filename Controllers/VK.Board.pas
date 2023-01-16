@@ -169,11 +169,11 @@ type
     /// <summary>
     /// ƒобавл€ет новый комментарий в обсуждении
     /// </summary>
-    function CreateComment(var Id: Integer; GroupId, TopicId: Integer; Message: string): Boolean; overload;
+    function CreateComment(var Id: Integer; GroupId: TVkPeerId; TopicId: Integer; Message: string): Boolean; overload;
     /// <summary>
     /// ƒобавл€ет новый комментарий в обсуждении
     /// </summary>
-    function CreateComment(GroupId, TopicId: Integer; Message: string): Boolean; overload;
+    function CreateComment(GroupId: TVkPeerId; TopicId: Integer; Message: string): Boolean; overload;
     /// <summary>
     /// ƒобавл€ет новый комментарий в обсуждении
     /// </summary>
@@ -189,7 +189,7 @@ type
     /// <summary>
     /// »змен€ет заголовок темы в списке обсуждений группы.
     /// </summary>
-    function EditTopic(GroupId, TopicId: Integer; Title: string): Boolean; overload;
+    function EditTopic(GroupId: TVkPeerId; TopicId: Integer; Title: string): Boolean; overload;
     /// <summary>
     /// ƒобавл€ет новый комментарий в обсуждении
     /// </summary>
@@ -201,11 +201,11 @@ type
     /// <summary>
     /// ”дал€ет обсуждение
     /// </summary>
-    function DeleteTopic(GroupId, TopicId: Integer): Boolean;
+    function DeleteTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean;
     /// <summary>
     /// ”дал€ет сообщение темы в обсуждени€х сообщества.
     /// </summary>
-    function DeleteComment(GroupId, TopicId, CommentId: Integer): Boolean;
+    function DeleteComment(GroupId: TVkPeerId; TopicId, CommentId: Integer): Boolean;
     /// <summary>
     /// ¬озвращает список тем в обсуждени€х указанной группы.
     /// </summary>
@@ -229,23 +229,23 @@ type
     /// <summary>
     /// «акрывает тему в списке обсуждений группы (в такой теме невозможно оставл€ть новые сообщени€).
     /// </summary>
-    function CloseTopic(GroupId, TopicId: Integer): Boolean; overload;
+    function CloseTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean; overload;
     /// <summary>
     /// ќткрывает ранее закрытую тему (в ней станет возможно оставл€ть новые сообщени€).
     /// </summary>
-    function OpenTopic(GroupId, TopicId: Integer): Boolean; overload;
+    function OpenTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean; overload;
     /// <summary>
     /// ќткрывает ранее закрытую тему (в ней станет возможно оставл€ть новые сообщени€).
     /// </summary>
-    function RestoreComment(GroupId, TopicId, CommentId: Integer): Boolean; overload;
+    function RestoreComment(GroupId: TVkPeerId; TopicId, CommentId: Integer): Boolean; overload;
     /// <summary>
     /// «акрепл€ет тему в списке обсуждений группы (така€ тема при любой сортировке выводитс€ выше остальных).
     /// </summary>
-    function FixTopic(GroupId, TopicId: Integer): Boolean; overload;
+    function FixTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean; overload;
     /// <summary>
     /// ќтмен€ет прикрепление темы в списке обсуждений группы (тема будет выводитьс€ согласно выбранной сортировке).
     /// </summary>
-    function UnfixTopic(GroupId, TopicId: Integer): Boolean; overload;
+    function UnfixTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean; overload;
     /// <summary>
     /// ¬озвращает список сообщений в указанной теме.
     /// </summary>
@@ -263,7 +263,7 @@ uses
 
 { TBoardController }
 
-function TBoardController.CreateComment(var Id: Integer; GroupId, TopicId: Integer; Message: string): Boolean;
+function TBoardController.CreateComment(var Id: Integer; GroupId: TVkPeerId; TopicId: Integer; Message: string): Boolean;
 var
   Params: TVkParamsBoardCommentCreate;
 begin
@@ -273,7 +273,7 @@ begin
   Result := CreateComment(Id, Params.List);
 end;
 
-function TBoardController.CreateComment(GroupId, TopicId: Integer; Message: string): Boolean;
+function TBoardController.CreateComment(GroupId: TVkPeerId; TopicId: Integer; Message: string): Boolean;
 var
   Id: Integer;
 begin
@@ -315,7 +315,7 @@ begin
   Result := AddTopic(Id, Params.List);
 end;
 
-function TBoardController.CloseTopic(GroupId, TopicId: Integer): Boolean;
+function TBoardController.CloseTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean;
 begin
   Result := Handler.Execute('board.closeTopic', [
     ['group_id', GroupId.ToString],
@@ -323,7 +323,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TBoardController.DeleteComment(GroupId, TopicId, CommentId: Integer): Boolean;
+function TBoardController.DeleteComment(GroupId: TVkPeerId; TopicId, CommentId: Integer): Boolean;
 var
   Params: TParams;
 begin
@@ -333,7 +333,7 @@ begin
   Result := Handler.Execute('board.deleteComment', Params).ResponseIsTrue;
 end;
 
-function TBoardController.DeleteTopic(GroupId, TopicId: Integer): Boolean;
+function TBoardController.DeleteTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean;
 begin
   Result := Handler.Execute('board.deleteTopic', [
     ['group_id', GroupId.ToString],
@@ -346,7 +346,7 @@ begin
   Result := EditComment(Params.List);
 end;
 
-function TBoardController.EditTopic(GroupId, TopicId: Integer; Title: string): Boolean;
+function TBoardController.EditTopic(GroupId: TVkPeerId; TopicId: Integer; Title: string): Boolean;
 begin
   Result := Handler.Execute('board.editTopic', [
     ['group_id', GroupId.ToString],
@@ -355,7 +355,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TBoardController.FixTopic(GroupId, TopicId: Integer): Boolean;
+function TBoardController.FixTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean;
 begin
   Result := Handler.Execute('board.fixTopic', [
     ['group_id', GroupId.ToString],
@@ -363,7 +363,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TBoardController.UnfixTopic(GroupId, TopicId: Integer): Boolean;
+function TBoardController.UnfixTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean;
 begin
   Result := Handler.Execute('board.unfixTopic', [
     ['group_id', GroupId.ToString],
@@ -391,7 +391,7 @@ begin
   Result := GetTopics(Items, Params.List);
 end;
 
-function TBoardController.OpenTopic(GroupId, TopicId: Integer): Boolean;
+function TBoardController.OpenTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean;
 begin
   Result := Handler.Execute('board.openTopic', [
     ['group_id', GroupId.ToString],
@@ -399,7 +399,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TBoardController.RestoreComment(GroupId, TopicId, CommentId: Integer): Boolean;
+function TBoardController.RestoreComment(GroupId: TVkPeerId; TopicId, CommentId: Integer): Boolean;
 begin
   Result := Handler.Execute('board.restoreComment', [
     ['group_id', GroupId.ToString],

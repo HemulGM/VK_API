@@ -10,15 +10,20 @@ uses
   FMX.Effects, FMX.Filter.Effects, ChatFMX.DM.Res, VK.API, VK.Components,
   VK.Entity.Conversation, System.Messaging, VK.Types,
   System.Generics.Collections, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo,
-  ChatFMX.Frame.Loading;
+  ChatFMX.Frame.Loading, VK.UserEvents, VK.Entity.Common.ExtendedList,
+  System.Sensors;
 
 type
-  TChats = class(TList<TFrameChat>)
+  TChats = class(TObjectList<TFrameChat>)
     function FindChat(const PeerId: TVkPeerId; var Frame: TFrameChat): Boolean;
   end;
 
   TListBoxLoading = class(TListBoxItem)
   end;
+
+  {$IFDEF DEBUG_ADAPTIVE}
+    {$DEFINE ANDROID}
+  {$ENDIF}
 
   TFormMain = class(TForm)
     LayoutClient: TLayout;
@@ -73,18 +78,33 @@ type
     FrameLoading1: TFrameLoading;
     Memo1: TMemo;
     LayoutAdaptive: TLayout;
+    UserEvents: TVkUserEvents;
+    LayoutLogin: TLayout;
+    Rectangle1: TRectangle;
+    Label1: TLabel;
+    ButtonLogin: TButton;
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
     procedure VKLogin(Sender: TObject);
     procedure LabelChatsModeClick(Sender: TObject);
     procedure ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
-    procedure FormDestroy(Sender: TObject);
     procedure ButtonReloginClick(Sender: TObject);
     procedure VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
     procedure ListBoxChatsApplyStyleLookup(Sender: TObject);
     procedure Path3Click(Sender: TObject);
     procedure VKLog(Sender: TObject; const Value: string);
+    procedure UserEventsUserOffline(Sender: TObject; UserId: TVkPeerId; InactiveUser: Boolean; TimeStamp: TDateTime);
+    procedure UserEventsUserOnline(Sender: TObject; UserId: TVkPeerId; VkPlatform: TVkPlatform; TimeStamp: TDateTime);
+    procedure UserEventsNewMessage(Sender: TObject; MessageData: TMessageData);
+    procedure UserEventsEditMessage(Sender: TObject; MessageData: TMessageData);
+    procedure UserEventsDeleteMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
+    procedure UserEventsReadMessages(Sender: TObject; Incoming: Boolean; PeerId: TVkPeerId; LocalId: Int64);
+    procedure UserEventsChangeMessageFlags(Sender: TObject; MessageChangeData: TMessageChangeData);
+    procedure UserEventsRecoverMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
+    procedure VKNeedGeoLocation(Sender: TObject; var Coord: TLocationCoord2D);
+    procedure LocationSensorLocationChanged(Sender: TObject; const OldLocation, NewLocation: TLocationCoord2D);
+    procedure CircleAvatarClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -95,11 +115,16 @@ type
     FListChatsOffsetEnd: Boolean;
     FChats: TChats;
     FLoadingItem: TListBoxLoading;
+    FAllowLocation: Boolean;
+    FLocation: TLocationCoord2D;
     procedure FOnReadyAvatar(const Sender: TObject; const M: TMessage);
     procedure FOnChatItemClick(Sender: TObject);
+   {$IFDEF ANDROID}
     procedure FOnChatItemTap(Sender: TObject; const Point: TPointF);
+    procedure FOnBackAdaptive(Sender: TObject);
+    {$ENDIF}
     procedure LoadConversationsAsync;
-    procedure CreateChatItem(Chat: TVkConversationItem; Data: TVkConversationItems);
+    procedure CreateChatItem(Chat: TVkConversationItem; Data: IExtended);
     procedure SetUnreadOnly(const Value: Boolean);
     procedure FOnLog(Sender: TObject; Value: string);
     procedure EndOfChats;
@@ -112,9 +137,10 @@ type
     procedure DoErrorLogin;
     procedure CreateLoadingItem;
     procedure ClearChatList;
-    procedure FOnBackAdaptive(Sender: TObject);
+    procedure Logout;
   public
     property UnreadOnly: Boolean read FUnreadOnly write SetUnreadOnly;
+    destructor Destroy; override;
   end;
 
 var
@@ -123,9 +149,9 @@ var
 implementation
 
 uses
-  System.Math, System.Threading, VK.FMX.OAuth2, System.IOUtils, VK.Clients,
-  ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager, FMX.Ani,
-  HGM.FMX.SmoothScroll;
+  System.Math, System.Threading, VK.Errors, VK.FMX.OAuth2, System.IOUtils,
+  VK.Clients, ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager,
+  FMX.Ani, HGM.FMX.SmoothScroll, ChatFMX.Events;
 
 {$R *.fmx}
 
@@ -137,14 +163,34 @@ begin
   LoadChat(Item.ConversationId);
 end;
 
+{$IFDEF ANDROID}
 procedure TFormMain.FOnChatItemTap(Sender: TObject; const Point: TPointF);
 begin
   FOnChatItemClick(Sender);
 end;
 
+procedure TFormMain.FOnBackAdaptive(Sender: TObject);
+begin
+  if LayoutChats.Visible then
+  begin
+    LayoutChats.Visible := False;
+    LayoutChat.Visible := True;
+  end
+  else
+  begin
+    LayoutChats.Visible := True;
+    LayoutChat.Visible := False;
+  end;
+end;
+{$ENDIF}
+
 procedure TFormMain.FOnLog(Sender: TObject; Value: string);
 begin
-  Memo1.Lines.Add(Value);
+  TThread.Queue(nil,
+    procedure
+    begin
+      Memo1.Lines.Add(Value);
+    end);
 end;
 
 procedure TFormMain.FOnReadyAvatar(const Sender: TObject; const M: TMessage);
@@ -167,9 +213,8 @@ procedure TFormMain.Login;
 begin
   try
     VK.Login;
-  finally
-    if not VK.IsLogin then
-      TThread.Queue(nil, DoErrorLogin);
+  except
+    TThread.Queue(nil, DoErrorLogin);
   end;
 end;
 
@@ -180,6 +225,9 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  {$IFDEF DEBUG_ADAPTIVE}
+  Width := 500;
+  {$ENDIF}
   {$IFDEF ANDROID}
   ListBoxChats.ShowScrollBars := False;
   RectangleBG.Visible := False;
@@ -188,7 +236,6 @@ begin
   RectangleFooter.Sides := [];
   RectangleFooter.Corners := [];
   ListBoxChats.Margins.Left := 0;
-  //LayoutClient.Align := TAlignLayout.Client;
   LayoutAdaptive.Visible := True;
   HorzScrollBoxContent.Visible := False;
   LayoutChat.Visible := False;
@@ -197,6 +244,7 @@ begin
   LayoutChats.Align := TAlignLayout.Client;
   LayoutChat.Align := TAlignLayout.Client;
   {$ENDIF}
+  FAllowLocation := False;
   FLoading := True;
   FLoadingItem := nil;
   LayoutLoading.Visible := True;
@@ -220,18 +268,12 @@ begin
   //LoadDone;
 end;
 
-procedure TFormMain.FormDestroy(Sender: TObject);
-begin
-  TPreview.Instance.Unsubscribe(FOnReadyAvatar);
-  FChats.Free;
-end;
-
 procedure TFormMain.FormResize(Sender: TObject);
 begin
   LayoutClient.Width := Max(Min(1000, ClientWidth), 800) - 40;
 end;
 
-procedure TFormMain.CreateChatItem(Chat: TVkConversationItem; Data: TVkConversationItems);
+procedure TFormMain.CreateChatItem(Chat: TVkConversationItem; Data: IExtended);
 var
   ListItem: TListBoxItemChat;
 begin
@@ -242,7 +284,11 @@ begin
   {$IFNDEF ANDROID}
   ListItem.OnClick := FOnChatItemClick;
   {$ELSE}
+    {$IFDEF DEBUG_ADAPTIVE}
+  ListItem.OnClick := FOnChatItemClick;
+    {$ELSE}
   ListItem.OnTap := FOnChatItemTap;
+    {$ENDIF}
   {$ENDIF}
   //ListItem.ApplyStyle;
 end;
@@ -286,7 +332,6 @@ end;
 
 procedure TFormMain.ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
-  //
   if Assigned(FLoadingItem) then
     LayoutChatLoadingAni.Position.Y := -(NewViewportPosition.Y - FLoadingItem.Position.Y)
   else
@@ -303,26 +348,13 @@ procedure TFormMain.ButtonReloginClick(Sender: TObject);
 begin
   PanelLoader.Visible := True;
   LayoutError.Visible := False;
+  LayoutLogin.Visible := False;
   TTask.Run(
     procedure
     begin
       Sleep(2000);
       Login;
     end);
-end;
-
-procedure TFormMain.FOnBackAdaptive(Sender: TObject);
-begin
-  if LayoutChats.Visible then
-  begin
-    LayoutChats.Visible := False;
-    LayoutChat.Visible := True;
-  end
-  else
-  begin
-    LayoutChats.Visible := True;
-    LayoutChat.Visible := False;
-  end;
 end;
 
 function TFormMain.CreateChat(PeerId: TVkPeerId): TFrameChat;
@@ -336,17 +368,59 @@ begin
   Result.OnBack := FOnBackAdaptive;
   {$ENDIF}
   FChats.Add(Result);
+  if FChats.Count > 30 then
+    FChats.Delete(0);
 end;
 
 procedure TFormMain.ShowChat(Frame: TFrameChat);
 begin
   for var Control in LayoutChatFrames.Controls do
     Control.Visible := Control = Frame;
-
+  Frame.RecalcSize;
   {$IFDEF ANDROID}
   LayoutChats.Visible := False;
   LayoutChat.Visible := True;
   {$ENDIF}
+end;
+
+procedure TFormMain.UserEventsChangeMessageFlags(Sender: TObject; MessageChangeData: TMessageChangeData);
+begin
+  Event.Send(TEventMessageChange.Create(MessageChangeData));
+end;
+
+procedure TFormMain.UserEventsDeleteMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
+begin
+  Event.Send(TEventDeleteMessage.Create(PeerId, LocalId));
+end;
+
+procedure TFormMain.UserEventsEditMessage(Sender: TObject; MessageData: TMessageData);
+begin
+  Event.Send(TEventEditMessage.Create(MessageData));
+end;
+
+procedure TFormMain.UserEventsNewMessage(Sender: TObject; MessageData: TMessageData);
+begin
+  Event.Send(TEventNewMessage.Create(MessageData));
+end;
+
+procedure TFormMain.UserEventsReadMessages(Sender: TObject; Incoming: Boolean; PeerId: TVkPeerId; LocalId: Int64);
+begin
+  Event.Send(TEventReadMessages.Create(Incoming, PeerId, LocalId));
+end;
+
+procedure TFormMain.UserEventsRecoverMessages(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64);
+begin
+  Event.Send(TEventRecoverMessage.Create(PeerId, LocalId));
+end;
+
+procedure TFormMain.UserEventsUserOffline(Sender: TObject; UserId: TVkPeerId; InactiveUser: Boolean; TimeStamp: TDateTime);
+begin
+  Event.Send(TEventUserStatus.Create(UserId, False));
+end;
+
+procedure TFormMain.UserEventsUserOnline(Sender: TObject; UserId: TVkPeerId; VkPlatform: TVkPlatform; TimeStamp: TDateTime);
+begin
+  Event.Send(TEventUserStatus.Create(UserId, False, VkPlatform));
 end;
 
 procedure TFormMain.LoadChat(PeerId: TVkPeerId);
@@ -367,13 +441,14 @@ begin
   Params.Offset(FListChatsOffset);
   Params.Count(20);
   Params.Fields(
-    [TVkProfileField.Photo50, TVkProfileField.Verified, TVkProfileField.OnlineInfo,
-    TVkProfileField.FirstNameAcc, TVkProfileField.LastNameAcc]);
+    [TVkExtendedField.Photo50, TVkExtendedField.Verified, TVkExtendedField.OnlineInfo,
+    TVkExtendedField.FirstNameAcc, TVkExtendedField.LastNameAcc]);
   if FUnreadOnly then
     Params.Filter(TVkConversationFilter.Unread);
   try
     if VK.Messages.GetConversations(Items, Params) then
-    try
+    begin
+      var Extended: IExtended := Items;
       if Length(Items.Items) < 20 then
         FListChatsOffsetEnd := True;
       TThread.Synchronize(nil,
@@ -382,7 +457,7 @@ begin
           ListBoxChats.BeginUpdate;
           try
             for var Item in Items.Items do
-              CreateChatItem(Item, Items);
+              CreateChatItem(Item, Extended);
             if FListChatsOffsetEnd then
             begin
               LayoutChatLoadingAni.Position.Y := -LayoutChatLoadingAni.Height;
@@ -396,11 +471,11 @@ begin
           end;
           FLoading := False;
         end);
-    finally
-      Items.Free;
     end;
   except
     Dec(FListChatsOffset);
+    if FListChatsOffset < 0 then
+      FListChatsOffset := 0;
     FLoading := False;
   end;
 end;
@@ -415,8 +490,36 @@ begin
   ListBoxChats.AddObject(FLoadingItem);
 end;
 
+procedure TFormMain.CircleAvatarClick(Sender: TObject);
+begin
+  Logout;
+end;
+
+procedure TFormMain.Logout;
+begin
+  {$IFDEF MSWINDOWS}
+  DeleteCache('vk.com');
+  {$ENDIF}
+  VK.Logout;
+  UserEvents.Stop;
+  FChats.Clear;
+  ListBoxChats.Clear;
+  try
+    TFile.Delete('token.tmp');
+  except
+  end;
+  LayoutLoading.Opacity := 1;
+  LayoutLoading.Visible := True;
+  LayoutError.Visible := False;
+  PanelLoader.Visible := False;
+  HorzScrollBoxContent.Visible := False;
+  LayoutAdaptive.Visible := False;
+  LayoutLogin.Visible := True;
+end;
+
 procedure TFormMain.ClearChatList;
 begin
+  FLoadingItem := nil;
   ListBoxChats.Clear;
   CreateLoadingItem;
 end;
@@ -436,14 +539,11 @@ begin
 end;
 
 procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
-var
-  AToken: string;
-  ATokenExpiry: Int64;
 begin
-  TThread.Synchronize(nil,
-    procedure
-    begin
-      if FToken.IsEmpty then
+  if FToken.IsEmpty then
+  begin
+    TThread.Synchronize(nil,
+      procedure
       begin
         TFormFMXOAuth2.Execute(Url,
           procedure(Form: TFormFMXOAuth2)
@@ -454,19 +554,27 @@ begin
             if not FToken.IsEmpty then
               VK.Login
             else
-            begin
               DoErrorLogin;
-            end;
           end);
-      end
-      else
-      begin
-        AToken := FToken;
-        ATokenExpiry := FTokenExpiry;
-      end;
-    end);
-  Token := AToken;
-  TokenExpiry := ATokenExpiry;
+      end);
+  end
+  else
+  begin
+    Token := FToken;
+    TokenExpiry := FTokenExpiry;
+    ChangePasswordHash := FChangePasswordHash;
+  end;
+end;
+
+destructor TFormMain.Destroy;
+begin
+  Hide;
+  TThread.RemoveQueuedEvents(nil);
+  while VK.Handler.Executing do
+    Application.ProcessMessages;
+  TPreview.Instance.Unsubscribe(FOnReadyAvatar);
+  FChats.Free;
+  inherited;
 end;
 
 procedure TFormMain.DoErrorLogin;
@@ -475,10 +583,15 @@ begin
   begin
     FToken := '';
     VK.Token := '';
+    try
+      TFile.Delete('token.tmp');
+    except
+    end;
     LayoutError.Visible := False;
     TTask.Run(Login);
     Exit;
   end;
+  LayoutLogin.Visible := False;
   LayoutLoading.Opacity := 1;
   LayoutLoading.Visible := True;
   LayoutError.Visible := True;
@@ -489,7 +602,14 @@ end;
 
 procedure TFormMain.VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
 begin
-  if not VK.IsLogin then
+  if Code = VK_ERROR_INVALID_TOKEN then
+  begin
+    FToken := '';
+    VK.Token := '';
+    TTask.Run(Login);
+    Exit;
+  end
+  else if not VK.IsLogin then
     DoErrorLogin;
 end;
 
@@ -506,6 +626,12 @@ begin
   {$ENDIF}
 end;
 
+procedure TFormMain.LocationSensorLocationChanged(Sender: TObject; const OldLocation, NewLocation: TLocationCoord2D);
+begin
+  FAllowLocation := True;
+  FLocation := NewLocation;
+end;
+
 procedure TFormMain.Reload;
 begin
   ClearChatList;
@@ -520,9 +646,10 @@ begin
         procedure
         begin
           TPreview.Instance.Subscribe(VK.UserPhoto100, FOnReadyAvatar);
-          Caption := 'FMX VK Messanger [' + VK.UserName + ']';
+          Caption := 'VK Messenger [' + VK.UserName + ']';
         end);
       LoadConversationsAsync;
+      UserEvents.Start;
       Sleep(500);
       TThread.Queue(nil,
         procedure
@@ -534,7 +661,11 @@ end;
 
 procedure TFormMain.VKLog(Sender: TObject; const Value: string);
 begin
-  Memo1.Lines.Add(Value);
+  TThread.Queue(nil,
+    procedure
+    begin
+      Memo1.Lines.Add(Value);
+    end);
 end;
 
 procedure TFormMain.VKLogin(Sender: TObject);
@@ -542,9 +673,15 @@ begin
   try
     TFile.WriteAllText('token.tmp', VK.Token);
   except
-  //
+    //
   end;
   TThread.Queue(nil, Reload);
+end;
+
+procedure TFormMain.VKNeedGeoLocation(Sender: TObject; var Coord: TLocationCoord2D);
+begin
+  if FAllowLocation then
+    Coord := FLocation;
 end;
 
 { TChats }

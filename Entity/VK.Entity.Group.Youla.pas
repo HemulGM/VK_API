@@ -30,8 +30,8 @@ type
     property Radius: Extended read FRadius write FRadius;
     property RadiusArea: string read FRadius_Area write FRadius_Area;
     property Radiuses: TArray<Extended> read FRadiuses write FRadiuses;
-    property Selected_Category_Ids: TArray<Integer> read FSelected_Category_Ids write FSelected_Category_Ids;
-    property Show_Moderation_Setting: Boolean read FShow_Moderation_Setting write FShow_Moderation_Setting;
+    property SelectedCategoryIds: TArray<Integer> read FSelected_Category_Ids write FSelected_Category_Ids;
+    property ShowModerationSetting: Boolean read FShow_Moderation_Setting write FShow_Moderation_Setting;
   end;
 
   TVkYoulaSubcategory = class(TVkObject)
@@ -40,7 +40,7 @@ type
     FTitle: string;
   public
     property Id;
-    property Parent_Id: Integer read FParent_Id write FParent_Id;
+    property ParentId: Integer read FParent_Id write FParent_Id;
     property Title: string read FTitle write FTitle;
   end;
 
@@ -51,7 +51,7 @@ type
     FTitle: string;
   public
     property Id;
-    property Parent_Id: Integer read FParent_Id write FParent_Id;
+    property ParentId: Integer read FParent_Id write FParent_Id;
     property Subcategories: TArray<TVkYoulaSubcategory> read FSubcategories write FSubcategories;
     property Title: string read FTitle write FTitle;
     destructor Destroy; override;

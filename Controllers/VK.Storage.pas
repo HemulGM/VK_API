@@ -3,7 +3,8 @@ unit VK.Storage;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Storage;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Storage;
 
 type
   /// <summary>
@@ -14,20 +15,20 @@ type
     /// <summary>
     /// Возвращает значение переменной, название которой передано в параметре key.
     /// </summary>
-    function Get(var Items: TVkStorageItems; Keys: TArrayOfString; UserId: Integer = 0): Boolean; overload;
+    function Get(var Items: TVkStorageItems; Keys: TArrayOfString; UserId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает значение переменной, название которой передано в параметре key.
     /// </summary>
-    function Get(var Value: string; Key: string; UserId: Integer = 0): Boolean; overload;
+    function Get(var Value: string; Key: string; UserId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
     /// Возвращает названия всех переменных.
     /// </summary>
-    function GetKeys(var Items: TVkStorageKeys; Offset: Integer = 0; Count: Integer = 100; UserId: Integer = 0): Boolean;
+    function GetKeys(var Items: TVkStorageKeys; Offset: Integer = 0; Count: Integer = 100; UserId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Сохраняет значение переменной, название которой передано в параметре key.
     /// Пользовательская переменная привязана к пользователю, и только он или сервер приложения может получить к ней доступ. Может быть создано не более 1000 переменных для каждого пользователя. Не более 1000 вызовов в час на каждого пользователя.
     /// </summary>
-    function &Set(const Key, Value: string; UserId: Integer = 0): Boolean; overload;
+    function &Set(const Key, Value: string; UserId: TVkPeerId = 0): Boolean; overload;
   end;
 
 implementation
@@ -37,7 +38,7 @@ uses
 
 { TStorageController }
 
-function TStorageController.Get(var Items: TVkStorageItems; Keys: TArrayOfString; UserId: Integer): Boolean;
+function TStorageController.Get(var Items: TVkStorageItems; Keys: TArrayOfString; UserId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -47,7 +48,7 @@ begin
   Result := Handler.Execute('storage.get', Params).GetObjects(Items);
 end;
 
-function TStorageController.&Set(const Key, Value: string; UserId: Integer): Boolean;
+function TStorageController.&Set(const Key, Value: string; UserId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -58,7 +59,7 @@ begin
   Result := Handler.Execute('storage.set', Params).ResponseIsTrue
 end;
 
-function TStorageController.Get(var Value: string; Key: string; UserId: Integer): Boolean;
+function TStorageController.Get(var Value: string; Key: string; UserId: TVkPeerId): Boolean;
 var
   Params: TParams;
   Items: TVkStorageItems;
@@ -87,7 +88,7 @@ begin
   end;
 end;
 
-function TStorageController.GetKeys(var Items: TVkStorageKeys; Offset, Count, UserId: Integer): Boolean;
+function TStorageController.GetKeys(var Items: TVkStorageKeys; Offset, Count: Integer; UserId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin

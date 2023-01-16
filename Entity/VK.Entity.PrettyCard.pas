@@ -11,7 +11,7 @@ type
   private
     FButton: TVkLinkButton;
     FCard_id: string;
-    FImages: TArray<TVkImage>;
+    FImages: TArray<TVkSize>;
     FLink_url: string;
     FPrice: string;
     FPrice_old: string;
@@ -19,7 +19,7 @@ type
   public
     property Button: TVkLinkButton read FButton write FButton;
     property CardId: string read FCard_id write FCard_id;
-    property Images: TArray<TVkImage> read FImages write FImages;
+    property Images: TArray<TVkSize> read FImages write FImages;
     property LinkUrl: string read FLink_url write FLink_url;
     property Price: string read FPrice write FPrice;
     property PriceOld: string read FPrice_old write FPrice_old;
@@ -38,7 +38,7 @@ uses
 
 destructor TVkPrettyCard.Destroy;
 begin
-  TArrayHelp.FreeArrayOfObject<TVkImage>(FImages);
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FImages);
   if Assigned(FButton) then
     FButton.Free;
   inherited;

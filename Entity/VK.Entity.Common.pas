@@ -3,7 +3,7 @@ unit VK.Entity.Common;
 interface
 
 uses
-  System.SysUtils, System.Json, Rest.Json;
+  System.SysUtils, System.Json, Rest.Json, System.Types;
 
 type
   TVkEntity = class(TInterfacedObject)
@@ -39,6 +39,12 @@ type
     property Name: string read FName write FName;
   end;
 
+  TVkBasicObjects = TArray<TVkBasicObject>;
+
+  TVkBasicObjectsHelper = record helper for TVkBasicObjects
+    function ToStringNames: string;
+  end;
+
   //////////////////////////////////////////////////////////////////////////////
 
   TVkCopyright = class(TVkEntity)
@@ -50,18 +56,6 @@ type
     property Link: string read FLink write FLink;
     property Name: string read FName write FName;
     property &Type: string read FType write FType;
-  end;
-
-  TVkProductCurrency = class(TVkBasicObject)
-  public
-    /// <summary>
-    /// Идентификатор валюты
-    /// </summary>
-    property Id;
-    /// <summary>
-    /// Обозначение валюты
-    /// </summary>
-    property Name;
   end;
 
   TVkRect = class(TVkEntity)
@@ -89,6 +83,36 @@ type
     property Y2: Integer read FY2 write FY2;
   end;
 
+  TVkCurrencyInfo = class(TVkBasicObject)
+  private
+    FTitle: string;
+  public
+    /// <summary>
+    /// Идентификатор валюты
+    /// </summary>
+    property Id;
+    /// <summary>
+    /// Обозначение валюты
+    /// </summary>
+    property Name;
+    /// <summary>
+    /// Символ волюты
+    /// </summary>
+    property Title: string read FTitle write FTitle;
+  end;
+
+  TVkMoneyAmount = class
+  private
+    FAmount: string;
+    FCurrency: TVkCurrencyInfo;
+    FText: string;
+  public
+    property Amount: string read FAmount write FAmount;
+    property Currency: TVkCurrencyInfo read FCurrency write FCurrency;
+    property Text: string read FText write FText;
+    destructor Destroy; override;
+  end;
+
   TVkLiked = class(TVkEntity)
   private
     FCopied: Integer;
@@ -96,26 +120,6 @@ type
   public
     property Copied: Integer read FCopied write FCopied;
     property Liked: Integer read FLiked write FLiked;
-  end;
-
-  TVkImage = class(TVkEntity)
-  private
-    FHeight: Integer;
-    FUrl: string;
-    FWidth: Integer;
-  public
-    /// <summary>
-    /// URL копии
-    /// </summary>
-    property Url: string read FUrl write FUrl;
-    /// <summary>
-    /// Высота
-    /// </summary>
-    property Height: Integer read FHeight write FHeight;
-    /// <summary>
-    /// Ширина
-    /// </summary>
-    property Width: Integer read FWidth write FWidth;
   end;
 
   {$REGION 'Возможные значения поля Type'}
@@ -188,6 +192,10 @@ type
     /// Получить элемент с максимальным размером (макс. по сумме размерностей W + H)
     /// </summary>
     function GetSizeMaxSum: TVkSize;
+    function GetSizeFromHeight(const Height: Integer): TVkSize;
+    function GetSizeFromWidth(const Width: Integer): TVkSize;
+    function GetMaxSizeOrZero: TSize;
+    function GetSizeUrlOrEmpty(const Size: Integer = 50): string;
   end;
 
   TVkChatPhoto = class(TVkEntity)
@@ -225,35 +233,19 @@ type
     property IsDefaultCallPhoto: Boolean read FIs_default_call_photo write FIs_default_call_photo;
   end;
 
-  TVkThumb = class
-  private
-    FHeight: Integer;
-    FPhoto_135: string;
-    FPhoto_270: string;
-    FPhoto_300: string;
-    FPhoto_34: string;
-    FPhoto_600: string;
-    FPhoto_68: string;
-    FWidth: Integer;
-    FPhoto_1200: string;
-    FId: string;
-  public
-    property Id: string read FId write FId;
-    property Height: Integer read FHeight write FHeight;
-    property Width: Integer read FWidth write FWidth;
-    property Photo34: string read FPhoto_34 write FPhoto_34;
-    property Photo68: string read FPhoto_68 write FPhoto_68;
-    property Photo135: string read FPhoto_135 write FPhoto_135;
-    property Photo270: string read FPhoto_270 write FPhoto_270;
-    property Photo300: string read FPhoto_300 write FPhoto_300;
-    property Photo600: string read FPhoto_600 write FPhoto_600;
-    property Photo1200: string read FPhoto_1200 write FPhoto_1200;
-  end;
-
 implementation
 
 uses
   VK.CommonUtils;
+
+{ TVkMoneyAmount }
+
+destructor TVkMoneyAmount.Destroy;
+begin
+  if Assigned(FCurrency) then
+    FCurrency.Free;
+  inherited;
+end;
 
 { TVkSizesHelper }
 
@@ -267,6 +259,17 @@ begin
       Exit(Self[i]);
 end;
 
+function TVkSizesHelper.GetMaxSizeOrZero: TSize;
+begin
+  if Length(Self) > 0 then
+  begin
+    var Item := Self[High(Self)];
+    Result := TSize.Create(Item.Width, Item.Height);
+  end
+  else
+    Result := TSize.Create(0, 0);
+end;
+
 function TVkSizesHelper.GetSize(Value: Char; Higher: Boolean): TVkSize;
 begin
   Result := Get(Value);
@@ -276,6 +279,44 @@ begin
     Result := GetSizeMin(Value)
   else
     Result := GetSizeMax(Value);
+end;
+
+function TVkSizesHelper.GetSizeFromHeight(const Height: Integer): TVkSize;
+var
+  D: Integer;
+begin
+  Result := nil;
+  D := -1;
+  for var Item in Self do
+    if Item.Height >= Height then
+    begin
+      if (D = -1) or (Item.Height - Height < D) then
+      begin
+        D := Item.Height - Height;
+        Result := Item;
+      end;
+    end;
+  if (not Assigned(Result)) and (Length(Self) > 0) then
+    Result := Self[High(Self)];
+end;
+
+function TVkSizesHelper.GetSizeFromWidth(const Width: Integer): TVkSize;
+var
+  D: Integer;
+begin
+  Result := nil;
+  D := -1;
+  for var Item in Self do
+    if Item.Width >= Width then
+    begin
+      if (D = -1) or (Item.Width - Width < D) then
+      begin
+        D := Item.Width - Width;
+        Result := Item;
+      end;
+    end;
+  if (not Assigned(Result)) and (Length(Self) > 0) then
+    Result := Self[High(Self)];
 end;
 
 function TVkSizesHelper.GetSizeMax(const From: Char): TVkSize;
@@ -312,6 +353,20 @@ begin
     if Assigned(Result) then
       Exit;
   end;
+end;
+
+function TVkSizesHelper.GetSizeUrlOrEmpty(const Size: Integer): string;
+begin
+  var Item := GetSizeFromHeight(Size);
+  if Assigned(Item) then
+  begin
+    if not Item.Url.IsEmpty then
+      Result := Item.Url
+    else
+      Result := Item.Src;
+  end
+  else
+    Result := '';
 end;
 
 { TVkEntity }
@@ -356,6 +411,16 @@ end;
 function TVkEntity.ToJsonString: string;
 begin
   Result := TJson.ObjectToJsonString(Self);
+end;
+
+{ TVkBasicObjectsHelper }
+
+function TVkBasicObjectsHelper.ToStringNames: string;
+begin
+  Result := '';
+  for var Item in Self do
+    Result := Result + Item.Name + ', ';
+  Result := Result.Trim([',', ' ']);
 end;
 
 end.

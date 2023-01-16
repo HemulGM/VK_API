@@ -3,31 +3,31 @@ unit VK.Entity.Board;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json, VK.Entity.Profile, VK.Entity.Common,
-  VK.Entity.Common.List;
+  Generics.Collections, VK.Wrap.Interceptors, REST.JsonReflect, Rest.Json,
+  VK.Entity.Profile, VK.Entity.Common, VK.Entity.Common.List, VK.Types;
 
 type
   TVkBoardTopic = class(TVkObject)
   private
     FComments: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FCreated: TDateTime;
-    FCreated_by: Integer;
+    FCreated_by: TVkPeerId;
     FIs_closed: Boolean;
     FIs_fixed: Boolean;
     FTitle: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUpdated: TDateTime;
-    FUpdated_by: Integer;
+    FUpdated_by: TVkPeerId;
   public
     property Comments: Integer read FComments write FComments;
     property Created: TDateTime read FCreated write FCreated;
-    property CreatedBy: Integer read FCreated_by write FCreated_by;
+    property CreatedBy: TVkPeerId read FCreated_by write FCreated_by;
     property IsClosed: Boolean read FIs_closed write FIs_closed;
     property IsFixed: Boolean read FIs_fixed write FIs_fixed;
     property Title: string read FTitle write FTitle;
     property Updated: TDateTime read FUpdated write FUpdated;
-    property UpdatedBy: Integer read FUpdated_by write FUpdated_by;
+    property UpdatedBy: TVkPeerId read FUpdated_by write FUpdated_by;
   end;
 
   TVkBoardTopics = class(TVkEntityList<TVkBoardTopic>)

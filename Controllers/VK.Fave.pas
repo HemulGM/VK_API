@@ -28,7 +28,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields): TVkParamsFaveGet;
+    function Fields(const Value: TVkExtendedFields): TVkParamsFaveGet;
     /// <summary>
     /// IsFromSnackbar
     /// </summary>
@@ -45,12 +45,12 @@ type
     /// Идентификатор пользователя, которому требуется проставить метку в закладках.
     /// Обязательный параметр, если не задан параметр GroupId
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsFavePageTagsSet;
+    function UserId(const Value: TVkPeerId): TVkParamsFavePageTagsSet;
     /// <summary>
     /// Идентификатор сообщества, которому требуется проставить метку в закладках.
     /// Обязательный параметр, если не задан параметр UserId
     /// </summary>
-    function GroupId(const Value: Integer): TVkParamsFavePageTagsSet;
+    function GroupId(const Value: TVkPeerId): TVkParamsFavePageTagsSet;
     /// <summary>
     /// Перечисленные через запятую идентификаторы тегов, которые требуется присвоить странице
     /// </summary>
@@ -73,7 +73,7 @@ type
     /// <summary>
     /// Идентификатор владельца объекта, которому требуется присвоить метку
     /// </summary>
-    function ItemOwnerId(const Value: Integer): TVkParamsFaveTagsSet;
+    function ItemOwnerId(const Value: TVkPeerId): TVkParamsFaveTagsSet;
     /// <summary>
     /// Идентификатор объекта
     /// </summary>
@@ -111,7 +111,7 @@ type
     /// <summary>
     /// Список дополнительных полей для объектов user и group, которые необходимо вернуть
     /// </summary>
-    function Fields(GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsFavePagesGet;
+    function Fields(Value: TVkExtendedFields = []): TVkParamsFavePagesGet;
     /// <summary>
     /// Идентификатор метки, закладки отмеченные которой требуется вернуть
     /// </summary>
@@ -135,23 +135,23 @@ type
     /// <summary>
     /// Удаляет из закладок страницу пользователя.
     /// </summary>
-    function RemoveUserPage(UserId: Integer): Boolean;
+    function RemoveUserPage(UserId: TVkPeerId): Boolean;
     /// <summary>
     /// Удаляет из закладок сообщество.
     /// </summary>
-    function RemoveGroupPage(GroupId: Integer): Boolean;
+    function RemoveGroupPage(GroupId: TVkPeerId): Boolean;
     /// <summary>
     /// Удаляет из закладок запись на стене пользователя или сообщества.
     /// </summary>
-    function RemovePost(OwnerId, Id: Integer): Boolean;
+    function RemovePost(OwnerId: TVkPeerId; Id: Integer): Boolean;
     /// <summary>
     /// Удаляет статью из закладок.
     /// </summary>
-    function RemoveArticle(OwnerId, ArticleId: Integer; Ref: string): Boolean;
+    function RemoveArticle(OwnerId: TVkPeerId; ArticleId: Integer; Ref: string): Boolean;
     /// <summary>
     /// Удаляет товар из закладок.
     /// </summary>
-    function RemoveProduct(OwnerId, Id: Integer): Boolean;
+    function RemoveProduct(OwnerId: TVkPeerId; Id: Integer): Boolean;
     /// <summary>
     /// Удаляет метку закладок.
     /// </summary>
@@ -159,7 +159,7 @@ type
     /// <summary>
     /// Удаляет видеозапись из списка закладок.
     /// </summary>
-    function RemoveVideo(OwnerId, Id: Integer): Boolean;
+    function RemoveVideo(OwnerId: TVkPeerId; Id: Integer): Boolean;
     /// <summary>
     /// Меняет порядок меток закладок в списке.
     /// </summary>
@@ -171,11 +171,11 @@ type
     /// <summary>
     /// Устанавливает метку странице пользователя.
     /// </summary>
-    function SetUserPageTags(UserId: Integer; Tags: TArrayOfInteger): Boolean;
+    function SetUserPageTags(UserId: TVkPeerId; Tags: TArrayOfInteger): Boolean;
     /// <summary>
     /// Устанавливает метку странице сообщества.
     /// </summary>
-    function SetGroupPageTags(GroupId: Integer; Tags: TArrayOfInteger): Boolean;
+    function SetGroupPageTags(GroupId: TVkPeerId; Tags: TArrayOfInteger): Boolean;
     /// <summary>
     /// Устанавливает метку выбранному объекту в списке закладок.
     /// </summary>
@@ -183,11 +183,11 @@ type
     /// <summary>
     /// Устанавливает страницу пользователя в топ закладок.
     /// </summary>
-    function TrackPageInteractionUser(UserId: Integer): Boolean;
+    function TrackPageInteractionUser(UserId: TVkPeerId): Boolean;
     /// <summary>
     /// Устанавливает страницу сообщества в топ закладок.
     /// </summary>
-    function TrackPageInteractionGroup(GroupId: Integer): Boolean;
+    function TrackPageInteractionGroup(GroupId: TVkPeerId): Boolean;
     /// <summary>
     /// Возвращает список меток в закладках.
     /// </summary>
@@ -207,7 +207,7 @@ type
     /// <summary>
     /// Добавляет видеозапись в закладки.
     /// </summary>
-    function AddVideo(OwnerId, Id: Integer; AccessKey: string): Boolean;
+    function AddVideo(OwnerId: TVkPeerId; Id: Integer; AccessKey: string): Boolean;
     /// <summary>
     /// Создает метку закладок.
     /// </summary>
@@ -215,19 +215,19 @@ type
     /// <summary>
     /// Добавляет товар в закладки.
     /// </summary>
-    function AddProduct(OwnerId, Id: Integer; AccessKey: string): Boolean;
+    function AddProduct(OwnerId: TVkPeerId; Id: Integer; AccessKey: string): Boolean;
     /// <summary>
     /// Добавляет товар в закладки.
     /// </summary>
-    function AddPost(OwnerId, Id: Integer; AccessKey: string; Params: TVkParamsFavePostAdd): Boolean;
+    function AddPost(OwnerId: TVkPeerId; Id: Integer; AccessKey: string; Params: TVkParamsFavePostAdd): Boolean;
     /// <summary>
     /// Добавляет пользователя в закладки.
     /// </summary>
-    function AddUserPage(Id: Integer): Boolean;
+    function AddUserPage(Id: TVkPeerId): Boolean;
     /// <summary>
     /// Добавляет сообщество в закладки.
     /// </summary>
-    function AddGroupPage(Id: Integer): Boolean;
+    function AddGroupPage(Id: TVkPeerId): Boolean;
     /// <summary>
     /// Добавляет ссылку в закладки.
     /// </summary>
@@ -255,7 +255,7 @@ begin
   Result := Handler.Execute('fave.addLink', ['link', Link]).ResponseIsTrue;
 end;
 
-function TFaveController.AddPost(OwnerId, Id: Integer; AccessKey: string; Params: TVkParamsFavePostAdd): Boolean;
+function TFaveController.AddPost(OwnerId: TVkPeerId; Id: Integer; AccessKey: string; Params: TVkParamsFavePostAdd): Boolean;
 begin
   Params.List.Add('owner_id', OwnerId);
   Params.List.Add('id', Id);
@@ -263,7 +263,7 @@ begin
   Result := Handler.Execute('fave.addPost', Params.List).ResponseIsTrue;
 end;
 
-function TFaveController.AddProduct(OwnerId, Id: Integer; AccessKey: string): Boolean;
+function TFaveController.AddProduct(OwnerId: TVkPeerId; Id: Integer; AccessKey: string): Boolean;
 begin
   Result := Handler.Execute('fave.addProduct', [
     ['owner_id', OwnerId.ToString],
@@ -282,17 +282,17 @@ begin
   Result := Handler.Execute('fave.addArticle', ['url', Url]).ResponseIsTrue;
 end;
 
-function TFaveController.AddGroupPage(Id: Integer): Boolean;
+function TFaveController.AddGroupPage(Id: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('fave.addPage', ['group_id', Id.ToString]).ResponseIsTrue;
 end;
 
-function TFaveController.AddUserPage(Id: Integer): Boolean;
+function TFaveController.AddUserPage(Id: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('fave.addPage', ['user_id', Id.ToString]).ResponseIsTrue;
 end;
 
-function TFaveController.AddVideo(OwnerId, Id: Integer; AccessKey: string): Boolean;
+function TFaveController.AddVideo(OwnerId: TVkPeerId; Id: Integer; AccessKey: string): Boolean;
 begin
   Result := Handler.Execute('fave.addVideo', [
     ['owner_id', OwnerId.ToString],
@@ -326,7 +326,7 @@ begin
   Result := Handler.Execute('fave.markSeen').ResponseIsTrue;
 end;
 
-function TFaveController.RemoveArticle(OwnerId, ArticleId: Integer; Ref: string): Boolean;
+function TFaveController.RemoveArticle(OwnerId: TVkPeerId; ArticleId: Integer; Ref: string): Boolean;
 begin
   Result := Handler.Execute('fave.removeArticle', [
     ['owner_id', OwnerId.ToString],
@@ -335,7 +335,7 @@ begin
     ResponseIsTrue;
 end;
 
-function TFaveController.RemoveGroupPage(GroupId: Integer): Boolean;
+function TFaveController.RemoveGroupPage(GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('fave.removePage', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
@@ -345,12 +345,12 @@ begin
   Result := Handler.Execute('fave.removeLink', ['link_id', LinkId.ToString]).ResponseIsTrue;
 end;
 
-function TFaveController.RemovePost(OwnerId, Id: Integer): Boolean;
+function TFaveController.RemovePost(OwnerId: TVkPeerId; Id: Integer): Boolean;
 begin
   Result := Handler.Execute('fave.removePost', [['owner_id', OwnerId.ToString], ['id', Id.ToString]]).ResponseIsTrue;
 end;
 
-function TFaveController.RemoveProduct(OwnerId, Id: Integer): Boolean;
+function TFaveController.RemoveProduct(OwnerId: TVkPeerId; Id: Integer): Boolean;
 begin
   Result := Handler.Execute('fave.removeProduct', [['owner_id', OwnerId.ToString], ['id', Id.ToString]]).ResponseIsTrue;
 end;
@@ -360,12 +360,12 @@ begin
   Result := Handler.Execute('fave.removeTag', ['id', Id.ToString]).ResponseIsTrue;
 end;
 
-function TFaveController.RemoveUserPage(UserId: Integer): Boolean;
+function TFaveController.RemoveUserPage(UserId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('fave.removePage', ['user_id', UserId.ToString]).ResponseIsTrue;
 end;
 
-function TFaveController.RemoveVideo(OwnerId, Id: Integer): Boolean;
+function TFaveController.RemoveVideo(OwnerId: TVkPeerId; Id: Integer): Boolean;
 begin
   Result := Handler.Execute('fave.removeVideo', [['owner_id', OwnerId.ToString], ['id', Id.ToString]]).ResponseIsTrue;
 end;
@@ -375,7 +375,7 @@ begin
   Result := Handler.Execute('fave.reorderTags', ['ids', Ids.ToString]).ResponseIsTrue;
 end;
 
-function TFaveController.SetGroupPageTags(GroupId: Integer; Tags: TArrayOfInteger): Boolean;
+function TFaveController.SetGroupPageTags(GroupId: TVkPeerId; Tags: TArrayOfInteger): Boolean;
 begin
   Result := Handler.Execute('fave.setPageTags', [['group_id', GroupId.ToString], ['tag_ids', Tags.ToString]]).ResponseIsTrue;
 end;
@@ -390,17 +390,17 @@ begin
   Result := Handler.Execute('fave.setTags', Params.List).ResponseIsTrue;
 end;
 
-function TFaveController.SetUserPageTags(UserId: Integer; Tags: TArrayOfInteger): Boolean;
+function TFaveController.SetUserPageTags(UserId: TVkPeerId; Tags: TArrayOfInteger): Boolean;
 begin
   Result := Handler.Execute('fave.setPageTags', [['user_id', UserId.ToString], ['tag_ids', Tags.ToString]]).ResponseIsTrue;
 end;
 
-function TFaveController.TrackPageInteractionGroup(GroupId: Integer): Boolean;
+function TFaveController.TrackPageInteractionGroup(GroupId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('fave.trackPageInteraction', ['group_id', GroupId.ToString]).ResponseIsTrue;
 end;
 
-function TFaveController.TrackPageInteractionUser(UserId: Integer): Boolean;
+function TFaveController.TrackPageInteractionUser(UserId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('fave.trackPageInteraction', ['user_id', UserId.ToString]).ResponseIsTrue;
 end;
@@ -419,7 +419,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsFaveGet.Fields(const Value: TVkProfileFields): TVkParamsFaveGet;
+function TVkParamsFaveGet.Fields(const Value: TVkExtendedFields): TVkParamsFaveGet;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -451,7 +451,7 @@ end;
 
 { TVkParamsFavePageTagsSet }
 
-function TVkParamsFavePageTagsSet.GroupId(const Value: Integer): TVkParamsFavePageTagsSet;
+function TVkParamsFavePageTagsSet.GroupId(const Value: TVkPeerId): TVkParamsFavePageTagsSet;
 begin
   List.Add('group_id', Value);
   Result := Self;
@@ -463,7 +463,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsFavePageTagsSet.UserId(const Value: Integer): TVkParamsFavePageTagsSet;
+function TVkParamsFavePageTagsSet.UserId(const Value: TVkPeerId): TVkParamsFavePageTagsSet;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -477,7 +477,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsFaveTagsSet.ItemOwnerId(const Value: Integer): TVkParamsFaveTagsSet;
+function TVkParamsFaveTagsSet.ItemOwnerId(const Value: TVkPeerId): TVkParamsFaveTagsSet;
 begin
   List.Add('item_owner_id', Value);
   Result := Self;
@@ -515,9 +515,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsFavePagesGet.Fields(GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsFavePagesGet;
+function TVkParamsFavePagesGet.Fields(Value: TVkExtendedFields): TVkParamsFavePagesGet;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 

@@ -1,0 +1,22 @@
+inherited FrameAttachmentMessages: TFrameAttachmentMessages
+  Margins.Top = 8.000000000000000000
+  Size.Width = 354.000000000000000000
+  Size.Height = 18.000000000000000000
+  object LabelTitle: TLabel
+    Align = Left
+    AutoSize = True
+    StyledSettings = []
+    HitTest = True
+    Size.Width = 164.000000000000000000
+    Size.Height = 18.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Size = 13.000000000000000000
+    TextSettings.FontColor = xFF71AAEB
+    TextSettings.WordWrap = False
+    Text = '4 '#1087#1077#1088#1077#1089#1083#1072#1085#1085#1099#1093' '#1089#1086#1086#1073#1097#1077#1085#1080#1103
+    TabOrder = 1
+    OnMouseEnter = LabelTitleMouseEnter
+    OnMouseLeave = LabelTitleMouseLeave
+  end
+end

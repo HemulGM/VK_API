@@ -3,25 +3,25 @@ unit VK.Entity.Board.Comment;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
+  Generics.Collections, VK.Wrap.Interceptors, REST.JsonReflect, Rest.Json,
   VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Info,
   VK.Entity.Group, VK.Entity.Media, VK.Entity.Poll,
-  VK.Entity.Common.ExtendedList;
+  VK.Entity.Common.ExtendedList, VK.Types;
 
 type
   TVkBoardComment = class(TVkObject)
   private
     FCan_edit: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
-    FFrom_id: Integer;
+    FFrom_id: TVkPeerId;
     FLikes: TVkLikesInfo;
     FText: string;
     FAttachments: TVkAttachmentArray;
   public
     property CanEdit: Integer read FCan_edit write FCan_edit;
     property Date: TDateTime read FDate write FDate;
-    property FromId: Integer read FFrom_id write FFrom_id;
+    property FromId: TVkPeerId read FFrom_id write FFrom_id;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Text: string read FText write FText;
     property Attachments: TVkAttachmentArray read FAttachments write FAttachments;

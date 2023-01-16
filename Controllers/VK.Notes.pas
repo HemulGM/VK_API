@@ -15,7 +15,7 @@ type
     /// <summary>
     /// Идентификатор пользователя, информацию о заметках которого требуется получить
     /// </summary>
-    function UserId(const Value: Integer): TVkParamsNotesGet;
+    function UserId(const Value: TVkPeerId): TVkParamsNotesGet;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества заметок
     /// </summary>
@@ -59,11 +59,11 @@ type
     /// <summary>
     /// Идентификатор владельца заметки
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsNotesCreateComment;
+    function OwnerId(const Value: TVkPeerId): TVkParamsNotesCreateComment;
     /// <summary>
     /// Идентификатор пользователя, ответом на комментарий которого является добавляемый комментарий (не передаётся, если комментарий не является ответом)
     /// </summary>
-    function ReplyTo(const Value: Integer): TVkParamsNotesCreateComment;
+    function ReplyTo(const Value: TVkPeerId): TVkParamsNotesCreateComment;
     /// <summary>
     /// Текст комментария
     /// </summary>
@@ -83,7 +83,7 @@ type
     /// <summary>
     /// Идентификатор владельца заметки
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsNotesGetComments;
+    function OwnerId(const Value: TVkPeerId): TVkParamsNotesGetComments;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества комментариев
     /// </summary>
@@ -123,7 +123,7 @@ type
     /// <summary>
     /// Удаляет комментарий к заметке.
     /// </summary>
-    function DeleteComment(var Status: Boolean; CommentId: Integer; OwnerId: Integer = 0): Boolean;
+    function DeleteComment(var Status: Boolean; CommentId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Редактирует заметку текущего пользователя.
     /// </summary>
@@ -131,7 +131,7 @@ type
     /// <summary>
     /// Редактирует заметку текущего пользователя.
     /// </summary>
-    function EditComment(CommentId: Integer; Message: string; OwnerId: Integer = 0): Boolean;
+    function EditComment(CommentId: Integer; Message: string; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
     /// Возвращает список заметок, созданных пользователем.
     /// </summary>
@@ -143,7 +143,7 @@ type
     /// <summary>
     /// Возвращает заметку по её id.
     /// </summary>
-    function GetById(var Item: TVkNote; NoteId: Integer; OwnerId: Integer = 0; NeedWiki: Boolean = False): Boolean;
+    function GetById(var Item: TVkNote; NoteId: Integer; OwnerId: TVkPeerId = 0; NeedWiki: Boolean = False): Boolean;
     /// <summary>
     /// Возвращает список комментариев к заметке.
     /// </summary>
@@ -155,7 +155,7 @@ type
     /// <summary>
     /// Восстанавливает удалённый комментарий.
     /// </summary>
-    function RestoreComment(var Status: Boolean; CommentId: Integer; OwnerId: Integer = 0): Boolean;
+    function RestoreComment(var Status: Boolean; CommentId: Integer; OwnerId: TVkPeerId = 0): Boolean;
   end;
 
 implementation
@@ -190,7 +190,7 @@ begin
   Result := Handler.Execute('notes.delete', ['note_id', NoteId.ToString]).ResponseAsBool(Status);
 end;
 
-function TNotesController.DeleteComment(var Status: Boolean; CommentId, OwnerId: Integer): Boolean;
+function TNotesController.DeleteComment(var Status: Boolean; CommentId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -206,7 +206,7 @@ begin
   Result := Handler.Execute('notes.edit', Params.List).ResponseAsBool(Status);
 end;
 
-function TNotesController.EditComment(CommentId: Integer; Message: string; OwnerId: Integer): Boolean;
+function TNotesController.EditComment(CommentId: Integer; Message: string; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -227,7 +227,7 @@ begin
   Result := Get(Items, Params.List);
 end;
 
-function TNotesController.GetById(var Item: TVkNote; NoteId, OwnerId: Integer; NeedWiki: Boolean): Boolean;
+function TNotesController.GetById(var Item: TVkNote; NoteId: Integer; OwnerId: TVkPeerId; NeedWiki: Boolean): Boolean;
 var
   Params: TParams;
 begin
@@ -244,7 +244,7 @@ begin
   Result := GetComments(Items, Params.List);
 end;
 
-function TNotesController.RestoreComment(var Status: Boolean; CommentId, OwnerId: Integer): Boolean;
+function TNotesController.RestoreComment(var Status: Boolean; CommentId: Integer; OwnerId: TVkPeerId): Boolean;
 var
   Params: TParams;
 begin
@@ -285,7 +285,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNotesGet.UserId(const Value: Integer): TVkParamsNotesGet;
+function TVkParamsNotesGet.UserId(const Value: TVkPeerId): TVkParamsNotesGet;
 begin
   List.Add('user_id', Value);
   Result := Self;
@@ -337,13 +337,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNotesCreateComment.OwnerId(const Value: Integer): TVkParamsNotesCreateComment;
+function TVkParamsNotesCreateComment.OwnerId(const Value: TVkPeerId): TVkParamsNotesCreateComment;
 begin
   List.Add('owner_id', Value);
   Result := Self;
 end;
 
-function TVkParamsNotesCreateComment.ReplyTo(const Value: Integer): TVkParamsNotesCreateComment;
+function TVkParamsNotesCreateComment.ReplyTo(const Value: TVkPeerId): TVkParamsNotesCreateComment;
 begin
   List.Add('reply_to', Value);
   Result := Self;
@@ -369,7 +369,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsNotesGetComments.OwnerId(const Value: Integer): TVkParamsNotesGetComments;
+function TVkParamsNotesGetComments.OwnerId(const Value: TVkPeerId): TVkParamsNotesGetComments;
 begin
   List.Add('owner_id', Value);
   Result := Self;

@@ -1,10 +1,10 @@
-unit VK.Entity.Podcast.Episode;
+﻿unit VK.Entity.Podcast.Episode;
 
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Common;
+  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, Rest.Json,
+  VK.Entity.Common, VK.Types;
 
 type
   TVkPodcastCover = class
@@ -34,14 +34,14 @@ type
   TVkPodcastsEpisode = class(TVkObject)
   private
     FArtist: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDuration: Integer;
     FIs_explicit: Boolean;
     FIs_focus_track: Boolean;
     FLyrics_id: Integer;
     FNo_search: Boolean;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPodcast_info: TVkPodcastInfo;
     FShort_videos_allowed: Boolean;
     FStories_allowed: Boolean;
@@ -56,7 +56,7 @@ type
     property IsFocusTrack: Boolean read FIs_focus_track write FIs_focus_track;
     property LyricsId: Integer read FLyrics_id write FLyrics_id;
     property NoSearch: Boolean read FNo_search write FNo_search;
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property PodcastInfo: TVkPodcastInfo read FPodcast_info write FPodcast_info;
     property ShortVideosAllowed: Boolean read FShort_videos_allowed write FShort_videos_allowed;
     property StoriesAllowed: Boolean read FStories_allowed write FStories_allowed;

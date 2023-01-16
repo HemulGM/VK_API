@@ -3,10 +3,10 @@ unit VK.Entity.Profile;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  REST.Json.Types, VK.Entity.Common, VK.Entity.Photo, VK.Entity.Database.Cities,
-  VK.Entity.Database.Countries, VK.Types, VK.Entity.Counters,
-  VK.Wrap.Interceptors, VK.Entity.Audio, VK.Entity.Common.List;
+  Generics.Collections, REST.JsonReflect, Rest.Json, REST.Json.Types,
+  VK.Entity.Common, VK.Entity.Database.Cities, VK.Entity.Database.Countries,
+  VK.Types, VK.Entity.Counters, VK.Wrap.Interceptors, VK.Entity.Audio,
+  VK.Entity.Common.List, VK.Entity.Photo;
 
 type
   TVkProfile = class;
@@ -54,13 +54,13 @@ type
   private
     FFriend_status: Integer;
     FSign: string;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     FIs_request_unread: Boolean;
   public
     property FriendStatus: Integer read FFriend_status write FFriend_status;
     property IsRequestUnread: Boolean read FIs_request_unread write FIs_request_unread;
     property Sign: string read FSign write FSign;
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
   end;
 
   TVkFriendInfos = TVkEntityList<TVkFriendInfo>;
@@ -320,7 +320,7 @@ type
     FFrom: Integer;
     FUnit: string;
     FUnit_id: Integer;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUntil: TDateTime;
   public
     property CountryId: Integer read FCountry_id write FCountry_id;
@@ -337,7 +337,7 @@ type
     FCountry_id: Integer;
     FFrom: Integer;
     FPosition: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FUntil: TDateTime;
     FGroup_id: Integer;
     FCity_name: string;
@@ -378,7 +378,7 @@ type
   private
     [JsonReflectAttribute(ctString, rtString, TPlatformInterceptor)]
     FPlatform: TVkPlatform;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTime: TDateTime;
   public
     property &Platform: TVkPlatform read FPlatform write FPlatform;
@@ -389,7 +389,7 @@ type
   private
     FIs_mobile: Boolean;
     FIs_online: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FLast_seen: TDateTime;
     FVisible: Boolean;
     FApp_id: Int64;

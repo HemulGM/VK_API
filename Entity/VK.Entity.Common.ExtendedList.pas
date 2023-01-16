@@ -4,13 +4,20 @@ interface
 
 uses
   Generics.Collections, Rest.Json, REST.Json.Types, VK.Entity.Common,
-  VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group, VK.Types;
+  VK.Entity.Common.List, VK.Entity.Profile, VK.Entity.Group, VK.Types,
+  VK.Entity.Photo;
 
 type
+  IExtended = interface
+    ['{CD673BC9-1E4C-4963-A300-1900905401E5}']
+    function GetProfileById(const Id: TVkPeerId; out Profile: TVkProfile): Boolean;
+    function GetGroupById(const Id: TVkPeerId; out Group: TVkGroup): Boolean;
+  end;
+
   /// <summary>
   /// Базовый класс список со списком профилей и групп (с освобождением элементов списка)
   /// </summary>
-  TVkEntityExtendedList<T: TVkEntity> = class(TVkEntityList<T>)
+  TVkEntityExtendedList<T: TVkEntity> = class(TVkEntityList<T>, IExtended)
   protected
     FProfiles: TArray<TVkProfile>;
     FGroups: TArray<TVkGroup>;
@@ -37,10 +44,26 @@ type
     destructor Destroy; override;
   end;
 
+  TVkPhotos = class(TVkEntityExtendedList<TVkPhoto>)
+  public
+    function ToAttachments: TAttachmentArray;
+  end;
+
 implementation
 
 uses
   VK.CommonUtils;
+
+{TVkPhotos}
+
+function TVkPhotos.ToAttachments: TAttachmentArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(FItems));
+  for i := Low(FItems) to High(FItems) do
+    Result[i] := FItems[i].ToAttachment;
+end;
 
 { TVkEntityExtendedList<T> }
 

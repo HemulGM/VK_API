@@ -3,7 +3,7 @@ unit VK.Entity.Link;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, Rest.Json,
   VK.Entity.Common, VK.Entity.Common.List, VK.Entity.Photo, VK.Entity.Market,
   VK.Entity.App, VK.Types;
 
@@ -140,7 +140,7 @@ type
   private
     FKey: string;
     FShort_url: string;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTimestamp: TDateTime;
     FUrl: string;
     FViews: Integer;
@@ -211,7 +211,7 @@ type
     FCities: TArray<TVkLinkViewsCity>;
     FCountries: TArray<TVkLinkViewsCountries>;
     FSex_age: TArray<TVkLinkSexAge>;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTimestamp: TDateTime;
     FViews: Integer;
   public

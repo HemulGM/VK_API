@@ -3,9 +3,9 @@ unit VK.Entity.Market;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
-  VK.Entity.Photo, VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List,
-  VK.Types, VK.Wrap.Interceptors;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Photo,
+  VK.Entity.Info, VK.Entity.Common, VK.Entity.Common.List, VK.Types,
+  VK.Wrap.Interceptors;
 
 type
   TVkMarketSection = class(TVkBasicObject)
@@ -23,12 +23,14 @@ type
   TVkProductPrice = class(TVkEntity)
   private
     FAmount: string;
-    FCurrency: TVkProductCurrency;
+    FCurrency: TVkCurrencyInfo;
     FText: string;
     FOld_amount: string;
     FOld_amount_text: string;
     FDiscount_rate: Integer;
     FAccess_key: string;
+    FPrice_type: Integer;
+    FPrice_unit: Integer;
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
@@ -43,18 +45,21 @@ type
     /// <summary>
     /// Валюта
     /// </summary>
-    property Currency: TVkProductCurrency read FCurrency write FCurrency;
+    property Currency: TVkCurrencyInfo read FCurrency write FCurrency;
     /// <summary>
     /// Строковое представление цены
     /// </summary>
     property Text: string read FText write FText;
     property DiscountRate: Integer read FDiscount_rate write FDiscount_rate;
+    property PriceType: Integer read FPrice_type write FPrice_type;
+    property PriceUnit: Integer read FPrice_unit write FPrice_unit;
     destructor Destroy; override;
   end;
 
   TVkProductCategory = class(TVkBasicObject)
   private
     FSection: TVkMarketSection;
+    FParent: TVkProductCategory;
   public
     /// <summary>
     /// Идентификатор категории
@@ -64,6 +69,7 @@ type
     /// Название категории
     /// </summary>
     property Name;
+    property Parent: TVkProductCategory read FParent write FParent;
     /// <summary>
     /// Секция
     /// </summary>
@@ -93,21 +99,32 @@ type
     property Length: Integer read FLength write FLength;
   end;
 
+  TVkProductPropertyValue = class(TVkEntity)
+  private
+    FVariant_id: Int64;
+    FVariant_name: string;
+    FProperty_name: string;
+  public
+    property VariantId: Int64 read FVariant_id write FVariant_id;
+    property VariantName: string read FVariant_name write FVariant_name;
+    property PropertyName: string read FProperty_name write FProperty_name;
+  end;
+
   TVkProduct = class(TVkObject, IAttachment)
   private
     [JsonReflectAttribute(ctString, rtString, TProductAvailabilityInterceptor)]
     FAvailability: TVkProductAvailability;
     FCategory: TVkProductCategory;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FDescription: string;
     FExternal_id: string;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPrice: TVkProductPrice;
     FThumb_photo: string;
     FTitle: string;
     FPhotos: TArray<TVkPhoto>;
-    FAlbums_ids: TArray<Integer>;
+    FAlbums_ids: TArray<Int64>;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FCan_comment: Boolean;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
@@ -125,6 +142,9 @@ type
     FSku: string;
     FUrl: string;
     FButton_title: string;
+    FProperty_values: TArray<TVkProductPropertyValue>;
+    FCsrf_hashes: string;
+    FThumb: TVkSizes;
   public
     /// <summary>
     /// Идентификатор товара.
@@ -133,8 +153,8 @@ type
     /// <summary>
     /// Идентификатор владельца товара.
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
-    property AlbumsIds: TArray<Integer> read FAlbums_ids write FAlbums_ids;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
+    property AlbumsIds: TArray<Int64> read FAlbums_ids write FAlbums_ids;
     /// <summary>
     /// Статус доступности товара
     /// </summary>
@@ -189,6 +209,7 @@ type
     /// Цена
     /// </summary>
     property Price: TVkProductPrice read FPrice write FPrice;
+    property PropertyValues: TArray<TVkProductPropertyValue> read FProperty_values write FProperty_values;
     property Quantity: Integer read FQuantity write FQuantity;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     /// <summary>
@@ -213,6 +234,8 @@ type
     /// Ссылка на товар во внешних ресурсах
     /// </summary>
     property Url: string read FUrl write FUrl;
+    property CsrfHashes: string read FCsrf_hashes write FCsrf_hashes;
+    property Thumb: TVkSizes read FThumb write FThumb;
     destructor Destroy; override;
     function ToAttachment: TAttachment;
   end;
@@ -239,6 +262,8 @@ destructor TVkProductCategory.Destroy;
 begin
   if Assigned(FSection) then
     FSection.Free;
+  if Assigned(FParent) then
+    FParent.Free;
   inherited;
 end;
 
@@ -247,6 +272,7 @@ end;
 destructor TVkProduct.Destroy;
 begin
   TArrayHelp.FreeArrayOfObject<TVkPhoto>(FPhotos);
+  TArrayHelp.FreeArrayOfObject<TVkProductPropertyValue>(FProperty_values);
   if Assigned(FCategory) then
     FCategory.Free;
   if Assigned(FPrice) then
@@ -257,6 +283,7 @@ begin
     FReposts.Free;
   if Assigned(FDimensions) then
     FDimensions.Free;
+  TArrayHelp.FreeArrayOfObject<TVkSize>(FThumb);
   inherited;
 end;
 

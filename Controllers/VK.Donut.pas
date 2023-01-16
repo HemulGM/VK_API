@@ -12,11 +12,11 @@ type
     /// <summary>
     /// Идентификатор сообщества
     /// </summary>
-    function OwnerId(const Value: Integer): TVkParamsDonutGetFriends;
+    function OwnerId(const Value: TVkPeerId): TVkParamsDonutGetFriends;
     /// <summary>
     /// Список дополнительных полей профилей, которые необходимо вернуть
     /// </summary>
-    function Fields(const Value: TVkProfileFields = []): TVkParamsDonutGetFriends;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsDonutGetFriends;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества друзей
     /// </summary>
@@ -32,7 +32,7 @@ type
     /// <summary>
     /// Список дополнительных полей профилей и групп, которые необходимо вернуть
     /// </summary>
-    function Fields(const GroupFields: TVkGroupFields = []; UserFields: TVkProfileFields = []): TVkParamsDonutGetSubscriptions;
+    function Fields(const Value: TVkExtendedFields = []): TVkParamsDonutGetSubscriptions;
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества подписок
     /// </summary>
@@ -59,7 +59,7 @@ type
     /// <summary>
     /// Возвращает информацию о подписке VK Donut.
     /// </summary>
-    function GetSubscription(var Item: TVkDonutSubscription; OwnerId: Integer): Boolean;
+    function GetSubscription(var Item: TVkDonutSubscription; OwnerId: TVkPeerId): Boolean;
     /// <summary>
     /// Возвращает информацию о подписках пользователя.
     /// </summary>
@@ -71,7 +71,7 @@ type
     /// <summary>
     /// Возвращает информацию о том, подписан ли пользователь на платный контент (является доном).
     /// </summary>
-    function IsDon(OwnerId: Integer): Boolean;
+    function IsDon(OwnerId: TVkPeerId): Boolean;
   end;
 
 implementation
@@ -91,7 +91,7 @@ begin
   Result := GetFriends(Items, Params.List);
 end;
 
-function TDonutController.GetSubscription(var Item: TVkDonutSubscription; OwnerId: Integer): Boolean;
+function TDonutController.GetSubscription(var Item: TVkDonutSubscription; OwnerId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('donut.getSubscription').GetObject(Item);
 end;
@@ -101,7 +101,7 @@ begin
   Result := GetSubscriptions(Items, Params.List);
 end;
 
-function TDonutController.IsDon(OwnerId: Integer): Boolean;
+function TDonutController.IsDon(OwnerId: TVkPeerId): Boolean;
 begin
   Result := Handler.Execute('donut.isDon').ResponseIsTrue;
 end;
@@ -119,7 +119,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsDonutGetFriends.OwnerId(const Value: Integer): TVkParamsDonutGetFriends;
+function TVkParamsDonutGetFriends.OwnerId(const Value: TVkPeerId): TVkParamsDonutGetFriends;
 begin
   List.Add('owner_id', Value);
   Result := Self;
@@ -131,7 +131,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsDonutGetFriends.Fields(const Value: TVkProfileFields): TVkParamsDonutGetFriends;
+function TVkParamsDonutGetFriends.Fields(const Value: TVkExtendedFields): TVkParamsDonutGetFriends;
 begin
   List.Add('fields', Value.ToString);
   Result := Self;
@@ -145,9 +145,9 @@ begin
   Result := Self;
 end;
 
-function TVkParamsDonutGetSubscriptions.Fields(const GroupFields: TVkGroupFields; UserFields: TVkProfileFields): TVkParamsDonutGetSubscriptions;
+function TVkParamsDonutGetSubscriptions.Fields(const Value: TVkExtendedFields): TVkParamsDonutGetSubscriptions;
 begin
-  List.Add('fields', [GroupFields.ToString, UserFields.ToString]);
+  List.Add('fields', Value.ToString);
   Result := Self;
 end;
 

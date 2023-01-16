@@ -1,12 +1,10 @@
-object FrameAttachmentSticker: TFrameAttachmentSticker
-  HitTest = False
+inherited FrameAttachmentSticker: TFrameAttachmentSticker
   Padding.Left = 7.000000000000000000
   Padding.Top = 9.000000000000000000
   Padding.Right = 7.000000000000000000
   Padding.Bottom = 10.000000000000000000
   Size.Width = 320.000000000000000000
   Size.Height = 147.000000000000000000
-  Size.PlatformDefault = False
   object ImageSticker: TImage
     MultiResBitmap.Height = 276
     MultiResBitmap.Width = 276

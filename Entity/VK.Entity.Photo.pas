@@ -3,8 +3,8 @@ unit VK.Entity.Photo;
 interface
 
 uses
-  Generics.Collections, REST.Json.Interceptors, REST.JsonReflect, Rest.Json,
-  VK.Entity.Common, VK.Entity.Info, VK.Types;
+  Generics.Collections, REST.JsonReflect, Rest.Json, VK.Entity.Common,
+  VK.Entity.Info, VK.Types, VK.Entity.Common.List, VK.Wrap.Interceptors;
 
 type
   TVkOwnerPhoto = class(TVkEntity)
@@ -26,11 +26,11 @@ type
 
   TVkPhotoTag = class(TVkObject)
   private
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FPlacer_id: Integer;
     FTagged_name: string;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     FViewed: Boolean;
     FX: Integer;
     FX2: Integer;
@@ -40,7 +40,7 @@ type
     property Date: TDateTime read FDate write FDate;
     property PlacerId: Integer read FPlacer_id write FPlacer_id;
     property TaggedName: string read FTagged_name write FTagged_name;
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     property Viewed: Boolean read FViewed write FViewed;
     property X: Integer read FX write FX;
     property X2: Integer read FX2 write FX2;
@@ -60,19 +60,21 @@ type
 
   TVkPhoto = class(TVkObject, IAttachment)
   private
-    FAlbum_id: Integer;
-    FCan_comment: Integer;
-    FCan_repost: Integer;
+    FAlbum_id: Int64;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_comment: Boolean;
+    [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
+    FCan_repost: Boolean;
     FComments: TVkCommentsInfo;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FLikes: TVkLikesInfo;
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FReposts: TVkRepostsInfo;
     FSizes: TVkSizes;
     FTags: TVkCounterEntity;
     FText: string;
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     FWidth: Integer;
     FHeight: Integer;
     FAccess_key: string;
@@ -83,12 +85,14 @@ type
     FPhoto_2560: string;
     FPhoto_130: string;
     FHas_tags: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTag_created: TDateTime;
-    FPlacer_id: Integer;
-    FTag_id: Integer;
-    FPost_id: Integer;
+    FPlacer_id: Int64;
+    FTag_id: Int64;
+    FPost_id: Int64;
     FSquare_crop: string;
+    FLat: Extended;
+    FLong: Extended;
   public
     /// <summary>
     /// Идентификатор фотографии
@@ -97,15 +101,16 @@ type
     /// <summary>
     /// Идентификатор альбома, в котором находится фотография
     /// </summary>
-    property AlbumId: Integer read FAlbum_id write FAlbum_id;
+    property AlbumId: Int64 read FAlbum_id write FAlbum_id;
     /// <summary>
     /// Идентификатор владельца фотографии
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Идентификатор пользователя, загрузившего фото (если фотография размещена в сообществе). Для фотографий, размещенных от имени сообщества, user_id = 100.
+    /// Идентификатор пользователя, загрузившего фото (если фотография размещена в сообществе).
+    /// Для фотографий, размещенных от имени сообщества, UserId = 100.
     /// </summary>
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     /// <summary>
     /// Текст описания фотографии
     /// </summary>
@@ -127,9 +132,11 @@ type
     /// </summary>
     property Height: Integer read FHeight write FHeight;
     //
-    property CanComment: Integer read FCan_comment write FCan_comment;
-    property CanRepost: Integer read FCan_repost write FCan_repost;
+    property CanComment: Boolean read FCan_comment write FCan_comment;
+    property CanRepost: Boolean read FCan_repost write FCan_repost;
     property Comments: TVkCommentsInfo read FComments write FComments;
+    property Lat: Extended read FLat write FLat;
+    property Long: Extended read FLong write FLong;
     property Likes: TVkLikesInfo read FLikes write FLikes;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     property Tags: TVkCounterEntity read FTags write FTags;
@@ -164,14 +171,14 @@ type
     /// </summary>
     property Photo2560: string read FPhoto_2560 write FPhoto_2560;
     //
-    property PlacerId: Integer read FPlacer_id write FPlacer_id;
+    property PlacerId: Int64 read FPlacer_id write FPlacer_id;
     property TagCreated: TDateTime read FTag_created write FTag_created;
-    property TagId: Integer read FTag_id write FTag_id;
+    property TagId: Int64 read FTag_id write FTag_id;
     property SquareCrop: string read FSquare_crop write FSquare_crop;
     /// <summary>
     /// Идентификатор записи, в которую была загружена фотография
     /// </summary>
-    property PostId: Integer read FPost_id write FPost_id;
+    property PostId: Int64 read FPost_id write FPost_id;
     //
     destructor Destroy; override;
     function ToAttachment: TAttachment;
@@ -201,7 +208,7 @@ type
 
   TVkPostedPhoto = class(TVkObject)
   private
-    FOwner_id: Integer;
+    FOwner_id: TVkPeerId;
     FPhoto_130: string;
     FPhoto_604: string;
     FAccess_key: string;
@@ -213,7 +220,7 @@ type
     /// <summary>
     /// Идентификатор владельца фотографии
     /// </summary>
-    property OwnerId: Integer read FOwner_id write FOwner_id;
+    property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
     /// Ключ доступа
     /// </summary>
@@ -226,22 +233,6 @@ type
     /// URL полноразмерного изображения
     /// </summary>
     property Photo604: string read FPhoto_604 write FPhoto_604;
-  end;
-
-  TVkPhotos = class(TVkEntity)
-  private
-    FItems: TArray<TVkPhoto>;
-    FCount: Integer;
-    FSaveObjects: Boolean;
-    procedure SetSaveObjects(const Value: Boolean);
-  public
-    property Items: TArray<TVkPhoto> read FItems write FItems;
-    property Count: Integer read FCount write FCount;
-    property SaveObjects: Boolean read FSaveObjects write SetSaveObjects;
-    procedure Append(Users: TVkPhotos);
-    function ToAttachments: TAttachmentArray;
-    constructor Create; override;
-    destructor Destroy; override;
   end;
 
 implementation
@@ -275,48 +266,6 @@ begin
   Result := Format('%d_%d', [OwnerId, Id]);
   if not AccessKey.IsEmpty then
     Result := Result + '_' + AccessKey;
-end;
-
-{TVkPhotos}
-
-procedure TVkPhotos.Append(Users: TVkPhotos);
-var
-  OldLen: Integer;
-begin
-  OldLen := Length(Items);
-  SetLength(FItems, OldLen + Length(Users.Items));
-  Move(Users.Items[0], FItems[OldLen], Length(Users.Items) * SizeOf(TVkPhoto));
-end;
-
-constructor TVkPhotos.Create;
-begin
-  inherited;
-  FSaveObjects := False;
-end;
-
-destructor TVkPhotos.Destroy;
-begin
-  {$IFNDEF AUTOREFCOUNT}
-  if not FSaveObjects then
-  begin
-    TArrayHelp.FreeArrayOfObject<TVkPhoto>(FItems);
-  end;
-  {$ENDIF}
-  inherited;
-end;
-
-procedure TVkPhotos.SetSaveObjects(const Value: Boolean);
-begin
-  FSaveObjects := Value;
-end;
-
-function TVkPhotos.ToAttachments: TAttachmentArray;
-var
-  i: Integer;
-begin
-  SetLength(Result, Length(FItems));
-  for i := Low(FItems) to High(FItems) do
-    Result[i] := FItems[i].ToAttachment;
 end;
 
 { TVkPhotoTags }

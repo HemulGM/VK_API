@@ -3,9 +3,9 @@ unit VK.Entity.Notifications;
 interface
 
 uses
-  Generics.Collections, REST.JsonReflect, REST.Json.Interceptors, Rest.Json,
+  Generics.Collections, REST.JsonReflect, VK.Wrap.Interceptors, Rest.Json,
   VK.Entity.Profile, VK.Entity.Group, VK.Entity.Photo, VK.Entity.Common,
-  VK.Entity.Common.List, VK.Entity.Common.ExtendedList;
+  VK.Entity.Common.List, VK.Entity.Common.ExtendedList, VK.Types;
 
 type
   TVkNotificationAction = class
@@ -63,7 +63,7 @@ type
   private
     FAction: TVkNotificationAction;
     FButton_hide: Boolean;
-    [JsonReflectAttribute(ctString, rtString, TUnixDateTimeInterceptor)]
+    [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FFooter: string;
     FHeader: string;
@@ -116,11 +116,11 @@ type
 
   TVkNotificationMessageStatus = class(TVkEntity)
   private
-    FUser_id: Integer;
+    FUser_id: TVkPeerId;
     FStatus: Boolean;
     FError: TVkNotificationMessageError;
   public
-    property UserId: Integer read FUser_id write FUser_id;
+    property UserId: TVkPeerId read FUser_id write FUser_id;
     property Status: Boolean read FStatus write FStatus;
     property Error: TVkNotificationMessageError read FError write FError;
     destructor Destroy; override;
