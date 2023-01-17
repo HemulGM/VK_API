@@ -5,7 +5,7 @@
         <ProjectVersion>19.5</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Package</AppType>
@@ -110,14 +110,9 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="vcl.dcp"/>
-        <DCCReference Include="vclie.dcp"/>
         <DCCReference Include="RESTComponents.dcp"/>
-        <DCCReference Include="vclimg.dcp"/>
-        <DCCReference Include="fmx.dcp"/>
-        <DCCReference Include="IndySystem.dcp"/>
-        <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="IndyCore.dcp"/>
+        <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="VK.API.pas"/>
         <DCCReference Include="VK.Components.pas"/>
         <DCCReference Include="VK.Controller.pas"/>
@@ -321,6 +316,12 @@
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule"/>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule"/>
                 <DeployFile LocalName="..\..\..\..\Public\Documents\Embarcadero\Studio\22.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="..\..\..\..\Public\Documents\Embarcadero\Studio\22.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>VKComponents.bpl</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\21.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\21.0\Bpl\VKComponents.bpl" Configuration="Debug" Class="ProjectOutput"/>
