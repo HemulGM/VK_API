@@ -50,13 +50,11 @@ Widgets | 0
 
 **Заметки**
 
-Для использования FMX необходимо добавить директиву *NEEDFMX* в проект.
-
 Для некоторых старых версий среды требуется указать директиву *OLD_VERSION*.
 
 **Note**
 
-To use FMX, you need to add the NEEDFMX directive to the project.
+For old IDE versions, include *OLD_VERSION* directive
 
 **Способы авторизации:**
 
@@ -111,6 +109,56 @@ end;
 
 3 . Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
 
+Пример бота
+```Pascal
+program VKBotTemplate;
+
+uses
+  VK.Bot,
+  VK.Types,
+  VK.Bot.Utils,
+  VK.Messages,
+  VK.GroupEvents,
+  VK.Entity.Message,
+  VK.Entity.ClientInfo;
+
+var
+  VKBot: TVkBotChat;
+
+begin
+  VKBot := TVkBotChat.GetInstance(12345678, '<token>');
+  with VKBot do
+  try
+    OnMessage :=
+      procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
+      begin
+        if PeerIdIsUser(Message.PeerId) then
+        begin
+          if Assigned(Message.Action) then
+            case Message.Action.&Type of
+              TVkMessageActionType.ChatInviteUser:
+                Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome');
+            end
+          else
+            Bot.API.Messages.SendToPeer(Message.PeerId, 'Your message: ' + Message.Text);
+        end;
+      end;
+
+    if Init and Run then
+    begin
+      Console.Run(
+        procedure(const Command: string; var Quit: Boolean)
+        begin
+          Quit := Command = 'exit';
+        end);
+    end
+    else
+      Readln;
+  finally
+    Free;
+  end;
+end.
+```
 
 **Получение пользователей**
     
