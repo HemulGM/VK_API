@@ -1,4 +1,4 @@
-unit VK.Entity.Message.Chat;
+﻿unit VK.Entity.Message.Chat;
 
 interface
 

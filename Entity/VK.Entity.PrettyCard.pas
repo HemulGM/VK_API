@@ -1,4 +1,4 @@
-unit VK.Entity.PrettyCard;
+﻿unit VK.Entity.PrettyCard;
 
 interface
 

@@ -1,4 +1,4 @@
-unit VK.Entity.Common.List;
+п»їunit VK.Entity.Common.List;
 
 interface
 
@@ -7,7 +7,7 @@ uses
 
 type
   /// <summary>
-  /// Базовый класс списка без освобождения элементов списка
+  /// Р‘Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ СЃРїРёСЃРєР° Р±РµР· РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР°
   /// </summary>
   TVkEntityListSimple<T> = class(TVkEntity)
   private
@@ -24,7 +24,7 @@ type
   end;
 
   /// <summary>
-  /// Базовый класс списка с освобождением элементов списка
+  /// Р‘Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ СЃРїРёСЃРєР° СЃ РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµРј СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР°
   /// </summary>
   TVkEntityList<T: TVkEntity> = class(TVkEntityListSimple<T>)
   protected
@@ -41,7 +41,7 @@ type
   end;
 
   /// <summary>
-  /// Базовый класс списка для сущностей с Id
+  /// Р‘Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ СЃРїРёСЃРєР° РґР»СЏ СЃСѓС‰РЅРѕСЃС‚РµР№ СЃ Id
   /// </summary>
   TVkObjectList<T: TVkObject> = class(TVkObject)
   private

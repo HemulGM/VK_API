@@ -1,4 +1,4 @@
-unit VK.Entity.Group.LongpollSettings;
+﻿unit VK.Entity.Group.LongpollSettings;
 
 interface
 

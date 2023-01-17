@@ -1,4 +1,4 @@
-unit VK.Entity.Board;
+﻿unit VK.Entity.Board;
 
 interface
 

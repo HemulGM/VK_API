@@ -1,4 +1,4 @@
-unit VK.Entity.Info;
+п»їunit VK.Entity.Info;
 
 interface
 
@@ -19,7 +19,7 @@ type
   TVkViewsInfo = class(TVkCounterEntity)
   public
     /// <summary>
-    /// Число просмотров записи
+    /// Р§РёСЃР»Рѕ РїСЂРѕСЃРјРѕС‚СЂРѕРІ Р·Р°РїРёСЃРё
     /// </summary>
     property Count;
   end;
@@ -34,19 +34,19 @@ type
     FUser_likes: Boolean;
   public
     /// <summary>
-    /// Число отметок «Мне нравится»
+    /// Р§РёСЃР»Рѕ РѕС‚РјРµС‚РѕРє В«РњРЅРµ РЅСЂР°РІРёС‚СЃСЏВ»
     /// </summary>
     property Count;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь поставить отметку «Мне нравится»
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїРѕСЃС‚Р°РІРёС‚СЊ РѕС‚РјРµС‚РєСѓ В«РњРЅРµ РЅСЂР°РІРёС‚СЃСЏВ»
     /// </summary>
     property CanLike: Boolean read FCan_like write FCan_like;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь сделать репост записи
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРґРµР»Р°С‚СЊ СЂРµРїРѕСЃС‚ Р·Р°РїРёСЃРё
     /// </summary>
     property CanPublish: Boolean read FCan_publish write FCan_publish;
     /// <summary>
-    /// Есть ли отметка «Мне нравится» от текущего пользователя
+    /// Р•СЃС‚СЊ Р»Рё РѕС‚РјРµС‚РєР° В«РњРЅРµ РЅСЂР°РІРёС‚СЃСЏВ» РѕС‚ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property UserLikes: Boolean read FUser_likes write FUser_likes;
   end;
@@ -59,11 +59,11 @@ type
     FWall_count: Integer;
   public
     /// <summary>
-    /// Число пользователей, скопировавших запись
+    /// Р§РёСЃР»Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, СЃРєРѕРїРёСЂРѕРІР°РІС€РёС… Р·Р°РїРёСЃСЊ
     /// </summary>
     property Count;
     /// <summary>
-    /// Наличие репоста от текущего пользователя
+    /// РќР°Р»РёС‡РёРµ СЂРµРїРѕСЃС‚Р° РѕС‚ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property UserReposted: Boolean read FUser_reposted write FUser_reposted;
     property WallCount: Integer read FWall_count write FWall_count;
@@ -83,27 +83,27 @@ type
     FCan_view: Boolean;
   public
     /// <summary>
-    /// Количество комментариев
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
     /// </summary>
     property Count;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь комментировать запись
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ Р·Р°РїРёСЃСЊ
     /// </summary>
     property CanPost: Boolean read FCan_post write FCan_post;
     /// <summary>
-    /// Информация о том, могут ли сообщества комментировать запись
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕРіСѓС‚ Р»Рё СЃРѕРѕР±С‰РµСЃС‚РІР° РєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ Р·Р°РїРёСЃСЊ
     /// </summary>
     property GroupsCanPost: Boolean read FGroups_can_post write FGroups_can_post;
     /// <summary>
-    /// Может ли текущий пользователь закрыть комментарии к записи
+    /// РњРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р·Р°РєСЂС‹С‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёРё Рє Р·Р°РїРёСЃРё
     /// </summary>
     property CanClose: Boolean read FCan_close write FCan_close;
     /// <summary>
-    /// может ли текущий пользователь открыть комментарии к записи
+    /// РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕС‚РєСЂС‹С‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёРё Рє Р·Р°РїРёСЃРё
     /// </summary>
     property CanOpen: Boolean read FCan_open write FCan_open;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь просматривать запись
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїСЂРѕСЃРјР°С‚СЂРёРІР°С‚СЊ Р·Р°РїРёСЃСЊ
     /// </summary>
     property CanView: Boolean read FCan_view write FCan_view;
   end;

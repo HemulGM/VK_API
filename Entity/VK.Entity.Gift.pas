@@ -1,4 +1,4 @@
-unit VK.Entity.Gift;
+п»їunit VK.Entity.Gift;
 
 interface
 
@@ -8,7 +8,7 @@ uses
 
 type
   /// <summary>
-  /// Объект, описывающий подарок
+  /// РћР±СЉРµРєС‚, РѕРїРёСЃС‹РІР°СЋС‰РёР№ РїРѕРґР°СЂРѕРє
   /// </summary>
   TVkGift = class(TVkObject)
   private
@@ -18,19 +18,19 @@ type
     FStickers_product_id: Integer;
   public
     /// <summary>
-    /// Идентификатор подарка
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР°СЂРєР°
     /// </summary>
     property Id;
     /// <summary>
-    /// URL изображения 256x256px
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ 256x256px
     /// </summary>
     property Thumb256: string read FThumb_256 write FThumb_256;
     /// <summary>
-    /// URL изображения 96x96px
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ 96x96px
     /// </summary>
     property Thumb96: string read FThumb_96 write FThumb_96;
     /// <summary>
-    /// URL изображения 48x48px
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ 48x48px
     /// </summary>
     property Thumb48: string read FThumb_48 write FThumb_48;
     /// <summary>
@@ -52,7 +52,7 @@ type
     FAccess_key: string;
   public
     /// <summary>
-    /// Идентификатор полученного подарка
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ РїРѕРґР°СЂРєР°
     /// </summary>
     property Id;
     /// <summary>
@@ -60,15 +60,15 @@ type
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Время отправки подарка
+    /// Р’СЂРµРјСЏ РѕС‚РїСЂР°РІРєРё РїРѕРґР°СЂРєР°
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Идентификатор пользователя, который отправил подарок, или 0, если отправитель скрыт
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РєРѕС‚РѕСЂС‹Р№ РѕС‚РїСЂР°РІРёР» РїРѕРґР°СЂРѕРє, РёР»Рё 0, РµСЃР»Рё РѕС‚РїСЂР°РІРёС‚РµР»СЊ СЃРєСЂС‹С‚
     /// </summary>
     property FromId: TVkPeerId read FFrom_id write FFrom_id;
     /// <summary>
-    /// Объект подарка
+    /// РћР±СЉРµРєС‚ РїРѕРґР°СЂРєР°
     /// </summary>
     property Gift: TVkGift read FGift write FGift;
     /// <summary>
@@ -76,11 +76,11 @@ type
     /// </summary>
     property GiftHash: string read FGift_hash write FGift_hash;
     /// <summary>
-    /// Текст сообщения, приложенного к подарку
+    /// РўРµРєСЃС‚ СЃРѕРѕР±С‰РµРЅРёСЏ, РїСЂРёР»РѕР¶РµРЅРЅРѕРіРѕ Рє РїРѕРґР°СЂРєСѓ
     /// </summary>
     property Message: string read FMessage write FMessage;
     /// <summary>
-    /// Значение приватности подарка (только для текущего пользователя)
+    /// Р—РЅР°С‡РµРЅРёРµ РїСЂРёРІР°С‚РЅРѕСЃС‚Рё РїРѕРґР°СЂРєР° (С‚РѕР»СЊРєРѕ РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ)
     /// </summary>
     property Privacy: TVkGiftPrivacy read FPrivacy write FPrivacy;
     destructor Destroy; override;

@@ -1,4 +1,4 @@
-unit VK.Entity.App;
+п»їunit VK.Entity.App;
 
 interface
 
@@ -32,11 +32,11 @@ type
   TVkStore = class(TVkBasicObject)
   public
     /// <summary>
-    /// Идентификатор магазина
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РјР°РіР°Р·РёРЅР°
     /// </summary>
     property Id;
     /// <summary>
-    /// Название магазина
+    /// РќР°Р·РІР°РЅРёРµ РјР°РіР°Р·РёРЅР°
     /// </summary>
     property Name;
   end;
@@ -47,11 +47,11 @@ type
     FStore: TVkStore;
   public
     /// <summary>
-    /// Идентификатор приложения в магазине
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїСЂРёР»РѕР¶РµРЅРёСЏ РІ РјР°РіР°Р·РёРЅРµ
     /// </summary>
     property AppId: Integer read FApp_id write FApp_id;
     /// <summary>
-    /// Информация о магазине
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РјР°РіР°Р·РёРЅРµ
     /// </summary>
     property Store: TVkStore read FStore write FStore;
     destructor Destroy; override;

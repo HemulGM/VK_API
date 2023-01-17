@@ -1,4 +1,4 @@
-unit VK.Entity.Podcast;
+﻿unit VK.Entity.Podcast;
 
 interface
 

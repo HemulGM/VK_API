@@ -1,4 +1,4 @@
-unit VK.Entity.Database.Faculties;
+﻿unit VK.Entity.Database.Faculties;
 
 interface
 

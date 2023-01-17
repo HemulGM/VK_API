@@ -1,4 +1,4 @@
-unit VK.Entity.ScreenName;
+﻿unit VK.Entity.ScreenName;
 
 interface
 

@@ -1,4 +1,4 @@
-unit VK.Components;
+п»їunit VK.Components;
 
 interface
 
@@ -41,7 +41,7 @@ type
   published
     property ActualVersion: string read GetActualVersion;
     /// <description>
-    /// События вызываются асинхронно (без синхронизации)
+    /// РЎРѕР±С‹С‚РёСЏ РІС‹Р·С‹РІР°СЋС‚СЃСЏ Р°СЃРёРЅС…СЂРѕРЅРЅРѕ (Р±РµР· СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё)
     /// </description>
     property Async default False;
     property Logging default False;

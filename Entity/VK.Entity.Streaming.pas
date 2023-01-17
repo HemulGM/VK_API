@@ -1,4 +1,4 @@
-unit VK.Entity.Streaming;
+﻿unit VK.Entity.Streaming;
 
 interface
 

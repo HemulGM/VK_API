@@ -1,4 +1,4 @@
-unit VK.Streaming;
+п»їunit VK.Streaming;
 
 interface
 
@@ -9,50 +9,50 @@ type
   TVkParamsStreamGetStats = record
     List: TParams;
     /// <summary>
-    /// Тип статистики
+    /// РўРёРї СЃС‚Р°С‚РёСЃС‚РёРєРё
     /// </summary>
     function &Type(const Value: TVkStreamStatType): TVkParamsStreamGetStats;
     /// <summary>
-    /// Интервалы статистики
+    /// РРЅС‚РµСЂРІР°Р»С‹ СЃС‚Р°С‚РёСЃС‚РёРєРё
     /// </summary>
     function Interval(const Value: TVkStreamStatInterval): TVkParamsStreamGetStats;
     /// <summary>
-    /// Время начала отсчёта. По умолчанию: EndTime минус сутки
+    /// Р’СЂРµРјСЏ РЅР°С‡Р°Р»Р° РѕС‚СЃС‡С‘С‚Р°. РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ: EndTime РјРёРЅСѓСЃ СЃСѓС‚РєРё
     /// </summary>
     function StartTime(const Value: TDateTime): TVkParamsStreamGetStats;
     /// <summary>
-    /// Время окончания отсчёта. По умолчанию: текущее время
+    /// Р’СЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ РѕС‚СЃС‡С‘С‚Р°. РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ: С‚РµРєСѓС‰РµРµ РІСЂРµРјСЏ
     /// </summary>
     function EndTime(const Value: TDateTime): TVkParamsStreamGetStats;
   end;
 
   /// <summary>
-  /// Список методов секции Streaming
+  /// РЎРїРёСЃРѕРє РјРµС‚РѕРґРѕРІ СЃРµРєС†РёРё Streaming
   /// </summary>
   TStreamingController = class(TVkController)
   public
     /// <summary>
-    /// Позволяет получить данные для подключения к Streaming API
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Streaming API
     /// </summary>
     function GetServerUrl(var Data: TVkStreamServer): Boolean;
     /// <summary>
-    /// Позволяет получить значение порога для Streaming API
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РїРѕСЂРѕРіР° РґР»СЏ Streaming API
     /// </summary>
     function GetSettings(var Data: TVkStreamLimit): Boolean;
     /// <summary>
-    /// Позволяет получить статистику для подготовленных и доставленных событий Streaming API.
-    /// Руководствуясь статистикой, Вы можете отслеживать перебои в получении данных от ВКонтакте
-    /// на стороне Вашего сервера — если значения prepared и received расходятся, значит, что-то пошло не так.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РґР»СЏ РїРѕРґРіРѕС‚РѕРІР»РµРЅРЅС‹С… Рё РґРѕСЃС‚Р°РІР»РµРЅРЅС‹С… СЃРѕР±С‹С‚РёР№ Streaming API.
+    /// Р СѓРєРѕРІРѕРґСЃС‚РІСѓСЏСЃСЊ СЃС‚Р°С‚РёСЃС‚РёРєРѕР№, Р’С‹ РјРѕР¶РµС‚Рµ РѕС‚СЃР»РµР¶РёРІР°С‚СЊ РїРµСЂРµР±РѕРё РІ РїРѕР»СѓС‡РµРЅРёРё РґР°РЅРЅС‹С… РѕС‚ Р’РљРѕРЅС‚Р°РєС‚Рµ
+    /// РЅР° СЃС‚РѕСЂРѕРЅРµ Р’Р°С€РµРіРѕ СЃРµСЂРІРµСЂР° вЂ” РµСЃР»Рё Р·РЅР°С‡РµРЅРёСЏ prepared Рё received СЂР°СЃС…РѕРґСЏС‚СЃСЏ, Р·РЅР°С‡РёС‚, С‡С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє.
     /// </summary>
     function GetStats(var Items: TVkStreamStats; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Позволяет получить статистику для подготовленных и доставленных событий Streaming API.
-    /// Руководствуясь статистикой, Вы можете отслеживать перебои в получении данных от ВКонтакте
-    /// на стороне Вашего сервера — если значения prepared и received расходятся, значит, что-то пошло не так.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РґР»СЏ РїРѕРґРіРѕС‚РѕРІР»РµРЅРЅС‹С… Рё РґРѕСЃС‚Р°РІР»РµРЅРЅС‹С… СЃРѕР±С‹С‚РёР№ Streaming API.
+    /// Р СѓРєРѕРІРѕРґСЃС‚РІСѓСЏСЃСЊ СЃС‚Р°С‚РёСЃС‚РёРєРѕР№, Р’С‹ РјРѕР¶РµС‚Рµ РѕС‚СЃР»РµР¶РёРІР°С‚СЊ РїРµСЂРµР±РѕРё РІ РїРѕР»СѓС‡РµРЅРёРё РґР°РЅРЅС‹С… РѕС‚ Р’РљРѕРЅС‚Р°РєС‚Рµ
+    /// РЅР° СЃС‚РѕСЂРѕРЅРµ Р’Р°С€РµРіРѕ СЃРµСЂРІРµСЂР° вЂ” РµСЃР»Рё Р·РЅР°С‡РµРЅРёСЏ prepared Рё received СЂР°СЃС…РѕРґСЏС‚СЃСЏ, Р·РЅР°С‡РёС‚, С‡С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє.
     /// </summary>
     function GetStats(var Items: TVkStreamStats; Params: TVkParamsStreamGetStats): Boolean; overload;
     /// <summary>
-    /// Позволяет задать значение порога для Streaming API
+    /// РџРѕР·РІРѕР»СЏРµС‚ Р·Р°РґР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ РїРѕСЂРѕРіР° РґР»СЏ Streaming API
     /// </summary>
     function SetSettings(const MonthlyTier: TVkMonthlyTier): Boolean;
   end;

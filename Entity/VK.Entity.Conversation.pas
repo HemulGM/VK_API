@@ -1,4 +1,4 @@
-unit VK.Entity.Conversation;
+п»їunit VK.Entity.Conversation;
 
 interface
 
@@ -108,35 +108,35 @@ type
     property IsDisappearing: Boolean read FIs_disappearing write FIs_disappearing;
     property IsService: Boolean read FIs_service write FIs_service;
     /// <summary>
-    /// Идентификаторы последних пользователей, писавших в чат
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РїРѕСЃР»РµРґРЅРёС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РїРёСЃР°РІС€РёС… РІ С‡Р°С‚
     /// </summary>
     property ActiveIds: TArray<TVkPeerId> read FActive_ids write FActive_ids;
     /// <summary>
-    /// Число участников
+    /// Р§РёСЃР»Рѕ СѓС‡Р°СЃС‚РЅРёРєРѕРІ
     /// </summary>
     property MembersCount: Integer read FMembers_count write FMembers_count;
     /// <summary>
-    /// Число друзей-участников
+    /// Р§РёСЃР»Рѕ РґСЂСѓР·РµР№-СѓС‡Р°СЃС‚РЅРёРєРѕРІ
     /// </summary>
     property FriendsCount: Integer read FFriends_count write FFriends_count;
     /// <summary>
-    /// Информация о том, является ли беседа каналом сообщества
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё Р±РµСЃРµРґР° РєР°РЅР°Р»РѕРј СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     property IsGroupChannel: Boolean read FIs_group_channel write FIs_group_channel;
     /// <summary>
-    /// Изображение-обложка чата
+    /// РР·РѕР±СЂР°Р¶РµРЅРёРµ-РѕР±Р»РѕР¶РєР° С‡Р°С‚Р°
     /// </summary>
     property Photo: TVkChatPhoto read FPhoto write FPhoto;
     /// <summary>
-    /// Объект закреплённого сообщения, если есть
+    /// РћР±СЉРµРєС‚ Р·Р°РєСЂРµРїР»С‘РЅРЅРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ, РµСЃР»Рё РµСЃС‚СЊ
     /// </summary>
     property PinnedMessage: TVkMessage read FPinned_message write FPinned_message;
     /// <summary>
-    ///  Статус текущего пользователя
+    ///  РЎС‚Р°С‚СѓСЃ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property State: TVkChatState read FState write FState;
     /// <summary>
-    /// Название
+    /// РќР°Р·РІР°РЅРёРµ
     /// </summary>
     property Title: string read FTitle write FTitle;
     destructor Destroy; override;
@@ -163,15 +163,15 @@ type
     function GetIsUser: Boolean;
   public
     /// <summary>
-    /// Идентификатор назначения
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅР°Р·РЅР°С‡РµРЅРёСЏ
     /// </summary>
     property Id: TVkPeerId read FId write FId;
     /// <summary>
-    /// Локальный идентификатор назначения. Для чатов — id - 2000000000, для сообществ — -id, для e-mail — -(id+2000000000).
+    /// Р›РѕРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅР°Р·РЅР°С‡РµРЅРёСЏ. Р”Р»СЏ С‡Р°С‚РѕРІ вЂ” id - 2000000000, РґР»СЏ СЃРѕРѕР±С‰РµСЃС‚РІ вЂ” -id, РґР»СЏ e-mail вЂ” -(id+2000000000).
     /// </summary>
     property LocalId: TVkPeerId read FLocal_id write FLocal_id;
     /// <summary>
-    /// Тип. Возможные значения: user, chat, group, email
+    /// РўРёРї. Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ: user, chat, group, email
     /// </summary>
     property &Type: TVkPeerType read FType write FType;
     property IsUser: Boolean read GetIsUser;
@@ -238,24 +238,24 @@ type
     property CanSendMoney: Boolean read FCan_send_money write FCan_send_money;
     property CanReceiveMoney: Boolean read FCan_receive_money write FCan_receive_money;
     /// <summary>
-    /// Информация о том, может ли пользователь писать в диалог
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїРёСЃР°С‚СЊ РІ РґРёР°Р»РѕРі
     /// </summary>
     property CanWrite: TVkCanWrite read FCan_write write FCan_write;
     /// <summary>
-    /// Настройки чата
+    /// РќР°СЃС‚СЂРѕР№РєРё С‡Р°С‚Р°
     /// </summary>
     property ChatSettings: TVkChatSettings read FChat_settings write FChat_settings;
     property CurrentKeyboard: TVkKeyboard read FCurrent_keyboard write FCurrent_keyboard;
     /// <summary>
-    /// True, если диалог помечен как важный (только для сообщений сообществ).
+    /// True, РµСЃР»Рё РґРёР°Р»РѕРі РїРѕРјРµС‡РµРЅ РєР°Рє РІР°Р¶РЅС‹Р№ (С‚РѕР»СЊРєРѕ РґР»СЏ СЃРѕРѕР±С‰РµРЅРёР№ СЃРѕРѕР±С‰РµСЃС‚РІ).
     /// </summary>
     property Important: Boolean read FImportant write FImportant;
     /// <summary>
-    /// Идентификатор последнего прочтенного входящего сообщения.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕСЃР»РµРґРЅРµРіРѕ РїСЂРѕС‡С‚РµРЅРЅРѕРіРѕ РІС…РѕРґСЏС‰РµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.
     /// </summary>
     property InRead: Integer read FIn_read write FIn_read;
     /// <summary>
-    /// Идентификатор последнего прочтенного входящего сообщения.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕСЃР»РµРґРЅРµРіРѕ РїСЂРѕС‡С‚РµРЅРЅРѕРіРѕ РІС…РѕРґСЏС‰РµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.
     /// </summary>
     property InReadCmid: Integer read FIn_read_cmid write FIn_read_cmid;
     property IsChat: Boolean read GetIsChat;
@@ -263,37 +263,37 @@ type
     property IsNew: Boolean read FIs_new write FIs_new;
     property IsUser: Boolean read GetIsUser;
     /// <summary>
-    /// Идентификатор последнего сообщения
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕСЃР»РµРґРЅРµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     property LastConversationMessageId: Int64 read FLast_conversation_message_id write FLast_conversation_message_id;
     /// <summary>
-    /// Идентификатор последнего сообщения.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕСЃР»РµРґРЅРµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.
     /// </summary>
     property LastMessageId: Integer read FLast_message_id write FLast_message_id;
     /// <summary>
-    /// Идентификатор последнего прочтенного исходящего сообщения.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕСЃР»РµРґРЅРµРіРѕ РїСЂРѕС‡С‚РµРЅРЅРѕРіРѕ РёСЃС…РѕРґСЏС‰РµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.
     /// </summary>
     property OutRead: Integer read FOut_read write FOut_read;
         /// <summary>
-    /// Идентификатор последнего прочтенного исходящего сообщения.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕСЃР»РµРґРЅРµРіРѕ РїСЂРѕС‡С‚РµРЅРЅРѕРіРѕ РёСЃС…РѕРґСЏС‰РµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.
     /// </summary>
     property OutReadCmid: Integer read FOut_read_cmid write FOut_read_cmid;
     /// <summary>
-    /// Информация о собеседнике
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃРѕР±РµСЃРµРґРЅРёРєРµ
     /// </summary>
     property Peer: TVkPeer read FPeer write FPeer;
     /// <summary>
-    /// Настройки Push-уведомлений
+    /// РќР°СЃС‚СЂРѕР№РєРё Push-СѓРІРµРґРѕРјР»РµРЅРёР№
     /// </summary>
     property PushSettings: TVkChatPushSettings read FPush_settings write FPush_settings;
     property SortId: TVkConversationSort read FSort_id write FSort_id;
     property Style: string read FStyle write FStyle;
     /// <summary>
-    /// Число непрочитанных сообщений.
+    /// Р§РёСЃР»Рѕ РЅРµРїСЂРѕС‡РёС‚Р°РЅРЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№.
     /// </summary>
     property UnreadCount: Integer read FUnread_count write FUnread_count;
     /// <summary>
-    /// True, если диалог помечен как неотвеченный (только для сообщений сообществ).
+    /// True, РµСЃР»Рё РґРёР°Р»РѕРі РїРѕРјРµС‡РµРЅ РєР°Рє РЅРµРѕС‚РІРµС‡РµРЅРЅС‹Р№ (С‚РѕР»СЊРєРѕ РґР»СЏ СЃРѕРѕР±С‰РµРЅРёР№ СЃРѕРѕР±С‰РµСЃС‚РІ).
     /// </summary>
     property Unanswered: Boolean read FUnanswered write FUnanswered;
     property Mentions: TVkPeerIds read FMentions write FMentions;

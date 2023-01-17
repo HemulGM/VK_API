@@ -1,4 +1,4 @@
-unit VK.Entity.Common.ExtendedList;
+п»їunit VK.Entity.Common.ExtendedList;
 
 interface
 
@@ -15,7 +15,7 @@ type
   end;
 
   /// <summary>
-  /// Базовый класс список со списком профилей и групп (с освобождением элементов списка)
+  /// Р‘Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ СЃРїРёСЃРѕРє СЃРѕ СЃРїРёСЃРєРѕРј РїСЂРѕС„РёР»РµР№ Рё РіСЂСѓРїРї (СЃ РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµРј СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР°)
   /// </summary>
   TVkEntityExtendedList<T: TVkEntity> = class(TVkEntityList<T>, IExtended)
   protected
@@ -30,7 +30,7 @@ type
   end;
 
   /// <summary>
-  /// Базовый класс список со списком профилей и групп (без освобождения элементов списка)
+  /// Р‘Р°Р·РѕРІС‹Р№ РєР»Р°СЃСЃ СЃРїРёСЃРѕРє СЃРѕ СЃРїРёСЃРєРѕРј РїСЂРѕС„РёР»РµР№ Рё РіСЂСѓРїРї (Р±РµР· РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР°)
   /// </summary>
   TVkEntityExtendedSimpleList<T> = class(TVkEntityListSimple<T>)
   protected

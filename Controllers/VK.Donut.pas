@@ -1,4 +1,4 @@
-unit VK.Donut;
+п»їunit VK.Donut;
 
 interface
 
@@ -10,19 +10,19 @@ type
   TVkParamsDonutGetFriends = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function OwnerId(const Value: TVkPeerId): TVkParamsDonutGetFriends;
     /// <summary>
-    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields = []): TVkParamsDonutGetFriends;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества друзей
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РґСЂСѓР·РµР№
     /// </summary>
     function Offset(const Value: Integer = 0): TVkParamsDonutGetFriends;
     /// <summary>
-    /// Количество друзей, информацию о которых необходимо вернуть (максимальное значение 100)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РґСЂСѓР·РµР№, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100)
     /// </summary>
     function Count(const Value: Integer = 10): TVkParamsDonutGetFriends;
   end;
@@ -30,46 +30,46 @@ type
   TVkParamsDonutGetSubscriptions = record
     List: TParams;
     /// <summary>
-    /// Список дополнительных полей профилей и групп, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№ Рё РіСЂСѓРїРї, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields = []): TVkParamsDonutGetSubscriptions;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества подписок
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РїРѕРґРїРёСЃРѕРє
     /// </summary>
     function Offset(const Value: Integer = 0): TVkParamsDonutGetSubscriptions;
     /// <summary>
-    /// Количество подписок, информацию о которых необходимо вернуть (максимальное значение 100)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРґРїРёСЃРѕРє, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 100)
     /// </summary>
     function Count(const Value: Integer = 10): TVkParamsDonutGetSubscriptions;
   end;
 
   /// <summary>
-  /// Методы для работы с донатом.
+  /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґРѕРЅР°С‚РѕРј.
   /// </summary>
   TDonutController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает список донов, которые подписаны на определенные сообщества, из числа друзей пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РґРѕРЅРѕРІ, РєРѕС‚РѕСЂС‹Рµ РїРѕРґРїРёСЃР°РЅС‹ РЅР° РѕРїСЂРµРґРµР»РµРЅРЅС‹Рµ СЃРѕРѕР±С‰РµСЃС‚РІР°, РёР· С‡РёСЃР»Р° РґСЂСѓР·РµР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetFriends(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список донов, которые подписаны на определенные сообщества, из числа друзей пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РґРѕРЅРѕРІ, РєРѕС‚РѕСЂС‹Рµ РїРѕРґРїРёСЃР°РЅС‹ РЅР° РѕРїСЂРµРґРµР»РµРЅРЅС‹Рµ СЃРѕРѕР±С‰РµСЃС‚РІР°, РёР· С‡РёСЃР»Р° РґСЂСѓР·РµР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetFriends(var Items: TVkProfiles; Params: TVkParamsDonutGetFriends): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о подписке VK Donut.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕРґРїРёСЃРєРµ VK Donut.
     /// </summary>
     function GetSubscription(var Item: TVkDonutSubscription; OwnerId: TVkPeerId): Boolean;
     /// <summary>
-    /// Возвращает информацию о подписках пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕРґРїРёСЃРєР°С… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetSubscriptions(var Items: TVkDonutSubscriptions; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о подписках пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕРґРїРёСЃРєР°С… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetSubscriptions(var Items: TVkDonutSubscriptions; Params: TVkParamsDonutGetSubscriptions): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о том, подписан ли пользователь на платный контент (является доном).
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РѕРј, РїРѕРґРїРёСЃР°РЅ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅР° РїР»Р°С‚РЅС‹Р№ РєРѕРЅС‚РµРЅС‚ (СЏРІР»СЏРµС‚СЃСЏ РґРѕРЅРѕРј).
     /// </summary>
     function IsDon(OwnerId: TVkPeerId): Boolean;
   end;

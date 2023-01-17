@@ -1,4 +1,4 @@
-unit VK.Utils;
+п»їunit VK.Utils;
 
 interface
 
@@ -10,27 +10,27 @@ type
   TVkParamsUtilsGetLinkStats = record
     List: TParams;
     /// <summary>
-    /// Сокращенная ссылка (часть URL после "vk.cc/")
+    /// РЎРѕРєСЂР°С‰РµРЅРЅР°СЏ СЃСЃС‹Р»РєР° (С‡Р°СЃС‚СЊ URL РїРѕСЃР»Рµ "vk.cc/")
     /// </summary>
     function Key(const Value: string): TVkParamsUtilsGetLinkStats;
     /// <summary>
-    /// Строка, по умолчанию vk_cc
+    /// РЎС‚СЂРѕРєР°, РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ vk_cc
     /// </summary>
     function Source(const Value: string): TVkParamsUtilsGetLinkStats;
     /// <summary>
-    /// Ключ доступа к приватной статистике ссылки
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР° Рє РїСЂРёРІР°С‚РЅРѕР№ СЃС‚Р°С‚РёСЃС‚РёРєРµ СЃСЃС‹Р»РєРё
     /// </summary>
     function AccessKey(const Value: string): TVkParamsUtilsGetLinkStats;
     /// <summary>
-    /// Единица времени для подсчета статистики
+    /// Р•РґРёРЅРёС†Р° РІСЂРµРјРµРЅРё РґР»СЏ РїРѕРґСЃС‡РµС‚Р° СЃС‚Р°С‚РёСЃС‚РёРєРё
     /// </summary>
     function Interval(const Value: TVkStatInterval = TVkStatInterval.Day): TVkParamsUtilsGetLinkStats;
     /// <summary>
-    /// Длительность периода для получения статистики в выбранных единицах (из параметра Interval)
+    /// Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ РїРµСЂРёРѕРґР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЃС‚Р°С‚РёСЃС‚РёРєРё РІ РІС‹Р±СЂР°РЅРЅС‹С… РµРґРёРЅРёС†Р°С… (РёР· РїР°СЂР°РјРµС‚СЂР° Interval)
     /// </summary>
     function IntervalsCount(const Value: Integer): TVkParamsUtilsGetLinkStats;
     /// <summary>
-    /// True — возвращать расширенную статистику (пол/возраст/страна/город), False — возвращать только количество переходов
+    /// True вЂ” РІРѕР·РІСЂР°С‰Р°С‚СЊ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ СЃС‚Р°С‚РёСЃС‚РёРєСѓ (РїРѕР»/РІРѕР·СЂР°СЃС‚/СЃС‚СЂР°РЅР°/РіРѕСЂРѕРґ), False вЂ” РІРѕР·РІСЂР°С‰Р°С‚СЊ С‚РѕР»СЊРєРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРµСЂРµС…РѕРґРѕРІ
     /// </summary>
     function Extended(const Value: Boolean): TVkParamsUtilsGetLinkStats;
   end;
@@ -38,39 +38,39 @@ type
   TUtilsController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает информацию о том, является ли внешняя ссылка заблокированной на сайте ВКонтакте
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РѕРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РІРЅРµС€РЅСЏСЏ СЃСЃС‹Р»РєР° Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅРѕР№ РЅР° СЃР°Р№С‚Рµ Р’РљРѕРЅС‚Р°РєС‚Рµ
     /// </summary>
     function CheckLink(var Info: TVkLinkStatus; Url: string): Boolean;
     /// <summary>
-    /// Удаляет сокращенную ссылку из списка пользователя
+    /// РЈРґР°Р»СЏРµС‚ СЃРѕРєСЂР°С‰РµРЅРЅСѓСЋ СЃСЃС‹Р»РєСѓ РёР· СЃРїРёСЃРєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function DeleteFromLastShortened(Key: string): Boolean;
     /// <summary>
-    /// Получает список сокращенных ссылок для текущего пользователя
+    /// РџРѕР»СѓС‡Р°РµС‚ СЃРїРёСЃРѕРє СЃРѕРєСЂР°С‰РµРЅРЅС‹С… СЃСЃС‹Р»РѕРє РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function GetLastShortenedLinks(var Items: TVkShortLinks; Offset: Integer = 0; Count: Integer = 10): Boolean;
     /// <summary>
-    /// Возвращает статистику переходов по сокращенной ссылке
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РїРµСЂРµС…РѕРґРѕРІ РїРѕ СЃРѕРєСЂР°С‰РµРЅРЅРѕР№ СЃСЃС‹Р»РєРµ
     /// </summary>
     function GetLinkStats(var Item: TVkLinkStats; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает статистику переходов по сокращенной ссылке
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РїРµСЂРµС…РѕРґРѕРІ РїРѕ СЃРѕРєСЂР°С‰РµРЅРЅРѕР№ СЃСЃС‹Р»РєРµ
     /// </summary>
     function GetLinkStats(var Item: TVkLinkStats; Params: TVkParamsUtilsGetLinkStats): Boolean; overload;
     /// <summary>
-    /// Возвращает текущее время на сервере ВКонтакте
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰РµРµ РІСЂРµРјСЏ РЅР° СЃРµСЂРІРµСЂРµ Р’РљРѕРЅС‚Р°РєС‚Рµ
     /// </summary>
     function GetServerTime(var ServerTime: TDateTime): Boolean; overload;
     /// <summary>
-    /// Возвращает текущее время на сервере ВКонтакте в unixtime
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰РµРµ РІСЂРµРјСЏ РЅР° СЃРµСЂРІРµСЂРµ Р’РљРѕРЅС‚Р°РєС‚Рµ РІ unixtime
     /// </summary>
     function GetServerTimeUnix(var ServerTime: Int64): Boolean; overload;
     /// <summary>
-    /// Позволяет получить URL, сокращенный с помощью vk.cc
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ URL, СЃРѕРєСЂР°С‰РµРЅРЅС‹Р№ СЃ РїРѕРјРѕС‰СЊСЋ vk.cc
     /// </summary>
     function GetShortLink(var Item: TVkShortLink; const Url: string; &Private: Boolean = False): Boolean; overload;
     /// <summary>
-    /// Определяет тип объекта (пользователь, сообщество, приложение) и его идентификатор по короткому имени ScreenName
+    /// РћРїСЂРµРґРµР»СЏРµС‚ С‚РёРї РѕР±СЉРµРєС‚Р° (РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ, СЃРѕРѕР±С‰РµСЃС‚РІРѕ, РїСЂРёР»РѕР¶РµРЅРёРµ) Рё РµРіРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕ РєРѕСЂРѕС‚РєРѕРјСѓ РёРјРµРЅРё ScreenName
     /// </summary>
     function ResolveScreenName(var Item: TVkScreenNameType; const ScreenName: string): Boolean; overload;
   end;

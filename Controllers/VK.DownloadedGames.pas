@@ -1,4 +1,4 @@
-unit VK.DownloadedGames;
+п»їunit VK.DownloadedGames;
 
 interface
 
@@ -7,12 +7,12 @@ uses
 
 type
   /// <summary>
-  /// Список методов секции downloadedGames
+  /// РЎРїРёСЃРѕРє РјРµС‚РѕРґРѕРІ СЃРµРєС†РёРё downloadedGames
   /// </summary>
   TDownloadedGamesController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает информацию о том, куплено ли приложение
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РѕРј, РєСѓРїР»РµРЅРѕ Р»Рё РїСЂРёР»РѕР¶РµРЅРёРµ
     /// </summary>
     function GetPaidStatus(var IsPaid: Boolean; UserId: TVkPeerId = 0): Boolean;
   end;

@@ -1,4 +1,4 @@
-unit VK.Entity.MoneyTransfer;
+﻿unit VK.Entity.MoneyTransfer;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   VK.Entity.Common, VK.Types, REST.JsonReflect, VK.Wrap.Interceptors;
 
 type
-  TVkMoneyTransfer = class(TVkEntity)
+  TVkMoneyTransfer = class(TVkObject)
   private
     FAmount: TVkMoneyAmount;
     FBy_Phone: Boolean;
@@ -14,7 +14,6 @@ type
     [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDate: TDateTime;
     FFrom_Id: TVkPeerId;
-    FId: Integer;
     FIs_Anonymous: Boolean;
     FIs_Vkpay: Boolean;
     FStatus: Integer;
@@ -25,7 +24,7 @@ type
     property Comment: string read FComment write FComment;
     property Date: TDateTime read FDate write FDate;
     property FromId: TVkPeerId read FFrom_Id write FFrom_Id;
-    property Id: Integer read FId write FId;
+    property Id;
     property IsAnonymous: Boolean read FIs_Anonymous write FIs_Anonymous;
     property IsVkpay: Boolean read FIs_Vkpay write FIs_Vkpay;
     property Status: Integer read FStatus write FStatus;

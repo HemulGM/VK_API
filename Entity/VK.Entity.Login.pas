@@ -1,4 +1,4 @@
-unit VK.Entity.Login;
+﻿unit VK.Entity.Login;
 
 interface
 

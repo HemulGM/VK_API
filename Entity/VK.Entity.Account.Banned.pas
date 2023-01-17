@@ -1,4 +1,4 @@
-unit VK.Entity.Account.Banned;
+﻿unit VK.Entity.Account.Banned;
 
 interface
 

@@ -1,4 +1,4 @@
-unit VK.Entity.Graffiti;
+п»їunit VK.Entity.Graffiti;
 
 interface
 
@@ -15,15 +15,15 @@ type
     FUrl: string;
   public
     /// <summary>
-    /// Идентификатор граффити
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіСЂР°С„С„РёС‚Рё
     /// </summary>
     property Id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Идентификатор автора граффити
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°РІС‚РѕСЂР° РіСЂР°С„С„РёС‚Рё
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property Height: Integer read FHeight write FHeight;

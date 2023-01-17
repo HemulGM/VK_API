@@ -1,4 +1,4 @@
-unit VK.Board;
+п»їunit VK.Board;
 
 interface
 
@@ -11,31 +11,31 @@ type
   TVkParamsBoardCommentCreate = record
     List: TParams;
     /// <summary>
-    /// True — тема будет создана от имени группы, False — тема будет создана от имени пользователя (по умолчанию).
+    /// True вЂ” С‚РµРјР° Р±СѓРґРµС‚ СЃРѕР·РґР°РЅР° РѕС‚ РёРјРµРЅРё РіСЂСѓРїРїС‹, False вЂ” С‚РµРјР° Р±СѓРґРµС‚ СЃРѕР·РґР°РЅР° РѕС‚ РёРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ).
     /// </summary>
     function FromGroup(const Value: Boolean): TVkParamsBoardCommentCreate;
     /// <summary>
-    /// Идентификатор стикера.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚РёРєРµСЂР°.
     /// </summary>
     function StickerId(const Value: Integer): TVkParamsBoardCommentCreate;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsBoardCommentCreate;
     /// <summary>
-    /// Идентификатор обсуждения.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕР±СЃСѓР¶РґРµРЅРёСЏ.
     /// </summary>
     function TopicId(const Value: Integer): TVkParamsBoardCommentCreate;
     /// <summary>
-    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария.
+    /// РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ, РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅРЅС‹Р№ РґР»СЏ РїСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёСЏ РїРѕРІС‚РѕСЂРЅРѕР№ РѕС‚РїСЂР°РІРєРё РѕРґРёРЅР°РєРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ.
     /// </summary>
     function Guid(const Value: string): TVkParamsBoardCommentCreate;
     /// <summary>
-    /// Текст комментария. Обязательный параметр, если не передано значение
+    /// РўРµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ. РћР±СЏР·Р°С‚РµР»СЊРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ, РµСЃР»Рё РЅРµ РїРµСЂРµРґР°РЅРѕ Р·РЅР°С‡РµРЅРёРµ
     /// </summary>
     function Message(const Value: string): TVkParamsBoardCommentCreate;
     /// <summary>
-    /// Cписок объектов, приложенных к записи
+    /// CРїРёСЃРѕРє РѕР±СЉРµРєС‚РѕРІ, РїСЂРёР»РѕР¶РµРЅРЅС‹С… Рє Р·Р°РїРёСЃРё
     /// </summary>
     function Attachments(const Value: TAttachmentArray): TVkParamsBoardCommentCreate;
   end;
@@ -43,27 +43,27 @@ type
   TVkParamsBoardCommentEdit = record
     List: TParams;
     /// <summary>
-    /// True — тема будет создана от имени группы, False — тема будет создана от имени пользователя (по умолчанию).
+    /// True вЂ” С‚РµРјР° Р±СѓРґРµС‚ СЃРѕР·РґР°РЅР° РѕС‚ РёРјРµРЅРё РіСЂСѓРїРїС‹, False вЂ” С‚РµРјР° Р±СѓРґРµС‚ СЃРѕР·РґР°РЅР° РѕС‚ РёРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ).
     /// </summary>
     function FromGroup(const Value: Boolean): TVkParamsBoardCommentEdit;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsBoardCommentEdit;
     /// <summary>
-    /// Идентификатор комментария в обсуждении.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё.
     /// </summary>
     function CommentId(const Value: Integer): TVkParamsBoardCommentEdit;
     /// <summary>
-    /// Идентификатор обсуждения.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕР±СЃСѓР¶РґРµРЅРёСЏ.
     /// </summary>
     function TopicId(const Value: Integer): TVkParamsBoardCommentEdit;
     /// <summary>
-    /// Новый текст комментария (является обязательным, если не задан параметр attachments).
+    /// РќРѕРІС‹Р№ С‚РµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ (СЏРІР»СЏРµС‚СЃСЏ РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рј, РµСЃР»Рё РЅРµ Р·Р°РґР°РЅ РїР°СЂР°РјРµС‚СЂ attachments).
     /// </summary>
     function Message(const Value: string): TVkParamsBoardCommentEdit;
     /// <summary>
-    /// Cписок объектов, приложенных к записи
+    /// CРїРёСЃРѕРє РѕР±СЉРµРєС‚РѕРІ, РїСЂРёР»РѕР¶РµРЅРЅС‹С… Рє Р·Р°РїРёСЃРё
     /// </summary>
     function Attachments(const Value: TAttachmentArray): TVkParamsBoardCommentEdit;
   end;
@@ -71,35 +71,35 @@ type
   TVkParamsBoardGet = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsBoardGet;
     /// <summary>
-    /// Список идентификаторов тем, которые необходимо получить (не более 100). По умолчанию возвращаются все темы. Если указан данный параметр, игнорируются параметры order, offset и count (возвращаются все запрошенные темы в указанном порядке).
+    /// РЎРїРёСЃРѕРє РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ С‚РµРј, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ (РЅРµ Р±РѕР»РµРµ 100). РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ РІСЃРµ С‚РµРјС‹. Р•СЃР»Рё СѓРєР°Р·Р°РЅ РґР°РЅРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ, РёРіРЅРѕСЂРёСЂСѓСЋС‚СЃСЏ РїР°СЂР°РјРµС‚СЂС‹ order, offset Рё count (РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ РІСЃРµ Р·Р°РїСЂРѕС€РµРЅРЅС‹Рµ С‚РµРјС‹ РІ СѓРєР°Р·Р°РЅРЅРѕРј РїРѕСЂСЏРґРєРµ).
     /// </summary>
     function TopicIds(const Value: TIdList): TVkParamsBoardGet;
     /// <summary>
-    /// Порядок, в котором необходимо вернуть список тем.
+    /// РџРѕСЂСЏРґРѕРє, РІ РєРѕС‚РѕСЂРѕРј РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ СЃРїРёСЃРѕРє С‚РµРј.
     /// </summary>
     function Order(const Value: TVkBoardTopicOrder): TVkParamsBoardGet;
     /// <summary>
-    /// Количество тем, которое необходимо получить (но не более 100). По умолчанию — 40.
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРј, РєРѕС‚РѕСЂРѕРµ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ (РЅРѕ РЅРµ Р±РѕР»РµРµ 100). РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ вЂ” 40.
     /// </summary>
     function Count(const Value: Integer = 40): TVkParamsBoardGet;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества тем.
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° С‚РµРј.
     /// </summary>
     function Offset(const Value: Integer = 0): TVkParamsBoardGet;
     /// <summary>
-    /// Если указать в качестве этого параметра True, то будет возвращена информация о пользователях, являющихся создателями тем или оставившими в них последнее сообщение. По умолчанию False.
+    /// Р•СЃР»Рё СѓРєР°Р·Р°С‚СЊ РІ РєР°С‡РµСЃС‚РІРµ СЌС‚РѕРіРѕ РїР°СЂР°РјРµС‚СЂР° True, С‚Рѕ Р±СѓРґРµС‚ РІРѕР·РІСЂР°С‰РµРЅР° РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС…, СЏРІР»СЏСЋС‰РёС…СЃСЏ СЃРѕР·РґР°С‚РµР»СЏРјРё С‚РµРј РёР»Рё РѕСЃС‚Р°РІРёРІС€РёРјРё РІ РЅРёС… РїРѕСЃР»РµРґРЅРµРµ СЃРѕРѕР±С‰РµРЅРёРµ. РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ False.
     /// </summary>
     function Extended(const Value: Boolean = True): TVkParamsBoardGet;
     /// <summary>
-    /// Набор флагов, определяющий, необходимо ли вернуть вместе с информацией о темах текст первых и последних сообщений в них. Является суммой флагов
+    /// РќР°Р±РѕСЂ С„Р»Р°РіРѕРІ, РѕРїСЂРµРґРµР»СЏСЋС‰РёР№, РЅРµРѕР±С…РѕРґРёРјРѕ Р»Рё РІРµСЂРЅСѓС‚СЊ РІРјРµСЃС‚Рµ СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ Рѕ С‚РµРјР°С… С‚РµРєСЃС‚ РїРµСЂРІС‹С… Рё РїРѕСЃР»РµРґРЅРёС… СЃРѕРѕР±С‰РµРЅРёР№ РІ РЅРёС…. РЇРІР»СЏРµС‚СЃСЏ СЃСѓРјРјРѕР№ С„Р»Р°РіРѕРІ
     /// </summary>
     function Preview(const Value: TVkBoardTopicPreview): TVkParamsBoardGet;
     /// <summary>
-    /// Количество символов, по которому нужно обрезать первое и последнее сообщение. Укажите 0, если Вы не хотите обрезать сообщение. (по умолчанию — 90).
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРјРІРѕР»РѕРІ, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РЅСѓР¶РЅРѕ РѕР±СЂРµР·Р°С‚СЊ РїРµСЂРІРѕРµ Рё РїРѕСЃР»РµРґРЅРµРµ СЃРѕРѕР±С‰РµРЅРёРµ. РЈРєР°Р¶РёС‚Рµ 0, РµСЃР»Рё Р’С‹ РЅРµ С…РѕС‚РёС‚Рµ РѕР±СЂРµР·Р°С‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ. (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ вЂ” 90).
     /// </summary>
     function PreviewLength(const Value: Integer = 90): TVkParamsBoardGet;
   end;
@@ -107,23 +107,23 @@ type
   TVkParamsBoardAdd = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsBoardAdd;
     /// <summary>
-    /// Название обсуждения.
+    /// РќР°Р·РІР°РЅРёРµ РѕР±СЃСѓР¶РґРµРЅРёСЏ.
     /// </summary>
     function Title(const Value: string): TVkParamsBoardAdd;
     /// <summary>
-    /// Текст первого сообщения в обсуждении.
+    /// РўРµРєСЃС‚ РїРµСЂРІРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё.
     /// </summary>
     function Text(const Value: string): TVkParamsBoardAdd;
     /// <summary>
-    /// True — тема будет создана от имени группы, False — тема будет создана от имени пользователя (по умолчанию).
+    /// True вЂ” С‚РµРјР° Р±СѓРґРµС‚ СЃРѕР·РґР°РЅР° РѕС‚ РёРјРµРЅРё РіСЂСѓРїРїС‹, False вЂ” С‚РµРјР° Р±СѓРґРµС‚ СЃРѕР·РґР°РЅР° РѕС‚ РёРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ).
     /// </summary>
     function FromGroup(const Value: Boolean): TVkParamsBoardAdd;
     /// <summary>
-    /// Cписок объектов, приложенных к записи
+    /// CРїРёСЃРѕРє РѕР±СЉРµРєС‚РѕРІ, РїСЂРёР»РѕР¶РµРЅРЅС‹С… Рє Р·Р°РїРёСЃРё
     /// </summary>
     function Attachments(const Value: TAttachmentArray): TVkParamsBoardAdd;
   end;
@@ -131,35 +131,35 @@ type
   TVkParamsBoardCommentsGet = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsBoardCommentsGet;
     /// <summary>
-    /// Идентификатор обсуждения.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕР±СЃСѓР¶РґРµРЅРёСЏ.
     /// </summary>
     function TopicId(const Value: Integer): TVkParamsBoardCommentsGet;
     /// <summary>
-    /// True — будет возвращено дополнительное поле likes. По умолчанию поле likes не возвращается.
+    /// True вЂ” Р±СѓРґРµС‚ РІРѕР·РІСЂР°С‰РµРЅРѕ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРµ РїРѕР»Рµ likes. РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РїРѕР»Рµ likes РЅРµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ.
     /// </summary>
     function NeedLikes(const Value: Boolean): TVkParamsBoardCommentsGet;
     /// <summary>
-    /// Идентификатор комментария, начиная с которого нужно вернуть список (подробности см. ниже).
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ, РЅР°С‡РёРЅР°СЏ СЃ РєРѕС‚РѕСЂРѕРіРѕ РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ СЃРїРёСЃРѕРє (РїРѕРґСЂРѕР±РЅРѕСЃС‚Рё СЃРј. РЅРёР¶Рµ).
     /// </summary>
     function StartCommentId(const Value: Integer): TVkParamsBoardCommentsGet;
     /// <summary>
-    /// Количество тем, которое необходимо получить (но не более 100). По умолчанию — 20.
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРј, РєРѕС‚РѕСЂРѕРµ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ (РЅРѕ РЅРµ Р±РѕР»РµРµ 100). РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ вЂ” 20.
     /// </summary>
     function Count(const Value: Integer = 20): TVkParamsBoardCommentsGet;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества тем.
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° С‚РµРј.
     /// </summary>
     function Offset(const Value: Integer = 0): TVkParamsBoardCommentsGet;
     /// <summary>
-    /// Если указать в качестве этого параметра True, то будет возвращена информация о пользователях, являющихся авторами сообщений. По умолчанию False.
+    /// Р•СЃР»Рё СѓРєР°Р·Р°С‚СЊ РІ РєР°С‡РµСЃС‚РІРµ СЌС‚РѕРіРѕ РїР°СЂР°РјРµС‚СЂР° True, С‚Рѕ Р±СѓРґРµС‚ РІРѕР·РІСЂР°С‰РµРЅР° РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС…, СЏРІР»СЏСЋС‰РёС…СЃСЏ Р°РІС‚РѕСЂР°РјРё СЃРѕРѕР±С‰РµРЅРёР№. РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ False.
     /// </summary>
     function Extended(const Value: Boolean = True): TVkParamsBoardCommentsGet;
     /// <summary>
-    /// Порядок сортировки комментариев: asc — хронологический, desc — антихронологический
+    /// РџРѕСЂСЏРґРѕРє СЃРѕСЂС‚РёСЂРѕРІРєРё РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ: asc вЂ” С…СЂРѕРЅРѕР»РѕРіРёС‡РµСЃРєРёР№, desc вЂ” Р°РЅС‚РёС…СЂРѕРЅРѕР»РѕРіРёС‡РµСЃРєРёР№
     /// </summary>
     function Sort(const Value: TVkSort): TVkParamsBoardCommentsGet;
   end;
@@ -167,91 +167,91 @@ type
   TBoardController = class(TVkController)
   public
     /// <summary>
-    /// Добавляет новый комментарий в обсуждении
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function CreateComment(var Id: Integer; GroupId: TVkPeerId; TopicId: Integer; Message: string): Boolean; overload;
     /// <summary>
-    /// Добавляет новый комментарий в обсуждении
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function CreateComment(GroupId: TVkPeerId; TopicId: Integer; Message: string): Boolean; overload;
     /// <summary>
-    /// Добавляет новый комментарий в обсуждении
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function CreateComment(var Id: Integer; Params: TVkParamsBoardCommentCreate): Boolean; overload;
     /// <summary>
-    /// Добавляет новый комментарий в обсуждении
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function CreateComment(Params: TVkParamsBoardCommentCreate): Boolean; overload;
     /// <summary>
-    /// Добавляет новый комментарий в обсуждении
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function CreateComment(var Id: Integer; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Изменяет заголовок темы в списке обсуждений группы.
+    /// РР·РјРµРЅСЏРµС‚ Р·Р°РіРѕР»РѕРІРѕРє С‚РµРјС‹ РІ СЃРїРёСЃРєРµ РѕР±СЃСѓР¶РґРµРЅРёР№ РіСЂСѓРїРїС‹.
     /// </summary>
     function EditTopic(GroupId: TVkPeerId; TopicId: Integer; Title: string): Boolean; overload;
     /// <summary>
-    /// Добавляет новый комментарий в обсуждении
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function EditComment(Params: TParams): Boolean; overload;
     /// <summary>
-    /// Добавляет новый комментарий в обсуждении
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function EditComment(Params: TVkParamsBoardCommentEdit): Boolean; overload;
     /// <summary>
-    /// Удаляет обсуждение
+    /// РЈРґР°Р»СЏРµС‚ РѕР±СЃСѓР¶РґРµРЅРёРµ
     /// </summary>
     function DeleteTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean;
     /// <summary>
-    /// Удаляет сообщение темы в обсуждениях сообщества.
+    /// РЈРґР°Р»СЏРµС‚ СЃРѕРѕР±С‰РµРЅРёРµ С‚РµРјС‹ РІ РѕР±СЃСѓР¶РґРµРЅРёСЏС… СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function DeleteComment(GroupId: TVkPeerId; TopicId, CommentId: Integer): Boolean;
     /// <summary>
-    /// Возвращает список тем в обсуждениях указанной группы.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С‚РµРј РІ РѕР±СЃСѓР¶РґРµРЅРёСЏС… СѓРєР°Р·Р°РЅРЅРѕР№ РіСЂСѓРїРїС‹.
     /// </summary>
     function GetTopics(var Items: TVkBoardTopics; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список тем в обсуждениях указанной группы.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С‚РµРј РІ РѕР±СЃСѓР¶РґРµРЅРёСЏС… СѓРєР°Р·Р°РЅРЅРѕР№ РіСЂСѓРїРїС‹.
     /// </summary>
     function GetTopics(var Items: TVkBoardTopics; Params: TVkParamsBoardGet): Boolean; overload;
     /// <summary>
-    /// Создает новую тему в списке обсуждений группы.
+    /// РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ С‚РµРјСѓ РІ СЃРїРёСЃРєРµ РѕР±СЃСѓР¶РґРµРЅРёР№ РіСЂСѓРїРїС‹.
     /// </summary>
     function AddTopic(var Id: Integer; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Создает новую тему в списке обсуждений группы.
+    /// РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ С‚РµРјСѓ РІ СЃРїРёСЃРєРµ РѕР±СЃСѓР¶РґРµРЅРёР№ РіСЂСѓРїРїС‹.
     /// </summary>
     function AddTopic(Params: TVkParamsBoardAdd): Boolean; overload;
     /// <summary>
-    /// Создает новую тему в списке обсуждений группы.
+    /// РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ С‚РµРјСѓ РІ СЃРїРёСЃРєРµ РѕР±СЃСѓР¶РґРµРЅРёР№ РіСЂСѓРїРїС‹.
     /// </summary>
     function AddTopic(var Id: Integer; Params: TVkParamsBoardAdd): Boolean; overload;
     /// <summary>
-    /// Закрывает тему в списке обсуждений группы (в такой теме невозможно оставлять новые сообщения).
+    /// Р—Р°РєСЂС‹РІР°РµС‚ С‚РµРјСѓ РІ СЃРїРёСЃРєРµ РѕР±СЃСѓР¶РґРµРЅРёР№ РіСЂСѓРїРїС‹ (РІ С‚Р°РєРѕР№ С‚РµРјРµ РЅРµРІРѕР·РјРѕР¶РЅРѕ РѕСЃС‚Р°РІР»СЏС‚СЊ РЅРѕРІС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ).
     /// </summary>
     function CloseTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean; overload;
     /// <summary>
-    /// Открывает ранее закрытую тему (в ней станет возможно оставлять новые сообщения).
+    /// РћС‚РєСЂС‹РІР°РµС‚ СЂР°РЅРµРµ Р·Р°РєСЂС‹С‚СѓСЋ С‚РµРјСѓ (РІ РЅРµР№ СЃС‚Р°РЅРµС‚ РІРѕР·РјРѕР¶РЅРѕ РѕСЃС‚Р°РІР»СЏС‚СЊ РЅРѕРІС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ).
     /// </summary>
     function OpenTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean; overload;
     /// <summary>
-    /// Открывает ранее закрытую тему (в ней станет возможно оставлять новые сообщения).
+    /// РћС‚РєСЂС‹РІР°РµС‚ СЂР°РЅРµРµ Р·Р°РєСЂС‹С‚СѓСЋ С‚РµРјСѓ (РІ РЅРµР№ СЃС‚Р°РЅРµС‚ РІРѕР·РјРѕР¶РЅРѕ РѕСЃС‚Р°РІР»СЏС‚СЊ РЅРѕРІС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ).
     /// </summary>
     function RestoreComment(GroupId: TVkPeerId; TopicId, CommentId: Integer): Boolean; overload;
     /// <summary>
-    /// Закрепляет тему в списке обсуждений группы (такая тема при любой сортировке выводится выше остальных).
+    /// Р—Р°РєСЂРµРїР»СЏРµС‚ С‚РµРјСѓ РІ СЃРїРёСЃРєРµ РѕР±СЃСѓР¶РґРµРЅРёР№ РіСЂСѓРїРїС‹ (С‚Р°РєР°СЏ С‚РµРјР° РїСЂРё Р»СЋР±РѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРµ РІС‹РІРѕРґРёС‚СЃСЏ РІС‹С€Рµ РѕСЃС‚Р°Р»СЊРЅС‹С…).
     /// </summary>
     function FixTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean; overload;
     /// <summary>
-    /// Отменяет прикрепление темы в списке обсуждений группы (тема будет выводиться согласно выбранной сортировке).
+    /// РћС‚РјРµРЅСЏРµС‚ РїСЂРёРєСЂРµРїР»РµРЅРёРµ С‚РµРјС‹ РІ СЃРїРёСЃРєРµ РѕР±СЃСѓР¶РґРµРЅРёР№ РіСЂСѓРїРїС‹ (С‚РµРјР° Р±СѓРґРµС‚ РІС‹РІРѕРґРёС‚СЊСЃСЏ СЃРѕРіР»Р°СЃРЅРѕ РІС‹Р±СЂР°РЅРЅРѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРµ).
     /// </summary>
     function UnfixTopic(GroupId: TVkPeerId; TopicId: Integer): Boolean; overload;
     /// <summary>
-    /// Возвращает список сообщений в указанной теме.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃРѕРѕР±С‰РµРЅРёР№ РІ СѓРєР°Р·Р°РЅРЅРѕР№ С‚РµРјРµ.
     /// </summary>
     function GetComments(var Items: TVkBoardComments; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список сообщений в указанной теме.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃРѕРѕР±С‰РµРЅРёР№ РІ СѓРєР°Р·Р°РЅРЅРѕР№ С‚РµРјРµ.
     /// </summary>
     function GetComments(var Items: TVkBoardComments; Params: TVkParamsBoardCommentsGet): Boolean; overload;
   end;

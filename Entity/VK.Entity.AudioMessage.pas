@@ -1,4 +1,4 @@
-unit VK.Entity.AudioMessage;
+п»їunit VK.Entity.AudioMessage;
 
 interface
 
@@ -20,20 +20,20 @@ type
     property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Длительность аудиосообщения в секундах
+    /// Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ Р°СѓРґРёРѕСЃРѕРѕР±С‰РµРЅРёСЏ РІ СЃРµРєСѓРЅРґР°С…
     /// </summary>
     property Duration: Int64 read FDuration write FDuration;
     /// <summary>
-    /// URL .mp3-файла
+    /// URL .mp3-С„Р°Р№Р»Р°
     /// </summary>
     property LinkMp3: string read FLink_mp3 write FLink_mp3;
     /// <summary>
-    /// URL .ogg-файла
+    /// URL .ogg-С„Р°Р№Р»Р°
     /// </summary>
     property LinkOgg: string read FLink_ogg write FLink_ogg;
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Массив значений (integer) для визуального отображения звука
+    /// РњР°СЃСЃРёРІ Р·РЅР°С‡РµРЅРёР№ (integer) РґР»СЏ РІРёР·СѓР°Р»СЊРЅРѕРіРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ Р·РІСѓРєР°
     /// </summary>
     property WaveForm: TArray<Integer> read FWaveform write FWaveform;
     property Transcript: string read FTranscript write FTranscript;

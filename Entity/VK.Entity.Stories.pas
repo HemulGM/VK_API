@@ -1,4 +1,4 @@
-unit VK.Entity.Stories;
+﻿unit VK.Entity.Stories;
 
 interface
 

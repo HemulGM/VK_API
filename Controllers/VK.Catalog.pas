@@ -1,4 +1,4 @@
-unit VK.Catalog;
+п»їunit VK.Catalog;
 
 interface
 
@@ -11,7 +11,7 @@ type
   TCatalogController = class(TVkController)
   public
     /// <summary>
-    /// Получает текст статуса пользователя или сообщества.
+    /// РџРѕР»СѓС‡Р°РµС‚ С‚РµРєСЃС‚ СЃС‚Р°С‚СѓСЃР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GetAudio(var Catalog: TVkCatalog; NeedBlocks: Boolean = False): Boolean;
     function GetSection(var Section: TVkSectionData; SectionId: string; NeedBlocks: Boolean = False): Boolean;

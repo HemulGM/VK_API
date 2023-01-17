@@ -1,4 +1,4 @@
-unit VK.Entity.Doc.Types;
+﻿unit VK.Entity.Doc.Types;
 
 interface
 

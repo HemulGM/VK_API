@@ -1,4 +1,4 @@
-unit VK.Entity.Group.Invites;
+﻿unit VK.Entity.Group.Invites;
 
 interface
 

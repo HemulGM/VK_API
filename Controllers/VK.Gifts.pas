@@ -1,4 +1,4 @@
-unit VK.Gifts;
+п»їunit VK.Gifts;
 
 interface
 
@@ -10,7 +10,7 @@ type
   TGiftsController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает список полученных подарков пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕР»СѓС‡РµРЅРЅС‹С… РїРѕРґР°СЂРєРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Get(var Items: TVkGiftItems; UserId: TVkPeerId; Count: Integer = 10; Offset: Integer = 0): Boolean;
   end;

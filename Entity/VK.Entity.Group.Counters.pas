@@ -1,4 +1,4 @@
-unit VK.Entity.Group.Counters;
+﻿unit VK.Entity.Group.Counters;
 
 interface
 

@@ -1,4 +1,4 @@
-unit VK.API;
+п»їunit VK.API;
 
 interface
 
@@ -154,151 +154,151 @@ type
     constructor Create(AOwner: TComponent); overload; override;
     destructor Destroy; override;
     /// <summary>
-    /// Метод возвращает запрос для получения токена через OAuth2
+    /// РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РїСЂРѕСЃ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ С‚РѕРєРµРЅР° С‡РµСЂРµР· OAuth2
     /// </summary>
     function GetOAuth2RequestURI: string;
     /// <summary>
-    /// Загрузить информацию о пользователе
+    /// Р—Р°РіСЂСѓР·РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ
     /// </summary>
     function LoadUserInfo: Boolean;
     /// <summary>
-    /// Метод выполняет проверку существования Token, если его нет, выполняет OnAuth, после чего, проверяет доступ к API.
-    /// Авторизация рекомендуемым Вконтакте способом - OAuth2 или через имеющийся токен.
-    /// <b>Не забывайте сохранять токен при закрытии приложения</b>
+    /// РњРµС‚РѕРґ РІС‹РїРѕР»РЅСЏРµС‚ РїСЂРѕРІРµСЂРєСѓ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ Token, РµСЃР»Рё РµРіРѕ РЅРµС‚, РІС‹РїРѕР»РЅСЏРµС‚ OnAuth, РїРѕСЃР»Рµ С‡РµРіРѕ, РїСЂРѕРІРµСЂСЏРµС‚ РґРѕСЃС‚СѓРї Рє API.
+    /// РђРІС‚РѕСЂРёР·Р°С†РёСЏ СЂРµРєРѕРјРµРЅРґСѓРµРјС‹Рј Р’РєРѕРЅС‚Р°РєС‚Рµ СЃРїРѕСЃРѕР±РѕРј - OAuth2 РёР»Рё С‡РµСЂРµР· РёРјРµСЋС‰РёР№СЃСЏ С‚РѕРєРµРЅ.
+    /// <b>РќРµ Р·Р°Р±С‹РІР°Р№С‚Рµ СЃРѕС…СЂР°РЅСЏС‚СЊ С‚РѕРєРµРЅ РїСЂРё Р·Р°РєСЂС‹С‚РёРё РїСЂРёР»РѕР¶РµРЅРёСЏ</b>
     /// </summary>
     function Login: Boolean; overload;
     /// <summary>
-    /// Метод выполняет авторизацию, запрашивая токен у сервера, после чего, проверяет доступ к API.
-    /// Авторизация "Client credentials flow" используя AppId и AppKey через логин и пароль.
-    /// <b>Не забывайте сохранять токен при закрытии приложения</b>
+    /// РњРµС‚РѕРґ РІС‹РїРѕР»РЅСЏРµС‚ Р°РІС‚РѕСЂРёР·Р°С†РёСЋ, Р·Р°РїСЂР°С€РёРІР°СЏ С‚РѕРєРµРЅ Сѓ СЃРµСЂРІРµСЂР°, РїРѕСЃР»Рµ С‡РµРіРѕ, РїСЂРѕРІРµСЂСЏРµС‚ РґРѕСЃС‚СѓРї Рє API.
+    /// РђРІС‚РѕСЂРёР·Р°С†РёСЏ "Client credentials flow" РёСЃРїРѕР»СЊР·СѓСЏ AppId Рё AppKey С‡РµСЂРµР· Р»РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ.
+    /// <b>РќРµ Р·Р°Р±С‹РІР°Р№С‚Рµ СЃРѕС…СЂР°РЅСЏС‚СЊ С‚РѕРєРµРЅ РїСЂРё Р·Р°РєСЂС‹С‚РёРё РїСЂРёР»РѕР¶РµРЅРёСЏ</b>
     /// </summary>
     function Login(ALogin, APassword: string; On2FA: TOn2FA = nil): Boolean; overload;
     /// <summary>
-    /// Очищает токен
+    /// РћС‡РёС‰Р°РµС‚ С‚РѕРєРµРЅ
     /// </summary>
     procedure Logout;
     /// <summary>
-    /// Генерировать событие лога
+    /// Р“РµРЅРµСЂРёСЂРѕРІР°С‚СЊ СЃРѕР±С‹С‚РёРµ Р»РѕРіР°
     /// </summary>
     procedure DoLog(Sender: TObject; Text: string);
     /// <summary>
-    /// Генерировать событие ошибки
+    /// Р“РµРЅРµСЂРёСЂРѕРІР°С‚СЊ СЃРѕР±С‹С‚РёРµ РѕС€РёР±РєРё
     /// </summary>
     procedure DoError(Sender: TObject; E: Exception; Code: Integer; Text: string = '');
     /// <summary>
-    /// Выполнить метод
+    /// Р’С‹РїРѕР»РЅРёС‚СЊ РјРµС‚РѕРґ
     /// </summary>
     procedure CallMethod(MethodName: string; Params: TParams = []; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
-    /// Выполнить метод асинхронно
+    /// Р’С‹РїРѕР»РЅРёС‚СЊ РјРµС‚РѕРґ Р°СЃРёРЅС…СЂРѕРЅРЅРѕ
     /// </summary>
     procedure CallMethodAsync(MethodName: string; Params: TParams = []; Callback: TCallMethodCallback = nil); overload;
     /// <summary>
-    /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
+    /// РЈРЅРёРІРµСЂСЃР°Р»СЊРЅС‹Р№ РјРµС‚РѕРґ, РєРѕС‚РѕСЂС‹Р№ РїРѕР·РІРѕР»СЏРµС‚ Р·Р°РїСѓСЃРєР°С‚СЊ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ РґСЂСѓРіРёС… РјРµС‚РѕРґРѕРІ, СЃРѕС…СЂР°РЅСЏСЏ Рё С„РёР»СЊС‚СЂСѓСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ СЂРµР·СѓР»СЊС‚Р°С‚С‹.
     /// https://vk.com/dev/execute
     /// </summary>
-    /// <param name="Code: string">Код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагается совместимость с ECMAScript). Алгоритм должен завершаться командой return %выражение%. Операторы должны быть разделены точкой с запятой. </param>
+    /// <param name="Code: string">РљРѕРґ Р°Р»РіРѕСЂРёС‚РјР° РІ VKScript - С„РѕСЂРјР°С‚Рµ, РїРѕС…РѕР¶РµРј РЅР° JavaSСЃript РёР»Рё ActionScript (РїСЂРµРґРїРѕР»Р°РіР°РµС‚СЃСЏ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚СЊ СЃ ECMAScript). РђР»РіРѕСЂРёС‚Рј РґРѕР»Р¶РµРЅ Р·Р°РІРµСЂС€Р°С‚СЊСЃСЏ РєРѕРјР°РЅРґРѕР№ return %РІС‹СЂР°Р¶РµРЅРёРµ%. РћРїРµСЂР°С‚РѕСЂС‹ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ СЂР°Р·РґРµР»РµРЅС‹ С‚РѕС‡РєРѕР№ СЃ Р·Р°РїСЏС‚РѕР№. </param>
     function Execute(Code: string): TResponse;
     /// <summary>
-    /// Универсальный метод, который позволяет запускать последовательность других методов, сохраняя и фильтруя промежуточные результаты.
+    /// РЈРЅРёРІРµСЂСЃР°Р»СЊРЅС‹Р№ РјРµС‚РѕРґ, РєРѕС‚РѕСЂС‹Р№ РїРѕР·РІРѕР»СЏРµС‚ Р·Р°РїСѓСЃРєР°С‚СЊ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ РґСЂСѓРіРёС… РјРµС‚РѕРґРѕРІ, СЃРѕС…СЂР°РЅСЏСЏ Рё С„РёР»СЊС‚СЂСѓСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ СЂРµР·СѓР»СЊС‚Р°С‚С‹.
     /// https://vk.com/dev/execute
     /// </summary>
-    /// <param name="Code: string">Код алгоритма в VKScript - формате, похожем на JavaSсript или ActionScript (предполагается совместимость с ECMAScript). Алгоритм должен завершаться командой return %выражение%. Операторы должны быть разделены точкой с запятой. </param>
-    /// <param name="Callback: TCallMethodCallback = nil"> Метод, который будет выполнен после выполнения Execute </param>
+    /// <param name="Code: string">РљРѕРґ Р°Р»РіРѕСЂРёС‚РјР° РІ VKScript - С„РѕСЂРјР°С‚Рµ, РїРѕС…РѕР¶РµРј РЅР° JavaSСЃript РёР»Рё ActionScript (РїСЂРµРґРїРѕР»Р°РіР°РµС‚СЃСЏ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚СЊ СЃ ECMAScript). РђР»РіРѕСЂРёС‚Рј РґРѕР»Р¶РµРЅ Р·Р°РІРµСЂС€Р°С‚СЊСЃСЏ РєРѕРјР°РЅРґРѕР№ return %РІС‹СЂР°Р¶РµРЅРёРµ%. РћРїРµСЂР°С‚РѕСЂС‹ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ СЂР°Р·РґРµР»РµРЅС‹ С‚РѕС‡РєРѕР№ СЃ Р·Р°РїСЏС‚РѕР№. </param>
+    /// <param name="Callback: TCallMethodCallback = nil"> РњРµС‚РѕРґ, РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РІС‹РїРѕР»РЅРµРЅ РїРѕСЃР»Рµ РІС‹РїРѕР»РЅРµРЅРёСЏ Execute </param>
     procedure ExecuteAsync(Code: string; Callback: TCallMethodCallback = nil);
     /// <summary>
-    /// Вспомогательный метод, для выполнения методов с Count и Offset
+    /// Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Р№ РјРµС‚РѕРґ, РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґРѕРІ СЃ Count Рё Offset
     /// </summary>
     procedure Walk(Method: TWalkMethod; Count: Integer);
     /// <summary>
-    /// Метод для загрузки файлов на сервер. UploadUrl должен быть получен соответствющим типу файла образом.
-    /// Например, для Фото в альбом - Photos.GetUploadServer.
+    /// РњРµС‚РѕРґ РґР»СЏ Р·Р°РіСЂСѓР·РєРё С„Р°Р№Р»РѕРІ РЅР° СЃРµСЂРІРµСЂ. UploadUrl РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїРѕР»СѓС‡РµРЅ СЃРѕРѕС‚РІРµС‚СЃС‚РІСЋС‰РёРј С‚РёРїСѓ С„Р°Р№Р»Р° РѕР±СЂР°Р·РѕРј.
+    /// РќР°РїСЂРёРјРµСЂ, РґР»СЏ Р¤РѕС‚Рѕ РІ Р°Р»СЊР±РѕРј - Photos.GetUploadServer.
     /// </summary>
     function Upload(const UploadUrl: string; FileNames: TArray<string>; var Response: string): Boolean; overload;
     function Upload(const UploadUrl: string; const Files: TArray<TPair<string, TStream>>; var Response: string): Boolean; overload;
-    //Группы методов
+    //Р“СЂСѓРїРїС‹ РјРµС‚РѕРґРѕРІ
     /// <summary>
-    /// Методы для работы с аккаунтом.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р°РєРєР°СѓРЅС‚РѕРј.
     /// </summary>
     property Account: TAccountController read FAccount;
     /// <summary>
-    /// Методы для работы с аккаунтом.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р°РєРєР°СѓРЅС‚РѕРј.
     /// </summary>
     property Ads: TAds read FAds;
     /// <summary>
-    /// Методы для работы с приложениями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїСЂРёР»РѕР¶РµРЅРёСЏРјРё.
     /// </summary>
     property Apps: TAppsController read FApps;
     /// <summary>
-    /// Метод выполняет распознавание речи из загруженного файла аудиозаписи.
+    /// РњРµС‚РѕРґ РІС‹РїРѕР»РЅСЏРµС‚ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёРµ СЂРµС‡Рё РёР· Р·Р°РіСЂСѓР¶РµРЅРЅРѕРіРѕ С„Р°Р№Р»Р° Р°СѓРґРёРѕР·Р°РїРёСЃРё.
     /// </summary>
     property Asr: TAsr read FAsr;
     /// <summary>
-    /// Методы для работы с авторизацией.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р°РІС‚РѕСЂРёР·Р°С†РёРµР№.
     /// </summary>
     property Auth: TAuthController read FAuth;
     /// <summary>
-    /// Методы для работы с аудиозаписями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р°СѓРґРёРѕР·Р°РїРёСЃСЏРјРё.
     /// </summary>
     property Audio: TAudioController read FAudio;
     /// <summary>
-    /// Методы для работы с обсуждениями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РѕР±СЃСѓР¶РґРµРЅРёСЏРјРё.
     /// </summary>
     property Board: TBoardController read FBoard;
     /// <summary>
-    /// Методы для работы с каталогом рекомендация.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РєР°С‚Р°Р»РѕРіРѕРј СЂРµРєРѕРјРµРЅРґР°С†РёСЏ.
     /// </summary>
     property Catalog: TCatalogController read FCatalog;
     /// <summary>
-    /// Методы этой секции предоставляют доступ к базе данных учебных заведений ВКонтакте.
+    /// РњРµС‚РѕРґС‹ СЌС‚РѕР№ СЃРµРєС†РёРё РїСЂРµРґРѕСЃС‚Р°РІР»СЏСЋС‚ РґРѕСЃС‚СѓРї Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С… СѓС‡РµР±РЅС‹С… Р·Р°РІРµРґРµРЅРёР№ Р’РљРѕРЅС‚Р°РєС‚Рµ.
     /// </summary>
     property Database: TDatabaseController read FDatabase;
     /// <summary>
-    /// Методы для работы с документами.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґРѕРєСѓРјРµРЅС‚Р°РјРё.
     /// </summary>
     property Docs: TDocController read FDoc;
     /// <summary>
-    /// Методы для работы с донатом.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґРѕРЅР°С‚РѕРј.
     /// </summary>
     property Donut: TDonutController read FDonut;
     /// <summary>
-    /// Список методов секции downloadedGames.
+    /// РЎРїРёСЃРѕРє РјРµС‚РѕРґРѕРІ СЃРµРєС†РёРё downloadedGames.
     /// </summary>
     property DownloadedGames: TDownloadedGamesController read FDownloadedGames;
     /// <summary>
-    /// Методы для работы с закладками.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р·Р°РєР»Р°РґРєР°РјРё.
     /// </summary>
     property Fave: TFaveController read FFave;
     /// <summary>
-    /// Методы для работы с друзьями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґСЂСѓР·СЊСЏРјРё.
     /// </summary>
     property Friends: TFriendsController read FFriends;
     /// <summary>
-    /// Методы для работы с подарками.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїРѕРґР°СЂРєР°РјРё.
     /// </summary>
     property Gifts: TGiftsController read FGifts;
     /// <summary>
-    /// Методы для работы с сообществами.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ СЃРѕРѕР±С‰РµСЃС‚РІР°РјРё.
     /// </summary>
     property Groups: TGroupsController read FGroups;
     /// <summary>
-    /// Методы для работы с отметками «Мне нравится».
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РѕС‚РјРµС‚РєР°РјРё В«РњРЅРµ РЅСЂР°РІРёС‚СЃСЏВ».
     /// </summary>
     property Likes: TLikesController read FLikes;
     /// <summary>
-    /// Методы market позволяют работать с товарами в сообществах.
+    /// РњРµС‚РѕРґС‹ market РїРѕР·РІРѕР»СЏСЋС‚ СЂР°Р±РѕС‚Р°С‚СЊ СЃ С‚РѕРІР°СЂР°РјРё РІ СЃРѕРѕР±С‰РµСЃС‚РІР°С….
     /// </summary>
     property Market: TMarketController read FMarket;
     /// <summary>
-    /// Методы для работы с личными сообщениями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р»РёС‡РЅС‹РјРё СЃРѕРѕР±С‰РµРЅРёСЏРјРё.
     /// </summary>
     property Messages: TMessagesController read FMessages;
     /// <summary>
-    /// Методы для работы с новостной лентой пользователя.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РЅРѕРІРѕСЃС‚РЅРѕР№ Р»РµРЅС‚РѕР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     property Newsfeed: TNewsfeedController read FNewsfeed;
     /// <summary>
-    /// Методы для работы с заметками.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р·Р°РјРµС‚РєР°РјРё.
     /// </summary>
     property Notes: TNotesController read FNotes;
     /// <summary>
@@ -306,192 +306,192 @@ type
     /// </summary>
     property Notifications: TNotificationsController read FNotifications;
     /// <summary>
-    /// Методы этой секции предоставляют дополнительную возможность управления состоянием заказов, которые были сделаны пользователями в приложениях.
+    /// РњРµС‚РѕРґС‹ СЌС‚РѕР№ СЃРµРєС†РёРё РїСЂРµРґРѕСЃС‚Р°РІР»СЏСЋС‚ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅСѓСЋ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СѓРїСЂР°РІР»РµРЅРёСЏ СЃРѕСЃС‚РѕСЏРЅРёРµРј Р·Р°РєР°Р·РѕРІ, РєРѕС‚РѕСЂС‹Рµ Р±С‹Р»Рё СЃРґРµР»Р°РЅС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРјРё РІ РїСЂРёР»РѕР¶РµРЅРёСЏС….
     /// </summary>
     property Orders: TOrdersController read FOrders;
     /// <summary>
-    /// Методы для работы с фотографиями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С„РѕС‚РѕРіСЂР°С„РёСЏРјРё.
     /// </summary>
     property Pages: TPagesController read FPages;
     /// <summary>
-    /// Методы для работы с фотографиями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С„РѕС‚РѕРіСЂР°С„РёСЏРјРё.
     /// </summary>
     property Photos: TPhotosController read FPhotos;
     /// <summary>
-    /// Методы для работы с подкастами.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїРѕРґРєР°СЃС‚Р°РјРё.
     /// </summary>
     property Podcasts: TPodcastsController read FPodcasts;
     /// <summary>
-    /// Методы для работы с опросами.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РѕРїСЂРѕСЃР°РјРё.
     /// </summary>
     property Polls: TPollsController read FPolls;
     /// <summary>
-    /// Методы для работы с поиском.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїРѕРёСЃРєРѕРј.
     /// </summary>
     property Search: TSearchController read FSearch;
     /// <summary>
-    /// Методы для работы с поиском.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїРѕРёСЃРєРѕРј.
     /// </summary>
     property Secure: TSecureController read FSecure;
     /// <summary>
-    /// Методы для работы со статусом.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃРѕ СЃС‚Р°С‚СѓСЃРѕРј.
     /// </summary>
     property Status: TStatusController read FStatus;
     /// <summary>
-    /// Методы для работы со статистикой.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃРѕ СЃС‚Р°С‚РёСЃС‚РёРєРѕР№.
     /// </summary>
     property Stats: TStatsController read FStats;
     /// <summary>
-    /// Методы для работы с переменными в приложении.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїРµСЂРµРјРµРЅРЅС‹РјРё РІ РїСЂРёР»РѕР¶РµРЅРёРё.
     /// </summary>
     property Storage: TStorageController read FStorage;
     /// <summary>
-    /// Методы для работы со историями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃРѕ РёСЃС‚РѕСЂРёСЏРјРё.
     /// </summary>
     property Stories: TStoriesController read FStories;
     /// <summary>
-    /// Методы для работы со стриамами.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃРѕ СЃС‚СЂРёР°РјР°РјРё.
     /// </summary>
     property Streaming: TStreamingController read FStreaming;
     /// <summary>
-    /// Методы для работы с данными пользователей.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґР°РЅРЅС‹РјРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№.
     /// </summary>
     property Users: TUsersController read FUsers;
     /// <summary>
-    /// Служебные методы.
+    /// РЎР»СѓР¶РµР±РЅС‹Рµ РјРµС‚РѕРґС‹.
     /// </summary>
     property Utils: TUtilsController read FUtils;
     /// <summary>
-    /// Методы для работы с видеозаписями.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РІРёРґРµРѕР·Р°РїРёСЃСЏРјРё.
     /// </summary>
     property Video: TVideoController read FVideo;
     /// <summary>
-    /// Методы для работы с записями на стене.
+    /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р·Р°РїРёСЃСЏРјРё РЅР° СЃС‚РµРЅРµ.
     /// </summary>
     property Wall: TWallController read FWall;
     ////////////////////////////////////////////////////////////////////////////
     /// <summary>
-    /// ID приложения
+    /// ID РїСЂРёР»РѕР¶РµРЅРёСЏ
     /// </summary>
     property AppID: string read FAppID write SetAppID;
     /// <summary>
-    /// Защищённый ключ приложения
+    /// Р—Р°С‰РёС‰С‘РЅРЅС‹Р№ РєР»СЋС‡ РїСЂРёР»РѕР¶РµРЅРёСЏ
     /// </summary>
     property AppKey: string read FAppKey write SetAppKey;
     /// <summary>
-    /// URL, который используется для авторизации через OAuth2
+    /// URL, РєРѕС‚РѕСЂС‹Р№ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ Р°РІС‚РѕСЂРёР·Р°С†РёРё С‡РµСЂРµР· OAuth2
     /// </summary>
     property EndPoint: string read FEndPoint write SetEndPoint;
     /// <summary>
-    /// Обработчик запросов. Реализует псевдо асинхронность и очередь выполнения
+    /// РћР±СЂР°Р±РѕС‚С‡РёРє Р·Р°РїСЂРѕСЃРѕРІ. Р РµР°Р»РёР·СѓРµС‚ РїСЃРµРІРґРѕ Р°СЃРёРЅС…СЂРѕРЅРЅРѕСЃС‚СЊ Рё РѕС‡РµСЂРµРґСЊ РІС‹РїРѕР»РЅРµРЅРёСЏ
     /// </summary>
     property Handler: TVkHandler read FHandler write SetHandler;
     /// <summary>
-    /// Версия API VK, которая поддеживается текущей оберткой
+    /// Р’РµСЂСЃРёСЏ API VK, РєРѕС‚РѕСЂР°СЏ РїРѕРґРґРµР¶РёРІР°РµС‚СЃСЏ С‚РµРєСѓС‰РµР№ РѕР±РµСЂС‚РєРѕР№
     /// </summary>
     property APIVersion: string read FAPIVersion;
     /// <summary>
-    /// Базовый URL для доступа к метода VK API (https://api.vk.com/method)
+    /// Р‘Р°Р·РѕРІС‹Р№ URL РґР»СЏ РґРѕСЃС‚СѓРїР° Рє РјРµС‚РѕРґР° VK API (https://api.vk.com/method)
     /// </summary>
     property BaseURL: string read FBaseURL write SetBaseURL;
     /// <summary>
-    /// Сервисный ключ для доступа к API VK
+    /// РЎРµСЂРІРёСЃРЅС‹Р№ РєР»СЋС‡ РґР»СЏ РґРѕСЃС‚СѓРїР° Рє API VK
     /// </summary>
     property ServiceKey: string read FServiceKey write SetServiceKey;
     /// <summary>
-    /// Если установлен флаг, то будет использоваться сервисный ключ для доступа к методам ВК
+    /// Р•СЃР»Рё СѓСЃС‚Р°РЅРѕРІР»РµРЅ С„Р»Р°Рі, С‚Рѕ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ СЃРµСЂРІРёСЃРЅС‹Р№ РєР»СЋС‡ РґР»СЏ РґРѕСЃС‚СѓРїР° Рє РјРµС‚РѕРґР°Рј Р’Рљ
     /// </summary>
     property UseServiceKeyOnly: Boolean read FUseServiceKeyOnly write SetUseServiceKeyOnly;
     /// <summary>
-    /// True, если авторизация успешна
+    /// True, РµСЃР»Рё Р°РІС‚РѕСЂРёР·Р°С†РёСЏ СѓСЃРїРµС€РЅР°
     /// </summary>
     property IsLogin: Boolean read FIsLogin;
     /// <summary>
-    /// Хеш, получаемый для смены пароля ВК
+    /// РҐРµС€, РїРѕР»СѓС‡Р°РµРјС‹Р№ РґР»СЏ СЃРјРµРЅС‹ РїР°СЂРѕР»СЏ Р’Рљ
     /// </summary>
     property ChangePasswordHash: string read FChangePasswordHash;
     /// <summary>
-    /// Идентификатор пользователя (будет запрошен, если не сохранен)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (Р±СѓРґРµС‚ Р·Р°РїСЂРѕС€РµРЅ, РµСЃР»Рё РЅРµ СЃРѕС…СЂР°РЅРµРЅ)
     /// </summary>
     property UserId: Integer read GetUserId;
     /// <summary>
-    /// Имя пользователя (будет запрошено, если не сохранено)
+    /// РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (Р±СѓРґРµС‚ Р·Р°РїСЂРѕС€РµРЅРѕ, РµСЃР»Рё РЅРµ СЃРѕС…СЂР°РЅРµРЅРѕ)
     /// </summary>
     property UserName: string read GetUserName;
     /// <summary>
-    /// Фото пользователя (будет запрошено, если не сохранено)
+    /// Р¤РѕС‚Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (Р±СѓРґРµС‚ Р·Р°РїСЂРѕС€РµРЅРѕ, РµСЃР»Рё РЅРµ СЃРѕС…СЂР°РЅРµРЅРѕ)
     /// </summary>
     property UserPhoto50: string read GetUserPhoto50;
     /// <summary>
-    /// Фото пользователя (будет запрошено, если не сохранено)
+    /// Р¤РѕС‚Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (Р±СѓРґРµС‚ Р·Р°РїСЂРѕС€РµРЅРѕ, РµСЃР»Рё РЅРµ СЃРѕС…СЂР°РЅРµРЅРѕ)
     /// </summary>
     property UserPhoto100: string read GetUserPhoto100;
     /// <summary>
-    /// Пол пользователя (будет запрошено, если не сохранено)
+    /// РџРѕР» РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (Р±СѓРґРµС‚ Р·Р°РїСЂРѕС€РµРЅРѕ, РµСЃР»Рё РЅРµ СЃРѕС…СЂР°РЅРµРЅРѕ)
     /// </summary>
     property UserSex: TVkSex read GetUserSex;
     /// <summary>
-    /// Событие, которое происходит, если токен успешно получен и успешно пройдена проверка авторизации
+    /// РЎРѕР±С‹С‚РёРµ, РєРѕС‚РѕСЂРѕРµ РїСЂРѕРёСЃС…РѕРґРёС‚, РµСЃР»Рё С‚РѕРєРµРЅ СѓСЃРїРµС€РЅРѕ РїРѕР»СѓС‡РµРЅ Рё СѓСЃРїРµС€РЅРѕ РїСЂРѕР№РґРµРЅР° РїСЂРѕРІРµСЂРєР° Р°РІС‚РѕСЂРёР·Р°С†РёРё
     /// </summary>
     property OnLogin: TOnLogin read FOnLogin write SetOnLogin;
     /// <summary>
-    /// Событие, которое происходит при возникновении ошибки
+    /// РЎРѕР±С‹С‚РёРµ, РєРѕС‚РѕСЂРѕРµ РїСЂРѕРёСЃС…РѕРґРёС‚ РїСЂРё РІРѕР·РЅРёРєРЅРѕРІРµРЅРёРё РѕС€РёР±РєРё
     /// </summary>
     property OnError: TOnVKError read FOnError write SetOnError;
     /// <summary>
-    /// Событие, которое происходит при логировании
+    /// РЎРѕР±С‹С‚РёРµ, РєРѕС‚РѕСЂРѕРµ РїСЂРѕРёСЃС…РѕРґРёС‚ РїСЂРё Р»РѕРіРёСЂРѕРІР°РЅРёРё
     /// </summary>
     property OnLog: TOnLog read FOnLog write SetOnLog;
     /// <summary>
-    /// Событие, которое происходит когда ВК требует разгадать капчу (по умолчанию используется стандартный диалог)
+    /// РЎРѕР±С‹С‚РёРµ, РєРѕС‚РѕСЂРѕРµ РїСЂРѕРёСЃС…РѕРґРёС‚ РєРѕРіРґР° Р’Рљ С‚СЂРµР±СѓРµС‚ СЂР°Р·РіР°РґР°С‚СЊ РєР°РїС‡Сѓ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ РґРёР°Р»РѕРі)
     /// </summary>
     property OnCaptcha: TOnCaptcha read FOnCaptcha write SetOnCaptcha;
     /// <summary>
-    /// Событие, которое происходит когда ВК требует подтверждения от пользователя (по умолчанию подтверждается)
+    /// РЎРѕР±С‹С‚РёРµ, РєРѕС‚РѕСЂРѕРµ РїСЂРѕРёСЃС…РѕРґРёС‚ РєРѕРіРґР° Р’Рљ С‚СЂРµР±СѓРµС‚ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РїРѕРґС‚РІРµСЂР¶РґР°РµС‚СЃСЏ)
     /// </summary>
     property OnConfirm: TOnConfirm read FOnConfirm write SetOnConfirm;
     /// <summary>
-    /// Событие, которое происходит когда не указан токен и требуется его получить
+    /// РЎРѕР±С‹С‚РёРµ, РєРѕС‚РѕСЂРѕРµ РїСЂРѕРёСЃС…РѕРґРёС‚ РєРѕРіРґР° РЅРµ СѓРєР°Р·Р°РЅ С‚РѕРєРµРЅ Рё С‚СЂРµР±СѓРµС‚СЃСЏ РµРіРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     property OnAuth: TOnAuth read FOnAuth write SetOnAuth;
     /// <summary>
-    /// Токен
+    /// РўРѕРєРµРЅ
     /// </summary>
     property Token: string read GetToken write SetToken;
     /// <summary>
-    /// Срок действия токена UNIXTIME
+    /// РЎСЂРѕРє РґРµР№СЃС‚РІРёСЏ С‚РѕРєРµРЅР° UNIXTIME
     /// </summary>
     property TokenExpiry: Int64 read GetTokenExpiry write SetTokenExpiry;
     /// <summary>
-    /// Логировать ли запросы
+    /// Р›РѕРіРёСЂРѕРІР°С‚СЊ Р»Рё Р·Р°РїСЂРѕСЃС‹
     /// </summary>
     property Logging: Boolean read FLogging write SetLogging;
     /// <summary>
-    /// Логировать ответ запроса
+    /// Р›РѕРіРёСЂРѕРІР°С‚СЊ РѕС‚РІРµС‚ Р·Р°РїСЂРѕСЃР°
     /// </summary>
     property LogResponse: Boolean read FLogResponse write SetLogResponse;
     /// <summary>
-    /// Обработчик запросов выполняет какой-то запрос
+    /// РћР±СЂР°Р±РѕС‚С‡РёРє Р·Р°РїСЂРѕСЃРѕРІ РІС‹РїРѕР»РЅСЏРµС‚ РєР°РєРѕР№-С‚Рѕ Р·Р°РїСЂРѕСЃ
     /// </summary>
     property IsWorking: Boolean read GetIsWorking;
     /// <summary>
-    /// Передаваемый параметр "Тестовый режим"
+    /// РџРµСЂРµРґР°РІР°РµРјС‹Р№ РїР°СЂР°РјРµС‚СЂ "РўРµСЃС‚РѕРІС‹Р№ СЂРµР¶РёРј"
     /// </summary>
     property TestMode: Boolean read GetTestMode write SetTestMode;
     /// <summary>
-    /// Права приложения, которые будут запрошены при авторизации через OAuth2
+    /// РџСЂР°РІР° РїСЂРёР»РѕР¶РµРЅРёСЏ, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ Р·Р°РїСЂРѕС€РµРЅС‹ РїСЂРё Р°РІС‚РѕСЂРёР·Р°С†РёРё С‡РµСЂРµР· OAuth2
     /// </summary>
     property Permissions: TVkPermissions read FPermissions write SetPermissions;
     /// <summary>
-    /// Передаваемый параметр языка (ВК)
+    /// РџРµСЂРµРґР°РІР°РµРјС‹Р№ РїР°СЂР°РјРµС‚СЂ СЏР·С‹РєР° (Р’Рљ)
     /// </summary>
     property Lang: TVkLang read FLang write SetLang;
     /// <summary>
-    /// Настройки прокси
+    /// РќР°СЃС‚СЂРѕР№РєРё РїСЂРѕРєСЃРё
     /// </summary>
     property Proxy: TVkProxy read FProxy write FProxy;
     /// <summary>
-    /// Данные клиента AppId (client_id) + AppKey (client_secret)
+    /// Р”Р°РЅРЅС‹Рµ РєР»РёРµРЅС‚Р° AppId (client_id) + AppKey (client_secret)
     /// </summary>
     property Application: TVkApplicationData read GetApplication write SetApplication;
     property RequestLimit: Integer read GetRequestLimit write SetRequestLimit;

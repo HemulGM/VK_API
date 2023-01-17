@@ -1,4 +1,4 @@
-unit VK.Entity.Group.TokenPermissions;
+﻿unit VK.Entity.Group.TokenPermissions;
 
 interface
 

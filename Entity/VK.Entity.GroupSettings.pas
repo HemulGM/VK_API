@@ -1,4 +1,4 @@
-unit VK.Entity.GroupSettings;
+﻿unit VK.Entity.GroupSettings;
 
 interface
 

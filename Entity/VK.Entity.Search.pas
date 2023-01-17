@@ -1,4 +1,4 @@
-unit VK.Entity.Search;
+п»їunit VK.Entity.Search;
 
 interface
 
@@ -23,7 +23,7 @@ type
     property Group: TVkGroup read FGroup write FGroup;
     property Section: TVkSearchSection read FSection write FSection;
     /// <summary>
-    /// Поле возвращается, если объект был найден в глобальном поиске, всегда содержит 1
+    /// РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ, РµСЃР»Рё РѕР±СЉРµРєС‚ Р±С‹Р» РЅР°Р№РґРµРЅ РІ РіР»РѕР±Р°Р»СЊРЅРѕРј РїРѕРёСЃРєРµ, РІСЃРµРіРґР° СЃРѕРґРµСЂР¶РёС‚ 1
     /// </summary>
     property Global: Boolean read FGlobal write FGlobal;
     property &Type: string read FType write FType;

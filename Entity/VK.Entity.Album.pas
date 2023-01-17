@@ -1,4 +1,4 @@
-unit VK.Entity.Album;
+п»їunit VK.Entity.Album;
 
 interface
 
@@ -34,44 +34,44 @@ type
     FAccess_key: string;
   public
     /// <summary>
-    /// Идентификатор альбома
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°Р»СЊР±РѕРјР°
     /// </summary>
     property Id;
     property AccessKey: string read FAccess_key write FAccess_key;
     property CanUpload: Boolean read FCan_upload write FCan_upload;
     property CommentsDisabled: Boolean read FComments_disabled write FComments_disabled;
     /// <summary>
-    /// Дата создания альбома
+    /// Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ Р°Р»СЊР±РѕРјР°
     /// </summary>
     property Created: TDateTime read FCreated write FCreated;
     /// <summary>
-    /// Описание альбома
+    /// РћРїРёСЃР°РЅРёРµ Р°Р»СЊР±РѕРјР°
     /// </summary>
     property Description: string read FDescription write FDescription;
     /// <summary>
-    /// Идентификатор владельца альбома
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° Р°Р»СЊР±РѕРјР°
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property PrivacyComment: TVkPrivacy read FPrivacy_comment write FPrivacy_comment;
     property PrivacyView: TVkPrivacy read FPrivacy_view write FPrivacy_view;
     /// <summary>
-    /// Количество фотографий в альбоме
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ С„РѕС‚РѕРіСЂР°С„РёР№ РІ Р°Р»СЊР±РѕРјРµ
     /// </summary>
     property Size: Integer read FSize write FSize;
     property Sizes: TVkSizes read FSizes write FSizes;
     /// <summary>
-    /// Обложка альбома, объект photo
+    /// РћР±Р»РѕР¶РєР° Р°Р»СЊР±РѕРјР°, РѕР±СЉРµРєС‚ photo
     /// </summary>
     property Thumb: TVkPhoto read FThumb write FThumb;
     property ThumbId: integer read FThumb_id write FThumb_id;
     property ThumbIsLast: Boolean read FThumb_is_last write FThumb_is_last;
     property ThumbSrc: string read FThumb_src write FThumb_src;
     /// <summary>
-    /// Название альбома.
+    /// РќР°Р·РІР°РЅРёРµ Р°Р»СЊР±РѕРјР°.
     /// </summary>
     property Title: string read FTitle write FTitle;
     /// <summary>
-    /// Дата последнего обновления альбома
+    /// Р”Р°С‚Р° РїРѕСЃР»РµРґРЅРµРіРѕ РѕР±РЅРѕРІР»РµРЅРёСЏ Р°Р»СЊР±РѕРјР°
     /// </summary>
     property Updated: TDateTime read FUpdated write FUpdated;
     property UploadByAdminsOnly: Boolean read FUpload_by_admins_only write FUpload_by_admins_only;

@@ -1,4 +1,4 @@
-unit VK.Params;
+﻿unit VK.Params;
 
 interface
 

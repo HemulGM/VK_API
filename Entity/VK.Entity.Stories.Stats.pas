@@ -1,4 +1,4 @@
-unit VK.Entity.Stories.Stats;
+п»їunit VK.Entity.Stories.Stats;
 
 interface
 
@@ -11,7 +11,7 @@ type
     FState: string;
   public
     /// <summary>
-    /// on — доступно, off — недоступно, hidden — недоступно
+    /// on вЂ” РґРѕСЃС‚СѓРїРЅРѕ, off вЂ” РЅРµРґРѕСЃС‚СѓРїРЅРѕ, hidden вЂ” РЅРµРґРѕСЃС‚СѓРїРЅРѕ
     /// </summary>
     property State: string read FState write FState;
   end;

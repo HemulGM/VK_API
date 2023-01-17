@@ -1,4 +1,4 @@
-unit VK.Entity.Auth;
+﻿unit VK.Entity.Auth;
 
 interface
 

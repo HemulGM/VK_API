@@ -1,4 +1,4 @@
-unit VK.Entity.Audio;
+п»їunit VK.Entity.Audio;
 
 interface
 
@@ -31,15 +31,15 @@ type
     FCan_follow: Boolean;
   public
     /// <summary>
-    /// Идентификатор артиста/группы
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°СЂС‚РёСЃС‚Р°/РіСЂСѓРїРїС‹
     /// </summary>
     property Id: string read FId write FId;
     /// <summary>
-    /// Домен-ссылка на аккаунт
+    /// Р”РѕРјРµРЅ-СЃСЃС‹Р»РєР° РЅР° Р°РєРєР°СѓРЅС‚
     /// </summary>
     property Domain: string read FDomain write FDomain;
     /// <summary>
-    /// Имя артиста/название группы
+    /// РРјСЏ Р°СЂС‚РёСЃС‚Р°/РЅР°Р·РІР°РЅРёРµ РіСЂСѓРїРїС‹
     /// </summary>
     property Name: string read FName write FName;
     property Photo: TArray<TVkSize> read FPhoto write FPhoto;
@@ -124,115 +124,115 @@ type
     FTrack_genre_id: TVkAudioGenre;
   public
     /// <summary>
-    /// Идентификатор аудиозаписи
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°СѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     property Id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Информация о рекламе
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЂРµРєР»Р°РјРµ
     /// </summary>
     property Ads: TVkAudioAds read FAds write FAds;
     /// <summary>
-    /// Альбом аудиозаписи
+    /// РђР»СЊР±РѕРј Р°СѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     property Album: TVkAudioAlbum read FAlbum write FAlbum;
     /// <summary>
-    /// Идентификатор альбома, в котором находится аудиозапись (если присвоен)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°Р»СЊР±РѕРјР°, РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ Р°СѓРґРёРѕР·Р°РїРёСЃСЊ (РµСЃР»Рё РїСЂРёСЃРІРѕРµРЅ)
     /// </summary>
     property AlbumId: Int64 read FAlbum_id write FAlbum_id;
     /// <summary>
-    /// Исполнитель
+    /// РСЃРїРѕР»РЅРёС‚РµР»СЊ
     /// </summary>
     property Artist: string read FArtist write FArtist;
     /// <summary>
-    /// Информация о позиции в Чарте
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕР·РёС†РёРё РІ Р§Р°СЂС‚Рµ
     /// </summary>
     property AudioChartInfo: TVkAudioChartInfo read FAudio_chart_info write FAudio_chart_info;
     /// <summary>
-    /// Доступна ли аудиозапись
+    /// Р”РѕСЃС‚СѓРїРЅР° Р»Рё Р°СѓРґРёРѕР·Р°РїРёСЃСЊ
     /// </summary>
     property ContentRestricted: Integer read FContent_restricted write FContent_restricted;
     /// <summary>
-    /// Дата добавления
+    /// Р”Р°С‚Р° РґРѕР±Р°РІР»РµРЅРёСЏ
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Длительность аудиозаписи в секундах
+    /// Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ Р°СѓРґРёРѕР·Р°РїРёСЃРё РІ СЃРµРєСѓРЅРґР°С…
     /// </summary>
     property Duration: Integer read FDuration write FDuration;
     /// <summary>
-    /// Список второстепенных исполнителей
+    /// РЎРїРёСЃРѕРє РІС‚РѕСЂРѕСЃС‚РµРїРµРЅРЅС‹С… РёСЃРїРѕР»РЅРёС‚РµР»РµР№
     /// </summary>
     property FeaturedArtists: TArray<TVkAudioArtist> read FFeatured_artists write FFeatured_artists;
     /// <summary>
-    /// Идентификатор жанра из списка аудио жанров
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р¶Р°РЅСЂР° РёР· СЃРїРёСЃРєР° Р°СѓРґРёРѕ Р¶Р°РЅСЂРѕРІ
     /// </summary>
     property Genre: TVkAudioGenre read FGenre_id write FGenre_id;
     /// <summary>
-    /// Идентификатор жанра из списка аудио жанров
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р¶Р°РЅСЂР° РёР· СЃРїРёСЃРєР° Р°СѓРґРёРѕ Р¶Р°РЅСЂРѕРІ
     /// </summary>
     property TrackGenreId: TVkAudioGenre read FTrack_genre_id write FTrack_genre_id;
     /// <summary>
-    /// Содержит ли трек ненормативную лексику
+    /// РЎРѕРґРµСЂР¶РёС‚ Р»Рё С‚СЂРµРє РЅРµРЅРѕСЂРјР°С‚РёРІРЅСѓСЋ Р»РµРєСЃРёРєСѓ
     /// </summary>
     property IsExplicit: Boolean read FIs_explicit write FIs_explicit;
     /// <summary>
-    /// [Не документирован]
+    /// [РќРµ РґРѕРєСѓРјРµРЅС‚РёСЂРѕРІР°РЅ]
     /// </summary>
     property IsFocusTrack: Boolean read FIs_focus_track write FIs_focus_track;
     /// <summary>
-    /// True, если аудио в высоком качестве
+    /// True, РµСЃР»Рё Р°СѓРґРёРѕ РІ РІС‹СЃРѕРєРѕРј РєР°С‡РµСЃС‚РІРµ
     /// </summary>
     property IsHQ: Boolean read FIs_hq write FIs_hq;
     /// <summary>
-    /// True, если аудиозапись лицензируется
+    /// True, РµСЃР»Рё Р°СѓРґРёРѕР·Р°РїРёСЃСЊ Р»РёС†РµРЅР·РёСЂСѓРµС‚СЃСЏ
     /// </summary>
     property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
     /// <summary>
-    /// Идентификатор текста аудиозаписи (если доступно)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РµРєСЃС‚Р° Р°СѓРґРёРѕР·Р°РїРёСЃРё (РµСЃР»Рё РґРѕСЃС‚СѓРїРЅРѕ)
     /// </summary>
     property LyricsId: Int64 read FLyrics_id write FLyrics_id;
     /// <summary>
-    /// Список главных исполнителей
+    /// РЎРїРёСЃРѕРє РіР»Р°РІРЅС‹С… РёСЃРїРѕР»РЅРёС‚РµР»РµР№
     /// </summary>
     property MainArtists: TArray<TVkAudioArtist> read FMain_artists write FMain_artists;
     /// <summary>
-    /// True, если включена опция «Не выводить при поиске». Если опция отключена, поле не возвращается
+    /// True, РµСЃР»Рё РІРєР»СЋС‡РµРЅР° РѕРїС†РёСЏ В«РќРµ РІС‹РІРѕРґРёС‚СЊ РїСЂРё РїРѕРёСЃРєРµВ». Р•СЃР»Рё РѕРїС†РёСЏ РѕС‚РєР»СЋС‡РµРЅР°, РїРѕР»Рµ РЅРµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ
     /// </summary>
     property NoSearch: Boolean read FNo_search write FNo_search;
     /// <summary>
-    /// Идентификатор владельца аудиозаписи
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° Р°СѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Возможно ли использование этого трека в "Клипах"
+    /// Р’РѕР·РјРѕР¶РЅРѕ Р»Рё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ СЌС‚РѕРіРѕ С‚СЂРµРєР° РІ "РљР»РёРїР°С…"
     /// </summary>
     property ShortVideosAllowed: Boolean read FShort_videos_allowed write FShort_videos_allowed;
     /// <summary>
-    /// Возможно ли использование этого трека в "Историях"
+    /// Р’РѕР·РјРѕР¶РЅРѕ Р»Рё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ СЌС‚РѕРіРѕ С‚СЂРµРєР° РІ "РСЃС‚РѕСЂРёСЏС…"
     /// </summary>
     property StoriesAllowed: Boolean read FStories_allowed write FStories_allowed;
     /// <summary>
-    /// Возможно ли использование обложки этого трека в "Историях"
+    /// Р’РѕР·РјРѕР¶РЅРѕ Р»Рё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РѕР±Р»РѕР¶РєРё СЌС‚РѕРіРѕ С‚СЂРµРєР° РІ "РСЃС‚РѕСЂРёСЏС…"
     /// </summary>
     property StoriesCoverAllowed: Boolean read FStories_cover_allowed write FStories_cover_allowed;
     /// <summary>
-    /// Подзаголовок композиции
+    /// РџРѕРґР·Р°РіРѕР»РѕРІРѕРє РєРѕРјРїРѕР·РёС†РёРё
     /// </summary>
     property Subtitle: string read FSubtitle write FSubtitle;
     /// <summary>
-    /// Название композиции
+    /// РќР°Р·РІР°РЅРёРµ РєРѕРјРїРѕР·РёС†РёРё
     /// </summary>
     property Title: string read FTitle write FTitle;
     /// <summary>
-    /// [Не документирован]
+    /// [РќРµ РґРѕРєСѓРјРµРЅС‚РёСЂРѕРІР°РЅ]
     /// </summary>
     property TrackCode: string read FTrack_code write FTrack_code;
     /// <summary>
-    /// Ссылка на аудиозапись (привязана к ip-адресу клиентского приложения)
+    /// РЎСЃС‹Р»РєР° РЅР° Р°СѓРґРёРѕР·Р°РїРёСЃСЊ (РїСЂРёРІСЏР·Р°РЅР° Рє ip-Р°РґСЂРµСЃСѓ РєР»РёРµРЅС‚СЃРєРѕРіРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ)
     /// </summary>
     property Url: string read FUrl write FUrl;
     destructor Destroy; override;
@@ -247,7 +247,7 @@ type
 
   TVkAudioIndexes = TArray<TVkAudioIndex>;
 
-  TVkAudios = TVkEntityList<TVkAudio>;
+  TVkAudios = class(TVkEntityList<TVkAudio>);
 
   TVkAudioInfo = class(TVkEntity)
   private

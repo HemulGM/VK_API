@@ -1,4 +1,4 @@
-unit VK.Entity.Longpoll;
+﻿unit VK.Entity.Longpoll;
 
 interface
 

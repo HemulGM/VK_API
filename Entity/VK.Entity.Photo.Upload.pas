@@ -1,4 +1,4 @@
-unit VK.Entity.Photo.Upload;
+﻿unit VK.Entity.Photo.Upload;
 
 interface
 

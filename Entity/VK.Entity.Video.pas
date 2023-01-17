@@ -1,4 +1,4 @@
-unit VK.Entity.Video;
+п»їunit VK.Entity.Video;
 
 interface
 
@@ -220,76 +220,76 @@ type
     FAds: TVkVideoAds;
   public
     /// <summary>
-    /// Ключ доступа к объекту
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР° Рє РѕР±СЉРµРєС‚Сѓ
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Добавлено ли видео в альбомы пользователя
+    /// Р”РѕР±Р°РІР»РµРЅРѕ Р»Рё РІРёРґРµРѕ РІ Р°Р»СЊР±РѕРјС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property Added: Boolean read FAdded write FAdded;
     /// <summary>
-    /// Дата добавления видеозаписи пользователем или группой
+    /// Р”Р°С‚Р° РґРѕР±Р°РІР»РµРЅРёСЏ РІРёРґРµРѕР·Р°РїРёСЃРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј РёР»Рё РіСЂСѓРїРїРѕР№
     /// </summary>
     property AddingDate: TDateTime read FAdding_date write FAdding_date;
     property Ads: TVkVideoAds read FAds write FAds;
     /// <summary>
-    /// Баланс донатов в прямой трансляции
+    /// Р‘Р°Р»Р°РЅСЃ РґРѕРЅР°С‚РѕРІ РІ РїСЂСЏРјРѕР№ С‚СЂР°РЅСЃР»СЏС†РёРё
     /// </summary>
     property Balance: Integer read FBalance write FBalance;
     /// <summary>
-    /// Может ли пользователь добавить видеозапись к себе
+    /// РњРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РґРѕР±Р°РІРёС‚СЊ РІРёРґРµРѕР·Р°РїРёСЃСЊ Рє СЃРµР±Рµ
     /// </summary>
     property CanAdd: Boolean read FCan_add write FCan_add;
     /// <summary>
-    /// Может ли пользователь добавить видео в избранное
+    /// РњРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РґРѕР±Р°РІРёС‚СЊ РІРёРґРµРѕ РІ РёР·Р±СЂР°РЅРЅРѕРµ
     /// </summary>
     property CanAddToFaves: Boolean read FCan_add_to_faves write FCan_add_to_faves;
     /// <summary>
-    /// Может ли пользователь прикрепить кнопку действия к видео
+    /// РњРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїСЂРёРєСЂРµРїРёС‚СЊ РєРЅРѕРїРєСѓ РґРµР№СЃС‚РІРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     property CanAttachLink: Boolean read FCan_attach_link write FCan_attach_link;
     /// <summary>
-    /// Может ли пользователь комментировать видео
+    /// РњРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ РІРёРґРµРѕ
     /// </summary>
     property CanComment: Boolean read FCan_comment write FCan_comment;
     /// <summary>
-    /// Может ли скачать (не известно)
+    /// РњРѕР¶РµС‚ Р»Рё СЃРєР°С‡Р°С‚СЊ (РЅРµ РёР·РІРµСЃС‚РЅРѕ)
     /// </summary>
     property CanDownload: integer read FCan_download write FCan_download;
     /// <summary>
-    /// Может ли пользователь редактировать видео
+    /// РњРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РІРёРґРµРѕ
     /// </summary>
     property CanEdit: Boolean read FCan_edit write FCan_edit;
     /// <summary>
-    /// Может ли пользователь добавить видео в список <<Мне нравится>>
+    /// РњРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РґРѕР±Р°РІРёС‚СЊ РІРёРґРµРѕ РІ СЃРїРёСЃРѕРє <<РњРЅРµ РЅСЂР°РІРёС‚СЃСЏ>>
     /// </summary>
     property CanLike: Boolean read FCan_like write FCan_like;
     /// <summary>
-    /// Может ли пользователь сделать репост видео
+    /// РњРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРґРµР»Р°С‚СЊ СЂРµРїРѕСЃС‚ РІРёРґРµРѕ
     /// </summary>
     property CanRepost: Boolean read FCan_repost write FCan_repost;
     /// <summary>
-    /// Может ли пользователь подписаться на автора видео
+    /// РњРѕР¶РµС‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїРѕРґРїРёСЃР°С‚СЊСЃСЏ РЅР° Р°РІС‚РѕСЂР° РІРёРґРµРѕ
     /// </summary>
     property CanSubscribe: Boolean read FCan_subscribe write FCan_subscribe;
     /// <summary>
-    /// Количество комментариев к видеозаписи
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     property Comments: Integer read FComments write FComments;
     /// <summary>
-    /// Конвертируется ли видео
+    /// РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚СЃСЏ Р»Рё РІРёРґРµРѕ
     /// </summary>
     property Converting: Boolean read FConverting write FConverting;
     /// <summary>
-    /// Дата создания видеозаписи
+    /// Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Текст описания видеозаписи
+    /// РўРµРєСЃС‚ РѕРїРёСЃР°РЅРёСЏ РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     property Description: string read FDescription write FDescription;
     /// <summary>
-    /// Длительность ролика в секундах
+    /// Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ СЂРѕР»РёРєР° РІ СЃРµРєСѓРЅРґР°С…
     /// </summary>
     property Duration: Int64 read FDuration write FDuration;
     property Files: TVkVideoFiles read FFiles write FFiles;
@@ -299,56 +299,56 @@ type
     property FirstFrame640: string read Ffirst_frame_640 write Ffirst_frame_640;
     property FirstFrame800: string read Ffirst_frame_800 write Ffirst_frame_800;
     /// <summary>
-    /// Изображение первого кадра
+    /// РР·РѕР±СЂР°Р¶РµРЅРёРµ РїРµСЂРІРѕРіРѕ РєР°РґСЂР°
     /// </summary>
     property FirstFrame: TArray<TVkSize> read FFirstFrame write FFirstFrame;
     /// <summary>
-    /// Высота видео
+    /// Р’С‹СЃРѕС‚Р° РІРёРґРµРѕ
     /// </summary>
     property Height: Integer read FHeight write FHeight;
     /// <summary>
-    /// Идентификатор видеозаписи
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     property Id;
     /// <summary>
-    /// Изображение обложки
+    /// РР·РѕР±СЂР°Р¶РµРЅРёРµ РѕР±Р»РѕР¶РєРё
     /// </summary>
     property Image: TArray<TVkVideoImage> read FImage write FImage;
     /// <summary>
-    /// True, если юзер - автор объекта
+    /// True, РµСЃР»Рё СЋР·РµСЂ - Р°РІС‚РѕСЂ РѕР±СЉРµРєС‚Р°
     /// </summary>
     property IsAuthor: Boolean read FIs_author write FIs_author;
     /// <summary>
-    /// True, если объект добавлен в закладки у текущего пользователя
+    /// True, РµСЃР»Рё РѕР±СЉРµРєС‚ РґРѕР±Р°РІР»РµРЅ РІ Р·Р°РєР»Р°РґРєРё Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     /// <summary>
-    /// Поле возвращается, если видеозапись приватная (например, была загружена в личное сообщение), всегда содержит True
+    /// РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ, РµСЃР»Рё РІРёРґРµРѕР·Р°РїРёСЃСЊ РїСЂРёРІР°С‚РЅР°СЏ (РЅР°РїСЂРёРјРµСЂ, Р±С‹Р»Р° Р·Р°РіСЂСѓР¶РµРЅР° РІ Р»РёС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ), РІСЃРµРіРґР° СЃРѕРґРµСЂР¶РёС‚ True
     /// </summary>
     property IsPrivate: Boolean read FIs_private write FIs_private;
     /// <summary>
-    /// Подписан ли пользователь на автора видео
+    /// РџРѕРґРїРёСЃР°РЅ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅР° Р°РІС‚РѕСЂР° РІРёРґРµРѕ
     /// </summary>
     property IsSubscribed: Boolean read FIs_subscribed write FIs_subscribed;
     /// <summary>
-    /// Содержит объект отметки <<Мне нравится>>
+    /// РЎРѕРґРµСЂР¶РёС‚ РѕР±СЉРµРєС‚ РѕС‚РјРµС‚РєРё <<РњРЅРµ РЅСЂР°РІРёС‚СЃСЏ>>
     /// </summary>
     property Likes: TVkLikesInfo read FLikes write FLikes;
     /// <summary>
-    /// Поле возвращается в том случае, если видеозапись является прямой трансляцией, всегда содержит True. Обратите внимание, в этом случае в поле duration содержится значение False
+    /// РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ С‚РѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РІРёРґРµРѕР·Р°РїРёСЃСЊ СЏРІР»СЏРµС‚СЃСЏ РїСЂСЏРјРѕР№ С‚СЂР°РЅСЃР»СЏС†РёРµР№, РІСЃРµРіРґР° СЃРѕРґРµСЂР¶РёС‚ True. РћР±СЂР°С‚РёС‚Рµ РІРЅРёРјР°РЅРёРµ, РІ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РІ РїРѕР»Рµ duration СЃРѕРґРµСЂР¶РёС‚СЃСЏ Р·РЅР°С‡РµРЅРёРµ False
     /// </summary>
     property Live: Boolean read FLive write FLive;
     /// <summary>
-    /// Статус прямой трансляции
+    /// РЎС‚Р°С‚СѓСЃ РїСЂСЏРјРѕР№ С‚СЂР°РЅСЃР»СЏС†РёРё
     /// </summary>
     property LiveStatus: TVkLiveStatus read FLive_status write FLive_status;
     /// <summary>
-    /// Если видео внешнее, количество просмотров в ВК
+    /// Р•СЃР»Рё РІРёРґРµРѕ РІРЅРµС€РЅРµРµ, РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕСЃРјРѕС‚СЂРѕРІ РІ Р’Рљ
     /// </summary>
     property LocalViews: Integer read FLocal_views write FLocal_views;
     property OvId: string read FOv_id write FOv_id;
     /// <summary>
-    /// Идентификатор владельца видеозаписи
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property Photo130: string read Fphoto_130 write Fphoto_130;
@@ -357,28 +357,28 @@ type
     property Photo800: string read Fphoto_800 write Fphoto_800;
     property Photo1280: string read Fphoto_1280 write Fphoto_1280;
     /// <summary>
-    /// URL страницы с плеером, который можно использовать для воспроизведения ролика в браузере. Поддерживается flash и html5, плеер всегда масштабируется по размеру окна
+    /// URL СЃС‚СЂР°РЅРёС†С‹ СЃ РїР»РµРµСЂРѕРј, РєРѕС‚РѕСЂС‹Р№ РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РґР»СЏ РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ СЂРѕР»РёРєР° РІ Р±СЂР°СѓР·РµСЂРµ. РџРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ flash Рё html5, РїР»РµРµСЂ РІСЃРµРіРґР° РјР°СЃС€С‚Р°Р±РёСЂСѓРµС‚СЃСЏ РїРѕ СЂР°Р·РјРµСЂСѓ РѕРєРЅР°
     /// </summary>
     property Player: string read FPlayer write FPlayer;
     /// <summary>
-    /// Поле возвращается в том случае, если видеоролик находится в процессе обработки, всегда содержит 1
+    /// РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ С‚РѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РІРёРґРµРѕСЂРѕР»РёРє РЅР°С…РѕРґРёС‚СЃСЏ РІ РїСЂРѕС†РµСЃСЃРµ РѕР±СЂР°Р±РѕС‚РєРё, РІСЃРµРіРґР° СЃРѕРґРµСЂР¶РёС‚ 1
     /// </summary>
     property Processing: Boolean read FProcessing write FProcessing;
     /// <summary>
-    /// Поле возвращается в том случае, если видео зациклено, всегда содержит 1
+    /// РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ С‚РѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РІРёРґРµРѕ Р·Р°С†РёРєР»РµРЅРѕ, РІСЃРµРіРґР° СЃРѕРґРµСЂР¶РёС‚ 1
     /// </summary>
     property &Repeat: Boolean read FRepeat write FRepeat;
     /// <summary>
-    /// Содержит объект репоста
+    /// РЎРѕРґРµСЂР¶РёС‚ РѕР±СЉРµРєС‚ СЂРµРїРѕСЃС‚Р°
     /// </summary>
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     /// <summary>
-    /// Количество зрителей прямой трансляции
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ Р·СЂРёС‚РµР»РµР№ РїСЂСЏРјРѕР№ С‚СЂР°РЅСЃР»СЏС†РёРё
     /// </summary>
     property Spectators: Integer read FSpectators write FSpectators;
     property TimelineThumbs: TVkTimelineThumbs read FTimeline_thumbs write FTimeline_thumbs;
     /// <summary>
-    /// Название видеозаписи
+    /// РќР°Р·РІР°РЅРёРµ РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     property Title: string read FTitle write FTitle;
     /// <summary>
@@ -386,30 +386,30 @@ type
     /// </summary>
     property TrackCode: string read FTrack_code write FTrack_code;
     /// <summary>
-    /// Поле свидетельствует о том, что трансляция скоро начнётся (для live = 1)
+    /// РџРѕР»Рµ СЃРІРёРґРµС‚РµР»СЊСЃС‚РІСѓРµС‚ Рѕ С‚РѕРј, С‡С‚Рѕ С‚СЂР°РЅСЃР»СЏС†РёСЏ СЃРєРѕСЂРѕ РЅР°С‡РЅС‘С‚СЃСЏ (РґР»СЏ live = 1)
     /// </summary>
     property UpComing: Boolean read FUpcoming write FUpcoming;
     /// <summary>
-    /// Идентификатор пользователя, загрузившего видео, если оно было загружено в группу одним из участников
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, Р·Р°РіСЂСѓР·РёРІС€РµРіРѕ РІРёРґРµРѕ, РµСЃР»Рё РѕРЅРѕ Р±С‹Р»Рѕ Р·Р°РіСЂСѓР¶РµРЅРѕ РІ РіСЂСѓРїРїСѓ РѕРґРЅРёРј РёР· СѓС‡Р°СЃС‚РЅРёРєРѕРІ
     /// </summary>
     property UserId: TVkPeerId read FUser_id write FUser_id;
     /// <summary>
-    /// Количество просмотров видеозаписи
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕСЃРјРѕС‚СЂРѕРІ РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     property Views: Integer read FViews write FViews;
     /// <summary>
-    /// Ширина видео
+    /// РЁРёСЂРёРЅР° РІРёРґРµРѕ
     /// </summary>
     property Width: Integer read FWidth write FWidth;
     /// <summary>
-    /// Название платформы (для видеозаписей, добавленных с внешних сайтов)
+    /// РќР°Р·РІР°РЅРёРµ РїР»Р°С‚С„РѕСЂРјС‹ (РґР»СЏ РІРёРґРµРѕР·Р°РїРёСЃРµР№, РґРѕР±Р°РІР»РµРЅРЅС‹С… СЃ РІРЅРµС€РЅРёС… СЃР°Р№С‚РѕРІ)
     /// </summary>
     property &Platform: string read FPlatform write FPlatform;
     /// <summary>
-    /// Тип видеозаписи
+    /// РўРёРї РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     property &Type: TVkVideoType read FType write FType;
-    ///Методы
+    ///РњРµС‚РѕРґС‹
     function ToAttachment: TAttachment;
     function ToStringId: string;
     destructor Destroy; override;

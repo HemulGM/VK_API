@@ -1,4 +1,4 @@
-unit VK.Entity.Stories.Sticker;
+﻿unit VK.Entity.Stories.Sticker;
 
 interface
 

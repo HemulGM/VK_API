@@ -1,4 +1,4 @@
-unit VK.Entity.Event;
+п»їunit VK.Entity.Event;
 
 interface
 
@@ -25,10 +25,10 @@ type
     property ButtonText: string read FButton_text write FButton_text;
     property Friends: TArray<TVkPeerId> read FFriends write FFriends;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
-    {1 -- точно идёт;
-      2 -- возможно пойдёт;
-      3 -- не идёт.}
-    { TODO -oHemulGM -c : Сделать тип 16.02.2021 13:56:39 }
+    {1 -- С‚РѕС‡РЅРѕ РёРґС‘С‚;
+      2 -- РІРѕР·РјРѕР¶РЅРѕ РїРѕР№РґС‘С‚;
+      3 -- РЅРµ РёРґС‘С‚.}
+    { TODO -oHemulGM -c : РЎРґРµР»Р°С‚СЊ С‚РёРї 16.02.2021 13:56:39 }
     property MemberStatus: Integer read FMember_status write FMember_status;
     property Text: string read FText write FText;
     property Time: TDateTime read FTime write FTime;

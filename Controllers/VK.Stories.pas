@@ -1,4 +1,4 @@
-unit VK.Stories;
+п»їunit VK.Stories;
 
 interface
 
@@ -11,15 +11,15 @@ type
   TVkParamsStoriesGet = record
     List: TParams;
     /// <summary>
-    /// Идентификатор пользователя, истории которого необходимо получить
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РёСЃС‚РѕСЂРёРё РєРѕС‚РѕСЂРѕРіРѕ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function OwnerId(const Value: TVkPeerId): TVkParamsStoriesGet;
     /// <summary>
-    /// True — возвращать в ответе дополнительную информацию о профилях пользователей
+    /// True вЂ” РІРѕР·РІСЂР°С‰Р°С‚СЊ РІ РѕС‚РІРµС‚Рµ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїСЂРѕС„РёР»СЏС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
     /// </summary>
     function Extended(const Value: Boolean = False): TVkParamsStoriesGet;
     /// <summary>
-    /// Список дополнительных полей для объектов User и Group, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РґР»СЏ РѕР±СЉРµРєС‚РѕРІ User Рё Group, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(Value: TVkExtendedFields = []): TVkParamsStoriesGet;
   end;
@@ -27,35 +27,35 @@ type
   TVkParamsStoriesGetUploadServer = record
     List: TParams;
     /// <summary>
-    /// True — разместить историю в новостях
+    /// True вЂ” СЂР°Р·РјРµСЃС‚РёС‚СЊ РёСЃС‚РѕСЂРёСЋ РІ РЅРѕРІРѕСЃС‚СЏС…
     /// </summary>
     function AddToNews(const Value: Boolean): TVkParamsStoriesGetUploadServer;
     /// <summary>
-    /// Идентификаторы пользователей, которые будут видеть историю (для отправки в личном сообщении)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ РІРёРґРµС‚СЊ РёСЃС‚РѕСЂРёСЋ (РґР»СЏ РѕС‚РїСЂР°РІРєРё РІ Р»РёС‡РЅРѕРј СЃРѕРѕР±С‰РµРЅРёРё)
     /// </summary>
     function UserIds(const Value: TVkPeerIds): TVkParamsStoriesGetUploadServer;
     /// <summary>
-    /// Идентификатор истории, в ответ на которую создается новая
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РёСЃС‚РѕСЂРёРё, РІ РѕС‚РІРµС‚ РЅР° РєРѕС‚РѕСЂСѓСЋ СЃРѕР·РґР°РµС‚СЃСЏ РЅРѕРІР°СЏ
     /// </summary>
     function ReplyToStory(const Value: string): TVkParamsStoriesGetUploadServer;
     /// <summary>
-    /// Текст ссылки для перехода из истории (только для историй сообществ)
+    /// РўРµРєСЃС‚ СЃСЃС‹Р»РєРё РґР»СЏ РїРµСЂРµС…РѕРґР° РёР· РёСЃС‚РѕСЂРёРё (С‚РѕР»СЊРєРѕ РґР»СЏ РёСЃС‚РѕСЂРёР№ СЃРѕРѕР±С‰РµСЃС‚РІ)
     /// </summary>
     function LinkText(const Value: TVkLinkText): TVkParamsStoriesGetUploadServer;
     /// <summary>
-    /// Адрес ссылки для перехода из истории
+    /// РђРґСЂРµСЃ СЃСЃС‹Р»РєРё РґР»СЏ РїРµСЂРµС…РѕРґР° РёР· РёСЃС‚РѕСЂРёРё
     /// </summary>
     function LinkUrl(const Value: string): TVkParamsStoriesGetUploadServer;
     /// <summary>
-    /// Идентификатор сообщества, в которое должна быть загружена история (при работе с ключом доступа пользователя)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°, РІ РєРѕС‚РѕСЂРѕРµ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р·Р°РіСЂСѓР¶РµРЅР° РёСЃС‚РѕСЂРёСЏ (РїСЂРё СЂР°Р±РѕС‚Рµ СЃ РєР»СЋС‡РѕРј РґРѕСЃС‚СѓРїР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ)
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsStoriesGetUploadServer;
     /// <summary>
-    /// Объект кликабельного стикера (данные в формате JSON)
+    /// РћР±СЉРµРєС‚ РєР»РёРєР°Р±РµР»СЊРЅРѕРіРѕ СЃС‚РёРєРµСЂР° (РґР°РЅРЅС‹Рµ РІ С„РѕСЂРјР°С‚Рµ JSON)
     /// </summary>
     function ClickableStickers(const Value: string): TVkParamsStoriesGetUploadServer; overload;
     /// <summary>
-    /// Объект кликабельного стикера
+    /// РћР±СЉРµРєС‚ РєР»РёРєР°Р±РµР»СЊРЅРѕРіРѕ СЃС‚РёРєРµСЂР°
     /// </summary>
     function ClickableStickers(Value: TVkStoriesStickersInfo): TVkParamsStoriesGetUploadServer; overload;
   end;
@@ -63,23 +63,23 @@ type
   TVkParamsStoriesGetReplies = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца истории
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° РёСЃС‚РѕСЂРёРё
     /// </summary>
     function OwnerId(const Value: TVkPeerId): TVkParamsStoriesGetReplies;
     /// <summary>
-    /// Идентификатор истории
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РёСЃС‚РѕСЂРёРё
     /// </summary>
     function StoryId(const Value: Integer): TVkParamsStoriesGetReplies;
     /// <summary>
-    /// Ключ доступа для приватного объекта
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР° РґР»СЏ РїСЂРёРІР°С‚РЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
     /// </summary>
     function AccessKey(const Value: string): TVkParamsStoriesGetReplies;
     /// <summary>
-    /// True — возвращать дополнительную информацию о профилях и сообществах
+    /// True вЂ” РІРѕР·РІСЂР°С‰Р°С‚СЊ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїСЂРѕС„РёР»СЏС… Рё СЃРѕРѕР±С‰РµСЃС‚РІР°С…
     /// </summary>
     function Extended(const Value: Boolean = False): TVkParamsStoriesGetReplies;
     /// <summary>
-    /// Дополнительные поля профилей и сообществ, которые необходимо вернуть в ответе
+    /// Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїРѕР»СЏ РїСЂРѕС„РёР»РµР№ Рё СЃРѕРѕР±С‰РµСЃС‚РІ, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ РІ РѕС‚РІРµС‚Рµ
     /// </summary>
     function Fields(Value: TVkExtendedFields = []): TVkParamsStoriesGetReplies;
   end;
@@ -87,23 +87,23 @@ type
   TVkParamsStoriesGetViewers = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца истории
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° РёСЃС‚РѕСЂРёРё
     /// </summary>
     function OwnerId(Value: TVkPeerId): TVkParamsStoriesGetViewers;
     /// <summary>
-    /// Идентификатор истории
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РёСЃС‚РѕСЂРёРё
     /// </summary>
     function StoryId(Value: Integer): TVkParamsStoriesGetViewers;
     /// <summary>
-    /// Максимальное число результатов в ответе
+    /// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ С‡РёСЃР»Рѕ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РІ РѕС‚РІРµС‚Рµ
     /// </summary>
     function Count(Value: Integer = 100): TVkParamsStoriesGetViewers;
     /// <summary>
-    /// Сдвиг для получения определённого подмножества результатов
+    /// РЎРґРІРёРі РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
     /// </summary>
     function Offset(Value: Integer = 0): TVkParamsStoriesGetViewers;
     /// <summary>
-    /// True — возвращать в ответе расширенную информацию о пользователях
+    /// True вЂ” РІРѕР·РІСЂР°С‰Р°С‚СЊ РІ РѕС‚РІРµС‚Рµ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС…
     /// </summary>
     function Extended(Value: Boolean = False): TVkParamsStoriesGetViewers;
   end;
@@ -111,41 +111,41 @@ type
   TVkParamsStoriesSearch = record
     List: TParams;
     /// <summary>
-    /// Поисковый запрос
+    /// РџРѕРёСЃРєРѕРІС‹Р№ Р·Р°РїСЂРѕСЃ
     /// </summary>
     function Query(Value: string): TVkParamsStoriesSearch;
     /// <summary>
-    /// Идентификатор места
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РјРµСЃС‚Р°
     /// </summary>
     function PlaceId(Value: Integer): TVkParamsStoriesSearch;
     /// <summary>
-    /// Географическая широта точки, в радиусе которой необходимо производить поиск, заданная в градусах (от -90 до 90)
+    /// Р“РµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ С€РёСЂРѕС‚Р° С‚РѕС‡РєРё, РІ СЂР°РґРёСѓСЃРµ РєРѕС‚РѕСЂРѕР№ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕРёР·РІРѕРґРёС‚СЊ РїРѕРёСЃРє, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -90 РґРѕ 90)
     /// </summary>
     function Latitude(Value: Extended): TVkParamsStoriesSearch;
     /// <summary>
-    /// Географическая долгота точки, в радиусе которой необходимо производить поиск, заданная в градусах (от -180 до 180)
+    /// Р“РµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ РґРѕР»РіРѕС‚Р° С‚РѕС‡РєРё, РІ СЂР°РґРёСѓСЃРµ РєРѕС‚РѕСЂРѕР№ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕРёР·РІРѕРґРёС‚СЊ РїРѕРёСЃРє, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -180 РґРѕ 180)
     /// </summary>
     function Longitude(Value: Extended): TVkParamsStoriesSearch;
     /// <summary>
-    /// Радиус зоны поиска в метрах
+    /// Р Р°РґРёСѓСЃ Р·РѕРЅС‹ РїРѕРёСЃРєР° РІ РјРµС‚СЂР°С…
     /// </summary>
     function Radius(Value: Integer): TVkParamsStoriesSearch;
     /// <summary>
-    /// Идентификатор упомянутого в истории пользователя или сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓРїРѕРјСЏРЅСѓС‚РѕРіРѕ РІ РёСЃС‚РѕСЂРёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function MentionedId(Value: TVkPeerId): TVkParamsStoriesSearch;
     /// <summary>
-    /// Количество историй, информацию о которых необходимо вернуть
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РёСЃС‚РѕСЂРёР№, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Count(Value: Integer = 20): TVkParamsStoriesSearch;
     /// <summary>
-    /// Параметр, определяющий необходимость возвращать расширенную информацию о владельце истории
-    /// False - возвращаются только идентификаторы
-    /// True — будут дополнительно возвращены имя и фамили
+    /// РџР°СЂР°РјРµС‚СЂ, РѕРїСЂРµРґРµР»СЏСЋС‰РёР№ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚СЊ РІРѕР·РІСЂР°С‰Р°С‚СЊ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РІР»Р°РґРµР»СЊС†Рµ РёСЃС‚РѕСЂРёРё
+    /// False - РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ С‚РѕР»СЊРєРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹
+    /// True вЂ” Р±СѓРґСѓС‚ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ РІРѕР·РІСЂР°С‰РµРЅС‹ РёРјСЏ Рё С„Р°РјРёР»Рё
     /// </summary>
     function Extended(Value: Boolean): TVkParamsStoriesSearch;
     /// <summary>
-    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(Value: TVkExtendedFields = []): TVkParamsStoriesSearch;
   end;
@@ -153,21 +153,21 @@ type
   TVkParamsStoriesSendInteraction = record
     List: TParams;
     /// <summary>
-    /// Ключ доступа пользователя, полученный при подписке. Возвращает событие VKWebAppSubscribeStoryApp
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РїРѕР»СѓС‡РµРЅРЅС‹Р№ РїСЂРё РїРѕРґРїРёСЃРєРµ. Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРѕР±С‹С‚РёРµ VKWebAppSubscribeStoryApp
     /// </summary>
     function AccessKey(Value: string): TVkParamsStoriesSendInteraction;
     /// <summary>
-    /// Текст фидбека
+    /// РўРµРєСЃС‚ С„РёРґР±РµРєР°
     /// </summary>
     function Message(Value: string): TVkParamsStoriesSendInteraction;
     /// <summary>
-    /// False — фидбек виден только отправителю и автору истории;
-    /// True — фидбек виден всем зрителям истории и автору
+    /// False вЂ” С„РёРґР±РµРє РІРёРґРµРЅ С‚РѕР»СЊРєРѕ РѕС‚РїСЂР°РІРёС‚РµР»СЋ Рё Р°РІС‚РѕСЂСѓ РёСЃС‚РѕСЂРёРё;
+    /// True вЂ” С„РёРґР±РµРє РІРёРґРµРЅ РІСЃРµРј Р·СЂРёС‚РµР»СЏРј РёСЃС‚РѕСЂРёРё Рё Р°РІС‚РѕСЂСѓ
     /// </summary>
     function IsBroadcast(Value: Boolean = False): TVkParamsStoriesSendInteraction;
     /// <summary>
-    /// False — автор фидбека не анонимный;
-    /// True — автор фидбека анонимный
+    /// False вЂ” Р°РІС‚РѕСЂ С„РёРґР±РµРєР° РЅРµ Р°РЅРѕРЅРёРјРЅС‹Р№;
+    /// True вЂ” Р°РІС‚РѕСЂ С„РёРґР±РµРєР° Р°РЅРѕРЅРёРјРЅС‹Р№
     /// </summary>
     function IsAnonymous(Value: Boolean = False): TVkParamsStoriesSendInteraction;
     function UnseenMarker(Value: Boolean): TVkParamsStoriesSendInteraction;
@@ -179,80 +179,80 @@ type
   TStoriesController = class(TVkController)
   public
     /// <summary>
-    /// Позволяет скрыть из ленты новостей истории от выбранных источников.
+    /// РџРѕР·РІРѕР»СЏРµС‚ СЃРєСЂС‹С‚СЊ РёР· Р»РµРЅС‚С‹ РЅРѕРІРѕСЃС‚РµР№ РёСЃС‚РѕСЂРёРё РѕС‚ РІС‹Р±СЂР°РЅРЅС‹С… РёСЃС‚РѕС‡РЅРёРєРѕРІ.
     /// </summary>
     function BanOwner(const OwnersIds: TVkPeerIds): Boolean;
     /// <summary>
-    /// Удаляет историю.
+    /// РЈРґР°Р»СЏРµС‚ РёСЃС‚РѕСЂРёСЋ.
     /// </summary>
     function Delete(const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
     /// <summary>
-    /// Возвращает истории, доступные для текущего пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёСЃС‚РѕСЂРёРё, РґРѕСЃС‚СѓРїРЅС‹Рµ РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Get(var Items: TVkStoriesBlock; const Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает истории, доступные для текущего пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёСЃС‚РѕСЂРёРё, РґРѕСЃС‚СѓРїРЅС‹Рµ РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Get(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesGet): Boolean; overload;
     /// <summary>
-    /// Возвращает истории, доступные для текущего пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёСЃС‚РѕСЂРёРё, РґРѕСЃС‚СѓРїРЅС‹Рµ РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Get(var Items: TVkStoriesBlock; const OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
-    /// Возвращает список источников историй, скрытых из ленты текущего пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РёСЃС‚РѕС‡РЅРёРєРѕРІ РёСЃС‚РѕСЂРёР№, СЃРєСЂС‹С‚С‹С… РёР· Р»РµРЅС‚С‹ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetBanned(var Items: TVkStoriesBanned; const Extended: Boolean = False; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
-    /// Возвращает истории, доступные для текущего пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёСЃС‚РѕСЂРёРё, РґРѕСЃС‚СѓРїРЅС‹Рµ РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetById(var Items: TVkStoryItems; const Stories: TArrayOfString; Extended: Boolean = False; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
-    /// Позволяет получить адрес для загрузки истории с фотографией.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ Р°РґСЂРµСЃ РґР»СЏ Р·Р°РіСЂСѓР·РєРё РёСЃС‚РѕСЂРёРё СЃ С„РѕС‚РѕРіСЂР°С„РёРµР№.
     /// </summary>
     function GetPhotoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer): Boolean;
     /// <summary>
-    /// Позволяет получить ответы на историю.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ РѕС‚РІРµС‚С‹ РЅР° РёСЃС‚РѕСЂРёСЋ.
     /// </summary>
     function GetReplies(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesGetReplies): Boolean;
     /// <summary>
-    /// Возвращает статистику истории.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РёСЃС‚РѕСЂРёРё.
     /// </summary>
     function GetStats(var Items: TVkStoryStat; const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
     /// <summary>
-    /// Позволяет получить адрес для загрузки видеозаписи в историю.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ Р°РґСЂРµСЃ РґР»СЏ Р·Р°РіСЂСѓР·РєРё РІРёРґРµРѕР·Р°РїРёСЃРё РІ РёСЃС‚РѕСЂРёСЋ.
     /// </summary>
     function GetVideoUploadServer(var UploadResult: string; const Params: TVkParamsStoriesGetUploadServer): Boolean;
     /// <summary>
-    /// Возвращает список пользователей, просмотревших историю.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РїСЂРѕСЃРјРѕС‚СЂРµРІС€РёС… РёСЃС‚РѕСЂРёСЋ.
     /// </summary>
     function GetViewers(var Items: TVkStoryViews; const Params: TVkParamsStoriesGetViewers): Boolean;
     /// <summary>
-    /// Скрывает все ответы автора за последние сутки на истории текущего пользователя.
+    /// РЎРєСЂС‹РІР°РµС‚ РІСЃРµ РѕС‚РІРµС‚С‹ Р°РІС‚РѕСЂР° Р·Р° РїРѕСЃР»РµРґРЅРёРµ СЃСѓС‚РєРё РЅР° РёСЃС‚РѕСЂРёРё С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function HideAllReplies(const OwnerId, GroupId: TVkPeerId): Boolean;
     /// <summary>
-    /// Скрывает ответ на историю.
+    /// РЎРєСЂС‹РІР°РµС‚ РѕС‚РІРµС‚ РЅР° РёСЃС‚РѕСЂРёСЋ.
     /// </summary>
     function HideReply(const OwnerId: TVkPeerId; StoryId: Integer): Boolean;
     /// <summary>
-    /// Сохраняет историю. В upload_results нужно передать строку, которую возвращает stories.getPhotoUploadServer или stories.getVideoUploadServer
+    /// РЎРѕС…СЂР°РЅСЏРµС‚ РёСЃС‚РѕСЂРёСЋ. Р’ upload_results РЅСѓР¶РЅРѕ РїРµСЂРµРґР°С‚СЊ СЃС‚СЂРѕРєСѓ, РєРѕС‚РѕСЂСѓСЋ РІРѕР·РІСЂР°С‰Р°РµС‚ stories.getPhotoUploadServer РёР»Рё stories.getVideoUploadServer
     /// </summary>
     function Save(var Items: TVkStoryItems; const UploadResults: TArrayOfString): Boolean;
     /// <summary>
-    /// Возвращает результаты поиска по историям.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР° РїРѕ РёСЃС‚РѕСЂРёСЏРј.
     /// </summary>
     function Search(var Items: TVkStoriesBlock; const Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает результаты поиска по историям.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР° РїРѕ РёСЃС‚РѕСЂРёСЏРј.
     /// </summary>
     function Search(var Items: TVkStoriesBlock; const Params: TVkParamsStoriesSearch): Boolean; overload;
     /// <summary>
-    /// Отправляет фидбек на историю.
-    /// Доступен приложениям с типом VK Mini Apps. Метод по умолчанию недоступен приложениям. Получить доступ к использованию метода можно подав заявку на размещение в каталоге приложений и подробно рассказав о механике, используемой в приложении.
+    /// РћС‚РїСЂР°РІР»СЏРµС‚ С„РёРґР±РµРє РЅР° РёСЃС‚РѕСЂРёСЋ.
+    /// Р”РѕСЃС‚СѓРїРµРЅ РїСЂРёР»РѕР¶РµРЅРёСЏРј СЃ С‚РёРїРѕРј VK Mini Apps. РњРµС‚РѕРґ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РЅРµРґРѕСЃС‚СѓРїРµРЅ РїСЂРёР»РѕР¶РµРЅРёСЏРј. РџРѕР»СѓС‡РёС‚СЊ РґРѕСЃС‚СѓРї Рє РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЋ РјРµС‚РѕРґР° РјРѕР¶РЅРѕ РїРѕРґР°РІ Р·Р°СЏРІРєСѓ РЅР° СЂР°Р·РјРµС‰РµРЅРёРµ РІ РєР°С‚Р°Р»РѕРіРµ РїСЂРёР»РѕР¶РµРЅРёР№ Рё РїРѕРґСЂРѕР±РЅРѕ СЂР°СЃСЃРєР°Р·Р°РІ Рѕ РјРµС…Р°РЅРёРєРµ, РёСЃРїРѕР»СЊР·СѓРµРјРѕР№ РІ РїСЂРёР»РѕР¶РµРЅРёРё.
     /// </summary>
     function SendInteraction(const Params: TVkParamsStoriesSendInteraction): Boolean;
     /// <summary>
-    /// Позволяет вернуть пользователя или сообщество в список отображаемых историй в ленте.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РІРµСЂРЅСѓС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІРѕ РІ СЃРїРёСЃРѕРє РѕС‚РѕР±СЂР°Р¶Р°РµРјС‹С… РёСЃС‚РѕСЂРёР№ РІ Р»РµРЅС‚Рµ.
     /// </summary>
     function UnbanOwner(const OwnersIds: TIdList): Boolean;
   end;

@@ -1,4 +1,4 @@
-unit VK.Entity.Profile;
+п»їunit VK.Entity.Profile;
 
 interface
 
@@ -11,12 +11,11 @@ uses
 type
   TVkProfile = class;
 
-  TVkLangFull = class(TVkEntity)
+  TVkLangFull = class(TVkObject)
   private
-    FId: Integer;
     FNative_name: string;
   public
-    property Id: Integer read FId write FId;
+    property Id;
     property NativeName: string read FNative_name write FNative_name;
   end;
 
@@ -85,21 +84,21 @@ type
     FType: string;
   public
     /// <summary>
-    /// Идентификатор пользователя
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property Id;
     /// <summary>
-    /// Имя родственника (если родственник не является пользователем ВКонтакте, то предыдущее значение id возвращено не будет)
+    /// РРјСЏ СЂРѕРґСЃС‚РІРµРЅРЅРёРєР° (РµСЃР»Рё СЂРѕРґСЃС‚РІРµРЅРЅРёРє РЅРµ СЏРІР»СЏРµС‚СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј Р’РљРѕРЅС‚Р°РєС‚Рµ, С‚Рѕ РїСЂРµРґС‹РґСѓС‰РµРµ Р·РЅР°С‡РµРЅРёРµ id РІРѕР·РІСЂР°С‰РµРЅРѕ РЅРµ Р±СѓРґРµС‚)
     /// </summary>
     property Name;
     /// <summary>
-    /// Тип родственной связи.
-    ///  Возможные значения:
-    ///  child — сын/дочь;
-    ///  sibling — брат/сестра;
-    ///  parent — отец/мать;
-    ///  grandparent — дедушка/бабушка;
-    ///  grandchild — внук/внучка
+    /// РўРёРї СЂРѕРґСЃС‚РІРµРЅРЅРѕР№ СЃРІСЏР·Рё.
+    ///  Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ:
+    ///  child вЂ” СЃС‹РЅ/РґРѕС‡СЊ;
+    ///  sibling вЂ” Р±СЂР°С‚/СЃРµСЃС‚СЂР°;
+    ///  parent вЂ” РѕС‚РµС†/РјР°С‚СЊ;
+    ///  grandparent вЂ” РґРµРґСѓС€РєР°/Р±Р°Р±СѓС€РєР°;
+    ///  grandchild вЂ” РІРЅСѓРє/РІРЅСѓС‡РєР°
     /// </summary>
     property TypeRelative: string read FType write FType;
   end;
@@ -117,61 +116,61 @@ type
     FType_str: string;
   public
     /// <summary>
-    /// Идентификатор школы
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С€РєРѕР»С‹
     /// </summary>
     property Id;
     /// <summary>
-    /// Наименование школы
+    /// РќР°РёРјРµРЅРѕРІР°РЅРёРµ С€РєРѕР»С‹
     /// </summary>
     property Name;
     /// <summary>
-    /// Идентификатор города, в котором расположена школа
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°, РІ РєРѕС‚РѕСЂРѕРј СЂР°СЃРїРѕР»РѕР¶РµРЅР° С€РєРѕР»Р°
     /// </summary>
     property City: Integer read FCity write FCity;
     /// <summary>
-    /// Буква класса
+    /// Р‘СѓРєРІР° РєР»Р°СЃСЃР°
     /// </summary>
     property &Class: string read FClass write FClass;
     /// <summary>
-    /// Идентификатор страны, в которой расположена школа
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹, РІ РєРѕС‚РѕСЂРѕР№ СЂР°СЃРїРѕР»РѕР¶РµРЅР° С€РєРѕР»Р°
     /// </summary>
     property Country: Integer read FCountry write FCountry;
     /// <summary>
-    /// Специализация
+    /// РЎРїРµС†РёР°Р»РёР·Р°С†РёСЏ
     /// </summary>
     property Speciality: string read FSpeciality write FSpeciality;
     /// <summary>
-    /// Идентификатор типа
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РёРїР°
     /// </summary>
     property &Type: Integer read FType write FType;
     /// <summary>
-    /// Название типа. Возможные значения для пар type-typeStr
-    ///  0 — "школа";
-    ///  1 — "гимназия";
-    ///  2 —"лицей";
-    ///  3 — "школа-интернат";
-    ///  4 — "школа вечерняя";
-    ///  5 — "школа музыкальная";
-    ///  6 — "школа спортивная";
-    ///  7 — "школа художественная";
-    ///  8 — "колледж";
-    ///  9 — "профессиональный лицей";
-    ///  10 — "техникум";
-    ///  11 — "ПТУ";
-    ///  12 — "училище";
-    ///  13 — "школа искусств".
+    /// РќР°Р·РІР°РЅРёРµ С‚РёРїР°. Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РґР»СЏ РїР°СЂ type-typeStr
+    ///  0 вЂ” "С€РєРѕР»Р°";
+    ///  1 вЂ” "РіРёРјРЅР°Р·РёСЏ";
+    ///  2 вЂ”"Р»РёС†РµР№";
+    ///  3 вЂ” "С€РєРѕР»Р°-РёРЅС‚РµСЂРЅР°С‚";
+    ///  4 вЂ” "С€РєРѕР»Р° РІРµС‡РµСЂРЅСЏСЏ";
+    ///  5 вЂ” "С€РєРѕР»Р° РјСѓР·С‹РєР°Р»СЊРЅР°СЏ";
+    ///  6 вЂ” "С€РєРѕР»Р° СЃРїРѕСЂС‚РёРІРЅР°СЏ";
+    ///  7 вЂ” "С€РєРѕР»Р° С…СѓРґРѕР¶РµСЃС‚РІРµРЅРЅР°СЏ";
+    ///  8 вЂ” "РєРѕР»Р»РµРґР¶";
+    ///  9 вЂ” "РїСЂРѕС„РµСЃСЃРёРѕРЅР°Р»СЊРЅС‹Р№ Р»РёС†РµР№";
+    ///  10 вЂ” "С‚РµС…РЅРёРєСѓРј";
+    ///  11 вЂ” "РџРўРЈ";
+    ///  12 вЂ” "СѓС‡РёР»РёС‰Рµ";
+    ///  13 вЂ” "С€РєРѕР»Р° РёСЃРєСѓСЃСЃС‚РІ".
     /// </summary>
     property TypeStr: string read FType_str write FType_str;
     /// <summary>
-    /// Год начала обучения
+    /// Р“РѕРґ РЅР°С‡Р°Р»Р° РѕР±СѓС‡РµРЅРёСЏ
     /// </summary>
     property YearFrom: Integer read FYear_from write FYear_from;
     /// <summary>
-    /// Год окончания обучения
+    /// Р“РѕРґ РѕРєРѕРЅС‡Р°РЅРёСЏ РѕР±СѓС‡РµРЅРёСЏ
     /// </summary>
     property YearTo: Integer read FYear_to write FYear_to;
     /// <summary>
-    /// Год выпуска
+    /// Р“РѕРґ РІС‹РїСѓСЃРєР°
     /// </summary>
     property YearGraduated: Integer read FYear_graduated write FYear_graduated;
   end;
@@ -191,55 +190,55 @@ type
     FEducation_status_id: Integer;
   public
     /// <summary>
-    /// Идентификатор университета
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓРЅРёРІРµСЂСЃРёС‚РµС‚Р°
     /// </summary>
     property Id;
     /// <summary>
-    /// Идентификатор страны, в которой расположен университет
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹, РІ РєРѕС‚РѕСЂРѕР№ СЂР°СЃРїРѕР»РѕР¶РµРЅ СѓРЅРёРІРµСЂСЃРёС‚РµС‚
     /// </summary>
     property Country: Integer read FCountry write FCountry;
     /// <summary>
-    /// Идентификатор города, в котором расположен университет
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°, РІ РєРѕС‚РѕСЂРѕРј СЂР°СЃРїРѕР»РѕР¶РµРЅ СѓРЅРёРІРµСЂСЃРёС‚РµС‚
     /// </summary>
     property City: Integer read FCity write FCity;
     /// <summary>
-    /// Наименование университета
+    /// РќР°РёРјРµРЅРѕРІР°РЅРёРµ СѓРЅРёРІРµСЂСЃРёС‚РµС‚Р°
     /// </summary>
     property Name;
     /// <summary>
-    /// Идентификатор факультета
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„Р°РєСѓР»СЊС‚РµС‚Р°
     /// </summary>
     property Faculty: Integer read FFaculty write FFaculty;
     /// <summary>
-    /// Наименование факультета
+    /// РќР°РёРјРµРЅРѕРІР°РЅРёРµ С„Р°РєСѓР»СЊС‚РµС‚Р°
     /// </summary>
     property FacultyName: string read FFaculty_name write FFaculty_name;
     /// <summary>
-    /// Идентификатор кафедры
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°С„РµРґСЂС‹
     /// </summary>
     property Chair: Integer read FChair write FChair;
     /// <summary>
-    /// Наименование кафедры
+    /// РќР°РёРјРµРЅРѕРІР°РЅРёРµ РєР°С„РµРґСЂС‹
     /// </summary>
     property ChairName: string read FChair_name write FChair_name;
     /// <summary>
-    /// Год окончания обучения
+    /// Р“РѕРґ РѕРєРѕРЅС‡Р°РЅРёСЏ РѕР±СѓС‡РµРЅРёСЏ
     /// </summary>
     property Graduation: Integer read FGraduation write FGraduation;
     /// <summary>
-    /// Форма обучения (Id)
+    /// Р¤РѕСЂРјР° РѕР±СѓС‡РµРЅРёСЏ (Id)
     /// </summary>
     property EducationFormId: Integer read FEducation_form_id write FEducation_form_id;
     /// <summary>
-    /// Форма обучения
+    /// Р¤РѕСЂРјР° РѕР±СѓС‡РµРЅРёСЏ
     /// </summary>
     property EducationForm: string read FEducation_form write FEducation_form;
     /// <summary>
-    /// Статус (например, «Выпускник (специалист)»)
+    /// РЎС‚Р°С‚СѓСЃ (РЅР°РїСЂРёРјРµСЂ, В«Р’С‹РїСѓСЃРєРЅРёРє (СЃРїРµС†РёР°Р»РёСЃС‚)В»)
     /// </summary>
     property EducationStatus: string read FEducation_status write FEducation_status;
     /// <summary>
-    /// Статус (например, «Выпускник (специалист)») (Id)
+    /// РЎС‚Р°С‚СѓСЃ (РЅР°РїСЂРёРјРµСЂ, В«Р’С‹РїСѓСЃРєРЅРёРє (СЃРїРµС†РёР°Р»РёСЃС‚)В») (Id)
     /// </summary>
     property EducationStatusId: Integer read FEducation_status_id write FEducation_status_id;
   end;
@@ -261,54 +260,54 @@ type
     FLangs_full: TArray<TVkLangFull>;
   public
     /// <summary>
-    /// Отношение к алкоголю
+    /// РћС‚РЅРѕС€РµРЅРёРµ Рє Р°Р»РєРѕРіРѕР»СЋ
     /// </summary>
     property Alcohol: TVkPersonalAttitude read FAlcohol write FAlcohol;
     /// <summary>
-    /// Источники вдохновения
+    /// РСЃС‚РѕС‡РЅРёРєРё РІРґРѕС…РЅРѕРІРµРЅРёСЏ
     /// </summary>
     property InspiredBy: string read FInspired_by write FInspired_by;
     /// <summary>
-    /// Языки
+    /// РЇР·С‹РєРё
     /// </summary>
     property Langs: TArray<string> read FLangs write FLangs;
     property LangsFull: TArray<TVkLangFull> read FLangs_full write FLangs_full;
     /// <summary>
-    /// Главное в жизни
-    ///  1 — семья и дети;
-    ///  2 — карьера и деньги;
-    ///  3 — развлечения и отдых;
-    ///  4 — наука и исследования;
-    ///  5 — совершенствование мира;
-    ///  6 — саморазвитие;
-    ///  7 — красота и искусство;
-    ///  8 — слава и влияние;
+    /// Р“Р»Р°РІРЅРѕРµ РІ Р¶РёР·РЅРё
+    ///  1 вЂ” СЃРµРјСЊСЏ Рё РґРµС‚Рё;
+    ///  2 вЂ” РєР°СЂСЊРµСЂР° Рё РґРµРЅСЊРіРё;
+    ///  3 вЂ” СЂР°Р·РІР»РµС‡РµРЅРёСЏ Рё РѕС‚РґС‹С…;
+    ///  4 вЂ” РЅР°СѓРєР° Рё РёСЃСЃР»РµРґРѕРІР°РЅРёСЏ;
+    ///  5 вЂ” СЃРѕРІРµСЂС€РµРЅСЃС‚РІРѕРІР°РЅРёРµ РјРёСЂР°;
+    ///  6 вЂ” СЃР°РјРѕСЂР°Р·РІРёС‚РёРµ;
+    ///  7 вЂ” РєСЂР°СЃРѕС‚Р° Рё РёСЃРєСѓСЃСЃС‚РІРѕ;
+    ///  8 вЂ” СЃР»Р°РІР° Рё РІР»РёСЏРЅРёРµ;
     /// </summary>
     property LifeMain: Integer read FLife_main write FLife_main;
     /// <summary>
-    /// Главное в людях
-    ///  1 — ум и креативность;
-    ///  2 — доброта и честность;
-    ///  3 — красота и здоровье;
-    ///  4 — власть и богатство;
-    ///  5 — смелость и упорство;
-    ///  6 — юмор и жизнелюбие.
+    /// Р“Р»Р°РІРЅРѕРµ РІ Р»СЋРґСЏС…
+    ///  1 вЂ” СѓРј Рё РєСЂРµР°С‚РёРІРЅРѕСЃС‚СЊ;
+    ///  2 вЂ” РґРѕР±СЂРѕС‚Р° Рё С‡РµСЃС‚РЅРѕСЃС‚СЊ;
+    ///  3 вЂ” РєСЂР°СЃРѕС‚Р° Рё Р·РґРѕСЂРѕРІСЊРµ;
+    ///  4 вЂ” РІР»Р°СЃС‚СЊ Рё Р±РѕРіР°С‚СЃС‚РІРѕ;
+    ///  5 вЂ” СЃРјРµР»РѕСЃС‚СЊ Рё СѓРїРѕСЂСЃС‚РІРѕ;
+    ///  6 вЂ” СЋРјРѕСЂ Рё Р¶РёР·РЅРµР»СЋР±РёРµ.
     /// </summary>
     property PeopleMain: Integer read FPeople_main write FPeople_main;
     /// <summary>
-    /// Политические предпочтения
+    /// РџРѕР»РёС‚РёС‡РµСЃРєРёРµ РїСЂРµРґРїРѕС‡С‚РµРЅРёСЏ
     /// </summary>
     property Political: TVkPolitical read FPolitical write FPolitical;
     /// <summary>
-    /// Мировоззрение
+    /// РњРёСЂРѕРІРѕР·Р·СЂРµРЅРёРµ
     /// </summary>
     property Religion: string read FReligion write FReligion;
     /// <summary>
-    /// Мировоззрение
+    /// РњРёСЂРѕРІРѕР·Р·СЂРµРЅРёРµ
     /// </summary>
     property ReligionId: Integer read FReligion_id write FReligion_id;
     /// <summary>
-    /// Отношение к курению
+    /// РћС‚РЅРѕС€РµРЅРёРµ Рє РєСѓСЂРµРЅРёСЋ
     /// </summary>
     property Smoking: TVkPersonalAttitude read FSmoking write FSmoking;
     destructor Destroy; override;
@@ -359,15 +358,15 @@ type
     FCity_id: Integer;
   public
     /// <summary>
-    /// Тип
+    /// РўРёРї
     /// </summary>
     property &Type: string read FType write FType;
     /// <summary>
-    /// Идентификатор школы, вуза, сообщества компании (в которой пользователь работает);
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С€РєРѕР»С‹, РІСѓР·Р°, СЃРѕРѕР±С‰РµСЃС‚РІР° РєРѕРјРїР°РЅРёРё (РІ РєРѕС‚РѕСЂРѕР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЂР°Р±РѕС‚Р°РµС‚);
     /// </summary>
     property Id;
     /// <summary>
-    /// Название школы, вуза или места работы
+    /// РќР°Р·РІР°РЅРёРµ С€РєРѕР»С‹, РІСѓР·Р° РёР»Рё РјРµСЃС‚Р° СЂР°Р±РѕС‚С‹
     /// </summary>
     property Name;
     property CountryId: Integer read FCountry_id write FCountry_id;
@@ -532,20 +531,28 @@ type
     FWall_default: string;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_no_index: Boolean;
+    FMaiden_name_dat: string;
+    FMaiden_name_abl: string;
+    FMaiden_name_acc: string;
+    FMaiden_name_ins: string;
+    FMaiden_name_gen: string;
+    FMaiden_name_nom: string;
+    [JsonReflectAttribute(ctString, rtString, TBirthDateVisibilityInterceptor)]
+    FBdate_visibility: TVkBirthDateVisibility;
     function GetRefer: string;
     function FGetFullName: string;
     function GetFullNameAcc: string;
   public
     /// <summary>
-    /// Идентификатор пользователя
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property Id;
     /// <summary>
-    /// Содержимое поля «О себе» из профиля.
+    /// РЎРѕРґРµСЂР¶РёРјРѕРµ РїРѕР»СЏ В«Рћ СЃРµР±РµВ» РёР· РїСЂРѕС„РёР»СЏ.
     /// </summary>
     property About: string read FAbout write FAbout;
     /// <summary>
-    /// Содержимое поля «Деятельность» из профиля.
+    /// РЎРѕРґРµСЂР¶РёРјРѕРµ РїРѕР»СЏ В«Р”РµСЏС‚РµР»СЊРЅРѕСЃС‚СЊВ» РёР· РїСЂРѕС„РёР»СЏ.
     /// </summary>
     property Activities: string read FActivities write FActivities;
     /// <summary>
@@ -553,83 +560,87 @@ type
     /// </summary>
     property Activity: string read FActivity write FActivity;
     /// <summary>
-    /// Дата рождения. Возвращается в формате D.M.YYYY или D.M (если год рождения скрыт). Если дата рождения скрыта целиком, поле отсутствует в ответе.
+    /// Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ. Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ С„РѕСЂРјР°С‚Рµ D.M.YYYY РёР»Рё D.M (РµСЃР»Рё РіРѕРґ СЂРѕР¶РґРµРЅРёСЏ СЃРєСЂС‹С‚). Р•СЃР»Рё РґР°С‚Р° СЂРѕР¶РґРµРЅРёСЏ СЃРєСЂС‹С‚Р° С†РµР»РёРєРѕРј, РїРѕР»Рµ РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РІ РѕС‚РІРµС‚Рµ.
     /// </summary>
     property BirthDate: string read FBdate write FBdate;
     /// <summary>
-    /// Информация о том, находится ли текущий пользователь в черном списке
+    /// Р’РёРґРёРјРѕСЃС‚СЊ РґР°С‚С‹ СЂРѕР¶РґРµРЅРёСЏ
+    /// </summary>
+    property BirthDateVisibility: TVkBirthDateVisibility read FBdate_visibility write FBdate_visibility;
+    /// <summary>
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІ С‡РµСЂРЅРѕРј СЃРїРёСЃРєРµ
     /// </summary>
     property Blacklisted: Boolean read FBlacklisted write FBlacklisted;
     /// <summary>
-    /// Информация о том, находится ли пользователь в черном списке у текущего пользователя
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІ С‡РµСЂРЅРѕРј СЃРїРёСЃРєРµ Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property BlacklistedByMe: Boolean read FBlacklisted_by_me write FBlacklisted_by_me;
     /// <summary>
-    /// Содержимое поля «Любимые книги» из профиля пользователя.
+    /// РЎРѕРґРµСЂР¶РёРјРѕРµ РїРѕР»СЏ В«Р›СЋР±РёРјС‹Рµ РєРЅРёРіРёВ» РёР· РїСЂРѕС„РёР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     property Books: string read FBooks write FBooks;
     /// <summary>
-    /// Может ли текущий пользователь видеть профиль при is_closed = 1 (например, он есть в друзьях).
+    /// РњРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРёРґРµС‚СЊ РїСЂРѕС„РёР»СЊ РїСЂРё is_closed = 1 (РЅР°РїСЂРёРјРµСЂ, РѕРЅ РµСЃС‚СЊ РІ РґСЂСѓР·СЊСЏС…).
     /// </summary>
     property CanAccessClosed: Boolean read FCan_access_closed write FCan_access_closed;
     /// <summary>
-    /// Может ли текущий пользователь пригласить в группу
+    /// РњРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїСЂРёРіР»Р°СЃРёС‚СЊ РІ РіСЂСѓРїРїСѓ
     /// </summary>
     property CanBeInvitedGroup: Boolean read FCan_be_invited_group write FCan_be_invited_group;
     /// <summary>
-    /// Может ли текущий пользователь пригласить в чат
+    /// РњРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїСЂРёРіР»Р°СЃРёС‚СЊ РІ С‡Р°С‚
     /// </summary>
     property CanInviteToChats: Boolean read FCan_invite_to_chats write FCan_invite_to_chats;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь оставлять записи на стене
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕСЃС‚Р°РІР»СЏС‚СЊ Р·Р°РїРёСЃРё РЅР° СЃС‚РµРЅРµ
     /// </summary>
     property CanPost: Boolean read FCan_post write FCan_post;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь видеть чужие записи на стене
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРёРґРµС‚СЊ С‡СѓР¶РёРµ Р·Р°РїРёСЃРё РЅР° СЃС‚РµРЅРµ
     /// </summary>
     property CanSeeAllPosts: Boolean read FCan_see_all_posts write FCan_see_all_posts;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь видеть аудиозаписи
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРёРґРµС‚СЊ Р°СѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     property CanSeeAudio: Boolean read FCan_see_audio write FCan_see_audio;
     /// <summary>
-    /// Информация о том, будет ли отправлено уведомление пользователю о заявке в друзья от текущего пользователя
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, Р±СѓРґРµС‚ Р»Рё РѕС‚РїСЂР°РІР»РµРЅРѕ СѓРІРµРґРѕРјР»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ Рѕ Р·Р°СЏРІРєРµ РІ РґСЂСѓР·СЊСЏ РѕС‚ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property CanSendFriendRequest: Boolean read FCan_send_friend_request write FCan_send_friend_request;
     /// <summary>
-    /// Информация о том, может ли текущий пользователь отправить личное сообщение
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РјРѕР¶РµС‚ Р»Рё С‚РµРєСѓС‰РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕС‚РїСЂР°РІРёС‚СЊ Р»РёС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ
     /// </summary>
     property CanWritePrivateMessage: Boolean read FCan_write_private_message write FCan_write_private_message;
     /// <summary>
-    /// Информация о карьере пользователя
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєР°СЂСЊРµСЂРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property Career: TArray<TVkCareer> read FCareer write FCareer;
     /// <summary>
-    /// Информация о городе, указанном на странице пользователя в разделе «Контакты»
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РіРѕСЂРѕРґРµ, СѓРєР°Р·Р°РЅРЅРѕРј РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ СЂР°Р·РґРµР»Рµ В«РљРѕРЅС‚Р°РєС‚С‹В»
     /// </summary>
     property City: TVkCity read FCity write FCity;
     /// <summary>
-    /// Количество общих друзей с текущим пользователем
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±С‰РёС… РґСЂСѓР·РµР№ СЃ С‚РµРєСѓС‰РёРј РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј
     /// </summary>
     property CommonCount: Integer read FCommon_count write FCommon_count;
     /// <summary>
-    /// Информация о стране, указанной на странице пользователя в разделе «Контакты»
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃС‚СЂР°РЅРµ, СѓРєР°Р·Р°РЅРЅРѕР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ СЂР°Р·РґРµР»Рµ В«РљРѕРЅС‚Р°РєС‚С‹В»
     /// </summary>
     property Country: TVkCountry read FCountry write FCountry;
     /// <summary>
-    /// Количество различных объектов у пользователя. Поле возвращается только в методе users.get при запросе информации об одном пользователе, с передачей пользовательского access_token
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°Р·Р»РёС‡РЅС‹С… РѕР±СЉРµРєС‚РѕРІ Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ. РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РІ РјРµС‚РѕРґРµ users.get РїСЂРё Р·Р°РїСЂРѕСЃРµ РёРЅС„РѕСЂРјР°С†РёРё РѕР± РѕРґРЅРѕРј РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ, СЃ РїРµСЂРµРґР°С‡РµР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРѕРіРѕ access_token
     /// </summary>
     property Counters: TVkCounters read FCounters write FCounters;
     /// <summary>
-    /// Возвращает данные о точках, по которым вырезаны профильная и миниатюрная фотографии пользователя, при наличии
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РґР°РЅРЅС‹Рµ Рѕ С‚РѕС‡РєР°С…, РїРѕ РєРѕС‚РѕСЂС‹Рј РІС‹СЂРµР·Р°РЅС‹ РїСЂРѕС„РёР»СЊРЅР°СЏ Рё РјРёРЅРёР°С‚СЋСЂРЅР°СЏ С„РѕС‚РѕРіСЂР°С„РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РїСЂРё РЅР°Р»РёС‡РёРё
     /// </summary>
     property CropPhoto: TVkCropPhoto read FCrop_photo write FCrop_photo;
     /// <summary>
-    /// Поле возвращается, если страница пользователя удалена или заблокирована, содержит значение deleted или banned. В этом случае опциональные поля не возвращаются.
+    /// РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ, РµСЃР»Рё СЃС‚СЂР°РЅРёС†Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СѓРґР°Р»РµРЅР° РёР»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅР°, СЃРѕРґРµСЂР¶РёС‚ Р·РЅР°С‡РµРЅРёРµ deleted РёР»Рё banned. Р’ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РѕРїС†РёРѕРЅР°Р»СЊРЅС‹Рµ РїРѕР»СЏ РЅРµ РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ.
     /// </summary>
     property Deactivated: TVkDeactivated read FDeactivated write FDeactivated;
     /// <summary>
-    /// Короткий адрес страницы. Возвращается строка, содержащая короткий адрес страницы (например, andrew). Если он не назначен, возвращается "id"+user_id, например, id35828305
+    /// РљРѕСЂРѕС‚РєРёР№ Р°РґСЂРµСЃ СЃС‚СЂР°РЅРёС†С‹. Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ СЃС‚СЂРѕРєР°, СЃРѕРґРµСЂР¶Р°С‰Р°СЏ РєРѕСЂРѕС‚РєРёР№ Р°РґСЂРµСЃ СЃС‚СЂР°РЅРёС†С‹ (РЅР°РїСЂРёРјРµСЂ, andrew). Р•СЃР»Рё РѕРЅ РЅРµ РЅР°Р·РЅР°С‡РµРЅ, РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ "id"+user_id, РЅР°РїСЂРёРјРµСЂ, id35828305
     /// </summary>
     property Domain: string read FDomain write FDomain;
     /// <summary>
@@ -641,7 +652,7 @@ type
     /// </summary>
     property EducationStatus: string read FEducation_status write FEducation_status;
     /// <summary>
-    /// Внешние сервисы, в которые настроен экспорт из ВК (twitter, facebook, livejournal, instagram)
+    /// Р’РЅРµС€РЅРёРµ СЃРµСЂРІРёСЃС‹, РІ РєРѕС‚РѕСЂС‹Рµ РЅР°СЃС‚СЂРѕРµРЅ СЌРєСЃРїРѕСЂС‚ РёР· Р’Рљ (twitter, facebook, livejournal, instagram)
     /// </summary>
     property &Exports: TArray<TVkExport> read FExports write FExports;
     /// <summary>
@@ -649,47 +660,47 @@ type
     /// </summary>
     property Facebook: string read FFacebook write FFacebook;
     /// <summary>
-    /// Имя на Facebook
+    /// РРјСЏ РЅР° Facebook
     /// </summary>
     property FacebookName: string read FFacebook_name write FFacebook_name;
     /// <summary>
-    /// Идентификатор факультета
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„Р°РєСѓР»СЊС‚РµС‚Р°
     /// </summary>
     property Faculty: Integer read FFaculty write FFaculty;
     /// <summary>
-    /// Название факультета
+    /// РќР°Р·РІР°РЅРёРµ С„Р°РєСѓР»СЊС‚РµС‚Р°
     /// </summary>
     property FacultyName: string read FFaculty_name write FFaculty_name;
     /// <summary>
-    /// Имя
+    /// РРјСЏ
     /// </summary>
     property FirstName: string read FFirst_name write FFirst_name;
     /// <summary>
-    /// Имя (именительный)
+    /// РРјСЏ (РёРјРµРЅРёС‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property FirstNameNom: string read FFirst_name_nom write FFirst_name_nom;
     /// <summary>
-    /// Имя (родительный)
+    /// РРјСЏ (СЂРѕРґРёС‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property FirstNameGen: string read FFirst_name_gen write FFirst_name_gen;
     /// <summary>
-    /// Имя (дательный)
+    /// РРјСЏ (РґР°С‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property FirstNameDat: string read FFirst_name_dat write FFirst_name_dat;
     /// <summary>
-    /// Имя (винительный)
+    /// РРјСЏ (РІРёРЅРёС‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property FirstNameAcc: string read FFirst_name_acc write FFirst_name_acc;
     /// <summary>
-    /// Имя (творительный)
+    /// РРјСЏ (С‚РІРѕСЂРёС‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property FirstNameIns: string read FFirst_name_ins write FFirst_name_ins;
     /// <summary>
-    /// Имя (предложный)
+    /// РРјСЏ (РїСЂРµРґР»РѕР¶РЅС‹Р№)
     /// </summary>
     property FirstNameAbl: string read FFirst_name_abl write FFirst_name_abl;
     /// <summary>
-    /// Количество подписчиков пользователя
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРґРїРёСЃС‡РёРєРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property FollowersCount: Integer read FFollowers_count write FFollowers_count;
     /// <summary>
@@ -697,35 +708,35 @@ type
     /// </summary>
     property FoundWith: string read FFound_with write FFound_with;
     /// <summary>
-    /// Статус дружбы с пользователем
-    /// 0 — не является другом
-    /// 1 — отправлена заявка/подписка пользователю
-    /// 2 — имеется входящая заявка/подписка от пользователя
-    /// 3 — является другом
+    /// РЎС‚Р°С‚СѓСЃ РґСЂСѓР¶Р±С‹ СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј
+    /// 0 вЂ” РЅРµ СЏРІР»СЏРµС‚СЃСЏ РґСЂСѓРіРѕРј
+    /// 1 вЂ” РѕС‚РїСЂР°РІР»РµРЅР° Р·Р°СЏРІРєР°/РїРѕРґРїРёСЃРєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ
+    /// 2 вЂ” РёРјРµРµС‚СЃСЏ РІС…РѕРґСЏС‰Р°СЏ Р·Р°СЏРІРєР°/РїРѕРґРїРёСЃРєР° РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+    /// 3 вЂ” СЏРІР»СЏРµС‚СЃСЏ РґСЂСѓРіРѕРј
     /// </summary>
     property FriendStatus: TVkFriendStatus read FFriend_status write FFriend_status;
     /// <summary>
-    /// Содержимое поля «Любимые игры» из профиля
+    /// РЎРѕРґРµСЂР¶РёРјРѕРµ РїРѕР»СЏ В«Р›СЋР±РёРјС‹Рµ РёРіСЂС‹В» РёР· РїСЂРѕС„РёР»СЏ
     /// </summary>
     property Games: string read FGames write FGames;
     /// <summary>
-    /// Год окончания
+    /// Р“РѕРґ РѕРєРѕРЅС‡Р°РЅРёСЏ
     /// </summary>
     property Graduation: Integer read FGraduation write FGraduation;
     /// <summary>
-    /// Информация о том, известен ли номер мобильного телефона пользователя
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РёР·РІРµСЃС‚РµРЅ Р»Рё РЅРѕРјРµСЂ РјРѕР±РёР»СЊРЅРѕРіРѕ С‚РµР»РµС„РѕРЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property HasMobile: Boolean read FHas_mobile write FHas_mobile;
     /// <summary>
-    /// True, если пользователь установил фотографию для профиля
+    /// True, РµСЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓСЃС‚Р°РЅРѕРІРёР» С„РѕС‚РѕРіСЂР°С„РёСЋ РґР»СЏ РїСЂРѕС„РёР»СЏ
     /// </summary>
     property HasPhoto: Boolean read FHas_photo write FHas_photo;
     /// <summary>
-    /// Дополнительный номер телефона пользователя
+    /// Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property HomePhone: string read FHome_phone write FHome_phone;
     /// <summary>
-    /// Название родного города
+    /// РќР°Р·РІР°РЅРёРµ СЂРѕРґРЅРѕРіРѕ РіРѕСЂРѕРґР°
     /// </summary>
     property HomeTown: string read FHome_town write FHome_town;
     /// <summary>
@@ -733,71 +744,71 @@ type
     /// </summary>
     property Instagram: string read FInstagram write FInstagram;
     /// <summary>
-    /// Содержимое поля «Интересы» из профиля
+    /// РЎРѕРґРµСЂР¶РёРјРѕРµ РїРѕР»СЏ В«РРЅС‚РµСЂРµСЃС‹В» РёР· РїСЂРѕС„РёР»СЏ
     /// </summary>
     property Interests: string read FInterests write FInterests;
     /// <summary>
-    /// Был приглашен
+    /// Р‘С‹Р» РїСЂРёРіР»Р°С€РµРЅ
     /// </summary>
     property InvitedBy: Boolean read FInvited_by write FInvited_by;
     /// <summary>
-    /// Скрыт ли профиль пользователя настройками приватности.
+    /// РЎРєСЂС‹С‚ Р»Рё РїСЂРѕС„РёР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР°СЃС‚СЂРѕР№РєР°РјРё РїСЂРёРІР°С‚РЅРѕСЃС‚Рё.
     /// </summary>
     property IsClosed: Boolean read FIs_closed write FIs_closed;
     /// <summary>
-    /// Информация о том, есть ли пользователь в закладках у текущего пользователя
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РµСЃС‚СЊ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІ Р·Р°РєР»Р°РґРєР°С… Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     /// <summary>
-    /// Информация о том, является ли пользователь другом текущего пользователя
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РґСЂСѓРіРѕРј С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property IsFriend: Boolean read FIs_friend write FIs_friend;
     /// <summary>
-    /// Информация о том, скрыт ли пользователь из ленты новостей текущего пользователя
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, СЃРєСЂС‹С‚ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РёР· Р»РµРЅС‚С‹ РЅРѕРІРѕСЃС‚РµР№ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property IsHiddenFromFeed: Boolean read FIs_hidden_from_feed write FIs_hidden_from_feed;
     /// <summary>
-    /// Индексируется ли профиль поисковыми сайтами
-    /// True - профиль скрыт от поисковых сайтов
-    /// False - профиль доступен поисковым сайтам.
-    /// (В настройках приватности: https://vk.com/settings?act=privacy,
-    /// в пункте «Кому в интернете видна моя страница», выбрано значение «Всем»
+    /// РРЅРґРµРєСЃРёСЂСѓРµС‚СЃСЏ Р»Рё РїСЂРѕС„РёР»СЊ РїРѕРёСЃРєРѕРІС‹РјРё СЃР°Р№С‚Р°РјРё
+    /// True - РїСЂРѕС„РёР»СЊ СЃРєСЂС‹С‚ РѕС‚ РїРѕРёСЃРєРѕРІС‹С… СЃР°Р№С‚РѕРІ
+    /// False - РїСЂРѕС„РёР»СЊ РґРѕСЃС‚СѓРїРµРЅ РїРѕРёСЃРєРѕРІС‹Рј СЃР°Р№С‚Р°Рј.
+    /// (Р’ РЅР°СЃС‚СЂРѕР№РєР°С… РїСЂРёРІР°С‚РЅРѕСЃС‚Рё: https://vk.com/settings?act=privacy,
+    /// РІ РїСѓРЅРєС‚Рµ В«РљРѕРјСѓ РІ РёРЅС‚РµСЂРЅРµС‚Рµ РІРёРґРЅР° РјРѕСЏ СЃС‚СЂР°РЅРёС†Р°В», РІС‹Р±СЂР°РЅРѕ Р·РЅР°С‡РµРЅРёРµ В«Р’СЃРµРјВ»
     /// </summary>
     property IsNoIndex: Boolean read FIs_no_index write FIs_no_index;
     /// <summary>
-    /// Фамилия
+    /// Р¤Р°РјРёР»РёСЏ
     /// </summary>
     property LastName: string read FLast_name write FLast_name;
     /// <summary>
-    /// Фамилия (именительный)
+    /// Р¤Р°РјРёР»РёСЏ (РёРјРµРЅРёС‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property LastNameNom: string read FLast_name_nom write FLast_name_nom;
     /// <summary>
-    /// Фамилия (родительный)
+    /// Р¤Р°РјРёР»РёСЏ (СЂРѕРґРёС‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property LastNameGen: string read FLast_name_gen write FLast_name_gen;
     /// <summary>
-    /// Фамилия (дательный)
+    /// Р¤Р°РјРёР»РёСЏ (РґР°С‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property LastNameDat: string read FLast_name_dat write FLast_name_dat;
     /// <summary>
-    /// Фамилия (винительный)
+    /// Р¤Р°РјРёР»РёСЏ (РІРёРЅРёС‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property LastNameAcc: string read FLast_name_acc write FLast_name_acc;
     /// <summary>
-    /// Фамилия (творительный)
+    /// Р¤Р°РјРёР»РёСЏ (С‚РІРѕСЂРёС‚РµР»СЊРЅС‹Р№)
     /// </summary>
     property LastNameIns: string read FLast_name_ins write FLast_name_ins;
     /// <summary>
-    /// Фамилия (предложный)
+    /// Р¤Р°РјРёР»РёСЏ (РїСЂРµРґР»РѕР¶РЅС‹Р№)
     /// </summary>
     property LastNameAbl: string read FLast_name_abl write FLast_name_abl;
     /// <summary>
-    /// Время последнего посещения
+    /// Р’СЂРµРјСЏ РїРѕСЃР»РµРґРЅРµРіРѕ РїРѕСЃРµС‰РµРЅРёСЏ
     /// </summary>
     property LastSeen: TVkLastSeen read FLast_seen write FLast_seen;
     /// <summary>
-    /// Разделенные запятой идентификаторы списков друзей, в которых состоит пользователь
+    /// Р Р°Р·РґРµР»РµРЅРЅС‹Рµ Р·Р°РїСЏС‚РѕР№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ СЃРїРёСЃРєРѕРІ РґСЂСѓР·РµР№, РІ РєРѕС‚РѕСЂС‹С… СЃРѕСЃС‚РѕРёС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ
     /// </summary>
     property Lists: TArray<Integer> read FLists write FLists;
     /// <summary>
@@ -805,75 +816,99 @@ type
     /// </summary>
     property LiveJournal: string read FLivejournal write FLivejournal;
     /// <summary>
-    /// Девичья фамилия
+    /// Р”РµРІРёС‡СЊСЏ С„Р°РјРёР»РёСЏ
     /// </summary>
     property MaidenName: string read FMaiden_name write FMaiden_name;
     /// <summary>
-    /// Информация о военной службе пользователя
+    /// Р”РµРІРёС‡СЊСЏ С„Р°РјРёР»РёСЏ (РёРјРµРЅРёС‚РµР»СЊРЅС‹Р№)
+    /// </summary>
+    property MaidenNameNom: string read FMaiden_name_nom write FMaiden_name_nom;
+    /// <summary>
+    /// Р”РµРІРёС‡СЊСЏ С„Р°РјРёР»РёСЏ (СЂРѕРґРёС‚РµР»СЊРЅС‹Р№)
+    /// </summary>
+    property MaidenNameGen: string read FMaiden_name_gen write FMaiden_name_gen;
+    /// <summary>
+    /// Р”РµРІРёС‡СЊСЏ С„Р°РјРёР»РёСЏ (РґР°С‚РµР»СЊРЅС‹Р№)
+    /// </summary>
+    property MaidenNameDat: string read FMaiden_name_dat write FMaiden_name_dat;
+    /// <summary>
+    /// Р”РµРІРёС‡СЊСЏ С„Р°РјРёР»РёСЏ (РІРёРЅРёС‚РµР»СЊРЅС‹Р№)
+    /// </summary>
+    property MaidenNameAcc: string read FMaiden_name_acc write FMaiden_name_acc;
+    /// <summary>
+    /// Р”РµРІРёС‡СЊСЏ С„Р°РјРёР»РёСЏ (С‚РІРѕСЂРёС‚РµР»СЊРЅС‹Р№)
+    /// </summary>
+    property MaidenNameIns: string read FMaiden_name_ins write FMaiden_name_ins;
+    /// <summary>
+    /// Р”РµРІРёС‡СЊСЏ С„Р°РјРёР»РёСЏ (РїСЂРµРґР»РѕР¶РЅС‹Р№)
+    /// </summary>
+    property MaidenNameAbl: string read FMaiden_name_abl write FMaiden_name_abl;
+    /// <summary>
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РІРѕРµРЅРЅРѕР№ СЃР»СѓР¶Р±Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property Military: TArray<TVkMilitary> read FMilitary write FMilitary;
     /// <summary>
-    /// Номер мобильного телефона пользователя (только для Standalone-приложений)
+    /// РќРѕРјРµСЂ РјРѕР±РёР»СЊРЅРѕРіРѕ С‚РµР»РµС„РѕРЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (С‚РѕР»СЊРєРѕ РґР»СЏ Standalone-РїСЂРёР»РѕР¶РµРЅРёР№)
     /// </summary>
     property MobilePhone: string read FMobile_phone write FMobile_phone;
     /// <summary>
-    /// Содержимое поля «Любимые фильмы» из профиля пользователя
+    /// РЎРѕРґРµСЂР¶РёРјРѕРµ РїРѕР»СЏ В«Р›СЋР±РёРјС‹Рµ С„РёР»СЊРјС‹В» РёР· РїСЂРѕС„РёР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property Movies: string read FMovies write FMovies;
     /// <summary>
-    /// Содержимое поля «Любимая музыка» из профиля пользователя
+    /// РЎРѕРґРµСЂР¶РёРјРѕРµ РїРѕР»СЏ В«Р›СЋР±РёРјР°СЏ РјСѓР·С‹РєР°В» РёР· РїСЂРѕС„РёР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property Music: string read FMusic write FMusic;
     /// <summary>
-    /// Общее
+    /// РћР±С‰РµРµ
     /// </summary>
     property Mutual: TVkFriendsMutual read FMutual write FMutual;
     /// <summary>
-    /// Никнейм (отчество) пользователя
+    /// РќРёРєРЅРµР№Рј (РѕС‚С‡РµСЃС‚РІРѕ) РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property NickName: string read FNickname write FNickname;
     /// <summary>
-    /// Информация о текущем роде занятия пользователя
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РµРєСѓС‰РµРј СЂРѕРґРµ Р·Р°РЅСЏС‚РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property Occupation: TVkOccupation read FOccupation write FOccupation;
     /// <summary>
-    /// Информация о том, находится ли пользователь сейчас на сайте. Если пользователь использует мобильное приложение либо мобильную версию, возвращается дополнительное поле online_mobile, содержащее 1. При этом, если используется именно приложение, дополнительно возвращается поле online_app, содержащее его идентификатор
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРµР№С‡Р°СЃ РЅР° СЃР°Р№С‚Рµ. Р•СЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РёСЃРїРѕР»СЊР·СѓРµС‚ РјРѕР±РёР»СЊРЅРѕРµ РїСЂРёР»РѕР¶РµРЅРёРµ Р»РёР±Рѕ РјРѕР±РёР»СЊРЅСѓСЋ РІРµСЂСЃРёСЋ, РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРµ РїРѕР»Рµ online_mobile, СЃРѕРґРµСЂР¶Р°С‰РµРµ 1. РџСЂРё СЌС‚РѕРј, РµСЃР»Рё РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РёРјРµРЅРЅРѕ РїСЂРёР»РѕР¶РµРЅРёРµ, РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РїРѕР»Рµ online_app, СЃРѕРґРµСЂР¶Р°С‰РµРµ РµРіРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ
     /// </summary>
     property Online: Boolean read FOnline write FOnline;
     /// <summary>
-    /// Информация о статусе онлайн
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃС‚Р°С‚СѓСЃРµ РѕРЅР»Р°Р№РЅ
     /// </summary>
     property OnlineInfo: TVkUserOnlineInfo read FOnline_info write FOnline_info;
     /// <summary>
-    /// Информация о полях из раздела «Жизненная позиция»
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕР»СЏС… РёР· СЂР°Р·РґРµР»Р° В«Р–РёР·РЅРµРЅРЅР°СЏ РїРѕР·РёС†РёСЏВ»
     /// </summary>
     property Personal: TVkPersonal read FPersonal write FPersonal;
     /// <summary>
-    /// Фото 50
+    /// Р¤РѕС‚Рѕ 50
     /// </summary>
     property Photo50: string read FPhoto_50 write FPhoto_50;
     /// <summary>
-    /// Фото 100
+    /// Р¤РѕС‚Рѕ 100
     /// </summary>
     property Photo100: string read FPhoto_100 write FPhoto_100;
     /// <summary>
-    /// Фото 200
+    /// Р¤РѕС‚Рѕ 200
     /// </summary>
     property Photo200: string read FPhoto_200 write FPhoto_200;
     /// <summary>
-    /// Фото 200 Orig
+    /// Р¤РѕС‚Рѕ 200 Orig
     /// </summary>
     property Photo200_Orig: string read FPhoto_200_orig write FPhoto_200_orig;
     /// <summary>
-    /// Фото 400 Orig
+    /// Р¤РѕС‚Рѕ 400 Orig
     /// </summary>
     property Photo400_Orig: string read FPhoto_400_orig write FPhoto_400_orig;
     /// <summary>
-    /// Фото
+    /// Р¤РѕС‚Рѕ
     /// </summary>
     property Photo: string read FPhoto write FPhoto;
     /// <summary>
-    /// Фото Big
+    /// Р¤РѕС‚Рѕ Big
     /// </summary>
     property PhotoBig: string read FPhoto_big write FPhoto_big;
     /// <summary>
@@ -881,51 +916,51 @@ type
     /// </summary>
     property PhotoId: string read FPhoto_id write FPhoto_id;
     /// <summary>
-    /// Фото Max
+    /// Р¤РѕС‚Рѕ Max
     /// </summary>
     property PhotoMax: string read FPhoto_max write FPhoto_max;
     /// <summary>
-    /// Фото Max Orig
+    /// Р¤РѕС‚Рѕ Max Orig
     /// </summary>
     property PhotoMax_Orig: string read FPhoto_max_orig write FPhoto_max_orig;
     /// <summary>
-    /// Фото Medium
+    /// Р¤РѕС‚Рѕ Medium
     /// </summary>
     property PhotoMedium: string read FPhoto_medium write FPhoto_medium;
     /// <summary>
-    /// Фото Medium Rec
+    /// Р¤РѕС‚Рѕ Medium Rec
     /// </summary>
     property PhotoMediumRec: string read FPhoto_medium_rec write FPhoto_medium_rec;
     /// <summary>
-    /// Любимые цитаты
+    /// Р›СЋР±РёРјС‹Рµ С†РёС‚Р°С‚С‹
     /// </summary>
     property Quotes: string read FQuotes write FQuotes;
     /// <summary>
-    /// Семейное положение
+    /// РЎРµРјРµР№РЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
     /// </summary>
     property Relation: TVkRelation read FRelation write FRelation;
     /// <summary>
-    /// Информация о партнёре
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїР°СЂС‚РЅС‘СЂРµ
     /// </summary>
     property RelationPartner: TVkProfile read FRelation_partner write FRelation_partner;
     /// <summary>
-    /// Список родственников
+    /// РЎРїРёСЃРѕРє СЂРѕРґСЃС‚РІРµРЅРЅРёРєРѕРІ
     /// </summary>
     property Relatives: TArray<TVkRelative> read FRelatives write FRelatives;
     /// <summary>
-    /// Список школ, в которых учился пользователь
+    /// РЎРїРёСЃРѕРє С€РєРѕР», РІ РєРѕС‚РѕСЂС‹С… СѓС‡РёР»СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ
     /// </summary>
     property Schools: TArray<TVkSchoolInfo> read FSchools write FSchools;
     /// <summary>
-    /// Короткое имя страницы
+    /// РљРѕСЂРѕС‚РєРѕРµ РёРјСЏ СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     property ScreenName: string read FScreen_name write FScreen_name;
     /// <summary>
-    /// Пол
+    /// РџРѕР»
     /// </summary>
     property Sex: TVkSex read FSex write FSex;
     /// <summary>
-    /// Адрес сайта, указанный в профиле
+    /// РђРґСЂРµСЃ СЃР°Р№С‚Р°, СѓРєР°Р·Р°РЅРЅС‹Р№ РІ РїСЂРѕС„РёР»Рµ
     /// </summary>
     property Site: string read FSite write FSite;
     /// <summary>
@@ -933,15 +968,15 @@ type
     /// </summary>
     property Skype: string read FSkype write FSkype;
     /// <summary>
-    /// Статус пользователя. Возвращается строка, содержащая текст статуса, расположенного в профиле под именем. Если включена опция «Транслировать в статус играющую музыку», возвращается дополнительное поле status_audio, содержащее информацию о композиции
+    /// РЎС‚Р°С‚СѓСЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ. Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ СЃС‚СЂРѕРєР°, СЃРѕРґРµСЂР¶Р°С‰Р°СЏ С‚РµРєСЃС‚ СЃС‚Р°С‚СѓСЃР°, СЂР°СЃРїРѕР»РѕР¶РµРЅРЅРѕРіРѕ РІ РїСЂРѕС„РёР»Рµ РїРѕРґ РёРјРµРЅРµРј. Р•СЃР»Рё РІРєР»СЋС‡РµРЅР° РѕРїС†РёСЏ В«РўСЂР°РЅСЃР»РёСЂРѕРІР°С‚СЊ РІ СЃС‚Р°С‚СѓСЃ РёРіСЂР°СЋС‰СѓСЋ РјСѓР·С‹РєСѓВ», РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРµ РїРѕР»Рµ status_audio, СЃРѕРґРµСЂР¶Р°С‰РµРµ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕРјРїРѕР·РёС†РёРё
     /// </summary>
     property Status: string read FStatus write FStatus;
     /// <summary>
-    /// Аудиозапись в статусе
+    /// РђСѓРґРёРѕР·Р°РїРёСЃСЊ РІ СЃС‚Р°С‚СѓСЃРµ
     /// </summary>
     property StatusAudio: TVkAudio read FStatus_audio write FStatus_audio;
     /// <summary>
-    /// Временная зона. Только при запросе информации о текущем пользователе
+    /// Р’СЂРµРјРµРЅРЅР°СЏ Р·РѕРЅР°. РўРѕР»СЊРєРѕ РїСЂРё Р·Р°РїСЂРѕСЃРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С‚РµРєСѓС‰РµРј РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ
     /// </summary>
     property TimeZone: Extended read FTimezone write FTimezone;
     /// <summary>
@@ -949,11 +984,11 @@ type
     /// </summary>
     property TrackCode: string read FTrack_code write FTrack_code;
     /// <summary>
-    /// Информация о том, есть ли на странице пользователя «огонёк»
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РµСЃС‚СЊ Р»Рё РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ В«РѕРіРѕРЅС‘РєВ»
     /// </summary>
     property Trending: Boolean read FTrending write FTrending;
     /// <summary>
-    /// Любимые телешоу
+    /// Р›СЋР±РёРјС‹Рµ С‚РµР»РµС€РѕСѓ
     /// </summary>
     property TV: string read FTv write FTv;
     /// <summary>
@@ -961,19 +996,19 @@ type
     /// </summary>
     property Twitter: string read FTwitter write FTwitter;
     /// <summary>
-    /// Список вузов, в которых учился пользователь
+    /// РЎРїРёСЃРѕРє РІСѓР·РѕРІ, РІ РєРѕС‚РѕСЂС‹С… СѓС‡РёР»СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ
     /// </summary>
     property Universities: TArray<TVkUniversities> read FUniversities write FUniversities;
     /// <summary>
-    /// Идентификатор университета
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓРЅРёРІРµСЂСЃРёС‚РµС‚Р°
     /// </summary>
     property University: Integer read FUniversity write FUniversity;
     /// <summary>
-    /// Название университета
+    /// РќР°Р·РІР°РЅРёРµ СѓРЅРёРІРµСЂСЃРёС‚РµС‚Р°
     /// </summary>
     property UniversityName: string read FUniversity_name write FUniversity_name;
     /// <summary>
-    /// Возвращается True, если страница пользователя верифицирована, False — если нет
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ True, РµСЃР»Рё СЃС‚СЂР°РЅРёС†Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІРµСЂРёС„РёС†РёСЂРѕРІР°РЅР°, False вЂ” РµСЃР»Рё РЅРµС‚
     /// </summary>
     property Verified: Boolean read FVerified write FVerified;
     /// <summary>
@@ -981,7 +1016,7 @@ type
     /// </summary>
     property &Type: string read FType write FType;
     /// <summary>
-    /// Режим стены по умолчанию. Возможные значения: owner, all.
+    /// Р РµР¶РёРј СЃС‚РµРЅС‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ. Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ: owner, all.
     /// </summary>
     property WallDefault: string read FWall_default write FWall_default;
     /// <summary>

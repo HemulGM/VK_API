@@ -1,4 +1,4 @@
-unit VK.Entity.Database.Cities;
+п»їunit VK.Entity.Database.Cities;
 
 interface
 
@@ -14,11 +14,11 @@ type
     FRegion: string;
   public
     /// <summary>
-    /// Идентификатор города
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°
     /// </summary>
     property Id;
     /// <summary>
-    /// Название города
+    /// РќР°Р·РІР°РЅРёРµ РіРѕСЂРѕРґР°
     /// </summary>
     property Title: string read FTitle write FTitle;
     property Important: Boolean read FImportant write FImportant;

@@ -1,4 +1,4 @@
-unit VK.Entity.Subscription;
+﻿unit VK.Entity.Subscription;
 
 interface
 

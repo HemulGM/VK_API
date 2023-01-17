@@ -1,4 +1,4 @@
-unit VK.Entity.Note;
+п»їunit VK.Entity.Note;
 
 interface
 
@@ -23,39 +23,39 @@ type
     FAccess_key: string;
   public
     /// <summary>
-    /// Идентификатор заметки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РјРµС‚РєРё
     /// </summary>
     property Id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Идентификатор владельца заметки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° Р·Р°РјРµС‚РєРё
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Количество комментариев
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
     /// </summary>
     property Comments: Integer read FComments write FComments;
     /// <summary>
-    /// Дата создания заметки
+    /// Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ Р·Р°РјРµС‚РєРё
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Количество прочитанных комментариев (только при запросе информации о заметке текущего пользователя)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ (С‚РѕР»СЊРєРѕ РїСЂРё Р·Р°РїСЂРѕСЃРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ Р·Р°РјРµС‚РєРµ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ)
     /// </summary>
     property ReadComments: Integer read FRead_comments write FRead_comments;
     /// <summary>
-    /// Заголовок заметки
+    /// Р—Р°РіРѕР»РѕРІРѕРє Р·Р°РјРµС‚РєРё
     /// </summary>
     property Title: string read FTitle write FTitle;
     /// <summary>
-    /// Текст заметки
+    /// РўРµРєСЃС‚ Р·Р°РјРµС‚РєРё
     /// </summary>
     property Text: string read FText write FText;
     /// <summary>
-    /// URL страницы для отображения заметки
+    /// URL СЃС‚СЂР°РЅРёС†С‹ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ Р·Р°РјРµС‚РєРё
     /// </summary>
     property ViewUrl: string read FView_url write FView_url;
     property Privacy: Integer read FPrivacy write FPrivacy;

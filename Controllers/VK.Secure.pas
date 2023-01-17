@@ -1,4 +1,4 @@
-unit VK.Secure;
+п»їunit VK.Secure;
 
 interface
 
@@ -10,16 +10,16 @@ type
   TSecureController = class(TVkController)
   public
     /// <summary>
-    /// Добавляет информацию о достижениях пользователя в приложении.
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РґРѕСЃС‚РёР¶РµРЅРёСЏС… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ РїСЂРёР»РѕР¶РµРЅРёРё.
     /// </summary>
     function AddAppEvent(const UserId: TVkPeerId; ActivityId: TAppActivity; Value: Integer): Boolean;
     /// <summary>
-    /// Позволяет проверять валидность пользователя в IFrame, VK Mini Apps и Standalone-приложениях с помощью передаваемого в приложения параметра access_token.
-    /// Обратите внимание, что для iFrame-приложений токен становится валидным только после запроса прав у пользователя и установки приложения.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїСЂРѕРІРµСЂСЏС‚СЊ РІР°Р»РёРґРЅРѕСЃС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ IFrame, VK Mini Apps Рё Standalone-РїСЂРёР»РѕР¶РµРЅРёСЏС… СЃ РїРѕРјРѕС‰СЊСЋ РїРµСЂРµРґР°РІР°РµРјРѕРіРѕ РІ РїСЂРёР»РѕР¶РµРЅРёСЏ РїР°СЂР°РјРµС‚СЂР° access_token.
+    /// РћР±СЂР°С‚РёС‚Рµ РІРЅРёРјР°РЅРёРµ, С‡С‚Рѕ РґР»СЏ iFrame-РїСЂРёР»РѕР¶РµРЅРёР№ С‚РѕРєРµРЅ СЃС‚Р°РЅРѕРІРёС‚СЃСЏ РІР°Р»РёРґРЅС‹Рј С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ Р·Р°РїСЂРѕСЃР° РїСЂР°РІ Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё СѓСЃС‚Р°РЅРѕРІРєРё РїСЂРёР»РѕР¶РµРЅРёСЏ.
     /// </summary>
     function CheckToken(var Value: TVkSecureCheckToken; const Token, IP: string): Boolean;
     /// <summary>
-    /// Возвращает платежный баланс (счет) приложения в сотых долях голоса.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РїР»Р°С‚РµР¶РЅС‹Р№ Р±Р°Р»Р°РЅСЃ (СЃС‡РµС‚) РїСЂРёР»РѕР¶РµРЅРёСЏ РІ СЃРѕС‚С‹С… РґРѕР»СЏС… РіРѕР»РѕСЃР°.
     /// </summary>
     function GetAppBalance(var Value: Integer): Boolean;
   end;
@@ -44,7 +44,7 @@ end;
 
 function TSecureController.GetAppBalance(var Value: Integer): Boolean;
 begin
-  { TODO -oМалинин Геннадий -c : Not work 15.01.2021 11:12:57 }
+  { TODO -oРњР°Р»РёРЅРёРЅ Р“РµРЅРЅР°РґРёР№ -c : Not work 15.01.2021 11:12:57 }
   with Handler.Execute('secure.getAppBalance') do
     Result := Success; // and ResponseIsTrue;
 end;

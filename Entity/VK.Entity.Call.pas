@@ -1,4 +1,4 @@
-unit VK.Entity.Call;
+﻿unit VK.Entity.Call;
 
 interface
 

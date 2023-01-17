@@ -1,4 +1,4 @@
-unit VK.Database;
+п»їunit VK.Database;
 
 interface
 
@@ -13,28 +13,28 @@ type
   TVkParamsGetCities = record
     List: TParams;
     /// <summary>
-    /// Идентификатор страны, полученный GetCountries
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹, РїРѕР»СѓС‡РµРЅРЅС‹Р№ GetCountries
     /// </summary>
     function CountryId(const Value: Integer): TVkParamsGetCities;
     /// <summary>
-    /// Идентификатор региона, города которого необходимо получить
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂРµРіРёРѕРЅР°, РіРѕСЂРѕРґР° РєРѕС‚РѕСЂРѕРіРѕ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function RegionId(const Value: Integer): TVkParamsGetCities;
     /// <summary>
-    /// Строка поискового запроса
+    /// РЎС‚СЂРѕРєР° РїРѕРёСЃРєРѕРІРѕРіРѕ Р·Р°РїСЂРѕСЃР°
     /// </summary>
     function Query(const Value: string): TVkParamsGetCities;
     /// <summary>
-    /// True – возвращать все города.
-    /// False – возвращать только основные города
+    /// True вЂ“ РІРѕР·РІСЂР°С‰Р°С‚СЊ РІСЃРµ РіРѕСЂРѕРґР°.
+    /// False вЂ“ РІРѕР·РІСЂР°С‰Р°С‚СЊ С‚РѕР»СЊРєРѕ РѕСЃРЅРѕРІРЅС‹Рµ РіРѕСЂРѕРґР°
     /// </summary>
     function NeedAll(const Value: Boolean): TVkParamsGetCities;
     /// <summary>
-    /// Отступ, необходимый для получения определенного подмножества городов
+    /// РћС‚СЃС‚СѓРї, РЅРµРѕР±С…РѕРґРёРјС‹Р№ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РіРѕСЂРѕРґРѕРІ
     /// </summary>
     function Offset(const Value: Integer): TVkParamsGetCities;
     /// <summary>
-    /// Количество городов, которые необходимо вернуть (максимальное значение 1000)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РіРѕСЂРѕРґРѕРІ, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 1000)
     /// </summary>
     function Count(const Value: Integer = 100): TVkParamsGetCities;
   end;
@@ -42,22 +42,22 @@ type
   TVkParamsGetCountries = record
     List: TParams;
     /// <summary>
-    /// True — вернуть список всех стран
+    /// True вЂ” РІРµСЂРЅСѓС‚СЊ СЃРїРёСЃРѕРє РІСЃРµС… СЃС‚СЂР°РЅ
     /// </summary>
     function NeedAll(const Value: Boolean): TVkParamsGetCountries;
     /// <summary>
-    /// Перечисленные через запятую двухбуквенные коды стран в стандарте ISO 3166-1 alpha-2,
-    /// для которых необходимо выдать информацию.
-    /// Пример значения code:
+    /// РџРµСЂРµС‡РёСЃР»РµРЅРЅС‹Рµ С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ РґРІСѓС…Р±СѓРєРІРµРЅРЅС‹Рµ РєРѕРґС‹ СЃС‚СЂР°РЅ РІ СЃС‚Р°РЅРґР°СЂС‚Рµ ISO 3166-1 alpha-2,
+    /// РґР»СЏ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РІС‹РґР°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ.
+    /// РџСЂРёРјРµСЂ Р·РЅР°С‡РµРЅРёСЏ code:
     /// RU,UA,BY
     /// </summary>
     function Code(const Value: TArrayOfString): TVkParamsGetCountries;
     /// <summary>
-    /// Отступ, необходимый для выбора определенного подмножества стран
+    /// РћС‚СЃС‚СѓРї, РЅРµРѕР±С…РѕРґРёРјС‹Р№ РґР»СЏ РІС‹Р±РѕСЂР° РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° СЃС‚СЂР°РЅ
     /// </summary>
     function Offset(const Value: Integer): TVkParamsGetCountries;
     /// <summary>
-    /// Количество стран, которое необходимо вернуть (максимальное значение 1000)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂР°РЅ, РєРѕС‚РѕСЂРѕРµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 1000)
     /// </summary>
     function Count(const Value: Integer = 100): TVkParamsGetCountries;
   end;
@@ -65,70 +65,70 @@ type
   TVkParamsGetUniversities = record
     List: TParams;
     /// <summary>
-    /// Строка поискового запроса
+    /// РЎС‚СЂРѕРєР° РїРѕРёСЃРєРѕРІРѕРіРѕ Р·Р°РїСЂРѕСЃР°
     /// </summary>
     function Query(const Value: string): TVkParamsGetUniversities;
     /// <summary>
-    /// Идентификатор страны, учебные заведения которой необходимо вернуть
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹, СѓС‡РµР±РЅС‹Рµ Р·Р°РІРµРґРµРЅРёСЏ РєРѕС‚РѕСЂРѕР№ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function CountryId(const Value: Integer): TVkParamsGetUniversities;
     /// <summary>
-    /// Идентификатор города, учебные заведения которого необходимо вернуть
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°, СѓС‡РµР±РЅС‹Рµ Р·Р°РІРµРґРµРЅРёСЏ РєРѕС‚РѕСЂРѕРіРѕ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function CityId(const Value: Integer): TVkParamsGetUniversities;
     /// <summary>
-    /// Отступ, необходимый для получения определенного подмножества учебных заведений
+    /// РћС‚СЃС‚СѓРї, РЅРµРѕР±С…РѕРґРёРјС‹Р№ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° СѓС‡РµР±РЅС‹С… Р·Р°РІРµРґРµРЅРёР№
     /// </summary>
     function Offset(const Value: Integer): TVkParamsGetUniversities;
     /// <summary>
-    /// Количество учебных заведений, которое необходимо вернуть (максимальное значение 10000)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СѓС‡РµР±РЅС‹С… Р·Р°РІРµРґРµРЅРёР№, РєРѕС‚РѕСЂРѕРµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 10000)
     /// </summary>
     function Count(const Value: Integer = 100): TVkParamsGetUniversities;
   end;
 
   /// <summary>
-  /// Методы этой секции предоставляют доступ к базе данных учебных заведений ВКонтакте. Доступ к данным является бесплатным и не требует авторизации, однако количество запросов с одного IP адреса может быть ограничено, при необходимости делать большое количество запросов рекомендуется выполнять запросы с клиентской стороны, используя JSONP.
+  /// РњРµС‚РѕРґС‹ СЌС‚РѕР№ СЃРµРєС†РёРё РїСЂРµРґРѕСЃС‚Р°РІР»СЏСЋС‚ РґРѕСЃС‚СѓРї Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С… СѓС‡РµР±РЅС‹С… Р·Р°РІРµРґРµРЅРёР№ Р’РљРѕРЅС‚Р°РєС‚Рµ. Р”РѕСЃС‚СѓРї Рє РґР°РЅРЅС‹Рј СЏРІР»СЏРµС‚СЃСЏ Р±РµСЃРїР»Р°С‚РЅС‹Рј Рё РЅРµ С‚СЂРµР±СѓРµС‚ Р°РІС‚РѕСЂРёР·Р°С†РёРё, РѕРґРЅР°РєРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїСЂРѕСЃРѕРІ СЃ РѕРґРЅРѕРіРѕ IP Р°РґСЂРµСЃР° РјРѕР¶РµС‚ Р±С‹С‚СЊ РѕРіСЂР°РЅРёС‡РµРЅРѕ, РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РґРµР»Р°С‚СЊ Р±РѕР»СЊС€РѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїСЂРѕСЃРѕРІ СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РІС‹РїРѕР»РЅСЏС‚СЊ Р·Р°РїСЂРѕСЃС‹ СЃ РєР»РёРµРЅС‚СЃРєРѕР№ СЃС‚РѕСЂРѕРЅС‹, РёСЃРїРѕР»СЊР·СѓСЏ JSONP.
   /// </summary>
   TDatabaseController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает список кафедр университета по указанному факультету
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєР°С„РµРґСЂ СѓРЅРёРІРµСЂСЃРёС‚РµС‚Р° РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ С„Р°РєСѓР»СЊС‚РµС‚Сѓ
     /// </summary>
     function GetChairs(var Items: TVkChairs; const FacultyId: Integer; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
-    /// Возвращает список городов
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РіРѕСЂРѕРґРѕРІ
     /// </summary>
     function GetCities(var Items: TVkCities; const Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список городов
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РіРѕСЂРѕРґРѕРІ
     /// </summary>
     function GetCities(var Items: TVkCities; const Params: TVkParamsGetCities): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о городах и регионах по их идентификаторам
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РіРѕСЂРѕРґР°С… Рё СЂРµРіРёРѕРЅР°С… РїРѕ РёС… РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР°Рј
     /// </summary>
     function GetCitiesById(var Items: TVkCities; const CityIds: TIdList): Boolean;
     /// <summary>
-    /// Возвращает список стран
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃС‚СЂР°РЅ
     /// </summary>
     function GetCountries(var Items: TVkCountries; const Params: TVkParamsGetCountries): Boolean;
     /// <summary>
-    /// Возвращает информацию о странах по их идентификаторам
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃС‚СЂР°РЅР°С… РїРѕ РёС… РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР°Рј
     /// </summary>
     function GetCountriesById(var Items: TVkCountries; const CountryIds: TIdList): Boolean;
     /// <summary>
-    /// Возвращает список факультетов
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С„Р°РєСѓР»СЊС‚РµС‚РѕРІ
     /// </summary>
     function GetFaculties(var Items: TVkFaculties; const UniversityId: Integer; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
-    /// Возвращает список станций метро
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃС‚Р°РЅС†РёР№ РјРµС‚СЂРѕ
     /// </summary>
     function GetMetroStations(var Items: TVkMetroStations; const CityId: Integer; Extended: Boolean = False; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
-    /// Возвращает информацию об одной или нескольких станциях метро по их идентификаторам
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РѕРґРЅРѕР№ РёР»Рё РЅРµСЃРєРѕР»СЊРєРёС… СЃС‚Р°РЅС†РёСЏС… РјРµС‚СЂРѕ РїРѕ РёС… РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР°Рј
     /// </summary>
     function GetMetroStationsById(var Items: TVkMetroStations; const StationIds: TIdList): Boolean;
     /// <summary>
-    /// Возвращает список регионов
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЂРµРіРёРѕРЅРѕРІ
     /// <code> var Regions: TVkRegions;
     /// if GetRegions(Regions, 0) then
     /// try
@@ -141,15 +141,15 @@ type
     /// </summary>
     function GetRegions(var Items: TVkRegions; const CountryId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
-    /// Возвращает список классов, характерных для школ определенной страны
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєР»Р°СЃСЃРѕРІ, С…Р°СЂР°РєС‚РµСЂРЅС‹С… РґР»СЏ С€РєРѕР» РѕРїСЂРµРґРµР»РµРЅРЅРѕР№ СЃС‚СЂР°РЅС‹
     /// </summary>
     function GetSchoolClasses(var Items: TVkSchoolClasses; const CountryId: Integer = 0): Boolean;
     /// <summary>
-    /// Возвращает список школ
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С€РєРѕР»
     /// </summary>
     function GetSchools(var Items: TVkSchools; const CityId: Integer; Query: string = ''; Offset: Integer = 0; Count: Integer = 100): Boolean;
     /// <summary>
-    /// Возвращает список высших учебных заведений
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РІС‹СЃС€РёС… СѓС‡РµР±РЅС‹С… Р·Р°РІРµРґРµРЅРёР№
     /// </summary>
     function GetUniversities(var Items: TVkUniversities; const Params: TVkParamsGetUniversities): Boolean;
   end;

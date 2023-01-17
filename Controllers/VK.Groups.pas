@@ -1,4 +1,4 @@
-unit VK.Groups;
+п»їunit VK.Groups;
 
 interface
 
@@ -16,31 +16,31 @@ type
   TVkParamsGroupsGetMembers = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsGetMembers; overload;
     /// <summary>
-    /// Короткое имя сообщества
+    /// РљРѕСЂРѕС‚РєРѕРµ РёРјСЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: string): TVkParamsGroupsGetMembers; overload;
     /// <summary>
-    /// Фильтр
+    /// Р¤РёР»СЊС‚СЂ
     /// </summary>
     function Filter(const Value: TVkGroupMembersFilter): TVkParamsGroupsGetMembers;
     /// <summary>
-    /// Список дополнительных полей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields): TVkParamsGroupsGetMembers;
     /// <summary>
-    /// Количество участников сообщества, информацию о которых необходимо получить (максимальное значение 1000)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СѓС‡Р°СЃС‚РЅРёРєРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІР°, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 1000)
     /// </summary>
     function Count(const Value: Int64 = 1000): TVkParamsGroupsGetMembers;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества участников
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° СѓС‡Р°СЃС‚РЅРёРєРѕРІ
     /// </summary>
     function Offset(const Value: Int64 = 0): TVkParamsGroupsGetMembers;
     /// <summary>
-    /// Сортировка, с которой необходимо вернуть список участников
+    /// РЎРѕСЂС‚РёСЂРѕРІРєР°, СЃ РєРѕС‚РѕСЂРѕР№ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ СЃРїРёСЃРѕРє СѓС‡Р°СЃС‚РЅРёРєРѕРІ
     /// </summary>
     function Sort(const Value: TVkSortIdTime = TVkSortIdTime.IdAsc): TVkParamsGroupsGetMembers;
   end;
@@ -48,23 +48,23 @@ type
   TVkParamsGroupsGet = record
     List: TParams;
     /// <summary>
-    /// Идентификатор пользователя
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsGroupsGet;
     /// <summary>
-    /// Список фильтров сообществ, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє С„РёР»СЊС‚СЂРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІ, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Filter(const Value: TVkGroupFilters): TVkParamsGroupsGet; overload;
     /// <summary>
-    /// Список дополнительных полей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields): TVkParamsGroupsGet; overload;
     /// <summary>
-    /// Количество сообществ, информацию о которых нужно вернуть (максимальное значение 1000)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРѕРѕР±С‰РµСЃС‚РІ, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 1000)
     /// </summary>
     function Count(const Value: Int64): TVkParamsGroupsGet;
     /// <summary>
-    /// Смещение, необходимое для выборки определённого подмножества сообществ
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° СЃРѕРѕР±С‰РµСЃС‚РІ
     /// </summary>
     function Offset(const Value: Int64): TVkParamsGroupsGet;
   end;
@@ -72,23 +72,23 @@ type
   TVkParamsGroupsIsMember = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsIsMember; overload;
     /// <summary>
-    /// Короткое имя сообщества.
+    /// РљРѕСЂРѕС‚РєРѕРµ РёРјСЏ СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function GroupId(const Value: string): TVkParamsGroupsIsMember; overload;
     /// <summary>
-    /// True — вернуть ответ в расширенной форме. По умолчанию — False.
+    /// True вЂ” РІРµСЂРЅСѓС‚СЊ РѕС‚РІРµС‚ РІ СЂР°СЃС€РёСЂРµРЅРЅРѕР№ С„РѕСЂРјРµ. РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ вЂ” False.
     /// </summary>
     function Extended(const Value: Boolean = False): TVkParamsGroupsIsMember;
     /// <summary>
-    /// Идентификатор пользователя.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsGroupsIsMember;
     /// <summary>
-    /// Идентификаторы пользователей, не более 500.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РЅРµ Р±РѕР»РµРµ 500.
     /// </summary>
     function UserIds(const Value: TVkPeerIds): TVkParamsGroupsIsMember;
   end;
@@ -96,58 +96,58 @@ type
   TVkParamsGroupsAddAddress = record
     List: TParams;
     /// <summary>
-    /// идентификатор сообщества, в которое добавляется адрес
+    /// РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°, РІ РєРѕС‚РѕСЂРѕРµ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ Р°РґСЂРµСЃ
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// заголовок адреса (максимальная длина 255)
+    /// Р·Р°РіРѕР»РѕРІРѕРє Р°РґСЂРµСЃР° (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 255)
     /// </summary>
     function Title(const Value: string): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// строка адреса (максимальная длина 255)
+    /// СЃС‚СЂРѕРєР° Р°РґСЂРµСЃР° (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 255)
     /// </summary>
     function Address(const Value: string): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// дополнительное описание адреса (максимальная длина 400)
+    /// РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРµ РѕРїРёСЃР°РЅРёРµ Р°РґСЂРµСЃР° (РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° 400)
     /// </summary>
     function AdditionalAddress(const Value: string): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// идентификатор страны. Для получения можно использовать database.getCountries
+    /// РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ database.getCountries
     /// </summary>
     function CountryId(const Value: Int64): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// идентификатор города. Для получения можно использовать database.getCities
+    /// РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ database.getCities
     /// </summary>
     function CityId(const Value: Int64): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// идентификатор станции метро. Для получения можно использовать database.getMetroStations
+    /// РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°РЅС†РёРё РјРµС‚СЂРѕ. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ database.getMetroStations
     /// </summary>
     function MetroId(const Value: Int64): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// географическая широта отметки, заданная в градусах (от -90 до 90)
+    /// РіРµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ С€РёСЂРѕС‚Р° РѕС‚РјРµС‚РєРё, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -90 РґРѕ 90)
     /// </summary>
     function Latitude(const Value: Extended): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// географическая долгота отметки, заданная в градусах (от -180 до 180)
+    /// РіРµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ РґРѕР»РіРѕС‚Р° РѕС‚РјРµС‚РєРё, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -180 РґРѕ 180)
     /// </summary>
     function Longitude(const Value: Extended): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// номер телефона
+    /// РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°
     /// </summary>
     function Phone(const Value: string): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// тип расписания
+    /// С‚РёРї СЂР°СЃРїРёСЃР°РЅРёСЏ
     /// </summary>
     function WorkInfoStatus(const Value: TVkWorkInfoStatus = TVkWorkInfoStatus.NoInformation): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// Время передается в минутах от 0 часов. Ключ по дню означает, что день рабочий.
-    /// OpenTime, CloseTime - начало и конец рабочего дня.
-    /// BreakOpenTime, BreakCloseTime — время перерыва
+    /// Р’СЂРµРјСЏ РїРµСЂРµРґР°РµС‚СЃСЏ РІ РјРёРЅСѓС‚Р°С… РѕС‚ 0 С‡Р°СЃРѕРІ. РљР»СЋС‡ РїРѕ РґРЅСЋ РѕР·РЅР°С‡Р°РµС‚, С‡С‚Рѕ РґРµРЅСЊ СЂР°Р±РѕС‡РёР№.
+    /// OpenTime, CloseTime - РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† СЂР°Р±РѕС‡РµРіРѕ РґРЅСЏ.
+    /// BreakOpenTime, BreakCloseTime вЂ” РІСЂРµРјСЏ РїРµСЂРµСЂС‹РІР°
     /// </summary>
     function Timetable(const Value: TVkTimeTable): TVkParamsGroupsAddAddress;
     /// <summary>
-    /// Установить адрес основным. Информация об основном адресе сразу показывается в сообществе.
-    /// Для получения информации об остальных адресах нужно перейти к списку адресов
+    /// РЈСЃС‚Р°РЅРѕРІРёС‚СЊ Р°РґСЂРµСЃ РѕСЃРЅРѕРІРЅС‹Рј. РРЅС„РѕСЂРјР°С†РёСЏ РѕР± РѕСЃРЅРѕРІРЅРѕРј Р°РґСЂРµСЃРµ СЃСЂР°Р·Сѓ РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ.
+    /// Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РѕР± РѕСЃС‚Р°Р»СЊРЅС‹С… Р°РґСЂРµСЃР°С… РЅСѓР¶РЅРѕ РїРµСЂРµР№С‚Рё Рє СЃРїРёСЃРєСѓ Р°РґСЂРµСЃРѕРІ
     /// </summary>
     function IsMainAddress(const Value: Boolean): TVkParamsGroupsAddAddress;
   end;
@@ -157,30 +157,30 @@ type
   TVkParamsGroupsBan = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsBan;
     /// <summary>
-    /// Идентификатор пользователя или сообщества, которое будет добавлено в черный список
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°, РєРѕС‚РѕСЂРѕРµ Р±СѓРґРµС‚ РґРѕР±Р°РІР»РµРЅРѕ РІ С‡РµСЂРЅС‹Р№ СЃРїРёСЃРѕРє
     /// </summary>
     function OwnerId(const Value: TVkPeerId): TVkParamsGroupsBan;
     /// <summary>
-    /// Дата завершения срока действия бана.
-    /// Максимальный возможный срок окончания бана, который можно указать, — один год с его начала.
-    /// Если параметр не указан, пользователь будет заблокирован навсегда
+    /// Р”Р°С‚Р° Р·Р°РІРµСЂС€РµРЅРёСЏ СЃСЂРѕРєР° РґРµР№СЃС‚РІРёСЏ Р±Р°РЅР°.
+    /// РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІРѕР·РјРѕР¶РЅС‹Р№ СЃСЂРѕРє РѕРєРѕРЅС‡Р°РЅРёСЏ Р±Р°РЅР°, РєРѕС‚РѕСЂС‹Р№ РјРѕР¶РЅРѕ СѓРєР°Р·Р°С‚СЊ, вЂ” РѕРґРёРЅ РіРѕРґ СЃ РµРіРѕ РЅР°С‡Р°Р»Р°.
+    /// Р•СЃР»Рё РїР°СЂР°РјРµС‚СЂ РЅРµ СѓРєР°Р·Р°РЅ, РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р±СѓРґРµС‚ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ РЅР°РІСЃРµРіРґР°
     /// </summary>
     function EndDate(const Value: TDateTime): TVkParamsGroupsBan;
     /// <summary>
-    /// Причина бана
+    /// РџСЂРёС‡РёРЅР° Р±Р°РЅР°
     /// </summary>
     function Reason(const Value: TVkUserBlockReason = TVkUserBlockReason.Other): TVkParamsGroupsBan;
     /// <summary>
-    /// Текст комментария к бану
+    /// РўРµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє Р±Р°РЅСѓ
     /// </summary>
     function Comment(const Value: string): TVkParamsGroupsBan;
     /// <summary>
-    /// True – текст комментария будет отображаться пользователю.
-    /// False – текст комментария не доступен пользователю
+    /// True вЂ“ С‚РµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Р±СѓРґРµС‚ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊСЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ.
+    /// False вЂ“ С‚РµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅРµ РґРѕСЃС‚СѓРїРµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ
     /// </summary>
     function CommentVisible(const Value: Boolean = False): TVkParamsGroupsBan;
   end;
@@ -188,23 +188,23 @@ type
   TVkParamsGroupsCreate = record
     List: TParams;
     /// <summary>
-    /// Название сообщества
+    /// РќР°Р·РІР°РЅРёРµ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Title(const Value: string): TVkParamsGroupsCreate;
     /// <summary>
-    /// Описание сообщества, (не учитывается при Type = TVkGroupTypeCreate.Public)
+    /// РћРїРёСЃР°РЅРёРµ СЃРѕРѕР±С‰РµСЃС‚РІР°, (РЅРµ СѓС‡РёС‚С‹РІР°РµС‚СЃСЏ РїСЂРё Type = TVkGroupTypeCreate.Public)
     /// </summary>
     function Description(const Value: string): TVkParamsGroupsCreate;
     /// <summary>
-    /// Тип создаваемого сообщества
+    /// РўРёРї СЃРѕР·РґР°РІР°РµРјРѕРіРѕ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function &Type(const Value: TVkGroupTypeCreate): TVkParamsGroupsCreate;
     /// <summary>
-    /// Категория публичной страницы (только для Type = TVkGroupTypeCreate.Public)
+    /// РљР°С‚РµРіРѕСЂРёСЏ РїСѓР±Р»РёС‡РЅРѕР№ СЃС‚СЂР°РЅРёС†С‹ (С‚РѕР»СЊРєРѕ РґР»СЏ Type = TVkGroupTypeCreate.Public)
     /// </summary>
     function PublicCategory(const Value: Int64): TVkParamsGroupsCreate;
     /// <summary>
-    /// Вид публичной страницы (только при Type = TVkGroupTypeCreate.Public)
+    /// Р’РёРґ РїСѓР±Р»РёС‡РЅРѕР№ СЃС‚СЂР°РЅРёС†С‹ (С‚РѕР»СЊРєРѕ РїСЂРё Type = TVkGroupTypeCreate.Public)
     /// </summary>
     function Subtype(const Value: TVkGroupSubType): TVkParamsGroupsCreate;
   end;
@@ -212,19 +212,19 @@ type
   TVkParamsGroupsEdit = record
     const
       /// <summary>
-      /// Выключено
+      /// Р’С‹РєР»СЋС‡РµРЅРѕ
       /// </summary>
       GroupSectionOff = 0;
       /// <summary>
-      /// Открыто
+      /// РћС‚РєСЂС‹С‚Рѕ
       /// </summary>
       GroupSectionOpen = 1;
       /// <summary>
-      /// Ограниченно (доступно только для групп и событий)
+      /// РћРіСЂР°РЅРёС‡РµРЅРЅРѕ (РґРѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РіСЂСѓРїРї Рё СЃРѕР±С‹С‚РёР№)
       /// </summary>
       GroupSectionPrivate = 2;
       /// <summary>
-      /// Закрыто (доступно только для групп и событий)
+      /// Р—Р°РєСЂС‹С‚Рѕ (РґРѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РіСЂСѓРїРї Рё СЃРѕР±С‹С‚РёР№)
       /// </summary>
       GroupSectionClosed = 3;
     type
@@ -250,169 +250,169 @@ type
   public
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsEdit;
     /// <summary>
-    /// Название сообщества
+    /// РќР°Р·РІР°РЅРёРµ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Title(const Value: string): TVkParamsGroupsEdit;
     /// <summary>
-    /// Описание сообщества
+    /// РћРїРёСЃР°РЅРёРµ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Description(const Value: string): TVkParamsGroupsEdit;
     /// <summary>
-    /// Короткое имя сообщества
+    /// РљРѕСЂРѕС‚РєРѕРµ РёРјСЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function ScreenName(const Value: string): TVkParamsGroupsEdit;
     /// <summary>
-    /// Тип группы (доступ)
+    /// РўРёРї РіСЂСѓРїРїС‹ (РґРѕСЃС‚СѓРї)
     /// </summary>
     function Access(const Value: TVkGroupAccess): TVkParamsGroupsEdit;
     /// <summary>
-    /// Адрес сайта, который будет указан в информации о группе
+    /// РђРґСЂРµСЃ СЃР°Р№С‚Р°, РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ СѓРєР°Р·Р°РЅ РІ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РіСЂСѓРїРїРµ
     /// </summary>
     function Website(const Value: string): TVkParamsGroupsEdit;
     /// <summary>
-    /// Тематика сообщества
+    /// РўРµРјР°С‚РёРєР° СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Subject(const Value: TVkGroupSubjectType): TVkParamsGroupsEdit;
     /// <summary>
-    /// Электронный адрес организатора (для мероприятий)
+    /// Р­Р»РµРєС‚СЂРѕРЅРЅС‹Р№ Р°РґСЂРµСЃ РѕСЂРіР°РЅРёР·Р°С‚РѕСЂР° (РґР»СЏ РјРµСЂРѕРїСЂРёСЏС‚РёР№)
     /// </summary>
     function Email(const Value: string): TVkParamsGroupsEdit;
     /// <summary>
-    /// Номер телефона организатора (для мероприятий)
+    /// РќРѕРјРµСЂ С‚РµР»РµС„РѕРЅР° РѕСЂРіР°РЅРёР·Р°С‚РѕСЂР° (РґР»СЏ РјРµСЂРѕРїСЂРёСЏС‚РёР№)
     /// </summary>
     function Phone(const Value: string): TVkParamsGroupsEdit;
     /// <summary>
-    /// Адрес rss для импорта новостей (доступен только группам,
-    /// получившим соответствующее разрешение, обратитесь в http://vk.com/support для получения разрешения)
+    /// РђРґСЂРµСЃ rss РґР»СЏ РёРјРїРѕСЂС‚Р° РЅРѕРІРѕСЃС‚РµР№ (РґРѕСЃС‚СѓРїРµРЅ С‚РѕР»СЊРєРѕ РіСЂСѓРїРїР°Рј,
+    /// РїРѕР»СѓС‡РёРІС€РёРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРµ СЂР°Р·СЂРµС€РµРЅРёРµ, РѕР±СЂР°С‚РёС‚РµСЃСЊ РІ http://vk.com/support РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЂР°Р·СЂРµС€РµРЅРёСЏ)
     /// </summary>
     function Rss(const Value: string): TVkParamsGroupsEdit;
     /// <summary>
-    /// Дата начала события
+    /// Р”Р°С‚Р° РЅР°С‡Р°Р»Р° СЃРѕР±С‹С‚РёСЏ
     /// </summary>
     function EventStartDate(const Value: TDateTime): TVkParamsGroupsEdit;
     /// <summary>
-    /// Дата окончания события
+    /// Р”Р°С‚Р° РѕРєРѕРЅС‡Р°РЅРёСЏ СЃРѕР±С‹С‚РёСЏ
     /// </summary>
     function EventFinishDate(const Value: TDateTime): TVkParamsGroupsEdit;
     /// <summary>
-    /// Идентификатор группы, которая является организатором события (только для событий)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіСЂСѓРїРїС‹, РєРѕС‚РѕСЂР°СЏ СЏРІР»СЏРµС‚СЃСЏ РѕСЂРіР°РЅРёР·Р°С‚РѕСЂРѕРј СЃРѕР±С‹С‚РёСЏ (С‚РѕР»СЊРєРѕ РґР»СЏ СЃРѕР±С‹С‚РёР№)
     /// </summary>
     function EventGroupId(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
-    /// Категория публичной страницы
+    /// РљР°С‚РµРіРѕСЂРёСЏ РїСѓР±Р»РёС‡РЅРѕР№ СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function PublicCategory(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
-    /// Подкатегория публичной станицы. Список подкатегорий можно получить методом groups.getSettings
+    /// РџРѕРґРєР°С‚РµРіРѕСЂРёСЏ РїСѓР±Р»РёС‡РЅРѕР№ СЃС‚Р°РЅРёС†С‹. РЎРїРёСЃРѕРє РїРѕРґРєР°С‚РµРіРѕСЂРёР№ РјРѕР¶РЅРѕ РїРѕР»СѓС‡РёС‚СЊ РјРµС‚РѕРґРѕРј groups.getSettings
     /// </summary>
     function PublicSubcategory(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
-    /// Дата основания компании, организации, которой посвящена публичная страница
+    /// Р”Р°С‚Р° РѕСЃРЅРѕРІР°РЅРёСЏ РєРѕРјРїР°РЅРёРё, РѕСЂРіР°РЅРёР·Р°С†РёРё, РєРѕС‚РѕСЂРѕР№ РїРѕСЃРІСЏС‰РµРЅР° РїСѓР±Р»РёС‡РЅР°СЏ СЃС‚СЂР°РЅРёС†Р°
     /// </summary>
     function PublicDate(const Value: TDateTime): TVkParamsGroupsEdit;
     /// <summary>
-    /// Стена
+    /// РЎС‚РµРЅР°
     /// </summary>
     function Wall(const Value: TGroupSectionWall): TVkParamsGroupsEdit;
     /// <summary>
-    /// Обсуждения
+    /// РћР±СЃСѓР¶РґРµРЅРёСЏ
     /// </summary>
     function Topics(const Value: TGroupSectionTopics): TVkParamsGroupsEdit;
     /// <summary>
-    /// Фотографии
+    /// Р¤РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     function Photos(const Value: TGroupSectionPhotos): TVkParamsGroupsEdit;
     /// <summary>
-    /// Видеозаписи
+    /// Р’РёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     function Video(const Value: TGroupSectionVideo): TVkParamsGroupsEdit;
     /// <summary>
-    /// Аудиозаписи
+    /// РђСѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     function Audio(const Value: TGroupSectionAudio): TVkParamsGroupsEdit;
     /// <summary>
-    /// Ссылки (доступно только для публичных страниц)
+    /// РЎСЃС‹Р»РєРё (РґРѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РїСѓР±Р»РёС‡РЅС‹С… СЃС‚СЂР°РЅРёС†)
     /// </summary>
     function Links(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// События (доступно только для публичных страниц)
+    /// РЎРѕР±С‹С‚РёСЏ (РґРѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РїСѓР±Р»РёС‡РЅС‹С… СЃС‚СЂР°РЅРёС†)
     /// </summary>
     function Events(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Места (доступно только для публичных страниц)
+    /// РњРµСЃС‚Р° (РґРѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РїСѓР±Р»РёС‡РЅС‹С… СЃС‚СЂР°РЅРёС†)
     /// </summary>
     function Places(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Контакты (доступно только для публичных страниц)
+    /// РљРѕРЅС‚Р°РєС‚С‹ (РґРѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РїСѓР±Р»РёС‡РЅС‹С… СЃС‚СЂР°РЅРёС†)
     /// </summary>
     function Contacts(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Документы сообщества
+    /// Р”РѕРєСѓРјРµРЅС‚С‹ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Docs(const Value: TGroupSectionDocs): TVkParamsGroupsEdit;
     /// <summary>
-    /// Wiki-материалы сообщества
+    /// Wiki-РјР°С‚РµСЂРёР°Р»С‹ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Wiki(const Value: TGroupSectionWiki): TVkParamsGroupsEdit;
     /// <summary>
-    /// Сообщения сообщества
+    /// РЎРѕРѕР±С‰РµРЅРёСЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Messages(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Статьи
+    /// РЎС‚Р°С‚СЊРё
     /// </summary>
     function Articles(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Адреса
+    /// РђРґСЂРµСЃР°
     /// </summary>
     function Addresses(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Возрастное ограничение для сообщества
+    /// Р’РѕР·СЂР°СЃС‚РЅРѕРµ РѕРіСЂР°РЅРёС‡РµРЅРёРµ РґР»СЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function AgeLimits(const Value: TVkAgeLimits): TVkParamsGroupsEdit;
     /// <summary>
-    /// Товары
+    /// РўРѕРІР°СЂС‹
     /// </summary>
     function Market(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Комментарии к товарам
+    /// РљРѕРјРјРµРЅС‚Р°СЂРёРё Рє С‚РѕРІР°СЂР°Рј
     /// </summary>
     function MarketComments(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Регионы доставки товаров
+    /// Р РµРіРёРѕРЅС‹ РґРѕСЃС‚Р°РІРєРё С‚РѕРІР°СЂРѕРІ
     /// </summary>
     function MarketCountry(const Value: TIdList): TVkParamsGroupsEdit;
     /// <summary>
-    /// Города доставки товаров (в случае если указана одна страна)
+    /// Р“РѕСЂРѕРґР° РґРѕСЃС‚Р°РІРєРё С‚РѕРІР°СЂРѕРІ (РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё СѓРєР°Р·Р°РЅР° РѕРґРЅР° СЃС‚СЂР°РЅР°)
     /// </summary>
     function MarketCity(const Value: TIdList): TVkParamsGroupsEdit;
     /// <summary>
-    /// Идентификатор валюты магазина
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР°Р»СЋС‚С‹ РјР°РіР°Р·РёРЅР°
     /// </summary>
     function MarketCurrency(const Value: TVkCurrency): TVkParamsGroupsEdit;
     /// <summary>
-    /// Контакт для связи для продавцом.
-    /// Для использования сообщений сообщества следует включить их и передать значение 0
+    /// РљРѕРЅС‚Р°РєС‚ РґР»СЏ СЃРІСЏР·Рё РґР»СЏ РїСЂРѕРґР°РІС†РѕРј.
+    /// Р”Р»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ СЃРѕРѕР±С‰РµРЅРёР№ СЃРѕРѕР±С‰РµСЃС‚РІР° СЃР»РµРґСѓРµС‚ РІРєР»СЋС‡РёС‚СЊ РёС… Рё РїРµСЂРµРґР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ 0
     /// </summary>
     function MarketContact(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
-    /// Идентификатор wiki-страницы с описанием магазина
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ wiki-СЃС‚СЂР°РЅРёС†С‹ СЃ РѕРїРёСЃР°РЅРёРµРј РјР°РіР°Р·РёРЅР°
     /// </summary>
     function MarketWiki(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
-    /// Фильтр нецензурных выражений в комментариях
+    /// Р¤РёР»СЊС‚СЂ РЅРµС†РµРЅР·СѓСЂРЅС‹С… РІС‹СЂР°Р¶РµРЅРёР№ РІ РєРѕРјРјРµРЅС‚Р°СЂРёСЏС…
     /// </summary>
     function ObsceneFilter(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Фильтр по ключевым словам в комментариях
+    /// Р¤РёР»СЊС‚СЂ РїРѕ РєР»СЋС‡РµРІС‹Рј СЃР»РѕРІР°Рј РІ РєРѕРјРјРµРЅС‚Р°СЂРёСЏС…
     /// </summary>
     function ObsceneStopwords(const Value: Boolean): TVkParamsGroupsEdit;
     /// <summary>
-    /// Ключевые слова для фильтра комментариев
+    /// РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР° РґР»СЏ С„РёР»СЊС‚СЂР° РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
     /// </summary>
     function ObsceneWords(const Value: TArrayOfString): TVkParamsGroupsEdit;
     /// <summary>
@@ -424,11 +424,11 @@ type
     /// </summary>
     function SecondarySection(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
-    /// Страна
+    /// РЎС‚СЂР°РЅР°
     /// </summary>
     function Country(const Value: Int64): TVkParamsGroupsEdit;
     /// <summary>
-    /// Город
+    /// Р“РѕСЂРѕРґ
     /// </summary>
     function City(const Value: Int64): TVkParamsGroupsEdit;
   end;
@@ -436,32 +436,32 @@ type
   TVkParamsGroupsEditManager = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества (указывается без знака «минус»).
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР° (СѓРєР°Р·С‹РІР°РµС‚СЃСЏ Р±РµР· Р·РЅР°РєР° В«РјРёРЅСѓСЃВ»).
     /// </summary>
     function GroupId(const Value: UInt64): TVkParamsGroupsEditManager;
     /// <summary>
-    /// Идентификатор пользователя, чьи полномочия в сообществе нужно изменить
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, С‡СЊРё РїРѕР»РЅРѕРјРѕС‡РёСЏ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ РЅСѓР¶РЅРѕ РёР·РјРµРЅРёС‚СЊ
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsGroupsEditManager;
     /// <summary>
-    /// Уровень полномочий
-    /// Если параметр не задан, с пользователя user_id снимаются полномочия руководителя
+    /// РЈСЂРѕРІРµРЅСЊ РїРѕР»РЅРѕРјРѕС‡РёР№
+    /// Р•СЃР»Рё РїР°СЂР°РјРµС‚СЂ РЅРµ Р·Р°РґР°РЅ, СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ user_id СЃРЅРёРјР°СЋС‚СЃСЏ РїРѕР»РЅРѕРјРѕС‡РёСЏ СЂСѓРєРѕРІРѕРґРёС‚РµР»СЏ
     /// </summary>
     function Role(const Value: TVkGroupRole): TVkParamsGroupsEditManager;
     /// <summary>
-    /// Отображать ли пользователя в блоке контактов сообщества
+    /// РћС‚РѕР±СЂР°Р¶Р°С‚СЊ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ Р±Р»РѕРєРµ РєРѕРЅС‚Р°РєС‚РѕРІ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function IsContact(const Value: Boolean): TVkParamsGroupsEditManager;
     /// <summary>
-    /// Должность пользователя, отображаемая в блоке контактов
+    /// Р”РѕР»Р¶РЅРѕСЃС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РѕС‚РѕР±СЂР°Р¶Р°РµРјР°СЏ РІ Р±Р»РѕРєРµ РєРѕРЅС‚Р°РєС‚РѕРІ
     /// </summary>
     function ContactPosition(const Value: string): TVkParamsGroupsEditManager;
     /// <summary>
-    /// Телефон пользователя, отображаемый в блоке контактов
+    /// РўРµР»РµС„РѕРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РѕС‚РѕР±СЂР°Р¶Р°РµРјС‹Р№ РІ Р±Р»РѕРєРµ РєРѕРЅС‚Р°РєС‚РѕРІ
     /// </summary>
     function ContactPhone(const Value: string): TVkParamsGroupsEditManager;
     /// <summary>
-    /// Email пользователя, отображаемый в блоке контактов
+    /// Email РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РѕС‚РѕР±СЂР°Р¶Р°РµРјС‹Р№ РІ Р±Р»РѕРєРµ РєРѕРЅС‚Р°РєС‚РѕРІ
     /// </summary>
     function ContactEmail(const Value: string): TVkParamsGroupsEditManager;
   end;
@@ -469,35 +469,35 @@ type
   TVkParamsGroupsGetAddresses = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: UInt64): TVkParamsGroupsGetAddresses;
     /// <summary>
-    /// Перечисленные через запятую идентификаторы адресов, информацию о которых необходимо вернуть
+    /// РџРµСЂРµС‡РёСЃР»РµРЅРЅС‹Рµ С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ Р°РґСЂРµСЃРѕРІ, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function AddressIds(const Value: TIdList): TVkParamsGroupsGetAddresses; overload;
     /// <summary>
-    /// Перечисленные через запятую идентификаторы адресов, информацию о которых необходимо вернуть
+    /// РџРµСЂРµС‡РёСЃР»РµРЅРЅС‹Рµ С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ Р°РґСЂРµСЃРѕРІ, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function AddressIds(const Value: Int64): TVkParamsGroupsGetAddresses; overload;
     /// <summary>
-    /// Географическая широта отметки, заданная в градусах (от -90 до 90)
+    /// Р“РµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ С€РёСЂРѕС‚Р° РѕС‚РјРµС‚РєРё, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -90 РґРѕ 90)
     /// </summary>
     function Latitude(const Value: Extended): TVkParamsGroupsGetAddresses;
     /// <summary>
-    /// Географическая долгота отметки, заданная в градусах (от -180 до 180)
+    /// Р“РµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ РґРѕР»РіРѕС‚Р° РѕС‚РјРµС‚РєРё, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -180 РґРѕ 180)
     /// </summary>
     function Longitude(const Value: Extended): TVkParamsGroupsGetAddresses;
     /// <summary>
-    /// Список дополнительных полей адресов, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ Р°РґСЂРµСЃРѕРІ, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkGroupAddressFields): TVkParamsGroupsGetAddresses; overload;
     /// <summary>
-    /// Количество адресов, которое необходимо вернуть
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ Р°РґСЂРµСЃРѕРІ, РєРѕС‚РѕСЂРѕРµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Count(const Value: Int64 = 10): TVkParamsGroupsGetAddresses;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества черного списка
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° С‡РµСЂРЅРѕРіРѕ СЃРїРёСЃРєР°
     /// </summary>
     function Offset(const Value: Int64 = 0): TVkParamsGroupsGetAddresses;
   end;
@@ -505,23 +505,23 @@ type
   TVkParamsGroupsGetBanned = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsGetBanned;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества черного списка
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° С‡РµСЂРЅРѕРіРѕ СЃРїРёСЃРєР°
     /// </summary>
     function Offset(const Value: Int64 = 0): TVkParamsGroupsGetBanned;
     /// <summary>
-    /// Количество пользователей, которое необходимо вернуть (максимальное значение 200)
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РєРѕС‚РѕСЂРѕРµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ (РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ 200)
     /// </summary>
     function Count(const Value: Int64 = 20): TVkParamsGroupsGetBanned;
     /// <summary>
-    /// Список дополнительных полей профилей и сообществ, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№ Рё СЃРѕРѕР±С‰РµСЃС‚РІ, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields = []): TVkParamsGroupsGetBanned; overload;
     /// <summary>
-    /// Идентификатор пользователя или сообщества из чёрного списка, информацию о котором нужно получить
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР° РёР· С‡С‘СЂРЅРѕРіРѕ СЃРїРёСЃРєР°, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂРѕРј РЅСѓР¶РЅРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function OwnerId(const Value: Int64): TVkParamsGroupsGetBanned;
   end;
@@ -529,23 +529,23 @@ type
   TVkParamsGroupsGetInvitedUsers = record
     List: TParams;
     /// <summary>
-    /// Идентификатор группы, список приглашенных в которую пользователей нужно вернуть
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіСЂСѓРїРїС‹, СЃРїРёСЃРѕРє РїСЂРёРіР»Р°С€РµРЅРЅС‹С… РІ РєРѕС‚РѕСЂСѓСЋ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
-    /// Смещение, необходимое для выборки определённого подмножества пользователей
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
     /// </summary>
     function Offset(const Value: Int64 = 0): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
-    /// Количество пользователей, информацию о которых нужно вернуть
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Count(const Value: Int64 = 20): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
-    /// Список дополнительных полей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields = []): TVkParamsGroupsGetInvitedUsers;
     /// <summary>
-    /// Падеж для склонения имени и фамилии пользователя
+    /// РџР°РґРµР¶ РґР»СЏ СЃРєР»РѕРЅРµРЅРёСЏ РёРјРµРЅРё Рё С„Р°РјРёР»РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function NameCase(const Value: TVkNameCase): TVkParamsGroupsGetInvitedUsers;
   end;
@@ -553,41 +553,41 @@ type
   TVkParamsGroupsSearch = record
     List: TParams;
     /// <summary>
-    /// Текст поискового запроса
+    /// РўРµРєСЃС‚ РїРѕРёСЃРєРѕРІРѕРіРѕ Р·Р°РїСЂРѕСЃР°
     /// </summary>
     function Query(const Value: string): TVkParamsGroupsSearch;
     /// <summary>
-    /// Тип сообщества
+    /// РўРёРї СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function &Type(const Value: TVkGroupType): TVkParamsGroupsSearch;
     /// <summary>
-    /// Идентификатор страны
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹
     /// </summary>
     function CountryId(const Value: Int64): TVkParamsGroupsSearch;
     /// <summary>
-    /// Идентификатор города. При передаче этого параметра поле CountryId игнорируется
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°. РџСЂРё РїРµСЂРµРґР°С‡Рµ СЌС‚РѕРіРѕ РїР°СЂР°РјРµС‚СЂР° РїРѕР»Рµ CountryId РёРіРЅРѕСЂРёСЂСѓРµС‚СЃСЏ
     /// </summary>
     function CityId(const Value: Int64): TVkParamsGroupsSearch;
     /// <summary>
-    /// При передаче значения True будут выведены предстоящие события.
-    /// Учитывается только при передаче в качестве Type значения Event
+    /// РџСЂРё РїРµСЂРµРґР°С‡Рµ Р·РЅР°С‡РµРЅРёСЏ True Р±СѓРґСѓС‚ РІС‹РІРµРґРµРЅС‹ РїСЂРµРґСЃС‚РѕСЏС‰РёРµ СЃРѕР±С‹С‚РёСЏ.
+    /// РЈС‡РёС‚С‹РІР°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РїСЂРё РїРµСЂРµРґР°С‡Рµ РІ РєР°С‡РµСЃС‚РІРµ Type Р·РЅР°С‡РµРЅРёСЏ Event
     /// </summary>
     function Future(const Value: Boolean): TVkParamsGroupsSearch;
     /// <summary>
-    /// При передаче значения 1 будут выведены сообщества с включенными товарами
+    /// РџСЂРё РїРµСЂРµРґР°С‡Рµ Р·РЅР°С‡РµРЅРёСЏ 1 Р±СѓРґСѓС‚ РІС‹РІРµРґРµРЅС‹ СЃРѕРѕР±С‰РµСЃС‚РІР° СЃ РІРєР»СЋС‡РµРЅРЅС‹РјРё С‚РѕРІР°СЂР°РјРё
     /// </summary>
     function Market(const Value: Boolean): TVkParamsGroupsSearch;
     /// <summary>
-    /// Сортировка
+    /// РЎРѕСЂС‚РёСЂРѕРІРєР°
     /// </summary>
     function Sort(const Value: TVkGroupSearchSort): TVkParamsGroupsSearch;
     /// <summary>
-    /// Смещение, необходимое для выборки определённого подмножества результатов поиска
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РїРѕРёСЃРєР°
     /// </summary>
     function Offset(const Value: Int64 = 0): TVkParamsGroupsSearch;
     /// <summary>
-    /// Количество результатов поиска, которое необходимо вернуть (1000)
-    /// Обратите внимание — даже при использовании параметра offset для получения информации доступны только первые 1000 результатов
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РїРѕРёСЃРєР°, РєРѕС‚РѕСЂРѕРµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ (1000)
+    /// РћР±СЂР°С‚РёС‚Рµ РІРЅРёРјР°РЅРёРµ вЂ” РґР°Р¶Рµ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РїР°СЂР°РјРµС‚СЂР° offset РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РґРѕСЃС‚СѓРїРЅС‹ С‚РѕР»СЊРєРѕ РїРµСЂРІС‹Рµ 1000 СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
     /// </summary>
     function Count(const Value: Int64 = 20): TVkParamsGroupsSearch;
   end;
@@ -595,131 +595,131 @@ type
   TVkParamsGroupsSetCallbackSettings = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Версия Callback API
+    /// Р’РµСЂСЃРёСЏ Callback API
     /// </summary>
     function ApiVersion(const Value: string): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Идентификатор сервера
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРµСЂРІРµСЂР°
     /// </summary>
     function ServerId(const Value: Int64): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о добавлении новой аудиозаписи
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕР№ Р°СѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     function AudioNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об удалении комментария в обсуждении
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function BoardPostDelete(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария в обсуждении
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function BoardPostEdit(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о создании комментария в обсуждении
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЃРѕР·РґР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function BoardPostNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление о восстановлении комментария в обсуждении
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function BoardPostRestore(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление о создании подписки
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ СЃРѕР·РґР°РЅРёРё РїРѕРґРїРёСЃРєРё
     /// </summary>
     function DonutSubscriptionCreate(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление о продлении подписки
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РїСЂРѕРґР»РµРЅРёРё РїРѕРґРїРёСЃРєРё
     /// </summary>
     function DonutSubscriptionProlonged(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление об отмене подписки
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ РѕР± РѕС‚РјРµРЅРµ РїРѕРґРїРёСЃРєРё
     /// </summary>
     function DonutSubscriptionCancelled(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление об изменении стоимости подписки
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ РѕР± РёР·РјРµРЅРµРЅРёРё СЃС‚РѕРёРјРѕСЃС‚Рё РїРѕРґРїРёСЃРєРё
     /// </summary>
     function DonutSubscriptionPriceChanged(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление о том, что подписка истекла
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ С‚РѕРј, С‡С‚Рѕ РїРѕРґРїРёСЃРєР° РёСЃС‚РµРєР»Р°
     /// </summary>
     function DonutSubscriptionExpired(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление о выводе денег
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РІС‹РІРѕРґРµ РґРµРЅРµРі
     /// </summary>
     function DonutMoneyWithdraw(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление об ошибке при выводе денег
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ РѕР± РѕС€РёР±РєРµ РїСЂРё РІС‹РІРѕРґРµ РґРµРЅРµРі
     /// </summary>
     function DonutMoneyWithdrawError(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об изменении главной фотографии
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёР·РјРµРЅРµРЅРёРё РіР»Р°РІРЅРѕР№ С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     function GroupChangePhoto(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об изменении настроек
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёР·РјРµРЅРµРЅРёРё РЅР°СЃС‚СЂРѕРµРє
     /// </summary>
     function GroupChangeSettings(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о вступлении в сообщество
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІСЃС‚СѓРїР»РµРЅРёРё РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function GroupJoin(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о выходе из сообщества
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІС‹С…РѕРґРµ РёР· СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupLeave(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об изменении руководства
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёР·РјРµРЅРµРЅРёРё СЂСѓРєРѕРІРѕРґСЃС‚РІР°
     /// </summary>
     function GroupOfficersEdit(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о заполнении формы
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ Р·Р°РїРѕР»РЅРµРЅРёРё С„РѕСЂРјС‹
     /// </summary>
     function LeadFormsNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о новой отметке "Мне нравится"
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІРѕР№ РѕС‚РјРµС‚РєРµ "РњРЅРµ РЅСЂР°РІРёС‚СЃСЏ"
     /// </summary>
     function LikeAdd(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о снятии отметки "Мне нравится"
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЃРЅСЏС‚РёРё РѕС‚РјРµС‚РєРё "РњРЅРµ РЅСЂР°РІРёС‚СЃСЏ"
     /// </summary>
     function LikeRemove(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об удалении комментария к товару
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ
     /// </summary>
     function MarketCommentDelete(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария к товару
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ
     /// </summary>
     function MarketCommentEdit(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о добавлении нового комментария к товару
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ
     /// </summary>
     function MarketCommentNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о восстановлении комментария к товару
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ
     /// </summary>
     function MarketCommentRestore(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление о новом заказе
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РЅРѕРІРѕРј Р·Р°РєР°Р·Рµ
     /// </summary>
     function MarketOrderNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомление о редактировании заказа
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё Р·Р°РєР°Р·Р°
     /// </summary>
     function MarketOrderEdit(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о подписке на сообщения
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РїРѕРґРїРёСЃРєРµ РЅР° СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     function MessageAllow(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о запрете на сообщения
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ Р·Р°РїСЂРµС‚Рµ РЅР° СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     function MessageDeny(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о редактировании сообщения
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     function MessageEdit(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
@@ -727,91 +727,91 @@ type
     /// </summary>
     function MessageEvent(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о новых сообщениях
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІС‹С… СЃРѕРѕР±С‰РµРЅРёСЏС…
     /// </summary>
     function MessageNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об исходящем сообщении
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёСЃС…РѕРґСЏС‰РµРј СЃРѕРѕР±С‰РµРЅРёРё
     /// </summary>
     function MessageReply(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о наборе текста сообщения
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅР°Р±РѕСЂРµ С‚РµРєСЃС‚Р° СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     function MessageTypingState(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об удалении комментария к фото
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С„РѕС‚Рѕ
     /// </summary>
     function PhotoCommentDelete(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария к фото
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С„РѕС‚Рѕ
     /// </summary>
     function PhotoCommentEdit(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о добавлении нового комментария к фото
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С„РѕС‚Рѕ
     /// </summary>
     function PhotoCommentNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о восстановлении комментария к фото
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С„РѕС‚Рѕ
     /// </summary>
     function PhotoCommentRestore(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о добавлении новой фотографии
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕР№ С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     function PhotoNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о новом голосе в публичных опросах
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІРѕРј РіРѕР»РѕСЃРµ РІ РїСѓР±Р»РёС‡РЅС‹С… РѕРїСЂРѕСЃР°С…
     /// </summary>
     function PollVoteNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об внесении пользователя в чёрный список
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РІРЅРµСЃРµРЅРёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ С‡С‘СЂРЅС‹Р№ СЃРїРёСЃРѕРє
     /// </summary>
     function UserBlock(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об исключении пользователя из чёрного списка
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёСЃРєР»СЋС‡РµРЅРёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· С‡С‘СЂРЅРѕРіРѕ СЃРїРёСЃРєР°
     /// </summary>
     function UserUnblock(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об удалении комментария к видео
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     function VideoCommentDelete(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария к видео
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     function VideoCommentEdit(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о добавлении нового комментария к видео
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     function VideoCommentNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о восстановлении комментария к видео
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     function VideoCommentRestore(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о добавлении новой видеозаписи
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕР№ РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     function VideoNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о новой записи на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІРѕР№ Р·Р°РїРёСЃРё РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallPostNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления об удалении комментария на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallReplyDelete(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallReplyEdit(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о добавлении нового комментария на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallReplyNew(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о восстановлении комментария на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallReplyRestore(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
     /// <summary>
-    /// Уведомления о репосте записи
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРїРѕСЃС‚Рµ Р·Р°РїРёСЃРё
     /// </summary>
     function WallRepost(const Value: Boolean): TVkParamsGroupsSetCallbackSettings;
   end;
@@ -819,131 +819,131 @@ type
   TVkParamsGroupsSetLongpollSettings = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// True — включить Bots Long Poll, False — отключить
+    /// True вЂ” РІРєР»СЋС‡РёС‚СЊ Bots Long Poll, False вЂ” РѕС‚РєР»СЋС‡РёС‚СЊ
     /// </summary>
     function Enabled(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Версия API
+    /// Р’РµСЂСЃРёСЏ API
     /// </summary>
     function ApiVersion(const Value: string): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о добавлении новой аудиозаписи
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕР№ Р°СѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     function AudioNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об удалении комментария в обсуждении
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function BoardPostDelete(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария в обсуждении
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function BoardPostEdit(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о создании комментария в обсуждении
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЃРѕР·РґР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function BoardPostNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление о восстановлении комментария в обсуждении
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РІ РѕР±СЃСѓР¶РґРµРЅРёРё
     /// </summary>
     function BoardPostRestore(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление о создании подписки
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ СЃРѕР·РґР°РЅРёРё РїРѕРґРїРёСЃРєРё
     /// </summary>
     function DonutSubscriptionCreate(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление о продлении подписки
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РїСЂРѕРґР»РµРЅРёРё РїРѕРґРїРёСЃРєРё
     /// </summary>
     function DonutSubscriptionProlonged(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление об отмене подписки
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ РѕР± РѕС‚РјРµРЅРµ РїРѕРґРїРёСЃРєРё
     /// </summary>
     function DonutSubscriptionCancelled(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление об изменении стоимости подписки
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ РѕР± РёР·РјРµРЅРµРЅРёРё СЃС‚РѕРёРјРѕСЃС‚Рё РїРѕРґРїРёСЃРєРё
     /// </summary>
     function DonutSubscriptionPriceChanged(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление о том, что подписка истекла
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ С‚РѕРј, С‡С‚Рѕ РїРѕРґРїРёСЃРєР° РёСЃС‚РµРєР»Р°
     /// </summary>
     function DonutSubscriptionExpired(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление о выводе денег
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РІС‹РІРѕРґРµ РґРµРЅРµРі
     /// </summary>
     function DonutMoneyWithdraw(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление об ошибке при выводе денег
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ РѕР± РѕС€РёР±РєРµ РїСЂРё РІС‹РІРѕРґРµ РґРµРЅРµРі
     /// </summary>
     function DonutMoneyWithdrawError(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об изменении главной фотографии
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёР·РјРµРЅРµРЅРёРё РіР»Р°РІРЅРѕР№ С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     function GroupChangePhoto(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об изменении настроек
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёР·РјРµРЅРµРЅРёРё РЅР°СЃС‚СЂРѕРµРє
     /// </summary>
     function GroupChangeSettings(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о вступлении в сообщество
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІСЃС‚СѓРїР»РµРЅРёРё РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function GroupJoin(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о выходе из сообщества
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІС‹С…РѕРґРµ РёР· СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupLeave(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об изменении руководства
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёР·РјРµРЅРµРЅРёРё СЂСѓРєРѕРІРѕРґСЃС‚РІР°
     /// </summary>
     function GroupOfficersEdit(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о заполнении формы
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ Р·Р°РїРѕР»РЅРµРЅРёРё С„РѕСЂРјС‹
     /// </summary>
     function LeadFormsNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о новой отметке "Мне нравится"
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІРѕР№ РѕС‚РјРµС‚РєРµ "РњРЅРµ РЅСЂР°РІРёС‚СЃСЏ"
     /// </summary>
     function LikeAdd(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о снятии отметки "Мне нравится"
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЃРЅСЏС‚РёРё РѕС‚РјРµС‚РєРё "РњРЅРµ РЅСЂР°РІРёС‚СЃСЏ"
     /// </summary>
     function LikeRemove(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об удалении комментария к товару
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ
     /// </summary>
     function MarketCommentDelete(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария к товару
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ
     /// </summary>
     function MarketCommentEdit(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о добавлении нового комментария к товару
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ
     /// </summary>
     function MarketCommentNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о восстановлении комментария к товару
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С‚РѕРІР°СЂСѓ
     /// </summary>
     function MarketCommentRestore(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление о новом заказе
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РЅРѕРІРѕРј Р·Р°РєР°Р·Рµ
     /// </summary>
     function MarketOrderNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомление о редактировании заказа
+    /// РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё Р·Р°РєР°Р·Р°
     /// </summary>
     function MarketOrderEdit(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о подписке на сообщения
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РїРѕРґРїРёСЃРєРµ РЅР° СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     function MessageAllow(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о запрете на сообщения
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ Р·Р°РїСЂРµС‚Рµ РЅР° СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     function MessageDeny(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о редактировании сообщения
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     function MessageEdit(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
@@ -951,91 +951,91 @@ type
     /// </summary>
     function MessageEvent(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о новых сообщениях
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІС‹С… СЃРѕРѕР±С‰РµРЅРёСЏС…
     /// </summary>
     function MessageNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об исходящем сообщении
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёСЃС…РѕРґСЏС‰РµРј СЃРѕРѕР±С‰РµРЅРёРё
     /// </summary>
     function MessageReply(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о наборе текста сообщения
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅР°Р±РѕСЂРµ С‚РµРєСЃС‚Р° СЃРѕРѕР±С‰РµРЅРёСЏ
     /// </summary>
     function MessageTypingState(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об удалении комментария к фото
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С„РѕС‚Рѕ
     /// </summary>
     function PhotoCommentDelete(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария к фото
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С„РѕС‚Рѕ
     /// </summary>
     function PhotoCommentEdit(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о добавлении нового комментария к фото
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С„РѕС‚Рѕ
     /// </summary>
     function PhotoCommentNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о восстановлении комментария к фото
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє С„РѕС‚Рѕ
     /// </summary>
     function PhotoCommentRestore(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о добавлении новой фотографии
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕР№ С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     function PhotoNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о новом голосе в публичных опросах
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІРѕРј РіРѕР»РѕСЃРµ РІ РїСѓР±Р»РёС‡РЅС‹С… РѕРїСЂРѕСЃР°С…
     /// </summary>
     function PollVoteNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об внесении пользователя в чёрный список
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РІРЅРµСЃРµРЅРёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ С‡С‘СЂРЅС‹Р№ СЃРїРёСЃРѕРє
     /// </summary>
     function UserBlock(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об исключении пользователя из чёрного списка
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± РёСЃРєР»СЋС‡РµРЅРёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· С‡С‘СЂРЅРѕРіРѕ СЃРїРёСЃРєР°
     /// </summary>
     function UserUnblock(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об удалении комментария к видео
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     function VideoCommentDelete(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария к видео
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     function VideoCommentEdit(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о добавлении нового комментария к видео
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     function VideoCommentNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о восстановлении комментария к видео
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє РІРёРґРµРѕ
     /// </summary>
     function VideoCommentRestore(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о добавлении новой видеозаписи
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕР№ РІРёРґРµРѕР·Р°РїРёСЃРё
     /// </summary>
     function VideoNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о новой записи на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІРѕР№ Р·Р°РїРёСЃРё РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallPostNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления об удалении комментария на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ РѕР± СѓРґР°Р»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallReplyDelete(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о редактировании комментария на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallReplyEdit(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о добавлении нового комментария на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallReplyNew(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о восстановлении комментария на стене
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РЅР° СЃС‚РµРЅРµ
     /// </summary>
     function WallReplyRestore(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
     /// <summary>
-    /// Уведомления о репосте записи
+    /// РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ СЂРµРїРѕСЃС‚Рµ Р·Р°РїРёСЃРё
     /// </summary>
     function WallRepost(const Value: Boolean): TVkParamsGroupsSetLongpollSettings;
   end;
@@ -1054,29 +1054,29 @@ type
   TVkParamsGroupsSetSettings = record
     List: TParams;
     /// <summary>
-    /// Идентификатор сообщества
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsGroupsSetSettings;
     /// <summary>
-    /// Сообщения сообщества
+    /// РЎРѕРѕР±С‰РµРЅРёСЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Messages(const Value: Boolean): TVkParamsGroupsSetSettings;
     /// <summary>
-    /// Возможности ботов (использование клавиатуры, добавление в беседу)
+    /// Р’РѕР·РјРѕР¶РЅРѕСЃС‚Рё Р±РѕС‚РѕРІ (РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РєР»Р°РІРёР°С‚СѓСЂС‹, РґРѕР±Р°РІР»РµРЅРёРµ РІ Р±РµСЃРµРґСѓ)
     /// </summary>
     function BotsCapabilities(const Value: Boolean): TVkParamsGroupsSetSettings;
     /// <summary>
-    /// Кнопка «Начать» в диалоге с сообществом.
-    /// Работает, в случае если BotsCapabilities = True.
-    /// Если эта настройка включена, то при заходе в беседу с Вашим сообществом
-    /// в первый раз пользователь увидит кнопку с командой «Начать»,
-    /// которая отправляет команду start. Payload этого сообщения будет выглядеть так:
+    /// РљРЅРѕРїРєР° В«РќР°С‡Р°С‚СЊВ» РІ РґРёР°Р»РѕРіРµ СЃ СЃРѕРѕР±С‰РµСЃС‚РІРѕРј.
+    /// Р Р°Р±РѕС‚Р°РµС‚, РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё BotsCapabilities = True.
+    /// Р•СЃР»Рё СЌС‚Р° РЅР°СЃС‚СЂРѕР№РєР° РІРєР»СЋС‡РµРЅР°, С‚Рѕ РїСЂРё Р·Р°С…РѕРґРµ РІ Р±РµСЃРµРґСѓ СЃ Р’Р°С€РёРј СЃРѕРѕР±С‰РµСЃС‚РІРѕРј
+    /// РІ РїРµСЂРІС‹Р№ СЂР°Р· РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓРІРёРґРёС‚ РєРЅРѕРїРєСѓ СЃ РєРѕРјР°РЅРґРѕР№ В«РќР°С‡Р°С‚СЊВ»,
+    /// РєРѕС‚РѕСЂР°СЏ РѕС‚РїСЂР°РІР»СЏРµС‚ РєРѕРјР°РЅРґСѓ start. Payload СЌС‚РѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ Р±СѓРґРµС‚ РІС‹РіР»СЏРґРµС‚СЊ С‚Р°Рє:
     /// { "command": "start" }
     /// </summary>
     function BotsStartButton(const Value: Boolean): TVkParamsGroupsSetSettings;
     /// <summary>
-    /// Добавление бота в беседы.
-    /// Работает, в случае если bots_capabilities=1
+    /// Р”РѕР±Р°РІР»РµРЅРёРµ Р±РѕС‚Р° РІ Р±РµСЃРµРґС‹.
+    /// Р Р°Р±РѕС‚Р°РµС‚, РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё bots_capabilities=1
     /// </summary>
     function BotsAddToChat(const Value: Boolean): TVkParamsGroupsSetSettings;
   end;
@@ -1084,291 +1084,291 @@ type
   TGroupsController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает список участников сообщества
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СѓС‡Р°СЃС‚РЅРёРєРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetMembers(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список участников сообщества
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СѓС‡Р°СЃС‚РЅРёРєРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetMembers(var Items: TVkProfiles; Params: TVkParamsGroupsGetMembers): Boolean; overload;
     /// <summary>
-    /// Возвращает список id участников сообщества
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє id СѓС‡Р°СЃС‚РЅРёРєРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetMembersIds(var Items: TVkIdList; Params: TVkParamsGroupsGetMembers): Boolean; overload;
     /// <summary>
-    /// Включает статус «онлайн» в сообществе
+    /// Р’РєР»СЋС‡Р°РµС‚ СЃС‚Р°С‚СѓСЃ В«РѕРЅР»Р°Р№РЅВ» РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function EnableOnline(GroupId: TVkPeerId): Boolean;
     /// <summary>
-    /// Выключает статус «онлайн» в сообществе
+    /// Р’С‹РєР»СЋС‡Р°РµС‚ СЃС‚Р°С‚СѓСЃ В«РѕРЅР»Р°Р№РЅВ» РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function DisableOnline(GroupId: TVkPeerId): Boolean;
     /// <summary>
-    /// Получает информацию о статусе «онлайн» в сообществе
+    /// РџРѕР»СѓС‡Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃС‚Р°С‚СѓСЃРµ В«РѕРЅР»Р°Р№РЅВ» РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function GetOnlineStatus(var Value: TVkGroupStatus; GroupId: TVkPeerId): Boolean;
     /// <summary>
-    /// Возвращает список сообществ указанного пользователя
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃРѕРѕР±С‰РµСЃС‚РІ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function Get(var Items: TVkGroups; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список сообществ указанного пользователя
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃРѕРѕР±С‰РµСЃС‚РІ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function Get(var Items: TVkGroups; Params: TVkParamsGroupsGet): Boolean; overload;
     /// <summary>
-    /// Возвращает список id сообществ указанного пользователя
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє id СЃРѕРѕР±С‰РµСЃС‚РІ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function Get(var Items: TVkIdList; Params: TVkParamsGroupsGet): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о том, является ли пользователь участником сообщества
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РѕРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓС‡Р°СЃС‚РЅРёРєРѕРј СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function IsMember(var Items: TVkGroupMemberStates; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о том, является ли пользователь участником сообщества
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РѕРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓС‡Р°СЃС‚РЅРёРєРѕРј СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function IsMember(var Items: TVkGroupMemberStates; Params: TVkParamsGroupsIsMember): Boolean; overload;
     /// <summary>
-    ///  Позволяет покинуть сообщество или отклонить приглашение в сообщество
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РїРѕРєРёРЅСѓС‚СЊ СЃРѕРѕР±С‰РµСЃС‚РІРѕ РёР»Рё РѕС‚РєР»РѕРЅРёС‚СЊ РїСЂРёРіР»Р°С€РµРЅРёРµ РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function Leave(GroupId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Данный метод позволяет вступить в группу, публичную страницу, а также подтвердить участие во встрече.
-    ///  NotSure - опциональный параметр, учитываемый, если GroupId принадлежит встрече.
-    ///  True — Возможно пойду. False — Точно пойду
+    ///  Р”Р°РЅРЅС‹Р№ РјРµС‚РѕРґ РїРѕР·РІРѕР»СЏРµС‚ РІСЃС‚СѓРїРёС‚СЊ РІ РіСЂСѓРїРїСѓ, РїСѓР±Р»РёС‡РЅСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ, Р° С‚Р°РєР¶Рµ РїРѕРґС‚РІРµСЂРґРёС‚СЊ СѓС‡Р°СЃС‚РёРµ РІРѕ РІСЃС‚СЂРµС‡Рµ.
+    ///  NotSure - РѕРїС†РёРѕРЅР°Р»СЊРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ, СѓС‡РёС‚С‹РІР°РµРјС‹Р№, РµСЃР»Рё GroupId РїСЂРёРЅР°РґР»РµР¶РёС‚ РІСЃС‚СЂРµС‡Рµ.
+    ///  True вЂ” Р’РѕР·РјРѕР¶РЅРѕ РїРѕР№РґСѓ. False вЂ” РўРѕС‡РЅРѕ РїРѕР№РґСѓ
     /// </summary>
     function Join(GroupId: TVkPeerId; NotSure: Boolean = False): Boolean;
     /// <summary>
-    ///  Позволяет приглашать друзей в группу
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РїСЂРёРіР»Р°С€Р°С‚СЊ РґСЂСѓР·РµР№ РІ РіСЂСѓРїРїСѓ
     /// </summary>
     function Invite(GroupId, UserId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Позволяет исключить пользователя из группы или отклонить заявку на вступление
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РёСЃРєР»СЋС‡РёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· РіСЂСѓРїРїС‹ РёР»Рё РѕС‚РєР»РѕРЅРёС‚СЊ Р·Р°СЏРІРєСѓ РЅР° РІСЃС‚СѓРїР»РµРЅРёРµ
     /// </summary>
     function RemoveUser(GroupId, UserId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Позволяет одобрить заявку в группу от пользователя
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РѕРґРѕР±СЂРёС‚СЊ Р·Р°СЏРІРєСѓ РІ РіСЂСѓРїРїСѓ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function ApproveRequest(GroupId, UserId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Позволяет добавить адрес в сообщество.
-    ///  Список адресов может быть получен методом groups.getAddresses
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РґРѕР±Р°РІРёС‚СЊ Р°РґСЂРµСЃ РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ.
+    ///  РЎРїРёСЃРѕРє Р°РґСЂРµСЃРѕРІ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїРѕР»СѓС‡РµРЅ РјРµС‚РѕРґРѕРј groups.getAddresses
     /// </summary>
     function AddAddress(var Item: TVkGroupAddress; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Позволяет добавить адрес в сообщество.
-    ///  Список адресов может быть получен методом groups.getAddresses
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РґРѕР±Р°РІРёС‚СЊ Р°РґСЂРµСЃ РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ.
+    ///  РЎРїРёСЃРѕРє Р°РґСЂРµСЃРѕРІ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїРѕР»СѓС‡РµРЅ РјРµС‚РѕРґРѕРј groups.getAddresses
     /// </summary>
     function AddAddress(var Item: TVkGroupAddress; Params: TVkParamsGroupsAddAddress): Boolean; overload;
     /// <summary>
-    ///  Добавляет сервер для Callback API в сообщество
+    ///  Р”РѕР±Р°РІР»СЏРµС‚ СЃРµСЂРІРµСЂ РґР»СЏ Callback API РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function AddCallbackServer(var ServerId: Int64; GroupId: TVkPeerId; Url, Title: string; SecretKey: string): Boolean;
     /// <summary>
-    ///  Позволяет добавлять ссылки в сообщество
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РґРѕР±Р°РІР»СЏС‚СЊ СЃСЃС‹Р»РєРё РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function AddLink(var Item: TVkGroupLink; GroupId: TVkPeerId; Link: string; Text: string = ''): Boolean;
     /// <summary>
-    ///  Добавляет пользователя или группу в черный список сообщества
+    ///  Р”РѕР±Р°РІР»СЏРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїСѓ РІ С‡РµСЂРЅС‹Р№ СЃРїРёСЃРѕРє СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Ban(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Добавляет пользователя или группу в черный список сообщества
+    ///  Р”РѕР±Р°РІР»СЏРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїСѓ РІ С‡РµСЂРЅС‹Р№ СЃРїРёСЃРѕРє СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Ban(Params: TVkParamsGroupsBan): Boolean; overload;
     /// <summary>
-    ///  Создает новое сообщество
+    ///  РЎРѕР·РґР°РµС‚ РЅРѕРІРѕРµ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function Create(var Item: TVkGroup; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Создает новое сообщество
+    ///  РЎРѕР·РґР°РµС‚ РЅРѕРІРѕРµ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function Create(var Item: TVkGroup; Params: TVkParamsGroupsCreate): Boolean; overload;
     /// <summary>
-    ///  Удаляет адрес сообщества
+    ///  РЈРґР°Р»СЏРµС‚ Р°РґСЂРµСЃ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function DeleteAddress(GroupId: TVkPeerId; AddressId: Int64): Boolean;
     /// <summary>
-    ///  Удаляет сервер для Callback API из сообщества
+    ///  РЈРґР°Р»СЏРµС‚ СЃРµСЂРІРµСЂ РґР»СЏ Callback API РёР· СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function DeleteCallbackServer(GroupId: TVkPeerId; ServerId: Int64): Boolean;
     /// <summary>
-    ///  Позволяет удалить ссылки из сообщества
+    ///  РџРѕР·РІРѕР»СЏРµС‚ СѓРґР°Р»РёС‚СЊ СЃСЃС‹Р»РєРё РёР· СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function DeleteLink(GroupId: TVkPeerId; LinkId: Int64): Boolean;
     /// <summary>
-    ///  Редактирует сообщество
+    ///  Р РµРґР°РєС‚РёСЂСѓРµС‚ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function Edit(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Редактирует сообщество
+    ///  Р РµРґР°РєС‚РёСЂСѓРµС‚ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function Edit(Params: TVkParamsGroupsEdit): Boolean; overload;
     /// <summary>
-    ///  Позволяет отредактировать адрес в сообществе
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р°РґСЂРµСЃ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function EditAddress(var Item: TVkGroupAddress; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Позволяет отредактировать адрес в сообществе
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р°РґСЂРµСЃ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function EditAddress(var Item: TVkGroupAddress; AddressId: Int64; Params: TVkParamsGroupsEditAddress): Boolean; overload;
     /// <summary>
-    ///  Редактирует данные сервера для Callback API в сообществе
+    ///  Р РµРґР°РєС‚РёСЂСѓРµС‚ РґР°РЅРЅС‹Рµ СЃРµСЂРІРµСЂР° РґР»СЏ Callback API РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function EditCallbackServer(GroupId: TVkPeerId; ServerId: Int64; Url, Title: string; SecretKey: string): Boolean;
     /// <summary>
-    ///  Позволяет редактировать ссылки в сообществе
+    ///  РџРѕР·РІРѕР»СЏРµС‚ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ СЃСЃС‹Р»РєРё РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function EditLink(GroupId: TVkPeerId; Link: string; Text: string = ''): Boolean;
     /// <summary>
-    ///  Позволяет назначить/разжаловать руководителя в сообществе или изменить уровень его полномочий
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РЅР°Р·РЅР°С‡РёС‚СЊ/СЂР°Р·Р¶Р°Р»РѕРІР°С‚СЊ СЂСѓРєРѕРІРѕРґРёС‚РµР»СЏ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ РёР»Рё РёР·РјРµРЅРёС‚СЊ СѓСЂРѕРІРµРЅСЊ РµРіРѕ РїРѕР»РЅРѕРјРѕС‡РёР№
     /// </summary>
     function EditManager(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Позволяет назначить/разжаловать руководителя в сообществе или изменить уровень его полномочий
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РЅР°Р·РЅР°С‡РёС‚СЊ/СЂР°Р·Р¶Р°Р»РѕРІР°С‚СЊ СЂСѓРєРѕРІРѕРґРёС‚РµР»СЏ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ РёР»Рё РёР·РјРµРЅРёС‚СЊ СѓСЂРѕРІРµРЅСЊ РµРіРѕ РїРѕР»РЅРѕРјРѕС‡РёР№
     /// </summary>
     function EditManager(Params: TVkParamsGroupsEditManager): Boolean; overload;
     /// <summary>
-    ///  Возвращает адрес указанного сообщества
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ Р°РґСЂРµСЃ СѓРєР°Р·Р°РЅРЅРѕРіРѕ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetAddresses(var Item: TVkGroupAddresses; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Возвращает адрес указанного сообщества
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ Р°РґСЂРµСЃ СѓРєР°Р·Р°РЅРЅРѕРіРѕ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetAddresses(var Item: TVkGroupAddresses; Params: TVkParamsGroupsGetAddresses): Boolean; overload;
     /// <summary>
-    ///  Возвращает список забаненных пользователей и сообществ в сообществе
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°Р±Р°РЅРµРЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Рё СЃРѕРѕР±С‰РµСЃС‚РІ РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function GetBanned(var Items: TVkGroupBans; Params: TVkParamsGroupsGetBanned): Boolean; overload;
     /// <summary>
-    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р·Р°РґР°РЅРЅРѕРј СЃРѕРѕР±С‰РµСЃС‚РІРµ РёР»Рё Рѕ РЅРµСЃРєРѕР»СЊРєРёС… СЃРѕРѕР±С‰РµСЃС‚РІР°С…
     /// </summary>
     function GetById(var Items: TVkGroups; GroupIds: TVkPeerIds; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
-    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р·Р°РґР°РЅРЅРѕРј СЃРѕРѕР±С‰РµСЃС‚РІРµ РёР»Рё Рѕ РЅРµСЃРєРѕР»СЊРєРёС… СЃРѕРѕР±С‰РµСЃС‚РІР°С…
     /// </summary>
     function GetById(var Item: TVkGroup; GroupId: TVkPeerId; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
-    ///  Возвращает информацию о заданном сообществе или о нескольких сообществах
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р·Р°РґР°РЅРЅРѕРј СЃРѕРѕР±С‰РµСЃС‚РІРµ РёР»Рё Рѕ РЅРµСЃРєРѕР»СЊРєРёС… СЃРѕРѕР±С‰РµСЃС‚РІР°С…
     /// </summary>
     function GetById(var Items: TVkGroups; GroupId: string; Fields: TVkExtendedFields = []): Boolean; overload;
     /// <summary>
-    ///  Позволяет получить строку, необходимую для подтверждения адреса сервера в Callback API
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ СЃС‚СЂРѕРєСѓ, РЅРµРѕР±С…РѕРґРёРјСѓСЋ РґР»СЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ Р°РґСЂРµСЃР° СЃРµСЂРІРµСЂР° РІ Callback API
     /// </summary>
     function GetCallbackConfirmationCode(var Code: string; GroupId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Получает информацию о серверах для Callback API в сообществе
+    ///  РџРѕР»СѓС‡Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃРµСЂРІРµСЂР°С… РґР»СЏ Callback API РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function GetCallbackServers(var Items: TVkGroupCallbackServers; GroupId: TVkPeerId; ServerIds: TIdList = []): Boolean;
     /// <summary>
-    ///  Позволяет получить настройки уведомлений Callback API для сообщества
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СѓРІРµРґРѕРјР»РµРЅРёР№ Callback API РґР»СЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetCallbackSettings(var Items: TVkCallbackSettings; GroupId: TVkPeerId; ServerId: Int64): Boolean;
     /// <summary>
-    ///  Возвращает список сообществ выбранной категории каталога
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СЃРѕРѕР±С‰РµСЃС‚РІ РІС‹Р±СЂР°РЅРЅРѕР№ РєР°С‚РµРіРѕСЂРёРё РєР°С‚Р°Р»РѕРіР°
     /// </summary>
     function GetCatalog(var Items: TVkGroups; CategoryId: Int64 = 0; SubcategoryId: Int64 = 0): Boolean;
     /// <summary>
-    ///  Возвращает список категорий для каталога сообществ
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєР°С‚РµРіРѕСЂРёР№ РґР»СЏ РєР°С‚Р°Р»РѕРіР° СЃРѕРѕР±С‰РµСЃС‚РІ
     /// </summary>
     function GetCatalogInfo(var Items: TVkGroupCategories; Subcategories: Boolean = False; Extended: Boolean = False): Boolean;
     /// <summary>
-    ///  Возвращает список пользователей, которые были приглашены в группу
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РєРѕС‚РѕСЂС‹Рµ Р±С‹Р»Рё РїСЂРёРіР»Р°С€РµРЅС‹ РІ РіСЂСѓРїРїСѓ
     /// </summary>
     function GetInvitedUsers(var Items: TVkProfiles; Params: TVkParamsGroupsGetInvitedUsers): Boolean;
     /// <summary>
-    ///  Данный метод возвращает список приглашений в сообщества и встречи текущего пользователя
+    ///  Р”Р°РЅРЅС‹Р№ РјРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїСЂРёРіР»Р°С€РµРЅРёР№ РІ СЃРѕРѕР±С‰РµСЃС‚РІР° Рё РІСЃС‚СЂРµС‡Рё С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function GetInvites(var Items: TVkInvitesGroups; Extended: Boolean = False; Count: Int64 = 20; Offset: Int64 = 0): Boolean;
     /// <summary>
-    ///  Возвращает данные для подключения к Bots Longpoll API
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ РґР°РЅРЅС‹Рµ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Bots Longpoll API
     /// </summary>
     function GetLongPollServer(var Item: TVkLongpollData; GroupId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Получает настройки Bots Longpoll API для сообщества
+    ///  РџРѕР»СѓС‡Р°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё Bots Longpoll API РґР»СЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetLongPollSettings(var Item: TVkLongpollSettings; GroupId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Возвращает список заявок на вступление в сообщество
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°СЏРІРѕРє РЅР° РІСЃС‚СѓРїР»РµРЅРёРµ РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function GetRequests(var Items: TVkProfiles; GroupId: TVkPeerId; Fields: TVkExtendedFields = [TVkExtendedField.Domain]; Count: Int64 = 20; Offset: Int64 = 0): Boolean; overload;
     /// <summary>
-    ///  Возвращает список заявок на вступление в сообщество
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°СЏРІРѕРє РЅР° РІСЃС‚СѓРїР»РµРЅРёРµ РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function GetRequestsIds(var Items: TVkIdList; GroupId: TVkPeerId; Count: Int64 = 20; Offset: Int64 = 0): Boolean; overload;
     /// <summary>
-    ///  Позволяет получать данные, необходимые для отображения страницы редактирования данных сообщества
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡Р°С‚СЊ РґР°РЅРЅС‹Рµ, РЅРµРѕР±С…РѕРґРёРјС‹Рµ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃС‚СЂР°РЅРёС†С‹ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ РґР°РЅРЅС‹С… СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetSettings(var Item: TVkGroupSettings; GroupId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Возвращает список тегов сообщества
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє С‚РµРіРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetTagList(var Items: TVkGroupTags; GroupId: TVkPeerId): Boolean;
     /// <summary>
-    ///  Возвращает настройки прав для ключа доступа сообщества
+    ///  Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё РїСЂР°РІ РґР»СЏ РєР»СЋС‡Р° РґРѕСЃС‚СѓРїР° СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function GetTokenPermissions(var Items: TVkTokenPermissions): Boolean;
     /// <summary>
-    ///  Позволяет менять местоположение ссылки в списке
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РјРµРЅСЏС‚СЊ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ СЃСЃС‹Р»РєРё РІ СЃРїРёСЃРєРµ
     /// </summary>
     function ReorderLink(GroupId: TVkPeerId; LinkId: Int64; After: Int64): Boolean;
     /// <summary>
-    ///  Осуществляет поиск сообществ по заданной подстроке
+    ///  РћСЃСѓС‰РµСЃС‚РІР»СЏРµС‚ РїРѕРёСЃРє СЃРѕРѕР±С‰РµСЃС‚РІ РїРѕ Р·Р°РґР°РЅРЅРѕР№ РїРѕРґСЃС‚СЂРѕРєРµ
     /// </summary>
     function Search(var Items: TVkGroups; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Осуществляет поиск сообществ по заданной подстроке
+    ///  РћСЃСѓС‰РµСЃС‚РІР»СЏРµС‚ РїРѕРёСЃРє СЃРѕРѕР±С‰РµСЃС‚РІ РїРѕ Р·Р°РґР°РЅРЅРѕР№ РїРѕРґСЃС‚СЂРѕРєРµ
     /// </summary>
     function Search(var Items: TVkGroups; Params: TVkParamsGroupsSearch): Boolean; overload;
     /// <summary>
-    ///  Позволяет задать настройки уведомлений о событиях в Callback API
+    ///  РџРѕР·РІРѕР»СЏРµС‚ Р·Р°РґР°С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СѓРІРµРґРѕРјР»РµРЅРёР№ Рѕ СЃРѕР±С‹С‚РёСЏС… РІ Callback API
     /// </summary>
     function SetCallbackSettings(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Позволяет задать настройки уведомлений о событиях в Callback API
+    ///  РџРѕР·РІРѕР»СЏРµС‚ Р·Р°РґР°С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СѓРІРµРґРѕРјР»РµРЅРёР№ Рѕ СЃРѕР±С‹С‚РёСЏС… РІ Callback API
     /// </summary>
     function SetCallbackSettings(Params: TVkParamsGroupsSetCallbackSettings): Boolean; overload;
     /// <summary>
-    ///  Задаёт настройки для Bots Long Poll API в сообществе
+    ///  Р—Р°РґР°С‘С‚ РЅР°СЃС‚СЂРѕР№РєРё РґР»СЏ Bots Long Poll API РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function SetLongPollSettings(Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Задаёт настройки для Bots Long Poll API в сообществе
+    ///  Р—Р°РґР°С‘С‚ РЅР°СЃС‚СЂРѕР№РєРё РґР»СЏ Bots Long Poll API РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ
     /// </summary>
     function SetLongPollSettings(Params: TVkParamsGroupsSetLongpollSettings): Boolean; overload;
     /// <summary>
-    ///  Устанавливает настройки сообщества
+    ///  РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function SetSettings(Params: TVkParamsGroupsSetSettings): Boolean;
     /// <summary>
-    ///  Позволяет создать или отредактировать заметку о пользователе в рамках переписки пользователя с сообществом
+    ///  РџРѕР·РІРѕР»СЏРµС‚ СЃРѕР·РґР°С‚СЊ РёР»Рё РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р·Р°РјРµС‚РєСѓ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ РІ СЂР°РјРєР°С… РїРµСЂРµРїРёСЃРєРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ СЃРѕРѕР±С‰РµСЃС‚РІРѕРј
     /// </summary>
     function SetUserNote(GroupId, UserId: TVkPeerId; Note: string): Boolean;
     /// <summary>
-    ///  Позволяет добавить новый тег в сообщество
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РґРѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Р№ С‚РµРі РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     function TagAdd(GroupId: TVkPeerId; TagName: string; TagColor: TVkGroupTagColor): Boolean;
     /// <summary>
-    ///  Позволяет "привязывать" и "отвязывать" теги сообщества к беседам
+    ///  РџРѕР·РІРѕР»СЏРµС‚ "РїСЂРёРІСЏР·С‹РІР°С‚СЊ" Рё "РѕС‚РІСЏР·С‹РІР°С‚СЊ" С‚РµРіРё СЃРѕРѕР±С‰РµСЃС‚РІР° Рє Р±РµСЃРµРґР°Рј
     /// </summary>
     function TagBind(GroupId: TVkPeerId; TagId: Int64; UserId: TVkPeerId; Act: TVkGroupTagAct): Boolean;
     /// <summary>
-    ///  Позволяет удалить тег сообщества
+    ///  РџРѕР·РІРѕР»СЏРµС‚ СѓРґР°Р»РёС‚СЊ С‚РµРі СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function TagDelete(GroupId: TVkPeerId; TagId: Int64): Boolean;
     /// <summary>
-    ///  Позволяет переименовать существующий тег
+    ///  РџРѕР·РІРѕР»СЏРµС‚ РїРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ С‚РµРі
     /// </summary>
     function TagUpdate(GroupId: TVkPeerId; TagId: Int64; const TagName: string): Boolean;
     /// <summary>
-    ///  Переключает функционал раздела «Товаров» в выбранной группе.
+    ///  РџРµСЂРµРєР»СЋС‡Р°РµС‚ С„СѓРЅРєС†РёРѕРЅР°Р» СЂР°Р·РґРµР»Р° В«РўРѕРІР°СЂРѕРІВ» РІ РІС‹Р±СЂР°РЅРЅРѕР№ РіСЂСѓРїРїРµ.
     /// </summary>
     function ToggleMarket(GroupId: TVkPeerId; State: TVkGroupMarketState; Params: TParams): Boolean; overload;
     /// <summary>
-    ///  Переключает функционал раздела «Товаров» в выбранной группе.
+    ///  РџРµСЂРµРєР»СЋС‡Р°РµС‚ С„СѓРЅРєС†РёРѕРЅР°Р» СЂР°Р·РґРµР»Р° В«РўРѕРІР°СЂРѕРІВ» РІ РІС‹Р±СЂР°РЅРЅРѕР№ РіСЂСѓРїРїРµ.
     /// </summary>
     function ToggleMarket(GroupId: TVkPeerId; State: TVkGroupMarketState; Params: TVkParamsToggleMarket): Boolean; overload;
     /// <summary>
-    ///  Убирает пользователя или группу из черного списка сообщества
+    ///  РЈР±РёСЂР°РµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїСѓ РёР· С‡РµСЂРЅРѕРіРѕ СЃРїРёСЃРєР° СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     function Unban(GroupId, OwnerId: TVkPeerId): Boolean;
   end;

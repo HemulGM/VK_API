@@ -1,4 +1,4 @@
-unit VK.Account;
+п»їunit VK.Account;
 
 interface
 
@@ -12,33 +12,33 @@ type
   TVkParamsRegisterDevice = record
     List: TParams;
     /// <summary>
-    /// Идентификатор устройства, используемый для отправки уведомлений.
-    /// (для mpns идентификатор должен представлять из себя URL для отправки уведомлений)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓСЃС‚СЂРѕР№СЃС‚РІР°, РёСЃРїРѕР»СЊР·СѓРµРјС‹Р№ РґР»СЏ РѕС‚РїСЂР°РІРєРё СѓРІРµРґРѕРјР»РµРЅРёР№.
+    /// (РґР»СЏ mpns РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РґРѕР»Р¶РµРЅ РїСЂРµРґСЃС‚Р°РІР»СЏС‚СЊ РёР· СЃРµР±СЏ URL РґР»СЏ РѕС‚РїСЂР°РІРєРё СѓРІРµРґРѕРјР»РµРЅРёР№)
     /// </summary>
     function Token(const Value: string): TVkParamsRegisterDevice;
     /// <summary>
-    /// Строковое название модели устройства
+    /// РЎС‚СЂРѕРєРѕРІРѕРµ РЅР°Р·РІР°РЅРёРµ РјРѕРґРµР»Рё СѓСЃС‚СЂРѕР№СЃС‚РІР°
     /// </summary>
     function DeviceModel(const Value: string): TVkParamsRegisterDevice;
     /// <summary>
-    /// Год устройства
+    /// Р“РѕРґ СѓСЃС‚СЂРѕР№СЃС‚РІР°
     /// </summary>
     function DeviceYear(const Value: Integer): TVkParamsRegisterDevice;
     /// <summary>
-    /// Уникальный идентификатор устройства
+    /// РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓСЃС‚СЂРѕР№СЃС‚РІР°
     /// </summary>
     function DeviceId(const Value: string): TVkParamsRegisterDevice;
     /// <summary>
-    /// Строковая версия операционной системы устройства
+    /// РЎС‚СЂРѕРєРѕРІР°СЏ РІРµСЂСЃРёСЏ РѕРїРµСЂР°С†РёРѕРЅРЅРѕР№ СЃРёСЃС‚РµРјС‹ СѓСЃС‚СЂРѕР№СЃС‚РІР°
     /// </summary>
     function SystemVersion(const Value: string): TVkParamsRegisterDevice;
     /// <summary>
-    /// Настройки уведомлений (https://vk.com/dev/push_settings)
+    /// РќР°СЃС‚СЂРѕР№РєРё СѓРІРµРґРѕРјР»РµРЅРёР№ (https://vk.com/dev/push_settings)
     /// </summary>
     function Settings(const Value: string): TVkParamsRegisterDevice;
     /// <summary>
-    /// Флаг предназначен для iOS устройств.
-    /// True — использовать Sandbox сервер для отправки push-уведомлений, False — не использовать
+    /// Р¤Р»Р°Рі РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ РґР»СЏ iOS СѓСЃС‚СЂРѕР№СЃС‚РІ.
+    /// True вЂ” РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Sandbox СЃРµСЂРІРµСЂ РґР»СЏ РѕС‚РїСЂР°РІРєРё push-СѓРІРµРґРѕРјР»РµРЅРёР№, False вЂ” РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ
     /// </summary>
     function Sandbox(const Value: string): TVkParamsRegisterDevice;
   end;
@@ -46,60 +46,60 @@ type
   TVkParamsProfileInfo = record
     List: TParams;
     /// <summary>
-    /// Имя пользователя. Обязательно с большой буквы
+    /// РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ. РћР±СЏР·Р°С‚РµР»СЊРЅРѕ СЃ Р±РѕР»СЊС€РѕР№ Р±СѓРєРІС‹
     /// </summary>
     function FirstName(const Value: string): TVkParamsProfileInfo;
     /// <summary>
-    /// Фамилия пользователя. Обязательно с большой буквы
+    /// Р¤Р°РјРёР»РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ. РћР±СЏР·Р°С‚РµР»СЊРЅРѕ СЃ Р±РѕР»СЊС€РѕР№ Р±СѓРєРІС‹
     /// </summary>
     function LastName(const Value: string): TVkParamsProfileInfo;
     /// <summary>
-    /// Девичья фамилия пользователя (только для женского пола)
+    /// Р”РµРІРёС‡СЊСЏ С„Р°РјРёР»РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (С‚РѕР»СЊРєРѕ РґР»СЏ Р¶РµРЅСЃРєРѕРіРѕ РїРѕР»Р°)
     /// </summary>
     function MaidenName(const Value: string): TVkParamsProfileInfo;
     /// <summary>
-    /// Короткое имя страницы
+    /// РљРѕСЂРѕС‚РєРѕРµ РёРјСЏ СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function ScreenName(const Value: string): TVkParamsProfileInfo;
     /// <summary>
-    /// Идентификатор заявки на смену имени, которую необходимо отменить.
-    /// Если передан этот параметр, все остальные параметры игнорируются
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°СЏРІРєРё РЅР° СЃРјРµРЅСѓ РёРјРµРЅРё, РєРѕС‚РѕСЂСѓСЋ РЅРµРѕР±С…РѕРґРёРјРѕ РѕС‚РјРµРЅРёС‚СЊ.
+    /// Р•СЃР»Рё РїРµСЂРµРґР°РЅ СЌС‚РѕС‚ РїР°СЂР°РјРµС‚СЂ, РІСЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РёРіРЅРѕСЂРёСЂСѓСЋС‚СЃСЏ
     /// </summary>
     function CancelRequestId(const Value: Integer): TVkParamsProfileInfo;
     /// <summary>
-    /// Пол пользователя
+    /// РџРѕР» РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function Sex(const Value: TVkSex): TVkParamsProfileInfo;
     /// <summary>
-    /// Семейное положение пользователя
+    /// РЎРµРјРµР№РЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function Relation(const Value: TVkRelation): TVkParamsProfileInfo;
     /// <summary>
-    /// Идентификатор пользователя, с которым связано семейное положение
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, СЃ РєРѕС‚РѕСЂС‹Рј СЃРІСЏР·Р°РЅРѕ СЃРµРјРµР№РЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
     /// </summary>
     function RelationPartnerId(const Value: TVkPeerId): TVkParamsProfileInfo;
     /// <summary>
-    /// Дата рождения пользователя
+    /// Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function BirthDate(const Value: TDateTime): TVkParamsProfileInfo;
     /// <summary>
-    /// Видимость даты рождения
+    /// Р’РёРґРёРјРѕСЃС‚СЊ РґР°С‚С‹ СЂРѕР¶РґРµРЅРёСЏ
     /// </summary>
     function BirthDateVisibility(const Value: TVkBirthDateVisibility): TVkParamsProfileInfo;
     /// <summary>
-    /// Родной город пользователя
+    /// Р РѕРґРЅРѕР№ РіРѕСЂРѕРґ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function HomeTown(const Value: string): TVkParamsProfileInfo;
     /// <summary>
-    /// Идентификатор страны пользователя
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function CountryId(const Value: Integer): TVkParamsProfileInfo;
     /// <summary>
-    /// Идентификатор города пользователя
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function CityId(const Value: Integer): TVkParamsProfileInfo;
     /// <summary>
-    /// Статус пользователя, который также может быть изменен методом status.set
+    /// РЎС‚Р°С‚СѓСЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РєРѕС‚РѕСЂС‹Р№ С‚Р°РєР¶Рµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РёР·РјРµРЅРµРЅ РјРµС‚РѕРґРѕРј status.set
     /// </summary>
     function Status(const Value: string): TVkParamsProfileInfo;
   end;
@@ -107,82 +107,82 @@ type
   TAccountController = class(TVkController)
   public
     /// <summary>
-    /// Добавляет пользователя или группу в черный список.
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїСѓ РІ С‡РµСЂРЅС‹Р№ СЃРїРёСЃРѕРє.
     /// </summary>
     function Ban(var Status: Boolean; const OwnerId: TVkPeerId): Boolean;
     /// <summary>
-    /// Позволяет сменить пароль пользователя после успешного восстановления доступа к аккаунту через СМС, используя метод Auth.Restore.
+    /// РџРѕР·РІРѕР»СЏРµС‚ СЃРјРµРЅРёС‚СЊ РїР°СЂРѕР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РїРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕРіРѕ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РґРѕСЃС‚СѓРїР° Рє Р°РєРєР°СѓРЅС‚Сѓ С‡РµСЂРµР· РЎРњРЎ, РёСЃРїРѕР»СЊР·СѓСЏ РјРµС‚РѕРґ Auth.Restore.
     /// </summary>
     function ChangePassword(var Token: string; NewPassword: string; RestoreSid, ChangePasswordHash, OldPassword: string): Boolean;
     /// <summary>
-    /// Возвращает список активных рекламных предложений (офферов), выполнив которые пользователь сможет получить соответствующее количество голосов на свой счёт внутри приложения.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°РєС‚РёРІРЅС‹С… СЂРµРєР»Р°РјРЅС‹С… РїСЂРµРґР»РѕР¶РµРЅРёР№ (РѕС„С„РµСЂРѕРІ), РІС‹РїРѕР»РЅРёРІ РєРѕС‚РѕСЂС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРјРѕР¶РµС‚ РїРѕР»СѓС‡РёС‚СЊ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РіРѕР»РѕСЃРѕРІ РЅР° СЃРІРѕР№ СЃС‡С‘С‚ РІРЅСѓС‚СЂРё РїСЂРёР»РѕР¶РµРЅРёСЏ.
     /// </summary>
     function GetActiveOffers(var Items: TVkActiveOffers; Count: Integer = 100; Offset: Integer = 0): Boolean;
     /// <summary>
-    /// Получает настройки текущего пользователя в данном приложении.
+    /// РџРѕР»СѓС‡Р°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ РґР°РЅРЅРѕРј РїСЂРёР»РѕР¶РµРЅРёРё.
     /// </summary>
     function GetAppPermissions(var Mask: Integer; UserId: TVkPeerId): Boolean;
     /// <summary>
-    /// Возвращает список пользователей, находящихся в черном списке.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РЅР°С…РѕРґСЏС‰РёС…СЃСЏ РІ С‡РµСЂРЅРѕРј СЃРїРёСЃРєРµ.
     /// </summary>
     function GetBanned(var Items: TVkBannedList; Count: Integer = 20; Offset: Integer = 0): Boolean;
     /// <summary>
-    /// Возвращает ненулевые значения счетчиков пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅРµРЅСѓР»РµРІС‹Рµ Р·РЅР°С‡РµРЅРёСЏ СЃС‡РµС‚С‡РёРєРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetCounters(var Counters: TVkCounters; Filter: TVkCounterFilters = []): Boolean;
     /// <summary>
-    /// Возвращает информацию о текущем аккаунте.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РµРєСѓС‰РµРј Р°РєРєР°СѓРЅС‚Рµ.
     /// </summary>
     function GetInfo(var Info: TVkAccountInfo; Fields: TVkInfoFilters = []): Boolean;
     /// <summary>
-    /// Возвращает информацию о текущем профиле.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РµРєСѓС‰РµРј РїСЂРѕС„РёР»Рµ.
     /// </summary>
     function GetProfileInfo(var ProfileInfo: TVkProfileInfo): Boolean;
     /// <summary>
-    /// Позволяет получать настройки Push-уведомлений.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡Р°С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё Push-СѓРІРµРґРѕРјР»РµРЅРёР№.
     /// </summary>
     function GetPushSettings(var PushSettings: TVkPushSettings; DeviceId: string): Boolean;
     /// <summary>
-    /// Подписывает устройство на базе iOS, Android, Windows Phone или Mac на получение Push-уведомлений.
-    /// При отсутствии поля settings в запросе будут применены текущие настройки.
-    /// Для нового идентификатора устройства token будут применены последние настройки для данного DeviceId
+    /// РџРѕРґРїРёСЃС‹РІР°РµС‚ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ РЅР° Р±Р°Р·Рµ iOS, Android, Windows Phone РёР»Рё Mac РЅР° РїРѕР»СѓС‡РµРЅРёРµ Push-СѓРІРµРґРѕРјР»РµРЅРёР№.
+    /// РџСЂРё РѕС‚СЃСѓС‚СЃС‚РІРёРё РїРѕР»СЏ settings РІ Р·Р°РїСЂРѕСЃРµ Р±СѓРґСѓС‚ РїСЂРёРјРµРЅРµРЅС‹ С‚РµРєСѓС‰РёРµ РЅР°СЃС‚СЂРѕР№РєРё.
+    /// Р”Р»СЏ РЅРѕРІРѕРіРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° СѓСЃС‚СЂРѕР№СЃС‚РІР° token Р±СѓРґСѓС‚ РїСЂРёРјРµРЅРµРЅС‹ РїРѕСЃР»РµРґРЅРёРµ РЅР°СЃС‚СЂРѕР№РєРё РґР»СЏ РґР°РЅРЅРѕРіРѕ DeviceId
     /// </summary>
     function RegisterDevice(const Data: TVkParamsRegisterDevice): Boolean;
     /// <summary>
-    /// Редактирует информацию текущего профиля.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ С‚РµРєСѓС‰РµРіРѕ РїСЂРѕС„РёР»СЏ.
     /// </summary>
     function SaveProfileInfo(const Data: TVkParamsProfileInfo; var Request: TVkAccountInfoRequest): Boolean;
     /// <summary>
-    /// Позволяет редактировать информацию о текущем аккаунте.
+    /// РџРѕР·РІРѕР»СЏРµС‚ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РµРєСѓС‰РµРј Р°РєРєР°СѓРЅС‚Рµ.
     /// </summary>
     function SetInfo(const Name, Value: string): Boolean;
     /// <summary>
-    /// Устанавливает короткое название приложения (до 17 символов), которое выводится пользователю в левом меню.
+    /// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєРѕСЂРѕС‚РєРѕРµ РЅР°Р·РІР°РЅРёРµ РїСЂРёР»РѕР¶РµРЅРёСЏ (РґРѕ 17 СЃРёРјРІРѕР»РѕРІ), РєРѕС‚РѕСЂРѕРµ РІС‹РІРѕРґРёС‚СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ РІ Р»РµРІРѕРј РјРµРЅСЋ.
     /// </summary>
     function SetNameInMenu(const UserId: TVkPeerId; Name: string): Boolean;
     /// <summary>
-    /// Помечает текущего пользователя как offline (только в текущем приложении).
+    /// РџРѕРјРµС‡Р°РµС‚ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РєР°Рє offline (С‚РѕР»СЊРєРѕ РІ С‚РµРєСѓС‰РµРј РїСЂРёР»РѕР¶РµРЅРёРё).
     /// </summary>
     function SetOffline: Boolean;
     /// <summary>
-    /// Помечает текущего пользователя как online на 5 минут.
+    /// РџРѕРјРµС‡Р°РµС‚ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РєР°Рє online РЅР° 5 РјРёРЅСѓС‚.
     /// </summary>
     function SetOnline(const Voip: Boolean = False): Boolean;
     /// <summary>
-    /// Изменяет настройку Push-уведомлений.
+    /// РР·РјРµРЅСЏРµС‚ РЅР°СЃС‚СЂРѕР№РєСѓ Push-СѓРІРµРґРѕРјР»РµРЅРёР№.
     /// </summary>
     function SetPushSettings(const DeviceId, Settings, Key, Value: string): Boolean;
     /// <summary>
-    /// Отключает push-уведомления на заданный промежуток времени.
+    /// РћС‚РєР»СЋС‡Р°РµС‚ push-СѓРІРµРґРѕРјР»РµРЅРёСЏ РЅР° Р·Р°РґР°РЅРЅС‹Р№ РїСЂРѕРјРµР¶СѓС‚РѕРє РІСЂРµРјРµРЅРё.
     /// </summary>
     function SetSilenceMode(const DeviceId: string; Time: Integer; PeerId: TVkPeerId; Sound: Boolean): Boolean;
     /// <summary>
-    /// Удаляет пользователя или группу из черного списка.
-    /// OwnerId - Идентификатор пользователя или группы, которого нужно удалить из черного списка.
+    /// РЈРґР°Р»СЏРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїСѓ РёР· С‡РµСЂРЅРѕРіРѕ СЃРїРёСЃРєР°.
+    /// OwnerId - РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїС‹, РєРѕС‚РѕСЂРѕРіРѕ РЅСѓР¶РЅРѕ СѓРґР°Р»РёС‚СЊ РёР· С‡РµСЂРЅРѕРіРѕ СЃРїРёСЃРєР°.
     /// </summary>
     function UnBan(const OwnerId: TVkPeerId): Boolean;
     /// <summary>
-    /// Отписывает устройство от Push уведомлений.
+    /// РћС‚РїРёСЃС‹РІР°РµС‚ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ РѕС‚ Push СѓРІРµРґРѕРјР»РµРЅРёР№.
     /// </summary>
     function UnRegisterDevice(const DeviceId: string; const Token: string; Sandbox: Boolean): Boolean;
   end;

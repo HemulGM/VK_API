@@ -1,4 +1,4 @@
-unit VK.Notes;
+п»їunit VK.Notes;
 
 interface
 
@@ -9,23 +9,23 @@ type
   TVkParamsNotesGet = record
     List: TParams;
     /// <summary>
-    /// Идентификаторы заметок, информацию о которых необходимо получить
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ Р·Р°РјРµС‚РѕРє, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function NoteIds(const Value: TIdList): TVkParamsNotesGet;
     /// <summary>
-    /// Идентификатор пользователя, информацию о заметках которого требуется получить
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р·Р°РјРµС‚РєР°С… РєРѕС‚РѕСЂРѕРіРѕ С‚СЂРµР±СѓРµС‚СЃСЏ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsNotesGet;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества заметок
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° Р·Р°РјРµС‚РѕРє
     /// </summary>
     function Offset(const Value: Integer = 0): TVkParamsNotesGet;
     /// <summary>
-    /// Количество заметок, информацию о которых необходимо получить
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РјРµС‚РѕРє, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function Count(const Value: Integer = 20): TVkParamsNotesGet;
     /// <summary>
-    /// Сортировка результатов (по дате создания)
+    /// РЎРѕСЂС‚РёСЂРѕРІРєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ (РїРѕ РґР°С‚Рµ СЃРѕР·РґР°РЅРёСЏ)
     /// </summary>
     function Sort(const Value: TVkSort): TVkParamsNotesGet;
   end;
@@ -33,19 +33,19 @@ type
   TVkParamsNotesAdd = record
     List: TParams;
     /// <summary>
-    /// Заголовок заметки
+    /// Р—Р°РіРѕР»РѕРІРѕРє Р·Р°РјРµС‚РєРё
     /// </summary>
     function Title(const Value: string): TVkParamsNotesAdd;
     /// <summary>
-    /// Текст заметки
+    /// РўРµРєСЃС‚ Р·Р°РјРµС‚РєРё
     /// </summary>
     function Text(const Value: string): TVkParamsNotesAdd;
     /// <summary>
-    /// Настройки приватности просмотра заметки
+    /// РќР°СЃС‚СЂРѕР№РєРё РїСЂРёРІР°С‚РЅРѕСЃС‚Рё РїСЂРѕСЃРјРѕС‚СЂР° Р·Р°РјРµС‚РєРё
     /// </summary>
     function PrivacyView(const Value: TVkPrivacySettings): TVkParamsNotesAdd;
     /// <summary>
-    /// Настройки приватности комментирования заметки
+    /// РќР°СЃС‚СЂРѕР№РєРё РїСЂРёРІР°С‚РЅРѕСЃС‚Рё РєРѕРјРјРµРЅС‚РёСЂРѕРІР°РЅРёСЏ Р·Р°РјРµС‚РєРё
     /// </summary>
     function PrivacyComment(const Value: TVkPrivacySettings): TVkParamsNotesAdd;
   end;
@@ -53,23 +53,23 @@ type
   TVkParamsNotesCreateComment = record
     List: TParams;
     /// <summary>
-    /// Идентификатор заметки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РјРµС‚РєРё
     /// </summary>
     function NoteId(const Value: Integer): TVkParamsNotesCreateComment;
     /// <summary>
-    /// Идентификатор владельца заметки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° Р·Р°РјРµС‚РєРё
     /// </summary>
     function OwnerId(const Value: TVkPeerId): TVkParamsNotesCreateComment;
     /// <summary>
-    /// Идентификатор пользователя, ответом на комментарий которого является добавляемый комментарий (не передаётся, если комментарий не является ответом)
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РѕС‚РІРµС‚РѕРј РЅР° РєРѕРјРјРµРЅС‚Р°СЂРёР№ РєРѕС‚РѕСЂРѕРіРѕ СЏРІР»СЏРµС‚СЃСЏ РґРѕР±Р°РІР»СЏРµРјС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ (РЅРµ РїРµСЂРµРґР°С‘С‚СЃСЏ, РµСЃР»Рё РєРѕРјРјРµРЅС‚Р°СЂРёР№ РЅРµ СЏРІР»СЏРµС‚СЃСЏ РѕС‚РІРµС‚РѕРј)
     /// </summary>
     function ReplyTo(const Value: TVkPeerId): TVkParamsNotesCreateComment;
     /// <summary>
-    /// Текст комментария
+    /// РўРµРєСЃС‚ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
     /// </summary>
     function Message(const Value: string): TVkParamsNotesCreateComment;
     /// <summary>
-    /// Уникальный идентификатор, предназначенный для предотвращения повторной отправки одинакового комментария
+    /// РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ, РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅРЅС‹Р№ РґР»СЏ РїСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёСЏ РїРѕРІС‚РѕСЂРЅРѕР№ РѕС‚РїСЂР°РІРєРё РѕРґРёРЅР°РєРѕРІРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
     /// </summary>
     function Guid(const Value: string): TVkParamsNotesCreateComment;
   end;
@@ -77,23 +77,23 @@ type
   TVkParamsNotesGetComments = record
     List: TParams;
     /// <summary>
-    /// Идентификатор заметки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РјРµС‚РєРё
     /// </summary>
     function NoteId(const Value: Integer): TVkParamsNotesGetComments;
     /// <summary>
-    /// Идентификатор владельца заметки
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° Р·Р°РјРµС‚РєРё
     /// </summary>
     function OwnerId(const Value: TVkPeerId): TVkParamsNotesGetComments;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества комментариев
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
     /// </summary>
     function Offset(const Value: Integer = 0): TVkParamsNotesGetComments;
     /// <summary>
-    /// Количество комментариев, которое необходимо получить
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ, РєРѕС‚РѕСЂРѕРµ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function Count(const Value: Integer = 20): TVkParamsNotesGetComments;
     /// <summary>
-    /// Сортировка результатов (по дате добавления)
+    /// РЎРѕСЂС‚РёСЂРѕРІРєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ (РїРѕ РґР°С‚Рµ РґРѕР±Р°РІР»РµРЅРёСЏ)
     /// </summary>
     function Sort(const Value: TVkSort = TVkSort.Asc): TVkParamsNotesGetComments;
   end;
@@ -101,59 +101,59 @@ type
   TNotesController = class(TVkController)
   public
     /// <summary>
-    /// Создает новую заметку у текущего пользователя.
+    /// РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ Р·Р°РјРµС‚РєСѓ Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Add(var NoteId: Integer; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Создает новую заметку у текущего пользователя.
+    /// РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ Р·Р°РјРµС‚РєСѓ Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Add(var NoteId: Integer; Params: TVkParamsNotesAdd): Boolean; overload;
     /// <summary>
-    /// Добавляет новый комментарий к заметке.
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РјРµС‚РєРµ.
     /// </summary>
     function CreateComment(var CommentId: Integer; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Добавляет новый комментарий к заметке.
+    /// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РјРµС‚РєРµ.
     /// </summary>
     function CreateComment(var CommentId: Integer; Params: TVkParamsNotesCreateComment): Boolean; overload;
     /// <summary>
-    /// Удаляет заметку текущего пользователя.
+    /// РЈРґР°Р»СЏРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Delete(var Status: Boolean; NoteId: Integer): Boolean;
     /// <summary>
-    /// Удаляет комментарий к заметке.
+    /// РЈРґР°Р»СЏРµС‚ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РјРµС‚РєРµ.
     /// </summary>
     function DeleteComment(var Status: Boolean; CommentId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
-    /// Редактирует заметку текущего пользователя.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Edit(var Status: Boolean; NoteId: Integer; Params: TVkParamsNotesAdd): Boolean;
     /// <summary>
-    /// Редактирует заметку текущего пользователя.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function EditComment(CommentId: Integer; Message: string; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
-    /// Возвращает список заметок, созданных пользователем.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°РјРµС‚РѕРє, СЃРѕР·РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.
     /// </summary>
     function Get(var Items: TVkNotes; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список заметок, созданных пользователем.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°РјРµС‚РѕРє, СЃРѕР·РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.
     /// </summary>
     function Get(var Items: TVkNotes; Params: TVkParamsNotesGet): Boolean; overload;
     /// <summary>
-    /// Возвращает заметку по её id.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РјРµС‚РєСѓ РїРѕ РµС‘ id.
     /// </summary>
     function GetById(var Item: TVkNote; NoteId: Integer; OwnerId: TVkPeerId = 0; NeedWiki: Boolean = False): Boolean;
     /// <summary>
-    /// Возвращает список комментариев к заметке.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє Р·Р°РјРµС‚РєРµ.
     /// </summary>
     function GetComments(var Items: TVkNoteComments; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список комментариев к заметке.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє Р·Р°РјРµС‚РєРµ.
     /// </summary>
     function GetComments(var Items: TVkNoteComments; Params: TVkParamsNotesGetComments): Boolean; overload;
     /// <summary>
-    /// Восстанавливает удалённый комментарий.
+    /// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРґР°Р»С‘РЅРЅС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№.
     /// </summary>
     function RestoreComment(var Status: Boolean; CommentId: Integer; OwnerId: TVkPeerId = 0): Boolean;
   end;

@@ -1,4 +1,4 @@
-unit VK.Entity.Photo;
+п»їunit VK.Entity.Photo;
 
 interface
 
@@ -95,40 +95,40 @@ type
     FLong: Extended;
   public
     /// <summary>
-    /// Идентификатор фотографии
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     property Id;
     /// <summary>
-    /// Идентификатор альбома, в котором находится фотография
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°Р»СЊР±РѕРјР°, РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ С„РѕС‚РѕРіСЂР°С„РёСЏ
     /// </summary>
     property AlbumId: Int64 read FAlbum_id write FAlbum_id;
     /// <summary>
-    /// Идентификатор владельца фотографии
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Идентификатор пользователя, загрузившего фото (если фотография размещена в сообществе).
-    /// Для фотографий, размещенных от имени сообщества, UserId = 100.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, Р·Р°РіСЂСѓР·РёРІС€РµРіРѕ С„РѕС‚Рѕ (РµСЃР»Рё С„РѕС‚РѕРіСЂР°С„РёСЏ СЂР°Р·РјРµС‰РµРЅР° РІ СЃРѕРѕР±С‰РµСЃС‚РІРµ).
+    /// Р”Р»СЏ С„РѕС‚РѕРіСЂР°С„РёР№, СЂР°Р·РјРµС‰РµРЅРЅС‹С… РѕС‚ РёРјРµРЅРё СЃРѕРѕР±С‰РµСЃС‚РІР°, UserId = 100.
     /// </summary>
     property UserId: TVkPeerId read FUser_id write FUser_id;
     /// <summary>
-    /// Текст описания фотографии
+    /// РўРµРєСЃС‚ РѕРїРёСЃР°РЅРёСЏ С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     property Text: string read FText write FText;
     /// <summary>
-    /// Дата добавления
+    /// Р”Р°С‚Р° РґРѕР±Р°РІР»РµРЅРёСЏ
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Массив с копиями изображения в разных размерах
+    /// РњР°СЃСЃРёРІ СЃ РєРѕРїРёСЏРјРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РІ СЂР°Р·РЅС‹С… СЂР°Р·РјРµСЂР°С…
     /// </summary>
     property Sizes: TVkSizes read FSizes write FSizes;
     /// <summary>
-    /// Ширина оригинала фотографии в пикселах
+    /// РЁРёСЂРёРЅР° РѕСЂРёРіРёРЅР°Р»Р° С„РѕС‚РѕРіСЂР°С„РёРё РІ РїРёРєСЃРµР»Р°С…
     /// </summary>
     property Width: Integer read FWidth write FWidth;
     /// <summary>
-    /// Высота оригинала фотографии в пикселах
+    /// Р’С‹СЃРѕС‚Р° РѕСЂРёРіРёРЅР°Р»Р° С„РѕС‚РѕРіСЂР°С„РёРё РІ РїРёРєСЃРµР»Р°С…
     /// </summary>
     property Height: Integer read FHeight write FHeight;
     //
@@ -141,33 +141,33 @@ type
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     property Tags: TVkCounterEntity read FTags write FTags;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     property HasTags: Boolean read FHas_tags write FHas_tags;
     // old field api < 5.77
     /// <summary>
-    /// URL копии фотографии с максимальным размером 75x75px
+    /// URL РєРѕРїРёРё С„РѕС‚РѕРіСЂР°С„РёРё СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј СЂР°Р·РјРµСЂРѕРј 75x75px
     /// </summary>
     property Photo75: string read FPhoto_75 write FPhoto_75;
     /// <summary>
-    /// URL копии фотографии с максимальным размером 130x130px
+    /// URL РєРѕРїРёРё С„РѕС‚РѕРіСЂР°С„РёРё СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј СЂР°Р·РјРµСЂРѕРј 130x130px
     /// </summary>
     property Photo130: string read FPhoto_130 write FPhoto_130;
     /// <summary>
-    /// UURL копии фотографии с максимальным размером 604x604px
+    /// UURL РєРѕРїРёРё С„РѕС‚РѕРіСЂР°С„РёРё СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј СЂР°Р·РјРµСЂРѕРј 604x604px
     /// </summary>
     property Photo604: string read FPhoto_604 write FPhoto_604;
     /// <summary>
-    /// URL копии фотографии с максимальным размером 807x807px
+    /// URL РєРѕРїРёРё С„РѕС‚РѕРіСЂР°С„РёРё СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј СЂР°Р·РјРµСЂРѕРј 807x807px
     /// </summary>
     property Photo807: string read FPhoto_807 write FPhoto_807;
     /// <summary>
-    /// URL копии фотографии с максимальным размером 1280x1024px
+    /// URL РєРѕРїРёРё С„РѕС‚РѕРіСЂР°С„РёРё СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј СЂР°Р·РјРµСЂРѕРј 1280x1024px
     /// </summary>
     property Photo1280: string read FPhoto_1280 write FPhoto_1280;
     /// <summary>
-    /// URL копии фотографии с максимальным размером 2560x2048px
+    /// URL РєРѕРїРёРё С„РѕС‚РѕРіСЂР°С„РёРё СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј СЂР°Р·РјРµСЂРѕРј 2560x2048px
     /// </summary>
     property Photo2560: string read FPhoto_2560 write FPhoto_2560;
     //
@@ -176,7 +176,7 @@ type
     property TagId: Int64 read FTag_id write FTag_id;
     property SquareCrop: string read FSquare_crop write FSquare_crop;
     /// <summary>
-    /// Идентификатор записи, в которую была загружена фотография
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё, РІ РєРѕС‚РѕСЂСѓСЋ Р±С‹Р»Р° Р·Р°РіСЂСѓР¶РµРЅР° С„РѕС‚РѕРіСЂР°С„РёСЏ
     /// </summary>
     property PostId: Int64 read FPost_id write FPost_id;
     //
@@ -192,15 +192,15 @@ type
     FRect: TVkRect;
   public
     /// <summary>
-    /// Объект photo фотографии пользователя, из которой вырезается главное фото сообщества
+    /// РћР±СЉРµРєС‚ photo С„РѕС‚РѕРіСЂР°С„РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РёР· РєРѕС‚РѕСЂРѕР№ РІС‹СЂРµР·Р°РµС‚СЃСЏ РіР»Р°РІРЅРѕРµ С„РѕС‚Рѕ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
     /// <summary>
-    /// Вырезанная фотография сообщества
+    /// Р’С‹СЂРµР·Р°РЅРЅР°СЏ С„РѕС‚РѕРіСЂР°С„РёСЏ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
     property Crop: TVkRect read FCrop write FCrop;
     /// <summary>
-    /// Миниатюрная квадратная фотография, вырезанная из фотографии Crop
+    /// РњРёРЅРёР°С‚СЋСЂРЅР°СЏ РєРІР°РґСЂР°С‚РЅР°СЏ С„РѕС‚РѕРіСЂР°С„РёСЏ, РІС‹СЂРµР·Р°РЅРЅР°СЏ РёР· С„РѕС‚РѕРіСЂР°С„РёРё Crop
     /// </summary>
     property Rect: TVkRect read FRect write FRect;
     destructor Destroy; override;
@@ -214,23 +214,23 @@ type
     FAccess_key: string;
   public
     /// <summary>
-    /// Идентификатор фотографии
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     property Id;
     /// <summary>
-    /// Идентификатор владельца фотографии
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С„РѕС‚РѕРіСЂР°С„РёРё
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// URL изображения для предпросмотра
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РґР»СЏ РїСЂРµРґРїСЂРѕСЃРјРѕС‚СЂР°
     /// </summary>
     property Photo130: string read FPhoto_130 write FPhoto_130;
     /// <summary>
-    /// URL полноразмерного изображения
+    /// URL РїРѕР»РЅРѕСЂР°Р·РјРµСЂРЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
     /// </summary>
     property Photo604: string read FPhoto_604 write FPhoto_604;
   end;

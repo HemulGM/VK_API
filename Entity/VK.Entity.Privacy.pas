@@ -1,4 +1,4 @@
-unit VK.Entity.Privacy;
+﻿unit VK.Entity.Privacy;
 
 interface
 

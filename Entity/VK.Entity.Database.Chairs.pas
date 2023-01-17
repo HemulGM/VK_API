@@ -1,4 +1,4 @@
-unit VK.Entity.Database.Chairs;
+﻿unit VK.Entity.Database.Chairs;
 
 interface
 
