@@ -56,7 +56,7 @@ Widgets | 0
 
 For old IDE versions, include *OLD_VERSION* directive
 
-#Способы авторизации
+# Способы авторизации
 
 1 . Авторизация через OAuth2 форму
 
@@ -121,7 +121,7 @@ VKAPI.Login('+7**********', '*****************',
   end);
 ```
 
-#Пример бота
+# Пример бота
 ```Pascal
 program VKBotTemplate;
 
