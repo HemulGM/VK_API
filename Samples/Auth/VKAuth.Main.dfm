@@ -11,9 +11,7 @@ object FormMain: TFormMain
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 13
   object Panel2: TPanel
     Left = 0
@@ -23,6 +21,8 @@ object FormMain: TFormMain
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 487
+    ExplicitWidth = 1065
     object Memo1: TMemo
       Left = 0
       Top = 17
@@ -52,6 +52,7 @@ object FormMain: TFormMain
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 1
+      ExplicitWidth = 665
     end
     object HeaderControl1: THeaderControl
       Left = 0
@@ -75,6 +76,7 @@ object FormMain: TFormMain
         end>
       Style = hsFlat
       NoSizing = True
+      ExplicitWidth = 1065
     end
   end
   object PageControl2: TPageControl
@@ -93,6 +95,8 @@ object FormMain: TFormMain
     ParentFont = False
     TabHeight = 30
     TabOrder = 1
+    ExplicitWidth = 1059
+    ExplicitHeight = 481
     object TabSheetWelcome: TTabSheet
       Caption = #1044#1086#1073#1088#1086' '#1087#1086#1078#1072#1083#1086#1074#1072#1090#1100
       object Label1: TLabel
@@ -182,7 +186,7 @@ object FormMain: TFormMain
           AlignWithMargins = True
           Left = 3
           Top = 26
-          Width = 1047
+          Width = 1049
           Height = 85
           Align = alTop
           Caption = 
@@ -195,12 +199,13 @@ object FormMain: TFormMain
             #10#1055#1086#1089#1083#1077' '#1101#1090#1086#1075#1086', '#1080#1083#1080' '#1077#1089#1083#1080' '#1090#1086#1082#1077#1085' '#1091#1078#1077' '#1091#1089#1090#1072#1085#1086#1074#1083#1077#1085', '#1074#1099#1087#1086#1083#1085#1103#1077#1090#1089#1103' '#1087#1088#1086#1074#1077#1088#1086 +
             #1095#1085#1099#1081' '#1079#1072#1087#1088#1086#1089'. '#1055#1086#1089#1083#1077' '#1082#1086#1090#1086#1088#1086#1075#1086' '#1073#1091#1076#1077#1090' '#1103#1089#1085#1086' '#1074#1072#1083#1080#1076#1085#1099#1081' '#1090#1086#1082#1077#1085' '#1080#1083#1080' '#1085#1077#1090
           WordWrap = True
+          ExplicitWidth = 1047
         end
         object LabelLogin: TLabel
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 31
+          Width = 1049
           Height = 17
           Align = alTop
           Caption = #1042#1093#1086#1076
@@ -210,18 +215,20 @@ object FormMain: TFormMain
           Font.Name = 'Segoe UI Semibold'
           Font.Style = [fsBold]
           ParentFont = False
+          ExplicitWidth = 31
         end
         object Label3: TLabel
           AlignWithMargins = True
           Left = 3
           Top = 158
-          Width = 546
+          Width = 1049
           Height = 17
           Align = alTop
           Caption = 
             #1050#1085#1086#1087#1082#1072' Logout '#1087#1088#1086#1089#1090#1086' '#1086#1095#1080#1097#1072#1077#1090' '#1091#1089#1090#1072#1085#1086#1074#1083#1077#1085#1085#1099#1081' '#1090#1086#1082#1077#1085', '#1072' '#1090#1072#1082#1078#1077' '#1082#1077#1096' '#1089#1090 +
             #1072#1085#1076#1072#1088#1090#1085#1086#1075#1086' '#1073#1088#1072#1091#1079#1077#1088#1072
           WordWrap = True
+          ExplicitWidth = 546
         end
         object Panel3: TPanel
           Left = 0
@@ -575,6 +582,8 @@ object FormMain: TFormMain
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitWidth = 1051
+        ExplicitHeight = 441
         object PageControl1: TPageControl
           AlignWithMargins = True
           Left = 30
@@ -588,6 +597,8 @@ object FormMain: TFormMain
           ActivePage = TabSheet10
           Align = alClient
           TabOrder = 0
+          ExplicitWidth = 991
+          ExplicitHeight = 381
           object TabSheet9: TTabSheet
             Caption = 'General'
             ImageIndex = 8
@@ -1225,8 +1236,8 @@ object FormMain: TFormMain
     OnLogin = VK1Login
     Permissions = [Notify, Friends, Photos, Audio, Video, Stories, Pages, Status, Notes, Messages, Wall, Ads, Offline, Docs, Groups, Notifications, Stats, Email, Market, AppWidget, Manage]
     Proxy.Port = 0
-    Left = 96
-    Top = 56
+    Left = 480
+    Top = 512
   end
   object VkUserEvents1: TVkUserEvents
     Logging = True
@@ -1240,8 +1251,8 @@ object FormMain: TFormMain
     OnUsersTyping = VkUserEvents1UsersTyping
     Version = '3'
     VK = VK1
-    Left = 208
-    Top = 56
+    Left = 600
+    Top = 512
   end
   object VkGroupEventsController1: TVkGroupEventsController
     Logging = True
@@ -1289,14 +1300,14 @@ object FormMain: TFormMain
     OnWallRepost = VkGroupEventsController1WallRepost
     Version = '3'
     VK = VK1
-    Left = 96
-    Top = 120
+    Left = 480
+    Top = 568
   end
   object VkGroupEvents1: TVkGroupEvents
     Logging = True
     Version = '3'
     VK = VK1
-    Left = 208
-    Top = 120
+    Left = 480
+    Top = 624
   end
 end

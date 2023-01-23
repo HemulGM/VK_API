@@ -126,6 +126,7 @@ begin
   inherited;
   {$IFDEF ANDROID}
   CircleAvatar.Margins.Right := 7;
+  MemoText.HitTest := False;
   {$ENDIF}
   //RectangleBG.Visible := False;
   MemoText.DisableDisappear := True;

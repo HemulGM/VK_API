@@ -441,6 +441,7 @@ begin
   inherited Create(AOwner);
   FPinnedMessage := nil;
   FPinnedMessageId := -1;
+  FChatScroll := TSmoothScroll.CreateFor(VertScrollBoxMessages);
 {$IFDEF ANDROID}
   VertScrollBoxMessages.ShowScrollBars := False;
   RectangleChatBG.Margins.Right := 0;
@@ -450,11 +451,11 @@ begin
   RectangleFooterBlock.Corners := [];
   RectangleFooter.Sides := [];
   RectangleFooter.Corners := [];
-{$ENDIF}
-  ButtonBack.Visible := False;
-  FChatScroll := TSmoothScroll.CreateFor(VertScrollBoxMessages);
+{$ELSE}
   FChatScroll.ScrollDelta := 2;
   FChatScroll.EnableSmoothScroll := False;
+{$ENDIF}
+  ButtonBack.Visible := False;
   FLoading := True;
   FVK := AVK;
   Name := '';

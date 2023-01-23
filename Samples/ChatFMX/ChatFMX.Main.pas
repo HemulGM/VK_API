@@ -290,7 +290,8 @@ begin
   ListItem.OnTap := FOnChatItemTap;
     {$ENDIF}
   {$ENDIF}
-  //ListItem.ApplyStyle;
+  ListItem.DisableDisappear := True;
+  ListItem.ApplyStyle;
 end;
 
 procedure TFormMain.LabelChatsModeClick(Sender: TObject);
