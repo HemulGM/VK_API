@@ -35,10 +35,6 @@ type
     function ToIds: TArrayOfInteger;
   end;
 
-{$IFDEF DEBUG_ADAPTIVE}
-{$DEFINE ANDROID}
-{$ENDIF}
-
   TFrameChat = class(TFrame)
     LayoutClient: TLayout;
     RectangleHead: TRectangle;
@@ -442,7 +438,7 @@ begin
   FPinnedMessage := nil;
   FPinnedMessageId := -1;
   FChatScroll := TSmoothScroll.CreateFor(VertScrollBoxMessages);
-{$IFDEF ANDROID}
+  {$IFDEF ADAPTIVE}
   VertScrollBoxMessages.ShowScrollBars := False;
   RectangleChatBG.Margins.Right := 0;
   RectangleHead.Sides := [];
@@ -451,10 +447,10 @@ begin
   RectangleFooterBlock.Corners := [];
   RectangleFooter.Sides := [];
   RectangleFooter.Corners := [];
-{$ELSE}
+  {$ELSE}
   FChatScroll.ScrollDelta := 2;
   FChatScroll.EnableSmoothScroll := False;
-{$ENDIF}
+  {$ENDIF}
   ButtonBack.Visible := False;
   FLoading := True;
   FVK := AVK;

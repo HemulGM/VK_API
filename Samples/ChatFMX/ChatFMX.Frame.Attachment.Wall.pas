@@ -112,7 +112,7 @@ end;
 constructor TFrameAttachmentWall.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited;
-  {$IFDEF ANDROID}
+  {$IFDEF ADAPTIVE}
   CircleAvatar.Margins.Right := 7;
   MemoText.HitTest := False;
   {$ENDIF}
