@@ -1,4 +1,4 @@
-unit VK.Entity.Stats;
+п»їunit VK.Entity.Stats;
 
 interface
 
@@ -107,43 +107,43 @@ type
     FReach_viral: Integer;
   public
     /// <summary>
-    /// Охват подписчиков
+    /// РћС…РІР°С‚ РїРѕРґРїРёСЃС‡РёРєРѕРІ
     /// </summary>
     property ReachSubscribers: Integer read FReach_subscribers write FReach_subscribers;
     /// <summary>
-    /// Количество скрывших запись
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРєСЂС‹РІС€РёС… Р·Р°РїРёСЃСЊ
     /// </summary>
     property Hide: Integer read FHide write FHide;
     /// <summary>
-    /// Вступления в сообщество
+    /// Р’СЃС‚СѓРїР»РµРЅРёСЏ РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     property JoinGroup: Integer read FJoin_group write FJoin_group;
     /// <summary>
-    /// Переходы по ссылке
+    /// РџРµСЂРµС…РѕРґС‹ РїРѕ СЃСЃС‹Р»РєРµ
     /// </summary>
     property Links: Integer read FLinks write FLinks;
     /// <summary>
-    /// Суммарный охват
+    /// РЎСѓРјРјР°СЂРЅС‹Р№ РѕС…РІР°С‚
     /// </summary>
     property ReachTotal: Integer read FReach_total write FReach_total;
     /// <summary>
-    /// Рекламный охват (если запись продвигалась с помощью таргетированной рекламы)
+    /// Р РµРєР»Р°РјРЅС‹Р№ РѕС…РІР°С‚ (РµСЃР»Рё Р·Р°РїРёСЃСЊ РїСЂРѕРґРІРёРіР°Р»Р°СЃСЊ СЃ РїРѕРјРѕС‰СЊСЋ С‚Р°СЂРіРµС‚РёСЂРѕРІР°РЅРЅРѕР№ СЂРµРєР»Р°РјС‹)
     /// </summary>
     property ReachAds: Integer read FReach_ads write FReach_ads;
     /// <summary>
-    /// Виральный охват (если запись продвигалась с помощью таргетированной рекламы)
+    /// Р’РёСЂР°Р»СЊРЅС‹Р№ РѕС…РІР°С‚ (РµСЃР»Рё Р·Р°РїРёСЃСЊ РїСЂРѕРґРІРёРіР°Р»Р°СЃСЊ СЃ РїРѕРјРѕС‰СЊСЋ С‚Р°СЂРіРµС‚РёСЂРѕРІР°РЅРЅРѕР№ СЂРµРєР»Р°РјС‹)
     /// </summary>
     property ReachViral: Integer read FReach_viral write FReach_viral;
     /// <summary>
-    /// Количество жалоб на запись
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ Р¶Р°Р»РѕР± РЅР° Р·Р°РїРёСЃСЊ
     /// </summary>
     property Report: Integer read FReport write FReport;
     /// <summary>
-    /// Переходы в сообщество
+    /// РџРµСЂРµС…РѕРґС‹ РІ СЃРѕРѕР±С‰РµСЃС‚РІРѕ
     /// </summary>
     property ToGroup: Integer read FTo_group write FTo_group;
     /// <summary>
-    /// Количество отписавшихся участников
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РѕС‚РїРёСЃР°РІС€РёС…СЃСЏ СѓС‡Р°СЃС‚РЅРёРєРѕРІ
     /// </summary>
     property Unsubscribe: Integer read FUnsubscribe write FUnsubscribe;
   end;

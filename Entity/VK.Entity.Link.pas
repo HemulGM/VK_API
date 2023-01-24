@@ -1,4 +1,4 @@
-unit VK.Entity.Link;
+п»їunit VK.Entity.Link;
 
 interface
 
@@ -39,7 +39,7 @@ type
   end;
 
   /// <summary>
-  /// Объект rating, описывающий информацию о рейтинге продукта
+  /// РћР±СЉРµРєС‚ rating, РѕРїРёСЃС‹РІР°СЋС‰РёР№ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЂРµР№С‚РёРЅРіРµ РїСЂРѕРґСѓРєС‚Р°
   /// </summary>
   TVkRating = class
   private
@@ -51,7 +51,7 @@ type
   end;
 
   /// <summary>
-  /// Прикрепленная ссылка
+  /// РџСЂРёРєСЂРµРїР»РµРЅРЅР°СЏ СЃСЃС‹Р»РєР°
   /// </summary>
   TVkLink = class(TVkEntity, IAttachment)
   private
@@ -74,62 +74,62 @@ type
     FIs_favorite: Boolean;
   public
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Объект application (если имеется)
+    /// РћР±СЉРµРєС‚ application (РµСЃР»Рё РёРјРµРµС‚СЃСЏ)
     /// </summary>
     property Application: TVkStoreApplication read FApplication write FApplication;
     /// <summary>
-    /// Информация о кнопке для перехода (если имеется)
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРЅРѕРїРєРµ РґР»СЏ РїРµСЂРµС…РѕРґР° (РµСЃР»Рё РёРјРµРµС‚СЃСЏ)
     /// </summary>
     property Button: TVkLinkButton read FButton write FButton;
     /// <summary>
-    /// Подпись ссылки (если имеется)
+    /// РџРѕРґРїРёСЃСЊ СЃСЃС‹Р»РєРё (РµСЃР»Рё РёРјРµРµС‚СЃСЏ)
     /// </summary>
     property Caption: string read FCaption write FCaption;
     /// <summary>
-    /// Описание ссылки
+    /// РћРїРёСЃР°РЅРёРµ СЃСЃС‹Р»РєРё
     /// </summary>
     property Description: string read FDescription write FDescription;
     /// <summary>
-    /// URL изображения для превью ссылки. (Для версий API ниже 5.37)
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РґР»СЏ РїСЂРµРІСЊСЋ СЃСЃС‹Р»РєРё. (Р”Р»СЏ РІРµСЂСЃРёР№ API РЅРёР¶Рµ 5.37)
     /// </summary>
     property ImageSrc: string read FImage_src write FImage_src;
     /// <summary>
-    /// Является ли ссылкой на внешний ресурс (если имеется)
+    /// РЇРІР»СЏРµС‚СЃСЏ Р»Рё СЃСЃС‹Р»РєРѕР№ РЅР° РІРЅРµС€РЅРёР№ СЂРµСЃСѓСЂСЃ (РµСЃР»Рё РёРјРµРµС‚СЃСЏ)
     /// </summary>
     property IsExternal: Boolean read FIs_external write FIs_external;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     /// <summary>
-    /// Изображение превью, объект фотографии (если имеется)
+    /// РР·РѕР±СЂР°Р¶РµРЅРёРµ РїСЂРµРІСЊСЋ, РѕР±СЉРµРєС‚ С„РѕС‚РѕРіСЂР°С„РёРё (РµСЃР»Рё РёРјРµРµС‚СЃСЏ)
     /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
     /// <summary>
-    /// Идентификатор вики-страницы с контентом для предпросмотра содержимого страницы. Возвращается в формате "owner_id_page_id".
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹ СЃ РєРѕРЅС‚РµРЅС‚РѕРј РґР»СЏ РїСЂРµРґРїСЂРѕСЃРјРѕС‚СЂР° СЃРѕРґРµСЂР¶РёРјРѕРіРѕ СЃС‚СЂР°РЅРёС†С‹. Р’РѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ С„РѕСЂРјР°С‚Рµ "owner_id_page_id".
     /// </summary>
     property PreviewPage: string read FPreview_page write FPreview_page;
     /// <summary>
-    /// URL страницы с контентом для предпросмотра содержимого страницы
+    /// URL СЃС‚СЂР°РЅРёС†С‹ СЃ РєРѕРЅС‚РµРЅС‚РѕРј РґР»СЏ РїСЂРµРґРїСЂРѕСЃРјРѕС‚СЂР° СЃРѕРґРµСЂР¶РёРјРѕРіРѕ СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     property PreviewUrl: string read FPreview_url write FPreview_url;
     /// <summary>
-    /// Информация о продукте (если имеется). Поле возвращается для ссылок на магазины, например, Aliexpress. Объект с единственным полем price (object)
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїСЂРѕРґСѓРєС‚Рµ (РµСЃР»Рё РёРјРµРµС‚СЃСЏ). РџРѕР»Рµ РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РґР»СЏ СЃСЃС‹Р»РѕРє РЅР° РјР°РіР°Р·РёРЅС‹, РЅР°РїСЂРёРјРµСЂ, Aliexpress. РћР±СЉРµРєС‚ СЃ РµРґРёРЅСЃС‚РІРµРЅРЅС‹Рј РїРѕР»РµРј price (object)
     /// </summary>
     property Product: TVkProduct read FProduct write FProduct;
     /// <summary>
-    /// Информацию о рейтинге продукта
+    /// РРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЂРµР№С‚РёРЅРіРµ РїСЂРѕРґСѓРєС‚Р°
     /// </summary>
     property Rating: TVkRating read FRating write FRating;
     property Target: string read FTarget write FTarget;
     /// <summary>
-    /// Заголовок ссылки
+    /// Р—Р°РіРѕР»РѕРІРѕРє СЃСЃС‹Р»РєРё
     /// </summary>
     property Title: string read FTitle write FTitle;
     property Text: string read FText write FText;
     /// <summary>
-    /// URL ссылки
+    /// URL СЃСЃС‹Р»РєРё
     /// </summary>
     property Url: string read FUrl write FUrl;
     destructor Destroy; override;
@@ -162,11 +162,11 @@ type
     FViews: Integer;
   public
     /// <summary>
-    /// Идентификатор города
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°
     /// </summary>
     property CityId: Integer read FCity_id write FCity_id;
     /// <summary>
-    /// Число переходов из этой города
+    /// Р§РёСЃР»Рѕ РїРµСЂРµС…РѕРґРѕРІ РёР· СЌС‚РѕР№ РіРѕСЂРѕРґР°
     /// </summary>
     property Views: Integer read FViews write FViews;
   end;
@@ -177,11 +177,11 @@ type
     FViews: Integer;
   public
     /// <summary>
-    /// Идентификатор страны
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹
     /// </summary>
     property CountryId: Integer read FCountry_id write FCountry_id;
     /// <summary>
-    /// Число переходов из этой страны
+    /// Р§РёСЃР»Рѕ РїРµСЂРµС…РѕРґРѕРІ РёР· СЌС‚РѕР№ СЃС‚СЂР°РЅС‹
     /// </summary>
     property Views: Integer read FViews write FViews;
   end;
@@ -193,15 +193,15 @@ type
     FMale: Integer;
   public
     /// <summary>
-    /// Обозначение возраста
+    /// РћР±РѕР·РЅР°С‡РµРЅРёРµ РІРѕР·СЂР°СЃС‚Р°
     /// </summary>
     property AgeRange: string read FAge_range write FAge_range;
     /// <summary>
-    /// Число переходов пользователей женского пола
+    /// Р§РёСЃР»Рѕ РїРµСЂРµС…РѕРґРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Р¶РµРЅСЃРєРѕРіРѕ РїРѕР»Р°
     /// </summary>
     property Female: Integer read FFemale write FFemale;
     /// <summary>
-    /// Число переходов пользователей мужского пола
+    /// Р§РёСЃР»Рѕ РїРµСЂРµС…РѕРґРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РјСѓР¶СЃРєРѕРіРѕ РїРѕР»Р°
     /// </summary>
     property Male: Integer read FMale write FMale;
   end;
@@ -296,7 +296,7 @@ end;
 
 function TVkLink.ToAttachment: TAttachment;
 begin
-  { TODO -oМалинин Геннадий -c : Доделать вложение ссылки 26.01.2021 12:23:45 }
+  { TODO -oРњР°Р»РёРЅРёРЅ Р“РµРЅРЅР°РґРёР№ -c : Р”РѕРґРµР»Р°С‚СЊ РІР»РѕР¶РµРЅРёРµ СЃСЃС‹Р»РєРё 26.01.2021 12:23:45 }
   Result := TAttachment.Link(0, 0, AccessKey);
 end;
 

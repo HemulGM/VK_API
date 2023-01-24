@@ -1,4 +1,4 @@
-unit VK.Entity.Counters;
+п»їunit VK.Entity.Counters;
 
 interface
 
@@ -35,28 +35,28 @@ type
     FMenu_clips_badge: Integer;
   public
     /// <summary>
-    /// Количество фотоальбомов;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ С„РѕС‚РѕР°Р»СЊР±РѕРјРѕРІ;
     /// </summary>
     property Albums: integer read FAlbums write FAlbums;
     property AppRequests: Integer read FApp_requests write FApp_requests;
     /// <summary>
-    /// Количество аудиозаписей;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ Р°СѓРґРёРѕР·Р°РїРёСЃРµР№;
     /// </summary>
     property Audios: integer read FAudios write FAudios;
     property Calls: Integer read FCalls write FCalls;
     property Events: Integer read FEvents write FEvents;
     /// <summary>
-    /// Количество подписчиков;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРґРїРёСЃС‡РёРєРѕРІ;
     /// </summary>
     property Followers: integer read FFollowers write FFollowers;
     /// <summary>
-    /// количество друзей;
+    /// РєРѕР»РёС‡РµСЃС‚РІРѕ РґСЂСѓР·РµР№;
     /// </summary>
     property Friends: Integer read FFriends write FFriends;
     property FriendsRecommendations: Integer read FFriends_recommendations write FFriends_recommendations;
     property Gifts: Integer read FGifts write FGifts;
     /// <summary>
-    /// количество сообществ;
+    /// РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРѕРѕР±С‰РµСЃС‚РІ;
     /// </summary>
     property Groups: Integer read FGroups write FGroups;
     property MenuClipsBadge: Integer read FMenu_clips_badge write FMenu_clips_badge;
@@ -66,33 +66,33 @@ type
     property Messages: Integer read FMessages write FMessages;
     property MessagesUnreadUnmuted: Integer read FMessages_unread_unmuted write FMessages_unread_unmuted;
     /// <summary>
-    /// Количество общих друзей;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±С‰РёС… РґСЂСѓР·РµР№;
     /// </summary>
     property MutualFriends: integer read FMutual_friends write FMutual_friends;
     /// <summary>
-    /// Количество заметок;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РјРµС‚РѕРє;
     /// </summary>
     property Notes: Integer read FNotes write FNotes;
     property Notifications: Integer read FNotifications write FNotifications;
     /// <summary>
-    /// Количество друзей онлайн;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РґСЂСѓР·РµР№ РѕРЅР»Р°Р№РЅ;
     /// </summary>
     property OnlineFriends: integer read FOnline_friends write FOnline_friends;
     /// <summary>
-    /// Количество фотографий;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ С„РѕС‚РѕРіСЂР°С„РёР№;
     /// </summary>
     property Photos: Integer read FPhotos write FPhotos;
     /// <summary>
-    /// Количество объектов в блоке «Интересные страницы».
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉРµРєС‚РѕРІ РІ Р±Р»РѕРєРµ В«РРЅС‚РµСЂРµСЃРЅС‹Рµ СЃС‚СЂР°РЅРёС†С‹В».
     /// </summary>
     property Pages: integer read FPages write FPages;
     property SDK: Integer read FSdk write FSdk;
     /// <summary>
-    /// Количество видеозаписей с пользователем;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РІРёРґРµРѕР·Р°РїРёСЃРµР№ СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј;
     /// </summary>
     property UserVideos: integer read FUser_videos write FUser_videos;
     /// <summary>
-    /// Количество видеозаписей;
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РІРёРґРµРѕР·Р°РїРёСЃРµР№;
     /// </summary>
     property Videos: Integer read FVideos write FVideos;
     //property messages_folders: TArray<?> read FMessages_folders write FMessages_folders;

@@ -1985,7 +1985,7 @@ object FormMain: TFormMain
               Size.Height = 10.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'loadstyle'
-              TabOrder = 4
+              TabOrder = 3
             end
           end
         end

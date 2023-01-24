@@ -266,6 +266,7 @@ begin
   LayoutRight.Visible := False;
   RectangleUnread.Margins.Right := 0;
   CircleAvatar.Margins.Right := 7;
+  MemoText.HitTest := False;
   {$ENDIF}
   Name := '';
   FVK := AVK;

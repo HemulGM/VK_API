@@ -1,4 +1,4 @@
-unit VK.GroupEvents;
+п»їunit VK.GroupEvents;
 
 interface
 
@@ -441,7 +441,7 @@ implementation
 uses
   System.DateUtils;
 
-{ TUserEvents }
+{ TCustomGroupEvents }
 
 constructor TCustomGroupEvents.Create(AOwner: TComponent);
 var
@@ -486,9 +486,9 @@ begin
   GroupId := Update.GetValue<Integer>('group_id', 0);
   EventId := Update.GetValue<string>('event_id', '');
   if not Assigned(EventObject) then
-    raise TVkGroupEventsException.Create('Не был получен объект события');
+    raise TVkGroupEventsException.Create('РќРµ Р±С‹Р» РїРѕР»СѓС‡РµРЅ РѕР±СЉРµРєС‚ СЃРѕР±С‹С‚РёСЏ');
   if EventType.IsEmpty then
-    raise TVkGroupEventsException.Create('Не был получен тип события');
+    raise TVkGroupEventsException.Create('РќРµ Р±С‹Р» РїРѕР»СѓС‡РµРЅ С‚РёРї СЃРѕР±С‹С‚РёСЏ');
   try
     if FLongPollEvents.ContainsKey(EventType) then
       FLongPollEvents.Items[EventType](GroupId, EventObject, EventId)
@@ -1457,7 +1457,7 @@ end;
 function TCustomGroupEvents.Start: Boolean;
 begin
   if not Assigned(FVK) then
-    raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
+    raise Exception.Create('Р”Р»СЏ СЂР°Р±РѕС‚С‹ РЅРµРѕР±С…РѕРґРёРј VK РєРѕРЅС‚СЂРѕР»Р»РµСЂ (РЎРІРѕР№СЃС‚РІРѕ VK)');
   FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'groups.getLongPollServer';
   FLongPollServer.Params.Add(VK_LP_FIELD_VERSION, FVersion);

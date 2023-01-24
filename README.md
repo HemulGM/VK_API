@@ -1,9 +1,10 @@
-﻿# VKAPI
+# VKAPI
 
 API для Вконтакте
 
-Покрытие методов - **82%**
-
+<details>
+  <summary> Покрытие методов - 83% </summary>
+  
 Группа | %
 --- | ---
 Account | 100
@@ -48,17 +49,17 @@ Video | 100
 Wall | 100
 Widgets | 0
 
-**Заметки**
+</details>
 
-Для использования FMX необходимо добавить директиву *NEEDFMX* в проект.
+**Заметки**
 
 Для некоторых старых версий среды требуется указать директиву *OLD_VERSION*.
 
 **Note**
 
-To use FMX, you need to add the NEEDFMX directive to the project.
+For old IDE versions, include *OLD_VERSION* directive
 
-**Способы авторизации:**
+# Способы авторизации
 
 1 . Авторизация через OAuth2 форму
 
@@ -111,7 +112,70 @@ end;
 
 3 . Авторизация с помощью сервисных ключей (указывается в designtime компоненте) 
 
+4 . Прямая авторизация (бета)
 
+```Pascal
+VKAPI.Application := TVkApplicationData.Android;  <-- Данные оф. клиента для Android
+VKAPI.Login('+7**********', '*****************',
+  function(var Code: string): Boolean
+  begin
+    Code := InputBox('', '', ''); <-- Код двухэтапной авторизации
+    Result := not Code.IsEmpty;
+  end);
+```
+
+# Пример бота
+```Pascal
+program VKBotTemplate;
+
+uses
+  VK.Bot,
+  VK.Types,
+  VK.Bot.Utils,
+  VK.Messages,
+  VK.GroupEvents,
+  VK.Entity.Message,
+  VK.Entity.ClientInfo;
+
+var
+  VKBot: TVkBotChat;
+
+begin
+  VKBot := TVkBotChat.GetInstance(12345678, '<token>');
+  with VKBot do
+  try
+    OnMessage :=
+      procedure(Bot: TVkBot; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo)
+      begin
+        if PeerIdIsUser(Message.PeerId) then
+        begin
+          if Assigned(Message.Action) then
+            case Message.Action.&Type of
+              TVkMessageActionType.ChatInviteUser:
+                Bot.API.Messages.SendToPeer(Message.PeerId, 'Welcome');
+            end
+          else
+            Bot.API.Messages.SendToPeer(Message.PeerId, 'Your message: ' + Message.Text);
+        end;
+      end;
+
+    if Init and Run then
+    begin
+      Console.Run(
+        procedure(const Command: string; var Quit: Boolean)
+        begin
+          Quit := Command = 'exit';
+        end);
+    end
+    else
+      Readln;
+  finally
+    Free;
+  end;
+end.
+```
+
+# Примеры
 **Получение пользователей**
     
 ```Pascal
@@ -133,18 +197,6 @@ begin
     Users.Free;
   end;
 end;
-```
-
-4 . Прямая авторизация (бета)
-
-```Pascal
-VKAPI.Application := TVkApplicationData.Android;  <-- Данные оф. клиента для Android
-VKAPI.Login('+7**********', '*****************',
-  function(var Code: string): Boolean
-  begin
-    Code := InputBox('', '', ''); <-- Код двухэтапной авторизации
-    Result := not Code.IsEmpty;
-  end);
 ```
     
 **Установка статуса онлайн**
@@ -188,12 +240,11 @@ begin
   Keys.AddButtonText(0, 'Отмена', 'cancel', bcNegative);
   Keys.AddButtonText(1, 'Информация', 'info', bcPrimary);
   Keys.AddButtonText(1, 'Команды', 'commands', bcSecondary);
-  Vk.Messages.
-    Send.
+  Vk.Messages.New.
     PeerId(PeerId).
     Keyboard(Keys).
     Message('Выбери вариант').
-    Send.Free;
+    Send;
 end;
 ```
 
@@ -205,29 +256,7 @@ Vk.Messages.Send(PeerId, 'Текст сообщения', [<вложения>]);
 **Отправка фото**
 
 ```Pascal
-var
-  Url: string;
-  Response: TVkPhotoUploadResponse;
-  Photos: TVkPhotos;
-begin
-  if VK.Photos.GetMessagesUploadServer(Url, PeerId) then
-  begin
-    if VK.Uploader.UploadPhotos(Url, FileName, Response) then
-    begin
-      if VK.Photos.SaveMessagesPhoto(Response, Photos) then
-      begin
-        FileName := Photos.Items[0].ToAttachment;
-        Vk.Messages.
-          Send.
-          PeerId(PeerId).
-          Attachemt([FileName]).
-          Send.Free;
-        Photos.Free;
-      end;
-      Response.Free;
-    end;
-  end;
-end;
+VK.Messages.New.UserId(58553419).AddPhotos(['D:\Downloads\6q8q9f.gif']).Send;
 ```
 
 **Получение аудиозаписей плейлиста (альбома)**
@@ -236,16 +265,14 @@ end;
 var
   List: TVkAudios;
   Params: TVkParamsAudio;
-  i: Integer;
 begin
   Params.OwnerId(415730216);
   Params.AlbumId(86751037);
   if VK.Audio.Get(List, Params) then
-  begin
-    for i := Low(List.Items) to High(List.Items) do
-    begin
+  try
+    for var i := Low(List.Items) to High(List.Items) do
       Memo1.Lines.Add(List.Items[i].Artist + '-' + List.Items[i].Title);
-    end;
+  finally
     List.Free;
   end;
 end;    
@@ -253,7 +280,7 @@ end;
 
 **Использование метода Walk, для выполнения методов с параметрами Count и Offset**
 
-Это простой цикл, который вызывает наш метод регулируя Offset. Cancel позволяет закончить цикл.
+Это простой цикл, который вызывает наш метод регулируя Offset. Cancel позволяет закончить цикл, до завершения всего обхода
 
 Метод позволяет получить все элементы определённого метода с Count и Offset
 Достаточно написать стандартную конструкцию получения данных с помощью искомого метода внутри 

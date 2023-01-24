@@ -1,4 +1,4 @@
-unit VK.Entity.Group.CallbackSettings;
+﻿unit VK.Entity.Group.CallbackSettings;
 
 interface
 

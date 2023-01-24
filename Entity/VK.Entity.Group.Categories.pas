@@ -1,4 +1,4 @@
-unit VK.Entity.Group.Categories;
+﻿unit VK.Entity.Group.Categories;
 
 interface
 

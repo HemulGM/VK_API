@@ -1,4 +1,4 @@
-unit VK.Entity.Fave.Pages;
+﻿unit VK.Entity.Fave.Pages;
 
 interface
 

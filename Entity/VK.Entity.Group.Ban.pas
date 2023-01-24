@@ -1,4 +1,4 @@
-unit VK.Entity.Group.Ban;
+﻿unit VK.Entity.Group.Ban;
 
 interface
 

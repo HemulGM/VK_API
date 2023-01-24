@@ -1,4 +1,4 @@
-unit VK.Users;
+п»їunit VK.Users;
 
 interface
 
@@ -10,20 +10,20 @@ type
   TVkParamsUsersGet = record
     List: TParams;
     /// <summary>
-    /// Перечисленные через запятую идентификаторы пользователей или их короткие имена (ScreenName).
-    /// По умолчанию — идентификатор текущего пользователя
+    /// РџРµСЂРµС‡РёСЃР»РµРЅРЅС‹Рµ С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РёР»Рё РёС… РєРѕСЂРѕС‚РєРёРµ РёРјРµРЅР° (ScreenName).
+    /// РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ вЂ” РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function UserIds(const Value: TVkPeerIds): TVkParamsUsersGet;
     /// <summary>
-    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: string): TVkParamsUsersGet; overload;
     /// <summary>
-    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields): TVkParamsUsersGet; overload;
     /// <summary>
-    /// Падеж для склонения имени и фамилии пользователя
+    /// РџР°РґРµР¶ РґР»СЏ СЃРєР»РѕРЅРµРЅРёСЏ РёРјРµРЅРё Рё С„Р°РјРёР»РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function NameCase(const Value: TVkNameCase): TVkParamsUsersGet; overload;
   end;
@@ -31,27 +31,27 @@ type
   TVkParamsUsersGetFollowers = record
     List: TParams;
     /// <summary>
-    /// Идентификатор пользователя
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsUsersGetFollowers;
     /// <summary>
-    /// Количество подписчиков, информацию о которых нужно получить
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРґРїРёСЃС‡РёРєРѕРІ, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅСѓР¶РЅРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function Count(const Value: Integer = 100): TVkParamsUsersGetFollowers; overload;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества подписчиков
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РїРѕРґРїРёСЃС‡РёРєРѕРІ
     /// </summary>
     function Offset(const Value: Integer): TVkParamsUsersGetFollowers; overload;
     /// <summary>
-    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: string): TVkParamsUsersGetFollowers; overload;
     /// <summary>
-    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields): TVkParamsUsersGetFollowers; overload;
     /// <summary>
-    /// Падеж для склонения имени и фамилии пользователя
+    /// РџР°РґРµР¶ РґР»СЏ СЃРєР»РѕРЅРµРЅРёСЏ РёРјРµРЅРё Рё С„Р°РјРёР»РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     function NameCase(const Value: TVkNameCase): TVkParamsUsersGetFollowers; overload;
   end;
@@ -59,26 +59,26 @@ type
   TVkParamsUsersGetSubscriptions = record
     List: TParams;
     /// <summary>
-    /// Идентификатор пользователя, подписки которого необходимо получить
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РїРѕРґРїРёСЃРєРё РєРѕС‚РѕСЂРѕРіРѕ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕР»СѓС‡РёС‚СЊ
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsUsersGetSubscriptions;
     /// <summary>
-    /// True – возвращает объединенный список, содержащий объекты group и user вместе.
-    /// False – возвращает список идентификаторов групп и пользователей отдельно. (по умолчанию)
+    /// True вЂ“ РІРѕР·РІСЂР°С‰Р°РµС‚ РѕР±СЉРµРґРёРЅРµРЅРЅС‹Р№ СЃРїРёСЃРѕРє, СЃРѕРґРµСЂР¶Р°С‰РёР№ РѕР±СЉРµРєС‚С‹ group Рё user РІРјРµСЃС‚Рµ.
+    /// False вЂ“ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ РіСЂСѓРїРї Рё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РѕС‚РґРµР»СЊРЅРѕ. (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ)
     /// </summary>
     function Extended(const Value: Boolean = False): TVkParamsUsersGetSubscriptions;
     /// <summary>
-    /// Смещение необходимое для выборки определенного подмножества подписок.
-    /// Этот параметр используется только если передан Extended = True
+    /// РЎРјРµС‰РµРЅРёРµ РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РїРѕРґРїРёСЃРѕРє.
+    /// Р­С‚РѕС‚ РїР°СЂР°РјРµС‚СЂ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РµСЃР»Рё РїРµСЂРµРґР°РЅ Extended = True
     /// </summary>
     function Offset(const Value: Integer): TVkParamsUsersGetSubscriptions;
     /// <summary>
-    /// Количество подписок, которые необходимо вернуть.
-    /// Этот параметр используется только если передан Extended = True
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРґРїРёСЃРѕРє, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ.
+    /// Р­С‚РѕС‚ РїР°СЂР°РјРµС‚СЂ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РµСЃР»Рё РїРµСЂРµРґР°РЅ Extended = True
     /// </summary>
     function Count(const Value: Integer): TVkParamsUsersGetSubscriptions;
     /// <summary>
-    /// Список дополнительных полей для объектов User и Group, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РґР»СЏ РѕР±СЉРµРєС‚РѕРІ User Рё Group, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(Value: TVkExtendedFields = []): TVkParamsUsersGetSubscriptions;
   end;
@@ -86,187 +86,187 @@ type
   TVkParamsUsersSearch = record
     List: TParams;
     /// <summary>
-    /// Строка поискового запроса
+    /// РЎС‚СЂРѕРєР° РїРѕРёСЃРєРѕРІРѕРіРѕ Р·Р°РїСЂРѕСЃР°
     /// </summary>
     function Query(const Value: string): TVkParamsUsersSearch;
     /// <summary>
-    /// Сортировка результатов
+    /// РЎРѕСЂС‚РёСЂРѕРІРєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
     /// </summary>
     function Sort(const Value: TVkSortUser): TVkParamsUsersSearch;
     /// <summary>
-    /// Смещение относительно первого найденного пользователя для выборки определенного подмножества
+    /// РЎРјРµС‰РµРЅРёРµ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РїРµСЂРІРѕРіРѕ РЅР°Р№РґРµРЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР°
     /// </summary>
     function Offset(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Количество возвращаемых пользователей
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
     /// </summary>
     function Count(const Value: Integer = 20): TVkParamsUsersSearch;
     /// <summary>
-    /// Список дополнительных полей профилей, которые необходимо вернуть
+    /// РЎРїРёСЃРѕРє РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РїРѕР»РµР№ РїСЂРѕС„РёР»РµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІРµСЂРЅСѓС‚СЊ
     /// </summary>
     function Fields(const Value: TVkExtendedFields): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор города
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°
     /// </summary>
     function City(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор страны
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹
     /// </summary>
     function Country(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Название города строкой
+    /// РќР°Р·РІР°РЅРёРµ РіРѕСЂРѕРґР° СЃС‚СЂРѕРєРѕР№
     /// </summary>
     function Hometown(const Value: string): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор страны, в которой пользователи закончили ВУЗ
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹, РІ РєРѕС‚РѕСЂРѕР№ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё Р·Р°РєРѕРЅС‡РёР»Рё Р’РЈР—
     /// </summary>
     function UniversityCountry(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор ВУЗа
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р’РЈР—Р°
     /// </summary>
     function University(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Год окончания ВУЗа
+    /// Р“РѕРґ РѕРєРѕРЅС‡Р°РЅРёСЏ Р’РЈР—Р°
     /// </summary>
     function UniversityYear(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор факультета
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„Р°РєСѓР»СЊС‚РµС‚Р°
     /// </summary>
     function UniversityFaculty(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор кафедры
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°С„РµРґСЂС‹
     /// </summary>
     function UniversityChair(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Пол
+    /// РџРѕР»
     /// </summary>
     function Sex(const Value: TVkSex): TVkParamsUsersSearch;
     /// <summary>
-    /// Семейное положение
+    /// РЎРµРјРµР№РЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
     /// </summary>
     function Status(const Value: TVkRelation): TVkParamsUsersSearch;
     /// <summary>
-    /// Возраст, от
+    /// Р’РѕР·СЂР°СЃС‚, РѕС‚
     /// </summary>
     function AgeFrom(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Возраст, до
+    /// Р’РѕР·СЂР°СЃС‚, РґРѕ
     /// </summary>
     function AgeTo(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// День рождения
+    /// Р”РµРЅСЊ СЂРѕР¶РґРµРЅРёСЏ
     /// </summary>
     function BirthDay(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Месяц рождения
+    /// РњРµСЃСЏС† СЂРѕР¶РґРµРЅРёСЏ
     /// </summary>
     function BirthMonth(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Год рождения
+    /// Р“РѕРґ СЂРѕР¶РґРµРЅРёСЏ
     /// </summary>
     function BirthYear(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Учитывать ли статус «онлайн»
+    /// РЈС‡РёС‚С‹РІР°С‚СЊ Р»Рё СЃС‚Р°С‚СѓСЃ В«РѕРЅР»Р°Р№РЅВ»
     /// </summary>
     function Online(const Value: Boolean): TVkParamsUsersSearch;
     /// <summary>
-    /// Учитывать ли наличие фото
+    /// РЈС‡РёС‚С‹РІР°С‚СЊ Р»Рё РЅР°Р»РёС‡РёРµ С„РѕС‚Рѕ
     /// </summary>
     function HasPhoto(const Value: Boolean): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор страны, в которой пользователи закончили школу
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹, РІ РєРѕС‚РѕСЂРѕР№ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё Р·Р°РєРѕРЅС‡РёР»Рё С€РєРѕР»Сѓ
     /// </summary>
     function SchoolCountry(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор города, в котором пользователи закончили школу
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°, РІ РєРѕС‚РѕСЂРѕРј РїРѕР»СЊР·РѕРІР°С‚РµР»Рё Р·Р°РєРѕРЅС‡РёР»Рё С€РєРѕР»Сѓ
     /// </summary>
     function SchoolCity(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Буква класса
+    /// Р‘СѓРєРІР° РєР»Р°СЃСЃР°
     /// </summary>
     function SchoolClass(const Value: TIdList): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор школы, которую закончили пользователи
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С€РєРѕР»С‹, РєРѕС‚РѕСЂСѓСЋ Р·Р°РєРѕРЅС‡РёР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»Рё
     /// </summary>
     function School(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Год окончания школы
+    /// Р“РѕРґ РѕРєРѕРЅС‡Р°РЅРёСЏ С€РєРѕР»С‹
     /// </summary>
     function SchoolYear(const Value: Integer): TVkParamsUsersSearch;
     /// <summary>
-    /// Религиозные взгляды
+    /// Р РµР»РёРіРёРѕР·РЅС‹Рµ РІР·РіР»СЏРґС‹
     /// </summary>
     function Religion(const Value: string): TVkParamsUsersSearch;
     /// <summary>
-    /// Название компании, в которой работают пользователи
+    /// РќР°Р·РІР°РЅРёРµ РєРѕРјРїР°РЅРёРё, РІ РєРѕС‚РѕСЂРѕР№ СЂР°Р±РѕС‚Р°СЋС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё
     /// </summary>
     function Company(const Value: string): TVkParamsUsersSearch;
     /// <summary>
-    /// Название должности
+    /// РќР°Р·РІР°РЅРёРµ РґРѕР»Р¶РЅРѕСЃС‚Рё
     /// </summary>
     function Position(const Value: string): TVkParamsUsersSearch;
     /// <summary>
-    /// Идентификатор группы, среди пользователей которой необходимо проводить поиск
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіСЂСѓРїРїС‹, СЃСЂРµРґРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РєРѕС‚РѕСЂРѕР№ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕРІРѕРґРёС‚СЊ РїРѕРёСЃРє
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsUsersSearch;
     /// <summary>
-    /// Разделы среди которых нужно осуществить поиск
+    /// Р Р°Р·РґРµР»С‹ СЃСЂРµРґРё РєРѕС‚РѕСЂС‹С… РЅСѓР¶РЅРѕ РѕСЃСѓС‰РµСЃС‚РІРёС‚СЊ РїРѕРёСЃРє
     /// </summary>
     function FromList(const Value: TVkSearchTargets): TVkParamsUsersSearch;
   end;
 
   TUsersController = class(TVkController)
   public    /// <summary>
-    /// Возвращает расширенную информацию о пользователях.
-    /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС….
+    /// РџРѕР»СЏ Counters, Military Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ С‚РѕР»СЊРєРѕ РІ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРµСЂРµРґР°РЅ СЂРѕРІРЅРѕ РѕРґРёРЅ UserId
     /// </summary>
     function Get(var Items: TVkProfiles; UserIds: TVkPeerIds; Fields: TVkExtendedFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
-    /// Возвращает расширенную информацию о пользователях.
-    /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС….
+    /// РџРѕР»СЏ Counters, Military Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ С‚РѕР»СЊРєРѕ РІ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРµСЂРµРґР°РЅ СЂРѕРІРЅРѕ РѕРґРёРЅ UserId
     /// </summary>
     function Get(var User: TVkProfile; UserId: TVkPeerId; Fields: TVkExtendedFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
-    /// Возвращает расширенную информацию о пользователях.
-    /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС….
+    /// РџРѕР»СЏ Counters, Military Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ С‚РѕР»СЊРєРѕ РІ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРµСЂРµРґР°РЅ СЂРѕРІРЅРѕ РѕРґРёРЅ UserId
     /// </summary>
     function Get(var User: TVkProfile; Fields: TVkExtendedFields = []; NameCase: TVkNameCase = TVkNameCase.Nom): Boolean; overload;
     /// <summary>
-    /// Возвращает расширенную информацию о пользователях.
-    /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС….
+    /// РџРѕР»СЏ Counters, Military Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ С‚РѕР»СЊРєРѕ РІ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРµСЂРµРґР°РЅ СЂРѕРІРЅРѕ РѕРґРёРЅ UserId
     /// </summary>
     function Get(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает расширенную информацию о пользователях.
-    /// Поля Counters, Military будут возвращены только в случае, если передан ровно один UserId
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС….
+    /// РџРѕР»СЏ Counters, Military Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ С‚РѕР»СЊРєРѕ РІ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРµСЂРµРґР°РЅ СЂРѕРІРЅРѕ РѕРґРёРЅ UserId
     /// </summary>
     function Get(var Items: TVkProfiles; Params: TVkParamsUsersGet): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов пользователей, которые являются подписчиками пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РєРѕС‚РѕСЂС‹Рµ СЏРІР»СЏСЋС‚СЃСЏ РїРѕРґРїРёСЃС‡РёРєР°РјРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetFollowers(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов пользователей, которые являются подписчиками пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РєРѕС‚РѕСЂС‹Рµ СЏРІР»СЏСЋС‚СЃСЏ РїРѕРґРїРёСЃС‡РёРєР°РјРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetFollowers(var Items: TVkProfiles; Params: TVkParamsUsersGetFollowers): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов пользователей и публичных страниц, которые входят в список подписок пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Рё РїСѓР±Р»РёС‡РЅС‹С… СЃС‚СЂР°РЅРёС†, РєРѕС‚РѕСЂС‹Рµ РІС…РѕРґСЏС‚ РІ СЃРїРёСЃРѕРє РїРѕРґРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetSubscriptions(var Items: TVkSubscriptions; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список идентификаторов пользователей и публичных страниц, которые входят в список подписок пользователя.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Рё РїСѓР±Р»РёС‡РЅС‹С… СЃС‚СЂР°РЅРёС†, РєРѕС‚РѕСЂС‹Рµ РІС…РѕРґСЏС‚ РІ СЃРїРёСЃРѕРє РїРѕРґРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function GetSubscriptions(var Items: TVkSubscriptions; Params: TVkParamsUsersGetSubscriptions): Boolean; overload;
     /// <summary>
-    /// Позволяет пожаловаться на пользователя.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РїРѕР¶Р°Р»РѕРІР°С‚СЊСЃСЏ РЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Report(UserId: TVkPeerId; Reason: TVkUserReport = TVkUserReport.Spam; Comment: string = ''): Boolean;
     /// <summary>
-    /// Возвращает список пользователей в соответствии с заданным критерием поиска.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°.
     /// </summary>
     function Search(var Items: TVkProfiles; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список пользователей в соответствии с заданным критерием поиска.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°.
     /// </summary>
     function Search(var Items: TVkProfiles; Params: TVkParamsUsersSearch): Boolean; overload;
   end;

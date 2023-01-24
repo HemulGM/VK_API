@@ -1,4 +1,4 @@
-unit VK.Entity.ClientInfo;
+﻿unit VK.Entity.ClientInfo;
 
 interface
 

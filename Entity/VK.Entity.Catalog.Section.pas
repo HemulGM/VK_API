@@ -1,4 +1,4 @@
-unit VK.Entity.Catalog.Section;
+﻿unit VK.Entity.Catalog.Section;
 
 interface
 

@@ -1,4 +1,4 @@
-unit VK.Entity.PushSettings;
+﻿unit VK.Entity.PushSettings;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   VK.Entity.Common, VK.Entity.Common.List, VK.Types;
 
 type
-  TVkConversation = class(TVkEntity)
+  TVkConversationPushInfo = class(TVkEntity)
   private
     [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FDisabled_until: TDateTime;
@@ -19,7 +19,7 @@ type
     property Sound: Boolean read FSound write FSound;
   end;
 
-  TVkConversations = TVkEntityList<TVkConversation>;
+  TVkConversationPushInfos = TVkEntityList<TVkConversationPushInfo>;
 
   TVkPushSettingsItem = class(TVkEntity)
   private
@@ -68,11 +68,11 @@ type
 
   TVkPushSettings = class(TVkEntity)
   private
-    FConversations: TVkConversations;
+    FConversations: TVkConversationPushInfos;
     FDisabled: Boolean;
     Fsettings: TVkPushSettingsItem;
   public
-    property Conversations: TVkConversations read FConversations write FConversations;
+    property Conversations: TVkConversationPushInfos read FConversations write FConversations;
     property Disabled: Boolean read FDisabled write FDisabled;
     property Settings: TVkPushSettingsItem read Fsettings write Fsettings;
     destructor Destroy; override;

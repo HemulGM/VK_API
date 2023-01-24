@@ -1,4 +1,4 @@
-unit VK.Pages;
+п»їunit VK.Pages;
 
 interface
 
@@ -10,31 +10,31 @@ type
   TVkParamsPagesGet = record
     List: TParams;
     /// <summary>
-    /// Идентификатор владельца вики-страницы
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function OwnerId(const Value: TVkPeerId): TVkParamsPagesGet;
     /// <summary>
-    /// Идентификатор вики-страницы
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function PageId(const Value: Integer): TVkParamsPagesGet;
     /// <summary>
-    /// True — требуется получить информацию о глобальной вики-странице
+    /// True вЂ” С‚СЂРµР±СѓРµС‚СЃСЏ РїРѕР»СѓС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РіР»РѕР±Р°Р»СЊРЅРѕР№ РІРёРєРё-СЃС‚СЂР°РЅРёС†Рµ
     /// </summary>
     function Global(const Value: Boolean = True): TVkParamsPagesGet;
     /// <summary>
-    /// True — получаемая wiki страница является предпросмотром для прикрепленной ссылки
+    /// True вЂ” РїРѕР»СѓС‡Р°РµРјР°СЏ wiki СЃС‚СЂР°РЅРёС†Р° СЏРІР»СЏРµС‚СЃСЏ РїСЂРµРґРїСЂРѕСЃРјРѕС‚СЂРѕРј РґР»СЏ РїСЂРёРєСЂРµРїР»РµРЅРЅРѕР№ СЃСЃС‹Р»РєРё
     /// </summary>
     function SitePreview(const Value: Boolean = True): TVkParamsPagesGet;
     /// <summary>
-    /// Название страницы
+    /// РќР°Р·РІР°РЅРёРµ СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function Title(const Value: string): TVkParamsPagesGet;
     /// <summary>
-    /// True — требуется вернуть содержимое страницы в вики-формате
+    /// True вЂ” С‚СЂРµР±СѓРµС‚СЃСЏ РІРµСЂРЅСѓС‚СЊ СЃРѕРґРµСЂР¶РёРјРѕРµ СЃС‚СЂР°РЅРёС†С‹ РІ РІРёРєРё-С„РѕСЂРјР°С‚Рµ
     /// </summary>
     function NeedSource(const Value: Boolean = True): TVkParamsPagesGet;
     /// <summary>
-    /// True — требуется вернуть html-представление страницы
+    /// True вЂ” С‚СЂРµР±СѓРµС‚СЃСЏ РІРµСЂРЅСѓС‚СЊ html-РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function NeedHtml(const Value: Boolean = True): TVkParamsPagesGet;
   end;
@@ -42,19 +42,19 @@ type
   TVkParamsPagesGetVersion = record
     List: TParams;
     /// <summary>
-    /// Идентификатор версии
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІРµСЂСЃРёРё
     /// </summary>
     function VersionId(const Value: Integer): TVkParamsPagesGetVersion;
     /// <summary>
-    /// Идентификатор сообщества, которому принадлежит вики-страница
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°, РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚ РІРёРєРё-СЃС‚СЂР°РЅРёС†Р°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsPagesGetVersion;
     /// <summary>
-    /// Идентификатор пользователя, который создал страницу
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РєРѕС‚РѕСЂС‹Р№ СЃРѕР·РґР°Р» СЃС‚СЂР°РЅРёС†Сѓ
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsPagesGetVersion;
     /// <summary>
-    /// Определяет, требуется ли в ответе html-представление вики-страницы
+    /// РћРїСЂРµРґРµР»СЏРµС‚, С‚СЂРµР±СѓРµС‚СЃСЏ Р»Рё РІ РѕС‚РІРµС‚Рµ html-РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function NeedHtml(const Value: Boolean): TVkParamsPagesGetVersion;
   end;
@@ -62,23 +62,23 @@ type
   TVkParamsPagesSave = record
     List: TParams;
     /// <summary>
-    /// Новый текст страницы в вики-формате
+    /// РќРѕРІС‹Р№ С‚РµРєСЃС‚ СЃС‚СЂР°РЅРёС†С‹ РІ РІРёРєРё-С„РѕСЂРјР°С‚Рµ
     /// </summary>
     function Text(const Value: string): TVkParamsPagesSave;
     /// <summary>
-    /// Идентификатор вики-страницы. Вместо PageId может быть передан параметр Title
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹. Р’РјРµСЃС‚Рѕ PageId РјРѕР¶РµС‚ Р±С‹С‚СЊ РїРµСЂРµРґР°РЅ РїР°СЂР°РјРµС‚СЂ Title
     /// </summary>
     function PageId(const Value: Integer): TVkParamsPagesSave;
     /// <summary>
-    /// Идентификатор сообщества, которому принадлежит вики-страница
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°, РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚ РІРёРєРё-СЃС‚СЂР°РЅРёС†Р°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsPagesSave;
     /// <summary>
-    /// Идентификатор пользователя, создавшего вики-страницу
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, СЃРѕР·РґР°РІС€РµРіРѕ РІРёРєРё-СЃС‚СЂР°РЅРёС†Сѓ
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsPagesSave;
     /// <summary>
-    /// Название вики-страницы
+    /// РќР°Р·РІР°РЅРёРµ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function Title(const Value: string): TVkParamsPagesSave;
   end;
@@ -86,67 +86,67 @@ type
   TVkParamsPagesSaveAccess = record
     List: TParams;
     /// <summary>
-    /// Идентификатор вики-страницы
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹
     /// </summary>
     function PageId(const Value: Integer): TVkParamsPagesSaveAccess;
     /// <summary>
-    /// Идентификатор сообщества, которому принадлежит вики-страница
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРѕРѕР±С‰РµСЃС‚РІР°, РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚ РІРёРєРё-СЃС‚СЂР°РЅРёС†Р°
     /// </summary>
     function GroupId(const Value: TVkPeerId): TVkParamsPagesSaveAccess;
     /// <summary>
-    /// Идентификатор пользователя, создавшего вики-страницу
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, СЃРѕР·РґР°РІС€РµРіРѕ РІРёРєРё-СЃС‚СЂР°РЅРёС†Сѓ
     /// </summary>
     function UserId(const Value: TVkPeerId): TVkParamsPagesSaveAccess;
     /// <summary>
-    /// Значение настройки доступа на чтение
+    /// Р—РЅР°С‡РµРЅРёРµ РЅР°СЃС‚СЂРѕР№РєРё РґРѕСЃС‚СѓРїР° РЅР° С‡С‚РµРЅРёРµ
     /// </summary>
     function View(const Value: TVkPageAccess): TVkParamsPagesSaveAccess;
     /// <summary>
-    /// Значение настройки доступа на редактирование
+    /// Р—РЅР°С‡РµРЅРёРµ РЅР°СЃС‚СЂРѕР№РєРё РґРѕСЃС‚СѓРїР° РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ
     /// </summary>
     function Edit(const Value: TVkPageAccess): TVkParamsPagesSaveAccess;
   end;
 
   /// <summary>
-  /// Методы для работы с вики-страницами.
+  /// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РІРёРєРё-СЃС‚СЂР°РЅРёС†Р°РјРё.
   /// </summary>
   TPagesController = class(TVkController)
   public
     /// <summary>
-    /// Позволяет очистить кеш отдельных внешних страниц, которые могут быть прикреплены к записям ВКонтакте. После очистки кеша при последующем прикреплении ссылки к записи, данные о странице будут обновлены.
-    /// Внешние страницы – страницы которые прикрепляются к записям вместе с ссылкой и доступные по кнопке "Предпросмотр".
+    /// РџРѕР·РІРѕР»СЏРµС‚ РѕС‡РёСЃС‚РёС‚СЊ РєРµС€ РѕС‚РґРµР»СЊРЅС‹С… РІРЅРµС€РЅРёС… СЃС‚СЂР°РЅРёС†, РєРѕС‚РѕСЂС‹Рµ РјРѕРіСѓС‚ Р±С‹С‚СЊ РїСЂРёРєСЂРµРїР»РµРЅС‹ Рє Р·Р°РїРёСЃСЏРј Р’РљРѕРЅС‚Р°РєС‚Рµ. РџРѕСЃР»Рµ РѕС‡РёСЃС‚РєРё РєРµС€Р° РїСЂРё РїРѕСЃР»РµРґСѓСЋС‰РµРј РїСЂРёРєСЂРµРїР»РµРЅРёРё СЃСЃС‹Р»РєРё Рє Р·Р°РїРёСЃРё, РґР°РЅРЅС‹Рµ Рѕ СЃС‚СЂР°РЅРёС†Рµ Р±СѓРґСѓС‚ РѕР±РЅРѕРІР»РµРЅС‹.
+    /// Р’РЅРµС€РЅРёРµ СЃС‚СЂР°РЅРёС†С‹ вЂ“ СЃС‚СЂР°РЅРёС†С‹ РєРѕС‚РѕСЂС‹Рµ РїСЂРёРєСЂРµРїР»СЏСЋС‚СЃСЏ Рє Р·Р°РїРёСЃСЏРј РІРјРµСЃС‚Рµ СЃ СЃСЃС‹Р»РєРѕР№ Рё РґРѕСЃС‚СѓРїРЅС‹Рµ РїРѕ РєРЅРѕРїРєРµ "РџСЂРµРґРїСЂРѕСЃРјРѕС‚СЂ".
     /// </summary>
     function ClearCache(var Status: Boolean; const Url: string): Boolean;
     /// <summary>
-    /// Возвращает информацию о вики-странице.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РІРёРєРё-СЃС‚СЂР°РЅРёС†Рµ.
     /// </summary>
     function Get(var Item: TVkPage; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о вики-странице.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РІРёРєРё-СЃС‚СЂР°РЅРёС†Рµ.
     /// </summary>
     function Get(var Item: TVkPage; Params: TVkParamsPagesGet): Boolean; overload;
     /// <summary>
-    /// Возвращает список всех старых версий вики-страницы.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РІСЃРµС… СЃС‚Р°СЂС‹С… РІРµСЂСЃРёР№ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹.
     /// </summary>
     function GetHistory(var Items: TVkPageVersions; const PageId: Integer; GroupId: TVkPeerId = 0; UserId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
-    /// Возвращает список вики-страниц в группе.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РІРёРєРё-СЃС‚СЂР°РЅРёС† РІ РіСЂСѓРїРїРµ.
     /// </summary>
     function GetTitles(var Items: TVkPages; const GroupId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
-    /// Возвращает текст одной из старых версий страницы.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСЃС‚ РѕРґРЅРѕР№ РёР· СЃС‚Р°СЂС‹С… РІРµСЂСЃРёР№ СЃС‚СЂР°РЅРёС†С‹.
     /// </summary>
     function GetVersion(var Item: TVkPage; Params: TVkParamsPagesGetVersion): Boolean; overload;
     /// <summary>
-    /// Возвращает html-представление вики-разметки.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ html-РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РІРёРєРё-СЂР°Р·РјРµС‚РєРё.
     /// </summary>
     function ParseWiki(var Html: string; const Text: string; const GroupId: TVkPeerId = 0): Boolean;
     /// <summary>
-    /// Сохраняет текст вики-страницы.
+    /// РЎРѕС…СЂР°РЅСЏРµС‚ С‚РµРєСЃС‚ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹.
     /// </summary>
     function Save(var Id: Integer; Params: TVkParamsPagesSave): Boolean;
     /// <summary>
-    /// Сохраняет новые настройки доступа на чтение и редактирование вики-страницы.
+    /// РЎРѕС…СЂР°РЅСЏРµС‚ РЅРѕРІС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё РґРѕСЃС‚СѓРїР° РЅР° С‡С‚РµРЅРёРµ Рё СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РІРёРєРё-СЃС‚СЂР°РЅРёС†С‹.
     /// https://vk.com/dev/pages.saveAccess
     /// </summary>
     function SaveAccess(var Id: Integer; Params: TVkParamsPagesSaveAccess): Boolean;

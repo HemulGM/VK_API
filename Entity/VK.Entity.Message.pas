@@ -267,8 +267,6 @@ type
     /// </summary>
     property Action: TVkMessageAction read FAction write FAction;
     property PayloadButton: TVkPayloadButton read GetPayloadButton;
-    //
-    function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
     /// <summary>
     /// Уникальный автоматически увеличивающийся номер для всех сообщений с этим peer
     /// </summary>
@@ -305,7 +303,10 @@ type
     /// отправленное с параметром session_id. Подробнее про Notify: https://notify.mail.ru/
     /// </summary>
     property MessageTag: string read FMessage_tag write FMessage_tag;
+    //
     property IsBotFrom: Boolean read GetIsBotFrom;
+    //
+    function GetPreviewAttachment(var Url: string; Index: Integer): Boolean;
     destructor Destroy; override;
   end;
 

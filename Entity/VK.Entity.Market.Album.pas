@@ -1,4 +1,4 @@
-unit VK.Entity.Market.Album;
+п»їunit VK.Entity.Market.Album;
 
 interface
 
@@ -18,31 +18,31 @@ type
     FAccess_key: string;
   public
     /// <summary>
-    /// Идентификатор подборки.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕРґР±РѕСЂРєРё.
     /// </summary>
     property Id;
     /// <summary>
-    /// Идентификатор владельца подборки.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° РїРѕРґР±РѕСЂРєРё.
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Число товаров в подборке.
+    /// Р§РёСЃР»Рѕ С‚РѕРІР°СЂРѕРІ РІ РїРѕРґР±РѕСЂРєРµ.
     /// </summary>
     property Count: Integer read FCount write FCount;
     /// <summary>
-    /// Обложка подборки, объект, описывающий фотографию.
+    /// РћР±Р»РѕР¶РєР° РїРѕРґР±РѕСЂРєРё, РѕР±СЉРµРєС‚, РѕРїРёСЃС‹РІР°СЋС‰РёР№ С„РѕС‚РѕРіСЂР°С„РёСЋ.
     /// </summary>
     property Photo: TVkPhoto read FPhoto write FPhoto;
     /// <summary>
-    /// Название подборки.
+    /// РќР°Р·РІР°РЅРёРµ РїРѕРґР±РѕСЂРєРё.
     /// </summary>
     property Title: string read FTitle write FTitle;
     /// <summary>
-    /// Дата обновления подборки
+    /// Р”Р°С‚Р° РѕР±РЅРѕРІР»РµРЅРёСЏ РїРѕРґР±РѕСЂРєРё
     /// </summary>
     property UpdatedTime: TDateTime read FUpdated_time write FUpdated_time;
     destructor Destroy; override;

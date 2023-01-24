@@ -1,4 +1,4 @@
-unit VK.CommonUtils;
+п»їunit VK.CommonUtils;
 
 interface
 
@@ -12,12 +12,6 @@ type
     class procedure FreeArrayOfObject<T: class>(var Target: TArray<T>); overload;
     class procedure FreeArrayOfArrayOfObject<T: class>(var Target: TArray<TArray<T>>); overload;
   end;
-
-function DownloadURL(URL: string): TMemoryStream; overload;
-
-function DownloadURL(URL: string; FileName: string): Boolean; overload;
-
-function GetRandomId: Int64;
 
 function BoolToString(Value: Boolean): string; overload;
 
@@ -89,9 +83,7 @@ begin
     Hash := Copy(Html, i + Pattern.Length, 150);
     i := Pos('"', Hash);
     if i > 0 then
-    begin
       Hash := Copy(Hash, 1, i - 1);
-    end;
   end;
   Result := not Hash.IsEmpty;
 end;
@@ -129,64 +121,6 @@ begin
   Result := IfThen(Value, TrueValue, FalseValue);
 end;
 
-function GetRandomId: Int64;
-begin
-  {$IFDEF OLD_VERSION}
-  Result := DateTimeToUnix(Now) + 1234567;
-  {$ELSE}
-  Result := DateTimeToMilliseconds(Now) + 1234567;
-  {$ENDIF}
-end;
-
-function DownloadURL(URL: string): TMemoryStream;
-var
-  HTTP: THTTPClient;
-begin
-  Result := TMemoryStream.Create;
-  HTTP := THTTPClient.Create;
-  try
-    try
-      HTTP.HandleRedirects := True;
-      HTTP.Get(URL, Result);
-      Result.Position := 0;
-    except
-      //Ну, ошибка... Поток всё равно создан и ошибки не должно возникнуть,
-      //если проверить размер потока перед его использованием
-    end;
-  finally
-    HTTP.Free;
-  end;
-end;
-
-function DownloadURL(URL: string; FileName: string): Boolean;
-var
-  HTTP: THTTPClient;
-  Mem: TFileStream;
-begin
-  //Создание, открытие файла
-  try
-    Mem := TFileStream.Create(FileName, fmCreate);
-  except
-    begin
-      raise Exception.Create('Не возможно создать файл');
-      Exit(False);
-    end;
-  end;
-  //Загрузка
-  HTTP := THTTPClient.Create;
-  try
-    try
-      HTTP.HandleRedirects := True;
-      Result := HTTP.Get(URL, Mem).StatusCode = 200;
-    except
-      Result := False;
-    end;
-  finally
-    Mem.Free;
-    HTTP.Free;
-  end;
-end;
-
 class procedure TArrayHelp.FreeArrayOfObject<T>(var Target: TArray<T>);
   {$IFNDEF AUTOREFCOUNT}
 var
@@ -197,8 +131,8 @@ begin
   for Item in Target do
     if Assigned(Item) then
       Item.Free;
-  SetLength(Target, 0);
   {$ENDIF}
+  SetLength(Target, 0);
 end;
 
 class procedure TArrayHelp.FreeArrayOfArrayOfObject<T>(var Target: TArray<TArray<T>>);
@@ -213,9 +147,10 @@ begin
     for Item in Items do
       if Assigned(Item) then
         Item.Free;
-  SetLength(Target, 0);
   {$ENDIF}
+  SetLength(Target, 0);
 end;
 
 end.
+
 

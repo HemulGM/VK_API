@@ -1,4 +1,4 @@
-unit VK.Entity.Secure;
+﻿unit VK.Entity.Secure;
 
 interface
 

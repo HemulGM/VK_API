@@ -1,4 +1,4 @@
-unit VK.Entity.Database.Countries;
+п»їunit VK.Entity.Database.Countries;
 
 interface
 
@@ -11,11 +11,11 @@ type
     FTitle: string;
   public
     /// <summary>
-    /// Идентификатор страны
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹
     /// </summary>
     property Id;
     /// <summary>
-    /// Название страны
+    /// РќР°Р·РІР°РЅРёРµ СЃС‚СЂР°РЅС‹
     /// </summary>
     property Title: string read FTitle write FTitle;
   end;

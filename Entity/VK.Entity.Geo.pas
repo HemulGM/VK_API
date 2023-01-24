@@ -1,4 +1,4 @@
-unit VK.Entity.Geo;
+п»їunit VK.Entity.Geo;
 
 interface
 
@@ -8,7 +8,7 @@ uses
 
 type
   /// <summary>
-  /// Объект, описывающий место
+  /// РћР±СЉРµРєС‚, РѕРїРёСЃС‹РІР°СЋС‰РёР№ РјРµСЃС‚Рѕ
   /// </summary>
   TVkPlace = class(TVkObject)
   private
@@ -29,56 +29,56 @@ type
     FIs_deleted: Boolean;
   public
     /// <summary>
-    /// Идентификатор места
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РјРµСЃС‚Р°
     /// </summary>
     property Id;
     /// <summary>
-    /// Число отметок в этом месте
+    /// Р§РёСЃР»Рѕ РѕС‚РјРµС‚РѕРє РІ СЌС‚РѕРј РјРµСЃС‚Рµ
     /// </summary>
     property Checkins: Integer read FCheckins write FCheckins;
     /// <summary>
-    /// Число отметок в этом месте
+    /// Р§РёСЃР»Рѕ РѕС‚РјРµС‚РѕРє РІ СЌС‚РѕРј РјРµСЃС‚Рµ
     /// </summary>
     property TotalCheckins: Integer read Ftotal_checkins write Ftotal_checkins;
     /// <summary>
-    /// Название места
+    /// РќР°Р·РІР°РЅРёРµ РјРµСЃС‚Р°
     /// </summary>
     property Title: string read FTitle write FTitle;
     /// <summary>
-    /// Географическая широта, заданная в градусах (от -90 до 90)
+    /// Р“РµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ С€РёСЂРѕС‚Р°, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -90 РґРѕ 90)
     /// </summary>
     property Latitude: Extended read FLatitude write FLatitude;
     /// <summary>
-    /// Географическая широта, заданная в градусах (от -90 до 90)
+    /// Р“РµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ С€РёСЂРѕС‚Р°, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -90 РґРѕ 90)
     /// </summary>
     property Longitude: Extended read FLongitude write FLongitude;
     /// <summary>
-    /// Тип места (point, ...)
+    /// РўРёРї РјРµСЃС‚Р° (point, ...)
     /// </summary>
     property &Type: Integer read FType write FType;
     /// <summary>
-    /// Идентификатор страны
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂР°РЅС‹
     /// </summary>
     property Country: string read FCountry write FCountry;
     /// <summary>
-    /// Идентификатор города
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР°
     /// </summary>
     property City: string read FCity write FCity;
     /// <summary>
-    /// Дата создания места
+    /// Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ РјРµСЃС‚Р°
     /// </summary>
     property Created: TDateTime read FCreated write FCreated;
     /// <summary>
-    /// дата обновления места в Unixtime.
+    /// РґР°С‚Р° РѕР±РЅРѕРІР»РµРЅРёСЏ РјРµСЃС‚Р° РІ Unixtime.
     /// </summary>
     property Updated: TDateTime read FUpdated write FUpdated;
     /// <summary>
-    /// Иконка места, URL изображения
+    /// РРєРѕРЅРєР° РјРµСЃС‚Р°, URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
     /// </summary>
     property Icon: string read FIcon write FIcon;
     property IsDeleted: Boolean read FIs_deleted write FIs_deleted;
     /// <summary>
-    /// Адрес места
+    /// РђРґСЂРµСЃ РјРµСЃС‚Р°
     /// </summary>
     property Address: string read FAddress write FAddress;
   end;
@@ -89,11 +89,11 @@ type
     FLongitude: Extended;
   public
     /// <summary>
-    /// Географическая широта, заданная в градусах (от -90 до 90)
+    /// Р“РµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ С€РёСЂРѕС‚Р°, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -90 РґРѕ 90)
     /// </summary>
     property Latitude: Extended read FLatitude write FLatitude;
     /// <summary>
-    /// Географическая широта, заданная в градусах (от -90 до 90)
+    /// Р“РµРѕРіСЂР°С„РёС‡РµСЃРєР°СЏ С€РёСЂРѕС‚Р°, Р·Р°РґР°РЅРЅР°СЏ РІ РіСЂР°РґСѓСЃР°С… (РѕС‚ -90 РґРѕ 90)
     /// </summary>
     property Longitude: Extended read FLongitude write FLongitude;
   end;
@@ -107,19 +107,19 @@ type
     FShowmap: Boolean;
   public
     /// <summary>
-    /// Координаты места
+    /// РљРѕРѕСЂРґРёРЅР°С‚С‹ РјРµСЃС‚Р°
     /// </summary>
     property Coordinates: TVkCoordinates read FCoordinates write FCoordinates;
     /// <summary>
-    /// Описание места (если оно добавлено)
+    /// РћРїРёСЃР°РЅРёРµ РјРµСЃС‚Р° (РµСЃР»Рё РѕРЅРѕ РґРѕР±Р°РІР»РµРЅРѕ)
     /// </summary>
     property Place: TVkPlace read FPlace write FPlace;
     /// <summary>
-    /// Тип места
+    /// РўРёРї РјРµСЃС‚Р°
     /// </summary>
     property &Type: string read FType write FType;
     /// <summary>
-    /// Информация о том, отображается ли карта
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ Р»Рё РєР°СЂС‚Р°
     /// </summary>
     property Showmap: Boolean read FShowmap write FShowmap;
     destructor Destroy; override;
@@ -134,19 +134,19 @@ type
     FShowmap: Boolean;
   public
     /// <summary>
-    /// Координаты места
+    /// РљРѕРѕСЂРґРёРЅР°С‚С‹ РјРµСЃС‚Р°
     /// </summary>
     property Coordinates: string read FCoordinates write FCoordinates;
     /// <summary>
-    /// Описание места (если оно добавлено)
+    /// РћРїРёСЃР°РЅРёРµ РјРµСЃС‚Р° (РµСЃР»Рё РѕРЅРѕ РґРѕР±Р°РІР»РµРЅРѕ)
     /// </summary>
     property Place: TVkPlace read FPlace write FPlace;
     /// <summary>
-    /// Тип места
+    /// РўРёРї РјРµСЃС‚Р°
     /// </summary>
     property &Type: string read FType write FType;
     /// <summary>
-    /// Информация о том, отображается ли карта
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ Р»Рё РєР°СЂС‚Р°
     /// </summary>
     property Showmap: Boolean read FShowmap write FShowmap;
     destructor Destroy; override;

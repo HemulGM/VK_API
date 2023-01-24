@@ -1,4 +1,4 @@
-unit VK.Entity.Playlist;
+﻿unit VK.Entity.Playlist;
 
 interface
 

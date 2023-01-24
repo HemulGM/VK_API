@@ -1,4 +1,4 @@
-unit VK.Entity.Status;
+﻿unit VK.Entity.Status;
 
 interface
 

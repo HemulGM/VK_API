@@ -1,4 +1,4 @@
-unit VK.Entity.OldApp;
+п»їunit VK.Entity.OldApp;
 
 interface
 
@@ -13,23 +13,23 @@ type
     FAccess_key: string;
   public
     /// <summary>
-    /// Идентификатор приложения
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїСЂРёР»РѕР¶РµРЅРёСЏ
     /// </summary>
     property Id;
     /// <summary>
-    /// Название приложения
+    /// РќР°Р·РІР°РЅРёРµ РїСЂРёР»РѕР¶РµРЅРёСЏ
     /// </summary>
     property Name;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// URL изображения для предпросмотра
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РґР»СЏ РїСЂРµРґРїСЂРѕСЃРјРѕС‚СЂР°
     /// </summary>
     property Photo130: string read FPhoto_130 write FPhoto_130;
     /// <summary>
-    /// URL полноразмерного изображения
+    /// URL РїРѕР»РЅРѕСЂР°Р·РјРµСЂРЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
     /// </summary>
     property Photo604: string read FPhoto_604 write FPhoto_604;
   end;

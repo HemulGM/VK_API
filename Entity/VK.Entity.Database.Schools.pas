@@ -1,4 +1,4 @@
-unit VK.Entity.Database.Schools;
+﻿unit VK.Entity.Database.Schools;
 
 interface
 

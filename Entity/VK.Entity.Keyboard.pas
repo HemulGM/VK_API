@@ -1,4 +1,4 @@
-unit VK.Entity.Keyboard;
+﻿unit VK.Entity.Keyboard;
 
 interface
 

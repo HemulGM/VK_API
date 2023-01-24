@@ -1,11 +1,11 @@
-unit VK.Clients;
+п»їunit VK.Clients;
 
 interface
 
 type
   /// <summary>
-  /// Данные клиента AppId (client_id) + AppKey (client_secret)
-  /// Имеются данные оф. клиентов для использования
+  /// Р”Р°РЅРЅС‹Рµ РєР»РёРµРЅС‚Р° AppId (client_id) + AppKey (client_secret)
+  /// РРјРµСЋС‚СЃСЏ РґР°РЅРЅС‹Рµ РѕС„. РєР»РёРµРЅС‚РѕРІ РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
   /// </summary>
   TVkApplicationData = record
     AppId: string;
@@ -18,59 +18,59 @@ type
     class function WindowsPhone: TVkApplicationData; static;
     //Without AppKey
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function VKAdmin: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function VKAdminIOS: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function VKLive: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function VKLiveAndroid: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function Vinci: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function Prisma: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function Clever: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function CleverGame: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function Instagram: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function KateMobile: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function VFeed: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function VKME: TVkApplicationData; static;
     /// <summary>
-    /// Только AppKey
+    /// РўРѕР»СЊРєРѕ AppKey
     /// </summary>
     class function VKAPI: TVkApplicationData; static;
     /// <summary>
-    /// Только Маруся
+    /// РўРѕР»СЊРєРѕ РњР°СЂСѓСЃСЏ
     /// </summary>
     class function Marusia: TVkApplicationData; static;
   end;

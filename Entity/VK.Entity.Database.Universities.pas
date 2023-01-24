@@ -1,4 +1,4 @@
-unit VK.Entity.Database.Universities;
+﻿unit VK.Entity.Database.Universities;
 
 interface
 

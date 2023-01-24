@@ -1,4 +1,4 @@
-unit VK.LongPollServer;
+п»їunit VK.LongPollServer;
 
 interface
 
@@ -70,11 +70,11 @@ type
 
 const
   DefaultLongPollServerInterval = 1000;
-  // Настройки лонгпул сервера
+  // РќР°СЃС‚СЂРѕР№РєРё Р»РѕРЅРіРїСѓР» СЃРµСЂРІРµСЂР°
   VK_LP_VERSION = '3';
   VK_LP_WAIT = '25';
   VK_LP_MODE = '10';
-  // Поля
+  // РџРѕР»СЏ
   VK_LP_FIELD_GROUP_ID = 'group_id';
   VK_LP_FIELD_VERSION = 'lp_version';
   VK_LP_FIELD_TS = 'ts';
@@ -85,14 +85,9 @@ const
 implementation
 
 uses
-  //{$IFDEF NEEDFMX}
-  //FMX.Forms, FMX.Types,
-  //{$ELSE}
-  //Vcl.Forms,
-  //{$ENDIF}
   System.Generics.Collections;
 
-{ TLongPollServer }
+{ TVkLongPollServer }
 
 constructor TVkLongPollServer.Create(AClient: TRESTClient; AMethod: string; AParams: TParams);
 begin
@@ -143,7 +138,7 @@ var
 begin
   Result := False;
   ResponseJSON := nil;
-  //Выполняем запрос
+  //Р’С‹РїРѕР»РЅСЏРµРј Р·Р°РїСЂРѕСЃ
   try
     with FHandler.Execute(FMethod, FParams) do
     begin
@@ -161,7 +156,7 @@ begin
       Exit;
     end;
   end;
-  //Если запрос выполнен успешно
+  //Р•СЃР»Рё Р·Р°РїСЂРѕСЃ РІС‹РїРѕР»РЅРµРЅ СѓСЃРїРµС€РЅРѕ
   if Result and Assigned(ResponseJSON) then
   begin
     try
@@ -251,7 +246,7 @@ var
   Param: TParam;
 begin
   FParams := Value;
-  //Сохраним id группы, если его передали
+  //РЎРѕС…СЂР°РЅРёРј id РіСЂСѓРїРїС‹, РµСЃР»Рё РµРіРѕ РїРµСЂРµРґР°Р»Рё
   for Param in FParams do
     if Param[0] = VK_LP_FIELD_GROUP_ID then
       FGroupID := Param[1];
@@ -270,12 +265,12 @@ begin
   end;
   if Assigned(JSON) then
   try
-    //Обновляем данные лонгпул сервера
+    //РћР±РЅРѕРІР»СЏРµРј РґР°РЅРЅС‹Рµ Р»РѕРЅРіРїСѓР» СЃРµСЂРІРµСЂР°
     FLongPollData.TS := JSON.GetValue(VK_LP_FIELD_TS, '');
-    //Пробуем получить список обновлений
+    //РџСЂРѕР±СѓРµРј РїРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РѕР±РЅРѕРІР»РµРЅРёР№
     if JSON.TryGetValue<TJSONArray>('updates', Updates) then
     begin
-      //Отдаем обработку обновлений в основной поток
+      //РћС‚РґР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ РѕР±РЅРѕРІР»РµРЅРёР№ РІ РѕСЃРЅРѕРІРЅРѕР№ РїРѕС‚РѕРє
       if not FLongPollNeedStop then
       begin
         if FDoSync then
@@ -288,11 +283,11 @@ begin
           OnLongPollRecieve(Updates);
       end;
     end
-    else //Ошибка при парсинге
+    else //РћС€РёР±РєР° РїСЂРё РїР°СЂСЃРёРЅРіРµ
     begin
       if not FLongPollNeedStop then
       begin
-        //Если ошибка, то пробуем переподключиться к лонгпул серверу
+        //Р•СЃР»Рё РѕС€РёР±РєР°, С‚Рѕ РїСЂРѕР±СѓРµРј РїРµСЂРµРїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє Р»РѕРЅРіРїСѓР» СЃРµСЂРІРµСЂСѓ
         if not QueryLongPollServer then
           DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: ' + Stream.DataString));
       end;
@@ -306,13 +301,13 @@ function TVkLongPollServer.Start: Boolean;
 begin
   Result := False;
   FLongPollNeedStop := False;
-  //Проверяем, есть ли обработчик событий, иначе нафига нам лонгпул)
+  //РџСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё РѕР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёР№, РёРЅР°С‡Рµ РЅР°С„РёРіР° РЅР°Рј Р»РѕРЅРіРїСѓР»)
   if not Assigned(FOnUpdate) then
-    raise Exception.Create('Необходимо обязательно указать обработчик входящих обновлений');
-  //Подключаемся к серверу, получаем данные для запросов
+    raise Exception.Create('РќРµРѕР±С…РѕРґРёРјРѕ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ СѓРєР°Р·Р°С‚СЊ РѕР±СЂР°Р±РѕС‚С‡РёРє РІС…РѕРґСЏС‰РёС… РѕР±РЅРѕРІР»РµРЅРёР№');
+  //РџРѕРґРєР»СЋС‡Р°РµРјСЃСЏ Рє СЃРµСЂРІРµСЂСѓ, РїРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ РґР»СЏ Р·Р°РїСЂРѕСЃРѕРІ
   if not QueryLongPollServer then
     Exit;
-  //Запускаем поток для выполнения запросов
+  //Р—Р°РїСѓСЃРєР°РµРј РїРѕС‚РѕРє РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РїСЂРѕСЃРѕРІ
   FThread := TThread.CreateAnonymousThread(
     procedure
     var
@@ -326,9 +321,9 @@ begin
       try
         while (not TThread.Current.CheckTerminated) and (not FLongPollNeedStop) do
         begin
-          //Очистим результат запроса с прошлого раза
+          //РћС‡РёСЃС‚РёРј СЂРµР·СѓР»СЊС‚Р°С‚ Р·Р°РїСЂРѕСЃР° СЃ РїСЂРѕС€Р»РѕРіРѕ СЂР°Р·Р°
           Stream.Clear;
-          //Выполняем запрос
+          //Р’С‹РїРѕР»РЅСЏРµРј Р·Р°РїСЂРѕСЃ
           ReqCode := 0;
           try
             ReqCode := HTTP.Get(FLongPollData.Request, Stream).StatusCode;
@@ -336,21 +331,21 @@ begin
             on E: Exception do
               DoError(TVkLongPollServerHTTPException.Create(E.Message));
           end;
-          //Если пора останавливаться - выходим из цикла
+          //Р•СЃР»Рё РїРѕСЂР° РѕСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊСЃСЏ - РІС‹С…РѕРґРёРј РёР· С†РёРєР»Р°
           if FLongPollNeedStop then
             Break;
-          //Если запрос выполнен успешно
+          //Р•СЃР»Рё Р·Р°РїСЂРѕСЃ РІС‹РїРѕР»РЅРµРЅ СѓСЃРїРµС€РЅРѕ
           if ReqCode = 200 then
             ParseResponse(Stream)
           else
           begin
-            //Если ошибка, то пробуем переподключиться к лонгпул серверу
+            //Р•СЃР»Рё РѕС€РёР±РєР°, С‚Рѕ РїСЂРѕР±СѓРµРј РїРµСЂРµРїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє Р»РѕРЅРіРїСѓР» СЃРµСЂРІРµСЂСѓ
             if not QueryLongPollServer then
               DoError(TVkLongPollServerParseException.Create('QueryLongPollServer error, result: ' + Stream.DataString));
           end;
-          //Интервал между запросами
+          //РРЅС‚РµСЂРІР°Р» РјРµР¶РґСѓ Р·Р°РїСЂРѕСЃР°РјРё
           Sleep(FInterval);
-          //Если пора останавливаться - выходим из цикла
+          //Р•СЃР»Рё РїРѕСЂР° РѕСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊСЃСЏ - РІС‹С…РѕРґРёРј РёР· С†РёРєР»Р°
           if FLongPollNeedStop then
             Break;
         end;
@@ -388,7 +383,7 @@ begin
     FLongPollNeedStop := False;
 end;
 
-{ TLongPollData }
+{ TVkLongPollData }
 
 function TVkLongPollData.Request: string;
 begin

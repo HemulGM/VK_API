@@ -1,4 +1,4 @@
-unit VK.UserEvents;
+п»їunit VK.UserEvents;
 
 interface
 
@@ -119,7 +119,7 @@ type
   end;
 
   /// <summary>
-  /// Структура события входящего сообщения
+  /// РЎС‚СЂСѓРєС‚СѓСЂР° СЃРѕР±С‹С‚РёСЏ РІС…РѕРґСЏС‰РµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ
   /// </summary>
   TMessageData = record
     MessageId: Int64;
@@ -147,9 +147,9 @@ type
   end;
 
   TEventExtraFields = record
-    PeerId: TVkPeerId; // идентификатор назначения. Для пользователя: id пользователя. Для групповой беседы: 2000000000 + id беседы. Для сообщества: -id сообщества либо id сообщества + 1000000000 (для version = 0).
-    TimeStamp: Int64; // время отправки сообщения в Unixtime;
-    Text: string; // текст сообщения;
+    PeerId: TVkPeerId; // РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅР°Р·РЅР°С‡РµРЅРёСЏ. Р”Р»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ: id РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ. Р”Р»СЏ РіСЂСѓРїРїРѕРІРѕР№ Р±РµСЃРµРґС‹: 2000000000 + id Р±РµСЃРµРґС‹. Р”Р»СЏ СЃРѕРѕР±С‰РµСЃС‚РІР°: -id СЃРѕРѕР±С‰РµСЃС‚РІР° Р»РёР±Рѕ id СЃРѕРѕР±С‰РµСЃС‚РІР° + 1000000000 (РґР»СЏ version = 0).
+    TimeStamp: Int64; // РІСЂРµРјСЏ РѕС‚РїСЂР°РІРєРё СЃРѕРѕР±С‰РµРЅРёСЏ РІ Unixtime;
+    Text: string; // С‚РµРєСЃС‚ СЃРѕРѕР±С‰РµРЅРёСЏ;
     Info: TVkMessageInfo;
     Attachments: TVkMessageAttachmentInfo;
     RandomId: Integer;
@@ -329,7 +329,7 @@ var
 
   procedure DoRaiseProcessing;
   begin
-    raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+    raise TVkUserEventsException.Create('РћС€РёР±РєР° РїСЂРё РёР·РІР»РµС‡РµРЅРёРё РґР°РЅРЅС‹С… СЃРѕР±С‹С‚РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ');
   end;
 
 begin
@@ -340,14 +340,14 @@ begin
     A3 := 0;
   except
     Exit;
-    //raise TVkUserEventsException.Create('Ошибка при извлечении данных события пользователя');
+    //raise TVkUserEventsException.Create('РћС€РёР±РєР° РїСЂРё РёР·РІР»РµС‡РµРЅРёРё РґР°РЅРЅС‹С… СЃРѕР±С‹С‚РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ');
   end;
   ExtraFields.Info := nil;
   ExtraFields.Attachments := nil;
   ExtraFields.PeerId := 0;
   ExtraFields.TimeStamp := 0;
   case EventType of
-    1..4: //Изменение флагов сообщений и новое сообщение
+    1..4: //РР·РјРµРЅРµРЅРёРµ С„Р»Р°РіРѕРІ СЃРѕРѕР±С‰РµРЅРёР№ Рё РЅРѕРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ
       begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
@@ -381,17 +381,17 @@ begin
           DoRaiseProcessing;
         end;
         case EventType of
-          1: //1	$message_id (integer) $flags (integer) extra_fields*	Замена флагов сообщения (FLAGS:=$flags).
+          1: //1	$message_id (integer) $flags (integer) extra_fields*	Р—Р°РјРµРЅР° С„Р»Р°РіРѕРІ СЃРѕРѕР±С‰РµРЅРёСЏ (FLAGS:=$flags).
             DoChangeMessageFlags(A1, TVkFlagsChangeType.Replace, A2, ExtraFields);
-          2: //2	$message_id (integer) $mask (integer) extra_fields*	Установка флагов сообщения (FLAGS|=$mask).
+          2: //2	$message_id (integer) $mask (integer) extra_fields*	РЈСЃС‚Р°РЅРѕРІРєР° С„Р»Р°РіРѕРІ СЃРѕРѕР±С‰РµРЅРёСЏ (FLAGS|=$mask).
             DoChangeMessageFlags(A1, TVkFlagsChangeType.&Set, A2, ExtraFields);
-          3: //3	$message_id (integer) $mask (integer) extra_fields*	Сброс флагов сообщения (FLAGS&=~$mask).
+          3: //3	$message_id (integer) $mask (integer) extra_fields*	РЎР±СЂРѕСЃ С„Р»Р°РіРѕРІ СЃРѕРѕР±С‰РµРЅРёСЏ (FLAGS&=~$mask).
             DoChangeMessageFlags(A1, TVkFlagsChangeType.Reset, A2, ExtraFields);
-          4: //4	$message_id (integer) $flags (integer) extra_fields*	Добавление нового сообщения.
+          4: //4	$message_id (integer) $flags (integer) extra_fields*	Р”РѕР±Р°РІР»РµРЅРёРµ РЅРѕРІРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.
             DoNewMessage(A1, A2, ExtraFields);
         end;
       end;
-    5: //Редактирование сообщения
+    5: //Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ
       begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
@@ -417,7 +417,7 @@ begin
         end;
         DoEditMessage(A1, A2, ExtraFields);
       end;
-    6, 7: //Прочтение сообщений
+    6, 7: //РџСЂРѕС‡С‚РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёР№
       begin
         try
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
@@ -427,7 +427,7 @@ begin
         end;
         DoReadMessages(EventType = 6, A1, A2);
       end;
-    8, 9: //Online/Offline пользователя
+    8, 9: //Online/Offline РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
       begin
         try
           A1 := -TJSONArray(Update).Items[1].GetValue<Integer>;
@@ -438,7 +438,7 @@ begin
         end;
         DoUserStateChange(EventType = 8, A1, A2, A3);
       end;
-    10, 11, 12: //Изменение флагов диалога
+    10, 11, 12: //РР·РјРµРЅРµРЅРёРµ С„Р»Р°РіРѕРІ РґРёР°Р»РѕРіР°
       begin
         try
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
@@ -447,15 +447,15 @@ begin
           DoRaiseProcessing;
         end;
         case EventType of
-          10: //$peer_id (integer) $mask (integer)	Сброс флагов диалога $peer_id. Соответствует операции (PEER_FLAGS &= ~$flags). Только для диалогов сообществ.
+          10: //$peer_id (integer) $mask (integer)	РЎР±СЂРѕСЃ С„Р»Р°РіРѕРІ РґРёР°Р»РѕРіР° $peer_id. РЎРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РѕРїРµСЂР°С†РёРё (PEER_FLAGS &= ~$flags). РўРѕР»СЊРєРѕ РґР»СЏ РґРёР°Р»РѕРіРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІ.
             DoChangeDialogFlags(A1, TVkFlagsChangeType.Reset, A2);
-          11: //$peer_id (integer) $flags (integer)	Замена флагов диалога $peer_id. Соответствует операции (PEER_FLAGS:= $flags). Только для диалогов сообществ.
+          11: //$peer_id (integer) $flags (integer)	Р—Р°РјРµРЅР° С„Р»Р°РіРѕРІ РґРёР°Р»РѕРіР° $peer_id. РЎРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РѕРїРµСЂР°С†РёРё (PEER_FLAGS:= $flags). РўРѕР»СЊРєРѕ РґР»СЏ РґРёР°Р»РѕРіРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІ.
             DoChangeDialogFlags(A1, TVkFlagsChangeType.Replace, A2);
-          12: //$peer_id (integer) $mask (integer)	Установка флагов диалога $peer_id. Соответствует операции (PEER_FLAGS|= $flags). Только для диалогов сообществ.
+          12: //$peer_id (integer) $mask (integer)	РЈСЃС‚Р°РЅРѕРІРєР° С„Р»Р°РіРѕРІ РґРёР°Р»РѕРіР° $peer_id. РЎРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РѕРїРµСЂР°С†РёРё (PEER_FLAGS|= $flags). РўРѕР»СЊРєРѕ РґР»СЏ РґРёР°Р»РѕРіРѕРІ СЃРѕРѕР±С‰РµСЃС‚РІ.
             DoChangeDialogFlags(A1, TVkFlagsChangeType.&Set, A2);
         end;
       end;
-    13, 14: //Удаление/восставноление сообщений
+    13, 14: //РЈРґР°Р»РµРЅРёРµ/РІРѕСЃСЃС‚Р°РІРЅРѕР»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёР№
       begin
         try
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
@@ -464,13 +464,13 @@ begin
           DoRaiseProcessing;
         end;
         case EventType of
-          13: //Удаление всех сообщений в диалоге $peer_id с идентификаторами вплоть до $local_id.
+          13: //РЈРґР°Р»РµРЅРёРµ РІСЃРµС… СЃРѕРѕР±С‰РµРЅРёР№ РІ РґРёР°Р»РѕРіРµ $peer_id СЃ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР°РјРё РІРїР»РѕС‚СЊ РґРѕ $local_id.
             DoDeleteMessages(A1, A2);
-          14: //Восстановление недавно удаленных сообщений в диалоге $peer_id с идентификаторами вплоть до $local_id.
+          14: //Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РЅРµРґР°РІРЅРѕ СѓРґР°Р»РµРЅРЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№ РІ РґРёР°Р»РѕРіРµ $peer_id СЃ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР°РјРё РІРїР»РѕС‚СЊ РґРѕ $local_id.
             DoRecoverMessages(A1, A2);
         end;
       end;
-    51: //Один из параметров (состав, тема) беседы $chat_id были изменены. $self — 1 или 0 (вызваны ли изменения самим пользователем).
+    51: //РћРґРёРЅ РёР· РїР°СЂР°РјРµС‚СЂРѕРІ (СЃРѕСЃС‚Р°РІ, С‚РµРјР°) Р±РµСЃРµРґС‹ $chat_id Р±С‹Р»Рё РёР·РјРµРЅРµРЅС‹. $self вЂ” 1 РёР»Рё 0 (РІС‹Р·РІР°РЅС‹ Р»Рё РёР·РјРµРЅРµРЅРёСЏ СЃР°РјРёРј РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј).
       begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<TVkPeerId>;
@@ -483,7 +483,7 @@ begin
         end;
         DoChatChanged(A1, A2 = 1);
       end;
-    52: //Изменение информации чата $peer_id с типом $type_id, $info — дополнительная информация об изменениях, зависит от типа события
+    52: //РР·РјРµРЅРµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё С‡Р°С‚Р° $peer_id СЃ С‚РёРїРѕРј $type_id, $info вЂ” РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ РѕР± РёР·РјРµРЅРµРЅРёСЏС…, Р·Р°РІРёСЃРёС‚ РѕС‚ С‚РёРїР° СЃРѕР±С‹С‚РёСЏ
       begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
@@ -494,7 +494,7 @@ begin
         end;
         DoChatChangeInfo(A2, A1, A3);
       end;
-    61, 62: //Пользователь набирает текст в диалоге/чате
+    61, 62: //РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅР°Р±РёСЂР°РµС‚ С‚РµРєСЃС‚ РІ РґРёР°Р»РѕРіРµ/С‡Р°С‚Рµ
       begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<TVkPeerId>;
@@ -507,7 +507,7 @@ begin
         end;
         DoUserTyping(A1, A2);
       end;
-    63, 64: //Пользователи в беседе набирают текст или записывают аудио
+    63, 64: //РџРѕР»СЊР·РѕРІР°С‚РµР»Рё РІ Р±РµСЃРµРґРµ РЅР°Р±РёСЂР°СЋС‚ С‚РµРєСЃС‚ РёР»Рё Р·Р°РїРёСЃС‹РІР°СЋС‚ Р°СѓРґРёРѕ
       begin
         try
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
@@ -529,7 +529,7 @@ begin
             DoUsersRecording(UserIds, A1, A2, A3);
         end;
       end;
-    70: //Пользователь $user_id совершил звонок с идентификатором $call_id.
+    70: //РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ $user_id СЃРѕРІРµСЂС€РёР» Р·РІРѕРЅРѕРє СЃ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРј $call_id.
       begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<TVkPeerId>;
@@ -539,7 +539,7 @@ begin
         end;
         DoUserCall(A1, A2);
       end;
-    80: //Счетчик в левом меню стал равен $count.
+    80: //РЎС‡РµС‚С‡РёРє РІ Р»РµРІРѕРј РјРµРЅСЋ СЃС‚Р°Р» СЂР°РІРµРЅ $count.
       begin
         try
           A1 := TJSONArray(Update).Items[1].GetValue<Integer>;
@@ -548,9 +548,9 @@ begin
         end;
         DoCountChange(A1);
       end;
-    114: //Изменились настройки оповещений. $peer_id — идентификатор чата/собеседника,
-         //'$sound — 1/0, включены/выключены звуковые оповещения,
-         //$disabled_until — выключение оповещений на необходимый срок (-1: навсегда, ''0
+    114: //РР·РјРµРЅРёР»РёСЃСЊ РЅР°СЃС‚СЂРѕР№РєРё РѕРїРѕРІРµС‰РµРЅРёР№. $peer_id вЂ” РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‡Р°С‚Р°/СЃРѕР±РµСЃРµРґРЅРёРєР°,
+         //'$sound вЂ” 1/0, РІРєР»СЋС‡РµРЅС‹/РІС‹РєР»СЋС‡РµРЅС‹ Р·РІСѓРєРѕРІС‹Рµ РѕРїРѕРІРµС‰РµРЅРёСЏ,
+         //$disabled_until вЂ” РІС‹РєР»СЋС‡РµРЅРёРµ РѕРїРѕРІРµС‰РµРЅРёР№ РЅР° РЅРµРѕР±С…РѕРґРёРјС‹Р№ СЃСЂРѕРє (-1: РЅР°РІСЃРµРіРґР°, ''0
       begin
         try
           A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
@@ -613,7 +613,7 @@ end;
 function TCustomUserEvents.Start: Boolean;
 begin
   if not Assigned(FVK) then
-    raise Exception.Create('Для работы необходим VK контроллер (Свойство VK)');
+    raise Exception.Create('Р”Р»СЏ СЂР°Р±РѕС‚С‹ РЅРµРѕР±С…РѕРґРёРј VK РєРѕРЅС‚СЂРѕР»Р»РµСЂ (РЎРІРѕР№СЃС‚РІРѕ VK)');
   FLongPollServer.Handler := FVK.Handler;
   FLongPollServer.Method := 'messages.getLongPollServer';
   FLongPollServer.Params.Add(VK_LP_FIELD_VERSION, FVersion);

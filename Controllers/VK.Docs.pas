@@ -1,4 +1,4 @@
-unit VK.Docs;
+п»їunit VK.Docs;
 
 interface
 
@@ -11,23 +11,23 @@ type
   TVkParamsDocsGet = record
     List: TParams;
     /// <summary>
-    /// Идентификатор пользователя или сообщества, которому принадлежат документы.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°, РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶Р°С‚ РґРѕРєСѓРјРµРЅС‚С‹.
     /// </summary>
     function OwnerId(const Value: TVkPeerId): TVkParamsDocsGet;
     /// <summary>
-    /// Фильтр по типу документа.
+    /// Р¤РёР»СЊС‚СЂ РїРѕ С‚РёРїСѓ РґРѕРєСѓРјРµРЅС‚Р°.
     /// </summary>
     function &Type(const Value: TVkDocTypeFilter): TVkParamsDocsGet;
     /// <summary>
-    /// Возвращать теги
+    /// Р’РѕР·РІСЂР°С‰Р°С‚СЊ С‚РµРіРё
     /// </summary>
     function ReturnTags(const Value: Boolean): TVkParamsDocsGet;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества документов.
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РґРѕРєСѓРјРµРЅС‚РѕРІ.
     /// </summary>
     function Offset(const Value: Integer): TVkParamsDocsGet;
     /// <summary>
-    /// Количество документов, информацию о которых нужно вернуть.
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РґРѕРєСѓРјРµРЅС‚РѕРІ, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ.
     /// </summary>
     function Count(const Value: Integer): TVkParamsDocsGet;
   end;
@@ -35,82 +35,82 @@ type
   TVkParamsDocsSearch = record
     List: TParams;
     /// <summary>
-    /// True — искать среди собственных документов пользователя.
+    /// True вЂ” РёСЃРєР°С‚СЊ СЃСЂРµРґРё СЃРѕР±СЃС‚РІРµРЅРЅС‹С… РґРѕРєСѓРјРµРЅС‚РѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function SearchOwn(const Value: Boolean): TVkParamsDocsSearch;
     /// <summary>
-    /// Строка поискового запроса. Например, зеленые тапочки.
+    /// РЎС‚СЂРѕРєР° РїРѕРёСЃРєРѕРІРѕРіРѕ Р·Р°РїСЂРѕСЃР°. РќР°РїСЂРёРјРµСЂ, Р·РµР»РµРЅС‹Рµ С‚Р°РїРѕС‡РєРё.
     /// </summary>
     function Query(const Value: string): TVkParamsDocsSearch;
     /// <summary>
-    /// Количество документов, информацию о которых нужно вернуть.
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РґРѕРєСѓРјРµРЅС‚РѕРІ, РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕС‚РѕСЂС‹С… РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ.
     /// </summary>
     function Count(const Value: Integer): TVkParamsDocsSearch;
     /// <summary>
-    /// Смещение, необходимое для выборки определенного подмножества документов.
+    /// РЎРјРµС‰РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕРµ РґР»СЏ РІС‹Р±РѕСЂРєРё РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РїРѕРґРјРЅРѕР¶РµСЃС‚РІР° РґРѕРєСѓРјРµРЅС‚РѕРІ.
     /// </summary>
     function Offset(const Value: Integer): TVkParamsDocsSearch;
     /// <summary>
-    /// Возвращать теги.
+    /// Р’РѕР·РІСЂР°С‰Р°С‚СЊ С‚РµРіРё.
     /// </summary>
     function ReturnTags(const Value: Boolean): TVkParamsDocsSearch;
   end;
 
   TDocController = class(TVkController)
   public    /// <summary>
-    /// Получает адрес сервера для загрузки документа в личное сообщение.
+    /// РџРѕР»СѓС‡Р°РµС‚ Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° РґР»СЏ Р·Р°РіСЂСѓР·РєРё РґРѕРєСѓРјРµРЅС‚Р° РІ Р»РёС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ.
     /// </summary>
     function GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType; PeerId: TVkPeerId): Boolean; overload;
     /// <summary>
-    /// ППолучает адрес сервера для загрузки документа в личное сообщение.
+    /// РџРџРѕР»СѓС‡Р°РµС‚ Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° РґР»СЏ Р·Р°РіСЂСѓР·РєРё РґРѕРєСѓРјРµРЅС‚Р° РІ Р»РёС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ.
     /// </summary>
     function GetMessagesUploadServer(var UploadUrl: string; &Type: TVkDocUploadType): Boolean; overload;
     /// <summary>
-    /// Сохраняет документ после его успешной загрузки на сервер.
+    /// РЎРѕС…СЂР°РЅСЏРµС‚ РґРѕРєСѓРјРµРЅС‚ РїРѕСЃР»Рµ РµРіРѕ СѓСЃРїРµС€РЅРѕР№ Р·Р°РіСЂСѓР·РєРё РЅР° СЃРµСЂРІРµСЂ.
     /// </summary>
     function Save(var Doc: TVkDocSaved; FileData: string; Title, Tags: string; ReturnTags: Boolean = False): Boolean;
     /// <summary>
-    /// Сохраняет аудиосообщение
+    /// РЎРѕС…СЂР°РЅСЏРµС‚ Р°СѓРґРёРѕСЃРѕРѕР±С‰РµРЅРёРµ
     /// </summary>
     function SaveAudioMessage(var Doc: TVkDocSaved; FileName: string; Title, Tags: string; PeerId: TVkPeerId = 0; ReturnTags: Boolean = False): Boolean;
     /// <summary>
-    /// Возвращает расширенную информацию о документах пользователя или сообщества.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РґРѕРєСѓРјРµРЅС‚Р°С… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function Get(var Items: TVkDocuments; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает расширенную информацию о документах пользователя или сообщества.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°СЃС€РёСЂРµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РґРѕРєСѓРјРµРЅС‚Р°С… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function Get(var Items: TVkDocuments; Params: TVkParamsDocsGet): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию о документах по их идентификаторам.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РґРѕРєСѓРјРµРЅС‚Р°С… РїРѕ РёС… РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР°Рј.
     /// </summary>
     function GetById(var Items: TVkDocuments; Docs: TArrayOfString; ReturnTags: Boolean): Boolean; overload;
     /// <summary>
-    /// Копирует документ в документы текущего пользователя.
+    /// РљРѕРїРёСЂСѓРµС‚ РґРѕРєСѓРјРµРЅС‚ РІ РґРѕРєСѓРјРµРЅС‚С‹ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     /// </summary>
     function Add(var Id: Integer; OwnerId: TVkPeerId; DocId: Integer; AccessKey: string): Boolean; overload;
     /// <summary>
-    /// Удаляет документ пользователя или группы.
+    /// РЈРґР°Р»СЏРµС‚ РґРѕРєСѓРјРµРЅС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїС‹.
     /// </summary>
     function Delete(OwnerId: TVkPeerId; DocId: Integer): Boolean; overload;
     /// <summary>
-    /// Редактирует документ пользователя или группы.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ РґРѕРєСѓРјРµРЅС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїС‹.
     /// </summary>
     function Edit(OwnerId: TVkPeerId; DocId: Integer; Title: string; Tags: TArrayOfString = []): Boolean; overload;
     /// <summary>
-    /// Возвращает доступные для пользователя типы документов.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РґРѕСЃС‚СѓРїРЅС‹Рµ РґР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ С‚РёРїС‹ РґРѕРєСѓРјРµРЅС‚РѕРІ.
     /// </summary>
     function GetTypes(var Items: TVkDocTypes; OwnerId: TVkPeerId): Boolean; overload;
     /// <summary>
-    /// Возвращает адрес сервера для загрузки документов.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° РґР»СЏ Р·Р°РіСЂСѓР·РєРё РґРѕРєСѓРјРµРЅС‚РѕРІ.
     /// </summary>
     function GetUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean; overload;
     /// <summary>
-    /// Возвращает адрес сервера для загрузки документов в папку Отправленные, для последующей отправки документа на стену или личным сообщением.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° РґР»СЏ Р·Р°РіСЂСѓР·РєРё РґРѕРєСѓРјРµРЅС‚РѕРІ РІ РїР°РїРєСѓ РћС‚РїСЂР°РІР»РµРЅРЅС‹Рµ, РґР»СЏ РїРѕСЃР»РµРґСѓСЋС‰РµР№ РѕС‚РїСЂР°РІРєРё РґРѕРєСѓРјРµРЅС‚Р° РЅР° СЃС‚РµРЅСѓ РёР»Рё Р»РёС‡РЅС‹Рј СЃРѕРѕР±С‰РµРЅРёРµРј.
     /// </summary>
     function GetWallUploadServer(var UploadUrl: string; GroupId: TVkPeerId): Boolean; overload;
     /// <summary>
-    /// Возвращает результаты поиска по документам.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР° РїРѕ РґРѕРєСѓРјРµРЅС‚Р°Рј.
     /// </summary>
     function Search(var Items: TVkDocuments; Params: TVkParamsDocsSearch): Boolean; overload;
   end;

@@ -1,4 +1,4 @@
-unit VK.Entity.Group.Status;
+п»їunit VK.Entity.Group.Status;
 
 interface
 
@@ -13,13 +13,13 @@ type
     FStatus: TVkGroupStatusType;
   public
     /// <summary>
-    /// Оценка времени ответа в минутах (для status = answer_mark)
+    /// РћС†РµРЅРєР° РІСЂРµРјРµРЅРё РѕС‚РІРµС‚Р° РІ РјРёРЅСѓС‚Р°С… (РґР»СЏ status = answer_mark)
     /// </summary>
     property Minutes: Integer read FMinutes write FMinutes;
     /// <summary>
-    /// Cтатус сообщества
+    /// CС‚Р°С‚СѓСЃ СЃРѕРѕР±С‰РµСЃС‚РІР°
     /// </summary>
-    /// <returns>none — сообщество не онлайн; online — сообщество онлайн (отвечает мгновенно); answer_mark — сообщество отвечает быстро.</returns>
+    /// <returns>none вЂ” СЃРѕРѕР±С‰РµСЃС‚РІРѕ РЅРµ РѕРЅР»Р°Р№РЅ; online вЂ” СЃРѕРѕР±С‰РµСЃС‚РІРѕ РѕРЅР»Р°Р№РЅ (РѕС‚РІРµС‡Р°РµС‚ РјРіРЅРѕРІРµРЅРЅРѕ); answer_mark вЂ” СЃРѕРѕР±С‰РµСЃС‚РІРѕ РѕС‚РІРµС‡Р°РµС‚ Р±С‹СЃС‚СЂРѕ.</returns>
     property Status: TVkGroupStatusType read FStatus write FStatus;
   end;
 

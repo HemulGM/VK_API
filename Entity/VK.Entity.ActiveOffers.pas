@@ -1,4 +1,4 @@
-unit VK.Entity.ActiveOffers;
+﻿unit VK.Entity.ActiveOffers;
 
 interface
 

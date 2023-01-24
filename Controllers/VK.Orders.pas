@@ -1,4 +1,4 @@
-unit VK.Orders;
+п»їunit VK.Orders;
 
 interface
 
@@ -9,11 +9,11 @@ type
   TOrdersController = class(TVkController)
   public
     /// <summary>
-    /// Отменяет подписку
+    /// РћС‚РјРµРЅСЏРµС‚ РїРѕРґРїРёСЃРєСѓ
     /// </summary>
     function CancelSubscription(var Status: Boolean; const UserId: TVkPeerId; SubscriptionId: Integer; PendingCancel: Boolean = False): Boolean;
     /// <summary>
-    /// Изменяет состояние заказа
+    /// РР·РјРµРЅСЏРµС‚ СЃРѕСЃС‚РѕСЏРЅРёРµ Р·Р°РєР°Р·Р°
     /// </summary>
     function ChangeState(var OrderState: string; OrderId: Integer; Action: TVkOrderStateAction; AppOrderId: Integer = 0): Boolean;
   end;

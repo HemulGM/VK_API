@@ -1,4 +1,4 @@
-unit VK.Entity.Group.TimeTable;
+п»їunit VK.Entity.Group.TimeTable;
 
 interface
 
@@ -23,19 +23,19 @@ type
     procedure SetOpenTime(const Value: Integer);
   public
     /// <summary>
-    /// Конец перерыва (в минутах)
+    /// РљРѕРЅРµС† РїРµСЂРµСЂС‹РІР° (РІ РјРёРЅСѓС‚Р°С…)
     /// </summary>
     property BreakCloseTime: Integer read FBreak_close_time write SetBreakCloseTime;
     /// <summary>
-    /// Начало перерыва (в минутах)
+    /// РќР°С‡Р°Р»Рѕ РїРµСЂРµСЂС‹РІР° (РІ РјРёРЅСѓС‚Р°С…)
     /// </summary>
     property BreakOpenTime: Integer read FBreak_open_time write SetBreakOpenTime;
     /// <summary>
-    /// Конец рабочего дня (в минутах)
+    /// РљРѕРЅРµС† СЂР°Р±РѕС‡РµРіРѕ РґРЅСЏ (РІ РјРёРЅСѓС‚Р°С…)
     /// </summary>
     property CloseTime: Integer read FClose_time write SetCloseTime;
     /// <summary>
-    /// Начало рабочего дня (в минутах)
+    /// РќР°С‡Р°Р»Рѕ СЂР°Р±РѕС‡РµРіРѕ РґРЅСЏ (РІ РјРёРЅСѓС‚Р°С…)
     /// </summary>
     property OpenTime: Integer read FOpen_time write SetOpenTime;
     property IsUse: Boolean read FUse;
@@ -54,31 +54,31 @@ type
     FSun: TVkTimeTableDay;
   public
     /// <summary>
-    /// Понетельник
+    /// РџРѕРЅРµС‚РµР»СЊРЅРёРє
     /// </summary>
     property Monday: TVkTimeTableDay read FMon write FMon;
     /// <summary>
-    /// Вторник
+    /// Р’С‚РѕСЂРЅРёРє
     /// </summary>
     property Tuesday: TVkTimeTableDay read FTue write FTue;
     /// <summary>
-    /// Среда
+    /// РЎСЂРµРґР°
     /// </summary>
     property Wednesday: TVkTimeTableDay read FWed write FWed;
     /// <summary>
-    /// Четверг
+    /// Р§РµС‚РІРµСЂРі
     /// </summary>
     property Thursday: TVkTimeTableDay read FThu write FThu;
     /// <summary>
-    /// Пятница
+    /// РџСЏС‚РЅРёС†Р°
     /// </summary>
     property Friday: TVkTimeTableDay read FFri write FFri;
     /// <summary>
-    /// Суббота
+    /// РЎСѓР±Р±РѕС‚Р°
     /// </summary>
     property Saturday: TVkTimeTableDay read FSat write FSat;
     /// <summary>
-    /// Воскресенье
+    /// Р’РѕСЃРєСЂРµСЃРµРЅСЊРµ
     /// </summary>
     property Sunday: TVkTimeTableDay read FSun write FSun;
     function ToJSON: string;

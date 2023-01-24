@@ -1,4 +1,4 @@
-unit VK.Entity.Poll;
+п»їunit VK.Entity.Poll;
 
 interface
 
@@ -31,36 +31,36 @@ type
     FImages: TArray<TVkSize>;
   public
     /// <summary>
-    /// Идентификатор фона
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С„РѕРЅР°
     /// </summary>
     property Id;
     property Name;
     /// <summary>
-    /// (для type = gradient) угол градиента по оси X
+    /// (РґР»СЏ type = gradient) СѓРіРѕР» РіСЂР°РґРёРµРЅС‚Р° РїРѕ РѕСЃРё X
     /// </summary>
     property Angle: Extended read FAngle write FAngle;
     /// <summary>
-    /// HEX-код замещающего цвета (без #)
+    /// HEX-РєРѕРґ Р·Р°РјРµС‰Р°СЋС‰РµРіРѕ С†РІРµС‚Р° (Р±РµР· #)
     /// </summary>
     property Color: string read FColor write FColor;
     /// <summary>
-    /// (для type = gradient) точки градиента. Массив объектов, каждый из которых содержит поля position (number) — положение точки — и color (string) — HEX-код цвета точки.
+    /// (РґР»СЏ type = gradient) С‚РѕС‡РєРё РіСЂР°РґРёРµРЅС‚Р°. РњР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ, РєР°Р¶РґС‹Р№ РёР· РєРѕС‚РѕСЂС‹С… СЃРѕРґРµСЂР¶РёС‚ РїРѕР»СЏ position (number) вЂ” РїРѕР»РѕР¶РµРЅРёРµ С‚РѕС‡РєРё вЂ” Рё color (string) вЂ” HEX-РєРѕРґ С†РІРµС‚Р° С‚РѕС‡РєРё.
     /// </summary>
     property Points: TArray<TVkPollPoints> read FPoints write FPoints;
     /// <summary>
-    /// Тип фона. Возможные значения: gradient, tile
+    /// РўРёРї С„РѕРЅР°. Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ: gradient, tile
     /// </summary>
     property &Type: string read FType write FType;
     /// <summary>
-    /// (для type = tile) ширина плитки паттерна
+    /// (РґР»СЏ type = tile) С€РёСЂРёРЅР° РїР»РёС‚РєРё РїР°С‚С‚РµСЂРЅР°
     /// </summary>
     property Width: Integer read FWidth write FWidth;
     /// <summary>
-    /// (для type = tile) высота плитки паттерна
+    /// (РґР»СЏ type = tile) РІС‹СЃРѕС‚Р° РїР»РёС‚РєРё РїР°С‚С‚РµСЂРЅР°
     /// </summary>
     property Height: Integer read FHeight write FHeight;
     /// <summary>
-    /// (для type = tile) изображение плитки паттерна. Массив объектов изображений.
+    /// (РґР»СЏ type = tile) РёР·РѕР±СЂР°Р¶РµРЅРёРµ РїР»РёС‚РєРё РїР°С‚С‚РµСЂРЅР°. РњР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ РёР·РѕР±СЂР°Р¶РµРЅРёР№.
     /// </summary>
     property Images: TArray<TVkSize> read FImages write FImages;
     destructor Destroy; override;
@@ -73,11 +73,11 @@ type
   public
     property Id;
     /// <summary>
-    /// HEX-код замещающего цвета (без #)
+    /// HEX-РєРѕРґ Р·Р°РјРµС‰Р°СЋС‰РµРіРѕ С†РІРµС‚Р° (Р±РµР· #)
     /// </summary>
     property Color: string read FColor write FColor;
     /// <summary>
-    /// (для type = tile) изображение плитки паттерна. Массив объектов изображений.
+    /// (РґР»СЏ type = tile) РёР·РѕР±СЂР°Р¶РµРЅРёРµ РїР»РёС‚РєРё РїР°С‚С‚РµСЂРЅР°. РњР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ РёР·РѕР±СЂР°Р¶РµРЅРёР№.
     /// </summary>
     property Images: TArray<TVkSize> read FImages write FImages;
     destructor Destroy; override;
@@ -92,19 +92,19 @@ type
     FVotes: Integer;
   public
     /// <summary>
-    /// Идентификатор ответа
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕС‚РІРµС‚Р°
     /// </summary>
     property Id;
     /// <summary>
-    /// Рейтинг ответа (%)
+    /// Р РµР№С‚РёРЅРі РѕС‚РІРµС‚Р° (%)
     /// </summary>
     property Rate: Extended read FRate write FRate;
     /// <summary>
-    /// Текст ответа
+    /// РўРµРєСЃС‚ РѕС‚РІРµС‚Р°
     /// </summary>
     property Text: string read FText write FText;
     /// <summary>
-    /// Число проголосовавших за этот ответ
+    /// Р§РёСЃР»Рѕ РїСЂРѕРіРѕР»РѕСЃРѕРІР°РІС€РёС… Р·Р° СЌС‚РѕС‚ РѕС‚РІРµС‚
     /// </summary>
     property Votes: Integer read FVotes write FVotes;
   end;
@@ -145,87 +145,87 @@ type
     FEmbed_hash: string;
   public
     /// <summary>
-    /// Идентификатор опроса для получения информации о нем через метод polls.getById.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕРїСЂРѕСЃР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РЅРµРј С‡РµСЂРµР· РјРµС‚РѕРґ polls.getById.
     /// </summary>
     property Id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Идентификатор владельца опроса
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° РѕРїСЂРѕСЃР°
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Дата создания
+    /// Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ
     /// </summary>
     property Created: TDateTime read FCreated write FCreated;
     /// <summary>
-    /// Текст вопроса
+    /// РўРµРєСЃС‚ РІРѕРїСЂРѕСЃР°
     /// </summary>
     property Question: string read FQuestion write FQuestion;
     /// <summary>
-    /// Количество голосов
+    /// РљРѕР»РёС‡РµСЃС‚РІРѕ РіРѕР»РѕСЃРѕРІ
     /// </summary>
     property Votes: Integer read FVotes write FVotes;
     /// <summary>
-    /// Массив объектов, которые содержат информацию о вариантах ответа
+    /// РњР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ СЃРѕРґРµСЂР¶Р°С‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РІР°СЂРёР°РЅС‚Р°С… РѕС‚РІРµС‚Р°
     /// </summary>
     property Answers: TArray<TVkPollAnswer> read FAnswers write FAnswers;
     /// <summary>
-    /// Является ли опрос анонимным.
+    /// РЇРІР»СЏРµС‚СЃСЏ Р»Рё РѕРїСЂРѕСЃ Р°РЅРѕРЅРёРјРЅС‹Рј.
     /// </summary>
     property Anonymous: Boolean read FAnonymous write FAnonymous;
     /// <summary>
-    /// Допускает ли опрос выбор нескольких вариантов ответа
+    /// Р”РѕРїСѓСЃРєР°РµС‚ Р»Рё РѕРїСЂРѕСЃ РІС‹Р±РѕСЂ РЅРµСЃРєРѕР»СЊРєРёС… РІР°СЂРёР°РЅС‚РѕРІ РѕС‚РІРµС‚Р°
     /// </summary>
     property Multiple: Boolean read FMultiple write FMultiple;
     /// <summary>
-    /// Идентификаторы вариантов ответа, выбранных текущим пользователем.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РІР°СЂРёР°РЅС‚РѕРІ РѕС‚РІРµС‚Р°, РІС‹Р±СЂР°РЅРЅС‹С… С‚РµРєСѓС‰РёРј РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.
     /// </summary>
     property AnswerIds: TArray<TVkPeerId> read FAnswer_ids write FAnswer_ids;
     /// <summary>
-    /// Дата завершения опроса. 0, если опрос бессрочный.
+    /// Р”Р°С‚Р° Р·Р°РІРµСЂС€РµРЅРёСЏ РѕРїСЂРѕСЃР°. 0, РµСЃР»Рё РѕРїСЂРѕСЃ Р±РµСЃСЃСЂРѕС‡РЅС‹Р№.
     /// </summary>
     property EndDate: TDateTime read FEnd_date write FEnd_date;
     /// <summary>
-    /// Является ли опрос завершенным
+    /// РЇРІР»СЏРµС‚СЃСЏ Р»Рё РѕРїСЂРѕСЃ Р·Р°РІРµСЂС€РµРЅРЅС‹Рј
     /// </summary>
     property Closed: Boolean read FClosed write FClosed;
     /// <summary>
-    /// Прикреплён ли опрос к обсуждению
+    /// РџСЂРёРєСЂРµРїР»С‘РЅ Р»Рё РѕРїСЂРѕСЃ Рє РѕР±СЃСѓР¶РґРµРЅРёСЋ
     /// </summary>
     property IsBoard: Boolean read FIs_board write FIs_board;
     /// <summary>
-    /// Можно ли отредактировать опрос
+    /// РњРѕР¶РЅРѕ Р»Рё РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РѕРїСЂРѕСЃ
     /// </summary>
     property CanEdit: Boolean read FCan_edit write FCan_edit;
     /// <summary>
-    /// Можно ли проголосовать в опросе
+    /// РњРѕР¶РЅРѕ Р»Рё РїСЂРѕРіРѕР»РѕСЃРѕРІР°С‚СЊ РІ РѕРїСЂРѕСЃРµ
     /// </summary>
     property CanVote: Boolean read FCan_vote write FCan_vote;
     /// <summary>
-    /// Можно ли пожаловаться на опрос
+    /// РњРѕР¶РЅРѕ Р»Рё РїРѕР¶Р°Р»РѕРІР°С‚СЊСЃСЏ РЅР° РѕРїСЂРѕСЃ
     /// </summary>
     property CanReport: Boolean read FCan_report write FCan_report;
     /// <summary>
-    /// Можно ли поделиться опросом
+    /// РњРѕР¶РЅРѕ Р»Рё РїРѕРґРµР»РёС‚СЊСЃСЏ РѕРїСЂРѕСЃРѕРј
     /// </summary>
     property CanShare: Boolean read FCan_share write FCan_share;
     /// <summary>
-    /// Идентификатор автора опроса
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р°РІС‚РѕСЂР° РѕРїСЂРѕСЃР°
     /// </summary>
     property AuthorId: TVkPeerId read FAuthor_id write FAuthor_id;
     /// <summary>
-    /// Фотография — фон сниппета опроса
+    /// Р¤РѕС‚РѕРіСЂР°С„РёСЏ вЂ” С„РѕРЅ СЃРЅРёРїРїРµС‚Р° РѕРїСЂРѕСЃР°
     /// </summary>
     property Photo: TVkPollPhoto read FPhoto write FPhoto;
     /// <summary>
-    /// Фон сниппета опроса
+    /// Р¤РѕРЅ СЃРЅРёРїРїРµС‚Р° РѕРїСЂРѕСЃР°
     /// </summary>
     property Background: TVkPollBackground read FBackground write FBackground;
     /// <summary>
-    /// Идентификаторы 3 друзей, которые проголосовали в опросе
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ 3 РґСЂСѓР·РµР№, РєРѕС‚РѕСЂС‹Рµ РїСЂРѕРіРѕР»РѕСЃРѕРІР°Р»Рё РІ РѕРїСЂРѕСЃРµ
     /// </summary>
     property Friends: TArray<TVkPollFriends> read FFriends write FFriends;
     property DisableUnvote: Boolean read FDisable_unvote write FDisable_unvote;

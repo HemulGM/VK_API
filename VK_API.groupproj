@@ -21,9 +21,6 @@
         <Projects Include="Samples\ChatFMX\ChatFMX.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\VKBotInformer\VKBotNerd.dproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -86,23 +83,14 @@
     <Target Name="ChatFMX:Make">
         <MSBuild Projects="Samples\ChatFMX\ChatFMX.dproj" Targets="Make"/>
     </Target>
-    <Target Name="VKBotNerd">
-        <MSBuild Projects="..\VKBotInformer\VKBotNerd.dproj"/>
-    </Target>
-    <Target Name="VKBotNerd:Clean">
-        <MSBuild Projects="..\VKBotInformer\VKBotNerd.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="VKBotNerd:Make">
-        <MSBuild Projects="..\VKBotInformer\VKBotNerd.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="VKComponents;VKAuth;VKBotTemplate;SQLiteWork;VKParams;ChatFMX;VKBotNerd"/>
+        <CallTarget Targets="VKComponents;VKAuth;VKBotTemplate;SQLiteWork;VKParams;ChatFMX"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="VKComponents:Clean;VKAuth:Clean;VKBotTemplate:Clean;SQLiteWork:Clean;VKParams:Clean;ChatFMX:Clean;VKBotNerd:Clean"/>
+        <CallTarget Targets="VKComponents:Clean;VKAuth:Clean;VKBotTemplate:Clean;SQLiteWork:Clean;VKParams:Clean;ChatFMX:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="VKComponents:Make;VKAuth:Make;VKBotTemplate:Make;SQLiteWork:Make;VKParams:Make;ChatFMX:Make;VKBotNerd:Make"/>
+        <CallTarget Targets="VKComponents:Make;VKAuth:Make;VKBotTemplate:Make;SQLiteWork:Make;VKParams:Make;ChatFMX:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

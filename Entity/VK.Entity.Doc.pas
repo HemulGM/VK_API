@@ -1,4 +1,4 @@
-unit VK.Entity.Doc;
+п»їunit VK.Entity.Doc;
 
 interface
 
@@ -22,22 +22,22 @@ type
     FAudio_message: TVkAudioMessage;
   public
     /// <summary>
-    /// Изображения для предпросмотра
+    /// РР·РѕР±СЂР°Р¶РµРЅРёСЏ РґР»СЏ РїСЂРµРґРїСЂРѕСЃРјРѕС‚СЂР°
     /// </summary>
     property Photo: TVkPreviewPhoto read FPhoto write FPhoto;
     /// <summary>
-    /// Данные о граффити
+    /// Р”Р°РЅРЅС‹Рµ Рѕ РіСЂР°С„С„РёС‚Рё
     /// </summary>
     property Graffiti: TVkSize read FGraffiti write FGraffiti;
     /// <summary>
-    /// Данные об аудиосообщении
+    /// Р”Р°РЅРЅС‹Рµ РѕР± Р°СѓРґРёРѕСЃРѕРѕР±С‰РµРЅРёРё
     /// </summary>
     property AudioMessage: TVkAudioMessage read FAudio_message write FAudio_message;
     destructor Destroy; override;
   end;
 
   /// <summary>
-  /// Объект, описывающий документ
+  /// РћР±СЉРµРєС‚, РѕРїРёСЃС‹РІР°СЋС‰РёР№ РґРѕРєСѓРјРµРЅС‚
   /// </summary>
   TVkDocument = class(TVkObject, IAttachment)
   private
@@ -57,48 +57,48 @@ type
     function GetSizeStr: string;
   public
     /// <summary>
-    /// Идентификатор документа
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РґРѕРєСѓРјРµРЅС‚Р°
     /// </summary>
     property Id;
     /// <summary>
-    /// Ключ доступа
+    /// РљР»СЋС‡ РґРѕСЃС‚СѓРїР°
     /// </summary>
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Дата добавления
+    /// Р”Р°С‚Р° РґРѕР±Р°РІР»РµРЅРёСЏ
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Расширение документа
+    /// Р Р°СЃС€РёСЂРµРЅРёРµ РґРѕРєСѓРјРµРЅС‚Р°
     /// </summary>
     property Ext: string read FExt write FExt;
     property IsLicensed: Boolean read FIs_licensed write FIs_licensed;
     /// <summary>
-    /// Идентификатор пользователя, загрузившего документ
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, Р·Р°РіСЂСѓР·РёРІС€РµРіРѕ РґРѕРєСѓРјРµРЅС‚
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     /// <summary>
-    /// Информация для предварительного просмотра документа
+    /// РРЅС„РѕСЂРјР°С†РёСЏ РґР»СЏ РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅРѕРіРѕ РїСЂРѕСЃРјРѕС‚СЂР° РґРѕРєСѓРјРµРЅС‚Р°
     /// </summary>
     property Preview: TVkPreview read FPreview write FPreview;
     /// <summary>
-    /// Размер документа в байтах
+    /// Р Р°Р·РјРµСЂ РґРѕРєСѓРјРµРЅС‚Р° РІ Р±Р°Р№С‚Р°С…
     /// </summary>
     property Size: Int64 read FSize write FSize;
     /// <summary>
-    /// Размер документа в строковом представлении
+    /// Р Р°Р·РјРµСЂ РґРѕРєСѓРјРµРЅС‚Р° РІ СЃС‚СЂРѕРєРѕРІРѕРј РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРё
     /// </summary>
     property SizeStr: string read GetSizeStr;
     /// <summary>
-    /// Название документа
+    /// РќР°Р·РІР°РЅРёРµ РґРѕРєСѓРјРµРЅС‚Р°
     /// </summary>
     property Title: string read FTitle write FTitle;
     /// <summary>
-    /// Тип документа
+    /// РўРёРї РґРѕРєСѓРјРµРЅС‚Р°
     /// </summary>
     property &Type: TVkDocumentType read FType write FType;
     /// <summary>
-    /// Адрес документа, по которому его можно загрузить
+    /// РђРґСЂРµСЃ РґРѕРєСѓРјРµРЅС‚Р°, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РµРіРѕ РјРѕР¶РЅРѕ Р·Р°РіСЂСѓР·РёС‚СЊ
     /// </summary>
     property Url: string read FUrl write FUrl;
     destructor Destroy; override;
@@ -156,9 +156,9 @@ end;
 function TVkDocument.GetSizeStr: string;
 begin
   if FSize / (1024 * 1024) > 1 then
-    Result := FormatFloat('0.00 мб', FSize / 1024 / 1024)
+    Result := FormatFloat('0.00 РјР±', FSize / 1024 / 1024)
   else
-    Result := FormatFloat('0.00 кб', FSize / 1024);
+    Result := FormatFloat('0.00 РєР±', FSize / 1024);
 end;
 
 end.

@@ -1,4 +1,4 @@
-unit VK.Entity.Newsfeed;
+﻿unit VK.Entity.Newsfeed;
 
 interface
 
@@ -53,6 +53,7 @@ type
     FCopyright: TVkCopyright;
     FDonut: TVkDonut;
   public
+    property Id;
     property Attachments: TVkAttachmentArray read FAttachments write FAttachments;
     property CanDelete: Boolean read FCan_delete write FCan_delete;
     property CanDoubtCategory: Boolean read FCan_doubt_category write FCan_doubt_category;

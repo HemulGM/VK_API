@@ -1,4 +1,4 @@
-unit VK.Entity.Storage;
+﻿unit VK.Entity.Storage;
 
 interface
 

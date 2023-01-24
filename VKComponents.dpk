@@ -31,14 +31,9 @@ package VKComponents;
 
 requires
   rtl,
-  vcl,
-  vclie,
   RESTComponents,
-  vclimg,
-  fmx,
-  IndySystem,
-  IndyProtocols,
-  IndyCore;
+  IndyCore,
+  IndyProtocols;
 
 contains
   VK.API in 'VK.API.pas',

@@ -1,4 +1,4 @@
-unit VK.Entity.Board.Comment;
+﻿unit VK.Entity.Board.Comment;
 
 interface
 

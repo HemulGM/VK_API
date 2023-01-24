@@ -1,4 +1,4 @@
-unit VK.Audio;
+п»їunit VK.Audio;
 
 interface
 
@@ -110,15 +110,15 @@ type
   TAudioController = class(TVkController)
   public
     /// <summary>
-    /// Возвращает информацию об аудиозаписях
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃСЏС…
     /// </summary>
     function Get(var Audios: TVkAudios; OwnerId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию об аудиозаписях
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃСЏС…
     /// </summary>
     function Get(var Audios: TVkAudios; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию об аудиозаписях
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃСЏС…
     /// </summary>
     function Get(var Audios: TVkAudios; Params: TVkParamsAudioGet): Boolean; overload;
     /// <summary>
@@ -134,11 +134,11 @@ type
     /// </summary>
     function GetAlbumsByArtist(var Items: TVkPlaylists; Params: TVkParamsByArtist): Boolean;
     /// <summary>
-    /// Возвращает информацию об аудиозаписях
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃСЏС…
     /// </summary>
     function GetRecommendations(var Audios: TVkAudios; Params: TVkParamsAudioGetRecomendations): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию об аудиозаписях
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃСЏС…
     /// </summary>
     function GetRecommendations(var Audios: TVkAudios; UserId: TVkPeerId = 0): Boolean; overload;
     /// <summary>
@@ -150,127 +150,127 @@ type
     /// </summary>
     function GetPopular(var Audios: TVkAudios; OnlyEng: Boolean = False; GenreId: TVkAudioGenre = TVkAudioGenre.None; Count: Integer = 0; Offset: Integer = 0): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию об аудиозаписях
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃСЏС…
     /// </summary>
     function GetPlaylists(var Items: TVkPlaylists; Params: TVkParamsPlaylist): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию об плейлистах
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РїР»РµР№Р»РёСЃС‚Р°С…
     /// </summary>
     function GetPlaylists(var Items: TVkPlaylists; OwnerId: TVkPeerId): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию об аудиозаписях
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃСЏС…
     /// </summary>
     function GetById(var Audios: TVkAudios; List: TVkAudioIndexes): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию об аудиозаписи
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     function GetById(var Audio: TVkAudio; OwnerId, AudioId: Integer; AccessKey: string = ''): Boolean; overload;
     /// <summary>
-    /// Возвращает информацию об аудиозаписи
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± Р°СѓРґРёРѕР·Р°РїРёСЃРё
     /// </summary>
     function GetById(var Audio: TVkAudio; FromAudio: TVkAudio): Boolean; overload;
     /// <summary>
-    /// Возвращает адрес сервера для загрузки аудиозаписей
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° РґР»СЏ Р·Р°РіСЂСѓР·РєРё Р°СѓРґРёРѕР·Р°РїРёСЃРµР№
     /// </summary>
     function GetUploadServer(var UploadUrl: string): Boolean;
     /// <summary>
-    /// Возвращает список аудиозаписей в соответствии (нестрогий поиск)
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°СѓРґРёРѕР·Р°РїРёСЃРµР№ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР° (РЅРµСЃС‚СЂРѕРіРёР№ РїРѕРёСЃРє)
     /// </summary>
     function Search(var Audios: TVkAudios; Query: string): Boolean; overload;
     /// <summary>
-    /// Возвращает список аудиозаписей в соответствии с заданным критерием поиска
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°СѓРґРёРѕР·Р°РїРёСЃРµР№ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°
     /// </summary>
     function Search(var Audios: TVkAudios; Query: string; AutoComplete, PerformerOnly: Boolean): Boolean; overload;
     /// <summary>
-    /// Возвращает список аудиозаписей в соответствии с заданным критерием поиска
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°СѓРґРёРѕР·Р°РїРёСЃРµР№ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°
     /// </summary>
     function Search(var Audios: TVkAudios; Params: TVkParamsAudioSearch): Boolean; overload;
     /// <summary>
-    /// Возвращает список альбомов в соответствии с заданным критерием поиска
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°Р»СЊР±РѕРјРѕРІ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°
     /// </summary>
     function SearchAlbums(var Items: TVkPlaylists; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список альбомов в соответствии с заданным критерием поиска
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°Р»СЊР±РѕРјРѕРІ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°
     /// </summary>
     function SearchAlbums(var Items: TVkPlaylists; Params: TVkParamsAudioBasicSearch): Boolean; overload;
     /// <summary>
-    /// Возвращает список артистов в соответствии с заданным критерием поиска
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°СЂС‚РёСЃС‚РѕРІ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°
     /// </summary>
     function SearchArtists(var Items: TVkAudioArtists; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список артистов в соответствии с заданным критерием поиска
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°СЂС‚РёСЃС‚РѕРІ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°
     /// </summary>
     function SearchArtists(var Items: TVkAudioArtists; Params: TVkParamsAudioBasicSearch): Boolean; overload;
     /// <summary>
-    /// Возвращает список плейлистов в соответствии с заданным критерием поиска
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїР»РµР№Р»РёСЃС‚РѕРІ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°
     /// </summary>
     function SearchPlaylists(var Items: TVkPlaylists; Params: TParams): Boolean; overload;
     /// <summary>
-    /// Возвращает список плейлистов в соответствии с заданным критерием поиска
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїР»РµР№Р»РёСЃС‚РѕРІ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј РєСЂРёС‚РµСЂРёРµРј РїРѕРёСЃРєР°
     /// </summary>
     function SearchPlaylists(var Items: TVkPlaylists; Params: TVkParamsAudioPlaylistSearch): Boolean; overload;
     /// <summary>
-    /// Сохраняет аудиозаписи после успешной загрузки.
+    /// РЎРѕС…СЂР°РЅСЏРµС‚ Р°СѓРґРёРѕР·Р°РїРёСЃРё РїРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕР№ Р·Р°РіСЂСѓР·РєРё.
     /// </summary>
     function Save(var Audio: TVkAudio; AudioSaveData: TVkAudioUploadResponse): Boolean;
     /// <summary>
-    /// Копирует аудиозапись на страницу пользователя или группы.
+    /// РљРѕРїРёСЂСѓРµС‚ Р°СѓРґРёРѕР·Р°РїРёСЃСЊ РЅР° СЃС‚СЂР°РЅРёС†Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїС‹.
     /// </summary>
     function Add(var Id: Integer; AudioId: integer; OwnerId: TVkPeerId; GroupId: TVkPeerId = 0; AlbumId: Integer = -1; AccessKey: string = ''): Boolean;
     /// <summary>
-    /// Удаляет аудиозапись со страницы пользователя или сообщества.
+    /// РЈРґР°Р»СЏРµС‚ Р°СѓРґРёРѕР·Р°РїРёСЃСЊ СЃРѕ СЃС‚СЂР°РЅРёС†С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function Delete(const AudioId: integer; OwnerId: TVkPeerId): Boolean;
     /// <summary>
-    /// Редактирует данные аудиозаписи на странице пользователя или сообщества.
+    /// Р РµРґР°РєС‚РёСЂСѓРµС‚ РґР°РЅРЅС‹Рµ Р°СѓРґРёРѕР·Р°РїРёСЃРё РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё СЃРѕРѕР±С‰РµСЃС‚РІР°.
     /// </summary>
     function Edit(const Params: TVkParamsAudioEdit): Boolean;
     /// <summary>
-    /// Создать плейлист
+    /// РЎРѕР·РґР°С‚СЊ РїР»РµР№Р»РёСЃС‚
     /// </summary>
     function CreatePlaylist(var Item: TVkAudioPlaylist; const OwnerId: TVkPeerId; const Title: string; Description: string = ''; AudioIds: TArrayOfString = []): Boolean;
     /// <summary>
-    /// Удалить плейлист
+    /// РЈРґР°Р»РёС‚СЊ РїР»РµР№Р»РёСЃС‚
     /// </summary>
     function DeletePlaylist(const PlaylistId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
-    /// Изменить плейлист
+    /// РР·РјРµРЅРёС‚СЊ РїР»РµР№Р»РёСЃС‚
     /// </summary>
     function EditPlaylist(Params: TVkParamsAudioEditPlaylist): Boolean;
     /// <summary>
-    /// Возвращает информацию об плейлисте
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РїР»РµР№Р»РёСЃС‚Рµ
     /// </summary>
     function GetPlaylistById(var Item: TVkAudioPlaylist; const PlaylistId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
-    /// Восстанавливает аудиозапись
+    /// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ Р°СѓРґРёРѕР·Р°РїРёСЃСЊ
     /// </summary>
     function Restore(const AudioId: Integer; OwnerId: TVkPeerId = 0): Boolean;
     /// <summary>
-    /// Получить каталог аудиозаписей
+    /// РџРѕР»СѓС‡РёС‚СЊ РєР°С‚Р°Р»РѕРі Р°СѓРґРёРѕР·Р°РїРёСЃРµР№
     /// </summary>
     function GetCatalog(var Items: TVkAudioCatalog; Params: TParams = []): Boolean;
     /// <summary>
-    /// Позволяет изменить порядок аудио.
+    /// РџРѕР·РІРѕР»СЏРµС‚ РёР·РјРµРЅРёС‚СЊ РїРѕСЂСЏРґРѕРє Р°СѓРґРёРѕ.
     /// </summary>
     function Reorder(Params: TVkParamsAudioReorder): Boolean;
     /// <summary>
-    /// Удалить плейлист
+    /// РЈРґР°Р»РёС‚СЊ РїР»РµР№Р»РёСЃС‚
     /// </summary>
     function AddToPlaylist(var Items: TVkAudioInfoItems; const OwnerId: TVkPeerId; const PlaylistId: Integer; AudioIds: TArrayOfString): Boolean;
     /// <summary>
-    ///  Метод загружает на указанный URL адрес аудиозапись, точнее, просто файл, но его можно использовать, чтобы загрузить аудиозапись в профиль в связке с методом audio.getUploadServer(), чтобы получить URL для загрузки.
+    ///  РњРµС‚РѕРґ Р·Р°РіСЂСѓР¶Р°РµС‚ РЅР° СѓРєР°Р·Р°РЅРЅС‹Р№ URL Р°РґСЂРµСЃ Р°СѓРґРёРѕР·Р°РїРёСЃСЊ, С‚РѕС‡РЅРµРµ, РїСЂРѕСЃС‚Рѕ С„Р°Р№Р», РЅРѕ РµРіРѕ РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ, С‡С‚РѕР±С‹ Р·Р°РіСЂСѓР·РёС‚СЊ Р°СѓРґРёРѕР·Р°РїРёСЃСЊ РІ РїСЂРѕС„РёР»СЊ РІ СЃРІСЏР·РєРµ СЃ РјРµС‚РѕРґРѕРј audio.getUploadServer(), С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ URL РґР»СЏ Р·Р°РіСЂСѓР·РєРё.
     /// </summary>
     function Upload(const UploadUrl, FileName: string; var Response: TVkAudioUploadResponse): Boolean; overload;
     /// <summary>
-    /// Метод загружает на указанный URL адрес аудиозапись
+    /// РњРµС‚РѕРґ Р·Р°РіСЂСѓР¶Р°РµС‚ РЅР° СѓРєР°Р·Р°РЅРЅС‹Р№ URL Р°РґСЂРµСЃ Р°СѓРґРёРѕР·Р°РїРёСЃСЊ
     /// </summary>
     function Upload(var Audio: TVkAudio; const FileName: string): Boolean; overload;
     /// <summary>
-    /// Метод возвращает количество аудиозаписей пользователя или группы
+    /// РњРµС‚РѕРґ РІРѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ Р°СѓРґРёРѕР·Р°РїРёСЃРµР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РіСЂСѓРїРїС‹
     /// </summary>
     function GetCount(var Value: Integer; OwnerId: TVkPeerId): Boolean;
     /// <summary>
-    /// Метод добавляет плейлист в подписки
+    /// РњРµС‚РѕРґ РґРѕР±Р°РІР»СЏРµС‚ РїР»РµР№Р»РёСЃС‚ РІ РїРѕРґРїРёСЃРєРё
     /// </summary>
     function FollowPlaylist(var NewPlaylistId: Integer; OwnerId: TVkPeerId; PlaylistId: Integer): Boolean;
   end;

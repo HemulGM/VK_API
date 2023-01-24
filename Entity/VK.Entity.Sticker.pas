@@ -1,4 +1,4 @@
-unit VK.Entity.Sticker;
+п»їunit VK.Entity.Sticker;
 
 interface
 
@@ -18,27 +18,27 @@ type
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// URL анимации стикера
+    /// URL Р°РЅРёРјР°С†РёРё СЃС‚РёРєРµСЂР°
     /// </summary>
     property AnimationUrl: string read FAnimation_url write FAnimation_url;
     /// <summary>
-    /// Изображения для стикера (с прозрачным фоном)
+    /// РР·РѕР±СЂР°Р¶РµРЅРёСЏ РґР»СЏ СЃС‚РёРєРµСЂР° (СЃ РїСЂРѕР·СЂР°С‡РЅС‹Рј С„РѕРЅРѕРј)
     /// </summary>
     property Images: TVkSizes read FImages write FImages;
     /// <summary>
-    /// Изображения для стикера (с непрозрачным фоном)
+    /// РР·РѕР±СЂР°Р¶РµРЅРёСЏ РґР»СЏ СЃС‚РёРєРµСЂР° (СЃ РЅРµРїСЂРѕР·СЂР°С‡РЅС‹Рј С„РѕРЅРѕРј)
     /// </summary>
     property ImagesWithBackground: TVkSizes read FImages_with_background write FImages_with_background;
     /// <summary>
-    /// Идентификатор набора
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅР°Р±РѕСЂР°
     /// </summary>
     property ProductId: Integer read FProduct_id write FProduct_id;
     /// <summary>
-    /// Идентификатор стикера
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚РёРєРµСЂР°
     /// </summary>
     property StickerId: Integer read FSticker_id write FSticker_id;
     /// <summary>
-    /// Информация о том, доступен ли стикер
+    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРј, РґРѕСЃС‚СѓРїРµРЅ Р»Рё СЃС‚РёРєРµСЂ
     /// </summary>
     property IsAllowed: Boolean read FIs_allowed write FIs_allowed;
     destructor Destroy; override;

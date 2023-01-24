@@ -1,4 +1,4 @@
-unit VK.Handler;
+п»їunit VK.Handler;
 
 interface
 
@@ -104,7 +104,7 @@ type
     property LogResponse: Boolean read FLogResponse write SetLogResponse;
     property Authenticator: TOAuth2Authenticator read FAuthenticator write FAuthenticator;
     /// <summary>
-    /// Лимит запросов в сек (по умолчанию 3)
+    /// Р›РёРјРёС‚ Р·Р°РїСЂРѕСЃРѕРІ РІ СЃРµРє (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ 3)
     /// </summary>
     property RequestLimit: Integer read FRequestLimit write FRequestLimit;
     //
@@ -332,13 +332,13 @@ begin
   TMonitor.Enter(FQueueLock);
   try
     Inc(FRequests);
-    // Если это первый запрос, то сохраняем метку
+    // Р•СЃР»Рё СЌС‚Рѕ РїРµСЂРІС‹Р№ Р·Р°РїСЂРѕСЃ, С‚Рѕ СЃРѕС…СЂР°РЅСЏРµРј РјРµС‚РєСѓ
     if FRequests = 1 then
       FStartRequest := TThread.GetTickCount;
   finally
     TMonitor.Exit(FQueueLock);
   end;
-  // Если уже 3 запроса было, то ждём до конца секунды FStartRequest
+  // Р•СЃР»Рё СѓР¶Рµ 3 Р·Р°РїСЂРѕСЃР° Р±С‹Р»Рѕ, С‚Рѕ Р¶РґС‘Рј РґРѕ РєРѕРЅС†Р° СЃРµРєСѓРЅРґС‹ FStartRequest
   if FRequests > RequestLimit then
   begin
     FRequests := 0;
@@ -384,7 +384,7 @@ begin
         end;
       VK_ERROR_TOO_MANY_SIMILAR_ACTIONS:
         raise TVkTooManySimilarActionException.Create(VKErrors.Get(Result.Error.Code), Result.Error.Code);
-      VK_ERROR_CAPTCHA: // Капча
+      VK_ERROR_CAPTCHA: // РљР°РїС‡Р°
         begin
           if FCaptchaWait then
             Exit(Execute(Request));
@@ -407,7 +407,7 @@ begin
             raise TVkCaptchaException.Create(Result.Error.Text, Result.Error.Code);
           end;
         end;
-      VK_ERROR_CONFIRM, VK_ERROR_TOKEN_CONFIRM, VK_ERROR_MORE_CONFIRM: // Подтверждение для ВК
+      VK_ERROR_CONFIRM, VK_ERROR_TOKEN_CONFIRM, VK_ERROR_MORE_CONFIRM: // РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РґР»СЏ Р’Рљ
         begin
           Answer := JS.GetValue<string>('confirmation_text', '');
           if DoConfirm(Answer) then
@@ -419,9 +419,9 @@ begin
           else
             raise TVkConfirmException.Create(Result.Error.Text, Result.Error.Code);
         end;
-      VK_ERROR_REQUESTLIMIT: // Превышено кол-во запросов в сек
+      VK_ERROR_REQUESTLIMIT: // РџСЂРµРІС‹С€РµРЅРѕ РєРѕР»-РІРѕ Р·Р°РїСЂРѕСЃРѕРІ РІ СЃРµРє
         begin
-          FLog(Format('Превышено кол-во запросов в сек. (%d/%d, StartRequest %d)', [FRequests, RequestLimit, FStartRequest]));
+          FLog(Format('РџСЂРµРІС‹С€РµРЅРѕ РєРѕР»-РІРѕ Р·Р°РїСЂРѕСЃРѕРІ РІ СЃРµРє. (%d/%d, StartRequest %d)', [FRequests, RequestLimit, FStartRequest]));
           if not IsRepeat then
           begin
             WaitTime(2000);
@@ -458,7 +458,7 @@ begin
       end;
     end
     else
-      raise TVkParserException.Create('Неизвестный ответ от сервера: ' + Request.Response.StatusCode.ToString);
+      raise TVkParserException.Create('РќРµРёР·РІРµСЃС‚РЅС‹Р№ РѕС‚РІРµС‚ РѕС‚ СЃРµСЂРІРµСЂР°: ' + Request.Response.StatusCode.ToString);
   end;
 end;
 
@@ -521,12 +521,12 @@ end;
 
 { TResponse }
 
-{$WARNINGS OFF}
-
 function TResponse.GetJSONValue: TJSONValue;
 begin
   if not Json.IsEmpty then
+    {$WARNINGS OFF}
     Result := TJSONObject.ParseJSONValue(UTF8ToString(Json))
+    {$WARNINGS ON}
   else
     Result := nil;
 end;
@@ -560,7 +560,9 @@ begin
   Result := Success;
   if Result then
   try
-    JSONItem := TJSONObject.ParseJSONValue(Response);
+    {$WARNINGS OFF}
+    JSONItem := TJSONObject.ParseJSONValue(UTF8ToString(Response));
+    {$WARNINGS ON}
     Value := T(JSONItem);
   except
     JSONItem.Free;
@@ -576,7 +578,9 @@ begin
   if Result then
   begin
     try
-      JSONItem := TJSONObject.ParseJSONValue(Response);
+      {$WARNINGS OFF}
+      JSONItem := TJSONObject.ParseJSONValue(UTF8ToString(Response));
+      {$WARNINGS ON}
       try
         Result := JSONItem.TryGetValue<T>(Field, Value);
       finally
@@ -645,11 +649,12 @@ end;
 function TResponse.GetJSONResponse: TJSONValue;
 begin
   if not Response.IsEmpty then
+    {$WARNINGS OFF}
     Result := TJSONObject.ParseJSONValue(UTF8ToString(Response))
+    {$WARNINGS ON}
   else
     Result := nil;
 end;
-{$WARNINGS ON}
 
 end.
 

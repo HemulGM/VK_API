@@ -1,4 +1,4 @@
-unit VK.Entity.Market;
+п»їunit VK.Entity.Market;
 
 interface
 
@@ -11,11 +11,11 @@ type
   TVkMarketSection = class(TVkBasicObject)
   public
     /// <summary>
-    /// Идентификатор секции
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃРµРєС†РёРё
     /// </summary>
     property Id;
     /// <summary>
-    /// Название секции
+    /// РќР°Р·РІР°РЅРёРµ СЃРµРєС†РёРё
     /// </summary>
     property Name;
   end;
@@ -34,20 +34,20 @@ type
   public
     property AccessKey: string read FAccess_key write FAccess_key;
     /// <summary>
-    /// Цена товара в сотых долях единицы валюты
+    /// Р¦РµРЅР° С‚РѕРІР°СЂР° РІ СЃРѕС‚С‹С… РґРѕР»СЏС… РµРґРёРЅРёС†С‹ РІР°Р»СЋС‚С‹
     /// </summary>
     property Amount: string read FAmount write FAmount;
     /// <summary>
-    /// Старая цена товара в сотых долях единицы валюты
+    /// РЎС‚Р°СЂР°СЏ С†РµРЅР° С‚РѕРІР°СЂР° РІ СЃРѕС‚С‹С… РґРѕР»СЏС… РµРґРёРЅРёС†С‹ РІР°Р»СЋС‚С‹
     /// </summary>
     property OldAmount: string read FOld_amount write FOld_amount;
     property OldAmountText: string read FOld_amount_text write FOld_amount_text;
     /// <summary>
-    /// Валюта
+    /// Р’Р°Р»СЋС‚Р°
     /// </summary>
     property Currency: TVkCurrencyInfo read FCurrency write FCurrency;
     /// <summary>
-    /// Строковое представление цены
+    /// РЎС‚СЂРѕРєРѕРІРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ С†РµРЅС‹
     /// </summary>
     property Text: string read FText write FText;
     property DiscountRate: Integer read FDiscount_rate write FDiscount_rate;
@@ -62,16 +62,16 @@ type
     FParent: TVkProductCategory;
   public
     /// <summary>
-    /// Идентификатор категории
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°С‚РµРіРѕСЂРёРё
     /// </summary>
     property Id;
     /// <summary>
-    /// Название категории
+    /// РќР°Р·РІР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё
     /// </summary>
     property Name;
     property Parent: TVkProductCategory read FParent write FParent;
     /// <summary>
-    /// Секция
+    /// РЎРµРєС†РёСЏ
     /// </summary>
     property Section: TVkMarketSection read FSection write FSection;
     destructor Destroy; override;
@@ -86,15 +86,15 @@ type
     FLength: Integer;
   public
     /// <summary>
-    /// Ширина в миллиметрах
+    /// РЁРёСЂРёРЅР° РІ РјРёР»Р»РёРјРµС‚СЂР°С…
     /// </summary>
     property Width: Integer read FWidth write FWidth;
     /// <summary>
-    /// Высота в миллиметрах
+    /// Р’С‹СЃРѕС‚Р° РІ РјРёР»Р»РёРјРµС‚СЂР°С…
     /// </summary>
     property Height: Integer read FHeight write FHeight;
     /// <summary>
-    /// Длина в миллиметрах
+    /// Р”Р»РёРЅР° РІ РјРёР»Р»РёРјРµС‚СЂР°С…
     /// </summary>
     property Length: Integer read FLength write FLength;
   end;
@@ -147,91 +147,91 @@ type
     FThumb: TVkSizes;
   public
     /// <summary>
-    /// Идентификатор товара.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РѕРІР°СЂР°.
     /// </summary>
     property Id;
     /// <summary>
-    /// Идентификатор владельца товара.
+    /// РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° С‚РѕРІР°СЂР°.
     /// </summary>
     property OwnerId: TVkPeerId read FOwner_id write FOwner_id;
     property AlbumsIds: TArray<Int64> read FAlbums_ids write FAlbums_ids;
     /// <summary>
-    /// Статус доступности товара
+    /// РЎС‚Р°С‚СѓСЃ РґРѕСЃС‚СѓРїРЅРѕСЃС‚Рё С‚РѕРІР°СЂР°
     /// </summary>
     property Availability: TVkProductAvailability read FAvailability write FAvailability;
     /// <summary>
-    /// Текст на кнопке товара. Возможные значения:
-    /// Купить
-    /// Перейти в магазин
-    /// Купить билет
+    /// РўРµРєСЃС‚ РЅР° РєРЅРѕРїРєРµ С‚РѕРІР°СЂР°. Р’РѕР·РјРѕР¶РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ:
+    /// РљСѓРїРёС‚СЊ
+    /// РџРµСЂРµР№С‚Рё РІ РјР°РіР°Р·РёРЅ
+    /// РљСѓРїРёС‚СЊ Р±РёР»РµС‚
     /// </summary>
     property ButtonTitle: string read FButton_title write FButton_title;
     /// <summary>
-    /// Возможность комментировать товар для текущего пользователя
+    /// Р’РѕР·РјРѕР¶РЅРѕСЃС‚СЊ РєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ С‚РѕРІР°СЂ РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property CanComment: Boolean read FCan_comment write FCan_comment;
     /// <summary>
-    /// Возможность сделать репост товара для текущего пользователя
+    /// Р’РѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЃРґРµР»Р°С‚СЊ СЂРµРїРѕСЃС‚ С‚РѕРІР°СЂР° РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property CanRepost: Boolean read FCan_repost write FCan_repost;
     property CartQuantity: Integer read FCart_quantity write FCart_quantity;
     /// <summary>
-    /// Категория товара
+    /// РљР°С‚РµРіРѕСЂРёСЏ С‚РѕРІР°СЂР°
     /// </summary>
     property Category: TVkProductCategory read FCategory write FCategory;
     /// <summary>
-    /// Дата создания товара
+    /// Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ С‚РѕРІР°СЂР°
     /// </summary>
     property Date: TDateTime read FDate write FDate;
     /// <summary>
-    /// Текст описания товара.
+    /// РўРµРєСЃС‚ РѕРїРёСЃР°РЅРёСЏ С‚РѕРІР°СЂР°.
     /// </summary>
     property Description: string read FDescription write FDescription;
     /// <summary>
-    /// Габариты товара
+    /// Р“Р°Р±Р°СЂРёС‚С‹ С‚РѕРІР°СЂР°
     /// </summary>
     property Dimensions: TVkDimensions read FDimensions write FDimensions;
     property ExternalId: string read FExternal_id write FExternal_id;
     /// <summary>
-    /// True, если объект добавлен в закладки у текущего пользователя
+    /// True, РµСЃР»Рё РѕР±СЉРµРєС‚ РґРѕР±Р°РІР»РµРЅ РІ Р·Р°РєР»Р°РґРєРё Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     /// </summary>
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
     property IsMainVariant: Boolean read FIs_main_variant write FIs_main_variant;
     /// <summary>
-    /// Информация об отметках «Мне нравится»
+    /// РРЅС„РѕСЂРјР°С†РёСЏ РѕР± РѕС‚РјРµС‚РєР°С… В«РњРЅРµ РЅСЂР°РІРёС‚СЃСЏВ»
     /// </summary>
     property Likes: TVkLikesInfo read FLikes write FLikes;
     /// <summary>
-    /// Изображения товара. Массив объектов, описывающих фотографии.
+    /// РР·РѕР±СЂР°Р¶РµРЅРёСЏ С‚РѕРІР°СЂР°. РњР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ, РѕРїРёСЃС‹РІР°СЋС‰РёС… С„РѕС‚РѕРіСЂР°С„РёРё.
     /// </summary>
     property Photos: TArray<TVkPhoto> read FPhotos write FPhotos;
     /// <summary>
-    /// Цена
+    /// Р¦РµРЅР°
     /// </summary>
     property Price: TVkProductPrice read FPrice write FPrice;
     property PropertyValues: TArray<TVkProductPropertyValue> read FProperty_values write FProperty_values;
     property Quantity: Integer read FQuantity write FQuantity;
     property Reposts: TVkRepostsInfo read FReposts write FReposts;
     /// <summary>
-    /// URL изображения-обложки товара
+    /// URL РёР·РѕР±СЂР°Р¶РµРЅРёСЏ-РѕР±Р»РѕР¶РєРё С‚РѕРІР°СЂР°
     /// </summary>
     property ThumbPhoto: string read FThumb_photo write FThumb_photo;
     /// <summary>
-    /// Название товара
+    /// РќР°Р·РІР°РЅРёРµ С‚РѕРІР°СЂР°
     /// </summary>
     property Title: string read FTitle write FTitle;
     property VariantsGroupingId: Integer read FVariants_grouping_id write FVariants_grouping_id;
     property ViewsCount: Integer read FViews_count write FViews_count;
     /// <summary>
-    /// Вес в граммах
+    /// Р’РµСЃ РІ РіСЂР°РјРјР°С…
     /// </summary>
     property Weight: Integer read FWeight write FWeight;
     /// <summary>
-    /// Артикул товара, произвольная строка длиной до 50 символов
+    /// РђСЂС‚РёРєСѓР» С‚РѕРІР°СЂР°, РїСЂРѕРёР·РІРѕР»СЊРЅР°СЏ СЃС‚СЂРѕРєР° РґР»РёРЅРѕР№ РґРѕ 50 СЃРёРјРІРѕР»РѕРІ
     /// </summary>
     property Sku: string read FSku write FSku;
     /// <summary>
-    /// Ссылка на товар во внешних ресурсах
+    /// РЎСЃС‹Р»РєР° РЅР° С‚РѕРІР°СЂ РІРѕ РІРЅРµС€РЅРёС… СЂРµСЃСѓСЂСЃР°С…
     /// </summary>
     property Url: string read FUrl write FUrl;
     property CsrfHashes: string read FCsrf_hashes write FCsrf_hashes;
