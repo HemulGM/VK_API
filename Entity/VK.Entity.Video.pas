@@ -253,7 +253,7 @@ type
     /// </summary>
     property CanComment: Boolean read FCan_comment write FCan_comment;
     /// <summary>
-    /// Может ли скачать (не известно)
+    /// Может ли скачать (не известно) (0, 1, 2, ...)
     /// </summary>
     property CanDownload: integer read FCan_download write FCan_download;
     /// <summary>

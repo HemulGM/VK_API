@@ -157,6 +157,7 @@ type
     FPinnedMessage: TFrameAttachmentPinnedMessage;
     FPinnedMessageId: Int64;
     FIsCanPinMessage: Boolean;
+    FUserSex: TVkSex;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
@@ -215,6 +216,7 @@ type
     procedure UpdateFavoriteButton(const Count: Integer; const Selected: TArray<TFrameMessage>);
     procedure UpdateReplyAnswerButton(const Count: Integer);
     procedure ForEach(Proc: TForEachMessage);
+    procedure SetUserSex(const Value: TVkSex);
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   protected
     procedure SetVisible(const Value: Boolean); override;
@@ -245,6 +247,7 @@ type
     property HavePinned: Boolean read FHavePinned write SetHavePinned;
     property PinnedMessageId: Int64 read FPinnedMessageId write SetPinnedMessageId;
     property IsCanPinMessage: Boolean read FIsCanPinMessage write SetIsCanPinMessage;
+    property UserSex: TVkSex read FUserSex write SetUserSex;
   end;
 
 const
@@ -922,7 +925,8 @@ begin
   Params.Offset(FOffset);
   Params.Count(ChatCountQuery);
   Params.Fields([TVkExtendedField.Photo50, TVkExtendedField.Verified,
-    TVkExtendedField.Sex, TVkExtendedField.FirstNameAcc,
+    TVkExtendedField.Sex, TVkExtendedField.FirstNameAcc, TVkExtendedField.FirstNameGen,
+    TVkExtendedField.LastNameGen,
     TVkExtendedField.LastNameAcc]);
   Params.PeerId(FConversationId);
   try
@@ -1091,7 +1095,7 @@ begin
         if IsOnline then
           LabelInfo.Text := 'online'
         else if LastSeen <> 0 then
-          LabelInfo.Text := 'был(а) в сети ' + HumanDateTime(LastSeen, True)
+          LabelInfo.Text := WordOfSex(FUserSex, ['был', 'была']) + ' в сети ' + HumanDateTime(LastSeen, True)
         else
           LabelInfo.Text := '';
       end;
@@ -1493,6 +1497,12 @@ procedure TFrameChat.SetTitle(const Value: string);
 begin
   FTitle := Value;
   LabelTitle.Text := FTitle;
+end;
+
+procedure TFrameChat.SetUserSex(const Value: TVkSex);
+begin
+  FUserSex := Value;
+  UpdateInfoText;
 end;
 
 procedure TFrameChat.SetVerified(const Value: Boolean);

@@ -143,6 +143,9 @@ type
     destructor Destroy; override;
   end;
 
+const
+  ChatItemCountPerQuery = 30;
+
 var
   FormMain: TFormMain;
 
@@ -309,7 +312,7 @@ begin
   FLoading := True;
   if not FListChatsOffsetEnd then
   begin
-    Inc(FListChatsOffset, 20);
+    Inc(FListChatsOffset, ChatItemCountPerQuery);
     TTask.Run(LoadConversationsAsync);
   end;
 end;
@@ -439,7 +442,7 @@ var
 begin
   Params.Extended;
   Params.Offset(FListChatsOffset);
-  Params.Count(20);
+  Params.Count(ChatItemCountPerQuery);
   Params.Fields(
     [TVkExtendedField.Photo50, TVkExtendedField.Verified, TVkExtendedField.OnlineInfo,
     TVkExtendedField.FirstNameAcc, TVkExtendedField.LastNameAcc]);
@@ -449,7 +452,7 @@ begin
     if VK.Messages.GetConversations(Items, Params) then
     begin
       var Extended: IExtended := Items;
-      if Length(Items.Items) < 20 then
+      if Length(Items.Items) < ChatItemCountPerQuery then
         FListChatsOffsetEnd := True;
       TThread.Synchronize(nil,
         procedure

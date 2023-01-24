@@ -535,6 +535,7 @@ type
     function GetRefer: string;
     function FGetFullName: string;
     function GetFullNameAcc: string;
+    function GetFullNameGen: string;
   public
     /// <summary>
     /// Идентификатор пользователя
@@ -993,6 +994,7 @@ type
     /// </summary>
     property FullName: string read FGetFullName;
     property FullNameAcc: string read GetFullNameAcc;
+    property FullNameGen: string read GetFullNameGen;
     destructor Destroy; override;
   end;
 
@@ -1055,6 +1057,11 @@ end;
 function TVkProfile.GetFullNameAcc: string;
 begin
   Result := FFirst_name_acc + ' ' + FLast_name_acc;
+end;
+
+function TVkProfile.GetFullNameGen: string;
+begin
+  Result := FFirst_name_gen + ' ' + FLast_name_gen;
 end;
 
 function TVkProfile.GetRefer: string;

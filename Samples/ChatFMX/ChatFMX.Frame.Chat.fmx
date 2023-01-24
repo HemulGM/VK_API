@@ -89,8 +89,9 @@ object FrameChat: TFrameChat
             Align = MostLeft
             AutoSize = True
             StyledSettings = [Style]
+            Margins.Left = 4.000000000000000000
             Margins.Right = 5.000000000000000000
-            Position.X = 85.000000000000000000
+            Position.X = 89.000000000000000000
             Size.Width = 89.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -119,7 +120,7 @@ object FrameChat: TFrameChat
           end
           object LayoutMobileIndicate: TLayout
             Align = Left
-            Position.X = 179.000000000000000000
+            Position.X = 183.000000000000000000
             Size.Width = 16.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -149,7 +150,7 @@ object FrameChat: TFrameChat
           end
           object LayoutMuteIndicate: TLayout
             Align = Left
-            Position.X = 195.000000000000000000
+            Position.X = 199.000000000000000000
             Size.Width = 16.000000000000000000
             Size.Height = 48.000000000000000000
             Size.PlatformDefault = False
@@ -218,6 +219,7 @@ object FrameChat: TFrameChat
           Size.Width = 618.000000000000000000
           Size.Height = 48.000000000000000000
           Size.PlatformDefault = False
+          Visible = False
           TabOrder = 2
           object ButtonSelAsSPAM: TButton
             Align = Right
@@ -562,19 +564,19 @@ object FrameChat: TFrameChat
       Fill.Color = xFF222222
       Margins.Right = 1.000000000000000000
       Size.Width = 685.000000000000000000
-      Size.Height = 382.000000000000000000
+      Size.Height = 374.000000000000000000
       Size.PlatformDefault = False
       Stroke.Kind = None
       object VertScrollBoxMessages: TVertScrollBox
         Align = Contents
         Size.Width = 685.000000000000000000
-        Size.Height = 382.000000000000000000
+        Size.Height = 374.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         OnResize = VertScrollBoxMessagesResize
         OnViewportPositionChange = VertScrollBoxMessagesViewportPositionChange
         Viewport.Width = 685.000000000000000000
-        Viewport.Height = 382.000000000000000000
+        Viewport.Height = 374.000000000000000000
         object LayoutMessageList: TLayout
           Position.X = 19.000000000000000000
           Position.Y = 16.000000000000000000
@@ -683,7 +685,7 @@ object FrameChat: TFrameChat
       object LayoutBottomHints: TLayout
         Align = Bottom
         Margins.Bottom = 12.000000000000000000
-        Position.Y = 320.000000000000000000
+        Position.Y = 312.000000000000000000
         Size.Width = 685.000000000000000000
         Size.Height = 50.000000000000000000
         Size.PlatformDefault = False
@@ -738,7 +740,7 @@ object FrameChat: TFrameChat
       Position.Y = 48.000000000000000000
       Sides = [Bottom]
       Size.Width = 685.000000000000000000
-      Size.Height = 48.000000000000000000
+      Size.Height = 52.000000000000000000
       Size.PlatformDefault = False
       Stroke.Color = xFF424242
       XRadius = 12.000000000000000000
@@ -748,14 +750,14 @@ object FrameChat: TFrameChat
         Padding.Left = 20.000000000000000000
         Padding.Right = 15.000000000000000000
         Size.Width = 685.000000000000000000
-        Size.Height = 48.000000000000000000
+        Size.Height = 52.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         object LabelAddFriendHint: TLabel
           Align = Client
           StyledSettings = [Style]
           Size.Width = 465.000000000000000000
-          Size.Height = 48.000000000000000000
+          Size.Height = 52.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
           TextSettings.Font.Size = 13.000000000000000000
@@ -768,12 +770,12 @@ object FrameChat: TFrameChat
           Align = MostRight
           StyledSettings = [Family, FontColor]
           Margins.Left = 10.000000000000000000
-          Margins.Top = 10.000000000000000000
-          Margins.Bottom = 10.000000000000000000
+          Margins.Top = 13.000000000000000000
+          Margins.Bottom = 13.000000000000000000
           Position.X = 495.000000000000000000
-          Position.Y = 10.000000000000000000
+          Position.Y = 13.000000000000000000
           Size.Width = 143.000000000000000000
-          Size.Height = 28.000000000000000000
+          Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'button_simple'
           TabOrder = 6
@@ -788,7 +790,7 @@ object FrameChat: TFrameChat
           Margins.Right = 8.000000000000000000
           Position.X = 646.000000000000000000
           Size.Width = 16.000000000000000000
-          Size.Height = 48.000000000000000000
+          Size.Height = 52.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 8
           object PathCloseAddToFriends: TPath
@@ -876,10 +878,10 @@ object FrameChat: TFrameChat
       Corners = []
       Fill.Color = xFF222222
       Margins.Right = 1.000000000000000000
-      Position.Y = 96.000000000000000000
+      Position.Y = 100.000000000000000000
       Sides = [Bottom]
       Size.Width = 685.000000000000000000
-      Size.Height = 48.000000000000000000
+      Size.Height = 52.000000000000000000
       Size.PlatformDefault = False
       Stroke.Color = xFF424242
       XRadius = 12.000000000000000000
@@ -889,7 +891,7 @@ object FrameChat: TFrameChat
         Padding.Left = 20.000000000000000000
         Padding.Right = 15.000000000000000000
         Size.Width = 685.000000000000000000
-        Size.Height = 48.000000000000000000
+        Size.Height = 52.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         object Layout2: TLayout
@@ -898,7 +900,7 @@ object FrameChat: TFrameChat
           Margins.Right = 8.000000000000000000
           Position.X = 646.000000000000000000
           Size.Width = 16.000000000000000000
-          Size.Height = 48.000000000000000000
+          Size.Height = 52.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 7
           object PathUnpinMessage: TPath
@@ -938,7 +940,7 @@ object FrameChat: TFrameChat
           Margins.Right = 8.000000000000000000
           Position.X = 24.000000000000000000
           Size.Width = 16.000000000000000000
-          Size.Height = 48.000000000000000000
+          Size.Height = 52.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 6
           object Path5: TPath
