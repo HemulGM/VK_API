@@ -60,7 +60,7 @@ begin
   var FromText: string;
   var User: TVkProfile;
   if Data.GetProfileById(Item.OwnerId, User) then
-    FromText := ' от ' + User.FullNameAcc
+    FromText := ' от ' + User.FullNameGen
   else
   begin
     var Group: TVkGroup;
