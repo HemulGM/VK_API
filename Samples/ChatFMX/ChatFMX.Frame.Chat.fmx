@@ -518,6 +518,7 @@ object FrameChat: TFrameChat
             TextSettings.Font.Family = 'Roboto'
             TextSettings.Font.Size = 13.000000000000000000
             TextSettings.WordWrap = True
+            OnChange = MemoTextChangeTracking
             OnChangeTracking = MemoTextChangeTracking
             Align = Client
             Margins.Left = 10.000000000000000000

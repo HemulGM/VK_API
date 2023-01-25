@@ -1,11 +1,11 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{4847E62B-96AB-4025-A83F-19C11CD94567}</ProjectGuid>
-        <ProjectVersion>19.5</ProjectVersion>
+        <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Config Condition="'$(Config)'==''">Release</Config>
+        <Platform Condition="'$(Platform)'==''">Android</Platform>
         <TargetedPlatforms>19</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>ChatFMX.dpr</MainSource>
@@ -378,6 +378,7 @@
         <DCCReference Include="ChatFMX.Frame.Attachment.Story.pas">
             <Form>FrameAttachmentStory</Form>
         </DCCReference>
+        <DCCReference Include="FMX.ListBox.pas"/>
         <RcItem Include="Res\im_favorites_100.png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>im_favorites_100</ResourceId>
@@ -423,8 +424,12 @@
                     <Source Name="MainSource">ChatFMX.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Bpl\Gorilla3D_Delphi_10_4_2_Sydney.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Bpl\Gorilla3D_DesignTime_10_4_2.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\alinv\Documents\GitHub\FMXTrayIcon\FmxTrayIcon.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k270.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp270.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\21.0\Bpl\htmlreports_XE104.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\21.0\Bpl\htmlreports_XE104.bpl not found</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="4">
@@ -482,15 +487,8 @@
                 <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Android64\Release\libsk4d.so" Configuration="Debug" Class="Skia"/>
                 <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Android64\Release\libsk4d.so" Configuration="Release" Class="Skia"/>
                 <DeployFile Condition="'$(AndroidAppBundle)'=='true'" Required="true" LocalName="$(SKIADIR)\Binary\Android\Release\libsk4d.so" Configuration="Debug" Class="Skia"/>
-                <DeployFile Condition="'$(AndroidAppBundle)'=='true'" Required="true" LocalName="$(SKIADIR)\Binary\Android\Release\libsk4d.so" Configuration="Release" Class="Skia"/>
-                <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Android\Release\libsk4d.so" Configuration="Release" Class="Skia">
-                    <Platform Name="Android">
-                        <RemoteDir>library\lib\armeabi-v7a\</RemoteDir>
-                        <Operation>1</Operation>
-                        <RemoteName>libsk4d.so</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
+                <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Android\Release\libsk4d.so" Configuration="Release" Class="Skia"/>
+                <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Android\Release\libsk4d.so" Configuration="Release" Class="Skia"/>
                 <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Win32\Release\sk4d.dll" Configuration="Debug" Class="Skia"/>
                 <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Win32\Release\sk4d.dll" Configuration="Debug" Class="Skia">
                     <Platform Name="Win32">
@@ -500,14 +498,8 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Win32\Release\sk4d.dll" Configuration="Release" Class="Skia">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Operation>0</Operation>
-                        <RemoteName>sk4d.dll</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
+                <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Win32\Release\sk4d.dll" Configuration="Release" Class="Skia"/>
+                <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Win32\Release\sk4d.dll" Configuration="Release" Class="Skia"/>
                 <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Win64\Release\sk4d.dll" Configuration="Debug" Class="Skia"/>
                 <DeployFile Required="true" LocalName="$(SKIADIR)\Binary\Win64\Release\sk4d.dll" Configuration="Release" Class="Skia"/>
                 <DeployFile LocalName="Android\Debug\AndroidManifest.xml" Configuration="Debug" Class="ProjectAndroidManifest"/>
@@ -526,12 +518,18 @@
                 <DeployFile LocalName="Android\Release\styles-v21.xml" Configuration="Release" Class="AndroidSplashStylesV21"/>
                 <DeployFile LocalName="Android\Release\styles.xml" Configuration="Release" Class="AndroidSplashStyles"/>
                 <DeployFile LocalName="Res\im_favorites_100.png" Configuration="Debug" Class="ProjectFile"/>
+                <DeployFile LocalName="Res\im_favorites_100.png" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Res\im_favorites_100.png" Configuration="Release" Class="ProjectFile"/>
+                <DeployFile LocalName="Res\msg_warning.png" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Res\msg_warning.png" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Res\msg_warning.png" Configuration="Release" Class="ProjectFile"/>
                 <DeployFile LocalName="Res\payment_request_snippet.png" Configuration="Debug" Class="ProjectFile"/>
+                <DeployFile LocalName="Res\payment_request_snippet.png" Configuration="Debug" Class="ProjectFile"/>
+                <DeployFile LocalName="Res\payment_snippet.png" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Res\payment_snippet.png" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Res\pv_layer_controls.png" Configuration="Debug" Class="ProjectFile"/>
+                <DeployFile LocalName="Res\pv_layer_controls.png" Configuration="Debug" Class="ProjectFile"/>
+                <DeployFile LocalName="Win32\Debug\ChatFMX.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="Win32\Debug\ChatFMX.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployClass Name="AdditionalDebugSymbols">
                     <Platform Name="iOSSimulator">

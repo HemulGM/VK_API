@@ -70,6 +70,9 @@ type
     procedure CreateStories(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
     procedure CreateAudioPlaylists(Items: TVkAttachmentArray; Data: TVkEntityExtendedList<TVkMessage>);
     procedure CreatePoll(Items: TVkAttachmentArray);
+    {$IFDEF ADAPTIVE}
+    procedure FOnPhotosTap(Sender: TObject; const Point: TPointF);
+    {$ENDIF}
   public
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
@@ -485,7 +488,11 @@ begin
     begin
       var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, VK);
       Frame.Parent := FlowLayoutMedia;
+      {$IFDEF ADAPTIVE}
+      Frame.OnTap := FOnPhotosTap;
+      {$ELSE}
       Frame.OnClick := FOnPhotosClick;
+      {$ENDIF}
       Frame.Fill(Item.Photo);
     end;
     if (Item.&Type = TVkAttachmentType.Doc) and (Assigned(Item.Doc.Preview)) then
@@ -496,6 +503,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF ADAPTIVE}
+procedure TFrameAttachmentWall.FOnPhotosTap(Sender: TObject; const Point: TPointF);
+begin
+  FOnPhotosClick(Sender);
+end;
+{$ENDIF}
 
 procedure TFrameAttachmentWall.FOnPhotosClick(Sender: TObject);
 var
@@ -542,7 +556,7 @@ begin
   for var Control in FlowLayoutMedia.Controls do
     if Control is TFrameAttachmentPhoto then
     begin
-      var Id :=(Control as TFrameAttachmentPhoto).Id;
+      var Id := (Control as TFrameAttachmentPhoto).Id;
       Items[i] := Id;
       if Id = PhotoId then
         Index := i;
