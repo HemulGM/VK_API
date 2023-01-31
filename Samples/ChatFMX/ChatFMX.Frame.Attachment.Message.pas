@@ -125,7 +125,7 @@ end;
 constructor TFrameAttachmentMessage.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited;
-  {$IFDEF ANDROID}
+  {$IFDEF ADAPTIVE}
   CircleAvatar.Margins.Right := 7;
   MemoText.HitTest := False;
   {$ENDIF}
@@ -246,7 +246,7 @@ end;
 
 procedure TFrameAttachmentMessage.FrameMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
-  {$IFNDEF ANDROID}
+  {$IFNDEF ADAPTIVE}
   MemoText.SelLength := 0;
   DoSelect;
   {$ENDIF}
@@ -308,7 +308,7 @@ procedure TFrameAttachmentMessage.MemoTextMouseUp(Sender: TObject; Button: TMous
 begin
   if (MemoText.SelLength > 0) or FWasSelectedText then
     Exit;
-  {$IFNDEF ANDROID}
+  {$IFNDEF ADAPTIVE}
   FrameMouseUp(Sender, Button, Shift, X, Y);
   {$ENDIF}
 end;

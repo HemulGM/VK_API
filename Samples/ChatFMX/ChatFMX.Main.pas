@@ -21,10 +21,6 @@ type
   TListBoxLoading = class(TListBoxItem)
   end;
 
-  {$IFDEF DEBUG_ADAPTIVE}
-    {$DEFINE ANDROID}
-  {$ENDIF}
-
   TFormMain = class(TForm)
     LayoutClient: TLayout;
     HorzScrollBoxContent: THorzScrollBox;
@@ -119,7 +115,7 @@ type
     FLocation: TLocationCoord2D;
     procedure FOnReadyAvatar(const Sender: TObject; const M: TMessage);
     procedure FOnChatItemClick(Sender: TObject);
-   {$IFDEF ANDROID}
+   {$IFDEF ADAPTIVE}
     procedure FOnChatItemTap(Sender: TObject; const Point: TPointF);
     procedure FOnBackAdaptive(Sender: TObject);
     {$ENDIF}
@@ -166,7 +162,7 @@ begin
   LoadChat(Item.ConversationId);
 end;
 
-{$IFDEF ANDROID}
+{$IFDEF ADAPTIVE}
 procedure TFormMain.FOnChatItemTap(Sender: TObject; const Point: TPointF);
 begin
   FOnChatItemClick(Sender);
@@ -228,10 +224,10 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  {$IFDEF DEBUG_ADAPTIVE}
+  {$IFDEF ADAPTIVE AND MSWINDOWS}
   Width := 500;
   {$ENDIF}
-  {$IFDEF ANDROID}
+  {$IFDEF ADAPTIVE}
   ListBoxChats.ShowScrollBars := False;
   RectangleBG.Visible := False;
   RectangleHead.Sides := [];
@@ -284,10 +280,10 @@ begin
   ListItem.Height := 63;
   ListBoxChats.AddObject(ListItem);
   ListItem.Fill(Chat, Data);
-  {$IFNDEF ANDROID}
+  {$IFNDEF ADAPTIVE}
   ListItem.OnClick := FOnChatItemClick;
   {$ELSE}
-    {$IFDEF DEBUG_ADAPTIVE}
+    {$IFDEF MSWINDOWS}
   ListItem.OnClick := FOnChatItemClick;
     {$ELSE}
   ListItem.OnTap := FOnChatItemTap;
@@ -368,7 +364,7 @@ begin
   Result.Parent := LayoutChatFrames;
   Result.Align := TAlignLayout.Client;
   Result.Load(PeerId);
-  {$IFDEF ANDROID}
+  {$IFDEF ADAPTIVE}
   Result.OnBack := FOnBackAdaptive;
   {$ENDIF}
   FChats.Add(Result);
@@ -381,7 +377,7 @@ begin
   for var Control in LayoutChatFrames.Controls do
     Control.Visible := Control = Frame;
   Frame.RecalcSize;
-  {$IFDEF ANDROID}
+  {$IFDEF ADAPTIVE}
   LayoutChats.Visible := False;
   LayoutChat.Visible := True;
   {$ENDIF}
@@ -619,11 +615,11 @@ end;
 
 procedure TFormMain.LoadDone;
 begin
-  {$IFNDEF ANDROID}
+  {$IFNDEF ADAPTIVE}
   TAnimator.AnimateFloatWait(LayoutLoading, 'Opacity', 0);
   {$ENDIF}
   LayoutLoading.Visible := False;
-  {$IFNDEF ANDROID}
+  {$IFNDEF ADAPTIVE}
   HorzScrollBoxContent.Visible := True;
   {$ELSE}
   LayoutAdaptive.Visible := True;

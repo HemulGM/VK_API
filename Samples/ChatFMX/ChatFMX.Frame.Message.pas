@@ -15,10 +15,6 @@ uses
   VK.Entity.Keyboard, ChatFMX.Classes, System.Threading;
 
 type
-  {$IFDEF DEBUG_ADAPTIVE}
-    {$DEFINE ANDROID}
-  {$ENDIF}
-
   TMessageSubType = (stNone, stGift, stMoneyTransfer, stMoneyRequest);
 
   TFrameMessage = class(TFrame)
@@ -137,6 +133,9 @@ type
     procedure UpdateSubType;
     procedure UpdateImportant;
     procedure FOnPhotosClick(Sender: TObject);
+    {$IFDEF ADAPTIVE}
+    procedure FOnPhotosTap(Sender: TObject; const Point: TPointF);
+    {$ENDIF}
     function CollectPhotosFrom(const PhotoId: string; out Items: TArray<string>; out Index: Integer): Boolean;
     procedure CreateGraffiti(Items: TVkAttachmentArray);
     procedure CreatePoll(Items: TVkAttachmentArray);
@@ -260,7 +259,7 @@ begin
   inherited Create(AOwner);
   MessageSubType := stNone;
   FVisibility := False;
-  {$IFDEF ANDROID}
+  {$IFDEF ADAPTIVE}
   LayoutSelectedIcon.Visible := False;
   LayoutLeft.Width := 51;
   LayoutRight.Visible := False;
@@ -575,6 +574,13 @@ begin
   end;
 end;
 
+{$IFDEF ADAPTIVE}
+procedure TFrameMessage.FOnPhotosTap(Sender: TObject; const Point: TPointF);
+begin
+  FOnPhotosClick(Sender);
+end;
+{$ENDIF}
+
 procedure TFrameMessage.CreatePhotos(Items: TVkAttachmentArray);
 begin
   for var Item in Items do
@@ -583,7 +589,11 @@ begin
     begin
       var Frame := TFrameAttachmentPhoto.Create(FlowLayoutMedia, FVK);
       Frame.Parent := FlowLayoutMedia;
+      {$IFDEF ADAPTIVE}
+      Frame.OnTap := FOnPhotosTap;
+      {$ELSE}
       Frame.OnClick := FOnPhotosClick;
+      {$ENDIF}
       Frame.Fill(Item.Photo);
     end;
     if (Item.&Type = TVkAttachmentType.Doc) and (Assigned(Item.Doc.Preview)) then
@@ -710,7 +720,7 @@ end;
 
 procedure TFrameMessage.FrameMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
-  {$IFNDEF ANDROID}
+  {$IFNDEF ADAPTIVE}
   MemoText.SelLength := 0;
   IsSelected := not IsSelected;
   {$ENDIF}
@@ -784,7 +794,7 @@ procedure TFrameMessage.MemoTextMouseUp(Sender: TObject; Button: TMouseButton; S
 begin
   if (MemoText.SelLength > 0) or FWasSelectedText then
     Exit;
-  {$IFNDEF ANDROID}
+  {$IFNDEF ADAPTIVE}
   //IsSelected := not IsSelected;
   FrameMouseUp(Sender, Button, Shift, X, Y);
   {$ENDIF}
