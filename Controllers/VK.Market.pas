@@ -8,6 +8,13 @@ uses
   VK.Entity.Market.Order;
 
 type
+  TVkParamsMarketFilter = record
+    List: TParams;
+    function CategoryId(const Value: Integer): TVkParamsMarketFilter;
+    function Query(const Value: string): TVkParamsMarketFilter;
+    function Count(const Value: Cardinal): TVkParamsMarketFilter;
+  end;
+
   TVkParamsMarketAdd = record
     List: TParams;
     /// <summary>
@@ -511,6 +518,7 @@ type
     /// Редактирует заказ.
     /// </summary>
     function EditOrder(Params: TVkParamsMarketEditOrder): Boolean; overload;
+    function FilterCategories(out Items: TVkMarketCategories; Params: TVkParamsMarketFilter): Boolean;
     /// <summary>
     /// Возвращает список товаров в сообществе.
     /// </summary>
@@ -595,6 +603,8 @@ type
     /// Ищет товары в каталоге сообщества.
     /// </summary>
     function Search(var Items: TVkProducts; Params: TVkParamsMarketSearch): Boolean; overload;
+    { TODO -oalinv -c : market.searchItems 06.02.2023 18:01:26 }
+    { TODO -oalinv -c : market.searchItemsBasic 06.02.2023 18:01:31 }
   end;
 
 implementation
@@ -632,6 +642,11 @@ end;
 function TMarketController.EditOrder(Params: TVkParamsMarketEditOrder): Boolean;
 begin
   Result := EditOrder(Params.List);
+end;
+
+function TMarketController.FilterCategories(out Items: TVkMarketCategories; Params: TVkParamsMarketFilter): Boolean;
+begin
+  Result := Handler.Execute('market.filterCategories', Params.List).GetObject(Items);
 end;
 
 function TMarketController.AddAlbum(var Id: Integer; OwnerId: TVkPeerId; Title: string; PhotoId: Integer; MainAlbum: Boolean): Boolean;
@@ -1462,6 +1477,26 @@ end;
 function TVkParamsMarketSearch.Status(const Value: Integer): TVkParamsMarketSearch;
 begin
   List.Add('status', Value);
+  Result := Self;
+end;
+
+{ TVkParamsMarketFilter }
+
+function TVkParamsMarketFilter.CategoryId(const Value: Integer): TVkParamsMarketFilter;
+begin
+  List.Add('category_id', Value);
+  Result := Self;
+end;
+
+function TVkParamsMarketFilter.Count(const Value: Cardinal): TVkParamsMarketFilter;
+begin
+  List.Add('count', Value);
+  Result := Self;
+end;
+
+function TVkParamsMarketFilter.Query(const Value: string): TVkParamsMarketFilter;
+begin
+  List.Add('query', Value);
   Result := Self;
 end;
 

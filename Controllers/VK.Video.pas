@@ -563,6 +563,10 @@ type
     /// Возвращает список комментариев к видеозаписи
     /// </summary>
     function GetComments(var Items: TVkComments; Params: TVkParamsVideoGetComments): Boolean; overload;
+    { TODO -oalinv -c : video.getLongPollServer 06.02.2023 18:27:24 }
+    { TODO -oalinv -c : video.liveGetCategories 06.02.2023 18:28:13 }
+    { TODO -oalinv -c : video.startStreaming 06.02.2023 18:29:40 }
+    { TODO -oalinv -c : video.stopStreaming 06.02.2023 18:29:47 }
     /// <summary>
     /// Позволяет убрать видеозапись из альбома
     /// </summary>

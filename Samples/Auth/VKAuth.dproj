@@ -135,12 +135,8 @@
             </Delphi.Personality>
             <Deployment Version="4">
                 <DeployFile LocalName="app_cred.inc" Configuration="Debug" Class="ProjectFile"/>
-                <DeployFile LocalName="app_cred.inc" Configuration="Debug" Class="ProjectFile"/>
-                <DeployFile LocalName="delphi_live.inc" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="delphi_live.inc" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="vk_admin.inc" Configuration="Debug" Class="ProjectFile"/>
-                <DeployFile LocalName="vk_admin.inc" Configuration="Debug" Class="ProjectFile"/>
-                <DeployFile LocalName="Win32\Debug\VKAuth.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="Win32\Debug\VKAuth.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployClass Name="AdditionalDebugSymbols">
                     <Platform Name="iOSSimulator">

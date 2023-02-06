@@ -594,11 +594,9 @@ object FormMain: TFormMain
           Margins.Top = 30
           Margins.Right = 30
           Margins.Bottom = 30
-          ActivePage = TabSheet10
+          ActivePage = TabSheetMarket
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 991
-          ExplicitHeight = 381
           object TabSheet9: TTabSheet
             Caption = 'General'
             ImageIndex = 8
@@ -1218,6 +1216,19 @@ object FormMain: TFormMain
               Caption = 'GetAlbum'
               TabOrder = 0
               OnClick = ButtonPhotosGetAlbumClick
+            end
+          end
+          object TabSheetMarket: TTabSheet
+            Caption = 'Market'
+            ImageIndex = 16
+            object ButtonMarketFilterCategories: TButton
+              Left = 3
+              Top = 3
+              Width = 126
+              Height = 25
+              Caption = 'FilterCategories'
+              TabOrder = 0
+              OnClick = ButtonMarketFilterCategoriesClick
             end
           end
         end

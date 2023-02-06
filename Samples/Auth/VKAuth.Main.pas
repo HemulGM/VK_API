@@ -118,6 +118,8 @@ type
     ButtonMessageGetChat: TButton;
     ButtonMessageGetConverstion: TButton;
     ButtonGetMessageById: TButton;
+    TabSheetMarket: TTabSheet;
+    ButtonMarketFilterCategories: TButton;
     procedure FormCreate(Sender: TObject);
     procedure ButtonAccountBanClick(Sender: TObject);
     procedure ButtonAccountUnbanClick(Sender: TObject);
@@ -249,6 +251,7 @@ type
     procedure ButtonMessageGetChatClick(Sender: TObject);
     procedure ButtonMessageGetConverstionClick(Sender: TObject);
     procedure ButtonGetMessageByIdClick(Sender: TObject);
+    procedure ButtonMarketFilterCategoriesClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -276,7 +279,7 @@ uses
   VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
   REST.Json, VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads,
   VK.Entity.Message.Chat, VK.Entity.Board, VK.Board,
-  VK.Entity.Common.ExtendedList;
+  VK.Entity.Common.ExtendedList, VK.Entity.Market, Vk.Market;
 
 {$R *.dfm}
 
@@ -565,6 +568,19 @@ begin
     Memo1.Lines.Add(Audio.Title);
   finally
     Audio.Free;
+  end;
+end;
+
+procedure TFormMain.ButtonMarketFilterCategoriesClick(Sender: TObject);
+begin
+  var Items: TVkMarketCategories;
+  var Params: TVkParamsMarketFilter;
+  if VK1.Market.FilterCategories(Items, Params) then
+  try
+    for var Item in Items.Items do
+      Memo1.Lines.Add(Item.Name);
+  finally
+    Items.Free;
   end;
 end;
 

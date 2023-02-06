@@ -3,7 +3,8 @@
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types, VK.Entity.Streaming;
+  System.SysUtils, System.Generics.Collections, VK.Controller, VK.Types,
+  VK.Entity.Streaming;
 
 type
   TVkParamsStreamGetStats = record
@@ -55,6 +56,11 @@ type
     /// Позволяет задать значение порога для Streaming API
     /// </summary>
     function SetSettings(const MonthlyTier: TVkMonthlyTier): Boolean;
+    /// <summary>
+    /// Позволяет получить основу слова.
+    /// <param name="const Text: string">Слово, основу которого мы собираемся получить.</param>
+    /// </summary>
+    function GetStem(out Stem: string; const Word: string): Boolean;
   end;
 
 implementation
@@ -77,6 +83,11 @@ end;
 function TStreamingController.GetStats(var Items: TVkStreamStats; Params: TVkParamsStreamGetStats): Boolean;
 begin
   Result := GetStats(Items, Params.List);
+end;
+
+function TStreamingController.GetStem(out Stem: string; const Word: string): Boolean;
+begin
+  Result := Handler.Execute('streaming.getStem', ['word', Word]).GetValue('stem', Stem);
 end;
 
 function TStreamingController.SetSettings(const MonthlyTier: TVkMonthlyTier): Boolean;

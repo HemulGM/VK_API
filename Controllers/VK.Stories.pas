@@ -255,6 +255,7 @@ type
     /// Позволяет вернуть пользователя или сообщество в список отображаемых историй в ленте.
     /// </summary>
     function UnbanOwner(const OwnersIds: TIdList): Boolean;
+    { TODO -oalinv -c : stories.getDetailedStats 06.02.2023 18:17:31 }
   end;
 
 implementation

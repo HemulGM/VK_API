@@ -8,6 +8,23 @@ uses
   VK.Wrap.Interceptors;
 
 type
+  TVkMarketCategoryView = class
+  private
+    FRoot_path: TArray<string>;
+  public
+    property RootPath: TArray<string> read FRoot_path write FRoot_path;
+  end;
+
+  TVkMarketCategory = class(TVkBasicObject)
+  private
+    FView: TVkMarketCategoryView;
+  public
+    property View: TVkMarketCategoryView read FView write FView;
+    destructor Destroy; override;
+  end;
+
+  TVkMarketCategories = TVkEntityList<TVkMarketCategory>;
+
   TVkMarketSection = class(TVkBasicObject)
   public
     /// <summary>
@@ -290,6 +307,15 @@ end;
 function TVkProduct.ToAttachment: TAttachment;
 begin
   Result := TAttachment.Market(OwnerId, Id);
+end;
+
+{ TVkMarketCategory }
+
+destructor TVkMarketCategory.Destroy;
+begin
+  if Assigned(FView) then
+    FView.Free;
+  inherited;
 end;
 
 end.

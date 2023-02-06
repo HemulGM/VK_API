@@ -22,6 +22,7 @@ type
     /// Возвращает платежный баланс (счет) приложения в сотых долях голоса.
     /// </summary>
     function GetAppBalance(var Value: Integer): Boolean;
+    { TODO -oalinv -c : Много новых методов в Secure 06.02.2023 18:14:33 }
   end;
 
 implementation

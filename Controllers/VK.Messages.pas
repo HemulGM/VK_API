@@ -1316,6 +1316,7 @@ type
     /// Открепляет сообщение.
     /// </summary>
     function Unpin(const PeerId: TVkPeerId; GroupId: TVkPeerId = 0): Boolean;
+    { TODO -oalinv -c : messages.getIntentUsers 06.02.2023 18:05:11 }
   end;
 
 implementation
