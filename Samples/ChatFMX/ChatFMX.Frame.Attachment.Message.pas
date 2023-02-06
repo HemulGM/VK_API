@@ -45,6 +45,7 @@ type
     FUpdateTime: TDateTime;
     FWasSelectedText: Boolean;
     FOnSelect: TNotifyEvent;
+    FResizing: Boolean;
     procedure SetFromText(const Value: string);
     procedure SetImageUrl(const Value: string);
     procedure SetText(const Value: string);
@@ -253,18 +254,23 @@ end;
 
 procedure TFrameAttachmentMessage.FrameResize(Sender: TObject);
 begin
-  var Sz: Single := LayoutContent.Padding.Top + LayoutContent.Padding.Bottom;
-  RecalcMedia;
-  MemoTextChange(nil);
-  for var Control in LayoutClient.Controls do
-    if Control.IsVisible then
-      Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
-  Sz := Max(Sz, LayoutHead.Height);
-  if Height <> Floor(Sz) then
-  begin
-    Height := Floor(Sz);
-    if Assigned(ParentControl) then
-      ParentControl.RecalcSize;
+  FResizing := True;
+  try
+    var Sz: Single := LayoutContent.Padding.Top + LayoutContent.Padding.Bottom;
+    RecalcMedia;
+    MemoTextChange(nil);
+    for var Control in LayoutClient.Controls do
+      if Control.IsVisible then
+        Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
+    Sz := Max(Sz, LayoutHead.Height);
+    if Height <> Floor(Sz) then
+    begin
+      Height := Floor(Sz);
+      if Assigned(ParentControl) then
+        ParentControl.RecalcSize;
+    end;
+  finally
+    FResizing := False;
   end;
 end;
 
@@ -288,7 +294,8 @@ begin
   if H <> MemoText.Height then
   begin
     MemoText.Height := H;
-    FrameResize(nil);
+    if not FResizing then
+      FrameResize(nil);
   end;
 end;
 

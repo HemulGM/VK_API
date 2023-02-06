@@ -45,12 +45,14 @@ uses
   ChatFMX.Frame.Window.OpenLink in 'ChatFMX.Frame.Window.OpenLink.pas' {FrameWindowLink: TFrame},
   ChatFMX.Frame.Attachment.PinnedMessage in 'ChatFMX.Frame.Attachment.PinnedMessage.pas' {FrameAttachmentPinnedMessage},
   ChatFMX.Classes in 'ChatFMX.Classes.pas',
-  ChatFMX.Frame.Attachment.Story in 'ChatFMX.Frame.Attachment.Story.pas' {FrameAttachmentStory};
+  ChatFMX.Frame.Attachment.Story in 'ChatFMX.Frame.Attachment.Story.pas' {FrameAttachmentStory},
+  Skia.FMX;
 
 {$R *.res}
 
 begin
   Application.Initialize;
+  GlobalUseSkia := True;
   Application.CreateForm(TFormMain, FormMain);
   Application.CreateForm(TDataModuleRes, DataModuleRes);
   Application.Run;
