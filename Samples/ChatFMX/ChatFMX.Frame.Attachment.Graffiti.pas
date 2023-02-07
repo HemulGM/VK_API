@@ -88,7 +88,7 @@ end;
 
 procedure TFrameAttachmentGraffiti.FrameResize(Sender: TObject);
 begin
-  Height := Min(Width * (Original.Height / Original.Width), 400);
+  Height := Min(Width * (Original.Height / Original.Width), 300);
   Width := Height * (Original.Width / Original.Height);
   Image.Width := Width;
 end;

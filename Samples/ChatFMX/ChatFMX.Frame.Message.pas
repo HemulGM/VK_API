@@ -225,15 +225,29 @@ begin
   begin
     var Control := FlowLayoutMedia.Controls[0];
     var D := Control.Height / Control.Width;
-    Control.Width := FlowLayoutMedia.Width;
-    if (Control is TFrameAttachmentVideo) and (not (Control as TFrameAttachmentVideo).ShowCaption) then
+    var DH := Control.Width / Control.Height;
+    Control.Width := Min(347, FlowLayoutMedia.Width);
+    Control.Height := Control.Width * D;
+    if (Control is TFrameAttachmentVideo) then
     begin
-      (Control as TFrameAttachmentVideo).ShowCaption := True;
-      Control.Height := Control.Width * D +
-        (Control as TFrameAttachmentVideo).LayoutCaption.Height;
-    end
-    else
-      Control.Height := Control.Width * D;
+      if (Control as TFrameAttachmentVideo).IsCircle then
+      begin
+        Control.Width := Min(216, FlowLayoutMedia.Width);
+        Control.Height := Min(216, FlowLayoutMedia.Width);
+      end
+      else if not (Control as TFrameAttachmentVideo).ShowCaption then
+      begin
+        (Control as TFrameAttachmentVideo).ShowCaption := True;
+        Control.Height := Control.Width * D +
+          (Control as TFrameAttachmentVideo).LayoutCaption.Height;
+      end;
+    end;
+
+    if Control.Height > 300 then
+    begin
+      Control.Height := 300;
+      Control.Width := Control.Height * DH;
+    end;
     H := Max(Control.Position.Y + Control.Height, H);
   end
   else
@@ -292,6 +306,7 @@ end;
 procedure TFrameMessage.Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; AChatInfo: TChatInfo);
 begin
   FMessageId := Item.Id;
+  TagFloat := FMessageId;
   FConversationMessageId := Item.ConversationMessageId;
   IsPinned := Item.PinnedAt <> 0;
   ChatInfo := AChatInfo;
@@ -365,7 +380,7 @@ begin
   if Assigned(Item.Keyboard) then
     CreateKeyborad(Item.Keyboard);
 
-  RecalcSize;
+  FrameResize(nil);
 end;
 
 procedure TFrameMessage.CreateKeyborad(Keyboard: TVkKeyboard);
@@ -728,6 +743,8 @@ end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
 begin
+  if IsUpdating then
+    Exit;
   var H: Single := LayoutContent.Padding.Top + LayoutContent.Padding.Bottom;
   RecalcMedia;
   for var Control in LayoutClient.Controls do

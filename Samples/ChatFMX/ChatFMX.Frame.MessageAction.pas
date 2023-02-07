@@ -18,6 +18,7 @@ type
     FText: string;
     FFromText, FMemberText: string;
     FDate: TDateTime;
+    FMessageId: Int64;
     procedure SetText(const Value: string);
     procedure SetDate(const Value: TDateTime);
   public
@@ -25,6 +26,7 @@ type
     procedure Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; ChatInfo: TChatInfo);
     property Text: string read FText write SetText;
     property Date: TDateTime read FDate write SetDate;
+    property MessageId: Int64 read FMessageId;
   end;
 
 implementation
@@ -43,6 +45,8 @@ end;
 
 procedure TFrameMessageAction.Fill(Item: TVkMessage; Data: TVkEntityExtendedList<TVkMessage>; ChatInfo: TChatInfo);
 begin
+  FMessageId := Item.Id;
+  TagFloat := FMessageId;
   FFromText := 'Кто-то';
   FMemberText := '';
   var P2P := ChatInfo.IsP2P;

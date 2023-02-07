@@ -56,8 +56,8 @@ end;
 
 procedure TFrameAttachmentSticker.AnimatedImageStickerMouseEnter(Sender: TObject);
 begin
-  if not AnimatedImageSticker.RunningAnimation then
-    AnimatedImageSticker.Progress := 0;
+  if not AnimatedImageSticker.Animation.Running then
+    AnimatedImageSticker.Animation.Progress := 0;
 end;
 
 constructor TFrameAttachmentSticker.Create(AOwner: TComponent; AVK: TCustomVK);

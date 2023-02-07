@@ -95,6 +95,12 @@ type
   TAgeLimitsInterceptor = class(TEnumInterceptor<TVkAgeLimits>)
   end;
 
+  TGroupMemberStatusInterceptor = class(TEnumInterceptor<TVkGroupMemberStatus>)
+  end;
+
+  TEventMemberStatusInterceptor = class(TEnumInterceptor<TVkEventMemberStatus>)
+  end;
+
   TGroupMainSectionInterceptor = class(TEnumInterceptor<TVkGroupMainSection>)
   end;
 

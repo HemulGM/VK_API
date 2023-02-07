@@ -10,7 +10,7 @@ uses
   VK.Entity.Conversation, System.Messaging, HGM.FMX.SmoothScroll, FMX.Ani,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, ChatFMX.Frame.Loading,
   VK.Entity.Common.ExtendedList, ChatFMX.Frame.Message, ChatFMX.Classes,
-  ChatFMX.Frame.Attachment.PinnedMessage;
+  ChatFMX.Frame.Attachment.PinnedMessage, System.Generics.Collections;
 
 type
   TFrameChat = class;
@@ -33,6 +33,16 @@ type
 
   TFrameMessagesHelper = record helper for TFrameMessages
     function ToIds: TArrayOfInteger;
+  end;
+
+  TMessageFrame = record
+    Frame: TFrame;
+    Id: Extended;
+    class function Create(Id: Extended; Frame: TFrame): TMessageFrame; static;
+  end;
+
+  TMessages = class(TList<TMessageFrame>)
+    procedure Sort;
   end;
 
   TFrameChat = class(TFrame)
@@ -106,6 +116,9 @@ type
     Path5: TPath;
     ButtonSelPin: TButton;
     LayoutFooterTop: TLayout;
+    LayoutReloading: TLayout;
+    FrameLoading1: TFrameLoading;
+    PathVer: TPath;
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
@@ -154,6 +167,7 @@ type
     FPinnedMessageId: Int64;
     FIsCanPinMessage: Boolean;
     FUserSex: TVkSex;
+    FMessages: TMessages;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
@@ -184,9 +198,8 @@ type
     procedure UpdateSelection(const Count: Integer);
     procedure SetHeadMode(const Value: THeadMode);
     procedure UpdateFooterSize;
-    function GetLastMessage: TFrame;
     function GetMessageDate(Frame: TFrame): TDateTime;
-    procedure InsertDateLastMessage(LastDate: TDateTime);
+    procedure InsertDateLastMessage(LastDate: TDateTime; MessageId: Int64);
     procedure SetVerified(const Value: Boolean);
     procedure SetIsNeedAddToFriends(const Value: Boolean);
     procedure SetIsCanWrtie(const Value: Boolean);
@@ -213,9 +226,14 @@ type
     procedure UpdateReplyAnswerButton(const Count: Integer);
     procedure ForEach(Proc: TForEachMessage);
     procedure SetUserSex(const Value: TVkSex);
+    function GetMessageId(Frame: TFrame): Extended;
+    procedure AddMessageFrame(Frame: TFrame);
+    procedure UpdateMessageList;
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   protected
     procedure SetVisible(const Value: Boolean); override;
+    function GetLastMessage: TFrame;
+    function GetFirstMessage: TFrame;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
@@ -257,9 +275,9 @@ implementation
 
 uses
   System.Threading, System.DateUtils, VK.Messages, VK.Entity.Profile,
-  VK.Entity.Group, ChatFMX.PreviewManager, System.Math, ChatFMX.Utils,
-  HGM.FMX.Image, ChatFMX.Frame.MessageAction, ChatFMX.Frame.MessageDate,
-  ChatFMX.Events;
+  System.Generics.Defaults, VK.Entity.Group, ChatFMX.PreviewManager, System.Math,
+  ChatFMX.Utils, HGM.FMX.Image, ChatFMX.Frame.MessageAction,
+  ChatFMX.Frame.MessageDate, ChatFMX.Events;
 
 {$R *.fmx}
 { TFrameChat }
@@ -437,6 +455,7 @@ end;
 
 constructor TFrameChat.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
+  FMessages := TMessages.Create;
   inherited Create(AOwner);
   FPinnedMessage := nil;
   FPinnedMessageId := -1;
@@ -464,6 +483,7 @@ begin
   IsNeedAddToFriends := False;
   IsCanWrtie := True;
   HavePinned := False;
+  LayoutMessageList.Left := 0;
   UpdateFooterSize;
 end;
 
@@ -487,72 +507,16 @@ end;
 
 procedure TFrameChat.LayoutMessageListResize(Sender: TObject);
 begin
-  LayoutMessageList.Realign;
-  var Sz: Single := 0;
+  UpdateMessageList;
+  var Sz: Single := 10;
   for var Control in LayoutMessageList.Controls do
     if Control.IsVisible then
       Sz := Sz + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
-  LayoutMessageList.Height := Sz + 10;
+  if LayoutMessageList.Height <> Sz then
+    LayoutMessageList.Height := Sz;
   FrameLoadingMesages.Visible :=
-    (LayoutMessageList.Height + 36 > VertScrollBoxMessages.Height) and
+    (LayoutMessageList.Height + FrameLoadingMesages.Height > VertScrollBoxMessages.Height) and
     (not FOffsetEnd);
-  {
-    LayoutMessageList.Sort(
-    function(Left, Right: TFmxObject): Integer
-    begin
-    var DL: TDateTime := 0;
-    if Left is TFrameMessageAction then
-    DL := (Left as TFrameMessageAction).Date
-    else if Left is TFrameMessage then
-    DL := (Left as TFrameMessage).Date
-    else if Left is TFrameMessageDate then
-    DL := (Left as TFrameMessageDate).Date;
-
-    var DR: TDateTime := 0;
-    if Right is TFrameMessageAction then
-    DR := (Right as TFrameMessageAction).Date
-    else if Right is TFrameMessage then
-    DR := (Right as TFrameMessage).Date
-    else if Right is TFrameMessageDate then
-    DR := (Right as TFrameMessageDate).Date;
-
-    Result := CompareDate(DL, DR);
-    end);
-    LayoutMessageList.FNeedAlign := True;
-    LayoutMessageList.Realign; }
-         {
-  LayoutMessageList.Sort(
-    function(Left, Right: TFMXObject): integer
-    begin
-      var DL: TDateTime := 0;
-      if Left is TFrameMessageAction then
-        DL := (Left as TFrameMessageAction).Date
-      else if Left is TFrameMessage then
-        DL := (Left as TFrameMessage).Date
-      else if Left is TFrameMessageDate then
-        DL := (Left as TFrameMessageDate).Date;
-
-      var DR: TDateTime := 0;
-      if Right is TFrameMessageAction then
-        DR := (Right as TFrameMessageAction).Date
-      else if Right is TFrameMessage then
-        DR := (Right as TFrameMessage).Date
-      else if Right is TFrameMessageDate then
-        DR := (Right as TFrameMessageDate).Date;
-
-      if DL < DR then
-      begin
-        (Left as TControl).Position.Y := (Right as TControl).Position.Y - (Left as TControl).Height - 1;
-        Result := -1
-      end
-      else if DL > DR then
-      begin
-        (Left as TControl).Position.Y := (Right as TControl).Position.Y + (Right as TControl).Height + 1;
-        Result := 1;
-      end
-      else
-        Result := 0;
-    end);  }
 end;
 
 procedure TFrameChat.LayoutUnselClick(Sender: TObject);
@@ -657,8 +621,7 @@ var
 begin
   if Event.Data.PeerId <> NormalizePeerId(FConversationId) then
     Exit;
-  var
-    MessageId := Event.Data.MessageId;
+  var MessageId := Event.Data.MessageId;
   ForEach(
     procedure(Item: TFrameMessage; var Break: Boolean)
     begin
@@ -751,8 +714,7 @@ begin
     CreateMessageItem(Item, Items, True);
 
   VertScrollBoxMessagesResize(nil);
-  LayoutMessageListResize(nil);
-  VertScrollBoxMessagesResize(nil);
+  LayoutMessageList.RecalcSize;
 end;
 
 procedure TFrameChat.FOnMessageSelected(Sender: TObject);
@@ -768,12 +730,36 @@ begin
   Result.PeerId := ConversationId;
 end;
 
+function TFrameChat.GetFirstMessage: TFrame;
+begin
+  Result := nil;
+  var MsgId: Extended := -1;
+  for var Control in LayoutMessageList.Controls do
+    if (Control is TFrameMessage) or (Control is TFrameMessageAction) or (Control is TFrameMessageDate) then
+    begin
+      var Id := GetMessageId(Control as TFrame);
+      if (MsgId > Id) or (MsgId = -1) then
+      begin
+        MsgId := Id;
+        Result := Control as TFrame;
+      end;
+    end;
+end;
+
 function TFrameChat.GetLastMessage: TFrame;
 begin
-  for var Control in LayoutMessageList.Controls do
-    if (Control is TFrameMessage) or (Control is TFrameMessageAction) then
-      Exit(Control as TFrame);
   Result := nil;
+  var MsgId: Extended := -1;
+  for var Control in LayoutMessageList.Controls do
+    if (Control is TFrameMessage) or (Control is TFrameMessageAction) or (Control is TFrameMessageDate) then
+    begin
+      var Id := GetMessageId(Control as TFrame);
+      if (MsgId < Id) or (MsgId = -1) then
+      begin
+        MsgId := Id;
+        Result := Control as TFrame;
+      end;
+    end;
 end;
 
 function TFrameChat.GetMessageDate(Frame: TFrame): TDateTime;
@@ -784,74 +770,83 @@ begin
   if Frame is TFrameMessage then
     Result := (Frame as TFrameMessage).Date
   else if Frame is TFrameMessageAction then
-    Result := (Frame as TFrameMessageAction).Date;
+    Result := (Frame as TFrameMessageAction).Date
+  else if Frame is TFrameMessageDate then
+    Result := (Frame as TFrameMessageDate).Date;
 end;
 
-procedure TFrameChat.InsertDateLastMessage(LastDate: TDateTime);
+function TFrameChat.GetMessageId(Frame: TFrame): Extended;
+begin
+  Result := 0;
+  if not Assigned(Frame) then
+    Exit;
+  if Frame is TFrameMessage then
+    Result := (Frame as TFrameMessage).MessageId
+  else if Frame is TFrameMessageAction then
+    Result := (Frame as TFrameMessageAction).MessageId
+  else if Frame is TFrameMessageDate then
+    Result := (Frame as TFrameMessageDate).MessageId;
+end;
+
+procedure TFrameChat.AddMessageFrame(Frame: TFrame);
+begin
+  FMessages.Add(TMessageFrame.Create(Frame.TagFloat, Frame));
+end;
+
+procedure TFrameChat.InsertDateLastMessage(LastDate: TDateTime; MessageId: Int64);
 begin
   if LastDate > 0 then
   begin
-    var
-      Frame := TFrameMessageDate.Create(LayoutMessageList);
-    LayoutMessageList.InsertObject(0, Frame);
-    with Frame do
-    begin
-      Fill(LastDate);
-      Align := TAlignLayout.Bottom;
-    end;
+    var Frame := TFrameMessageDate.Create(LayoutMessageList);
+    LayoutMessageList.AddObject(Frame);
+    Frame.Fill(LastDate, MessageId);
+    Frame.Align := TAlignLayout.Horizontal;
+    AddMessageFrame(Frame);
   end;
 end;
 
 procedure TFrameChat.CreateMessageItem(const Item: TVkMessage; AData: TVkEntityExtendedList<TVkMessage>; IsNew: Boolean);
 begin
+  if not Assigned(Item) then
+    Exit;
   if not IsNew then
   begin
-    var
-      LastDate := GetMessageDate(GetLastMessage);
+    var LastDate := GetMessageDate(GetFirstMessage);
     if LastDate > 0 then
       if not IsSameDay(Item.Date, LastDate) then
-        InsertDateLastMessage(LastDate);
+        InsertDateLastMessage(LastDate, Item.Id);
   end;
 
   if not Assigned(Item.Action) then
   begin
-    var
-      Frame := TFrameMessage.Create(LayoutMessageList, FVK);
-    if not IsNew then
-    begin
-      Frame.Align := TAlignLayout.MostTop;
-      LayoutMessageList.InsertObject(0, Frame);
-    end
-    else
-    begin
-      Frame.Align := TAlignLayout.MostBottom;
-      LayoutMessageList.AddObject(Frame);
-    end;
-    Frame.Fill(Item, AData, ChatInfo);
-    LayoutMessageList.RecalcSize;
-    Frame.Align := TAlignLayout.Bottom;
+    var Frame := TFrameMessage.Create(LayoutMessageList, FVK);
     Frame.OnSelectedChanged := FOnMessageSelected;
+    LayoutMessageList.AddObject(Frame);
+    Frame.Fill(Item, AData, ChatInfo);
+    Frame.Align := TAlignLayout.Horizontal;
+    AddMessageFrame(Frame);
   end
   else
   begin
     if IsNew then
       DoAction(Item.Action);
 
-    var
-      Frame := TFrameMessageAction.Create(LayoutMessageList, FVK);
-    if not IsNew then
-    begin
-      Frame.Align := TAlignLayout.MostTop;
-      LayoutMessageList.InsertObject(0, Frame);
-    end
-    else
-    begin
-      Frame.Align := TAlignLayout.MostBottom;
-      LayoutMessageList.AddObject(Frame);
-    end;
+    var Frame := TFrameMessageAction.Create(LayoutMessageList, FVK);
+    LayoutMessageList.AddObject(Frame);
     Frame.Fill(Item, AData, ChatInfo);
-    LayoutMessageList.RecalcSize;
-    Frame.Align := TAlignLayout.Bottom;
+    Frame.Align := TAlignLayout.Horizontal;
+    AddMessageFrame(Frame);
+  end;
+end;
+
+procedure TFrameChat.UpdateMessageList;
+begin
+  FMessages.Sort;
+  var LastY := LayoutLoading.Height;
+  for var Item in FMessages do
+  begin
+    Item.Frame.Position.Y := LastY;
+    LastY := LastY + Item.Frame.Height + Item.Frame.Margins.Top + Item.Frame.Margins.Bottom;
   end;
 end;
 
@@ -898,19 +893,27 @@ begin
   TPreview.Instance.Unsubscribe(FOnDeleteMessage);
   TPreview.Instance.Unsubscribe(FOnChangeMessage);
   TPreview.Instance.Unsubscribe(FOnReadMessage);
+  FMessages.Free;
   inherited;
 end;
 
 procedure TFrameChat.AppendHistory(Items: TVkMessageHistory);
 begin
-  for var Item in Items.Items do
-    CreateMessageItem(Item, Items, False);
-  if FOffsetEnd then
-    InsertDateLastMessage(GetMessageDate(GetLastMessage));
-  LayoutMessageList.Visible := True;
+  var LastId: Int64 := -1;
+  LayoutMessageList.BeginUpdate;
+  try
+    for var Item in Items.Items do
+    begin
+      CreateMessageItem(Item, Items, False);
+      LastId := Item.Id;
+    end;
+    if FOffsetEnd then
+      InsertDateLastMessage(GetMessageDate(GetFirstMessage), LastId);
+  finally
+    LayoutMessageList.EndUpdate;
+  end;
   VertScrollBoxMessagesResize(nil);
-  LayoutMessageListResize(nil);
-  VertScrollBoxMessagesResize(nil);
+  LayoutMessageList.RecalcSize;
 end;
 
 procedure TFrameChat.LoadConversationAsync;
@@ -934,6 +937,7 @@ begin
       TThread.Synchronize(nil,
         procedure
         begin
+          LayoutReloading.Visible := False;
           AppendHistory(Items);
           FLoading := False;
         end);
@@ -1106,6 +1110,7 @@ end;
 
 procedure TFrameChat.VertScrollBoxMessagesResize(Sender: TObject);
 begin
+  LayoutMessageList.Left := 0;
   if LayoutMessageList.Width <> VertScrollBoxMessages.Width then
     LayoutMessageList.Width := VertScrollBoxMessages.ClientWidth - 1;
   LayoutMessageList.Position.Y := VertScrollBoxMessages.Height -
@@ -1116,19 +1121,13 @@ procedure TFrameChat.CalcDisappear;
 begin
   if Visible then
   begin
-    var
-      Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
-    var
-      Offset := Abs(VertScrollBoxMessages.ViewportPosition.Y - Content.Top);
-    var
-      ViewHeight := VertScrollBoxMessages.Height;
-    var
-      ContentHeight := LayoutMessageList.Height;
+    var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
+    var Offset := Abs(VertScrollBoxMessages.ViewportPosition.Y - Content.Top);
+    var ViewHeight := VertScrollBoxMessages.Height;
+    var ContentHeight := LayoutMessageList.Height;
 
-    var
-      ATop := Offset;
-    var
-      ABottom := ATop + Min(ViewHeight, ContentHeight);
+    var ATop := Offset;
+    var ABottom := ATop + Min(ViewHeight, ContentHeight);
 
     for var Control in LayoutMessageList.Controls do
       if Control is TFrameMessage then
@@ -1151,8 +1150,7 @@ end;
 
 procedure TFrameChat.CircleToDownClick(Sender: TObject);
 begin
-  var
-    Pos := VertScrollBoxMessages.Content.ScrollBox.ContentBounds.Bottom -
+  var Pos := VertScrollBoxMessages.Content.ScrollBox.ContentBounds.Bottom -
     VertScrollBoxMessages.Height;
   VertScrollBoxMessages.ViewportPosition :=
     TPointF.Create(0,
@@ -1177,8 +1175,7 @@ end;
 procedure TFrameChat.VertScrollBoxMessagesViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
   CalcDisappear;
-  var
-    Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
+  var Content := VertScrollBoxMessages.Content.ScrollBox.ContentBounds;
   if Abs(NewViewportPosition.Y - Content.Top) < 500 then
     EndOfChat;
   if NewViewportPosition.Y = 0 then
@@ -1220,8 +1217,7 @@ begin
     TVkExtendedField.Photo50]);
   if VK.Messages.GetConversationsById(Items, Params) then
   begin
-    var
-      Ext: IExtended := Items;
+    var Ext: IExtended := Items;
     if Length(Items.Items) > 0 then
       TThread.Synchronize(nil,
         procedure
@@ -1275,7 +1271,10 @@ procedure TFrameChat.UpdateFooterSize;
 var
   H: Single;
 begin
-  H := Max(36, Min(MemoText.ContentSize.Height + 20, 220)) +
+  H := MemoText.ContentSize.Height;
+  LabelTitle.Text := H.ToString;
+  H := Min(H, MemoText.ContentSize.Height);
+  H := Max(36, Min(H + 20, 220)) +
     RectangleMessage.Margins.Top + RectangleMessage.Margins.Bottom;
   if LayoutFooterBottom.Visible then
     H := H + LayoutFooterBottom.Height;
@@ -1286,6 +1285,7 @@ end;
 
 procedure TFrameChat.ReloadAsync;
 begin
+  LayoutReloading.Visible := True;
   LayoutMessageList.BeginUpdate;
   try
     LayoutActivity.Parent := nil;
@@ -1299,7 +1299,6 @@ begin
   end;
   LayoutMessageList.Position.Y := 0;
   LayoutMessageList.Height := VertScrollBoxMessages.Height;
-  LayoutMessageList.Visible := False;
 
   LabelTitle.Text := 'Загрузка...';
   LabelInfo.Text := '';
@@ -1536,6 +1535,30 @@ begin
   SetLength(Result, Length(Self));
   for var i := Low(Self) to High(Self) do
     Result[i] := Self[i].MessageId;
+end;
+
+{ TMessageFrame }
+
+class function TMessageFrame.Create(Id: Extended; Frame: TFrame): TMessageFrame;
+begin
+  Result.Id := Id;
+  Result.Frame := Frame;
+end;
+
+{ TMessages }
+
+procedure TMessages.Sort;
+begin
+  inherited Sort(TComparer<TMessageFrame>.Construct(
+  function(const Left, Right: TMessageFrame): Integer
+  begin
+    if Left.Id > Right.Id then
+      Result := 1
+    else if Left.Id < Right.Id then
+      Result := -1
+    else
+      Result := 0;
+  end));
 end;
 
 end.

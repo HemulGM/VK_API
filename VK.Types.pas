@@ -839,6 +839,25 @@ type
 
   TVkAgeLimits = (Unknown = 0, None = 1, Plus16 = 2, Plus18 = 3);
 
+  /// <summary>
+  /// NotMember — не является участником;
+  /// Member — является участником;
+  /// NotSureForEvent — не уверен, что посетит мероприятие;
+  /// DeclinedInvitation — отклонил приглашение;
+  /// RequestSent — запрос на вступление отправлен;
+  /// Invited — приглашен.
+  /// </summary>
+  TVkGroupMemberStatus = (NotMember = 0, Member = 1, NotSureForEvent = 2,     //
+    DeclinedInvitation = 3, RequestSent = 4, Invited = 5);
+
+  /// <summary>
+  /// DefinitelyGoing -- точно идёт;
+  /// MaybeGo -- возможно пойдёт;
+  /// NotGoing -- не идёт.
+  /// </summary>
+  TVkEventMemberStatus = (Unknown = 0, DefinitelyGoing = 1, MaybeGo = 2,     //
+    NotGoing = 3);
+
   TVkCurrency = (RUB, UAH, KZT, EUR, USD);
 
   TVkMarketCurrencyHelper = record helper for TVkCurrency

@@ -11,8 +11,10 @@ object Form14: TForm14
   Font.Height = -13
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  PixelsPerInch = 96
   TextHeight = 16
   object PageControl1: TPageControl
     AlignWithMargins = True
@@ -20,7 +22,7 @@ object Form14: TForm14
     Top = 3
     Width = 1030
     Height = 594
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWindowText
@@ -80,8 +82,6 @@ object Form14: TForm14
           'guid')
         ScrollBars = ssBoth
         TabOrder = 0
-        ExplicitTop = 33
-        ExplicitHeight = 495
       end
       object MemoOut: TMemo
         AlignWithMargins = True
@@ -179,9 +179,6 @@ object Form14: TForm14
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 1
-        ExplicitLeft = 442
-        ExplicitWidth = 429
-        ExplicitHeight = 491
       end
       object EditName: TEdit
         AlignWithMargins = True
@@ -202,8 +199,6 @@ object Form14: TForm14
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 3
-        ExplicitTop = 531
-        ExplicitWidth = 881
         object ButtonParse: TButton
           AlignWithMargins = True
           Left = 3
@@ -237,9 +232,6 @@ object Form14: TForm14
           '"waiting", "started", "finished", "failed", "upcoming"')
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitLeft = 11
-        ExplicitTop = 40
-        ExplicitWidth = 846
       end
       object MemoTypesOut: TMemo
         AlignWithMargins = True
@@ -314,10 +306,6 @@ object Form14: TForm14
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 1
-        ExplicitLeft = 11
-        ExplicitTop = 142
-        ExplicitWidth = 846
-        ExplicitHeight = 410
       end
       object EditType: TEdit
         AlignWithMargins = True
@@ -338,9 +326,6 @@ object Form14: TForm14
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 3
-        ExplicitLeft = 296
-        ExplicitTop = 104
-        ExplicitWidth = 185
         object Button1: TButton
           AlignWithMargins = True
           Left = 3

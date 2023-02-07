@@ -12,12 +12,13 @@ type
     LabelText: TLabel;
   private
     FDate: TDateTime;
+    FMessageId: Extended;
     procedure SetDate(const Value: TDateTime);
-    { Private declarations }
   public
-    procedure Fill(Date: TDateTime);
+    procedure Fill(ADate: TDateTime; AMessageId: Int64);
     constructor Create(AOwner: TComponent); override;
     property Date: TDateTime read FDate write SetDate;
+    property MessageId: Extended read FMessageId;
   end;
 
 implementation
@@ -35,9 +36,11 @@ begin
   Name := '';
 end;
 
-procedure TFrameMessageDate.Fill(Date: TDateTime);
+procedure TFrameMessageDate.Fill(ADate: TDateTime; AMessageId: Int64);
 begin
-  LabelText.Text := HumanDateTime(IncSecond(Date));
+  FMessageId := AMessageId + 0.1;
+  TagFloat := FMessageId;
+  LabelText.Text := HumanDateTime(IncSecond(ADate));
 end;
 
 procedure TFrameMessageDate.SetDate(const Value: TDateTime);

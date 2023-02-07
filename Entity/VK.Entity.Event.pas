@@ -14,7 +14,8 @@ type
     FFriends: TArray<TVkPeerId>;
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FIs_favorite: Boolean;
-    FMember_status: Integer;
+    [JsonReflectAttribute(ctString, rtString, TEventMemberStatusInterceptor)]
+    FMember_status: TVkEventMemberStatus;
     FText: string;
     [JsonReflectAttribute(ctString, rtString, TVkUnixDateTimeInterceptor)]
     FTime: TDateTime;
@@ -25,11 +26,7 @@ type
     property ButtonText: string read FButton_text write FButton_text;
     property Friends: TArray<TVkPeerId> read FFriends write FFriends;
     property IsFavorite: Boolean read FIs_favorite write FIs_favorite;
-    {1 -- точно идёт;
-      2 -- возможно пойдёт;
-      3 -- не идёт.}
-    { TODO -oHemulGM -c : Сделать тип 16.02.2021 13:56:39 }
-    property MemberStatus: Integer read FMember_status write FMember_status;
+    property MemberStatus: TVkEventMemberStatus read FMember_status write FMember_status;
     property Text: string read FText write FText;
     property Time: TDateTime read FTime write FTime;
   end;

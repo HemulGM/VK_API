@@ -149,20 +149,40 @@ end;
 procedure TFrameAttachmentMessage.RecalcMedia;
 begin
   var H: Single := 0;
-  for var Control in FlowLayoutMedia.Controls do
+  if ((FlowLayoutMedia.ControlsCount = 1) and (
+    (FlowLayoutMedia.Controls[0] is TFrameAttachmentPhoto) or
+    (FlowLayoutMedia.Controls[0] is TFrameAttachmentVideo))) then
   begin
-    if (Control.Width > FlowLayoutMedia.Width) or
-      ((FlowLayoutMedia.ControlsCount = 1) and (
-      (FlowLayoutMedia.Controls[0] is TFrameAttachmentPhoto) or
-      (FlowLayoutMedia.Controls[0] is TFrameAttachmentVideo)))
-      then
+    var Control := FlowLayoutMedia.Controls[0];
+    var D := Control.Height / Control.Width;
+    var DH := Control.Width / Control.Height;
+    Control.Width := Min(347, FlowLayoutMedia.Width);
+    if (Control is TFrameAttachmentVideo) and (not (Control as TFrameAttachmentVideo).ShowCaption) then
     begin
-      var D := Control.Height / Control.Width;
-      Control.Width := FlowLayoutMedia.Width;
+      (Control as TFrameAttachmentVideo).ShowCaption := True;
+      Control.Height := Control.Width * D +
+        (Control as TFrameAttachmentVideo).LayoutCaption.Height;
+    end
+    else
       Control.Height := Control.Width * D;
+    if Control.Height > 300 then
+    begin
+      Control.Height := 300;
+      Control.Width := Control.Height * DH;
     end;
     H := Max(Control.Position.Y + Control.Height, H);
-  end;
+  end
+  else
+    for var Control in FlowLayoutMedia.Controls do
+    begin
+      if Control.Width > FlowLayoutMedia.Width then
+      begin
+        var D := Control.Height / Control.Width;
+        Control.Width := FlowLayoutMedia.Width;
+        Control.Height := Control.Width * D;
+      end;
+      H := Max(Control.Position.Y + Control.Height, H);
+    end;
   if FlowLayoutMedia.Height <> H then
   begin
     FlowLayoutMedia.Height := H;

@@ -1,6 +1,6 @@
 object FrameLoading: TFrameLoading
   Size.Width = 392.000000000000000000
-  Size.Height = 63.000000000000000000
+  Size.Height = 36.000000000000000000
   Size.PlatformDefault = False
   object LayoutAni: TLayout
     StyleName = 'Layout1Style'

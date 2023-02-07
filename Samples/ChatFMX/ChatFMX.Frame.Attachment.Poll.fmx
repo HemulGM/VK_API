@@ -2,6 +2,7 @@ inherited FrameAttachmentPoll: TFrameAttachmentPoll
   Padding.Top = 10.000000000000000000
   Size.Width = 421.000000000000000000
   Size.Height = 557.000000000000000000
+  OnResized = FrameResized
   object LayoutBG: TLayout
     Align = Client
     Size.Width = 421.000000000000000000
@@ -175,13 +176,12 @@ inherited FrameAttachmentPoll: TFrameAttachmentPoll
       end
     end
     object LayoutAnswers: TLayout
-      Align = Top
+      Align = Client
       ClipChildren = True
       Padding.Left = 20.000000000000000000
       Padding.Right = 20.000000000000000000
-      Position.Y = 200.000000000000000000
       Size.Width = 421.000000000000000000
-      Size.Height = 281.000000000000000000
+      Size.Height = 291.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object Button1: TButton

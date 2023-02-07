@@ -552,7 +552,7 @@ begin
             FTokenExpiry := Form.TokenExpiry;
             FChangePasswordHash := Form.ChangePasswordHash;
             if not FToken.IsEmpty then
-              VK.Login
+              TTask.Run(Login)
             else
               DoErrorLogin;
           end);

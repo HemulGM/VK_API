@@ -63,6 +63,7 @@ type
     FLikes: Integer;
     FReposts: Integer;
     procedure ShowPhoto(const Index: Integer);
+    procedure ShowUrl(const Url: string);
     procedure SetImageUrl(const Value: string);
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure SetOwnerText(const Value: string);
@@ -80,6 +81,7 @@ type
     procedure SetReposts(const Value: Integer);
   public
     procedure Fill(Photos: TArray<string>; ACurrent: Integer);
+    procedure FillUrl(const Url: string);
     property ImageUrl: string read FImageUrl write SetImageUrl;
     property OwnerText: string read FOwnerText write SetOwnerText;
     property OwnerImageUrl: string read FOwnerImageUrl write SetOwnerImageUrl;
@@ -102,7 +104,7 @@ implementation
 uses
   VK.Entity.Photo, ChatFMX.Utils, VK.Types, VK.Entity.Common,
   ChatFMX.PreviewManager, System.Math, VK.Entity.Profile,
-  VK.Entity.Common.ExtendedList, VK.Entity.Group;
+  VK.Entity.Common.ExtendedList, VK.Entity.Group, System.Threading;
 
 {$R *.fmx}
 
@@ -141,6 +143,13 @@ begin
   Current := ACurrent;
   UserImageUrl := VK.UserPhoto50;
   ShowPhoto(FCurrent);
+end;
+
+procedure TFrameWindowPhoto.FillUrl(const Url: string);
+begin
+  Count := 1;
+  UserImageUrl := VK.UserPhoto50;
+  ShowUrl(Url);
 end;
 
 procedure TFrameWindowPhoto.UpdateCount;
@@ -238,6 +247,9 @@ begin
   else
   try
     Image.Bitmap.LoadFromFile(FImageFile);
+    AspectRatio := Image.Bitmap.Size.Width / Image.Bitmap.Size.Height;
+    Original := TSizeF.Create(Image.Bitmap.Size.Width, Image.Bitmap.Size.Height);
+    LayoutContentResize(nil);
   except
     Image.Bitmap := nil
   end;
@@ -343,8 +355,9 @@ begin
   CanRepost := False;
   Likes := 0;
   Reposts := 0;
-
   Original := TSizeF.Create(0, 0);
+  //LayoutContentResize(nil);
+
   var Items: TVkPhotos;
   if VK.Photos.GetById(Items, [FPhotos[Current]], True, True) then
   try
@@ -394,6 +407,12 @@ begin
     Items.Free;
   end;
   LayoutContentResize(nil);
+end;
+
+procedure TFrameWindowPhoto.ShowUrl(const Url: string);
+begin
+  FImageUrl := Url;
+  TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
 end;
 
 end.

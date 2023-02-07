@@ -286,7 +286,8 @@ type
     [JsonReflectAttribute(ctString, rtString, TIntBooleanInterceptor)]
     FVerified: Boolean;
     FCountry: TVkCountry;
-    FMember_status: Integer;
+    [JsonReflectAttribute(ctString, rtString, TGroupMemberStatusInterceptor)]
+    FMember_status: TVkGroupMemberStatus;
     FCity: TVkCity;
     FActivity: string;
     [JsonReflectAttribute(ctString, rtString, TDeactivatedInterceptor)]
@@ -473,11 +474,10 @@ type
     /// Количество участников в сообществе
     /// </summary>
     property MembersCount: Integer read FMembers_count write FMembers_count;
-    { TODO -oHemulGM -c : Сделать тип 16.02.2021 13:57:27 }
     /// <summary>
     /// Статус участника текущего пользователя
     /// </summary>
-    property MemberStatus: Integer read FMember_status write FMember_status;
+    property MemberStatus: TVkGroupMemberStatus read FMember_status write FMember_status;
     property Name: string read FName write FName;
     property Photo100: string read FPhoto_100 write FPhoto_100;
     property Photo200: string read FPhoto_200 write FPhoto_200;

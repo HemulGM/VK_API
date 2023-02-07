@@ -216,7 +216,6 @@ begin
     FClosed := True;
     FProc(Self);
   end;
-  //Action := TCloseAction.caFree;
 end;
 
 procedure TFormFMXOAuth2.FormCreate(Sender: TObject);
@@ -237,10 +236,8 @@ end;
 
 procedure TFormFMXOAuth2.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-  if (Key = #27) then
-  begin
+  if Key = #27 then
     Close;
-  end;
 end;
 
 procedure TFormFMXOAuth2.ShowWithURL(const AURL: string; Modal: Boolean);
@@ -269,10 +266,7 @@ begin
     BringToFront;
   end
   else
-  begin
-    //Show;
     BringToFront;
-  end;
 end;
 
 procedure TFormFMXOAuth2.SetChangePasswordHash(const Value: string);

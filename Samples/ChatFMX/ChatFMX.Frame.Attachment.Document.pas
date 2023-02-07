@@ -39,6 +39,7 @@ type
     FImageFileGif: string;
     FExt: string;
     FPreviewSize: TSizeF;
+    FUrl: string;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure FOnReadyImageGif(const Sender: TObject; const M: TMessage);
     procedure SetTitle(const Value: string);
@@ -48,6 +49,7 @@ type
     procedure SetExt(const Value: string);
     procedure UpdatePreviewSize;
     procedure SetPreviewSize(const Value: TSizeF);
+    procedure SetUrl(const Value: string);
   public
     procedure SetVisibility(const Value: Boolean); override;
     constructor Create(AOwner: TComponent; AVK: TCustomVK); override;
@@ -59,6 +61,7 @@ type
     property ModePreview: Boolean read FModePreview write SetModePreview;
     property Ext: string read FExt write SetExt;
     property PreviewSize: TSizeF read FPreviewSize write SetPreviewSize;
+    property Url: string read FUrl write SetUrl;
   end;
 
 var
@@ -87,7 +90,8 @@ var
 implementation
 
 uses
-  ChatFMX.PreviewManager, VK.Entity.Common;
+  ChatFMX.PreviewManager, HGM.FMX.Image, VK.Entity.Common,
+  ChatFMX.Frame.Window.Photo;
 
 {$R *.fmx}
 
@@ -118,6 +122,7 @@ end;
 constructor TFrameAttachmentDocument.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited;
+  ImageIcon.Bitmap.LoadFromResource('doc_icons');
   ImageIcon.BitmapMargins.Rect := IconAudio;
   ModePreview := False;
 end;
@@ -131,7 +136,9 @@ end;
 
 procedure TFrameAttachmentDocument.Fill(Document: TVkDocument; AsPreview: Boolean);
 begin
+  Height := 32;
   ModePreview := AsPreview;
+  FUrl := Document.Url;
   FImageUrl := '';
   DocSize := Document.SizeStr;
   if Document.Ext.ToLower = 'gif' then
@@ -221,6 +228,18 @@ begin
         AniIndicatorGif.Visible := True;
         TPreview.Instance.Subscribe(FImageUrlGif, FOnReadyImageGif);
       end;
+  end
+  else if (Ext.ToLower = 'jpg') or (Ext.ToLower = 'png') or (Ext.ToLower = 'jpeg') then
+  begin
+    var Form := Application.MainForm;
+    with TFrameWindowPhoto.Create(Form, VK) do
+    begin
+      Parent := Form;
+      Align := TAlignLayout.Contents;
+
+      FillUrl(Url);
+      ShowFrame;
+    end;
   end;
 end;
 
@@ -307,6 +326,11 @@ procedure TFrameAttachmentDocument.SetTitle(const Value: string);
 begin
   FTitle := Value;
   LabelTitle.Text := FTitle;
+end;
+
+procedure TFrameAttachmentDocument.SetUrl(const Value: string);
+begin
+  FUrl := Value;
 end;
 
 end.

@@ -1,6 +1,6 @@
 object FrameMessageDate: TFrameMessageDate
   Size.Width = 475.000000000000000000
-  Size.Height = 46.000000000000000000
+  Size.Height = 36.000000000000000000
   Size.PlatformDefault = False
   object LabelText: TLabel
     Align = Center

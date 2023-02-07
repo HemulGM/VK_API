@@ -41,6 +41,7 @@ type
     RectangleFrame: TRectangle;
     procedure LayoutOptionsClick(Sender: TObject);
     procedure ButtonVoteClick(Sender: TObject);
+    procedure FrameResized(Sender: TObject);
   private
     FImageUrl: string;
     FImageFile: string;
@@ -202,6 +203,13 @@ begin
     Button.StylesData['voted.Visible'] := True;
     Voted := True;
   end;
+end;
+
+procedure TFrameAttachmentPoll.FrameResized(Sender: TObject);
+begin
+  inherited;
+  if Assigned(ParentControl) then
+    ParentControl.RecalcSize;
 end;
 
 procedure TFrameAttachmentPoll.UpdateVoted;

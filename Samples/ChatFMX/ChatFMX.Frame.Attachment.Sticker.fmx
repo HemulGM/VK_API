@@ -34,6 +34,6 @@ inherited FrameAttachmentSticker: TFrameAttachmentSticker
     Size.Height = 128.000000000000000000
     Size.PlatformDefault = False
     OnMouseEnter = AnimatedImageStickerMouseEnter
-    Loop = False
+    Animation.Loop = False
   end
 end
