@@ -9,9 +9,9 @@ inherited FrameAttachmentPhoto: TFrameAttachmentPhoto
       end>
     Align = Client
     HitTest = False
+    Opacity = 0.000000000000000000
     Size.Width = 320.000000000000000000
     Size.Height = 240.000000000000000000
     Size.PlatformDefault = False
-    WrapMode = Stretch
   end
 end

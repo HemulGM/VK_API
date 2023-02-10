@@ -10,7 +10,8 @@ uses
   VK.Entity.Conversation, System.Messaging, HGM.FMX.SmoothScroll, FMX.Ani,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, ChatFMX.Frame.Loading,
   VK.Entity.Common.ExtendedList, ChatFMX.Frame.Message, ChatFMX.Classes,
-  ChatFMX.Frame.Attachment.PinnedMessage, System.Generics.Collections;
+  ChatFMX.Frame.Attachment.PinnedMessage, System.Generics.Collections,
+  VK.Entity.Keyboard, ChatFMX.Frame.Keyboard;
 
 type
   TFrameChat = class;
@@ -81,7 +82,7 @@ type
     LayoutSendControls: TLayout;
     Layout3: TLayout;
     RectangleMessage: TRectangle;
-    Layout4: TLayout;
+    LayoutMessgeAcations: TLayout;
     MemoText: TMemo;
     LayoutFooterBottom: TLayout;
     LayoutFooterMessage: TLayout;
@@ -119,6 +120,12 @@ type
     LayoutReloading: TLayout;
     FrameLoading1: TFrameLoading;
     PathVer: TPath;
+    RectangleDesign: TRectangle;
+    LayoutFooterKeyboard: TLayout;
+    Layout1: TLayout;
+    Button3: TButton;
+    Button4: TButton;
+    CheckBoxKeyboard: TCheckBox;
     procedure VertScrollBoxMessagesResize(Sender: TObject);
     procedure LayoutMessageListResize(Sender: TObject);
     procedure LayoutUnselClick(Sender: TObject);
@@ -135,6 +142,7 @@ type
     procedure ButtonSelFavoriteClick(Sender: TObject);
     procedure ButtonSelDeleteClick(Sender: TObject);
     procedure ButtonSelAsSPAMClick(Sender: TObject);
+    procedure CheckBoxKeyboardChange(Sender: TObject);
   private
     FConversationId: TVkPeerId;
     FVK: TCustomVK;
@@ -168,6 +176,7 @@ type
     FIsCanPinMessage: Boolean;
     FUserSex: TVkSex;
     FMessages: TMessages;
+    FCurrentKeyboard: TFrameKeyboard;
     procedure SetConversationId(const Value: TVkPeerId);
     procedure ReloadAsync;
     procedure SetVK(const Value: TCustomVK);
@@ -229,6 +238,7 @@ type
     function GetMessageId(Frame: TFrame): Extended;
     procedure AddMessageFrame(Frame: TFrame);
     procedure UpdateMessageList;
+    procedure CreateKeyBoard(Keyboard: TVkKeyboard);
     property HeadMode: THeadMode read FHeadMode write SetHeadMode;
   protected
     procedure SetVisible(const Value: Boolean); override;
@@ -262,6 +272,7 @@ type
     property PinnedMessageId: Int64 read FPinnedMessageId write SetPinnedMessageId;
     property IsCanPinMessage: Boolean read FIsCanPinMessage write SetIsCanPinMessage;
     property UserSex: TVkSex read FUserSex write SetUserSex;
+    property CurrentKeyboard: TFrameKeyboard read FCurrentKeyboard;
   end;
 
 const
@@ -284,8 +295,7 @@ uses
 
 function TFrameChat.GetSelected: TArray<TFrameMessage>;
 begin
-  var
-    Cnt := 0;
+  var Cnt := 0;
   SetLength(Result, LayoutMessageList.ControlsCount);
   for var Control in LayoutMessageList.Controls do
     if (Control is TFrameMessage) and (Control as TFrameMessage).IsSelected then
@@ -327,8 +337,7 @@ begin
       end;
       if Assigned(Items) then
       begin
-        var
-          Extended: IExtended := Items;
+        var Extended: IExtended := Items;
         if Length(Items.Items) > 0 then
           TThread.Synchronize(nil,
             procedure
@@ -344,13 +353,11 @@ procedure TFrameChat.ButtonSelAsSPAMClick(Sender: TObject);
 begin
   if SelectedCount <= 0 then
     Exit;
-  var
-    Ids := GetSelected.ToIds;
+  var Ids := GetSelected.ToIds;
   TTask.Run(
     procedure
     begin
-      var
-        MessageIds: TVkMessageDelete;
+      var MessageIds: TVkMessageDelete;
       if VK.Messages.Delete(MessageIds, Ids, 0, False, True) then
         MessageIds.Free;
     end);
@@ -361,13 +368,11 @@ procedure TFrameChat.ButtonSelDeleteClick(Sender: TObject);
 begin
   if SelectedCount <= 0 then
     Exit;
-  var
-    Ids := GetSelected.ToIds;
+  var Ids := GetSelected.ToIds;
   TTask.Run(
     procedure
     begin
-      var
-        MessageIds: TVkMessageDelete;
+      var MessageIds: TVkMessageDelete;
       if VK.Messages.Delete(MessageIds, Ids, 0, False, False) then
         MessageIds.Free;
     end);
@@ -378,23 +383,20 @@ procedure TFrameChat.ButtonSelFavoriteClick(Sender: TObject);
 begin
   if SelectedCount <= 0 then
     Exit;
-  var
-    Ids := GetSelected.ToIds;
+  var Ids := GetSelected.ToIds;
   case ButtonSelFavorite.ImageIndex of
     ImageIndexFavoriteOff:
       TTask.Run(
         procedure
         begin
-          var
-            MessageIds: TIdList;
+          var MessageIds: TIdList;
           VK.Messages.MarkAsImportant(MessageIds, Ids, True);
         end);
     ImageIndexFavoriteOn:
       TTask.Run(
         procedure
         begin
-          var
-            MessageIds: TIdList;
+          var MessageIds: TIdList;
           VK.Messages.MarkAsImportant(MessageIds, Ids, False);
         end);
   end;
@@ -405,8 +407,7 @@ procedure TFrameChat.ButtonSelPinClick(Sender: TObject);
 begin
   if SelectedCount <> 1 then
     Exit;
-  var
-    Frame := GetSelected[0];
+  var Frame := GetSelected[0];
   case ButtonSelPin.ImageIndex of
     ImageIndexPinOff:
       TTask.Run(
@@ -431,8 +432,7 @@ end;
 
 procedure TFrameChat.SendMessage;
 begin
-  var
-    NewMessage := VK.Messages.New;
+  var NewMessage := VK.Messages.New;
   NewMessage.PeerId(ConversationId);
   if not MemoText.Text.IsEmpty then
   begin
@@ -457,6 +457,8 @@ constructor TFrameChat.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   FMessages := TMessages.Create;
   inherited Create(AOwner);
+  FCurrentKeyboard := nil;
+  RectangleDesign.Visible := False;
   FPinnedMessage := nil;
   FPinnedMessageId := -1;
   FChatScroll := TSmoothScroll.CreateFor(VertScrollBoxMessages);
@@ -484,6 +486,7 @@ begin
   IsCanWrtie := True;
   HavePinned := False;
   LayoutMessageList.Left := 0;
+  LayoutMessageList.Opacity := 0;
   UpdateFooterSize;
 end;
 
@@ -563,8 +566,7 @@ end;
 
 procedure TFrameChat.UpdateFavoriteButton(const Count: Integer; const Selected: TArray<TFrameMessage>);
 begin
-  var
-    AllFavorite := True;
+  var AllFavorite := True;
   for var Item in Selected do
     if not Item.IsImportant then
     begin
@@ -592,8 +594,7 @@ begin
   else
   begin
     HeadMode := hmSelection;
-    var
-      Selected := GetSelected;
+    var Selected := GetSelected;
     UpdatePinButton(Count, Selected);
     UpdateFavoriteButton(Count, Selected);
     UpdateReplyAnswerButton(Count);
@@ -604,8 +605,7 @@ end;
 
 procedure TFrameChat.ForEach(Proc: TForEachMessage);
 begin
-  var
-    DoBreak := False;
+  var DoBreak := False;
   for var Control in LayoutMessageList.Controls do
     if Control is TFrameMessage then
     begin
@@ -708,13 +708,41 @@ begin
     end);
 end;
 
+procedure TFrameChat.AppendHistory(Items: TVkMessageHistory);
+begin
+  var LastId: Int64 := -1;
+  LayoutMessageList.BeginUpdate;
+  try
+    for var Item in Items.Items do
+    begin
+      CreateMessageItem(Item, Items, False);
+      LastId := Item.Id;
+    end;
+    if FOffsetEnd then
+      InsertDateLastMessage(GetMessageDate(GetFirstMessage), LastId);
+  finally
+    LayoutMessageList.EndUpdate;
+  end;
+  VertScrollBoxMessagesResize(nil);
+  LayoutMessageList.RecalcSize;
+  if LayoutMessageList.Opacity = 0 then
+    TAnimator.AnimateFloat(LayoutMessageList, 'Opacity', 1);
+end;
+
 procedure TFrameChat.AppendMessage(Items: TVkMessages);
 begin
-  for var Item in Items.Items do
-    CreateMessageItem(Item, Items, True);
+  LayoutMessageList.BeginUpdate;
+  try
+    for var Item in Items.Items do
+      CreateMessageItem(Item, Items, True);
+  finally
+    LayoutMessageList.EndUpdate;
+  end;
 
   VertScrollBoxMessagesResize(nil);
   LayoutMessageList.RecalcSize;
+  if LayoutMessageList.Opacity = 0 then
+    TAnimator.AnimateFloat(LayoutMessageList, 'Opacity', 1);
 end;
 
 procedure TFrameChat.FOnMessageSelected(Sender: TObject);
@@ -888,32 +916,13 @@ end;
 destructor TFrameChat.Destroy;
 begin
   TPreview.Instance.Unsubscribe(FOnReadyImage);
-  TPreview.Instance.Unsubscribe(FOnNewMessage);
-  TPreview.Instance.Unsubscribe(FOnEditMessage);
-  TPreview.Instance.Unsubscribe(FOnDeleteMessage);
-  TPreview.Instance.Unsubscribe(FOnChangeMessage);
-  TPreview.Instance.Unsubscribe(FOnReadMessage);
+  Event.Unsubscribe(TEventNewMessage, FOnNewMessage);
+  Event.Unsubscribe(TEventEditMessage, FOnEditMessage);
+  Event.Unsubscribe(TEventDeleteMessage, FOnDeleteMessage);
+  Event.Unsubscribe(TEventMessageChange, FOnChangeMessage);
+  Event.Unsubscribe(TEventReadMessages, FOnReadMessage);
   FMessages.Free;
   inherited;
-end;
-
-procedure TFrameChat.AppendHistory(Items: TVkMessageHistory);
-begin
-  var LastId: Int64 := -1;
-  LayoutMessageList.BeginUpdate;
-  try
-    for var Item in Items.Items do
-    begin
-      CreateMessageItem(Item, Items, False);
-      LastId := Item.Id;
-    end;
-    if FOffsetEnd then
-      InsertDateLastMessage(GetMessageDate(GetFirstMessage), LastId);
-  finally
-    LayoutMessageList.EndUpdate;
-  end;
-  VertScrollBoxMessagesResize(nil);
-  LayoutMessageList.RecalcSize;
 end;
 
 procedure TFrameChat.LoadConversationAsync;
@@ -1007,8 +1016,7 @@ begin
   if IsSelfChat then
   begin
     try
-      var
-        RS: TResourceStream := TResourceStream.Create(HInstance,
+      var RS: TResourceStream := TResourceStream.Create(HInstance,
         'im_favorites_100', RT_RCDATA);
       try
         CircleImage.Fill.Bitmap.Bitmap.LoadFromStream(RS);
@@ -1044,8 +1052,7 @@ begin
   else if Info.IsUser then
   begin
     ChatType := ctUser;
-    var
-      User: TVkProfile;
+    var User: TVkProfile;
     if Data.GetProfileById(Info.Peer.Id, User) then
     begin
       Title := User.FullName;
@@ -1064,8 +1071,7 @@ begin
   else if Info.IsGroup then
   begin
     ChatType := ctGroup;
-    var
-      Group: TVkGroup;
+    var Group: TVkGroup;
     if Data.GetGroupById(Info.Peer.Id, Group) then
     begin
       Title := Group.Name;
@@ -1073,6 +1079,27 @@ begin
       Verified := Group.Verified;
     end;
   end;
+
+  CreateKeyBoard(Info.CurrentKeyboard);
+end;
+
+procedure TFrameChat.CreateKeyBoard(Keyboard: TVkKeyboard);
+begin
+  if Assigned(FCurrentKeyboard) then
+  begin
+    FCurrentKeyboard.Free;
+    FCurrentKeyboard := nil;
+  end;
+  if Assigned(Keyboard) then
+  begin
+    FCurrentKeyboard := TFrameKeyboard.Create(LayoutFooterKeyboard, FVK);
+    FCurrentKeyboard.Fill(Keyboard);
+    FCurrentKeyboard.Parent := LayoutFooterKeyboard;
+    LayoutFooterKeyboard.Height := FCurrentKeyboard.Height;
+    FCurrentKeyboard.Align := TAlignLayout.Client;
+  end;
+  LayoutFooterKeyboard.Visible := Assigned(FCurrentKeyboard);
+  UpdateFooterSize;
 end;
 
 procedure TFrameChat.UpdateInfoText;
@@ -1132,8 +1159,7 @@ begin
     for var Control in LayoutMessageList.Controls do
       if Control is TFrameMessage then
       begin
-        var
-          Vis :=((Control.BoundsRect.Bottom > ATop) and
+        var Vis :=((Control.BoundsRect.Bottom > ATop) and
           (Control.BoundsRect.Top < ABottom)) or
           ((Control.BoundsRect.Top < ABottom) and
           (Control.BoundsRect.Bottom > ATop));
@@ -1146,6 +1172,17 @@ begin
       if Control is TFrameMessage then
         (Control as TFrameMessage).Visibility := False;
   end;
+end;
+
+procedure TFrameChat.CheckBoxKeyboardChange(Sender: TObject);
+begin
+  if Assigned(FCurrentKeyboard) then
+  begin
+    LayoutFooterKeyboard.Visible := CheckBoxKeyboard.IsChecked;
+    UpdateFooterSize;
+  end
+  else
+    CheckBoxKeyboard.Visible := False;
 end;
 
 procedure TFrameChat.CircleToDownClick(Sender: TObject);
@@ -1238,7 +1275,7 @@ end;
 
 procedure TFrameChat.MemoTextKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
-  if (Key = vkReturn) and not (ssCtrl in Shift) then
+  if (Key = vkReturn) and (not (ssCtrl in Shift) and not (ssShift in Shift)) then
   begin
     Key := 0;
     TThread.ForceQueue(nil, SendMessage);
@@ -1272,14 +1309,27 @@ var
   H: Single;
 begin
   H := MemoText.ContentSize.Height;
-  LabelTitle.Text := H.ToString;
   H := Min(H, MemoText.ContentSize.Height);
   H := Max(36, Min(H + 20, 220)) +
     RectangleMessage.Margins.Top + RectangleMessage.Margins.Bottom;
+
+  LayoutFooterMessage.Height := H;
+
+  H := LayoutFooterMessage.Height;
+
   if LayoutFooterBottom.Visible then
     H := H + LayoutFooterBottom.Height;
+
+  if LayoutFooterKeyboard.Visible then
+    H := H + LayoutFooterKeyboard.Height + LayoutFooterKeyboard.Margins.Top;
+
   if LayoutFooterTop.Visible then
     H := H + LayoutFooterTop.Height;
+
+  CheckBoxKeyboard.Visible := Assigned(FCurrentKeyboard);
+
+  CheckBoxKeyboard.IsChecked := LayoutFooterKeyboard.Visible;
+
   RectangleFooter.Height := H;
 end;
 
@@ -1379,10 +1429,9 @@ begin
   RectangleFooterBlock.Visible := not FIsCanWrtie;
   if RectangleFooterBlock.Visible then
   begin
-    ImageWarning.Bitmap.LoadFromResource('msg_warning');
+    ImageWarning.Bitmap.LoadFromResource('vk_msg_warning');
   end;
-  var
-    Reason: string := '';
+  var Reason: string := '';
   case FNotAllowedReason of
     TVkConversationDisableReason.UserBannedOrDeleted
     :

@@ -185,6 +185,8 @@ type
 
   TOnRecoverOrDeleteMessages = procedure(Sender: TObject; PeerId: TVkPeerId; LocalId: Int64) of object;
 
+  TOnChangeConversationSortId = procedure(Sender: TObject; PeerId: TVkPeerId; const NewId: Int64) of object;
+
   TOnChatChanged = procedure(Sender: TObject; const ChatId: Int64; IsSelf: Boolean) of object;
 
   TOnChatChangeInfo = procedure(Sender: TObject; const PeerId: TVkPeerId; TypeId: TVkChatChangeInfoType; Info: Integer) of object;
@@ -227,6 +229,8 @@ type
     FOnUnhandledEvents: TOnUnhandledEvents;
     FVersion: string;
     FLogging: Boolean;
+    FOnChangeConversationMinorId: TOnChangeConversationSortId;
+    FOnChangeConversationMajorId: TOnChangeConversationSortId;
     function GetIsWork: Boolean;
     procedure DoChangeDialogFlags(const PeerId: TVkPeerId; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer);
     procedure DoChangeMessageFlags(const MessageId: Integer; ChangeType: TVkFlagsChangeType; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
@@ -234,6 +238,8 @@ type
     procedure DoChatChangeInfo(const PeerId: TVkPeerId; TypeId, Info: Integer);
     procedure DoCountChange(const Count: Integer);
     procedure DoDeleteMessages(const PeerId, LocalId: TVkPeerId);
+    procedure DoChangeConvMajorId(const PeerId: TVkPeerId; const NewId: Int64);
+    procedure DoChangeConvMinorId(const PeerId: TVkPeerId; const NewId: Int64);
     procedure DoEditMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
     procedure DoEvent(Sender: TObject; Update: TJSONValue);
     procedure DoNewMessage(const MessageId: Integer; FlagsMasksData: Integer; ExtraFields: TEventExtraFields);
@@ -266,6 +272,8 @@ type
     property VK: TCustomVK read FVK write SetVK;
     //
     property OnChangeDialogFlags: TOnChangeDialogFlags read FOnChangeDialogFlags write FOnChangeDialogFlags;
+    property OnChangeConversationMajorId: TOnChangeConversationSortId read FOnChangeConversationMajorId write FOnChangeConversationMajorId;
+    property OnChangeConversationMinorId: TOnChangeConversationSortId read FOnChangeConversationMinorId write FOnChangeConversationMinorId;
     property OnChangeMessageFlags: TOnChangeMessageFlags read FOnChangeMessageFlags write FOnChangeMessageFlags;
     property OnChatChanged: TOnChatChanged read FOnChatChanged write FOnChatChanged;
     property OnChatChangeInfo: TOnChatChangeInfo read FOnChatChangeInfo write FOnChatChangeInfo;
@@ -321,7 +329,7 @@ end;
 
 procedure TCustomUserEvents.DoEvent(Sender: TObject; Update: TJSONValue);
 var
-  EventType, A1, A2, A3: Integer;
+  EventType, A1, A2, A3: Int64;
   i: Integer;
   ExtraFields: TEventExtraFields;
   UserIds: TVkPeerIds;
@@ -468,6 +476,22 @@ begin
             DoDeleteMessages(A1, A2);
           14: //Восстановление недавно удаленных сообщений в диалоге $peer_id с идентификаторами вплоть до $local_id.
             DoRecoverMessages(A1, A2);
+        end;
+      end;
+    20, 21: //Изменился $major_id/$minor_id в диалоге $peer_id.
+      begin
+        // [20,2000000175,0]
+        try
+          A1 := NormalizePeerId(TJSONArray(Update).Items[1].GetValue<TVkPeerId>);
+          A2 := NormalizePeerId(TJSONArray(Update).Items[2].GetValue<Int64>);
+        except
+          DoRaiseProcessing;
+        end;
+        case EventType of
+          20:
+            DoChangeConvMajorId(A1, A2);
+          21:
+            DoChangeConvMinorId(A1, A2);
         end;
       end;
     51: //Один из параметров (состав, тема) беседы $chat_id были изменены. $self — 1 или 0 (вызваны ли изменения самим пользователем).
@@ -646,6 +670,18 @@ begin
     ExtraFields.Attachments.Free;
   if Assigned(ExtraFields.Info) then
     ExtraFields.Info.Free;
+end;
+
+procedure TCustomUserEvents.DoChangeConvMinorId(const PeerId: TVkPeerId; const NewId: Int64);
+begin
+  if Assigned(FOnChangeConversationMinorId) then
+    FOnChangeConversationMinorId(Self, PeerId, NewId);
+end;
+
+procedure TCustomUserEvents.DoChangeConvMajorId(const PeerId: TVkPeerId; const NewId: Int64);
+begin
+  if Assigned(FOnChangeConversationMajorId) then
+    FOnChangeConversationMajorId(Self, PeerId, NewId);
 end;
 
 procedure TCustomUserEvents.DoChatChanged(const ChatId: TVkPeerId; IsSelf: Boolean);

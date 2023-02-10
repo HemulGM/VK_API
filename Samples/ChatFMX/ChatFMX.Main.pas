@@ -87,7 +87,6 @@ type
     procedure ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure ButtonReloginClick(Sender: TObject);
     procedure VKError(Sender: TObject; E: Exception; Code: Integer; Text: string);
-    procedure ListBoxChatsApplyStyleLookup(Sender: TObject);
     procedure Path3Click(Sender: TObject);
     procedure VKLog(Sender: TObject; const Value: string);
     procedure UserEventsUserOffline(Sender: TObject; UserId: TVkPeerId; InactiveUser: Boolean; TimeStamp: TDateTime);
@@ -101,6 +100,10 @@ type
     procedure VKNeedGeoLocation(Sender: TObject; var Coord: TLocationCoord2D);
     procedure LocationSensorLocationChanged(Sender: TObject; const OldLocation, NewLocation: TLocationCoord2D);
     procedure CircleAvatarClick(Sender: TObject);
+    procedure VKCaptcha(Sender: TObject; const CaptchaURL: string; var Answer: string);
+    procedure ListBoxChatsCompare(Item1, Item2: TListBoxItem; var Result: Integer);
+    procedure UserEventsChangeConversationMajorId(Sender: TObject; PeerId: TVkPeerId; const NewId: Int64);
+    procedure UserEventsChangeConversationMinorId(Sender: TObject; PeerId: TVkPeerId; const NewId: Int64);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -134,6 +137,7 @@ type
     procedure CreateLoadingItem;
     procedure ClearChatList;
     procedure Logout;
+    procedure FOnChatChangeSort(Sender: TObject);
   public
     property UnreadOnly: Boolean read FUnreadOnly write SetUnreadOnly;
     destructor Destroy; override;
@@ -148,9 +152,9 @@ var
 implementation
 
 uses
-  System.Math, System.Threading, VK.Errors, VK.FMX.OAuth2, System.IOUtils,
-  VK.Clients, ChatFMX.View.ChatItem, VK.Messages, ChatFMX.PreviewManager,
-  FMX.Ani, HGM.FMX.SmoothScroll, ChatFMX.Events;
+  System.Math, System.Threading, VK.Errors, VK.FMX.OAuth2, VK.FMX.Captcha,
+  System.IOUtils, VK.Clients, ChatFMX.View.ChatItem, VK.Messages,
+  ChatFMX.PreviewManager, FMX.Ani, HGM.FMX.SmoothScroll, ChatFMX.Events;
 
 {$R *.fmx}
 
@@ -272,6 +276,17 @@ begin
   LayoutClient.Width := Max(Min(1000, ClientWidth), 800) - 40;
 end;
 
+procedure TFormMain.FOnChatChangeSort(Sender: TObject);
+begin
+  ListBoxChats.BeginUpdate;
+  try
+    ListBoxChats.Sorted := False;
+    ListBoxChats.Sorted := True;
+  finally
+    ListBoxChats.EndUpdate;
+  end;
+end;
+
 procedure TFormMain.CreateChatItem(Chat: TVkConversationItem; Data: IExtended);
 var
   ListItem: TListBoxItemChat;
@@ -280,6 +295,7 @@ begin
   ListItem.Height := 63;
   ListBoxChats.AddObject(ListItem);
   ListItem.Fill(Chat, Data);
+  ListItem.OnChangeSortId := FOnChatChangeSort;
   {$IFNDEF ADAPTIVE}
   ListItem.OnClick := FOnChatItemClick;
   {$ELSE}
@@ -314,20 +330,19 @@ begin
   end;
 end;
 
-procedure TFormMain.ListBoxChatsApplyStyleLookup(Sender: TObject);
+procedure TFormMain.ListBoxChatsCompare(Item1, Item2: TListBoxItem; var Result: Integer);
 var
-  Scroll: TSmallScrollBar;
-  Layout: TLayout;
+  L: TListBoxItemChat absolute Item1;
+  R: TListBoxItemChat absolute Item2;
 begin
-  if ListBoxChats.FindStyleResource('small_scroll', Layout) then
+  if (Item1 is TListBoxItemChat) and (Item2 is TListBoxItemChat) then
   begin
-    Layout.BringToFront;
-  end;
-  if ListBoxChats.FindStyleResource('vscrollbar', Scroll) then
-  begin
-    Scroll.BringToFront;
-    Scroll.HitTest := True;
-  end;
+    Result := R.SortMajorId - L.SortMajorId;
+    if Result = 0 then
+      Result := R.SortMinorId - L.SortMinorId
+  end
+  else
+    Result := 1;
 end;
 
 procedure TFormMain.ListBoxChatsViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
@@ -359,6 +374,7 @@ end;
 
 function TFormMain.CreateChat(PeerId: TVkPeerId): TFrameChat;
 begin
+  LayoutNoChat.Visible := False;
   Result := TFrameChat.Create(Self, VK);
   Result.Visible := False;
   Result.Parent := LayoutChatFrames;
@@ -381,6 +397,16 @@ begin
   LayoutChats.Visible := False;
   LayoutChat.Visible := True;
   {$ENDIF}
+end;
+
+procedure TFormMain.UserEventsChangeConversationMajorId(Sender: TObject; PeerId: TVkPeerId; const NewId: Int64);
+begin
+  Event.Send(TEventChangeSort.Create(PeerId, NewId, True));
+end;
+
+procedure TFormMain.UserEventsChangeConversationMinorId(Sender: TObject; PeerId: TVkPeerId; const NewId: Int64);
+begin
+  Event.Send(TEventChangeSort.Create(PeerId, NewId, False));
 end;
 
 procedure TFormMain.UserEventsChangeMessageFlags(Sender: TObject; MessageChangeData: TMessageChangeData);
@@ -468,6 +494,7 @@ begin
               FLoadingItem.Index := ListBoxChats.Count;
           finally
             ListBoxChats.EndUpdate;
+            ListBoxChats.Sorted := True;
           end;
           FLoading := False;
         end);
@@ -564,6 +591,11 @@ begin
     TokenExpiry := FTokenExpiry;
     ChangePasswordHash := FChangePasswordHash;
   end;
+end;
+
+procedure TFormMain.VKCaptcha(Sender: TObject; const CaptchaURL: string; var Answer: string);
+begin
+  TFormFMXCaptcha.Execute(CaptchaURL, Answer);
 end;
 
 destructor TFormMain.Destroy;

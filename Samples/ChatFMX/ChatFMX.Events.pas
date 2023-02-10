@@ -47,6 +47,13 @@ type
     constructor Create(MessageChangeData: TMessageChangeData); reintroduce;
   end;
 
+  TEventChangeSort = class(TMessage)
+    PeerId: TVkPeerId;
+    NewId: Int64;
+    IsMajor: Boolean;
+    constructor Create(APeerId: TVkPeerId; ANewId: Int64; AIsMajor: Boolean); reintroduce;
+  end;
+
   Event = class
   private
     class var
@@ -144,6 +151,16 @@ constructor TEventMessageChange.Create(MessageChangeData: TMessageChangeData);
 begin
   inherited Create;
   Data := MessageChangeData;
+end;
+
+{ TEventChangeSort }
+
+constructor TEventChangeSort.Create(APeerId: TVkPeerId; ANewId: Int64; AIsMajor: Boolean);
+begin
+  inherited Create;
+  PeerId := APeerId;
+  NewId := ANewId;
+  IsMajor := AIsMajor;
 end;
 
 end.

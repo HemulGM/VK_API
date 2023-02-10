@@ -1,0 +1,9 @@
+{
+	"name": "VK API by HGM",
+	"description": "VK API wrapper",
+	"version": "1.0.0",
+	"homepage": "https://github.com/HemulGM/VK_API",
+	"mainsrc": "/",
+	"projects": [],
+	"dependencies": {}
+}

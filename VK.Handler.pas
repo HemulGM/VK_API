@@ -577,10 +577,12 @@ begin
   Result := Success;
   if Result then
   begin
+    Result := False;
     try
       {$WARNINGS OFF}
       JSONItem := TJSONObject.ParseJSONValue(UTF8ToString(Response));
       {$WARNINGS ON}
+      if Assigned(JSONItem) then
       try
         Result := JSONItem.TryGetValue<T>(Field, Value);
       finally

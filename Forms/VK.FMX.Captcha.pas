@@ -9,11 +9,11 @@ uses
 type
   TFormFMXCaptcha = class(TForm)
     Panel1: TPanel;
-    Button1: TButton;
+    ButtonOk: TButton;
     Layout1: TLayout;
     ImageCaptcha: TImage;
     EditEnter: TEdit;
-    procedure Button1Click(Sender: TObject);
+    procedure ButtonOkClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -73,7 +73,7 @@ begin
   end;
 end;
 
-procedure TFormFMXCaptcha.Button1Click(Sender: TObject);
+procedure TFormFMXCaptcha.ButtonOkClick(Sender: TObject);
 begin
   ModalResult := mrOk;
 end;

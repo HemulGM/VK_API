@@ -3,9 +3,9 @@
 interface
 
 uses
-  System.SysUtils, FMX.ListBox, VK.API, VK.Entity.Conversation, System.Messaging,
-  System.Classes, FMX.Objects, System.UITypes, VK.Types, System.Types,
-  FMX.StdCtrls, FMX.Types, VK.Entity.Message, VK.Entity.Common.ExtendedList;
+  System.SysUtils, FMX.ListBox, VK.API, System.Messaging, System.Classes,
+  FMX.Objects, System.UITypes, VK.Types, System.Types, FMX.StdCtrls, FMX.Types,
+  VK.Entity.Message, VK.Entity.Common.ExtendedList, VK.Entity.Conversation;
 
 type
   TListBoxItemChat = class(TListBoxItem)
@@ -26,6 +26,9 @@ type
     FIsSelfChat: Boolean;
     FIsHaveMention: Boolean;
     FVerified: Boolean;
+    FSortMinorId: Int64;
+    FSortMajorId: Int64;
+    FOnChangeSortId: TNotifyEvent;
     procedure FOnReadyImage(const Sender: TObject; const M: TMessage);
     procedure FOnUserStatusChange(const Sender: TObject; const M: TMessage);
     procedure SetUndreadCount(const Value: Integer);
@@ -44,8 +47,15 @@ type
     procedure FOnChangeMessage(const Sender: TObject; const M: TMessage);
     procedure UpdatePinned;
     procedure UpdateInfo;
+    procedure SetSortMajorId(const Value: Int64);
+    procedure SetSortMinorId(const Value: Int64);
+    procedure Update(LastMessageId: Int64);
+    procedure FOnUpdateChat(const Sender: TObject; const M: TMessage);
+    procedure FOnChangeSort(const Sender: TObject; const M: TMessage);
+    procedure SetOnChangeSortId(const Value: TNotifyEvent);
   protected
     procedure SetText(const Value: string); override;
+    procedure DoChangeSortId;
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK);
     procedure Fill(Item: TVkConversationItem; Data: IExtended);
@@ -63,7 +73,11 @@ type
     property IsHaveMention: Boolean read FIsHaveMention write SetIsHaveMention;
     property Verified: Boolean read FVerified write SetVerified;
     procedure UpdateLastMessage(LastMessage: TVkMessage; Data: IExtended);
-    procedure Update(LastMessageId: Integer);
+    procedure UpdateConversation; overload;
+    procedure UpdateConversation(Conversation: TVkConversation; Data: IExtended); overload;
+    property SortMajorId: Int64 read FSortMajorId write SetSortMajorId;
+    property SortMinorId: Int64 read FSortMinorId write SetSortMinorId;
+    property OnChangeSortId: TNotifyEvent read FOnChangeSortId write SetOnChangeSortId;
     destructor Destroy; override;
   end;
 
@@ -136,6 +150,12 @@ begin
   FromText := '';
   TextSettings.WordWrap := False;
   TextSettings.Trimming := TTextTrimming.Character;
+
+  Event.Subscribe(TEventUserStatus, FOnUserStatusChange);
+  Event.Subscribe(TEventNewMessage, FOnChangeMessage);
+  Event.Subscribe(TEventEditMessage, FOnChangeMessage);
+  Event.Subscribe(TEventDeleteMessage, FOnUpdateChat);
+  Event.Subscribe(TEventChangeSort, FOnChangeSort);
 end;
 
 destructor TListBoxItemChat.Destroy;
@@ -147,6 +167,12 @@ begin
   inherited;
 end;
 
+procedure TListBoxItemChat.DoChangeSortId;
+begin
+  if Assigned(FOnChangeSortId) then
+    FOnChangeSortId(Self);
+end;
+
 procedure TListBoxItemChat.Fill(Item: TVkConversationItem; Data: IExtended);
 begin
   IsOnline := False;
@@ -154,67 +180,9 @@ begin
   Verified := False;
   SetMessageText('', False);
 
-  IsHaveMention := not Item.Conversation.Mentions.IsEmpty;
-  IsSelfChat := Item.Conversation.Peer.Id = FVK.UserId;
-  FConversationId := Item.Conversation.Peer.Id;
-  UnreadCount := Item.Conversation.UnreadCount;
-  IsPinned := Item.Conversation.SortId.MajorId <> 0;
-
-  Event.Subscribe(TEventUserStatus, FOnUserStatusChange);
-  Event.Subscribe(TEventNewMessage, FOnChangeMessage);
-  Event.Subscribe(TEventEditMessage, FOnChangeMessage);
+  UpdateConversation(Item.Conversation, Data);
   if Assigned(Item.LastMessage) then
-  begin
     UpdateLastMessage(Item.LastMessage, Data);
-  end;
-
-  if Assigned(Item.Conversation.PushSettings) then
-  begin
-    IsMuted := Item.Conversation.PushSettings.NoSound or Item.Conversation.PushSettings.DisabledForever;
-  end;
-
-  Unanswered := (Item.Conversation.UnreadCount = 0) and (Item.Conversation.InRead <> Item.Conversation.OutRead);
-
-  if IsSelfChat then
-  begin
-    Text := 'Избранное';
-    Exit;
-  end;
-  if Item.Conversation.IsChat then
-  begin
-    if Assigned(Item.Conversation.ChatSettings) then
-    begin
-      Text := Item.Conversation.ChatSettings.Title;
-      if Assigned(Item.Conversation.ChatSettings.Photo) then
-        FImageUrl := Item.Conversation.ChatSettings.Photo.Photo50;
-    end;
-  end
-  else if Item.Conversation.IsUser then
-  begin
-    var User: TVkProfile;
-    if Data.GetProfileById(Item.Conversation.Peer.Id, User) then
-    begin
-      Text := User.FullName;
-      Verified := User.Verified;
-      FImageUrl := User.Photo50;
-
-      if Assigned(User.OnlineInfo) then
-      begin
-        IsOnline := User.OnlineInfo.IsOnline;
-        IsOnlineMobile := User.OnlineInfo.IsMobile;
-      end;
-    end;
-  end
-  else if Item.Conversation.IsGroup then
-  begin
-    var Group: TVkGroup;
-    if Data.GetGroupById(Item.Conversation.Peer.Id, Group) then
-    begin
-      Text := Group.Name;
-      FImageUrl := Group.Photo50;
-      Verified := Group.Verified;
-    end;
-  end;
 end;
 
 procedure TListBoxItemChat.FOnChangeMessage(const Sender: TObject; const M: TMessage);
@@ -224,6 +192,30 @@ begin
   if Event.Data.PeerId <> NormalizePeerId(FConversationId) then
     Exit;
   Update(Event.Data.MessageId);
+end;
+
+procedure TListBoxItemChat.FOnChangeSort(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventChangeSort absolute M;
+begin
+  if Event.PeerId <> NormalizePeerId(FConversationId) then
+    Exit;
+  case Event.IsMajor of
+    True:
+      SortMajorId := Event.NewId;
+    False:
+      SortMinorId := Event.NewId;
+  end;
+  DoChangeSortId;
+end;
+
+procedure TListBoxItemChat.FOnUpdateChat(const Sender: TObject; const M: TMessage);
+var
+  Event: TEventNewMessage absolute M;
+begin
+  if Event.Data.PeerId <> NormalizePeerId(FConversationId) then
+    Exit;
+  UpdateConversation;
 end;
 
 procedure TListBoxItemChat.FOnReadyImage(const Sender: TObject; const M: TMessage);
@@ -332,6 +324,21 @@ begin
     ItemData.Detail := 'Пустое сообщение';
 end;
 
+procedure TListBoxItemChat.SetOnChangeSortId(const Value: TNotifyEvent);
+begin
+  FOnChangeSortId := Value;
+end;
+
+procedure TListBoxItemChat.SetSortMajorId(const Value: Int64);
+begin
+  FSortMajorId := Value;
+end;
+
+procedure TListBoxItemChat.SetSortMinorId(const Value: Int64);
+begin
+  FSortMinorId := Value;
+end;
+
 procedure TListBoxItemChat.SetText(const Value: string);
 begin
   inherited;
@@ -369,7 +376,37 @@ begin
   StylesData['verified.Visible'] := FVerified;
 end;
 
-procedure TListBoxItemChat.Update(LastMessageId: Integer);
+procedure TListBoxItemChat.UpdateConversation;
+begin
+  TTask.Run(
+    procedure
+    var
+      Params: TVkParamsConversationsGetById;
+      Items: TVkConversations;
+    begin
+      Params.PeerId(FConversationId);
+      Params.Extended;
+      Params.Fields(
+        [TVkExtendedField.OnlineInfo, TVkExtendedField.FirstNameAcc,
+        TVkExtendedField.IsFriend, TVkExtendedField.CanSendFriendRequest,
+        TVkExtendedField.CanWritePrivateMessage,
+        TVkExtendedField.Verified, TVkExtendedField.Photo50]);
+      if FVK.Messages.GetConversationsById(Items, Params) then
+      begin
+        var Extended: IExtended := Items;
+        if Length(Items.Items) > 0 then
+        begin
+          TThread.Synchronize(nil,
+            procedure
+            begin
+              UpdateConversation(Items.Items[0], Extended);
+            end);
+        end;
+      end;
+    end);
+end;
+
+procedure TListBoxItemChat.Update(LastMessageId: Int64);
 begin
   TTask.Run(
     procedure
@@ -398,6 +435,66 @@ begin
         end;
       end;
     end);
+end;
+
+procedure TListBoxItemChat.UpdateConversation(Conversation: TVkConversation; Data: IExtended);
+begin
+  SortMajorId := Conversation.SortId.MajorId;
+  SortMinorId := Conversation.SortId.MinorId;
+
+  IsHaveMention := not Conversation.Mentions.IsEmpty;
+  IsSelfChat := Conversation.Peer.Id = FVK.UserId;
+  FConversationId := Conversation.Peer.Id;
+  UnreadCount := Conversation.UnreadCount;
+  IsPinned := SortMajorId <> 0;
+
+  if Assigned(Conversation.PushSettings) then
+  begin
+    IsMuted := Conversation.PushSettings.NoSound or Conversation.PushSettings.DisabledForever;
+  end;
+
+  Unanswered := (Conversation.UnreadCount = 0) and (Conversation.InRead <> Conversation.OutRead);
+
+  if IsSelfChat then
+  begin
+    Text := 'Избранное';
+    Exit;
+  end;
+  if Conversation.IsChat then
+  begin
+    if Assigned(Conversation.ChatSettings) then
+    begin
+      Text := Conversation.ChatSettings.Title;
+      if Assigned(Conversation.ChatSettings.Photo) then
+        FImageUrl := Conversation.ChatSettings.Photo.Photo50;
+    end;
+  end
+  else if Conversation.IsUser then
+  begin
+    var User: TVkProfile;
+    if Data.GetProfileById(Conversation.Peer.Id, User) then
+    begin
+      Text := User.FullName;
+      Verified := User.Verified;
+      FImageUrl := User.Photo50;
+
+      if Assigned(User.OnlineInfo) then
+      begin
+        IsOnline := User.OnlineInfo.IsOnline;
+        IsOnlineMobile := User.OnlineInfo.IsMobile;
+      end;
+    end;
+  end
+  else if Conversation.IsGroup then
+  begin
+    var Group: TVkGroup;
+    if Data.GetGroupById(Conversation.Peer.Id, Group) then
+    begin
+      Text := Group.Name;
+      FImageUrl := Group.Photo50;
+      Verified := Group.Verified;
+    end;
+  end;
 end;
 
 procedure TListBoxItemChat.UpdateLastMessage;

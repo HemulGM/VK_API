@@ -45,6 +45,8 @@ type
     /// </description>
     property Async default False;
     property Logging default False;
+    property OnChangeConversationMajorId;
+    property OnChangeConversationMinorId;
     property OnChangeDialogFlags;
     property OnChangeMessageFlags;
     property OnChatChanged;

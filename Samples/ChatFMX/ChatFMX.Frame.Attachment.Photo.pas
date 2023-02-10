@@ -33,7 +33,8 @@ type
 implementation
 
 uses
-  ChatFMX.PreviewManager, System.Threading, VK.Photos, VK.Entity.Common;
+  ChatFMX.PreviewManager, System.Threading, VK.Photos, VK.Entity.Common,
+  FMX.Ani;
 
 {$R *.fmx}
 
@@ -83,6 +84,7 @@ begin
   else
   try
     Image.Bitmap.LoadFromFile(FImageFile);
+    TAnimator.AnimateFloat(Image, 'Opacity', 1);
     FWasImage := True;
   except
     Image.Bitmap := nil;

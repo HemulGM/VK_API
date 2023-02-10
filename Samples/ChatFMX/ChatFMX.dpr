@@ -5,6 +5,9 @@
 uses
   System.StartUpCopy,
   FMX.Forms,
+  {$IF CompilerVersion > 34.0}
+  FMX.ListBox in 'FMX.ListBox.pas' ,
+  {$ENDIF }
   ChatFMX.Main in 'ChatFMX.Main.pas' {FormMain},
   ChatFMX.Frame.Chat in 'ChatFMX.Frame.Chat.pas' {FrameChat: TFrame},
   ChatFMX.DM.Res in 'ChatFMX.DM.Res.pas' {DataModuleRes: TDataModule},
@@ -46,13 +49,12 @@ uses
   ChatFMX.Frame.Attachment.PinnedMessage in 'ChatFMX.Frame.Attachment.PinnedMessage.pas' {FrameAttachmentPinnedMessage},
   ChatFMX.Classes in 'ChatFMX.Classes.pas',
   ChatFMX.Frame.Attachment.Story in 'ChatFMX.Frame.Attachment.Story.pas' {FrameAttachmentStory},
-  Skia.FMX;
+  ChatFMX.Frame.Keyboard in 'ChatFMX.Frame.Keyboard.pas' {FrameKeyboard: TFrame};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  GlobalUseSkia := True;
   Application.CreateForm(TFormMain, FormMain);
   Application.CreateForm(TDataModuleRes, DataModuleRes);
   Application.Run;

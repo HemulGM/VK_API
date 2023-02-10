@@ -540,6 +540,7 @@ var
   FileName: string;
 begin
   Result := False;
+  Response := '';
   Data := TIdMultiPartFormDataStream.Create;
   HTTP := THTTPClient.Create;
   ResStream := TStringStream.Create;
@@ -551,6 +552,7 @@ begin
     begin
       try
         JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
+        if Assigned(JSON) then
         try
           Response := JSON.GetValue('file', '');
         finally
@@ -579,6 +581,7 @@ var
   FileItem: TPair<string, TStream>;
 begin
   Result := False;
+  Response := '';
   Data := TIdMultiPartFormDataStream.Create;
   HTTP := THTTPClient.Create;
   ResStream := TStringStream.Create;
@@ -590,6 +593,7 @@ begin
     begin
       try
         JSON := TJSONObject.ParseJSONValue(ResStream.DataString);
+        if Assigned(JSON) then
         try
           Response := JSON.GetValue('file', '');
         finally

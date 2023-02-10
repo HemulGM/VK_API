@@ -1,2 +1,0 @@
-.\assets\internal\im_favorites_100.png
-.\assets\internal\msg_warning.png
