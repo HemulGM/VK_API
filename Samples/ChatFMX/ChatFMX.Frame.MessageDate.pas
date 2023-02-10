@@ -38,7 +38,7 @@ end;
 
 procedure TFrameMessageDate.Fill(ADate: TDateTime; AMessageId: Int64);
 begin
-  FMessageId := AMessageId + 0.1;
+  FMessageId := AMessageId - 0.1;
   TagFloat := FMessageId;
   LabelText.Text := HumanDateTime(IncSecond(ADate));
 end;

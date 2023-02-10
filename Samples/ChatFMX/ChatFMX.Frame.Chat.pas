@@ -218,7 +218,7 @@ type
     procedure ShowHints;
     procedure HideHints;
     procedure ErrorLoading;
-    procedure AppendMessage(Items: TVkMessages);
+    procedure AppendMessage(Items: TVkMessageHistory);
     function GetChatInfo: TChatInfo;
     procedure SetIsUser(const Value: Boolean);
     procedure SetOutRead(const Value: Int64);
@@ -339,13 +339,13 @@ begin
       begin
         var Extended: IExtended := Items;
         if Length(Items.Items) > 0 then
-          TThread.Synchronize(nil,
+          TThread.Queue(nil,
             procedure
             begin
               CreatePinnedMessage(Items.Items[0], Extended);
+              Items := nil;
             end);
       end;
-      Items := nil;
     end);
 end;
 
@@ -687,24 +687,22 @@ begin
   TTask.Run(
     procedure
     var
-      Items: TVkMessages;
-      Params: TVkParamsMessageGet;
+      Items: TVkMessageHistory;
+      Params: TVkParamsMessageHistory;
     begin
-      Params.MessageId(MessageId);
+      Params.PeerId(ConversationId);
+      Params.StartMessageId(MessageId);
+      Params.Count(1);
       Params.Extended;
       Params.Fields([TVkExtendedField.Photo50, TVkExtendedField.Verified,
         TVkExtendedField.Sex, TVkExtendedField.FirstNameAcc,
         TVkExtendedField.LastNameAcc]);
-      if VK.Messages.GetById(Items, Params) then
-      try
-        TThread.Synchronize(nil,
+      if VK.Messages.GetHistory(Items, Params) then
+        TThread.Queue(nil,
           procedure
           begin
             AppendMessage(Items);
           end);
-      finally
-        Items.Free;
-      end;
     end);
 end;
 
@@ -713,10 +711,14 @@ begin
   var LastId: Int64 := -1;
   LayoutMessageList.BeginUpdate;
   try
-    for var Item in Items.Items do
-    begin
-      CreateMessageItem(Item, Items, False);
-      LastId := Item.Id;
+    try
+      for var Item in Items.Items do
+      begin
+        CreateMessageItem(Item, Items, False);
+        LastId := Item.Id;
+      end;
+    finally
+      Items.Free;
     end;
     if FOffsetEnd then
       InsertDateLastMessage(GetMessageDate(GetFirstMessage), LastId);
@@ -729,12 +731,18 @@ begin
     TAnimator.AnimateFloat(LayoutMessageList, 'Opacity', 1);
 end;
 
-procedure TFrameChat.AppendMessage(Items: TVkMessages);
+procedure TFrameChat.AppendMessage(Items: TVkMessageHistory);
 begin
   LayoutMessageList.BeginUpdate;
   try
-    for var Item in Items.Items do
-      CreateMessageItem(Item, Items, True);
+    try
+      for var Item in Items.Items do
+        CreateMessageItem(Item, Items, True);
+      if Length(Items.Conversations) > 0 then
+        CreateKeyBoard(Items.Conversations[0].CurrentKeyboard);
+    finally
+      Items.Free;
+    end;
   finally
     LayoutMessageList.EndUpdate;
   end;
@@ -940,21 +948,19 @@ begin
   Params.PeerId(FConversationId);
   try
     if VK.Messages.GetHistory(Items, Params) then
-    try
+    begin
       if Length(Items.Items) < ChatCountQuery then
         FOffsetEnd := True;
-      TThread.Synchronize(nil,
+      TThread.Queue(nil,
         procedure
         begin
           LayoutReloading.Visible := False;
           AppendHistory(Items);
           FLoading := False;
         end);
-    finally
-      Items.Free;
     end;
   except
-    TThread.Synchronize(nil,
+    TThread.Queue(nil,
       procedure
       begin
         FLoading := False;
@@ -1094,6 +1100,7 @@ begin
   begin
     FCurrentKeyboard := TFrameKeyboard.Create(LayoutFooterKeyboard, FVK);
     FCurrentKeyboard.Fill(Keyboard);
+    FCurrentKeyboard.PeerId := ConversationId;
     FCurrentKeyboard.Parent := LayoutFooterKeyboard;
     LayoutFooterKeyboard.Height := FCurrentKeyboard.Height;
     FCurrentKeyboard.Align := TAlignLayout.Client;
@@ -1159,7 +1166,7 @@ begin
     for var Control in LayoutMessageList.Controls do
       if Control is TFrameMessage then
       begin
-        var Vis :=((Control.BoundsRect.Bottom > ATop) and
+        var Vis := ((Control.BoundsRect.Bottom > ATop) and
           (Control.BoundsRect.Top < ABottom)) or
           ((Control.BoundsRect.Top < ABottom) and
           (Control.BoundsRect.Bottom > ATop));
@@ -1256,7 +1263,7 @@ begin
   begin
     var Ext: IExtended := Items;
     if Length(Items.Items) > 0 then
-      TThread.Synchronize(nil,
+      TThread.Queue(nil,
         procedure
         begin
           UpdateInfo(Items.Items[0], Ext);

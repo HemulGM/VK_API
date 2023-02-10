@@ -5,20 +5,25 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  VK.API, VK.Entity.Keyboard, FMX.Layouts;
+  VK.API, VK.Entity.Keyboard, FMX.Layouts, ChatFMX.Frame.Window.Geo, VK.Types;
 
 type
   TFrameKeyboard = class(TFrame)
-    Layout1: TLayout;
+    VertScrollBoxLines: TVertScrollBox;
   private
     FVK: TCustomVK;
+    FPeerId: TVkPeerId;
     procedure CreateButtonLine(Items: TVkKeyboardButtons);
     procedure FOnLayoutResize(Sender: TObject);
     procedure FOnKeyButtonClick(Sender: TObject);
+    procedure OpenLink(const Link: string);
+    procedure SelectGeo(CallBack: TExecuteGeoCallBack);
+    procedure SetPeerId(const Value: TVkPeerId);
   public
     constructor Create(AOwner: TComponent; AVK: TCustomVK); reintroduce;
     destructor Destroy; override;
     procedure Fill(Item: TVkKeyboard);
+    property PeerId: TVkPeerId read FPeerId write SetPeerId;
   end;
 
 const
@@ -31,7 +36,7 @@ const
 implementation
 
 uses
-  VK.Types;
+  ChatFMX.Frame.Window.OpenLink, System.Math;
 
 {$R *.fmx}
 
@@ -40,12 +45,13 @@ uses
 constructor TFrameKeyboard.Create(AOwner: TComponent; AVK: TCustomVK);
 begin
   inherited Create(AOwner);
+  Name := '';
+  VertScrollBoxLines.AniCalculations.Animation := True;
   FVK := AVK;
 end;
 
 destructor TFrameKeyboard.Destroy;
 begin
-
   inherited;
 end;
 
@@ -57,17 +63,53 @@ begin
     Control.Width := Trunc((Layout.Width / Layout.ControlsCount) - (Control.Margins.Left + Control.Margins.Right));
 end;
 
-procedure TFrameKeyboard.FOnKeyButtonClick(Sender: TObject);
+procedure TFrameKeyboard.SelectGeo(CallBack: TExecuteGeoCallBack);
 begin
+  TFrameWindowGeo.Execute(Self, FVK, CallBack);
+end;
 
+procedure TFrameKeyboard.SetPeerId(const Value: TVkPeerId);
+begin
+  FPeerId := Value;
+end;
+
+procedure TFrameKeyboard.OpenLink(const Link: string);
+begin
+  TFrameWindowLink.Execute(Self, Link);
+end;
+
+procedure TFrameKeyboard.FOnKeyButtonClick(Sender: TObject);
+var
+  Button: TButton absolute Sender;
+begin
+  case TVkKeyboardActionType(Button.Tag) of
+    TVkKeyboardActionType.Text:
+      FVK.Messages.New.PeerId(PeerId).Payload(Button.TagString).Message(Button.Text).Send;
+    TVkKeyboardActionType.OpenLink:
+      begin
+        OpenLink(Button.StylesData['link'].AsString);
+      end;
+    TVkKeyboardActionType.Location:
+      begin
+        SelectGeo(
+          procedure(Sender: TFrameWindowGeo; AResult: Boolean)
+          begin
+            if AResult then
+            begin
+              var Coord := Sender.Coord;
+              FVK.Messages.New.PeerId(PeerId).LatLong(Coord.Latitude, Coord.Longitude).Payload(Button.TagString).Send;
+            end;
+          end);
+      end;
+  end;
 end;
 
 procedure TFrameKeyboard.CreateButtonLine(Items: TVkKeyboardButtons);
 var
   Layout: TLayout;
 begin
-  Layout := TLayout.Create(Self);
-  Layout.Parent := Self;
+  Layout := TLayout.Create(VertScrollBoxLines);
+  Layout.Parent := VertScrollBoxLines;
   Layout.Position.Y := 10000;
   Layout.Align := TAlignLayout.Top;
   Layout.OnResize := FOnLayoutResize;
@@ -139,7 +181,7 @@ procedure TFrameKeyboard.Fill(Item: TVkKeyboard);
 begin
   for var ButtonLine in Item.Buttons do
     CreateButtonLine(ButtonLine);
-  Height := Length(Item.Buttons) * 48;
+  Height := Min(312, Length(Item.Buttons) * 48)
 end;
 
 end.

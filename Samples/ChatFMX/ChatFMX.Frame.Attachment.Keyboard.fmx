@@ -1,12 +1,12 @@
 inherited FrameAttachmentKeyboard: TFrameAttachmentKeyboard
   Padding.Top = 8.000000000000000000
-  Size.Width = 451.000000000000000000
-  Size.Height = 100.000000000000000000
+  Size.Width = 446.000000000000000000
+  Size.Height = 145.000000000000000000
   object FlowLayoutButtons: TFlowLayout
     Align = Client
     HitTest = False
-    Size.Width = 451.000000000000000000
-    Size.Height = 92.000000000000000000
+    Size.Width = 446.000000000000000000
+    Size.Height = 137.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
     Justify = Left
@@ -18,7 +18,7 @@ inherited FrameAttachmentKeyboard: TFrameAttachmentKeyboard
     OnResized = FlowLayoutButtonsResize
     object Button1: TButton
       Size.Width = 80.000000000000000000
-      Size.Height = 26.000000000000000000
+      Size.Height = 28.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'button_secondary'
       TabOrder = 3
@@ -27,7 +27,7 @@ inherited FrameAttachmentKeyboard: TFrameAttachmentKeyboard
     object Button2: TButton
       Position.X = 88.000000000000000000
       Size.Width = 80.000000000000000000
-      Size.Height = 26.000000000000000000
+      Size.Height = 28.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'button_positive'
       TabOrder = 2
@@ -42,7 +42,7 @@ inherited FrameAttachmentKeyboard: TFrameAttachmentKeyboard
     object Button4: TButton
       Position.Y = 34.000000000000000000
       Size.Width = 80.000000000000000000
-      Size.Height = 26.000000000000000000
+      Size.Height = 28.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'button_negative'
       TabOrder = 0
@@ -52,7 +52,7 @@ inherited FrameAttachmentKeyboard: TFrameAttachmentKeyboard
       Position.X = 88.000000000000000000
       Position.Y = 34.000000000000000000
       Size.Width = 80.000000000000000000
-      Size.Height = 26.000000000000000000
+      Size.Height = 28.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'button_primary'
       TabOrder = 1

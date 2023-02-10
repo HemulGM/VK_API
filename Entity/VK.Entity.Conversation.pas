@@ -300,7 +300,6 @@ type
     property MentionCmids: TArrayOfInteger read FMention_cmids write FMention_cmids;
     property ExpireCmids: TArrayOfInteger read FExpire_cmids write FExpire_cmids;
     property IsGroup: Boolean read GetIsGroup;
-    property CurrcurrentKeyboard: TVkKeyboard read FCurrent_keyboard write FCurrent_keyboard;
     destructor Destroy; override;
   end;
 

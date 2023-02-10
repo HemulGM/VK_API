@@ -557,7 +557,7 @@ begin
   for var Control in FlowLayoutMedia.Controls do
     if Control is TFrameAttachmentPhoto then
     begin
-      var Id :=(Control as TFrameAttachmentPhoto).Id;
+      var Id := (Control as TFrameAttachmentPhoto).Id;
       Items[i] := Id;
       if Id = PhotoId then
         Index := i;
@@ -1165,6 +1165,13 @@ begin
     Opacity := 1
   else
     Opacity := 0;
+  if Value then
+  begin
+    if (not FImageUrl.IsEmpty) and (CircleAvatar.Fill.Bitmap.Bitmap.IsEmpty) then
+      TPreview.Instance.Subscribe(FImageUrl, FOnReadyImage);
+  end
+  else
+    CircleAvatar.Fill.Bitmap.Bitmap := nil;
   BroadcastVisible(FVisibility);
 end;
 

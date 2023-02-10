@@ -82,7 +82,7 @@ begin
       begin
         var Btn := TButton.Create(FlowLayoutButtons);
         Btn.Parent := FlowLayoutButtons;
-        Btn.Height := 26;
+        Btn.Height := 28;
         Btn.Tag := Ord(Button.Action.&Type);
         Btn.StyleLookup := 'Button_secondary';
         Btn.OnClick := FOnKeyButtonClick;
@@ -144,7 +144,7 @@ begin
   var ImgW := StylesData['image.Width'].AsExtended;
   if ImgW > 0 then
     ImgW := ImgW + 16;
-  Width := GetTextRect(Self, 400).Width + 24 + ImgW;
+  Width := GetTextRect(Self, 400).Width + 24 + 10 + ImgW;
 end;
 
 procedure TFrameAttachmentKeyboard.FlowLayoutButtonsResize(Sender: TObject);

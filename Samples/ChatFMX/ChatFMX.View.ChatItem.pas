@@ -304,7 +304,7 @@ begin
   FLastTime := Value;
   StylesData['time.Visible'] := Value > 0;
   if IsToday(Value) then
-    StylesData['time'] := FormatDateTime('HH:nn', Value)
+    StylesData['time'] := FormatDateTime('H:nn', Value)
   else if YearOf(Value) = YearOf(Now) then
     StylesData['time'] := FormatDateTime('D mmm', Value)
   else
