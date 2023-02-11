@@ -1,6 +1,0 @@
-.\assets\internal\payment_request_snippet.png
-.\assets\internal\im_favorites_100.png
-.\assets\internal\msg_warning.png
-.\assets\internal\pv_layer_controls.png
-.\assets\internal\payment_snippet.png
-.\assets\internal\doc_icons.png
