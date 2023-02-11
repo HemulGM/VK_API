@@ -326,7 +326,15 @@ begin
           //Выполняем запрос
           ReqCode := 0;
           try
-            ReqCode := HTTP.Get(FLongPollData.Request, Stream).StatusCode;
+            var Res := HTTP.BeginGet(FLongPollData.Request, Stream);
+            while (not Res.IsCompleted) and (not Res.IsCancelled) do
+            begin
+              if FLongPollNeedStop then
+                Res.Cancel;
+              Sleep(1);
+            end;
+            if not FLongPollNeedStop then
+              ReqCode := (Res as IHTTPResponse).StatusCode;
           except
             on E: Exception do
               DoError(TVkLongPollServerHTTPException.Create(E.Message));
@@ -371,7 +379,7 @@ begin
     while not FLongPollStopped do
     begin
       if not IsConsole then
-        CheckSynchronize(3000)
+        CheckSynchronize(1000)
       else
         TThread.Yield;
       Sleep(100);
