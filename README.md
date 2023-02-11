@@ -310,9 +310,6 @@ VKAPI.Walk(
        Cancel := True;
    end, 100);  // 100 - параметр шага запроса, должен соответстовать параметру метода "Params.Count(100);"
 ```
-
-Пример чата-клиента
-![FMX VK Messager](https://github.com/HemulGM/VK_API/blob/master/Samples/ChatFMX/Res/screen1.png)
   
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbLTY2MDExNDI1Miw5MzcyNjYxMzQsMzQ1Mj
