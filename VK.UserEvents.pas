@@ -553,6 +553,12 @@ begin
             DoUsersRecording(UserIds, A1, A2, A3);
         end;
       end;
+    65: //ХЗ че
+      begin
+        // ID, PeerId    , [UserId   ], ?, timestamp
+        //[65, 2000000164, [415730216], 1, 1676289988]
+        DoUnhandledEvents(Update);
+      end;
     70: //Пользователь $user_id совершил звонок с идентификатором $call_id.
       begin
         try
@@ -759,12 +765,8 @@ end;
 
 procedure TCustomUserEvents.DoUnhandledEvents(const JSON: TJSONValue);
 begin
-  try
-    if Assigned(FOnUnhandledEvents) then
-      FOnUnhandledEvents(Self, JSON);
-  finally
-    JSON.Free;
-  end;
+  if Assigned(FOnUnhandledEvents) then
+    FOnUnhandledEvents(Self, JSON);
 end;
 
 procedure TCustomUserEvents.DoUserCall(const UserId, CallId: TVkPeerId);
