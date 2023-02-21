@@ -12,7 +12,7 @@ type
     ['{CD673BC9-1E4C-4963-A300-1900905401E5}']
     function GetProfileById(const Id: TVkPeerId; out Profile: TVkProfile): Boolean;
     function GetGroupById(const Id: TVkPeerId; out Group: TVkGroup): Boolean;
-    function ProfileCount: Cardinal;
+    function ProfileCount: Integer;
     function Profile(const Index: Integer): TVkProfile;
   end;
 
@@ -28,7 +28,7 @@ type
     property Groups: TArray<TVkGroup> read FGroups write FGroups;
     function GetProfileById(const Id: TVkPeerId; out Profile: TVkProfile): Boolean;
     function GetGroupById(const Id: TVkPeerId; out Group: TVkGroup): Boolean;
-    function ProfileCount: Cardinal;
+    function ProfileCount: Integer;
     function Profile(const Index: Integer): TVkProfile;
     destructor Destroy; override;
   end;
@@ -105,7 +105,7 @@ begin
   Result := FProfiles[Index];
 end;
 
-function TVkEntityExtendedList<T>.ProfileCount: Cardinal;
+function TVkEntityExtendedList<T>.ProfileCount: Integer;
 begin
   Result := Length(FProfiles);
 end;
