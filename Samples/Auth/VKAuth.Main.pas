@@ -120,6 +120,10 @@ type
     ButtonGetMessageById: TButton;
     TabSheetMarket: TTabSheet;
     ButtonMarketFilterCategories: TButton;
+    TabSheetPages: TTabSheet;
+    ButtonPagesSave: TButton;
+    ButtonPagesGet: TButton;
+    EditPageiD: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure ButtonAccountBanClick(Sender: TObject);
     procedure ButtonAccountUnbanClick(Sender: TObject);
@@ -252,6 +256,8 @@ type
     procedure ButtonMessageGetConverstionClick(Sender: TObject);
     procedure ButtonGetMessageByIdClick(Sender: TObject);
     procedure ButtonMarketFilterCategoriesClick(Sender: TObject);
+    procedure ButtonPagesSaveClick(Sender: TObject);
+    procedure ButtonPagesGetClick(Sender: TObject);
   private
     FToken: string;
     FChangePasswordHash: string;
@@ -279,7 +285,8 @@ uses
   VK.Photos, VK.Entity.Group, VK.Entity.Auth, VK.Clients, VK.Entity.Photo.Upload,
   REST.Json, VK.Entity.Newsfeed, VK.Newsfeed, System.Threading, VK.Entity.Ads,
   VK.Entity.Message.Chat, VK.Entity.Board, VK.Board,
-  VK.Entity.Common.ExtendedList, VK.Entity.Market, Vk.Market;
+  VK.Entity.Common.ExtendedList, VK.Entity.Market, Vk.Market, VK.Pages,
+  VK.Entity.Page;
 
 {$R *.dfm}
 
@@ -374,14 +381,14 @@ var
   Status: Boolean;
   Photos: TVkPhotos;
   Attach: TAttachment;
-begin
+begin    {
   Status := VK1.Photos.UploadForGroupWall(Photos, 145962568,
     ['D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (100).jpg',
-    'D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (149).jpg']);
+    'D:\Мультимедиа\Картинки\Аниме\anime-wallpaper-1366x768 (149).jpg']);  }
   //VK1.Wall.Post('', -145962568, TAttachment.Video(58553419, 456239240));
 
   Attach := 'http://habrahabr.ru';
-  if Status then
+  //if Status then
   try
     //.Attachments('doc533494309_58553419'); //TAttachment.Doc(533494309, 58553419, '657138cd5d7842ae0a')
     VK1.Wall.Post(Params
@@ -389,7 +396,8 @@ begin
       .OwnerId(-145962568)
       .FromGroup(True)
       .Signed(True)
-      .Attachments([Attach] + Photos.ToAttachments));
+      .Attachments(TAttachment.Article(VK1.UserId, 55531323)));
+      //.Attachments([Attach] + Photos.ToAttachments));
   finally
     Photos.Free;
   end;
@@ -1159,6 +1167,35 @@ end;
 procedure TFormMain.ButtonSendAudioMessageClick(Sender: TObject);
 begin
   VK1.Messages.SendAudioMessage(2000000001, '1.ogg');
+end;
+
+procedure TFormMain.ButtonPagesGetClick(Sender: TObject);
+begin
+  var Page: TVkPage;
+  var Params: TVkParamsPagesGet;
+  Params.OwnerId(VK1.UserId);
+  Params.PageId(StrToInt(EditPageiD.Text));
+  if VK1.Pages.Get(Page, Params) then
+  try
+
+  finally
+    Page.Free;
+  end;
+end;
+
+procedure TFormMain.ButtonPagesSaveClick(Sender: TObject);
+begin
+  var PageId: Integer;
+  var Params: TVkParamsPagesSave;
+  if VK1.Pages.Save(PageId,
+    Params
+      .Text('# hello')
+      .Title('Hello page 2')
+      .UserId(Vk1.UserId))
+  then
+  begin
+    ShowMessage(PageId.ToString);
+  end;
 end;
 
 procedure TFormMain.ButtonPhotosGetAlbumClick(Sender: TObject);

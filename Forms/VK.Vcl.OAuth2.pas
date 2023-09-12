@@ -221,7 +221,7 @@ begin
   FBrakeAll := False;
   FLastURL := '';
   FixIE;
-  UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, PAnsiChar(AnsiString(UserAgent)), Length(UserAgent), 0);
+  //UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, PAnsiChar(AnsiString(UserAgent)), Length(UserAgent), 0);
 end;
 
 procedure TFormOAuth2.FormKeyPress(Sender: TObject; var Key: Char);

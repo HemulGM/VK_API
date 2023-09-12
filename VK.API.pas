@@ -168,12 +168,6 @@ type
     /// </summary>
     function Login: Boolean; overload;
     /// <summary>
-    /// Метод выполняет авторизацию, запрашивая токен у сервера, после чего, проверяет доступ к API.
-    /// Авторизация "Client credentials flow" используя AppId и AppKey через логин и пароль.
-    /// <b>Не забывайте сохранять токен при закрытии приложения</b>
-    /// </summary>
-    function Login(ALogin, APassword: string; On2FA: TOn2FA = nil): Boolean; overload;
-    /// <summary>
     /// Очищает токен
     /// </summary>
     procedure Logout;
@@ -494,7 +488,13 @@ type
     /// Данные клиента AppId (client_id) + AppKey (client_secret)
     /// </summary>
     property Application: TVkApplicationData read GetApplication write SetApplication;
+    /// <summary>
+    /// Кол-во запросов в секунду
+    /// </summary>
     property RequestLimit: Integer read GetRequestLimit write SetRequestLimit;
+    /// <summary>
+    /// Быстрый метод загрузки файла на диск
+    /// </summary>
     function DownloadFile(const Url, FileName: string): Boolean;
     property GeoLocation: TLocationCoord2D read GetGeoLocation;
     property OnNeedGeoLocation: TOnNeedGeoLocation read FOnNeedGeoLocation write SetOnNeedGeoLocation;
@@ -741,13 +741,11 @@ function TCustomVK.DoOnError(Sender: TObject; E: Exception; Code: Integer; Text:
 begin
   Result := Assigned(FOnError);
   if Result then
-  begin
-    try
-      FOnError(Sender, E, Code, Text);
-    finally
-      if Assigned(E) then
-        E.Free;
-    end;
+  try
+    FOnError(Sender, E, Code, Text);
+  finally
+    if Assigned(E) then
+      E.Free;
   end;
 end;
 
@@ -849,148 +847,15 @@ begin
     Token := AToken;
 end;
 
-function TCustomVK.Login(ALogin, APassword: string; On2FA: TOn2FA): Boolean;
-var
-  HTTP: THTTPClient;
-  Response: TStringStream;
-  EndResponse: IHTTPResponse;
-  FormData: TStringList;
-  Info: TVkLoginInfo;
-  Remember: Boolean;
-  Hash, Code, Url, CaptchaSid: string;
-begin
-  Token := '';
-  HTTP := THTTPClient.Create;
-  HTTP.HandleRedirects := True;
-  Response := TStringStream.Create;
-  try
-    Url := Format('https://oauth.vk.com/token?grant_type=password&client_id=%s&client_secret=%s&username=%s&password=%s', [AppID, AppKey, ALogin, APassword]);
-    case HTTP.Get(Url, Response).StatusCode of
-      401:
-        begin
-          try
-              {$WARNINGS OFF}
-            Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
-              {$WARNINGS ON}
-            try
-              if not Info.Error.IsEmpty then
-              begin
-                if Info.Error = 'need_validation' then
-                begin
-                  if TVkValidationType.FromString(Info.ValidationType) <> TVkValidationType.Unknown then
-                  begin
-                    if HTTP.Get(Info.RedirectUri, Response).StatusCode = 200 then
-                    begin
-                      if GetActionLinkHash(Response.DataString, Hash) then
-                      begin
-                        if On2FA(TVkValidationType.FromString(Info.ValidationType), Code, Remember) then
-                        begin
-                          FormData := TStringList.Create;
-                          try
-                            FormData.AddPair('code', Code);
-                            FormData.AddPair('remember', BoolToString(Remember));
-
-                            HTTP.HandleRedirects := False;
-                            EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash, FormData);
-                            Response.SaveToFile('D:\temp.txt');
-                            while EndResponse.StatusCode = 200 do
-                            begin
-                              Response.LoadFromStream(EndResponse.ContentStream);
-                              if CheckForCaptcha(Response.DataString, CaptchaSid) then
-                              begin
-                                Code := '';
-                                FAskCaptcha(Self, 'https://vk.com/captcha.php?sid=' + CaptchaSid, Code);
-                                if not Code.IsEmpty then
-                                begin
-                                  EndResponse := HTTP.Post('https://vk.com/login?act=authcheck_code&hash=' + Hash + '&captcha_sid=' + CaptchaSid + '&captcha_key=' + Code, FormData);
-                                end
-                                else
-                                  Break;
-                              end
-                              else
-                                Break;
-                            end;
-
-                            if EndResponse.StatusCode = 302 then
-                            begin
-                              if GetTokenFromUrl(EndResponse.HeaderValue['Location'], Hash, Url, Code) then
-                              begin
-                                Token := Hash;
-                              end;
-                            end;
-                          except
-                            on E: Exception do
-                              DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, Response.DataString);
-                          end;
-                          FormData.Free;
-                        end;
-                      end;
-                    end;
-                  end;
-                end;
-                while Info.Error = 'need_captcha' do
-                begin
-                  Code := '';
-                  FAskCaptcha(Self, Info.CaptchaImg, Code);
-                  if not Code.IsEmpty then
-                  begin
-                    EndResponse := HTTP.Get(Url + '&captcha_sid=' + Info.CaptchaSid + '&captcha_key=' + Code, Response);
-                    Info.Free;
-                      {$WARNINGS OFF}
-                    Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(UTF8ToWideString(Response.DataString));
-                      {$WARNINGS ON}
-                    Token := Info.AccessToken;
-                  end
-                  else
-                    Break;
-                end;
-                if Info.Error = 'invalid_client' then
-                begin
-                  raise TVkParserException.Create(Info.ErrorDescription);
-                end;
-              end;
-            finally
-              Info.Free;
-            end;
-          except
-            on E: Exception do
-              DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, Response.DataString);
-          end;
-        end;
-      200:
-        begin
-          Info := TVkLoginInfo.FromJsonString<TVkLoginInfo>(Response.DataString);
-          Token := Info.AccessToken;
-          Info.Free;
-        end;
-    end;
-  except
-    on E: Exception do
-      DoOnError(Self, E.Create(E.Message), ERROR_VK_PARSE, 'Login request error');
-  end;
-  Response.Free;
-  HTTP.Free;
-  Result := not Token.IsEmpty;
-  try
-    if Result and CheckAuth then
-    begin
-      DoLogin;
-    end
-    else
-    begin
-      Result := False;
-      raise TVkAuthException.Create('Login request error', ERROR_VK_AUTH);
-    end;
-  except
-    on E: Exception do
-      DoOnError(Self, E.Create(E.Message), ERROR_VK_AUTH, E.Message);
-  end;
-end;
-
 procedure TCustomVK.Logout;
 begin
   Token := '';
   TokenExpiry := 0;
+  FUserId := 0;
+  FUserName := '';
+  FUserSex := TVkSex.None;
+  FUserPhoto50 := '';
+  FUserPhoto100 := '';
 end;
 
 function TCustomVK.GetOAuth2RequestURI: string;
@@ -1012,34 +877,33 @@ function TCustomVK.Login: Boolean;
 var
   AToken, APasswordHash: string;
   ATokenExpiry: Int64;
-  AuthUrl: string;
 begin
   Result := False;
   AToken := Token;
-  APasswordHash := ChangePasswordHash;
   ATokenExpiry := TokenExpiry;
-  if AToken.IsEmpty then
+  APasswordHash := ChangePasswordHash;
+  if AToken.IsEmpty and Assigned(FOnAuth) then
   begin
-    AuthUrl := GetOAuth2RequestURI;
-    if Assigned(FOnAuth) then
-      FOnAuth(Self, AuthUrl, AToken, ATokenExpiry, APasswordHash);
+    FOnAuth(Self, GetOAuth2RequestURI, AToken, ATokenExpiry, APasswordHash);
+    Token := AToken;
+    TokenExpiry := ATokenExpiry;
+    FChangePasswordHash := APasswordHash;
   end;
 
   if not AToken.IsEmpty then
   begin
-    FChangePasswordHash := APasswordHash;
-    Token := AToken;
-    if ATokenExpiry > 0 then
-      FOAuth2Authenticator.AccessTokenExpiry := IncSecond(Now, ATokenExpiry)
-    else
-      FOAuth2Authenticator.AccessTokenExpiry := 0;
     if CheckAuth then
     begin
       DoLogin;
       Result := True;
     end
     else
+    begin
+      Token := '';
+      TokenExpiry := 0;
+      FChangePasswordHash := '';
       Result := False;
+    end;
   end;
 end;
 

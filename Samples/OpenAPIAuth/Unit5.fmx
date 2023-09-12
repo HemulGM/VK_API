@@ -1,0 +1,57 @@
+object Form5: TForm5
+  Left = 0
+  Top = 0
+  Caption = 'Form5'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object Button1: TButton
+    Position.X = 232.000000000000000000
+    Position.Y = 32.000000000000000000
+    TabOrder = 1
+    Text = 'Button1'
+    OnClick = Button1Click
+  end
+  object LayoutAuthProc: TLayout
+    Align = Contents
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    object Rectangle1: TRectangle
+      Align = Contents
+      Fill.Color = claWhite
+      Size.Width = 640.000000000000000000
+      Size.Height = 480.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      object AniIndicator1: TAniIndicator
+        Align = Center
+        Enabled = True
+      end
+      object ButtonCancelAuth: TButton
+        Align = Center
+        Margins.Top = 100.000000000000000000
+        TabOrder = 1
+        Text = #1054#1090#1084#1077#1085#1080#1090#1100
+        OnClick = ButtonCancelAuthClick
+      end
+    end
+  end
+  object VK1: TVK
+    AppID = '5962016'
+    AppKey = 'Hqo7nMGTMAQQLGcImCX1'
+    BaseURL = 'https://api.vk.com/method'
+    EndPoint = 'https://oauth.vk.com/authorize'
+    OnAuth = VK1Auth
+    OnLogin = VK1Login
+    Permissions = [Friends, Email]
+    Proxy.Port = 0
+    Left = 120
+    Top = 80
+  end
+end

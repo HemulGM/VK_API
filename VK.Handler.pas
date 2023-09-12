@@ -65,6 +65,7 @@ type
     FQueueLock: TObject;
     FAuthenticator: TOAuth2Authenticator;
     FParams: TDictionary<string, string>;
+    FLogining: Boolean;
     function DoConfirm(Answer: string): Boolean;
     procedure SetOnConfirm(const Value: TOnConfirm);
     procedure FLog(const Value: string);
@@ -189,7 +190,8 @@ begin
   Result.Client.ConnectTimeout := 5000;
   Result.Client.ReadTimeout := 5000;
   Result.Response := TRESTResponse.Create(Result);
-  Result.Client.Authenticator := FAuthenticator;
+  //Result.Client.Authenticator := FAuthenticator;
+  Result.Client.AddParameter('access_token', FAuthenticator.AccessToken);
   Result.Client.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
   Result.Client.AcceptCharset := 'UTF-8, *;q=0.8';
   TMonitor.Enter(FParams);
@@ -237,15 +239,22 @@ var
   FRes: Boolean;
 begin
   Result := False;
-  if Assigned(FOnAuth) then
-  begin
-    FRes := False;
-    Synchronize(
-      procedure
-      begin
-        FOnAuth(Self, FRes);
-      end);
-    Result := FRes;
+  if FLogining then
+    Exit;
+  FLogining := True;
+  try
+    if Assigned(FOnAuth) then
+    begin
+      FRes := False;
+      Synchronize(
+        procedure
+        begin
+          FOnAuth(Self, FRes);
+        end);
+      Result := FRes;
+    end;
+  finally
+    FLogining := False;
   end;
 end;
 

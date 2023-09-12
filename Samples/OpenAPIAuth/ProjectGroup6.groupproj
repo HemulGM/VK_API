@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{FD14ED37-6A06-42E3-8240-C9732AED1E2F}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Project38.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\..\VKComponents.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\..\..\MiniWebServer\MiniWebServer.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Project38">
+        <MSBuild Projects="Project38.dproj"/>
+    </Target>
+    <Target Name="Project38:Clean">
+        <MSBuild Projects="Project38.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Project38:Make">
+        <MSBuild Projects="Project38.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="VKComponents">
+        <MSBuild Projects="..\..\VKComponents.dproj"/>
+    </Target>
+    <Target Name="VKComponents:Clean">
+        <MSBuild Projects="..\..\VKComponents.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VKComponents:Make">
+        <MSBuild Projects="..\..\VKComponents.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MiniWebServer">
+        <MSBuild Projects="..\..\..\MiniWebServer\MiniWebServer.dproj"/>
+    </Target>
+    <Target Name="MiniWebServer:Clean">
+        <MSBuild Projects="..\..\..\MiniWebServer\MiniWebServer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MiniWebServer:Make">
+        <MSBuild Projects="..\..\..\MiniWebServer\MiniWebServer.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Project38;VKComponents;MiniWebServer"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Project38:Clean;VKComponents:Clean;MiniWebServer:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Project38:Make;VKComponents:Make;MiniWebServer:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

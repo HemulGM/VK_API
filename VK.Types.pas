@@ -242,7 +242,8 @@ type
   TVkAttachmentType = (Unknown, Photo, Video, Audio, Doc, Link, Market,       //
     MarketAlbum, Wall, WallReply, Sticker, Gift, Call, AudioMessage,          //
     PostedPhoto, Graffiti, Note, App, Poll, Page, Album, PhotosList,          //
-    PrettyCards, Event, MoneyTransfer, MoneyRequest, AudioPlaylist, Story);
+    PrettyCards, Event, MoneyTransfer, MoneyRequest, AudioPlaylist, Story,    //
+    Article);
 
   TVkAttachmentTypeHelper = record helper for TVkAttachmentType
     function ToString: string; inline;
@@ -269,6 +270,7 @@ type
     class function Poll(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Gift(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Album(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
+    class function Article(OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class function Create(&Type: TVkAttachmentType; OwnerId, Id: Integer; const AccessKey: string = ''): TAttachment; static;
     class operator Implicit(const Value: string): TAttachment;
     class operator Implicit(const Value: TAttachment): string;
@@ -1528,7 +1530,7 @@ const
   VkAttachmentType: array[TVkAttachmentType] of string = ('', 'photo', 'video', 'audio', 'doc', 'link', 'market',
     'market_album', 'wall', 'wall_reply', 'sticker', 'gift', 'call', 'audio_message', 'posted_photo', 'graffiti',
     'note', 'app', 'poll', 'page', 'album', 'photos_list', 'pretty_cards', 'event', 'money_transfer', 'money_request',
-    'audio_playlist', 'story');
+    'audio_playlist', 'story', 'article');
   VkPeerType: array[TVkPeerType] of string = ('', 'user', 'chat', 'group', 'email');
   VkNameCase: array[TVkNameCase] of string = ('nom', 'gen', 'dat', 'acc', 'ins', 'abl');
   VkItemType: array[TVkItemType] of string = ('post', 'comment', 'photo', 'audio', 'video', 'note', 'market',
@@ -1674,7 +1676,7 @@ begin
   if (TThread.Current.ThreadID = MainThreadID) or IsConsole then
     Proc
   else
-    TThread.Synchronize(nil, Proc);
+    TThread.Synchronize(TThread.Current, Proc);
 end;
 
 function PeerIdIsChat(Value: TVkPeerId): Boolean;
@@ -2586,6 +2588,11 @@ begin
   Result.OwnerId := OwnerId;
   Result.Id := Id;
   Result.AccessKey := AccessKey;
+end;
+
+class function TAttachment.Article(OwnerId, Id: Integer; const AccessKey: string): TAttachment;
+begin
+  Result := Create(TVkAttachmentType.Article, OwnerId, Id, AccessKey);
 end;
 
 class function TAttachment.Audio(OwnerId, Id: Integer; const AccessKey: string): TAttachment;

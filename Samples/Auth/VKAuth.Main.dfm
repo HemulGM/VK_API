@@ -594,7 +594,7 @@ object FormMain: TFormMain
           Margins.Top = 30
           Margins.Right = 30
           Margins.Bottom = 30
-          ActivePage = TabSheetMarket
+          ActivePage = TabSheetPages
           Align = alClient
           TabOrder = 0
           object TabSheet9: TTabSheet
@@ -1229,6 +1229,36 @@ object FormMain: TFormMain
               Caption = 'FilterCategories'
               TabOrder = 0
               OnClick = ButtonMarketFilterCategoriesClick
+            end
+          end
+          object TabSheetPages: TTabSheet
+            Caption = 'Pages'
+            ImageIndex = 17
+            object ButtonPagesSave: TButton
+              Left = 3
+              Top = 3
+              Width = 75
+              Height = 25
+              Caption = 'PagesSave'
+              TabOrder = 0
+              OnClick = ButtonPagesSaveClick
+            end
+            object ButtonPagesGet: TButton
+              Left = 3
+              Top = 34
+              Width = 75
+              Height = 25
+              Caption = 'PagesGet'
+              TabOrder = 1
+              OnClick = ButtonPagesGetClick
+            end
+            object EditPageiD: TEdit
+              Left = 84
+              Top = 34
+              Width = 121
+              Height = 25
+              TabOrder = 2
+              Text = 'EditPageiD'
             end
           end
         end

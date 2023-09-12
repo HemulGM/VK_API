@@ -190,7 +190,9 @@ contains
   VK.Entity.Ads in 'Entity\VK.Entity.Ads.pas',
   VK.Asr in 'Controllers\VK.Asr.pas',
   VK.Entity.Asr in 'Entity\VK.Entity.Asr.pas',
-  VK.Entity.MoneyRequest in 'Entity\VK.Entity.MoneyRequest.pas';
+  VK.Entity.MoneyRequest in 'Entity\VK.Entity.MoneyRequest.pas',
+  VK.DirectAuth in 'Tools\VK.DirectAuth.pas',
+  HTTP.Server in 'MiniWebServer\HTTP.Server.pas';
 
 end.
 
