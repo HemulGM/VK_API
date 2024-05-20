@@ -297,7 +297,7 @@ type
   public
     function Add(Param: TParam): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: string): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
-    function Add(Key: string; Value: Integer): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
+    function Add(Key: string; Value: Int64): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: Extended): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: TDateTime; Format: string = ''): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
     function Add(Key: string; Value: Boolean): TParams; overload; {$IFNDEF DEBUG} inline; {$ENDIF}
@@ -2043,7 +2043,7 @@ begin
   Result := AddParam([Key, Value]);
 end;
 
-function TParamsHelper.Add(Key: string; Value: Integer): TParams;
+function TParamsHelper.Add(Key: string; Value: Int64): TParams;
 begin
   Result := AddParam([Key, Value.ToString]);
 end;

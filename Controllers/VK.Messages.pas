@@ -79,11 +79,11 @@ type
     /// <summary>
     /// Идентификатор стикера
     /// </summary>
-    function StickerId(const Value: Integer): IVkMessageNew;
+    function StickerId(const Value: Int64): IVkMessageNew;
     /// <summary>
     /// Число, которое в будущем будет предназначено для работы с интентами
     /// </summary>
-    function SubscribeId(const Value: Integer): IVkMessageNew;
+    function SubscribeId(const Value: Int64): IVkMessageNew;
     /// <summary>
     /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
@@ -91,7 +91,7 @@ type
     /// <summary>
     /// Идентификатор сообщения, на которое требуется ответить
     /// </summary>
-    function ReplyTo(const Value: Integer): IVkMessageNew;
+    function ReplyTo(const Value: Int64): IVkMessageNew;
     /// <summary>
     /// [Вероятно список сообщений для пересылки]
     /// </summary>
@@ -192,11 +192,11 @@ type
     /// <summary>
     /// Идентификатор стикера
     /// </summary>
-    function StickerId(const Value: Integer): IVkMessageNew;
+    function StickerId(const Value: Int64): IVkMessageNew;
     /// <summary>
     /// Число, которое в будущем будет предназначено для работы с интентами
     /// </summary>
-    function SubscribeId(const Value: Integer): IVkMessageNew;
+    function SubscribeId(const Value: Int64): IVkMessageNew;
     /// <summary>
     /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
@@ -204,7 +204,7 @@ type
     /// <summary>
     /// Идентификатор сообщения, на которое требуется ответить
     /// </summary>
-    function ReplyTo(const Value: Integer): IVkMessageNew;
+    function ReplyTo(const Value: Int64): IVkMessageNew;
     /// <summary>
     /// [Вероятно список сообщений для пересылки]
     /// </summary>
@@ -261,7 +261,7 @@ type
     /// Переданный в запросе random_id используется для проверки уникальности, проверяя в заданном диалоге сообщения за последний час (но не более 100 последних сообщений).
     /// Если не передать значение, будет сгенерирован через GetRandomId
     /// </summary>
-    function RandomId(const Value: Integer = -1): TVkParamsMessageSend;
+    function RandomId(const Value: Int64 = -1): TVkParamsMessageSend;
     /// <summary>
     /// Текст личного сообщения. Обязательный параметр, если не задан параметр Attachment
     /// </summary>
@@ -281,7 +281,7 @@ type
     /// <summary>
     /// идентификатор сообщения, на которое требуется ответить
     /// </summary>
-    function ReplyTo(const Value: Integer): TVkParamsMessageSend;
+    function ReplyTo(const Value: Int64): TVkParamsMessageSend;
     /// <summary>
     /// [Вероятно список сообщений для пересылки]
     /// </summary>
@@ -296,7 +296,7 @@ type
     /// <summary>
     /// Идентификатор стикера
     /// </summary>
-    function StickerId(const Value: Integer): TVkParamsMessageSend;
+    function StickerId(const Value: Int64): TVkParamsMessageSend;
     /// <summary>
     /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
@@ -329,7 +329,7 @@ type
     /// <summary>
     /// Число, которое в будущем будет предназначено для работы с интентами
     /// </summary>
-    function SubscribeId(const Value: Integer): TVkParamsMessageSend;
+    function SubscribeId(const Value: Int64): TVkParamsMessageSend;
     /// <summary>
     /// Боты могут отправлять специальные сообщения, используя шаблоны.
     /// Такие сообщения отличаются от обычных как по внешнему виду, так и по функциональности.
@@ -344,11 +344,11 @@ type
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества результатов
     /// </summary>
-    function Offset(const Value: Integer = 0): TVkParamsConversationsGet;
+    function Offset(const Value: Int64 = 0): TVkParamsConversationsGet;
     /// <summary>
     /// Максимальное число результатов, которые нужно получить
     /// </summary>
-    function Count(const Value: Integer = 20): TVkParamsConversationsGet;
+    function Count(const Value: Int64 = 20): TVkParamsConversationsGet;
     /// <summary>
     /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
@@ -368,7 +368,7 @@ type
     /// <summary>
     /// Идентификатор сообщения, начиная с которого нужно возвращать беседы
     /// </summary>
-    function StartMessageId(const Value: Integer): TVkParamsConversationsGet;
+    function StartMessageId(const Value: Int64): TVkParamsConversationsGet;
   end;
 
   TVkParamsConversationMembersGet = record
@@ -380,11 +380,11 @@ type
     /// <summary>
     /// Смещение, необходимое для выборки определенного подмножества результатов
     /// </summary>
-    function Offset(const Value: Integer = 0): TVkParamsConversationMembersGet;
+    function Offset(const Value: Int64 = 0): TVkParamsConversationMembersGet;
     /// <summary>
     /// Максимальное число результатов, которые нужно получить
     /// </summary>
-    function Count(const Value: Integer = 20): TVkParamsConversationMembersGet;
+    function Count(const Value: Int64 = 20): TVkParamsConversationMembersGet;
     /// <summary>
     /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
@@ -416,7 +416,7 @@ type
     /// <summary>
     /// Идентификатор сообщения
     /// </summary>
-    function MessageId(const Value: Integer): TVkParamsMessageDelete; overload;
+    function MessageId(const Value: Int64): TVkParamsMessageDelete; overload;
     /// <summary>
     /// Список идентификаторов сообщений беседы, разделённых через запятую
     /// </summary>
@@ -424,7 +424,7 @@ type
     /// <summary>
     /// Идентификатор сообщения беседы
     /// </summary>
-    function ConversationMessageId(const Value: Integer): TVkParamsMessageDelete; overload;
+    function ConversationMessageId(const Value: Int64): TVkParamsMessageDelete; overload;
     /// <summary>
     /// Пометить сообщения как спам
     /// </summary>
@@ -444,12 +444,12 @@ type
     /// <summary>
     /// Идентификатор сообщения
     /// </summary>
-    function MessageId(const Value: Integer): TVkParamsMessageGet;
+    function MessageId(const Value: Int64): TVkParamsMessageGet;
     /// <summary>
     /// Количество символов, по которому нужно обрезать сообщение.
     /// Укажите 0, если Вы не хотите обрезать сообщение. (По умолчанию сообщения не обрезаются)
     /// </summary>
-    function PreviewLength(const Value: Integer = 0): TVkParamsMessageGet;
+    function PreviewLength(const Value: Int64 = 0): TVkParamsMessageGet;
     /// <summary>
     /// True — возвращать дополнительные поля
     /// </summary>
@@ -461,7 +461,7 @@ type
     /// <summary>
     /// Идентификатор сообщества (для сообщений сообщества с ключом доступа пользователя)
     /// </summary>
-    function GroupId(const Value: Cardinal): TVkParamsMessageGet;
+    function GroupId(const Value: UInt64): TVkParamsMessageGet;
   end;
 
   TVkParamsMessageHistory = record
@@ -469,7 +469,7 @@ type
     /// <summary>
     /// Количество сообщений, которое необходимо получить (но не более 200)
     /// </summary>
-    function Count(const Value: Integer = 20): TVkParamsMessageHistory;
+    function Count(const Value: Int64 = 20): TVkParamsMessageHistory;
     /// <summary>
     /// Если указать в качестве этого параметра True, то будет возвращена
     /// информация о пользователях, являющихся авторами сообщений
@@ -487,7 +487,7 @@ type
     /// Смещение, необходимое для выборки определенного подмножества сообщений,
     /// должен быть >= 0, если не передан параметр start_message_id, и должен быть <= 0, если передан
     /// </summary>
-    function Offset(const Value: Integer): TVkParamsMessageHistory;
+    function Offset(const Value: Int64): TVkParamsMessageHistory;
     /// <summary>
     /// Идентификатор назначения
     /// </summary>
@@ -504,7 +504,7 @@ type
     /// к значению параметра offset прибавляется количество входящих
     /// непрочитанных сообщений в конце диалога (подробности см. ниже)
     /// </summary>
-    function StartMessageId(const Value: Integer): TVkParamsMessageHistory;
+    function StartMessageId(const Value: Int64): TVkParamsMessageHistory;
     /// <summary>
     /// Идентификатор пользователя, историю переписки с которым необходимо вернуть
     /// </summary>
@@ -1984,13 +1984,13 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.StickerId(const Value: Integer): IVkMessageNew;
+function TVkMessageNew.StickerId(const Value: Int64): IVkMessageNew;
 begin
   Params.Add('sticker_id', Value);
   Result := Self;
 end;
 
-function TVkMessageNew.SubscribeId(const Value: Integer): IVkMessageNew;
+function TVkMessageNew.SubscribeId(const Value: Int64): IVkMessageNew;
 begin
   Params.Add('subscribe_id', Value);
   Result := Self;
@@ -2108,7 +2108,7 @@ begin
   Result := Self;
 end;
 
-function TVkMessageNew.ReplyTo(const Value: Integer): IVkMessageNew;
+function TVkMessageNew.ReplyTo(const Value: Int64): IVkMessageNew;
 begin
   Params.Add('reply_to', Value);
   Result := Self;
@@ -2134,7 +2134,7 @@ end;
 
 { TVkParamsConversationsGet }
 
-function TVkParamsConversationsGet.Count(const Value: Integer): TVkParamsConversationsGet;
+function TVkParamsConversationsGet.Count(const Value: Int64): TVkParamsConversationsGet;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -2164,13 +2164,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsConversationsGet.Offset(const Value: Integer): TVkParamsConversationsGet;
+function TVkParamsConversationsGet.Offset(const Value: Int64): TVkParamsConversationsGet;
 begin
   List.Add('offset', Value);
   Result := Self;
 end;
 
-function TVkParamsConversationsGet.StartMessageId(const Value: Integer): TVkParamsConversationsGet;
+function TVkParamsConversationsGet.StartMessageId(const Value: Int64): TVkParamsConversationsGet;
 begin
   List.Add('start_message_id', Value);
   Result := Self;
@@ -2178,7 +2178,7 @@ end;
 
 { TVkParamsMessageHistory }
 
-function TVkParamsMessageHistory.Count(const Value: Integer): TVkParamsMessageHistory;
+function TVkParamsMessageHistory.Count(const Value: Int64): TVkParamsMessageHistory;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -2202,7 +2202,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageHistory.Offset(const Value: Integer): TVkParamsMessageHistory;
+function TVkParamsMessageHistory.Offset(const Value: Int64): TVkParamsMessageHistory;
 begin
   List.Add('offset', Value);
   Result := Self;
@@ -2220,7 +2220,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageHistory.StartMessageId(const Value: Integer): TVkParamsMessageHistory;
+function TVkParamsMessageHistory.StartMessageId(const Value: Int64): TVkParamsMessageHistory;
 begin
   List.Add('start_message_id', Value);
   Result := Self;
@@ -2246,13 +2246,13 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageGet.GroupID(const Value: Cardinal): TVkParamsMessageGet;
+function TVkParamsMessageGet.GroupID(const Value: UInt64): TVkParamsMessageGet;
 begin
   List.Add('group_id', Value);
   Result := Self;
 end;
 
-function TVkParamsMessageGet.MessageId(const Value: Integer): TVkParamsMessageGet;
+function TVkParamsMessageGet.MessageId(const Value: Int64): TVkParamsMessageGet;
 begin
   List.Add('message_ids', Value);
   Result := Self;
@@ -2264,7 +2264,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageGet.PreviewLength(const Value: Integer): TVkParamsMessageGet;
+function TVkParamsMessageGet.PreviewLength(const Value: Int64): TVkParamsMessageGet;
 begin
   List.Add('preview_length', Value);
   Result := Self;
@@ -2272,7 +2272,7 @@ end;
 
 { TVkParamsMessageDelete }
 
-function TVkParamsMessageDelete.ConversationMessageId(const Value: Integer): TVkParamsMessageDelete;
+function TVkParamsMessageDelete.ConversationMessageId(const Value: Int64): TVkParamsMessageDelete;
 begin
   List.Add('conversation_message_ids', Value);
   Result := Self;
@@ -2296,7 +2296,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageDelete.MessageId(const Value: Integer): TVkParamsMessageDelete;
+function TVkParamsMessageDelete.MessageId(const Value: Int64): TVkParamsMessageDelete;
 begin
   List.Add('message_ids', Value);
   Result := Self;
@@ -2419,7 +2419,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageSend.RandomId(const Value: Integer): TVkParamsMessageSend;
+function TVkParamsMessageSend.RandomId(const Value: Int64): TVkParamsMessageSend;
 begin
   if Value = -1 then
     List.Add('random_id', GetRandomId)
@@ -2428,19 +2428,19 @@ begin
   Result := Self;
 end;
 
-function TVkParamsMessageSend.ReplyTo(const Value: Integer): TVkParamsMessageSend;
+function TVkParamsMessageSend.ReplyTo(const Value: Int64): TVkParamsMessageSend;
 begin
   List.Add('reply_to', Value);
   Result := Self;
 end;
 
-function TVkParamsMessageSend.StickerId(const Value: Integer): TVkParamsMessageSend;
+function TVkParamsMessageSend.StickerId(const Value: Int64): TVkParamsMessageSend;
 begin
   List.Add('sticker_id', Value);
   Result := Self;
 end;
 
-function TVkParamsMessageSend.SubscribeId(const Value: Integer): TVkParamsMessageSend;
+function TVkParamsMessageSend.SubscribeId(const Value: Int64): TVkParamsMessageSend;
 begin
   List.Add('subscribe_id', Value);
   Result := Self;
@@ -3126,7 +3126,7 @@ end;
 
 { TVkParamsConversationMembersGet }
 
-function TVkParamsConversationMembersGet.Count(const Value: Integer): TVkParamsConversationMembersGet;
+function TVkParamsConversationMembersGet.Count(const Value: Int64): TVkParamsConversationMembersGet;
 begin
   List.Add('count', Value);
   Result := Self;
@@ -3150,7 +3150,7 @@ begin
   Result := Self;
 end;
 
-function TVkParamsConversationMembersGet.Offset(const Value: Integer): TVkParamsConversationMembersGet;
+function TVkParamsConversationMembersGet.Offset(const Value: Int64): TVkParamsConversationMembersGet;
 begin
   List.Add('offset', Value);
   Result := Self;
